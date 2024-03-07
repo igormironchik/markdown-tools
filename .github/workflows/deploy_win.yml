@@ -30,9 +30,7 @@ jobs:
      - run: conan profile detect
      
      - name: Install ECM
-       run: |
-         cd md-pdf
-         cmd /c install-extra-cmake-modules.bat
+       run: cmd /c install-extra-cmake-modules.bat
          
      - name: Set PATH to Qt
        run: echo "${{ github.workspace }}\Qt\6.6.2\msvc2019_64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
