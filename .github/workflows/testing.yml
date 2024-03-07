@@ -34,7 +34,7 @@ jobs:
       uses: jurplel/install-qt-action@v3
       with:
         version: '6.6.2'
-        modules: qtwebengine qtwebchannel qtwebview
+        modules: qtwebchannel qtwebengine qtwebview qtpositioning
         
     - run: sudo apt install libfreetype6-dev libjpeg-dev libpng-dev zlib1g zlib1g-dev libfontconfig1-dev fontconfig lcov libmagick++-dev libxml2-dev libtiff-dev libssl-dev extra-cmake-modules
 
@@ -85,7 +85,7 @@ jobs:
       uses: jurplel/install-qt-action@v3
       with:
         version: '6.6.2'
-        modules: qtwebengine qtwebchannel qtwebview
+        modules: qtwebengine qtwebchannel qtwebview qtpositioning
         
     - run: mkdir build
 
