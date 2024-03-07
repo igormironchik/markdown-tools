@@ -1,0 +1,47 @@
+
+name: "deploy_win"
+
+on:
+  workflow_dispatch:
+  
+env:
+  CONAN_HOME: "${{ github.workspace }}/.conan2"
+
+jobs:
+  windows:
+    name: windows
+    runs-on: windows-2019
+ 
+    strategy:
+      fail-fast: true
+      matrix:
+        language: ['cpp']
+ 
+    steps:
+     - name: Checkout repository
+       uses: actions/checkout@v4
+       with:
+         submodules: recursive
+ 
+     - name: Install Conan
+       id: conan
+       uses: turtlebrowser/get-conan@main
+       
+     - run: conan profile detect
+     
+     - name: Install ECM
+       run: |
+         cd md-pdf
+         cmd /c install-extra-cmake-modules.bat
+         
+     - name: Set PATH to Qt
+       run: echo "${{ github.workspace }}\Qt\6.6.2\msvc2019_64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+     
+     - name: Build and Deploy
+       run: cmd /c "script\windows\build_deploy.bat"
+      
+     - name: Upload installer
+       uses: actions/upload-artifact@v4
+       with:
+         name: Markdown_Windows_x64.Installer.exe
+         path: Markdown_Windows_x64.Installer.exe

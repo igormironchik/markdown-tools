@@ -1,0 +1,77 @@
+
+name: "deploy_mac"
+
+on:
+  workflow_dispatch:
+  
+env:
+  CONAN_HOME: "${{ github.workspace }}/.conan2"
+
+jobs:
+  macos:
+    name: macos
+    runs-on: macos-13
+
+    strategy:
+      fail-fast: true
+      matrix:
+        language: ['cpp']
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - run: brew update
+
+    - run: rm '/usr/local/bin/2to3'
+
+    - run: rm '/usr/local/bin/2to3-3.12'
+
+    - run: rm '/usr/local/bin/idle3'
+
+    - run: rm '/usr/local/bin/idle3.12'
+
+    - run: rm '/usr/local/bin/pydoc3'
+
+    - run: rm '/usr/local/bin/pydoc3.12'
+
+    - run: rm '/usr/local/bin/python3'
+
+    - run: rm '/usr/local/bin/python3.12'
+
+    - run: rm '/usr/local/bin/python3-config'
+
+    - run: rm '/usr/local/bin/python3.12-config'
+
+    - run: rm '/usr/local/bin/2to3-3.11'
+
+    - run: rm '/usr/local/bin/idle3.11'
+
+    - run: rm '/usr/local/bin/pydoc3.11'
+
+    - run: rm '/usr/local/bin/python3.11'
+
+    - run: rm '/usr/local/bin/python3.11-config'
+
+#     - run: rm '/usr/local/lib/libtcl8.6.dylib'
+#
+#     - run: rm '/usr/local/lib/libtk8.6.dylib'
+
+    - run: brew upgrade
+
+    - run: brew install imagemagick@6
+
+    - run: brew install extra-cmake-modules
+
+    - run: chmod a+x ./script/macos/build_deploy.sh
+
+    - name: Build and Deploy
+      run: ./script/macos/build_deploy.sh
+
+    - name: Upload installer
+      uses: actions/upload-artifact@v4
+      with:
+        name: Markdown_MacOS_x64.Installer.app
+        path: Markdown_MacOS_x64.Installer.app

@@ -1,0 +1,41 @@
+
+name: "deploy_linux"
+
+on:
+  workflow_dispatch:
+  
+env:
+  CONAN_HOME: "${{ github.workspace }}/.conan2"
+
+jobs:
+  linux:
+    name: linux
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: true
+      matrix:
+        language: ['cpp']
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+        
+    - run: sudo apt update
+    
+    - run: sudo apt upgrade
+        
+    - run: sudo apt install libfreetype6-dev libjpeg-dev libpng-dev zlib1g zlib1g-dev libfontconfig1-dev fontconfig libmagick++-dev libxml2-dev libtiff-dev freeglut3-dev libxcb-icccm4  libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-shape0 libxcb-xinerama0 libxcb-xkb1 libxkbcommon-x11-0 extra-cmake-modules
+        
+    - run: chmod a+x ./script/linux/build_deploy.sh
+          
+    - name: Build and Deploy
+      run: ./script/linux/build_deploy.sh
+      
+    - name: Upload installer
+      uses: actions/upload-artifact@v4
+      with:
+        name: Markdown_Linux_x64.Installer
+        path: Markdown_Linux_x64.Installer
