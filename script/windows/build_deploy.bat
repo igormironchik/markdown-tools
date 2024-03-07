@@ -18,7 +18,7 @@ echo "Building markdown-tools..."
 
 mkdir build-markdown-tools
 
-conan install . -of build-markdown-toolsf -s build_type=Release --build=missing
+conan install . -of build-markdown-tools -s build_type=Release --build=missing
 
 cmake -DCMAKE_BUILD_TYPE=Release -S . -B build-markdown-tools -DBUILD_MDPDF_TESTS=OFF -DCMAKE_PREFIX_PATH=%self_dir%\Qt\6.6.2\msvc2019_64
 
