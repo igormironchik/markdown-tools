@@ -41,7 +41,7 @@ jobs:
       uses: jurplel/install-qt-action@v3
       with:
         version: '6.6.2'
-        modules: qtwebengine qtwebenginewidgets qtwebchannel qtwebview
+        modules: qtwebengine qtwebchannel qtwebview
         
     - run: sudo apt install libfreetype6-dev libjpeg-dev libpng-dev zlib1g-dev libfontconfig1-dev fontconfig libmagick++-dev libxml2-dev libtiff-dev libssl-dev extra-cmake-modules
 
