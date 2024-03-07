@@ -1,0 +1,13 @@
+
+#include <QString>
+
+static const QString c_font = QStringLiteral( "@NORMAL_FONT@" );
+static const QString c_italicFont = QStringLiteral( "@ITALIC_FONT@" );
+static const QString c_boldFont = QStringLiteral( "@BOLD_FONT@" );
+static const QString c_boldItalicFont = QStringLiteral( "@BOLD_ITALIC_FONT@" );
+static const QString c_monoFont = QStringLiteral( "@MONO_FONT@" );
+static const QString c_monoItalicFont = QStringLiteral( "@MONO_ITALIC_FONT@" );
+static const QString c_monoBoldFont = QStringLiteral( "@MONO_BOLD_FONT@" );
+static const QString c_monoBoldItalicFont = QStringLiteral( "@MONO_BOLD_ITALIC_FONT@" );
+
+static const QString c_folder = QStringLiteral( "@WORKING_FOLDER@" );

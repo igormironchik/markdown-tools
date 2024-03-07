@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/">
+        <file>img/application-exit.png</file>
+        <file>img/icon_16x16.png</file>
+        <file>img/icon_24x24.png</file>
+        <file>img/icon_32x32.png</file>
+        <file>img/icon_48x48.png</file>
+        <file>img/icon_64x64.png</file>
+        <file>img/icon_128x128.png</file>
+        <file>img/icon_256x256.png</file>
+        <file>img/qt.png</file>
+        <file>img/bookmarks-organize.png</file>
+    </qresource>
+</RCC>

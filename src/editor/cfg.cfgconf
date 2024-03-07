@@ -1,0 +1,89 @@
+{forGeneration MDEDITOR__CFG_HPP
+
+	{namespace MdEditor
+		{class Cfg
+			{tagScalar
+				{valueType QString}
+				{name font}
+				{defaultValue ""}
+			}
+			{tagScalar
+				{valueType int}
+				{name fontSize}
+				{defaultValue -1}
+			}
+
+			{tagScalar
+				{valueType bool}
+				{name useColors}
+				{defaultValue true}
+			}
+
+			{tagScalar
+				{valueType QString}
+				{name linkColor}
+				{defaultValue ""}
+			}
+
+			{tagScalar
+				{valueType QString}
+				{name listColor}
+				{defaultValue ""}
+			}
+
+			{tagScalar
+				{valueType QString}
+				{name textColor}
+				{defaultValue ""}
+			}
+
+			{tagScalar
+				{valueType QString}
+				{name inlineColor}
+				{defaultValue ""}
+			}
+
+			{tagScalar
+				{valueType QString}
+				{name htmlColor}
+				{defaultValue ""}
+			}
+
+			{tagScalar
+				{valueType QString}
+				{name tableColor}
+				{defaultValue ""}
+			}
+
+			{tagScalar
+				{valueType QString}
+				{name blockquoteColor}
+				{defaultValue ""}
+			}
+
+			{tagScalar
+				{valueType QString}
+				{name codeColor}
+				{defaultValue ""}
+			}
+
+			{tagScalar
+				{valueType QString}
+				{name headingColor}
+				{defaultValue ""}
+			}
+
+			{tagScalar
+				{valueType QString}
+				{name mathColor}
+				{defaultValue ""}
+			}
+
+			{tagScalar
+				{valueType QString}
+				{name footnoteColor}
+				{defaultValue ""}
+			}
+		}
+	}
+}

@@ -1,0 +1,12 @@
+
+#pragma once
+
+// Qt include.
+#include <QString>
+
+namespace MdEditor {
+
+static const QString c_version = QStringLiteral( "@MDEDITOR_VERSION@" );
+static const QString c_md4qtVersion = QStringLiteral( "@md4qt_VERSION_STRING@" );
+
+} /* namespace MdEditor */

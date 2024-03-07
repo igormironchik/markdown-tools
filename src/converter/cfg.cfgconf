@@ -1,0 +1,95 @@
+{forGeneration MDPDF__CFG_HPP
+
+	{namespace MdPdf
+        {class Font
+            {tagScalar
+				{valueType QString}
+				{name name}
+				{defaultValue ""}
+			}
+
+			{tagScalar
+				{valueType int}
+				{name size}
+				{defaultValue 8}
+				{minMaxConstraint {min 5} {max 16}}
+			}
+        }
+
+        {class Margins
+            {tagScalar
+				{valueType int}
+				{name left}
+				{defaultValue 0}
+			}
+
+			{tagScalar
+				{valueType int}
+				{name right}
+				{defaultValue 0}
+			}
+
+			{tagScalar
+				{valueType int}
+				{name top}
+				{defaultValue 0}
+			}
+
+			{tagScalar
+				{valueType int}
+				{name bottom}
+				{defaultValue 0}
+			}
+
+			{tagScalar
+				{valueType QString}
+				{name units}
+				{defaultValue "\"mm\""}
+				{oneOfConstraint "\"mm\"" "\"pt\""}
+			}
+        }
+
+		{class Cfg
+			{tag
+				{valueType MdPdf::Font}
+				{name textFont}
+			}
+
+			{tag
+				{valueType MdPdf::Font}
+				{name codeFont}
+			}
+
+			{tag
+				{valueType MdPdf::Font}
+				{name mathFont}
+			}
+
+			{tag
+                {valueType MdPdf::Margins}
+                {name margins}
+			}
+
+			{tagScalar
+				{valueType QString}
+				{name linkColor}
+			}
+
+			{tagScalar
+				{valueType QString}
+				{name borderColor}
+			}
+
+			{tagScalar
+				{valueType QString}
+				{name codeTheme}
+			}
+
+			{tagScalar
+				{valueType int}
+				{name dpiForImages}
+				{minMaxConstraint {min 50} {max 2400}}
+			}
+		}
+	}
+}

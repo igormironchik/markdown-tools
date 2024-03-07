@@ -1,0 +1,106 @@
+name: "build"
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+  
+env:
+  CONAN_HOME: "${{ github.workspace }}/.conan2"
+
+jobs:
+  linux:
+    name: linux
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: true
+      matrix:
+        # Override automatic language detection by changing the below list
+        # Supported options are ['csharp', 'cpp', 'go', 'java', 'javascript', 'python']
+        language: ['cpp']
+        # Learn more...
+        # https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#overriding-automatic-language-detection
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        submodules: recursive
+          
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '6.6.2'
+        
+    - run: sudo apt install libfreetype6-dev libjpeg-dev libpng-dev zlib1g zlib1g-dev libfontconfig1-dev fontconfig lcov libmagick++-dev libxml2-dev libtiff-dev libssl-dev extra-cmake-modules
+
+    - name: Generate Makefiles
+      run: cmake -DENABLE_COVERAGE=ON -DCMAKE_BUILD_TYPE=Debug -S . -B build
+
+    - name: Build
+      run: cmake --build build --config Debug
+
+    - name: Test
+      run: |
+        export QT_QPA_PLATFORM=offscreen
+        ctest --test-dir build --output-on-failure --verbose -C Debug
+
+    - name: Upload coverage info
+      run: |
+        lcov --directory . --capture --output-file coverage.info
+        lcov --remove coverage.info '/usr/*' --output-file coverage.info
+        lcov --list coverage.info
+
+    - name: Codecov Upload
+      uses: codecov/codecov-action@v3
+      with:
+        fail_ci_if_error: true
+
+  windows:
+    name: windows
+    runs-on: windows-2019
+
+    strategy:
+      fail-fast: true
+      matrix:
+        language: ['cpp']
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        submodules: recursive
+
+    - name: Install Conan
+      id: conan
+      uses: turtlebrowser/get-conan@main
+      
+    - run: conan profile detect
+          
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '6.6.2'
+        
+    - run: mkdir build
+
+    - name: Install dependencies with Conan
+      run: conan install -of build --build=missing .
+      
+    - name: Install ECM
+      run: cmd /c install-extra-cmake-modules.bat
+      
+    - name: Generate Makefiles
+      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Relese
+
+    - name: Append PATH with packages
+      run: echo "${{ github.workspace }}\build\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+    - name: Build
+      run: cmake --build build --config Release
+
+    - name: Test
+      run: ctest --output-on-failure --verbose --test-dir build -C Release

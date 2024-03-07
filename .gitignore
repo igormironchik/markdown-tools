@@ -1,0 +1,13 @@
+
+/**/debug/
+/**/release/
+/lib/
+/build/
+/**/Makefile*
+/**/*.o
+/**/*.user
+/**/moc_*.cpp
+/**/*.moc
+/**/ui_*.h
+/**/qrc_*.cpp
+/3rdparty/badge-highlight/node_modules/

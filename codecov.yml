@@ -1,0 +1,12 @@
+codecov:
+  require_ci_to_pass: yes
+  
+ignore:
+  - "tests/**/*"
+  - "lib/**/*"
+  - "example/**/*"
+  - "3rdparty/**/*"
+  - "src/**/color_widget.*"
+  - "src/**/main_window.*"
+  - "src/**/main.*"
+  - "src/**/progress.*"
