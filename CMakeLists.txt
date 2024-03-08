@@ -59,9 +59,9 @@ if( WIN32 )
 	file( COPY ${IM_MODULES_FILES}
 		DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/bin/modules )
 
-	file( COPY ${CMAKE_CURRENT_SOURCE_DIR}/md-pdf-gui.bat
+	file( COPY ${CMAKE_CURRENT_SOURCE_DIR}/script/windows/md-pdf-gui.bat
 		DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/bin )
-	file( COPY ${CMAKE_CURRENT_SOURCE_DIR}/test.render.bat
+	file( COPY ${CMAKE_CURRENT_SOURCE_DIR}/script/windows/test.render.bat
 		DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/bin )
 endif()
 
