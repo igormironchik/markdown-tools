@@ -20,10 +20,6 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef MD_PDF_MAIN_WINDOW_HPP_INCLUDED
-#define MD_PDF_MAIN_WINDOW_HPP_INCLUDED
-
-
 // md-pdf include.
 #include "ui_main_window.h"
 
@@ -112,5 +108,3 @@ private slots:
 private:
 	MainWidget * ui = nullptr;
 }; // class MainWindow
-
-#endif // MD_PDF_MAIN_WINDOW_HPP_INCLUDED

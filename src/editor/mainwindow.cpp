@@ -71,7 +71,7 @@
 #include <cfgfile/all.hpp>
 
 // shared include.
-#include <license_dialog.hpp>
+#include "license_dialog.hpp"
 
 
 namespace MdEditor {

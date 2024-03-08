@@ -20,14 +20,14 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <src/converter/renderer.hpp>
-#include <src/converter/syntax.hpp>
+#include "src/converter/renderer.hpp"
+#include "src/converter/syntax.hpp"
 
 // md4qt include.
 #define MD4QT_QT_SUPPORT
 #include <md4qt/parser.hpp>
 
-#include <test_const.hpp>
+#include "test_const.hpp"
 
 #include <QObject>
 #include <QtTest/QtTest>

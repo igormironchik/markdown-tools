@@ -20,8 +20,7 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef MD_PDF_SYNTAX_HPP_INCLUDED
-#define MD_PDF_SYNTAX_HPP_INCLUDED
+#pragma once
 
 // Qt include.
 #include <QString>
@@ -80,5 +79,3 @@ private:
 	QMap< QString, KSyntaxHighlighting::Definition > m_definitions;
 	QMap< QString, KSyntaxHighlighting::Theme > m_themes;
 }; // class Syntax
-
-#endif // MD_PDF_SYNTAX_HPP_INCLUDED

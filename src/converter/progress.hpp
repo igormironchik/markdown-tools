@@ -20,8 +20,7 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef MD_PDF_PROGRESS_HPP_INCLUDED
-#define MD_PDF_PROGRESS_HPP_INCLUDED
+#pragma once
 
 // Qt include.
 #include <QDialog>
@@ -64,5 +63,3 @@ private:
 
 	Q_DISABLE_COPY( ProgressDlg )
 }; // class ProgressDlg
-
-#endif // MD_PDF_PROGRESS_HPP_INCLUDED

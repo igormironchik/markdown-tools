@@ -20,8 +20,7 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef MD_PDF_RENDERER_HPP_INCLUDED
-#define MD_PDF_RENDERER_HPP_INCLUDED
+#pragma once
 
 // md4qt include.
 #define MD4QT_QT_SUPPORT
@@ -868,5 +867,3 @@ private:
 	QNetworkReply * m_reply;
 	QUrl m_url;
 }; // class LoadImageFromNetwork
-
-#endif // MD_PDF_RENDERER_HPP_INCLUDED

@@ -31,7 +31,7 @@
 #include <QGroupBox>
 
 // shared include.
-#include <color_widget.hpp>
+#include "color_widget.hpp"
 
 
 namespace MdEditor {

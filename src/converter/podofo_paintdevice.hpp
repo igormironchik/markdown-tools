@@ -20,8 +20,7 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef MD_PDF_PODOFO_PAINTDEVICE_HPP_INCLUDED
-#define MD_PDF_PODOFO_PAINTDEVICE_HPP_INCLUDED
+#pragma once
 
 // Qt include.
 #include <QPaintDevice>
@@ -114,5 +113,3 @@ private:
 
 	QScopedPointer< PoDoFoPaintEnginePrivate > d;
 }; // class PoDoFoPaintEngine
-
-#endif // MD_PDF_PODOFO_PAINTDEVICE_HPP_INCLUDED

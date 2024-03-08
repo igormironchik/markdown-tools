@@ -51,7 +51,7 @@
 #include <podofo/podofo.h>
 
 // shared include.
-#include <license_dialog.hpp>
+#include "license_dialog.hpp"
 
 // cfgfile include.
 #include <cfgfile/all.hpp>

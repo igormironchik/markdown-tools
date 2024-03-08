@@ -20,9 +20,6 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef MD_PDF_CONST_HPP_INCLUDED
-#define MD_PDF_CONST_HPP_INCLUDED
+#pragma once
 
 static const double c_mmInPt = 25.4 / 72.0;
-
-#endif // MD_PDF_CONST_HPP_INCLUDED
