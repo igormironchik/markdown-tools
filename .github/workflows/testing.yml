@@ -91,7 +91,7 @@ jobs:
       run: conan install -of build --build=missing .
       
     - name: Install ECM
-      run: cmd /c install-extra-cmake-modules.bat
+      run: cmd /c script\windows\install-extra-cmake-modules.bat
       
     - name: Generate Makefiles
       run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Relese
