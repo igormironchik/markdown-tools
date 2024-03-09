@@ -91,6 +91,7 @@ private slots:
 
 protected:
 	void resizeEvent( QResizeEvent * event ) override;
+	void keyPressEvent( QKeyEvent * event ) override;
 
 protected:
 	int lineNumber( const QPoint & p );

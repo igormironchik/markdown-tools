@@ -590,4 +590,57 @@ Editor::highlightSyntax( const Colors & colors,
 	d->syntax.highlight( doc, colors );
 }
 
+void
+Editor::keyPressEvent( QKeyEvent * event )
+{
+	auto c = textCursor();
+	
+	if( c.hasSelection() )
+	{
+		switch( event->key() )
+		{
+			case Qt::Key_Tab :
+			{
+				const auto ss = c.selectionStart();
+				const auto se = c.selectionEnd();
+				c.setPosition( ss );
+				const auto start = c.blockNumber();
+				c.setPosition( se, QTextCursor::KeepAnchor );
+				const auto end = c.blockNumber();
+				
+				for( auto i = start; i <= end; ++i )
+				{
+					QTextCursor add( document()->findBlockByNumber( i ) );
+					add.insertText( QStringLiteral( "\t" ) );
+				}
+			}
+				break;
+				
+			case Qt::Key_Backtab :
+			{
+				const auto ss = c.selectionStart();
+				const auto se = c.selectionEnd();
+				c.setPosition( ss );
+				const auto start = c.blockNumber();
+				c.setPosition( se, QTextCursor::KeepAnchor );
+				const auto end = c.blockNumber();
+				
+				for( auto i = start; i <= end; ++i )
+				{
+					QTextCursor del( document()->findBlockByNumber( i ) );
+					
+					if( del.block().text().startsWith( QStringLiteral( "\t" ) ) )
+						del.deleteChar();
+				}
+			}
+				break;
+				
+			default:
+				QPlainTextEdit::keyPressEvent( event );
+		}
+	}
+	else
+		QPlainTextEdit::keyPressEvent( event );
+}
+
 } /* namespace MdEditor */
