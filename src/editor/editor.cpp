@@ -608,11 +608,15 @@ Editor::keyPressEvent( QKeyEvent * event )
 				c.setPosition( se, QTextCursor::KeepAnchor );
 				const auto end = c.blockNumber();
 				
+				c.beginEditBlock();
+				
 				for( auto i = start; i <= end; ++i )
 				{
 					QTextCursor add( document()->findBlockByNumber( i ) );
 					add.insertText( QStringLiteral( "\t" ) );
 				}
+				
+				c.endEditBlock();
 			}
 				break;
 				
@@ -625,6 +629,8 @@ Editor::keyPressEvent( QKeyEvent * event )
 				c.setPosition( se, QTextCursor::KeepAnchor );
 				const auto end = c.blockNumber();
 				
+				c.beginEditBlock();
+				
 				for( auto i = start; i <= end; ++i )
 				{
 					QTextCursor del( document()->findBlockByNumber( i ) );
@@ -632,6 +638,8 @@ Editor::keyPressEvent( QKeyEvent * event )
 					if( del.block().text().startsWith( QStringLiteral( "\t" ) ) )
 						del.deleteChar();
 				}
+				
+				c.endEditBlock();
 			}
 				break;
 				
