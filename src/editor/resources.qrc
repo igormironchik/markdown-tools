@@ -12,17 +12,9 @@
         <file>res/img/document-open.png</file>
         <file>res/img/document-save.png</file>
         <file>res/img/document-save-as.png</file>
-        <file>res/img/icon_16x16.png</file>
-        <file>res/img/icon_24x24.png</file>
-        <file>res/img/icon_32x32.png</file>
-        <file>res/img/icon_48x48.png</file>
-        <file>res/img/icon_64x64.png</file>
-        <file>res/img/icon_128x128.png</file>
-        <file>res/img/icon_256x256.png</file>
         <file>res/img/view-table-of-contents-ltr.png</file>
         <file>res/img/character-set.png</file>
         <file>res/img/edit-find.png</file>
-        <file>res/img/qt.png</file>
         <file>res/img/view-preview.png</file>
         <file>res/css/github-markdown.css</file>
         <file>res/katex/fonts/KaTeX_AMS-Regular.ttf</file>

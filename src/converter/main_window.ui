@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
+ <author>
+  SPDX-FileCopyrightText: none
+  SPDX-License-Identifier: GPL-3.0-or-later
+ </author>
  <class>MainWindow</class>
  <widget class="QWidget" name="MainWindow">
   <property name="geometry">
@@ -7,7 +11,7 @@
     <x>0</x>
     <y>0</y>
     <width>597</width>
-    <height>726</height>
+    <height>796</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -49,7 +53,7 @@
          </widget>
         </item>
         <item row="7" column="1">
-         <widget class="ColorWidget" name="m_borderColor">
+         <widget class="MdShared::ColorWidget" name="m_borderColor">
           <property name="minimumSize">
            <size>
             <width>0</width>
@@ -163,7 +167,7 @@
          <widget class="QComboBox" name="m_codeTheme"/>
         </item>
         <item row="6" column="1">
-         <widget class="ColorWidget" name="m_linkColor">
+         <widget class="MdShared::ColorWidget" name="m_linkColor">
           <property name="minimumSize">
            <size>
             <width>0</width>
@@ -598,7 +602,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>ColorWidget</class>
+   <class>MdShared::ColorWidget</class>
    <extends>QFrame</extends>
    <header>color_widget.hpp</header>
    <container>1</container>

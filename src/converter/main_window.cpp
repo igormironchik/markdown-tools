@@ -1,23 +1,6 @@
-
-/*!
-	\file
-
-	\author Igor Mironchik (igor.mironchik at gmail dot com).
-
-	Copyright (c) 2019-2024 Igor Mironchik
-
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
-
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public License
-	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/*
+	SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
+	SPDX-License-Identifier: GPL-3.0-or-later
 */
 
 // md4qt include.
@@ -57,6 +40,8 @@
 #include <cfgfile/all.hpp>
 
 
+namespace MdPdf {
+
 //
 // MainWindow
 //
@@ -74,8 +59,8 @@ MainWidget::MainWidget( QWidget * parent )
 	m_ui->m_linkColor->setColor( QColor( 33, 122, 255 ) );
 	m_ui->m_borderColor->setColor( QColor( 81, 81, 81 ) );
 
-	connect( m_ui->m_linkColor, &ColorWidget::clicked, this, &MainWidget::changeLinkColor );
-	connect( m_ui->m_borderColor, &ColorWidget::clicked, this, &MainWidget::changeBorderColor );
+	connect( m_ui->m_linkColor, &MdShared::ColorWidget::clicked, this, &MainWidget::changeLinkColor );
+	connect( m_ui->m_borderColor, &MdShared::ColorWidget::clicked, this, &MainWidget::changeBorderColor );
 	connect( m_ui->m_fileNameBtn, &QToolButton::clicked,
 		this, &MainWidget::selectMarkdown );
 	connect( m_ui->m_startBtn, &QPushButton::clicked,
@@ -101,11 +86,11 @@ MainWidget::MainWidget( QWidget * parent )
 
 	m_thread->start();
 
-	if( !PdfRenderer::isFontCreatable( m_ui->m_textFont->currentText() ) )
+	if( !Render::PdfRenderer::isFontCreatable( m_ui->m_textFont->currentText() ) )
 	{
 		for( int i = 0; i < m_ui->m_textFont->count(); ++i )
 		{
-			if( PdfRenderer::isFontCreatable( m_ui->m_textFont->itemText( i ) ) )
+			if( Render::PdfRenderer::isFontCreatable( m_ui->m_textFont->itemText( i ) ) )
 			{
 				m_ui->m_textFont->setCurrentIndex( i );
 
@@ -114,11 +99,11 @@ MainWidget::MainWidget( QWidget * parent )
 		}
 	}
 
-	if( !PdfRenderer::isFontCreatable( m_ui->m_codeFont->currentText() ) )
+	if( !Render::PdfRenderer::isFontCreatable( m_ui->m_codeFont->currentText() ) )
 	{
 		for( int i = 0; i < m_ui->m_codeFont->count(); ++i )
 		{
-			if( PdfRenderer::isFontCreatable( m_ui->m_codeFont->itemText( i ) ) )
+			if( Render::PdfRenderer::isFontCreatable( m_ui->m_codeFont->itemText( i ) ) )
 			{
 				m_ui->m_codeFont->setCurrentIndex( i );
 
@@ -178,7 +163,7 @@ MainWidget::readCfg()
 	if( file.open( QIODevice::ReadOnly ) )
 	{
 		try {
-			MdPdf::tag_Cfg< cfgfile::qstring_trait_t > tag;
+			tag_Cfg< cfgfile::qstring_trait_t > tag;
 
 			QTextStream stream( &file );
 
@@ -287,7 +272,7 @@ MainWidget::saveCfg()
 	if( file.open( QIODevice::WriteOnly ) )
 	{
 		try {
-			MdPdf::Cfg cfg;
+			Cfg cfg;
 			
 			{
 				MdPdf::Font f;
@@ -315,7 +300,7 @@ MainWidget::saveCfg()
 			cfg.set_codeTheme( m_ui->m_codeTheme->currentText() );
 			cfg.set_dpiForImages( m_ui->m_dpi->value() );
 			
-			MdPdf::Margins m;
+			Margins m;
 			
 			if( m_ui->m_mm->isChecked() )
 				m.set_units( QStringLiteral( "mm" ) );
@@ -329,7 +314,7 @@ MainWidget::saveCfg()
 			
 			cfg.set_margins( m );
 
-			MdPdf::tag_Cfg< cfgfile::qstring_trait_t > tag( cfg );
+			tag_Cfg< cfgfile::qstring_trait_t > tag( cfg );
 
 			QTextStream stream( &file );
 
@@ -416,10 +401,10 @@ MainWidget::process()
 
 		if( !doc->isEmpty() )
 		{
-			auto * pdf = new PdfRenderer();
+			auto * pdf = new Render::PdfRenderer();
 			pdf->moveToThread( m_thread );
 
-			RenderOpts opts;
+			Render::RenderOpts opts;
 
 			opts.m_textFont = m_ui->m_textFont->currentFont().family();
 			opts.m_textFontSize = m_ui->m_textFontSize->value();
@@ -514,7 +499,7 @@ MainWidget::textFontChanged( const QFont & f )
 {
 	static const QString defaultColor = m_ui->m_textFont->palette().color( QPalette::Text ).name();
 
-	if( !PdfRenderer::isFontCreatable( f.family() ) )
+	if( !Render::PdfRenderer::isFontCreatable( f.family() ) )
 	{
 		m_ui->m_textFont->setStyleSheet( QStringLiteral( "QFontComboBox { color: red }" ) );
 		m_textFontOk = false;
@@ -539,7 +524,7 @@ MainWidget::codeFontChanged( const QFont & f )
 {
 	static const QString defaultColor = m_ui->m_codeFont->palette().color( QPalette::Text ).name();
 
-	if( !PdfRenderer::isFontCreatable( f.family() ) )
+	if( !Render::PdfRenderer::isFontCreatable( f.family() ) )
 	{
 		m_ui->m_codeFont->setStyleSheet( QStringLiteral( "QFontComboBox { color: red }" ) );
 		m_codeFontOk = false;
@@ -573,9 +558,9 @@ MainWindow::MainWindow()
 		this, &MainWindow::quit );
 
 	auto help = menuBar()->addMenu( tr( "&Help" ) );
-	help->addAction( QIcon( QStringLiteral( ":/img/icon_24x24.png" ) ), tr( "About" ),
+	help->addAction( QIcon( QStringLiteral( ":/icon/icon_24x24.png" ) ), tr( "About" ),
 		this, &MainWindow::about );
-	help->addAction( QIcon( QStringLiteral( ":/img/qt.png" ) ), tr( "About Qt" ),
+	help->addAction( QIcon( QStringLiteral( ":/img/Qt-logo-neon-transparent.png" ) ), tr( "About Qt" ),
 		this, &MainWindow::aboutQt );
 	help->addAction( QIcon( QStringLiteral( ":/img/bookmarks-organize.png" ) ),
 		tr( "Licenses" ), this, &MainWindow::licenses );
@@ -614,7 +599,7 @@ MainWindow::aboutQt()
 void
 MainWindow::licenses()
 {
-	LicenseDialog msg( this );
+	MdShared::LicenseDialog msg( this );
 	msg.addLicense( QStringLiteral( "PoDoFo" ),
 		QStringLiteral( "<p><b>PoDoFo License\n\n</b></p>"
 		"<p>GNU LIBRARY GENERAL PUBLIC LICENSE\n</p>"
@@ -1296,3 +1281,5 @@ MainWindow::quit()
 {
 	QApplication::quit();
 }
+
+} /* namespace MdPdf */

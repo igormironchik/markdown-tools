@@ -1,3 +1,10 @@
+/*
+    SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
+    SPDX-FileCopyrightText: 2024 Ivan Stanevich
+
+    SPDX-License-Identifier: MIT
+*/
+
 const tagClassNameMap = {
     '[!NOTE]': 'markdown-alert-note',
     '[!TIP]': 'markdown-alert-tip',

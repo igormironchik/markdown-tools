@@ -1,23 +1,6 @@
-
-/*!
-	\file
-
-	\author Igor Mironchik (igor.mironchik at gmail dot com).
-
-	Copyright (c) 2023-2024 Igor Mironchik
-
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
-
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public License
-	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/*
+	SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
+	SPDX-License-Identifier: GPL-3.0-or-later
 */
 
 // md-editor include.
@@ -72,23 +55,23 @@ ColorsDialog::ColorsDialog( const Colors & cols, QWidget * parent )
 
 	connect( d->ui.buttonBox, &QDialogButtonBox::clicked,
 		this, &ColorsDialog::clicked );
-	connect( d->ui.linkColor, &ColorWidget::clicked,
+	connect( d->ui.linkColor, &MdShared::ColorWidget::clicked,
 		this, &ColorsDialog::chooseLinkColor );
-	connect( d->ui.listColor, &ColorWidget::clicked,
+	connect( d->ui.listColor, &MdShared::ColorWidget::clicked,
 		this, &ColorsDialog::chooseListColor );
-	connect( d->ui.textColor, &ColorWidget::clicked,
+	connect( d->ui.textColor, &MdShared::ColorWidget::clicked,
 		this, &ColorsDialog::chooseTextColor );
-	connect( d->ui.inlineColor, &ColorWidget::clicked,
+	connect( d->ui.inlineColor, &MdShared::ColorWidget::clicked,
 		this, &ColorsDialog::chooseInlineColor );
-	connect( d->ui.htmlColor, &ColorWidget::clicked,
+	connect( d->ui.htmlColor, &MdShared::ColorWidget::clicked,
 		this, &ColorsDialog::chooseHtmlColor );
-	connect( d->ui.tableColor, &ColorWidget::clicked,
+	connect( d->ui.tableColor, &MdShared::ColorWidget::clicked,
 		this, &ColorsDialog::chooseTableColor );
-	connect( d->ui.blockquoteColor, &ColorWidget::clicked,
+	connect( d->ui.blockquoteColor, &MdShared::ColorWidget::clicked,
 		this, &ColorsDialog::chooseBlockquoteColor );
-	connect( d->ui.codeColor, &ColorWidget::clicked,
+	connect( d->ui.codeColor, &MdShared::ColorWidget::clicked,
 		this, &ColorsDialog::chooseCodeColor );
-	connect( d->ui.headingColor, &ColorWidget::clicked,
+	connect( d->ui.headingColor, &MdShared::ColorWidget::clicked,
 		this, &ColorsDialog::chooseHeadingColor );
 	connect( d->ui.colors, &QGroupBox::toggled,
 		this, &ColorsDialog::colorsToggled );
@@ -139,7 +122,7 @@ ColorsDialog::applyColors()
 }
 
 void
-ColorsDialog::chooseColor( ColorWidget * w, QColor & c )
+ColorsDialog::chooseColor( MdShared::ColorWidget * w, QColor & c )
 {
 	QColorDialog dlg( c, this );
 

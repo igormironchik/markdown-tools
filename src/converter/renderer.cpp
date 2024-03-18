@@ -1,23 +1,6 @@
-
-/*!
-	\file
-
-	\author Igor Mironchik (igor.mironchik at gmail dot com).
-
-	Copyright (c) 2019-2024 Igor Mironchik
-
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
-
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public License
-	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/*
+	SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
+	SPDX-License-Identifier: GPL-3.0-or-later
 */
 
 // md-pdf include.
@@ -41,9 +24,6 @@
 #include <QScreen>
 #include <QRegularExpression>
 
-// Magick++ include.
-#include <Magick++.h>
-
 // JKQtPlotter include.
 #include <jkqtmathtext/jkqtmathtext.h>
 
@@ -52,6 +32,10 @@
 #include <utility>
 #include <functional>
 
+
+namespace MdPdf {
+
+namespace Render {
 
 //
 // PdfRendererError
@@ -651,10 +635,10 @@ PdfRenderer::renderImpl()
 		pdfData.fonts[ QStringLiteral( "Droid Serif Bold" ) ] = c_boldFont;
 		pdfData.fonts[ QStringLiteral( "Droid Serif Italic" ) ] = c_italicFont;
 		pdfData.fonts[ QStringLiteral( "Droid Serif Bold Italic" ) ] = c_boldItalicFont;
-		pdfData.fonts[ QStringLiteral( "Courier New" ) ] = c_monoFont;
-		pdfData.fonts[ QStringLiteral( "Courier New Italic" ) ] = c_monoItalicFont;
-		pdfData.fonts[ QStringLiteral( "Courier New Bold" ) ] = c_monoBoldFont;
-		pdfData.fonts[ QStringLiteral( "Courier New Bold Italic" ) ] = c_monoBoldItalicFont;
+		pdfData.fonts[ QStringLiteral( "Space Mono" ) ] = c_monoFont;
+		pdfData.fonts[ QStringLiteral( "Space Mono Italic" ) ] = c_monoItalicFont;
+		pdfData.fonts[ QStringLiteral( "Space Mono Bold" ) ] = c_monoBoldFont;
+		pdfData.fonts[ QStringLiteral( "Space Mono Bold Italic" ) ] = c_monoBoldItalicFont;
 
 		pdfData.self = this;
 
@@ -2799,36 +2783,6 @@ PdfRenderer::drawImage( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 }
 
 //
-// convert
-//
-
-QImage
-convert( const Magick::Image & img )
-{
-	QImage qimg( static_cast< int > ( img.columns() ),
-		static_cast< int > ( img.rows() ), QImage::Format_RGB888 );
-	const Magick::PixelPacket * pixels;
-	Magick::ColorRGB rgb;
-
-	for( int y = 0; y < qimg.height(); ++y)
-	{
-		pixels = img.getConstPixels( 0, y, static_cast< std::size_t > ( qimg.width() ), 1 );
-
-		for( int x = 0; x < qimg.width(); ++x )
-		{
-			rgb = ( *( pixels + x ) );
-
-			qimg.setPixel( x, y, QColor( static_cast< int> ( 255 * rgb.red() ),
-				static_cast< int > ( 255 * rgb.green() ),
-				static_cast< int > ( 255 * rgb.blue() ) ).rgb() );
-		}
-	}
-
-	return qimg;
-}
-
-
-//
 // LoadImageFromNetwork
 //
 
@@ -2872,31 +2826,8 @@ void
 LoadImageFromNetwork::loadFinished()
 {
 	const auto data = m_reply->readAll();
-	const auto svg = QString( data.mid( 0, 4 ).toLower() );
-
-	if( svg == QStringLiteral( "<svg" ) )
-	{
-		try {
-			Magick::Image img;
-			QTemporaryFile file( QStringLiteral( "XXXXXX.svg" ) );
-			if( file.open() )
-			{
-				file.write( data );
-				file.close();
-
-				img.read( file.fileName().toStdString() );
-
-				img.magick( "png" );
-
-				m_img = convert( img );
-			}
-		}
-		catch( const Magick::Exception & )
-		{
-		}
-	}
-	else
-		m_img.loadFromData( data );
+	
+	m_img.loadFromData( data );
 
 	m_reply->deleteLater();
 
@@ -2919,22 +2850,7 @@ PdfRenderer::loadImage( MD::Image< MD::QStringTrait > * item )
 	QImage img;
 
 	if( QFileInfo::exists( item->url() ) )
-	{
-		if( item->url().toLower().endsWith( QStringLiteral( "svg" ) ) )
-		{
-			try {
-				Magick::Image mimg;
-				mimg.read( item->url().toStdString() );
-				mimg.magick( "png" );
-				img = convert( mimg );
-			}
-			catch( const Magick::Exception & )
-			{
-			}
-		}
-		else
-			img = QImage( item->url() );
-	}
+		img = QImage( item->url() );
 	else if( !QUrl( item->url() ).isRelative() )
 	{
 		QThread thread;
@@ -4796,3 +4712,7 @@ PdfRenderer::minNecessaryHeight( PdfAuxData & pdfData, const RenderOpts & render
 	else
 		return 0.0;
 }
+
+} /* namespace Render */
+
+} /* namespace MdPdf */

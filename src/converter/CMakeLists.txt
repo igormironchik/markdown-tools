@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
 
 project( md-pdf-gui )
 
@@ -5,12 +7,14 @@ set( CMAKE_AUTOMOC ON )
 set( CMAKE_AUTORCC ON )
 set( CMAKE_AUTOUIC ON )
 
+find_package( KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
+    SyntaxHighlighting
+)
+
 find_package( Qt6Widgets 6.5.0 REQUIRED )
 find_package( Qt6Network 6.5.0 REQUIRED )
-find_package( ImageMagick 6 EXACT REQUIRED COMPONENTS Magick++ MagickCore )
+find_package( Qt6Svg 6.5.0 REQUIRED )
 
-add_definitions( -DMAGICKCORE_QUANTUM_DEPTH=16 )
-add_definitions( -DMAGICKCORE_HDRI_ENABLE=0 )
 add_definitions( -DPODOFO_SHARED )
 
 if( ENABLE_COVERAGE )
@@ -44,15 +48,9 @@ set( LIB_SYNTAX_SRC syntax.cpp
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/podofo/src
-	${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/cfgfile
-	${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/widgets/include
 	${CMAKE_CURRENT_BINARY_DIR}/../../3rdparty/podofo/src/podofo
-	${ImageMagick_INCLUDE_DIRS}
 	${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/JKQtPlotter/lib
-	${md4qt_INCLUDE_DIRECTORIES}
 	${CMAKE_CURRENT_BINARY_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/ksyntaxhighlighting/lib
-	${CMAKE_CURRENT_BINARY_DIR}/../../3rdparty/ksyntaxhighlighting/lib
 	${CMAKE_CURRENT_SOURCE_DIR}/../shared )
 
 link_directories( ${CMAKE_CURRENT_BINARY_DIR}/../../3rdparty/podofo/src/podofo
@@ -70,13 +68,15 @@ add_definitions( -DCFGFILE_QT_SUPPORT )
 
 add_library( syntax STATIC ${LIB_SYNTAX_SRC} )
 
-target_link_libraries( syntax KF6SyntaxHighlighting Qt6::Gui Qt6::Network Qt6::Core )
+target_link_libraries( syntax KF${KF_MAJOR_VERSION}::SyntaxHighlighting Qt6::Gui Qt6::Network Qt6::Core )
 
 add_executable( md-pdf-gui WIN32 ${GUI_SRC} )
 
 add_dependencies( md-pdf-gui cfgfile.generator )
 
-target_link_libraries( md-pdf-gui syntax markdown-widgets ${ImageMagick_LIBRARIES}
-	JKQTMathText6 JKQTCommon6 KF6SyntaxHighlighting
+install( TARGETS md-pdf-gui )
+
+target_link_libraries( md-pdf-gui syntax markdown-widgets
+	JKQTMathText6 JKQTCommon6 KF${KF_MAJOR_VERSION}::SyntaxHighlighting
 	Qt6::Widgets Qt6::Network Qt6::Core
-	podofo_shared )
+	podofo::podofo )

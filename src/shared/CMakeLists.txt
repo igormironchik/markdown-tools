@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
 
 project( markdown-widgets )
 
@@ -12,7 +14,12 @@ set( SRC license_dialog.hpp
 	license_dialog.cpp
 	license_dialog.ui
 	color_widget.cpp
-	color_widget.hpp )
+	color_widget.hpp
+	utils.hpp
+	utils.cpp )
+
+qt6_add_resources( SRC qt.qrc )
+qt6_add_resources( SRC icon.qrc )
     
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )
 

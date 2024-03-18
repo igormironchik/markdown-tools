@@ -1,23 +1,6 @@
-
-/*!
-	\file
-
-	\author Igor Mironchik (igor.mironchik at gmail dot com).
-
-	Copyright (c) 2019-2024 Igor Mironchik
-
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
-
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public License
-	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/*
+	SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
+	SPDX-License-Identifier: GPL-3.0-or-later
 */
 
 #include "src/converter/renderer.hpp"
@@ -34,6 +17,11 @@
 #include <QSignalSpy>
 #include <QVector>
 #include <QFontDatabase>
+
+
+//! Prepare test data or do actual test?
+static const bool c_printData = false;
+
 
 //
 // TestRender
@@ -110,8 +98,10 @@ private slots:
 	void testMathBigFont();
 }; // class TestRender
 
-//! Prepare test data or do actual test?
-static const bool c_printData = false;
+
+namespace MdPdf {
+
+namespace Render {
 
 struct TestRendering {
 	static void
@@ -128,7 +118,7 @@ struct TestRendering {
 		opts.m_bottom = 50.0;
 		opts.m_syntax = std::make_shared< Syntax > ();
 		opts.m_syntax->setTheme( opts.m_syntax->themeForName( QStringLiteral( "GitHub Light" ) ) );
-		opts.m_codeFont = QStringLiteral( "Courier New" );
+		opts.m_codeFont = QStringLiteral( "Space Mono" );
 		opts.m_codeFontSize = codeFontSize;
 		opts.m_left = 50.0;
 		opts.m_linkColor = QColor( 33, 122, 255 );
@@ -241,21 +231,25 @@ loadTestData( const QString & fileName, const QString & suffix )
 	return data;
 }
 
+} /* namespace Render */
+
+} /* namespace MdPdf */
+
 void
 doTest( const QString & fileName, const QString & suffix,
 	double textFontSize, double codeFontSize )
 {
-	QVector< DrawPrimitive > data;
+	QVector< MdPdf::Render::DrawPrimitive > data;
 
 	if( !c_printData )
 	{
-		data = loadTestData( fileName, suffix );
+		data = MdPdf::Render::loadTestData( fileName, suffix );
 
 		if( data.isEmpty() )
 			QFAIL( "Failed to load test data." );
 	}
 
-	TestRendering::testRendering( fileName, suffix, data, textFontSize, codeFontSize );
+	MdPdf::Render::TestRendering::testRendering( fileName, suffix, data, textFontSize, codeFontSize );
 }
 
 void

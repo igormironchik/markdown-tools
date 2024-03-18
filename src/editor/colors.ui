@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
+ <author>
+  SPDX-FileCopyrightText: none
+  SPDX-License-Identifier: GPL-3.0-or-later
+ </author>
  <class>ColorsDialog</class>
  <widget class="QDialog" name="ColorsDialog">
   <property name="geometry">
@@ -43,7 +47,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="ColorWidget" name="listColor">
+       <widget class="MdShared::ColorWidget" name="listColor">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -72,7 +76,7 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="ColorWidget" name="textColor">
+       <widget class="MdShared::ColorWidget" name="textColor">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -101,7 +105,7 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="ColorWidget" name="inlineColor">
+       <widget class="MdShared::ColorWidget" name="inlineColor">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -130,7 +134,7 @@
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="ColorWidget" name="linkColor">
+       <widget class="MdShared::ColorWidget" name="linkColor">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -153,7 +157,7 @@
        </widget>
       </item>
       <item row="4" column="1">
-       <widget class="ColorWidget" name="htmlColor">
+       <widget class="MdShared::ColorWidget" name="htmlColor">
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
         </property>
@@ -170,7 +174,7 @@
        </widget>
       </item>
       <item row="5" column="1">
-       <widget class="ColorWidget" name="tableColor">
+       <widget class="MdShared::ColorWidget" name="tableColor">
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
         </property>
@@ -187,7 +191,7 @@
        </widget>
       </item>
       <item row="6" column="1">
-       <widget class="ColorWidget" name="blockquoteColor">
+       <widget class="MdShared::ColorWidget" name="blockquoteColor">
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
         </property>
@@ -204,7 +208,7 @@
        </widget>
       </item>
       <item row="7" column="1">
-       <widget class="ColorWidget" name="codeColor">
+       <widget class="MdShared::ColorWidget" name="codeColor">
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
         </property>
@@ -221,7 +225,7 @@
        </widget>
       </item>
       <item row="8" column="1">
-       <widget class="ColorWidget" name="headingColor">
+       <widget class="MdShared::ColorWidget" name="headingColor">
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
         </property>
@@ -238,7 +242,7 @@
        </widget>
       </item>
       <item row="9" column="1">
-       <widget class="ColorWidget" name="mathColor">
+       <widget class="MdShared::ColorWidget" name="mathColor">
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
         </property>
@@ -255,7 +259,7 @@
        </widget>
       </item>
       <item row="10" column="1">
-       <widget class="ColorWidget" name="footnoteColor">
+       <widget class="MdShared::ColorWidget" name="footnoteColor">
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
         </property>
@@ -301,7 +305,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>ColorWidget</class>
+   <class>MdShared::ColorWidget</class>
    <extends>QFrame</extends>
    <header>color_widget.hpp</header>
    <container>1</container>
