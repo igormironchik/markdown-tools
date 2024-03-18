@@ -1,69 +1,33 @@
 This is a set of applications to work with `Markdown`, including editor, `HTML`
 preview viewer, converter to `PDF`.
 
-* [Installers](#installers)
-* [Getting from Repository](#getting-from-repository)
 * [Building](#building)
-  * [Building with `QtCreator` and `Conan`](#building-with-qtcreator-and-conan)
   * [On what platforms better use `Conan` to build `markdown-tools`?](#on-what-platforms-better-use-conan-to-build-markdown-tools)
 * [Known issues](#known-issues)
 
-# Installers
-
-`Windows` and `Linux` `x64` installers can be obtained from corresponding `deploy_*`
-workflow, just download appropriate artifact from it. `deploy_mac` workflow produces
-installer for `MacOS`, but it's not tested ever, it's just a proof of a build process
-on `MacOS`. I don't have a `MacOS` to check everything and do things right, you are
-welcome to give me 24h of remote `MacOS` environment with installed `XCode` to finish
-this work.
-
-`Linux` deploy may work with integration into desktop environment problems, for example, on
-`Plasma 6`. I suggest use your own build on `Linux` with new `Plasma 6`.
-
-# Getting from Repository
-
-After clone update submodules with the next command:
-
-```
-git submodule update --init --recursive
-```
-
 # Building
 
-To build these applications first of all install dependencies of `PoDoFo`
+To build these applications first of all install dependencies:
 
  * `openssl`
  * `freetype`
  * `libjpeg`
  * `libpng`
  * `zlib`
- * `libtiff` - optional
  * `libxml2`
  * `fontconfig`
-
-Also `ImageMagick 6` is required.
+ * `extra-cmake-modules`
+ * `kf6-syntax-highlighting`
+ * `Qt6`
 
 With these dependencies installed just open `CMakeLists.txt` in `QtCreator`
 (or use `CMake` from command line) and run build.
 
-You can use `Conan` to install dependencies, only `ImageMagick` should be installed by hands, as in
-`Conan` `ImageMagick` available version is 7 only, and not all platforms are supported. And
+You can use `Conan` to install some dependencies.
+
 `Fontconfig` should be installed in system, as using `Fontconfig` from `Conan` leads to ugly UI.
-Good luck!
 
-And one more thing - don't use `jom`.
-
-## Building with `QtCreator` and `Conan`
-
- * Be sure you enabled `Conan` plugin in `QtCreator`
- * Be sure you opt in `Preferences->CMake->General->Package manager auto setup` checkbox
- * Open `CMakeLists.txt` with `QtCreator`
- * And voila, run build and everything should go without any problem.
- 
-In this stack you can have problems only with `ImageMagick`, that I don't install with
-`Conan`, as there is no build possible on Windows platform with `Conan`. So be sure you installed
-`ImageMagick 6` and installation is available through the `PATH` environment, this should
-be enough to detect `ImageMagick`. Good luck.
+One more thing - don't use `jom`.
 
 ## On what platforms better use `Conan` to build `markdown-tools`?
 
