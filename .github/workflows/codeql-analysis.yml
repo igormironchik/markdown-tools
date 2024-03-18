@@ -43,7 +43,7 @@ jobs:
         version: '6.6.2'
         modules: qtwebengine qtwebchannel qtwebview qtpositioning
         
-    - run: sudo apt install libfreetype6-dev libjpeg-dev libpng-dev zlib1g-dev libfontconfig1-dev fontconfig libxml2-dev libtiff-dev libssl-dev extra-cmake-modules libkf5syntaxhighlighting-dev
+    - run: sudo apt install libfreetype6-dev libjpeg-dev libpng-dev zlib1g-dev libfontconfig1-dev fontconfig libxml2-dev libtiff-dev libssl-dev extra-cmake-modules kf6-syntax-highlighting-dev
 
     - run: mkdir build
 
