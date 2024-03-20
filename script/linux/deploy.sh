@@ -32,6 +32,12 @@ cp ./build-markdown-tools/bin/md-editor ./installer/packages/mironchik.igor.mark
 
 cp -r ./build-markdown-tools/bin/md-pdf-gui ./installer/packages/mironchik.igor.markdown/data/bin/md-pdf-gui || exit 1
 
+cp $PWD/../KDE/lib/x86_64-linux-gnu/libKF6SyntaxHighlighting.so.6.1.0 ./installer/packages/mironchik.igor.markdown/data/lib/libKF6SyntaxHighlighting.so.6.1.0
+
+cp $PWD/../KDE/lib/x86_64-linux-gnu/libKF6SyntaxHighlighting.so.6 ./installer/packages/mironchik.igor.markdown/data/lib/libKF6SyntaxHighlighting.so.6
+
+cp $PWD/../KDE/lib/x86_64-linux-gnu/libKF6SyntaxHighlighting.so ./installer/packages/mironchik.igor.markdown/data/lib/libKF6SyntaxHighlighting.so
+
 cp -r ./build-markdown-tools/lib ./installer/packages/mironchik.igor.markdown/data || exit 1
 
 rm -f ./installer/packages/mironchik.igor.markdown/data/lib/*.a || exit 1
