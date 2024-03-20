@@ -2,6 +2,6 @@ cmake -S 3rdparty/KDE/extra-cmake-modules -B ../build-extra-cmake-modules -DCMAK
 cmake --build ../build-extra-cmake-modules --config Release
 cmake --install ../build-extra-cmake-modules --prefix ../KDE
 
-cmake -S 3rdparty/KDE/syntax-highlighting -B ../build-syntax-highlighting -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE
+cmake -S 3rdparty/KDE/syntax-highlighting -B ../build-syntax-highlighting -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake
 cmake --build ../build-syntax-highlighting --config Release
 cmake --install ../build-syntax-highlighting --prefix ../KDE
