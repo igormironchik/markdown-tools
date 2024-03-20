@@ -43,12 +43,12 @@ jobs:
         version: '6.6.2'
         modules: qtwebengine qtwebchannel qtwebview qtpositioning
         
-    - run: sudo apt install libfreetype6-dev libjpeg-dev libpng-dev zlib1g-dev libfontconfig1-dev fontconfig libxml2-dev libtiff-dev libssl-dev extra-cmake-modules kf6-syntax-highlighting-dev
+    - run: sudo apt install libfreetype6-dev libjpeg-dev libpng-dev zlib1g zlib1g-dev libfontconfig1-dev fontconfig lcov libxml2-dev libtiff-dev libssl-dev
 
-    - run: mkdir build
+    - run: ./script/linux/install-kde.sh
 
     - name: Generate Makefiles
-      run: cmake -S . -B build
+      run: cmake -S . -B build -DECM_DIR=$PWD/../KDE/share/ECM/cmake -DKF6SyntaxHighlighting_DIR=$PWD/../KDE/lib/x86_64-linux-gnu/cmake/KF6SyntaxHighlighting
 
     - name: Build
       run: cmake --build build --config Release

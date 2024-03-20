@@ -27,12 +27,27 @@ jobs:
     
     - run: sudo apt upgrade
         
-    - run: sudo apt install libfreetype6-dev libjpeg-dev libpng-dev zlib1g zlib1g-dev libfontconfig1-dev fontconfig libmagick++-dev libxml2-dev libtiff-dev freeglut3-dev libxcb-icccm4  libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-shape0 libxcb-xinerama0 libxcb-xkb1 libxkbcommon-x11-0 extra-cmake-modules
+    - run: sudo apt install libfreetype6-dev libjpeg-dev libpng-dev zlib1g zlib1g-dev libfontconfig1-dev fontconfig libxml2-dev libtiff-dev freeglut3-dev libxcb-icccm4  libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-shape0 libxcb-xinerama0 libxcb-xkb1 libxkbcommon-x11-0
         
-    - run: chmod a+x ./script/linux/build_deploy.sh
-          
-    - name: Build and Deploy
-      run: ./script/linux/build_deploy.sh
+    - run: chmod a+x ./script/linux/install-qt.sh
+
+    - run: chmod a+x ./script/linux/install-kde.sh
+
+    - run: chmod a+x ./script/linux/build.sh
+
+    - run: chmod a+x ./script/linux/deploy.sh
+
+    - name: Install Qt
+      run: ./script/linux/install-qt.sh
+
+    - name: Install KDE
+      run: ./script/linux/install-kde.sh
+
+    - name: Build
+      run: ./script/linux/build.sh
+
+    - name: Deploy
+      run: ./script/linux/deploy.sh
       
     - name: Upload installer
       uses: actions/upload-artifact@v4
