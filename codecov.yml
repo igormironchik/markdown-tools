@@ -3,10 +3,12 @@ codecov:
   
 ignore:
   - "tests/**/*"
-  - "lib/**/*"
-  - "example/**/*"
+  - "Qt/**/*"
   - "3rdparty/**/*"
-  - "src/**/color_widget.*"
-  - "src/**/main_window.*"
-  - "src/**/main.*"
-  - "src/**/progress.*"
+  - "src/shared/**/*"
+  - "src/editor/**/*"
+  - "src/converter/main_window.*"
+  - "src/converter/main.*"
+  - "src/converter/podofo_paintdevice.*"
+  - "src/converter/progress.*"
+  - "src/converter/syntax.*"
