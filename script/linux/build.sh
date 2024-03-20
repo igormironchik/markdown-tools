@@ -14,6 +14,6 @@ echo "Building markdown-tools..."
 
 mkdir build-markdown-tools
 
-cmake -DCMAKE_BUILD_TYPE=Release -S . -B build-markdown-tools -DBUILD_MDPDF_TESTS=OFF -DCMAKE_PREFIX_PATH=${self_dir}/Qt/6.6.2/gcc_64:../KDE || exit 1
+cmake -DCMAKE_BUILD_TYPE=Release -S . -B build-markdown-tools -DBUILD_MDPDF_TESTS=OFF -DCMAKE_PREFIX_PATH=${self_dir}/Qt/6.6.2/gcc_64 -DECM_DIR=../KDE -DKF6SyntaxHighlighting_DIR=../KDE/lib/x86_64-linux-gnu/cmake/KF6SyntaxHighlighting || exit 1
 
 cmake --build build-markdown-tools --config Release || exit 1

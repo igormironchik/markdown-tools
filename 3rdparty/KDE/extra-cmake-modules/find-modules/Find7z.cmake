@@ -26,6 +26,11 @@ target:
 ``7z::7z``
     Path to 7z executable
 
+.. note::
+    Only works on Windows.
+
+Deprecated: since 5.113, use  :find-module:`Find7Zip`.
+
 Since 5.85.0.
 #]=======================================================================]
 

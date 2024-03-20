@@ -56,7 +56,7 @@ Additional options are specified as cache variables (eg: on the command line):
     The build tools version to use.
     Default: newest installed version (e.g. ``30.0.2``).
 ``ANDROID_EXTRA_LIBS``
-    The ";"-separated list of full paths to libs to include in resulting APK.
+    The ";"-separated list of full paths to libs to include in resulting APK (Qt 5 only).
 
 For integrating other libraries which are not part of the Android toolchain,
 like Qt5, and installed to a separate prefix on the host system, the install
@@ -76,8 +76,8 @@ system, make sure to pass ``CMAKE_FIND_ROOT_PATH_BOTH`` or
 ``NO_CMAKE_FIND_ROOT_PATH`` as argument in the call. See the
 ``find_package()`` documentation for more details.
 
-Deploying Qt Applications
-=========================
+Deploying Qt 5 Applications
+===========================
 
 After building the application, you will need to generate an APK that can be
 deployed to an Android device. This module integrates androiddeployqt support
@@ -216,11 +216,17 @@ list(APPEND CMAKE_TRY_COMPILE_PLATFORM_VARIABLES
   ANDROID_SDK_COMPILE_API
 )
 
+# needed for androiddeployqt's stdcpp-path setting
+if (ANDROID_TOOLCHAIN_ROOT)
+    set(ANDROID_SYSROOT_PREFIX "${ANDROID_TOOLCHAIN_ROOT}/sysroot/usr")
+else()
+    set(ANDROID_SYSROOT_PREFIX "${CMAKE_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr")
+endif()
+
 ## HACK: Remove when we can depend on NDK r23
 # Workaround issue https://github.com/android/ndk/issues/929
 if(ANDROID_NDK_MAJOR VERSION_LESS 23)
     unset(CMAKE_SYSROOT)
-    set(ANDROID_SYSROOT_PREFIX "${ANDROID_TOOLCHAIN_ROOT}/sysroot/usr")
 
     list(APPEND CMAKE_SYSTEM_INCLUDE_PATH
       "${ANDROID_SYSROOT_PREFIX}/include/${CMAKE_LIBRARY_ARCHITECTURE}")
@@ -233,8 +239,17 @@ if(ANDROID_NDK_MAJOR VERSION_LESS 23)
       "${ANDROID_SYSROOT_PREFIX}/lib/${CMAKE_LIBRARY_ARCHITECTURE}/${ANDROID_PLATFORM_LEVEL}")
 endif()
 
+# Qt6 still expects ABI suffixes but only applies them in its own qt_add_[executable|library] macros
+# as we typically don't use those we need another way to get those
+if (DEFINED __qt_chainload_toolchain_file) # indicator for Qt6, see above
+    set(CMAKE_MODULE_LIBRARY_SUFFIX_C "_${CMAKE_ANDROID_ARCH_ABI}.so")
+    set(CMAKE_MODULE_LIBRARY_SUFFIX_CXX "_${CMAKE_ANDROID_ARCH_ABI}.so")
+    set(CMAKE_SHARED_LIBRARY_SUFFIX_C "_${CMAKE_ANDROID_ARCH_ABI}.so")
+    set(CMAKE_SHARED_LIBRARY_SUFFIX_CXX "_${CMAKE_ANDROID_ARCH_ABI}.so")
+endif()
+
 # these aren't set yet at this point by the Android toolchain, but without
-# those the find_package() call in ECMAndroidDeployQt will fail
+# those the find_package() call in ECMAndroidDeployQt5 will fail
 set(CMAKE_FIND_LIBRARY_PREFIXES "lib")
 set(CMAKE_FIND_LIBRARY_SUFFIXES "_${CMAKE_ANDROID_ARCH_ABI}.so" ".so" ".a")
 
@@ -276,15 +291,15 @@ variable_watch(CMAKE_CXX_COMPILE_OPTIONS_PIE resetPieOption)
 
 set(ECM_DIR "${CMAKE_CURRENT_LIST_DIR}/../cmake" CACHE STRING "")
 
-######### generation
+######### generation (Qt 5 only)
 
 # Need to ensure we only get in here once, as this file is included twice:
 # from CMakeDetermineSystem.cmake and from CMakeSystem.cmake generated within the
 # build directory.
-if(DEFINED QTANDROID_EXPORTED_TARGET AND NOT TARGET "create-apk")
+if(DEFINED QTANDROID_EXPORTED_TARGET AND NOT TARGET "create-apk" AND NOT __qt_chainload_toolchain_file)
     get_filename_component(_CMAKE_ANDROID_DIR "${CMAKE_TOOLCHAIN_FILE}" PATH)
     list(LENGTH QTANDROID_EXPORTED_TARGET targetsCount)
-    include(${_CMAKE_ANDROID_DIR}/ECMAndroidDeployQt.cmake)
+    include(${_CMAKE_ANDROID_DIR}/ECMAndroidDeployQt5.cmake)
 
     math(EXPR last "${targetsCount}-1")
     foreach(idx RANGE 0 ${last})
@@ -297,9 +312,9 @@ if(DEFINED QTANDROID_EXPORTED_TARGET AND NOT TARGET "create-apk")
             set(APK_DIR "${_qt5Core_install_prefix}/src/android/templates/")
         endif()
 
-        ecm_androiddeployqt("${exportedTarget}" "${ECM_ADDITIONAL_FIND_ROOT_PATH}")
+        ecm_androiddeployqt5("${exportedTarget}" "${ECM_ADDITIONAL_FIND_ROOT_PATH}")
         set_target_properties(create-apk-${exportedTarget} PROPERTIES ANDROID_APK_DIR "${APK_DIR}")
     endforeach()
-else()
+elseif (NOT __qt_chainload_toolchain_file)
     message(STATUS "You can export a target by specifying -DQTANDROID_EXPORTED_TARGET=<targetname> and -DANDROID_APK_DIR=<paths>")
 endif()
