@@ -11,4 +11,3 @@ ignore:
   - "src/converter/main.*"
   - "src/converter/podofo_paintdevice.*"
   - "src/converter/progress.*"
-  - "src/converter/syntax.*"
