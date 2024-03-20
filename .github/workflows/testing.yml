@@ -39,7 +39,7 @@ jobs:
     - run: ./script/linux/install-kde.sh
 
     - name: Generate Makefiles
-      run: cmake -DENABLE_COVERAGE=ON -DCMAKE_BUILD_TYPE=Debug -S . -B build -DECM_DIR=../../KDE/share/ECM/cmake -DKF6SyntaxHighlighting_DIR=../../KDE/lib/x86_64-linux-gnu/cmake/KF6SyntaxHighlighting
+      run: cmake -DENABLE_COVERAGE=ON -DCMAKE_BUILD_TYPE=Debug -S . -B build -DECM_DIR=$PWD/../KDE/share/ECM/cmake -DKF6SyntaxHighlighting_DIR=$PWD/../KDE/lib/x86_64-linux-gnu/cmake/KF6SyntaxHighlighting
 
     - name: Build
       run: cmake --build build --config Debug
