@@ -1,6 +1,6 @@
 echo "Installing Qt Installer Framework..."
 
-aqt install-tool --outputdir ./Qt mac desktop tools_ifw qt.tools.ifw.47 || exit 1
+./python/bin/aqt install-tool --outputdir ./Qt mac desktop tools_ifw qt.tools.ifw.47 || exit 1
 
 echo "Copying binaries..."
 
