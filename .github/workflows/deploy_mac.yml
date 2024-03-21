@@ -61,6 +61,8 @@ jobs:
 
     - run: brew upgrade
 
+    - run: brew install fontconfig freetype openssl libxml2 jpeg-turbo libpng libtiff libidn
+
     - run: python3 -m venv ${{ github.workspace }}/python
 
     - run: chmod a+x ./script/macos/install-qt.sh
