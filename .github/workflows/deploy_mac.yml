@@ -61,6 +61,8 @@ jobs:
 
     - run: brew upgrade
 
+    - run: curl https://bootstrap.pypa.io/get-pip.py | python3
+
     - run: chmod a+x ./script/macos/install-qt.sh
 
     - run: chmod a+x ./script/macos/install-kde.sh
