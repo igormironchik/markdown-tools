@@ -25,36 +25,36 @@ jobs:
 
     - run: brew update
 
-    - run: rm '/usr/local/bin/2to3'
-
-    - run: rm '/usr/local/bin/2to3-3.12'
-
-    - run: rm '/usr/local/bin/idle3'
-
-    - run: rm '/usr/local/bin/idle3.12'
-
-    - run: rm '/usr/local/bin/pydoc3'
-
-    - run: rm '/usr/local/bin/pydoc3.12'
-
-    - run: rm '/usr/local/bin/python3'
-
-    - run: rm '/usr/local/bin/python3.12'
-
-    - run: rm '/usr/local/bin/python3-config'
-
-    - run: rm '/usr/local/bin/python3.12-config'
-
-    - run: rm '/usr/local/bin/2to3-3.11'
-
-    - run: rm '/usr/local/bin/idle3.11'
-
-    - run: rm '/usr/local/bin/pydoc3.11'
-
-    - run: rm '/usr/local/bin/python3.11'
-
-    - run: rm '/usr/local/bin/python3.11-config'
-
+#    - run: rm '/usr/local/bin/2to3'
+#
+#    - run: rm '/usr/local/bin/2to3-3.12'
+#
+#    - run: rm '/usr/local/bin/idle3'
+#
+#    - run: rm '/usr/local/bin/idle3.12'
+#
+#    - run: rm '/usr/local/bin/pydoc3'
+#
+#    - run: rm '/usr/local/bin/pydoc3.12'
+#
+#    - run: rm '/usr/local/bin/python3'
+#
+#    - run: rm '/usr/local/bin/python3.12'
+#
+#    - run: rm '/usr/local/bin/python3-config'
+#
+#    - run: rm '/usr/local/bin/python3.12-config'
+#
+#    - run: rm '/usr/local/bin/2to3-3.11'
+#
+#    - run: rm '/usr/local/bin/idle3.11'
+#
+#    - run: rm '/usr/local/bin/pydoc3.11'
+#
+#    - run: rm '/usr/local/bin/python3.11'
+#
+#    - run: rm '/usr/local/bin/python3.11-config'
+#
 #     - run: rm '/usr/local/lib/libtcl8.6.dylib'
 #
 #     - run: rm '/usr/local/lib/libtk8.6.dylib'
