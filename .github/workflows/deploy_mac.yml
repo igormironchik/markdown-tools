@@ -61,6 +61,8 @@ jobs:
 
     - run: brew upgrade
 
+    - run: python3 -m venv ${{ github.workspace }}/python
+
     - run: chmod a+x ./script/macos/install-qt.sh
 
     - run: chmod a+x ./script/macos/install-kde.sh
@@ -86,3 +88,5 @@ jobs:
       with:
         name: Markdown_MacOS_x64.Installer.app
         path: Markdown_MacOS_x64.Installer.app
+
+    - run: rm -r ${{ github.workspace }}/python
