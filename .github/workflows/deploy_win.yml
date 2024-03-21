@@ -28,15 +28,24 @@ jobs:
        uses: turtlebrowser/get-conan@main
        
      - run: conan profile detect
-     
-     - name: Install ECM
-       run: cmd /c script\windows\install-extra-cmake-modules.bat
          
      - name: Set PATH to Qt
        run: echo "${{ github.workspace }}\Qt\6.6.2\msvc2019_64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+       
+     - name: Set PATH to KDE
+       run: echo "${{ github.workspace }}\..\KDE\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
      
-     - name: Build and Deploy
-       run: cmd /c "script\windows\build_deploy.bat"
+     - name: Install Qt
+       run: cmd \c "script\windows\install-qt.bat"
+
+     - name: Install KDE
+       run: cmd /c "script\windows\install-kde.bat"
+
+     - name: Build
+       run: cmd /c "script\windows\build.bat"
+
+     - name: Deploy
+       run: cmd /c "script\windows\deploy.bat"
       
      - name: Upload installer
        uses: actions/upload-artifact@v4

@@ -104,13 +104,13 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-del /Q installer\packages\mironchik.igor.markdown\data\bin\katehighlightingindexer.exe
+del /Q installer\packages\mironchik.igor.markdown\data\bin\cfgfile.generator.exe
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-del /Q installer\packages\mironchik.igor.markdown\data\bin\cfgfile.generator.exe
+copy %CD%\..\KDE\bin\KF6SyntaxHighlighting.dll installer\packages\mironchik.igor.markdown\data\bin\KF6SyntaxHighlighting.dll
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
