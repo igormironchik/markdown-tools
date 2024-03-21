@@ -1,6 +1,6 @@
 echo "Installing aqt..."
 
-pip install aqtinstall
+pip3 install aqtinstall
 
 mkdir Qt
 
