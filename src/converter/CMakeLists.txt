@@ -14,6 +14,7 @@ find_package( KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
 find_package( Qt6Widgets 6.5.0 REQUIRED )
 find_package( Qt6Network 6.5.0 REQUIRED )
 find_package( Qt6Svg 6.5.0 REQUIRED )
+find_package( OpenSSL REQUIRED )
 
 add_definitions( -DPODOFO_SHARED )
 
@@ -71,6 +72,10 @@ add_library( syntax STATIC ${LIB_SYNTAX_SRC} )
 target_link_libraries( syntax KF${KF_MAJOR_VERSION}::SyntaxHighlighting Qt6::Gui Qt6::Network Qt6::Core )
 
 add_executable( md-pdf-gui WIN32 ${GUI_SRC} )
+
+add_executable( converter-starter converter_starter.cpp )
+
+target_link_libraries( converter-starter Qt6::Core OpenSSL::SSL )
 
 add_dependencies( md-pdf-gui cfgfile.generator )
 

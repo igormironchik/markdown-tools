@@ -127,12 +127,16 @@ struct MainWindowPrivate {
 
 #ifdef Q_OS_WIN
 		mdPdfExe = QStringLiteral( "md-pdf-gui.exe" );
+		converterStarterExe = QStringLiteral( "converter-starter.exe" );
 #else
 		mdPdfExe = QStringLiteral( "md-pdf-gui" );
+		converterStarterExe = QStringLiteral( "converter-starter" );
 #endif
 
 		QDir workingDir( QApplication::applicationDirPath() );
-		const auto files = workingDir.entryInfoList( { mdPdfExe },
+		const auto mdPdfExeFiles = workingDir.entryInfoList( { mdPdfExe },
+			QDir::Executable | QDir::Files );
+		const auto starterExeFiles = workingDir.entryInfoList( { converterStarterExe },
 			QDir::Executable | QDir::Files );
 
 		auto fileMenu = q->menuBar()->addMenu( MainWindow::tr( "&File" ) );
@@ -150,7 +154,7 @@ struct MainWindowPrivate {
 			MainWindow::tr( "Ctrl+R" ), q, &MainWindow::loadAllLinkedFiles );
 		loadAllAction->setEnabled( false );
 
-		if( !files.isEmpty() )
+		if( !mdPdfExeFiles.isEmpty() && ! starterExeFiles.isEmpty() )
 		{
 			fileMenu->addSeparator();
 
@@ -320,6 +324,7 @@ struct MainWindowPrivate {
 	QString baseUrl;
 	QString rootFilePath;
 	QString mdPdfExe;
+	QString converterStarterExe;
 	Colors mdColors;
 }; // struct MainWindowPrivate
 
@@ -346,13 +351,18 @@ void
 MainWindow::onConvertToPdf()
 {
 	QDir workingDir( QApplication::applicationDirPath() );
-	const auto files = workingDir.entryInfoList( { d->mdPdfExe },
+	const auto mdPdfExeFiles = workingDir.entryInfoList( { d->mdPdfExe },
+		QDir::Executable | QDir::Files );
+	const auto starterExeFiles = workingDir.entryInfoList( { d->converterStarterExe },
 		QDir::Executable | QDir::Files );
 
-	if( !files.isEmpty() )
+	if( !mdPdfExeFiles.isEmpty() && !starterExeFiles.isEmpty() )
 	{
-		QProcess::startDetached( files.at( 0 ).absoluteFilePath(),
-			{ d->rootFilePath }, workingDir.absolutePath() );
+		QProcess::startDetached( starterExeFiles.at( 0 ).absoluteFilePath(),
+			{ QStringLiteral( "--exe" ), mdPdfExeFiles.at( 0 ).fileName(),
+			  QStringLiteral( "--mode" ), QStringLiteral( "detached" ),
+			  QStringLiteral( "--arg" ), d->rootFilePath },
+			workingDir.absolutePath() );
 	}
 }
 
