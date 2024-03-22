@@ -37,6 +37,7 @@ public:
 		const Colors & colors );
 	void setFont( const QFont & f );
 	void clearHighlighting();
+	void clearFormats();
 
 protected:
 	void onAddLineEnding() override;

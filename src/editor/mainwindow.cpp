@@ -402,7 +402,7 @@ MainWindow::openFile( const QString & path )
 			QFileInfo( path ).absoluteDir().absolutePath(), "/\\:", {} ) ) );
 	d->page->setHtml( htmlContent(), d->baseUrl );
 
-	d->editor->setPlainText( f.readAll() );
+	d->editor->setText( f.readAll() );
 	f.close();
 	updateWindowTitle();
 	d->editor->setFocus();
@@ -446,7 +446,7 @@ MainWindow::onFileNew()
 	}
 
 	d->editor->setDocName( QStringLiteral( "default.md" ) );
-	d->editor->setPlainText( "" );
+	d->editor->setText( "" );
 	d->editor->document()->setModified( false );
 	d->editor->document()->clearUndoRedoStacks();
 	updateWindowTitle();
@@ -1315,7 +1315,7 @@ MainWindow::onNavigationDoubleClicked( QTreeWidgetItem * item, int )
 		}
 
 		d->editor->setDocName( path );
-		d->editor->setPlainText( f.readAll() );
+		d->editor->setText( f.readAll() );
 		f.close();
 
 		updateWindowTitle();

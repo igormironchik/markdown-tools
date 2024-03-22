@@ -61,6 +61,7 @@ public slots:
 	void highlightCurrent();
 	void clearHighlighting();
 	void goToLine( int l );
+	void setText( const QString & t );
 
 private slots:
 	void updateLineNumberAreaWidth( int newBlockCount );

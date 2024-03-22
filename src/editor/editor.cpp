@@ -567,6 +567,14 @@ Editor::goToLine( int l )
 }
 
 void
+Editor::setText( const QString & t )
+{
+	d->syntax.clearFormats();
+	
+	setPlainText( t );
+}
+
+void
 Editor::highlightSyntax( const Colors & colors,
 	std::shared_ptr< MD::Document< MD::QStringTrait > > doc )
 {

@@ -157,6 +157,12 @@ SyntaxVisitor::clearHighlighting()
 }
 
 void
+SyntaxVisitor::clearFormats()
+{
+	d->formats.clear();
+}
+
+void
 SyntaxVisitor::highlight( std::shared_ptr< MD::Document< MD::QStringTrait > > doc,
 	const Colors & colors )
 {
