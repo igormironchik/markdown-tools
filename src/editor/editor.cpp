@@ -568,9 +568,7 @@ Editor::goToLine( int l )
 
 void
 Editor::setText( const QString & t )
-{
-	d->syntax.clearFormats();
-	
+{	
 	setPlainText( t );
 }
 

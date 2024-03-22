@@ -29,8 +29,14 @@ struct SyntaxVisitorPrivate {
 
 	void clearFormats()
 	{
-		for( const auto & f : std::as_const( formats ) )
-			f.block.layout()->clearFormats();
+		auto b = editor->document()->firstBlock();
+		
+		while( b.isValid() )
+		{
+			b.layout()->clearFormats();
+			
+			b = b.next();
+		}
 
 		formats.clear();
 	}
@@ -154,12 +160,6 @@ void
 SyntaxVisitor::clearHighlighting()
 {
 	d->clearFormats();
-}
-
-void
-SyntaxVisitor::clearFormats()
-{
-	d->formats.clear();
 }
 
 void
