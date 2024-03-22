@@ -30,6 +30,8 @@ mkdir ./installer/packages/mironchik.igor.markdown/data/translations || exit 1
 
 cp ./build-markdown-tools/bin/md-editor ./installer/packages/mironchik.igor.markdown/data/bin/md-editor || exit 1
 
+cp ./build-markdown-tools/bin/launcher ./installer/packages/mironchik.igor.markdown/data/bin/launcher || exit 1
+
 cp $PWD/../KDE/lib/libKF6SyntaxHighlighting.6.1.0.dylib ./installer/packages/mironchik.igor.markdown/data/lib/libKF6SyntaxHighlighting.6.1.0.dylib
 
 cp $PWD/../KDE/lib/libKF6SyntaxHighlighting.6.dylib ./installer/packages/mironchik.igor.markdown/data/lib/libKF6SyntaxHighlighting.6.dylib
