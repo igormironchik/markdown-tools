@@ -100,7 +100,7 @@ int main( int argc, char ** argv )
 			p.start();
 
 			if( p.waitForFinished( 15 * 60 * 1000 ) )
-				return 0;
+				return p.exitCode();
 			else
 			{
 				qDebug() << "Process is not finished." << p.errorString();
