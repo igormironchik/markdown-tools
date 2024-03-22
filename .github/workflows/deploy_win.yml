@@ -38,8 +38,8 @@ jobs:
     - name: Install Qt
       run: cmd /c "script\windows\install-qt.bat"
        
-     - name: Install OpenSSL
-       run: cmd /c "script\windows\install-openssl.bat"
+    - name: Install OpenSSL
+      run: cmd /c "script\windows\install-openssl.bat"
 
     - name: Install KDE
       run: cmd /c "script\windows\install-kde.bat"
