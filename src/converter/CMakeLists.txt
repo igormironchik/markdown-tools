@@ -80,6 +80,7 @@ target_link_libraries( launcher Qt6::Core OpenSSL::SSL )
 add_dependencies( md-pdf-gui cfgfile.generator )
 
 install( TARGETS md-pdf-gui )
+install( TARGETS launcher )
 
 target_link_libraries( md-pdf-gui syntax markdown-widgets
 	JKQTMathText6 JKQTCommon6 KF${KF_MAJOR_VERSION}::SyntaxHighlighting
