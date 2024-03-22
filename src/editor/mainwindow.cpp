@@ -127,16 +127,16 @@ struct MainWindowPrivate {
 
 #ifdef Q_OS_WIN
 		mdPdfExe = QStringLiteral( "md-pdf-gui.exe" );
-		converterStarterExe = QStringLiteral( "converter-starter.exe" );
+		launcherExe = QStringLiteral( "launcher.exe" );
 #else
 		mdPdfExe = QStringLiteral( "md-pdf-gui" );
-		converterStarterExe = QStringLiteral( "converter-starter" );
+		launcherExe = QStringLiteral( "launcher" );
 #endif
 
 		QDir workingDir( QApplication::applicationDirPath() );
 		const auto mdPdfExeFiles = workingDir.entryInfoList( { mdPdfExe },
 			QDir::Executable | QDir::Files );
-		const auto starterExeFiles = workingDir.entryInfoList( { converterStarterExe },
+		const auto starterExeFiles = workingDir.entryInfoList( { launcherExe },
 			QDir::Executable | QDir::Files );
 
 		auto fileMenu = q->menuBar()->addMenu( MainWindow::tr( "&File" ) );
@@ -324,7 +324,7 @@ struct MainWindowPrivate {
 	QString baseUrl;
 	QString rootFilePath;
 	QString mdPdfExe;
-	QString converterStarterExe;
+	QString launcherExe;
 	Colors mdColors;
 }; // struct MainWindowPrivate
 
@@ -353,7 +353,7 @@ MainWindow::onConvertToPdf()
 	QDir workingDir( QApplication::applicationDirPath() );
 	const auto mdPdfExeFiles = workingDir.entryInfoList( { d->mdPdfExe },
 		QDir::Executable | QDir::Files );
-	const auto starterExeFiles = workingDir.entryInfoList( { d->converterStarterExe },
+	const auto starterExeFiles = workingDir.entryInfoList( { d->launcherExe },
 		QDir::Executable | QDir::Files );
 
 	if( !mdPdfExeFiles.isEmpty() && !starterExeFiles.isEmpty() )

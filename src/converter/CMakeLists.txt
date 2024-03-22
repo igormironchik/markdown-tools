@@ -73,9 +73,9 @@ target_link_libraries( syntax KF${KF_MAJOR_VERSION}::SyntaxHighlighting Qt6::Gui
 
 add_executable( md-pdf-gui WIN32 ${GUI_SRC} )
 
-add_executable( converter-starter converter_starter.cpp )
+add_executable( launcher launcher.cpp )
 
-target_link_libraries( converter-starter Qt6::Core OpenSSL::SSL )
+target_link_libraries( launcher Qt6::Core OpenSSL::SSL )
 
 add_dependencies( md-pdf-gui cfgfile.generator )
 

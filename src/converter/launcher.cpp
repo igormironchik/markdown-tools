@@ -22,18 +22,6 @@ int main( int argc, char ** argv )
 {
 	QCoreApplication app( argc, argv );
 
-#ifdef Q_OS_WIN
-  #if OPENSSL_VERSION_MAJOR >= 3
-	QByteArray envVal = qgetenv( "OPENSSL_MODULES" );
-
-	if ( envVal.isEmpty() )
-	{
-		qputenv( "OPENSSL_MODULES", "./lib/ossl-modules" );
-		qputenv( "OPENSSL_ENGINES", "./lib/engines-3" );
-	}
-  #endif
-#endif // Q_OS_WIN
-
 	QCommandLineParser parser;
 	parser.setApplicationDescription( QStringLiteral( "Launcher of application required OpenSSL." ) );
 	parser.addHelpOption();
@@ -53,11 +41,29 @@ int main( int argc, char ** argv )
 		QStringLiteral( "arg" ) );
 	parser.addOption( arg );
 
+	QCommandLineOption modules( QStringLiteral( "modules" ),
+		QStringLiteral( "Folder with OpenSSL modules." ),
+		QStringLiteral( "modules" ), QStringLiteral( "./ossl-modules" ) );
+	parser.addOption( modules );
+
+	QCommandLineOption engines( QStringLiteral( "engines" ),
+		QStringLiteral( "Folder with OpenSSL engines." ),
+		QStringLiteral( "engines" ), QStringLiteral( "./engines-3" ) );
+	parser.addOption( engines );
+
 	parser.process( app );
 
-	const auto modeValue = ( parser.isSet( mode ) ? parser.value( mode ) :
-		QStringLiteral( "notdetached" ) );
-	const auto argValue = ( parser.isSet( arg ) ? parser.value( arg ) : QString() );
+	const auto modulesValue = parser.value( modules );
+	const auto enginesValue = parser.value( engines );
+
+#ifdef Q_OS_WIN
+  #if OPENSSL_VERSION_MAJOR >= 3
+	qputenv( "OPENSSL_MODULES", modulesValue.toLocal8Bit() );
+	qputenv( "OPENSSL_ENGINES", enginesValue.toLocal8Bit() );
+  #endif
+#endif // Q_OS_WIN
+
+	const auto modeValue = parser.value( mode );
 
 	if( parser.isSet( executable ) )
 	{
@@ -65,21 +71,29 @@ int main( int argc, char ** argv )
 		const QFileInfo info( exeValue );
 
 		if( !info.exists() )
+		{
+			qDebug() << "Executable is not exist.";
+
 			return 1;
+		}
 
 		QProcess p;
 		p.setWorkingDirectory( info.absolutePath() );
 		p.setProgram( info.absoluteFilePath() );
 
-		if( !argValue.isEmpty() )
-			p.setArguments( QStringList() << argValue );
+		if( parser.isSet( arg ) )
+			p.setArguments( QStringList() << parser.value( arg ) );
 
 		if( modeValue == QStringLiteral( "detached" ) )
 		{
 			if( p.startDetached() )
 				return 0;
 			else
+			{
+				qDebug() << "Unable to start detached process." << p.errorString();
+
 				return 1;
+			}
 		}
 		else
 		{
@@ -88,9 +102,17 @@ int main( int argc, char ** argv )
 			if( p.waitForFinished( 15 * 60 * 1000 ) )
 				return 0;
 			else
+			{
+				qDebug() << "Process is not finished." << p.errorString();
+
 				return 1;
+			}
 		}
 	}
 	else
+	{
+		qDebug() << "Define executable to launch.";
+
 		return 1;
+	}
 }

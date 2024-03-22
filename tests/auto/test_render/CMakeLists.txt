@@ -63,5 +63,5 @@ target_link_libraries( test.render syntax podofo_shared
 	Qt6::Widgets Qt6::Gui Qt6::Network Qt6::Test Qt6::Core )
 
 add_test( NAME test.render
-	COMMAND ${CMAKE_CURRENT_BINARY_DIR}/../../../bin/converter-starter${CMAKE_EXECUTABLE_SUFFIX} --exe test.render${CMAKE_EXECUTABLE_SUFFIX} --mode notdetached
+	COMMAND ${CMAKE_CURRENT_BINARY_DIR}/../../../bin/launcher${CMAKE_EXECUTABLE_SUFFIX} --exe test.render${CMAKE_EXECUTABLE_SUFFIX}
 	WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../../../bin )
