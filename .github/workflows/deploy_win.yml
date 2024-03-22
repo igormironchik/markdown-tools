@@ -18,46 +18,46 @@ jobs:
         language: ['cpp']
  
     steps:
-     - name: Checkout repository
-       uses: actions/checkout@v4
-       with:
-         submodules: recursive
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
  
-     - name: Install Conan
-       id: conan
-       uses: turtlebrowser/get-conan@main
+    - name: Install Conan
+      id: conan
+      uses: turtlebrowser/get-conan@main
        
-     - run: conan profile detect
+    - run: conan profile detect
          
-     - name: Set PATH to Qt
-       run: echo "${{ github.workspace }}\Qt\6.6.2\msvc2019_64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+    - name: Set PATH to Qt
+      run: echo "${{ github.workspace }}\Qt\6.6.2\msvc2019_64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
        
-     - name: Set PATH to KDE
-       run: echo "${{ github.workspace }}\..\KDE\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+    - name: Set PATH to KDE
+      run: echo "${{ github.workspace }}\..\KDE\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
      
-     - name: Install Qt
-       run: cmd /c "script\windows\install-qt.bat"
+    - name: Install Qt
+      run: cmd /c "script\windows\install-qt.bat"
        
-      - name: Install OpenSSL
-        run: cmd /c "script\windows\install-openssl.bat"
+     - name: Install OpenSSL
+       run: cmd /c "script\windows\install-openssl.bat"
 
-     - name: Install KDE
-       run: cmd /c "script\windows\install-kde.bat"
+    - name: Install KDE
+      run: cmd /c "script\windows\install-kde.bat"
 
-     - name: Build
-       run: cmd /c "script\windows\build.bat"
+    - name: Build
+      run: cmd /c "script\windows\build.bat"
        
-     - name: Copy binaries
-       run: cmd /c "script\windows\copy-binaries.bat"
+    - name: Copy binaries
+      run: cmd /c "script\windows\copy-binaries.bat"
 
-     - name: Copy OpenSSL
-       run: cmd /c "script\windows\copy-openssl.bat"
+    - name: Copy OpenSSL
+      run: cmd /c "script\windows\copy-openssl.bat"
        
-     - name: Deploy
-       run: cmd /c "script\windows\deploy.bat"
+    - name: Deploy
+      run: cmd /c "script\windows\deploy.bat"
       
-     - name: Upload installer
-       uses: actions/upload-artifact@v4
-       with:
-         name: Markdown_Windows_x64.Installer.exe
-         path: Markdown_Windows_x64.Installer.exe
+    - name: Upload installer
+      uses: actions/upload-artifact@v4
+      with:
+        name: Markdown_Windows_x64.Installer.exe
+        path: Markdown_Windows_x64.Installer.exe
