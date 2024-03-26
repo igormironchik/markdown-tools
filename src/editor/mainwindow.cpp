@@ -188,6 +188,28 @@ struct MainWindowPrivate {
 		q->addAction( toggleGoToLineAction );
 
 		addTOCAction = new QAction( MainWindow::tr( "Add TOC" ), q );
+		
+		auto formatMenu = q->menuBar()->addMenu( MainWindow::tr( "F&ormat" ) );
+		
+		tabAction = new QAction( MainWindow::tr( "Indent" ), formatMenu );
+		tabAction->setShortcut( MainWindow::tr( "Tab" ) );
+		tabAction->setShortcutContext( Qt::WidgetShortcut );
+		QObject::connect( tabAction, &QAction::triggered,
+			[this](){
+				qApp->postEvent( this->editor,
+					new QKeyEvent( QEvent::KeyPress, Qt::Key_Tab, Qt::NoModifier ) );
+			} );
+		formatMenu->addAction( tabAction );
+		
+		backtabAction = new QAction( MainWindow::tr( "Unindent" ), formatMenu );
+		backtabAction->setShortcut( MainWindow::tr( "Shift+Tab" ) );
+		backtabAction->setShortcutContext( Qt::WidgetShortcut );
+		QObject::connect( backtabAction, &QAction::triggered,
+			[this](){
+				qApp->postEvent( this->editor,
+					new QKeyEvent( QEvent::KeyPress, Qt::Key_Backtab, Qt::NoModifier ) );
+			} );
+		formatMenu->addAction( backtabAction );
 
 		auto viewMenu = q->menuBar()->addMenu( MainWindow::tr( "&View" ) );
 		viewAction = new QAction( QIcon( QStringLiteral( ":/res/img/view-preview.png" ) ),
@@ -312,6 +334,8 @@ struct MainWindowPrivate {
 	QAction * viewAction = nullptr;
 	QAction * convertToPdfAction = nullptr;
 	QAction * addTOCAction = nullptr;
+	QAction * tabAction = nullptr;
+	QAction * backtabAction = nullptr;
 	QMenu * standardEditMenu = nullptr;
 	QMenu * settingsMenu = nullptr;
 	QDockWidget * fileTreeDock = nullptr;
@@ -1095,6 +1119,9 @@ MainWindow::onCursorPositionChanged()
 		this, &MainWindow::onEditMenuActionTriggered );
 
 	const auto c = d->editor->textCursor();
+	
+	d->tabAction->setEnabled( c.hasSelection() );
+	d->backtabAction->setEnabled( c.hasSelection() );
 
 	d->cursorPosLabel->setText( tr( "Line: %1, Col: %2" )
 		.arg( c.block().blockNumber() + 1 ).arg( c.columnNumber() + 1 ) );
