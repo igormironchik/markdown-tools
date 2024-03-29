@@ -127,10 +127,10 @@ struct MainWindowPrivate {
 
 #ifdef Q_OS_WIN
 		mdPdfExe = QStringLiteral( "md-pdf-gui.exe" );
-		launcherExe = QStringLiteral( "launcher.exe" );
+		launcherExe = QStringLiteral( "md-launcher.exe" );
 #else
 		mdPdfExe = QStringLiteral( "md-pdf-gui" );
-		launcherExe = QStringLiteral( "launcher" );
+		launcherExe = QStringLiteral( "md-launcher" );
 #endif
 
 		QDir workingDir( QApplication::applicationDirPath() );
