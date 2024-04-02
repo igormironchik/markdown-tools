@@ -15,6 +15,10 @@ Files: tests/auto/test_render/*.data tests/manual/* converter.png editor.png vie
 Copyright: 2024 Igor Mironchik <igor.mironchik@gmail.com>
 License: GPL-3.0-or-later
 
+Files: tests/manual/img/*
+Copyright: none
+License: CC0-1.0
+
 Files: src/shared/icon/*
 Copyright: none
 License: GPL-3.0-or-later

@@ -11,7 +11,7 @@ magna tempor luctus. Nunc blandit tellus dolor, ut euismod ligula sollicitudin
 nec. Integer molestie aliquet libero, at luctus arcu pulvinar vel. Aliquam
 faucibus faucibus leo nec ullamcorper.
 
-![](https://github.com/igormironchik/md-pdf/raw/master/tests/manual/img/1.jpg)
+![](https://raw.githubusercontent.com/igormironchik/markdown-tools/main/tests/manual/img/1.jpg)
 
 Curabitur mattis elit sed sagittis ultrices. Aliquam a diam tellus. Proin
 nisi elit, tincidunt in interdum nec, interdum at magna. Vivamus in convallis
