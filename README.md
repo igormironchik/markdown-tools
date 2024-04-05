@@ -8,25 +8,9 @@
 This is a set of applications to work with `Markdown`, including editor, `HTML`
 preview viewer, converter to `PDF`.
 
-<table>
-<tr>
-<td>
 
-![](editor.png)
-
-</td>
-<td>
-
-![](converter.png)
-
-</td>
-<td>
-
-![](viewer.png)
-
-</td>
-</tr>
-</table>
+| ![](editor.png) | ![](converter.png) | ![](viewer.png) |
+| --- | --- | --- |
 
 # Building
 
