@@ -1,3 +1,6 @@
+[![License: GPL](https://img.shields.io/badge/license-GPLv3-blue
+)](https://opensource.org/license/GPL-3.0)
+
 * [About](#about)
 * [Building](#building)
   * [On what platforms better use `Conan` to build `markdown-tools`?](#on-what-platforms-better-use-conan-to-build-markdown-tools)
