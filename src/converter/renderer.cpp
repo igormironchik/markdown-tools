@@ -625,6 +625,9 @@ PdfRenderer::renderImpl()
 		pdfData.coords.margins.bottom = m_opts.m_bottom;
 		pdfData.dpi = m_opts.m_dpi;
 		pdfData.syntax = m_opts.m_syntax;
+		pdfData.resvgOpts.reset( new ResvgOptions );
+		pdfData.resvgOpts->setDpi( m_opts.m_dpi );
+		pdfData.resvgOpts->loadSystemFonts();
 
 		pdfData.colorsStack.push( Qt::black );
 
@@ -2637,7 +2640,7 @@ PdfRenderer::drawImage( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 	{
 		emit status( tr( "Loading image." ) );
 
-		const auto img = loadImage( item );
+		const auto img = loadImage( item, *pdfData.resvgOpts.get() );
 
 		if( !img.isNull() )
 		{
@@ -2731,7 +2734,7 @@ PdfRenderer::drawImage( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 	{
 		emit status( tr( "Loading image." ) );
 
-		const auto img = loadImage( item );
+		const auto img = loadImage( item, *pdfData.resvgOpts.get() );
 
 		auto height = 0.0;
 
@@ -2786,10 +2789,12 @@ PdfRenderer::drawImage( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 // LoadImageFromNetwork
 //
 
-LoadImageFromNetwork::LoadImageFromNetwork( const QUrl & url, QThread * thread )
+LoadImageFromNetwork::LoadImageFromNetwork( const QUrl & url, QThread * thread,
+	const ResvgOptions & opts )
 	:	m_thread( thread )
 	,	m_reply( nullptr )
 	,	m_url( url )
+	,	m_opts( opts )
 {
 	connect( this, &LoadImageFromNetwork::start, this, &LoadImageFromNetwork::loadImpl,
 		Qt::QueuedConnection );
@@ -2826,8 +2831,17 @@ void
 LoadImageFromNetwork::loadFinished()
 {
 	const auto data = m_reply->readAll();
+	const auto svg = QString( data.mid( 0, 4 ).toLower() );
 	
-	m_img.loadFromData( data );
+	if( svg == QStringLiteral( "<svg" ) )
+	{		
+		ResvgRenderer r( data, m_opts );
+		
+		if( r.isValid() )
+			m_img = r.renderToImage();
+	}
+	else
+		m_img.loadFromData( data );
 
 	m_reply->deleteLater();
 
@@ -2842,7 +2856,7 @@ LoadImageFromNetwork::loadError( QNetworkReply::NetworkError )
 }
 
 QByteArray
-PdfRenderer::loadImage( MD::Image< MD::QStringTrait > * item )
+PdfRenderer::loadImage( MD::Image< MD::QStringTrait > * item, const ResvgOptions & opts )
 {
 	if( m_imageCache.contains( item->url() ) )
 		return m_imageCache[ item->url() ];
@@ -2850,12 +2864,23 @@ PdfRenderer::loadImage( MD::Image< MD::QStringTrait > * item )
 	QImage img;
 
 	if( QFileInfo::exists( item->url() ) )
-		img = QImage( item->url() );
+	{
+		if( item->url().toLower().endsWith( QStringLiteral( "svg" ) ) ||
+			item->url().toLower().endsWith( QStringLiteral( "svgz" ) ) )
+		{	
+			ResvgRenderer r( item->url(), opts );
+			
+			if( r.isValid() )
+				img = r.renderToImage();
+		}
+		else
+			img = QImage( item->url() );
+	}
 	else if( !QUrl( item->url() ).isRelative() )
 	{
 		QThread thread;
 
-		LoadImageFromNetwork load( QUrl( item->url() ), &thread );
+		LoadImageFromNetwork load( QUrl( item->url() ), &thread, opts );
 
 		load.moveToThread( &thread );
 		thread.start();
@@ -3708,7 +3733,7 @@ PdfRenderer::createAuxCell( const RenderOpts & renderOpts,
 			else if( !l->img()->isEmpty() )
 			{
 				CellItem item;
-				item.image = loadImage( l->img().get() );
+				item.image = loadImage( l->img().get(), *pdfData.resvgOpts.get() );
 				item.url = url;
 				item.font = { renderOpts.m_textFont,
 					(bool) ( l->opts() & MD::TextOption::BoldText ),
@@ -3762,7 +3787,7 @@ PdfRenderer::createAuxCell( const RenderOpts & renderOpts,
 
 			emit status( tr( "Loading image." ) );
 
-			item.image = loadImage( i );
+			item.image = loadImage( i, *pdfData.resvgOpts.get() );
 			item.font = { renderOpts.m_textFont,
 				false, false, false, renderOpts.m_textFontSize };
 

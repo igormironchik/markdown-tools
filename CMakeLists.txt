@@ -100,6 +100,19 @@ install( TARGETS JKQTMathText${QT_VERSION_MAJOR} )
 
 set( CFGFILE_GENERATOR ${CMAKE_CURRENT_BINARY_DIR}/bin/cfgfile.generator${CMAKE_EXECUTABLE_SUFFIX} )
 
+add_library( resvg UNKNOWN IMPORTED )
+add_custom_target( build_resvg ALL
+	COMMAND cargo build --release
+	WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg/crates/c-api" )
+set_target_properties( resvg PROPERTIES
+	IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg/target/release/libresvg${CMAKE_SHARED_LIBRARY_SUFFIX} )
+set_target_properties( resvg PROPERTIES
+	INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg/crates/c-api )
+add_dependencies( resvg build_resvg )
+
+install( FILES ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg/target/release/libresvg${CMAKE_SHARED_LIBRARY_SUFFIX}
+	TYPE LIB )
+
 add_subdirectory( src )
 
 if( BUILD_MDPDF_TESTS )

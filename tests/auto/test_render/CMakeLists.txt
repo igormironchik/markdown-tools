@@ -60,7 +60,7 @@ add_executable( test.render ${SRC} )
 
 target_link_libraries( test.render syntax podofo_shared
 	JKQTMathText6 JKQTCommon6
-	Qt6::Widgets Qt6::Gui Qt6::Network Qt6::Test Qt6::Core )
+	Qt6::Widgets Qt6::Gui Qt6::Network Qt6::Test Qt6::Core resvg )
 
 add_test( NAME test.render
 	COMMAND ${CMAKE_CURRENT_BINARY_DIR}/../../../bin/md-launcher${CMAKE_EXECUTABLE_SUFFIX} --exe test.render${CMAKE_EXECUTABLE_SUFFIX}

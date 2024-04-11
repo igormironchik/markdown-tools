@@ -1,6 +1,7 @@
 
 /**/debug/
 /**/release/
+/**/target/
 /lib/
 /build/
 /**/Makefile*
