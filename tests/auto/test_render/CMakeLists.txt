@@ -58,6 +58,8 @@ qt6_add_resources( SRC ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/converter/resour
 
 add_executable( test.render ${SRC} )
 
+add_dependencies( test.render build_resvg )
+
 target_link_libraries( test.render syntax podofo_shared
 	JKQTMathText6 JKQTCommon6
 	Qt6::Widgets Qt6::Gui Qt6::Network Qt6::Test Qt6::Core resvg )

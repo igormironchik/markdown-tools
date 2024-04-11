@@ -79,6 +79,8 @@ target_link_libraries( md-launcher Qt6::Core OpenSSL::SSL )
 
 add_dependencies( md-pdf-gui cfgfile.generator )
 
+add_dependencies( md-pdf-gui build_resvg )
+
 install( TARGETS md-pdf-gui )
 install( TARGETS md-launcher )
 
