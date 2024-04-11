@@ -30,7 +30,7 @@ mkdir ./installer/packages/mironchik.igor.markdown/data/translations || exit 1
 
 cp ./build-markdown-tools/bin/md-editor ./installer/packages/mironchik.igor.markdown/data/bin/md-editor || exit 1
 
-cp ./build-markdown-tools/bin/launcher ./installer/packages/mironchik.igor.markdown/data/bin/launcher || exit 1
+cp ./build-markdown-tools/bin/md-launcher ./installer/packages/mironchik.igor.markdown/data/bin/md-launcher || exit 1
 
 cp ./build-markdown-tools/bin/md-pdf-gui ./installer/packages/mironchik.igor.markdown/data/bin/md-pdf-gui || exit 1
 
