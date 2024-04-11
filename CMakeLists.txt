@@ -103,7 +103,8 @@ set( CFGFILE_GENERATOR ${CMAKE_CURRENT_BINARY_DIR}/bin/cfgfile.generator${CMAKE_
 add_library( resvg UNKNOWN IMPORTED )
 add_custom_target( build_resvg ALL
 	COMMAND cargo build --release
-	WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg/crates/c-api" )
+	WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg/crates/c-api"
+	BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg/target/release/${CMAKE_STATIC_LIBRARY_PREFIX}resvg${CMAKE_SHARED_LIBRARY_SUFFIX}${CMAKE_STATIC_LIBRARY_SUFFIX} )
 
 if( WIN32 )
 	set_target_properties( resvg PROPERTIES
