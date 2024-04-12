@@ -84,8 +84,6 @@ add_subdirectory( 3rdparty/JKQtPlotter )
 set( BUILD_MD4QT_QT_TESTS OFF CACHE INTERNAL "" FORCE )
 add_subdirectory( 3rdparty/md4qt )
 
-find_package( Perl REQUIRED )
-
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/args-parser
 	${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/cfgfile
 	${md4qt_INCLUDE_DIRECTORIES} )
