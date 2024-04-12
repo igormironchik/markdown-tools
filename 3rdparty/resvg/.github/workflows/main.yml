@@ -1,0 +1,81 @@
+name: Build
+
+on: [push, pull_request]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    # We have to use the Release mode, otherwise it would take forever.
+    - name: Test
+      run: cargo test --all --release
+
+    - name: Build C API
+      working-directory: crates/c-api
+      run: cargo build
+
+    - name: Build C API without default features
+      working-directory: crates/c-api
+      run: cargo build --no-default-features
+
+    - name: Build resvg without default support
+      working-directory: crates/resvg
+      run: cargo check --no-default-features
+
+    - name: Build usvg without default support
+      working-directory: crates/usvg
+      run: cargo check --no-default-features
+
+  msrv:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.65.0
+
+      - name: Build
+        run: cargo build
+
+  # We have some Windows specific code that we should check on each commit.
+  windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Toolchain is stable-x86_64-pc-windows-msvc by default. No need to change it.
+
+      - name: Build thumbnailer
+        working-directory: tools/explorer-thumbnailer
+        env:
+          RUSTFLAGS: -Ctarget-feature=+crt-static # make sure it's static
+        run: cargo build
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v2
+        with:
+          version: '5.15.2'
+
+      # Unlike other binaries, viewsvg isn't built with crt-static
+      - name: Build C API
+        working-directory: crates/c-api
+        run: cargo build --release
+
+      - name: Prepare Developer Command Prompt for MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Build viewsvg
+        working-directory: tools/viewsvg
+        run: |
+          qmake
+          nmake

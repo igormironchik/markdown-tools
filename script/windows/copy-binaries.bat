@@ -161,3 +161,9 @@ copy /Y 3rdparty\Windows\VC_Redist\VC_redist.x64.exe installer\packages\mironchi
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
+
+copy /Y 3rdparty\resvg\target\release\resvg.dll installer\packages\mironchik.igor.markdown\data\bin\resvg.dll
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)

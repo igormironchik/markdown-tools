@@ -100,6 +100,30 @@ install( TARGETS JKQTMathText${QT_VERSION_MAJOR} )
 
 set( CFGFILE_GENERATOR ${CMAKE_CURRENT_BINARY_DIR}/bin/cfgfile.generator${CMAKE_EXECUTABLE_SUFFIX} )
 
+add_library( resvg UNKNOWN IMPORTED )
+add_custom_target( build_resvg ALL
+	COMMAND cargo build --release
+	WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg/crates/c-api"
+	BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg/target/release/${CMAKE_STATIC_LIBRARY_PREFIX}resvg${CMAKE_SHARED_LIBRARY_SUFFIX}${CMAKE_STATIC_LIBRARY_SUFFIX} )
+
+if( WIN32 )
+	set_target_properties( resvg PROPERTIES
+		IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg/target/release/${CMAKE_STATIC_LIBRARY_PREFIX}resvg${CMAKE_SHARED_LIBRARY_SUFFIX}${CMAKE_STATIC_LIBRARY_SUFFIX} )
+
+	install( FILES ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg/target/release/${CMAKE_STATIC_LIBRARY_PREFIX}resvg${CMAKE_SHARED_LIBRARY_SUFFIX}
+		TYPE BIN )
+else()
+	set_target_properties( resvg PROPERTIES
+		IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg/target/release/${CMAKE_STATIC_LIBRARY_PREFIX}resvg${CMAKE_SHARED_LIBRARY_SUFFIX} )
+
+	install( FILES ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg/target/release/${CMAKE_STATIC_LIBRARY_PREFIX}resvg${CMAKE_SHARED_LIBRARY_SUFFIX}
+		TYPE LIB )
+endif()
+
+set_target_properties( resvg PROPERTIES
+	INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg/crates/c-api )
+add_dependencies( resvg build_resvg )
+
 add_subdirectory( src )
 
 if( BUILD_MDPDF_TESTS )

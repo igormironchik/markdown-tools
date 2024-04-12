@@ -30,13 +30,13 @@ mkdir ./installer/packages/mironchik.igor.markdown/data/translations || exit 1
 
 cp ./build-markdown-tools/bin/md-editor ./installer/packages/mironchik.igor.markdown/data/bin/md-editor || exit 1
 
-cp ./build-markdown-tools/bin/launcher ./installer/packages/mironchik.igor.markdown/data/bin/launcher || exit 1
+cp ./build-markdown-tools/bin/md-launcher ./installer/packages/mironchik.igor.markdown/data/bin/md-launcher || exit 1
 
-cp $PWD/../KDE/lib/libKF6SyntaxHighlighting.6.1.0.dylib ./installer/packages/mironchik.igor.markdown/data/lib/libKF6SyntaxHighlighting.6.1.0.dylib
+cp $PWD/../KDE/lib/libKF6SyntaxHighlighting.6.1.0.dylib ./installer/packages/mironchik.igor.markdown/data/lib/libKF6SyntaxHighlighting.6.1.0.dylib || exit 1
 
-cp $PWD/../KDE/lib/libKF6SyntaxHighlighting.6.dylib ./installer/packages/mironchik.igor.markdown/data/lib/libKF6SyntaxHighlighting.6.dylib
+cp $PWD/../KDE/lib/libKF6SyntaxHighlighting.6.dylib ./installer/packages/mironchik.igor.markdown/data/lib/libKF6SyntaxHighlighting.6.dylib || exit 1
 
-cp $PWD/../KDE/lib/libKF6SyntaxHighlighting.dylib ./installer/packages/mironchik.igor.markdown/data/lib/libKF6SyntaxHighlighting.dylib
+cp $PWD/../KDE/lib/libKF6SyntaxHighlighting.dylib ./installer/packages/mironchik.igor.markdown/data/lib/libKF6SyntaxHighlighting.dylib || exit 1
 
 cp -r ./build-markdown-tools/bin/md-pdf-gui ./installer/packages/mironchik.igor.markdown/data/bin/md-pdf-gui || exit 1
 
@@ -49,6 +49,8 @@ cp -r ./Qt/6.6.2/macos/lib ./installer/packages/mironchik.igor.markdown/data || 
 cp -r ./Qt/6.6.2/macos/plugins ./installer/packages/mironchik.igor.markdown/data || exit 1
 
 cp -r ./Qt/6.6.2/macos/translations ./installer/packages/mironchik.igor.markdown/data || exit 1
+
+cp -r ./3rdparty/resvg/target/release/libresvg.dylib ./installer/packages/mironchik.igor.markdown/data/lib/libresvg.dylib || exit 1
 
 rm -rf ./installer/packages/mironchik.igor.markdown/data/lib/cmake || exit 1
 

@@ -85,4 +85,4 @@ install( TARGETS md-launcher )
 target_link_libraries( md-pdf-gui syntax markdown-widgets
 	JKQTMathText6 JKQTCommon6 KF${KF_MAJOR_VERSION}::SyntaxHighlighting
 	Qt6::Widgets Qt6::Network Qt6::Core
-	podofo::podofo )
+	podofo::podofo resvg )

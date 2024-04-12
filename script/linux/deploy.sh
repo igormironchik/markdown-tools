@@ -30,15 +30,15 @@ mkdir ./installer/packages/mironchik.igor.markdown/data/translations || exit 1
 
 cp ./build-markdown-tools/bin/md-editor ./installer/packages/mironchik.igor.markdown/data/bin/md-editor || exit 1
 
-cp ./build-markdown-tools/bin/launcher ./installer/packages/mironchik.igor.markdown/data/bin/launcher || exit 1
+cp ./build-markdown-tools/bin/md-launcher ./installer/packages/mironchik.igor.markdown/data/bin/md-launcher || exit 1
 
 cp ./build-markdown-tools/bin/md-pdf-gui ./installer/packages/mironchik.igor.markdown/data/bin/md-pdf-gui || exit 1
 
-cp $PWD/../KDE/lib/x86_64-linux-gnu/libKF6SyntaxHighlighting.so.6.1.0 ./installer/packages/mironchik.igor.markdown/data/lib/libKF6SyntaxHighlighting.so.6.1.0
+cp $PWD/../KDE/lib/x86_64-linux-gnu/libKF6SyntaxHighlighting.so.6.1.0 ./installer/packages/mironchik.igor.markdown/data/lib/libKF6SyntaxHighlighting.so.6.1.0 || exit 1
 
-cp $PWD/../KDE/lib/x86_64-linux-gnu/libKF6SyntaxHighlighting.so.6 ./installer/packages/mironchik.igor.markdown/data/lib/libKF6SyntaxHighlighting.so.6
+cp $PWD/../KDE/lib/x86_64-linux-gnu/libKF6SyntaxHighlighting.so.6 ./installer/packages/mironchik.igor.markdown/data/lib/libKF6SyntaxHighlighting.so.6 || exit 1
 
-cp $PWD/../KDE/lib/x86_64-linux-gnu/libKF6SyntaxHighlighting.so ./installer/packages/mironchik.igor.markdown/data/lib/libKF6SyntaxHighlighting.so
+cp $PWD/../KDE/lib/x86_64-linux-gnu/libKF6SyntaxHighlighting.so ./installer/packages/mironchik.igor.markdown/data/lib/libKF6SyntaxHighlighting.so || exit 1
 
 cp -r ./build-markdown-tools/lib ./installer/packages/mironchik.igor.markdown/data || exit 1
 
@@ -53,6 +53,8 @@ cp -r ./Qt/6.6.2/gcc_64/plugins ./installer/packages/mironchik.igor.markdown/dat
 cp -r ./Qt/6.6.2/gcc_64/resources ./installer/packages/mironchik.igor.markdown/data || exit 1
 
 cp -r ./Qt/6.6.2/gcc_64/translations ./installer/packages/mironchik.igor.markdown/data || exit 1
+
+cp -r ./3rdparty/resvg/target/release/libresvg.so ./installer/packages/mironchik.igor.markdown/data/lib/libresvg.so || exit 1
 
 rm -rf ./installer/packages/mironchik.igor.markdown/data/lib/cmake || exit 1
 

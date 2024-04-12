@@ -34,6 +34,9 @@
 // podofo include.
 #include <podofo/podofo.h>
 
+// resvg include.
+#include <ResvgQt.h>
+
 
 namespace MdPdf {
 
@@ -253,6 +256,8 @@ struct PdfAuxData {
 	QString currentFile;
 	//! Footnotes map to map anchors.
 	QMap< MD::Footnote< MD::QStringTrait > *, QPair< QString, int > > footnotesAnchorsMap;
+	//! Resvg options.
+	QSharedPointer< ResvgOptions > resvgOpts;
 
 #ifdef MD_PDF_TESTING
 	QMap< QString, QString > fonts;
@@ -380,7 +385,7 @@ private:
 	void moveToNewLine( PdfAuxData & pdfData, double xOffset, double yOffset,
 		double yOffsetMultiplier, double yOffsetOnNewPage );
 	//! Load image.
-	QByteArray loadImage( MD::Image< MD::QStringTrait > * item );
+	QByteArray loadImage( MD::Image< MD::QStringTrait > * item, const ResvgOptions & opts );
 	//! Make all links clickable.
 	void resolveLinks( PdfAuxData & pdfData );
 	//! Max width of numbered list bullet.
@@ -835,7 +840,7 @@ signals:
 	void start();
 
 public:
-	LoadImageFromNetwork( const QUrl & url, QThread * thread );
+	LoadImageFromNetwork( const QUrl & url, QThread * thread, const ResvgOptions & opts );
 	~LoadImageFromNetwork() override = default;
 
 	const QImage & image() const;
@@ -853,6 +858,7 @@ private:
 	QImage m_img;
 	QNetworkReply * m_reply;
 	QUrl m_url;
+	const ResvgOptions & m_opts;
 }; // class LoadImageFromNetwork
 
 } /* namespace Render */
