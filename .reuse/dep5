@@ -98,3 +98,7 @@ License: OFL-1.1
 Files: 3rdparty/hightlight-blockquote/*
 Copyright: 2024 Ivan Stanevich, 2024 Igor Mironchik <igor.mironchik@gmail.com>
 License: MIT
+
+Files: 3rdparty/resvg/*
+Copyright: none
+License: MPL-2.0
