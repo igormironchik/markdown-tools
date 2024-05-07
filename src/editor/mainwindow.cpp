@@ -819,66 +819,111 @@ inRange( long long int start, long long int end, int pos )
 void
 MainWindow::onLineHovered( int lineNumber, const QPoint & pos )
 {
+	auto isItemInRange = [&]( std::shared_ptr< MD::Item< MD::QStringTrait > > item ) -> bool
+	{
+		const auto code = ( item->type() == MD::ItemType::Code ?
+			static_cast< MD::Code< MD::QStringTrait >* > ( item.get() ) : nullptr );
+		const auto startLine = ( code && code->isFensedCode() ? code->startDelim().startLine() :
+			item->startLine() );
+		const auto endLine = ( code && code->isFensedCode() && code->endDelim().startLine() != -1 ?
+			code->endDelim().startLine() : item->endLine() );
+		
+		return inRange( startLine, endLine, lineNumber );
+	};
+	
+	auto checkNested = [&]( std::shared_ptr< MD::Item< MD::QStringTrait > > item,
+		std::shared_ptr< MD::Block< MD::QStringTrait > > parent ) -> bool
+	{
+		if( isItemInRange( item ) )
+		{
+			QToolTip::showText( pos, tr( "%1 in %2" )
+				.arg( itemType( item->type() ), itemType( parent->type() ) ) );
+
+			return true;
+		}
+		
+		return false;
+	};
+	
+	auto checkListOrFootnote = [&]( std::shared_ptr< MD::Block< MD::QStringTrait > > it ) -> bool
+	{
+		auto block = static_cast< MD::Block< MD::QStringTrait > * > ( it.get() );
+
+		for( auto lit = block->items().cbegin(), llast = block->items().cend();
+			lit != llast; ++lit )
+		{
+			if( (*lit)->startLine() == lineNumber )
+			{
+				QToolTip::showText( pos, itemType( it->type() ) );
+
+				return true;
+			}
+			else
+			{
+				auto item = static_cast< MD::Block< MD::QStringTrait > * > ( lit->get() );
+
+				if( block->type() == MD::ItemType::List )
+				{
+					for( auto iit = item->items().cbegin(), ilast = item->items().cend();
+						iit != ilast; ++iit )
+					{
+						if( checkNested( *iit, it ) )
+							return true;
+					}
+				}
+				else if( checkNested( *lit, it ) )
+					return true;
+			}
+		}
+		
+		return false;
+	};
+	
+	auto checkItem = [&]( std::shared_ptr< MD::Item< MD::QStringTrait > > item ) -> bool
+	{
+		if( item->type() == MD::ItemType::List || item->type() == MD::ItemType::Footnote )
+		{
+			if( checkListOrFootnote(
+				std::static_pointer_cast< MD::Block< MD::QStringTrait > > ( item ) ) )
+					return true;
+		}
+		else
+		{
+			if( isItemInRange( item ) )
+			{
+				QToolTip::showText( pos, itemType( item->type() ) );
+
+				return true;
+			}
+		}
+		
+		return false;
+	};
+	
 	if( d->mdDoc.get() )
 	{
 		QString fileName;
+		
+		auto it = d->mdDoc->items().cbegin(), last = d->mdDoc->items().cend();
 
-		for( auto it = d->mdDoc->items().cbegin(), last = d->mdDoc->items().cend(); it != last; ++it )
+		for( ; it != last; ++it )
 		{
 			if( (*it)->type() == MD::ItemType::Anchor )
 				fileName = static_cast< MD::Anchor< MD::QStringTrait >* > ( it->get() )->label();
 			else if( d->editor->docName() == fileName )
 			{
-				if( (*it)->type() == MD::ItemType::List || (*it)->type() == MD::ItemType::Footnote )
-				{
-					bool exit = false;
-
-					auto list = static_cast< MD::List< MD::QStringTrait > * > ( it->get() );
-
-					for( auto lit = list->items().cbegin(), llast = list->items().cend();
-						lit != llast; ++lit )
-					{
-						if( (*lit)->startLine() == lineNumber )
-						{
-							QToolTip::showText( pos, itemType( (*it)->type() ) );
-
-							exit = true;
-
-							break;
-						}
-						else
-						{
-							auto listItem = static_cast< MD::ListItem< MD::QStringTrait > * > ( lit->get() );
-
-							for( auto iit = listItem->items().cbegin(), ilast = listItem->items().cend();
-								 iit != ilast; ++iit )
-							{
-								if( inRange( (*iit)->startLine(), (*iit)->endLine(), lineNumber ) ||
-									( (*iit)->type() == MD::ItemType::Code &&
-										inRange( (*iit)->startLine() - 1, (*iit)->endLine() + 1, lineNumber ) ) )
-								{
-									QToolTip::showText( pos, tr( "%1 in %2" )
-										.arg( itemType( (*iit)->type() ), itemType( (*it)->type() ) ) );
-
-									exit = true;
-
-									break;
-								}
-							}
-						}
-					}
-
-					if( exit )
-						break;
-				}
-				else if( inRange( (*it)->startLine(), (*it)->endLine(), lineNumber ) ||
-					( (*it)->type() == MD::ItemType::Code &&
-						inRange( (*it)->startLine() - 1, (*it)->endLine() + 1, lineNumber ) ) )
-				{
-					QToolTip::showText( pos, itemType( (*it)->type() ) );
-
+				if( checkItem( *it ) )
 					break;
-				}
+			}
+		}
+		
+		if( it == last )
+		{
+			for( auto it = d->mdDoc->footnotesMap().cbegin(), last = d->mdDoc->footnotesMap().cend();
+				it != last; ++it )
+			{
+				if( it->first.endsWith( d->editor->docName() ) && checkItem( it->second ) )
+					break;
 			}
 		}
 	}
