@@ -25,6 +25,7 @@ namespace MdEditor {
 //
 
 struct EditorPrivate;
+class SyntaxVisitor;
 
 //! Markdown text editor.
 class Editor
@@ -50,6 +51,7 @@ public:
 	void applyColors( const Colors & colors );
 	std::shared_ptr< MD::Document< MD::QStringTrait > > currentDoc() const;
 	void applyFont( const QFont & f );
+	const SyntaxVisitor & syntaxHighlighter() const;
 
 public slots:
 	void showUnprintableCharacters( bool on );

@@ -16,6 +16,7 @@
 #include "cfg.hpp"
 #include "version.hpp"
 #include "colors.hpp"
+#include "syntaxvisitor.hpp"
 
 // Qt include.
 #include <QSplitter>
@@ -819,113 +820,19 @@ inRange( long long int start, long long int end, int pos )
 void
 MainWindow::onLineHovered( int lineNumber, const QPoint & pos )
 {
-	auto isItemInRange = [&]( std::shared_ptr< MD::Item< MD::QStringTrait > > item ) -> bool
-	{
-		const auto code = ( item->type() == MD::ItemType::Code ?
-			static_cast< MD::Code< MD::QStringTrait >* > ( item.get() ) : nullptr );
-		const auto startLine = ( code && code->isFensedCode() ? code->startDelim().startLine() :
-			item->startLine() );
-		const auto endLine = ( code && code->isFensedCode() && code->endDelim().startLine() != -1 ?
-			code->endDelim().startLine() : item->endLine() );
-		
-		return inRange( startLine, endLine, lineNumber );
-	};
+	const auto items = d->editor->syntaxHighlighter().findAllInCache(
+		{ 0, lineNumber,
+			d->editor->document()->findBlockByLineNumber( lineNumber ).length(),
+			lineNumber } );
 	
-	auto checkNested = [&]( std::shared_ptr< MD::Item< MD::QStringTrait > > item,
-		std::shared_ptr< MD::Block< MD::QStringTrait > > parent ) -> bool
+	if( !items.empty() )
 	{
-		if( isItemInRange( item ) )
-		{
-			QToolTip::showText( pos, tr( "%1 in %2" )
-				.arg( itemType( item->type() ), itemType( parent->type() ) ) );
-
-			return true;
-		}
-		
-		return false;
-	};
-	
-	auto checkListOrFootnote = [&]( std::shared_ptr< MD::Block< MD::QStringTrait > > it ) -> bool
-	{
-		auto block = static_cast< MD::Block< MD::QStringTrait > * > ( it.get() );
-
-		for( auto lit = block->items().cbegin(), llast = block->items().cend();
-			lit != llast; ++lit )
-		{
-			if( (*lit)->startLine() == lineNumber )
-			{
-				QToolTip::showText( pos, itemType( it->type() ) );
-
-				return true;
-			}
-			else
-			{
-				auto item = static_cast< MD::Block< MD::QStringTrait > * > ( lit->get() );
-
-				if( block->type() == MD::ItemType::List )
-				{
-					for( auto iit = item->items().cbegin(), ilast = item->items().cend();
-						iit != ilast; ++iit )
-					{
-						if( checkNested( *iit, it ) )
-							return true;
-					}
-				}
-				else if( checkNested( *lit, it ) )
-					return true;
-			}
-		}
-		
-		return false;
-	};
-	
-	auto checkItem = [&]( std::shared_ptr< MD::Item< MD::QStringTrait > > item ) -> bool
-	{
-		if( item->type() == MD::ItemType::List || item->type() == MD::ItemType::Footnote )
-		{
-			if( checkListOrFootnote(
-				std::static_pointer_cast< MD::Block< MD::QStringTrait > > ( item ) ) )
-					return true;
-		}
+		if( ( items.front()->type() != MD::ItemType::List &&
+			items.front()->type() != MD::ItemType::Footnote ) || items.size() == 1 )
+				QToolTip::showText( pos, itemType( items.front()->type() ) );
 		else
-		{
-			if( isItemInRange( item ) )
-			{
-				QToolTip::showText( pos, itemType( item->type() ) );
-
-				return true;
-			}
-		}
-		
-		return false;
-	};
-	
-	if( d->mdDoc.get() )
-	{
-		QString fileName;
-		
-		auto it = d->mdDoc->items().cbegin(), last = d->mdDoc->items().cend();
-
-		for( ; it != last; ++it )
-		{
-			if( (*it)->type() == MD::ItemType::Anchor )
-				fileName = static_cast< MD::Anchor< MD::QStringTrait >* > ( it->get() )->label();
-			else if( d->editor->docName() == fileName )
-			{
-				if( checkItem( *it ) )
-					break;
-			}
-		}
-		
-		if( it == last )
-		{
-			for( auto it = d->mdDoc->footnotesMap().cbegin(), last = d->mdDoc->footnotesMap().cend();
-				it != last; ++it )
-			{
-				if( it->first.endsWith( d->editor->docName() ) && checkItem( it->second ) )
-					break;
-			}
-		}
+			QToolTip::showText( pos, tr( "%1 in %2" )
+				.arg( itemType( items.at( 1 )->type() ), itemType( items.front()->type() ) ) );
 	}
 }
 

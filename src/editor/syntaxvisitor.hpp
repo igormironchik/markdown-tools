@@ -13,6 +13,9 @@
 // Qt include.
 #include <QScopedPointer>
 
+// C++ include.
+#include <vector>
+
 
 namespace MdEditor {
 
@@ -37,12 +40,16 @@ public:
 		const Colors & colors );
 	void setFont( const QFont & f );
 	void clearHighlighting();
+	
+	std::vector< MD::Item< MD::QStringTrait >* > findAllInCache(
+		const MD::WithPosition & pos ) const;
 
 protected:
 	void onAddLineEnding() override;
 	void onText( MD::Text< MD::QStringTrait > * t ) override;
 	void onMath( MD::Math< MD::QStringTrait > * m ) override;
 	void onLineBreak( MD::LineBreak< MD::QStringTrait > * b ) override;
+	void onParagraph( MD::Paragraph< MD::QStringTrait > * p, bool wrap ) override;
 	void onHeading( MD::Heading< MD::QStringTrait > * h ) override;
 	void onCode( MD::Code< MD::QStringTrait > * c ) override;
 	void onInlineCode( MD::Code< MD::QStringTrait > * c ) override;

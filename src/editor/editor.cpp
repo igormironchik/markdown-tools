@@ -86,6 +86,12 @@ Editor::~Editor()
 {
 }
 
+const SyntaxVisitor &
+Editor::syntaxHighlighter() const
+{
+	return d->syntax;
+}
+
 bool
 Editor::foundHighlighted() const
 {
