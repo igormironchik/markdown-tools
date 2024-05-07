@@ -521,8 +521,10 @@ Editor::onContentChanged()
 	QTextStream stream( &md );
 
 	MD::Parser< MD::QStringTrait > parser;
+	
+	QFileInfo info( d->docName );
 
-	d->currentDoc = parser.parse( stream, d->docName );
+	d->currentDoc = parser.parse( stream, info.absolutePath(), info.fileName() );
 
 	if( d->colors.enabled )
 		highlightSyntax( d->colors, d->currentDoc );

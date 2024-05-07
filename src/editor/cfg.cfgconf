@@ -89,6 +89,12 @@
 				{name footnoteColor}
 				{defaultValue ""}
 			}
+			
+			{tagScalar
+				{valueType QString}
+				{name specialColor}
+				{defaultValue ""}
+			}
 		}
 	}
 }

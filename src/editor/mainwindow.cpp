@@ -974,6 +974,7 @@ MainWindow::saveCfg() const
 			cfg.set_headingColor( d->mdColors.headingColor.name( QColor::HexRgb ) );
 			cfg.set_mathColor( d->mdColors.mathColor.name( QColor::HexRgb ) );
 			cfg.set_footnoteColor( d->mdColors.footnoteColor.name( QColor::HexRgb ) );
+			cfg.set_specialColor( d->mdColors.specialColor.name( QColor::HexRgb ) );
 
 			tag_Cfg< cfgfile::qstring_trait_t > tag( cfg );
 
@@ -1052,6 +1053,9 @@ MainWindow::readCfg()
 
 			if( !cfg.footnoteColor().isEmpty() )
 				d->mdColors.footnoteColor = QColor( cfg.footnoteColor() );
+			
+			if( !cfg.specialColor().isEmpty() )
+				d->mdColors.specialColor = QColor( cfg.specialColor() );
 
 			d->mdColors.enabled = cfg.useColors();
 		}

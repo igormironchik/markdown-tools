@@ -46,33 +46,12 @@ struct SyntaxVisitorPrivate {
 		for( const auto & f : std::as_const( formats ) )
 			f.block.layout()->setFormats( f.format );
 	}
-
-	long long int blockquoteOffset( const QString & s ) const
+	
+	void setFormat( const QTextCharFormat & format,
+		const MD::WithPosition & pos )
 	{
-		auto findBlockquote = [] ( const QString & s, long long int p ) -> long long int
-		{
-			while( p < s.length() && s[ p ].isSpace() )
-				++p;
-
-			if( p < s.length() && s[ p ] == QLatin1Char( '>' ) )
-				return p;
-
-			return -1;
-		};
-
-		long long int pos = 0, delta = 0, stack = blockquoteStackSize;
-
-		while( ( pos = findBlockquote( s, pos ) ) != -1 )
-		{
-			--stack;
-			++pos;
-			delta = pos;
-
-			if( !stack )
-				break;
-		}
-
-		return delta;
+		setFormat( format, pos.startLine(), pos.startColumn(),
+			pos.endLine(), pos.endColumn() )	;
 	}
 
 	void setFormat( const QTextCharFormat & format,
@@ -83,18 +62,13 @@ struct SyntaxVisitorPrivate {
 		{
 			formats[ i ].block = editor->document()->findBlockByNumber( i );
 
-			long long int delta = 0;
-
-			if( blockquoteStackSize )
-				delta = blockquoteOffset( formats[ i ].block.text() );
-
 			QTextLayout::FormatRange r;
 			r.format = format;
-			r.start = ( i == startLine ? startColumn : delta );
+			r.start = ( i == startLine ? startColumn : 0 );
 			r.length = ( i == startLine ?
 				( i == endLine ? endColumn - startColumn + 1 :
 					formats[ i ].block.length() - startColumn ) :
-				( i == endLine ? endColumn + 1 - delta : formats[ i ].block.length() - delta ) );
+				( i == endLine ? endColumn + 1 : formats[ i ].block.length() ) );
 
 			formats[ i ].format.push_back( r );
 		}
@@ -132,8 +106,6 @@ struct SyntaxVisitorPrivate {
 	QMap< int, Format > formats;
 	//! Default font.
 	QFont font;
-	//! Blockquote stack counter.
-	int blockquoteStackSize = 0;
 }; // struct SyntaxVisitorPrivate
 
 
@@ -191,6 +163,19 @@ SyntaxVisitor::onAddLineEnding()
 }
 
 void
+SyntaxVisitor::onItemWithOpts( MD::ItemWithOpts< MD::QStringTrait > * i )
+{
+	QTextCharFormat special;
+	special.setForeground( d->colors.specialColor );
+
+	for( const auto & s : i->openStyles() )
+		d->setFormat( special, s );
+	
+	for( const auto & s : i->closeStyles() )
+		d->setFormat( special, s );
+}
+
+void
 SyntaxVisitor::onText( MD::Text< MD::QStringTrait > * t )
 {
 	QTextCharFormat format;
@@ -199,6 +184,8 @@ SyntaxVisitor::onText( MD::Text< MD::QStringTrait > * t )
 
 	d->setFormat( format, t->startLine(), t->startColumn(),
 		t->endLine(), t->endColumn() );
+	
+	onItemWithOpts( t );
 }
 
 void
@@ -209,6 +196,20 @@ SyntaxVisitor::onMath( MD::Math< MD::QStringTrait > * m )
 
 	d->setFormat( format, m->startLine(), m->startColumn(),
 		m->endLine(), m->endColumn() );
+	
+	QTextCharFormat special;
+	special.setForeground( d->colors.specialColor );
+	
+	if( m->startDelim().startColumn() != -1 )
+		d->setFormat( special, m->startDelim() );
+	
+	if( m->endDelim().startColumn() != -1 )
+		d->setFormat( special, m->endDelim() );
+	
+	if( m->syntaxPos().startColumn() != -1 )
+		d->setFormat( special, m->syntaxPos() );
+	
+	onItemWithOpts( m );
 }
 
 void
@@ -222,9 +223,16 @@ SyntaxVisitor::onHeading( MD::Heading< MD::QStringTrait > * h )
 	QTextCharFormat format;
 	format.setForeground( d->colors.headingColor );
 	format.setFont( d->styleFont( MD::BoldText ) );
+	
+	QTextCharFormat special;
+	special.setForeground( d->colors.specialColor );
+	special.setFont( d->styleFont( MD::BoldText ) );
 
 	d->setFormat( format, h->startLine(), h->startColumn(),
 		h->endLine(), h->endColumn() );
+	
+	if( h->delim().startColumn() != -1 )
+		d->setFormat( special, h->delim() );
 }
 
 void
@@ -235,6 +243,20 @@ SyntaxVisitor::onCode( MD::Code< MD::QStringTrait > * c )
 
 	d->setFormat( format, c->startLine(), c->startColumn(),
 		c->endLine(), c->endColumn() );
+	
+	QTextCharFormat special;
+	special.setForeground( d->colors.specialColor );
+	
+	if( c->startDelim().startColumn() != -1 )
+		d->setFormat( special, c->startDelim() );
+	
+	if( c->endDelim().startColumn() != -1 )
+		d->setFormat( special, c->endDelim() );
+	
+	if( c->syntaxPos().startColumn() != -1 )
+		d->setFormat( special, c->syntaxPos() );
+	
+	onItemWithOpts( c );
 }
 
 void
@@ -245,6 +267,17 @@ SyntaxVisitor::onInlineCode( MD::Code< MD::QStringTrait > * c )
 
 	d->setFormat( format, c->startLine(), c->startColumn(),
 		c->endLine(), c->endColumn() );
+	
+	QTextCharFormat special;
+	special.setForeground( d->colors.specialColor );
+	
+	if( c->startDelim().startColumn() != -1 )
+		d->setFormat( special, c->startDelim() );
+	
+	if( c->endDelim().startColumn() != -1 )
+		d->setFormat( special, c->endDelim() );
+	
+	onItemWithOpts( c );
 }
 
 void
@@ -253,14 +286,13 @@ SyntaxVisitor::onBlockquote( MD::Blockquote< MD::QStringTrait > * b )
 	QTextCharFormat format;
 	format.setForeground( d->colors.blockquoteColor );
 
-	d->setFormat( format, b->startLine(), b->startColumn(),
-		b->endLine(), b->endColumn() );
-
-	++d->blockquoteStackSize;
-
 	MD::Visitor< MD::QStringTrait >::onBlockquote( b );
-
-	--d->blockquoteStackSize;
+	
+	QTextCharFormat special;
+	special.setForeground( d->colors.specialColor );
+	
+	for( const auto & dd : b->delims() )
+		d->setFormat( special, dd );
 }
 
 void
@@ -286,10 +318,15 @@ SyntaxVisitor::onListItem( MD::ListItem< MD::QStringTrait > * l, bool first )
 	format.setForeground( d->colors.listColor );
 	format.setFont( d->font );
 
-	d->setFormat( format, l->startLine(), l->startColumn(),
-		l->endLine(), l->endColumn() );
-
 	MD::Visitor< MD::QStringTrait >::onListItem( l, first );
+	
+	QTextCharFormat special;
+	special.setForeground( d->colors.specialColor );
+	
+	d->setFormat( special, l->delim() );
+	
+	if( l->taskDelim().startColumn() != -1 )
+		d->setFormat( special, l->taskDelim() );
 }
 
 void
@@ -348,70 +385,49 @@ SyntaxVisitor::onRawHtml( MD::RawHtml< MD::QStringTrait > * h )
 void
 SyntaxVisitor::onHorizontalLine( MD::HorizontalLine< MD::QStringTrait > * l )
 {
+	QTextCharFormat special;
+	special.setForeground( d->colors.specialColor );
+	
+	d->setFormat( special, l->startLine(),
+		l->startColumn(),
+		l->endLine(),
+		l->endColumn() );
 }
 
 namespace /* anonymous */ {
-void
-copyPositions( MD::Item< MD::QStringTrait > * from,
-	MD::Item< MD::QStringTrait > * to )
-{
-	to->setStartColumn( from->startColumn() );
-	to->setStartLine( from->startLine() );
-	to->setEndColumn( from->endColumn() );
-	to->setEndLine( from->endLine() );
-}
 
 std::shared_ptr< MD::Paragraph< MD::QStringTrait > >
 copyParagraphAndApplyOpts( std::shared_ptr< MD::Paragraph< MD::QStringTrait > > p, int opts )
 {
-	auto tmp = std::make_shared< MD::Paragraph< MD::QStringTrait > > ();
-	copyPositions( p.get(), tmp.get() );
+	auto tmp = std::static_pointer_cast< MD::Paragraph< MD::QStringTrait > > ( p->clone() );
 
-	for( const auto & i : p->items() )
+	for( const auto & i : tmp->items() )
 	{
 		switch( i->type() )
 		{
 			case MD::ItemType::Text :
 			{
-				auto from = static_cast< MD::Text< MD::QStringTrait > * > ( i.get() );
-				auto t = std::make_shared< MD::Text< MD::QStringTrait > > ();
-				copyPositions( i.get(), t.get() );
-				t->setText( from->text() );
-				t->setSpaceBefore( from->isSpaceBefore() );
-				t->setSpaceAfter( from->isSpaceAfter() );
-				t->setOpts( opts | from->opts() );
-				tmp->appendItem( t );
+				auto t = static_cast< MD::Text< MD::QStringTrait > * > ( i.get() );
+				t->setOpts( opts | t->opts() );
 			}
 				break;
 
 			case MD::ItemType::Link :
 			{
-				auto from = static_cast< MD::Link< MD::QStringTrait > * > ( i.get() );
-				auto l = std::make_shared< MD::Link< MD::QStringTrait > > ();
-				copyPositions( i.get(), l.get() );
-				l->setText( from->text() );
-				l->setImg( from->img() );
-				l->setUrl( from->url() );
-				l->setOpts( opts | from->opts() );
-				l->setP( copyParagraphAndApplyOpts( from->p(), opts ) );
-				tmp->appendItem( l );
+				auto l = static_cast< MD::Link< MD::QStringTrait > * > ( i.get() );
+				l->setOpts( opts | l->opts() );
+				l->setP( copyParagraphAndApplyOpts( l->p(), opts ) );
 			}
 				break;
 
 			case MD::ItemType::Code :
 			{
-				auto from = static_cast< MD::Code< MD::QStringTrait > * > ( i.get() );
-				auto c = std::make_shared< MD::Code< MD::QStringTrait > > (
-					from->text(), false, from->isInlined() );
-				copyPositions( i.get(), c.get() );
-				c->setSyntax( from->syntax() );
-				c->setOpts( opts | from->opts() );
-				tmp->appendItem( c );
+				auto c = static_cast< MD::Code< MD::QStringTrait > * > ( i.get() );
+				c->setOpts( opts | c->opts() );
 			}
 				break;
 
 			default :
-				tmp->appendItem( i );
 				break;
 		}
 	}
@@ -436,6 +452,8 @@ SyntaxVisitor::onLink( MD::Link< MD::QStringTrait > * l )
 		const auto p = copyParagraphAndApplyOpts( l->p(), l->opts() );
 		onParagraph( p.get(), true );
 	}
+	
+	onItemWithOpts( l );
 }
 
 void
@@ -449,6 +467,8 @@ SyntaxVisitor::onImage( MD::Image< MD::QStringTrait > * i )
 
 	if( i->p() )
 		onParagraph( i->p().get(), true );
+	
+	onItemWithOpts( i );
 }
 
 void
@@ -472,6 +492,8 @@ SyntaxVisitor::onFootnoteRef( MD::FootnoteRef< MD::QStringTrait > * ref )
 		d->setFormat( format, ref->startLine(), ref->startColumn(),
 			ref->endLine(), ref->endColumn() );
 	}
+	
+	onItemWithOpts( ref );
 }
 
 void

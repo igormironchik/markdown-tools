@@ -27,7 +27,8 @@ bool operator != ( const Colors & c1, const Colors & c2 )
 		c1.tableColor != c2.tableColor || c1.blockquoteColor != c2.blockquoteColor ||
 		c1.codeColor != c2.codeColor || c1.enabled != c2.enabled ||
 		c1.headingColor != c2.headingColor || c1.mathColor != c2.mathColor ||
-		c1.footnoteColor != c2.footnoteColor );
+		c1.footnoteColor != c2.footnoteColor ||
+		c1.specialColor != c2.specialColor );
 }
 
 //
@@ -75,6 +76,8 @@ ColorsDialog::ColorsDialog( const Colors & cols, QWidget * parent )
 		this, &ColorsDialog::chooseHeadingColor );
 	connect( d->ui.colors, &QGroupBox::toggled,
 		this, &ColorsDialog::colorsToggled );
+	connect( d->ui.specialColor, &MdShared::ColorWidget::clicked,
+		this, &ColorsDialog::chooseSpecialColor );
 }
 
 ColorsDialog::~ColorsDialog()
@@ -119,6 +122,7 @@ ColorsDialog::applyColors()
 	d->ui.headingColor->setColor( d->colors.headingColor );
 	d->ui.mathColor->setColor( d->colors.mathColor );
 	d->ui.footnoteColor->setColor( d->colors.footnoteColor );
+	d->ui.specialColor->setColor( d->colors.specialColor );
 }
 
 void
@@ -197,6 +201,12 @@ void
 ColorsDialog::chooseFootnoteColor()
 {
 	chooseColor( d->ui.footnoteColor, d->colors.footnoteColor );
+}
+
+void
+ColorsDialog::chooseSpecialColor()
+{
+	chooseColor( d->ui.specialColor, d->colors.specialColor );
 }
 
 void

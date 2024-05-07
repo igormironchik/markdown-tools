@@ -36,6 +36,7 @@ struct Colors {
 	QColor headingColor = QColor( 0, 0, 128 );
 	QColor mathColor = QColor( 128, 0, 0 );
 	QColor footnoteColor = QColor( 128, 0, 0 );
+	QColor specialColor = QColor( 128, 0, 0 );
 	bool enabled = true;
 }; // struct Colors
 
@@ -75,6 +76,7 @@ private slots:
 	void chooseHeadingColor();
 	void chooseMathColor();
 	void chooseFootnoteColor();
+	void chooseSpecialColor();
 	void colorsToggled( bool on );
 
 private:

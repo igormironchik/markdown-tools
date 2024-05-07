@@ -57,6 +57,9 @@ protected:
 	void onFootnoteRef( MD::FootnoteRef< MD::QStringTrait > * ref ) override;
 	void onFootnote( MD::Footnote< MD::QStringTrait > * f ) override;
 	void onListItem( MD::ListItem< MD::QStringTrait > * l, bool first ) override;
+	
+private:
+	void onItemWithOpts( MD::ItemWithOpts< MD::QStringTrait > * i );
 
 private:
 	Q_DISABLE_COPY( SyntaxVisitor )
