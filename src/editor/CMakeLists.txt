@@ -9,7 +9,7 @@ find_package( Qt6Core REQUIRED )
 find_package( Qt6Widgets REQUIRED )
 find_package( Qt6WebEngineWidgets REQUIRED )
 
-set( SRC main.cpp
+set( LIB_SRC 
 	editor.hpp
 	editor.cpp
 	mainwindow.hpp
@@ -42,7 +42,9 @@ set( SRC main.cpp
 	closebutton.hpp
 	closebutton.cpp )
 
-qt6_add_resources( SRC resources.qrc )
+set( SRC main.cpp )
+
+qt6_add_resources( LIB_SRC resources.qrc )
 
 if( WIN32 )
 	list( APPEND SRC md-editor.rc )
@@ -67,10 +69,14 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/widgets/include
 	${CMAKE_CURRENT_SOURCE_DIR}/../shared )
 
+add_library( md-editor-lib STATIC ${LIB_SRC} )
+
+target_link_libraries( md-editor-lib markdown-widgets Qt6::WebEngineWidgets Qt6::Widgets Qt6::Core )
+
 add_executable( md-editor WIN32 ${SRC} )
 
 install( TARGETS md-editor )
 
-add_dependencies( md-editor cfgfile.generator )
+add_dependencies( md-editor-lib cfgfile.generator )
 
-target_link_libraries( md-editor markdown-widgets Qt6::WebEngineWidgets Qt6::Widgets Qt6::Core )
+target_link_libraries( md-editor md-editor-lib markdown-widgets Qt6::WebEngineWidgets Qt6::Widgets Qt6::Core )
