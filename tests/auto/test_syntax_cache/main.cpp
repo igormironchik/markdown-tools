@@ -88,6 +88,50 @@ TEST_CASE( "003" )
 	}
 }
 
+/*
+Code in the `text`.
+
+*/
+TEST_CASE( "012" )
+{
+	prepareTest( QStringLiteral( "012.md" ) );
+	
+	{
+		auto items = g_editor->syntaxHighlighter().findAllInCache( { 0, 0, 0, 0 } );
+		REQUIRE( items.size() == 2 );
+		REQUIRE( items.at( 0 )->type() == MD::ItemType::Paragraph );
+		REQUIRE( items.at( 1 )->type() == MD::ItemType::Text );
+	}
+	
+	{
+		auto items = g_editor->syntaxHighlighter().findAllInCache( { 12, 0, 12, 0 } );
+		REQUIRE( items.size() == 2 );
+		REQUIRE( items.at( 0 )->type() == MD::ItemType::Paragraph );
+		REQUIRE( items.at( 1 )->type() == MD::ItemType::Code );
+	}
+	
+	{
+		auto items = g_editor->syntaxHighlighter().findAllInCache( { 13, 0, 13, 0 } );
+		REQUIRE( items.size() == 2 );
+		REQUIRE( items.at( 0 )->type() == MD::ItemType::Paragraph );
+		REQUIRE( items.at( 1 )->type() == MD::ItemType::Code );
+	}
+	
+	{
+		auto items = g_editor->syntaxHighlighter().findAllInCache( { 0, 0, 17, 0 } );
+		REQUIRE( items.size() == 2 );
+		REQUIRE( items.at( 0 )->type() == MD::ItemType::Paragraph );
+		REQUIRE( items.at( 1 )->type() == MD::ItemType::Text );
+	}
+	
+	{
+		auto items = g_editor->syntaxHighlighter().findAllInCache( { 18, 0, 18, 0 } );
+		REQUIRE( items.size() == 2 );
+		REQUIRE( items.at( 0 )->type() == MD::ItemType::Paragraph );
+		REQUIRE( items.at( 1 )->type() == MD::ItemType::Text );
+	}
+}
+
 int main( int argc, char ** argv )
 {
 	QApplication app( argc, argv );
