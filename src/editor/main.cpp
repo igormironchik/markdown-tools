@@ -54,6 +54,7 @@ int main( int argc, char ** argv )
 	app.setWindowIcon( appIcon );
 	
 	initSharedResources();
+	Q_INIT_RESOURCE( resources );
 
 	MdEditor::MainWindow w;
 	const auto screenSize = app.primaryScreen()->availableGeometry().size();
