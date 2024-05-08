@@ -132,6 +132,50 @@ TEST_CASE( "012" )
 	}
 }
 
+/*
+> Quote paragraph 1.
+>
+> Quote paragraph 2.
+>
+>> Nested quote
+
+*/
+TEST_CASE( "017" )
+{
+	prepareTest( QStringLiteral( "017.md" ) );
+	
+	{
+		auto items = g_editor->syntaxHighlighter().findAllInCache( { 0, 0, 0, 0 } );
+		REQUIRE( items.size() == 1 );
+		REQUIRE( items.at( 0 )->type() == MD::ItemType::Blockquote );
+	}
+	
+	{
+		auto items = g_editor->syntaxHighlighter().findAllInCache( { 2, 0, 2, 0 } );
+		REQUIRE( items.size() == 3 );
+		REQUIRE( items.at( 0 )->type() == MD::ItemType::Blockquote );
+		REQUIRE( items.at( 1 )->type() == MD::ItemType::Paragraph );
+		REQUIRE( items.at( 2 )->type() == MD::ItemType::Text );
+	}
+	
+	{
+		auto items = g_editor->syntaxHighlighter().findAllInCache( { 0, 0, 0, 1 } );
+		REQUIRE( items.size() == 3 );
+		REQUIRE( items.at( 0 )->type() == MD::ItemType::Blockquote );
+		REQUIRE( items.at( 1 )->type() == MD::ItemType::Paragraph );
+		REQUIRE( items.at( 2 )->type() == MD::ItemType::Text );
+	}
+	
+	{
+		auto items = g_editor->syntaxHighlighter().findAllInCache( { 3, 4, 3, 4 } );
+		REQUIRE( items.size() == 4 );
+		REQUIRE( items.at( 0 )->type() == MD::ItemType::Blockquote );
+		REQUIRE( items.at( 1 )->type() == MD::ItemType::Blockquote );
+		REQUIRE( items.at( 2 )->type() == MD::ItemType::Paragraph );
+		REQUIRE( items.at( 3 )->type() == MD::ItemType::Text );
+	}
+}
+
 int main( int argc, char ** argv )
 {
 	QApplication app( argc, argv );

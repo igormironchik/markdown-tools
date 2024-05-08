@@ -35,7 +35,10 @@ struct PosRange {
 
 bool operator == ( const PosRange & l, const PosRange & r )
 {
-	return ( l.startLine <= r.endLine && l.endLine >= r.startLine );
+	return ( l.startLine <= r.endLine && l.endLine >= r.startLine &&
+		( l.startLine == r.startLine && l.endLine == r.endLine && l.startLine == r.endLine ?
+			l.endColumn >= r.startColumn && l.startColumn <= r.endColumn :
+			true ) );
 }
 
 bool operator < ( const PosRange & l, const PosRange & r )
