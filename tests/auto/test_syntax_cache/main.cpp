@@ -151,6 +151,13 @@ TEST_CASE( "017" )
 	}
 	
 	{
+		auto items = g_editor->syntaxHighlighter().findAllInCache( { 1, 4, 1, 4 } );
+		REQUIRE( items.size() == 2 );
+		REQUIRE( items.at( 0 )->type() == MD::ItemType::Blockquote );
+		REQUIRE( items.at( 1 )->type() == MD::ItemType::Blockquote );
+	}
+	
+	{
 		auto items = g_editor->syntaxHighlighter().findAllInCache( { 2, 0, 2, 0 } );
 		REQUIRE( items.size() == 3 );
 		REQUIRE( items.at( 0 )->type() == MD::ItemType::Blockquote );
