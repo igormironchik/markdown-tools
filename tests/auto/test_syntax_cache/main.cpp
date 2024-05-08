@@ -65,6 +65,29 @@ TEST_CASE( "002" )
 	REQUIRE( g_editor->syntaxHighlighter().findAllInCache( { 0, 1, 0, 1 } ).empty() );
 }
 
+/*
+  
+Paragraph 1.
+
+Paragraph 2.
+
+*/
+TEST_CASE( "003" )
+{
+	prepareTest( QStringLiteral( "003.md" ) );
+	REQUIRE( g_editor->syntaxHighlighter().findAllInCache( { 0, 0, 0, 0 } ).empty() );
+	
+	for( int i = 0; i < 2; ++i )
+	{
+		auto items = g_editor->syntaxHighlighter().findAllInCache( { 0, 1 + i * 2, 0, 1 + i * 2 } );
+		REQUIRE( items.size() == 2 );
+		REQUIRE( items.at( 0 )->type() == MD::ItemType::Paragraph );
+		REQUIRE( items.at( 1 )->type() == MD::ItemType::Text );
+		auto t = static_cast< MD::Text< MD::QStringTrait >* > ( items.at( 1 ) );
+		REQUIRE( t->text() == QStringLiteral( "Paragraph %1." ).arg( QString::number( i + 1 ) ) );
+	}
+}
+
 int main( int argc, char ** argv )
 {
 	QApplication app( argc, argv );
