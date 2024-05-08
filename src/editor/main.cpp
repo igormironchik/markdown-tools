@@ -43,6 +43,9 @@ int main( int argc, char ** argv )
 	const auto args = parser.positionalArguments();
 
 	const auto fileName = ( args.isEmpty() ? QString() : args.at( 0 ) );
+	
+	initSharedResources();
+	Q_INIT_RESOURCE( resources );
 
 	QIcon appIcon( QStringLiteral( ":/icon/icon_256x256.png" ) );
 	appIcon.addFile( QStringLiteral( ":/icon/icon_128x128.png" ) );
@@ -52,9 +55,6 @@ int main( int argc, char ** argv )
 	appIcon.addFile( QStringLiteral( ":/icon/icon_24x24.png" ) );
 	appIcon.addFile( QStringLiteral( ":/icon/icon_16x16.png" ) );
 	app.setWindowIcon( appIcon );
-	
-	initSharedResources();
-	Q_INIT_RESOURCE( resources );
 
 	MdEditor::MainWindow w;
 	const auto screenSize = app.primaryScreen()->availableGeometry().size();
