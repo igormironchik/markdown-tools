@@ -334,6 +334,62 @@ TEST_CASE( "030" )
 	}
 }
 
+/*
+ [^footnote]: Paragraph in footnote
+
+    Paragraph in footnote
+
+	Paragraph in footnote
+
+*/
+TEST_CASE( "045" )
+{
+	prepareTest( QStringLiteral( "045.md" ) );
+	
+	{
+		auto items = g_editor->syntaxHighlighter().findAllInCache( { 1, 0, 1, 0 } );
+		REQUIRE( items.size() == 1 );
+		REQUIRE( items.at( 0 )->type() == MD::ItemType::Footnote );
+	}
+	
+	{
+		auto items = g_editor->syntaxHighlighter().findAllInCache( { 4, 2, 4, 2 } );
+		REQUIRE( items.size() == 3 );
+		REQUIRE( items.at( 0 )->type() == MD::ItemType::Footnote );
+		REQUIRE( items.at( 1 )->type() == MD::ItemType::Paragraph );
+		REQUIRE( items.at( 2 )->type() == MD::ItemType::Text );
+	}
+}
+
+/*
+
+Column 1 | Column 2
+---------|---------
+Cell 1   | Cell 2
+
+| Column 1 | Column 2 |
+|:--------:|---------:|
+| Cell 1   | Cell 2   |
+
+*/
+TEST_CASE( "047" )
+{
+	prepareTest( QStringLiteral( "047.md" ) );
+	
+	{
+		auto items = g_editor->syntaxHighlighter().findAllInCache( { 0, 1, 0, 1 } );
+		REQUIRE( items.size() == 2 );
+		REQUIRE( items.at( 0 )->type() == MD::ItemType::Table );
+		REQUIRE( items.at( 1 )->type() == MD::ItemType::Text );
+	}
+	
+	{
+		auto items = g_editor->syntaxHighlighter().findAllInCache( { 0, 2, 0, 2 } );
+		REQUIRE( items.size() == 1 );
+		REQUIRE( items.at( 0 )->type() == MD::ItemType::Table );
+	}
+}
+
 int main( int argc, char ** argv )
 {
 	QApplication app( argc, argv );
