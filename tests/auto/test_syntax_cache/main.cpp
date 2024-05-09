@@ -183,6 +183,157 @@ TEST_CASE( "017" )
 	}
 }
 
+/*
+```cpp
+if( a > b )
+  do_something();
+else
+  dont_do_anything();
+```
+
+*/
+TEST_CASE( "020" )
+{
+	prepareTest( QStringLiteral( "020.md" ) );
+	
+	{
+		auto items = g_editor->syntaxHighlighter().findAllInCache( { 0, 0, 0, 0 } );
+		REQUIRE( items.size() == 1 );
+		REQUIRE( items.at( 0 )->type() == MD::ItemType::Code );
+	}
+	
+	{
+		auto items = g_editor->syntaxHighlighter().findAllInCache( { 0, 1, 0, 1 } );
+		REQUIRE( items.size() == 1 );
+		REQUIRE( items.at( 0 )->type() == MD::ItemType::Code );
+	}
+}
+
+/*
+	if( a > b )
+      do_something();
+    else
+      dont_do_anything();
+*/
+TEST_CASE( "021" )
+{
+	prepareTest( QStringLiteral( "021.md" ) );
+	
+	{
+		auto items = g_editor->syntaxHighlighter().findAllInCache( { 4, 0, 4, 0 } );
+		REQUIRE( items.size() == 1 );
+		REQUIRE( items.at( 0 )->type() == MD::ItemType::Code );
+	}
+}
+
+/*
+* Item 1
+* Item 2
+* Item 3
+
+*/
+TEST_CASE( "023" )
+{
+	prepareTest( QStringLiteral( "023.md" ) );
+	
+	{
+		auto items = g_editor->syntaxHighlighter().findAllInCache( { 4, 0, 4, 0 } );
+		REQUIRE( items.size() == 4 );
+		REQUIRE( items.at( 0 )->type() == MD::ItemType::List );
+		REQUIRE( items.at( 1 )->type() == MD::ItemType::ListItem );
+		REQUIRE( items.at( 2 )->type() == MD::ItemType::Paragraph );
+		REQUIRE( items.at( 3 )->type() == MD::ItemType::Text );
+	}
+	
+	{
+		auto items = g_editor->syntaxHighlighter().findAllInCache( { 0, 0, 0, 0 } );
+		REQUIRE( items.size() == 2 );
+		REQUIRE( items.at( 0 )->type() == MD::ItemType::List );
+		REQUIRE( items.at( 1 )->type() == MD::ItemType::ListItem );
+	}
+}
+
+/*
+* Item 1
+  * Item 1
+  * Item 2
+* Item 2
+  * Item 1
+  * Item 2
+* Item 3
+  * Item 1
+  * Item 2
+
+*/
+TEST_CASE( "024" )
+{
+	prepareTest( QStringLiteral( "024.md" ) );
+	
+	{
+		auto items = g_editor->syntaxHighlighter().findAllInCache( { 4, 1, 4, 1 } );
+		REQUIRE( items.size() == 6 );
+		REQUIRE( items.at( 0 )->type() == MD::ItemType::List );
+		REQUIRE( items.at( 1 )->type() == MD::ItemType::ListItem );
+		REQUIRE( items.at( 2 )->type() == MD::ItemType::List );
+		REQUIRE( items.at( 3 )->type() == MD::ItemType::ListItem );
+		REQUIRE( items.at( 4 )->type() == MD::ItemType::Paragraph );
+		REQUIRE( items.at( 5 )->type() == MD::ItemType::Text );
+	}
+	
+	{
+		auto items = g_editor->syntaxHighlighter().findAllInCache( { 2, 1, 2, 1 } );
+		REQUIRE( items.size() == 4 );
+		REQUIRE( items.at( 0 )->type() == MD::ItemType::List );
+		REQUIRE( items.at( 1 )->type() == MD::ItemType::ListItem );
+		REQUIRE( items.at( 2 )->type() == MD::ItemType::List );
+		REQUIRE( items.at( 3 )->type() == MD::ItemType::ListItem );
+	}
+}
+
+/*
+* Item 1
+
+  Paragraph in list
+
+* Item 2
+
+  Paragraph in list
+
+* Item 3
+
+  Paragraph in list
+
+*/
+TEST_CASE( "025" )
+{
+	prepareTest( QStringLiteral( "025.md" ) );
+	
+	{
+		auto items = g_editor->syntaxHighlighter().findAllInCache( { 2, 2, 2, 2 } );
+		REQUIRE( items.size() == 4 );
+		REQUIRE( items.at( 0 )->type() == MD::ItemType::List );
+		REQUIRE( items.at( 1 )->type() == MD::ItemType::ListItem );
+		REQUIRE( items.at( 2 )->type() == MD::ItemType::Paragraph );
+		REQUIRE( items.at( 3 )->type() == MD::ItemType::Text );
+	}
+}
+
+/*
+Text ![Image 1](a.jpg) continue ![ Image 2 ](b.png) and ![ Image 3]( http://www.where.com/c.jpeg "description" )
+
+*/
+TEST_CASE( "030" )
+{
+	prepareTest( QStringLiteral( "030.md" ) );
+	
+	{
+		auto items = g_editor->syntaxHighlighter().findAllInCache( { 5, 0, 5, 0 } );
+		REQUIRE( items.size() == 2 );
+		REQUIRE( items.at( 0 )->type() == MD::ItemType::Paragraph );
+		REQUIRE( items.at( 1 )->type() == MD::ItemType::Image );
+	}
+}
+
 int main( int argc, char ** argv )
 {
 	QApplication app( argc, argv );
