@@ -44,6 +44,8 @@
 #include <QLineEdit>
 #include <QLabel>
 #include <QTextBlock>
+#include <QToolButton>
+
 
 // md4qt include.
 #define MD4QT_QT_SUPPORT
@@ -60,6 +62,37 @@
 
 namespace MdEditor {
 
+class MenuItem final
+	:	public QTreeWidgetItem
+{
+public:
+	explicit MenuItem( QTreeWidget * parent )
+		:	QTreeWidgetItem( parent )
+	{
+	}
+	
+	explicit MenuItem( MenuItem * parent )
+		:	QTreeWidgetItem( parent )
+	{
+	}
+	
+	~MenuItem() override = default;
+	
+	long long int startLine() const
+	{
+		return m_startLine;
+	}
+	
+	void setStartLine( long long int l )
+	{
+		m_startLine = l;
+	}
+	
+private:
+	long long int m_startLine = -1;
+}; // class MenuItem
+
+
 //
 // MainWindowPrivate
 //
@@ -73,27 +106,61 @@ struct MainWindowPrivate {
 	void initUi()
 	{
 		auto w = new QWidget( q );
-		auto l = new QHBoxLayout( w );
+		auto l = new QVBoxLayout( w );
+		l->setContentsMargins( 0, 0, 0, 0 );
+		l->setSpacing( 0 );
 
-		splitter = new QSplitter( Qt::Horizontal, w );
-
-		auto ew = new QWidget( w );
-		auto v = new QVBoxLayout( ew );
+		splitter = new QSplitter( w );
+		splitter->setOrientation( Qt::Orientation::Horizontal );
+		
+		// Sidebar.
+		sidebarPanel = new QWidget( splitter );
+		auto tb = new QWidget( sidebarPanel );
+		tb->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
+		tocBtn = new QToolButton( tb );
+		tocBtn->setIcon( QIcon( ":/res/img/view-sidetree.png" ) );
+		tocBtn->setIconSize( { 16, 16 } );
+		tocBtn->setCheckable( true );
+		tocBtn->setChecked( false );
+		tocBtn->setToolTip( MainWindow::tr( "Markdown Menu" ) );
+		sidebarPanel->setFixedWidth( tocBtn->sizeHint().width() );
+		
+		auto tbh = new QHBoxLayout( tb );
+		tbh->setContentsMargins( 0, 0, 0, 0 );
+		tbh->setSpacing( 0 );
+		tbh->addWidget( tocBtn );
+		tbh->addSpacerItem( new QSpacerItem( 0, 0, QSizePolicy::Expanding, QSizePolicy::Fixed ) );
+		
+		auto sv = new QVBoxLayout( sidebarPanel );
+		sv->setContentsMargins( 0, 0, 0, 0 );
+		sv->setSpacing( 0 );
+		sv->addWidget( tb );
+		tocTree = new QTreeWidget( sidebarPanel );
+		tocTree->setHeaderHidden( true );
+		sv->addWidget( tocTree );
+		auto spacer = new QSpacerItem( 0, 0, QSizePolicy::Fixed, QSizePolicy::Expanding );
+		sv->addSpacerItem( spacer );
+		tocTree->hide();
+		
+		// Editor.
+		auto editorPanel = new QWidget( splitter );
+		auto v = new QVBoxLayout( editorPanel );
 		v->setContentsMargins( 0, 0, 0, 0 );
 		v->setSpacing( 0 );
-		editor = new Editor( ew );
-		find = new Find( q, editor, ew );
-		gotoline = new GoToLine( q, editor, ew );
+		editor = new Editor( editorPanel );
+		find = new Find( q, editor, editorPanel );
+		gotoline = new GoToLine( q, editor, editorPanel );
 		v->addWidget( editor );
 		v->addWidget( gotoline );
 		v->addWidget( find );
 
-		auto pw = new QWidget( w );
-		auto v1 = new QVBoxLayout( pw );
+		// Preview.
+		auto previewPanel = new QWidget( splitter );
+		auto v1 = new QVBoxLayout( previewPanel );
 		v1->setContentsMargins( 0, 0, 0, 0 );
 		v1->setSpacing( 0 );
-		preview = new WebView( w );
-		findWeb = new FindWeb( q, preview, pw );
+		preview = new WebView( previewPanel );
+		findWeb = new FindWeb( q, preview, previewPanel );
 		v1->addWidget( preview );
 		v1->addWidget( findWeb );
 
@@ -101,8 +168,12 @@ struct MainWindowPrivate {
 		gotoline->hide();
 		findWeb->hide();
 
-		splitter->addWidget( ew );
-		splitter->addWidget( pw );
+		splitter->addWidget( sidebarPanel );
+		splitter->addWidget( editorPanel );
+		splitter->addWidget( previewPanel );
+		
+		splitterCursor = splitter->handle( 1 )->cursor();
+		this->splitter->handle( 1 )->setCursor( Qt::ArrowCursor );
 
 		l->addWidget( splitter );
 
@@ -272,7 +343,7 @@ struct MainWindowPrivate {
 			saveAction, &QAction::setEnabled );
 		QObject::connect( editor->document(), &QTextDocument::modificationChanged,
 			q, &MainWindow::setWindowModified );
-		QObject::connect( editor, &QPlainTextEdit::textChanged, q, &MainWindow::onTextChanged );
+		QObject::connect( editor, &Editor::ready, q, &MainWindow::onTextChanged );
 		QObject::connect( editor, &Editor::lineHovered, q, &MainWindow::onLineHovered );
 		QObject::connect( toggleLineNumbersAction, &QAction::toggled,
 			editor, &Editor::showLineNumbers );
@@ -298,6 +369,40 @@ struct MainWindowPrivate {
 			q, &MainWindow::onTogglePreviewAction );
 		QObject::connect( addTOCAction, &QAction::triggered,
 			q, &MainWindow::onAddTOC );
+		
+		QObject::connect( tocBtn, &QToolButton::toggled,
+			[spacer, this] ( bool checked )
+			{
+				spacer->changeSize( 0, 0, QSizePolicy::Fixed,
+					checked ? QSizePolicy::Fixed : QSizePolicy::Expanding );
+				this->tocTree->setVisible( checked );
+				
+				auto s = this->splitter->sizes();
+				
+				if( checked )
+				{
+					if( this->tocWidth == -1 )
+						this->tocWidth = 250;
+					
+					s[ 0 ] = this->tocWidth;
+					s[ 1 ] = s[ 1 ] - this->tocWidth + this->tocBtn->sizeHint().width();
+					this->sidebarPanel->setMaximumWidth( QWIDGETSIZE_MAX );
+					this->splitter->handle( 1 )->setCursor( this->splitterCursor );
+				}
+				else
+				{
+					this->tocWidth = s[ 0 ];
+					const auto w = s[ 0 ] - this->tocBtn->sizeHint().width();
+					s[ 0 ] = this->tocBtn->sizeHint().width();
+					s[ 1 ] = s[ 1 ] + w;
+					this->sidebarPanel->setFixedWidth( this->tocBtn->sizeHint().width() );
+					this->splitter->handle( 1 )->setCursor( Qt::ArrowCursor );
+				}
+				
+				this->splitter->setSizes( s );
+				
+				this->initMarkdownMenu();
+			} );
 
 		q->readCfg();
 
@@ -313,12 +418,128 @@ struct MainWindowPrivate {
 		q->setTabOrder( find->editLine(), find->replaceLine() );
 		q->setTabOrder( find->replaceLine(), findWeb->line() );
 	}
+	
+	QString paragraphToMenuText( MD::Paragraph< MD::QStringTrait > * p )
+	{
+		QString res;
+		
+		for( auto it = p->items().cbegin(), last = p->items().cend(); it != last; ++it )
+		{
+			switch( (*it)->type() )
+			{
+				case MD::ItemType::Text :
+				{
+					auto t = static_cast< MD::Text< MD::QStringTrait >* > ( it->get() );
+					
+					if( !res.isEmpty() )
+						res.append( QStringLiteral( " " ) );
+					
+					res.append( t->text() );
+				}
+					break;
 
+				case MD::ItemType::Code :
+				{
+					auto c = static_cast< MD::Code< MD::QStringTrait >* > ( it->get() );
+					
+					if( !res.isEmpty() )
+						res.append( QStringLiteral( " " ) );
+					
+					res.append( c->text() );
+				}
+					break;
+
+				case MD::ItemType::Link :
+				{
+					auto l = static_cast< MD::Link< MD::QStringTrait >* > ( it->get() );
+					
+					if( !l->p()->isEmpty() )
+					{
+						if( !res.isEmpty() )
+							res.append( QStringLiteral( " " ) );
+						
+						res.append( paragraphToMenuText( l->p().get() ) );
+					}
+				}
+					break;
+
+				default :
+					break;
+			}
+		}
+		
+		return res;
+	}
+
+	void initMarkdownMenu()
+	{
+		if( tocBtn->isChecked() )
+		{
+			tocTree->clear();
+			
+			const auto doc = editor->currentDoc();
+			
+			std::vector< MenuItem* > current;
+			int level = 0;
+			
+			for( auto it = doc->items().cbegin(), last = doc->items().cend(); it != last; ++it )
+			{
+				if( (*it)->type() == MD::ItemType::Heading )
+				{
+					auto h = static_cast< MD::Heading< MD::QStringTrait >* > ( it->get() );
+					
+					if( h->text() )
+					{
+						MenuItem * item = nullptr;
+						
+						if( current.size() )
+						{
+							if( current.size() < h->level() && h->level() > level )
+							{
+								for( int i = (int) current.size(); i < h->level() - 1; ++i )
+									current.push_back( new MenuItem( current.back() ) );
+							}
+							else
+							{
+								if( h->level() < level )
+									current.clear();
+								else
+									current.erase( current.cbegin() + h->level() - 1, current.cend() );
+								
+								if( current.empty() )
+								{
+									item = new MenuItem( tocTree );
+									tocTree->addTopLevelItem( item );
+									level = h->level();
+								}
+							}
+							
+							if( !item )
+								item = new MenuItem( current.back() );
+						}
+						else
+						{
+							item = new MenuItem( tocTree );
+							tocTree->addTopLevelItem( item );
+							level = h->level();
+						}
+						
+						item->setText( 0, paragraphToMenuText( h->text().get() ) );
+						item->setStartLine( h->startLine() );
+						current.push_back( item );
+					}
+				}
+			}
+		}
+	}
+	
 	MainWindow * q = nullptr;
 	Editor * editor = nullptr;
 	WebView * preview = nullptr;
 	PreviewPage * page = nullptr;
 	QSplitter * splitter = nullptr;
+	QWidget * sidebarPanel = nullptr;
+	QToolButton * tocBtn = nullptr;
 	HtmlDocument * html = nullptr;
 	Find * find = nullptr;
 	FindWeb * findWeb = nullptr;
@@ -341,16 +562,19 @@ struct MainWindowPrivate {
 	QMenu * settingsMenu = nullptr;
 	QDockWidget * fileTreeDock = nullptr;
 	QTreeWidget * fileTree = nullptr;
+	QTreeWidget * tocTree = nullptr;
 	QLabel * cursorPosLabel = nullptr;
 	bool init = false;
 	bool loadAllFlag = false;
 	bool previewMode = false;
+	QCursor splitterCursor;
 	std::shared_ptr< MD::Document< MD::QStringTrait > > mdDoc;
 	QString baseUrl;
 	QString rootFilePath;
 	QString mdPdfExe;
 	QString launcherExe;
 	Colors mdColors;
+	int tocWidth = -1;
 }; // struct MainWindowPrivate
 
 
@@ -398,12 +622,12 @@ MainWindow::resizeEvent( QResizeEvent * e )
 	{
 		d->init = true;
 
-		auto w = centralWidget()->width() / 2;
+		auto w = ( centralWidget()->width() - d->tocBtn->sizeHint().width() ) / 2;
 
 		if( !d->previewMode )
-			d->splitter->setSizes( { w, w } );
+			d->splitter->setSizes( { d->tocBtn->sizeHint().width(), w, w } );
 		else
-			d->splitter->setSizes( { 0, centralWidget()->width() } );
+			d->splitter->setSizes( { 0, 0, centralWidget()->width() } );
 	}
 
 	e->accept();
@@ -441,6 +665,7 @@ MainWindow::openFile( const QString & path )
 
 	closeAllLinkedFiles();
 	updateLoadAllLinkedFilesMenuText();
+	d->initMarkdownMenu();
 }
 
 void
@@ -490,6 +715,7 @@ MainWindow::onFileNew()
 
 	closeAllLinkedFiles();
 	updateLoadAllLinkedFilesMenuText();
+	d->initMarkdownMenu();
 }
 
 void
@@ -545,6 +771,8 @@ MainWindow::onFileSave()
 	updateWindowTitle();
 
 	readAllLinked();
+	
+	d->initMarkdownMenu();
 }
 
 void
@@ -733,6 +961,15 @@ MainWindow::onTextChanged()
 		d->html->setText( MD::toHtml( d->mdDoc, false,
 			QStringLiteral( "qrc:/res/img/go-jump.png" ) ) );
 	}
+	
+	const auto lineNumber = d->editor->textCursor().block().blockNumber();
+	const auto lineLength = d->editor->textCursor().block().length();
+	
+	const auto items = d->editor->syntaxHighlighter().findAllInCache(
+		{ 0, lineNumber, lineLength, lineNumber } );
+	
+	if( !items.empty() && items[ 0 ]->type() == MD::ItemType::Heading )
+		d->initMarkdownMenu();
 }
 
 void
@@ -1356,9 +1593,10 @@ MainWindow::onTogglePreviewAction( bool checked )
 		d->newAction->setVisible( false );
 		d->newAction->setEnabled( false );
 		d->editor->setVisible( false );
-		d->splitter->handle( 1 )->setEnabled( false );
-		d->splitter->handle( 1 )->setVisible( false );
-		d->splitter->setSizes( { 0, centralWidget()->width() } );
+		d->sidebarPanel->hide();
+		d->splitter->handle( 1 )->setCursor( Qt::ArrowCursor );
+		d->splitter->handle( 2 )->setCursor( Qt::ArrowCursor );
+		d->splitter->setSizes( { 0, 0, centralWidget()->width() } );
 
 		if( d->fileTreeDock )
 			removeDockWidget( d->fileTreeDock );
@@ -1376,10 +1614,12 @@ MainWindow::onTogglePreviewAction( bool checked )
 		d->newAction->setVisible( true );
 		d->newAction->setEnabled( true );
 		d->editor->setVisible( true );
-		d->splitter->handle( 1 )->setEnabled( true );
-		d->splitter->handle( 1 )->setVisible( true );
-		const auto w = centralWidget()->width() / 2;
-		d->splitter->setSizes( { w, w } );
+		d->sidebarPanel->show();
+		d->tocBtn->setChecked( false );
+		d->splitter->handle( 1 )->setCursor( Qt::ArrowCursor );
+		d->splitter->handle( 2 )->setCursor( d->splitterCursor );
+		const auto w = ( centralWidget()->width() - d->tocBtn->sizeHint().width() ) / 2;
+		d->splitter->setSizes( { d->tocBtn->sizeHint().width(), w, w } );
 
 		if( d->fileTreeDock )
 		{

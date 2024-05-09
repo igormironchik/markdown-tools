@@ -532,10 +532,11 @@ Editor::onContentChanged()
 
 	d->currentDoc = parser.parse( stream, info.absolutePath(), info.fileName() );
 
-	if( d->colors.enabled )
-		highlightSyntax( d->colors, d->currentDoc );
+	highlightSyntax( d->colors, d->currentDoc );
 
 	highlightCurrent();
+	
+	emit ready();
 }
 
 void

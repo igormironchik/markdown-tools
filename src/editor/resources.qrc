@@ -102,5 +102,6 @@
         <file>res/hightlight-blockquote.js</file>
         <file>res/css/emoji.css</file>
         <file>res/emoji.js</file>
+        <file>res/img/view-sidetree.png</file>
     </qresource>
 </RCC>

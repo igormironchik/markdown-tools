@@ -268,7 +268,10 @@ SyntaxVisitor::highlight( std::shared_ptr< MD::Document< MD::QStringTrait > > do
 		}
 	}
 
-	d->applyFormats();
+	if( colors.enabled )
+		d->applyFormats();
+	else
+		d->formats.clear();
 }
 
 void

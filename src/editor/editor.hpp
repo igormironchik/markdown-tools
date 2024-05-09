@@ -36,6 +36,7 @@ class Editor
 signals:
 	void lineHovered( int lineNumber, const QPoint & pos );
 	void hoverLeaved();
+	void ready();
 
 public:
 	explicit Editor( QWidget * parent );
