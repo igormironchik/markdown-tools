@@ -33,6 +33,8 @@ struct PosRange {
 	std::vector< PosRange > children = {};
 };
 
+// Look at this equality operator like on rectangles intersection.
+// If rectangles in text intersect then rectangles are equal.
 bool operator == ( const PosRange & l, const PosRange & r )
 {
 	return ( l.startLine <= r.endLine && l.endLine >= r.startLine &&
