@@ -17,6 +17,8 @@
 #include "version.hpp"
 #include "colors.hpp"
 #include "syntaxvisitor.hpp"
+#include "toc.hpp"
+#include "wordwrapdelegate.hpp"
 
 // Qt include.
 #include <QSplitter>
@@ -39,12 +41,14 @@
 #include <QStatusBar>
 #include <QApplication>
 #include <QDockWidget>
-#include <QTreeWidget>
+#include <QTreeView>
 #include <QProcess>
 #include <QLineEdit>
 #include <QLabel>
 #include <QTextBlock>
 #include <QToolButton>
+#include <QTreeWidget>
+#include <QHeaderView>
 
 
 // md4qt include.
@@ -59,39 +63,11 @@
 // shared include.
 #include "license_dialog.hpp"
 
+// C++ include.
+#include <functional>
+
 
 namespace MdEditor {
-
-class MenuItem final
-	:	public QTreeWidgetItem
-{
-public:
-	explicit MenuItem( QTreeWidget * parent )
-		:	QTreeWidgetItem( parent )
-	{
-	}
-	
-	explicit MenuItem( MenuItem * parent )
-		:	QTreeWidgetItem( parent )
-	{
-	}
-	
-	~MenuItem() override = default;
-	
-	long long int startLine() const
-	{
-		return m_startLine;
-	}
-	
-	void setStartLine( long long int l )
-	{
-		m_startLine = l;
-	}
-	
-private:
-	long long int m_startLine = -1;
-}; // class MenuItem
-
 
 //
 // MainWindowPrivate
@@ -101,6 +77,20 @@ struct MainWindowPrivate {
 	MainWindowPrivate( MainWindow * parent )
 		:	q( parent )
 	{
+	}
+	
+	void notifyTocTree( TocModel * model, WordWrapItemDelegate * delegate,
+		const QModelIndex & parent )
+	{
+		for( int i = 0; i < model->rowCount( parent ); ++i )
+		{
+			const auto idx = model->index( i, 0, parent );
+			
+			emit delegate->sizeHintChanged( idx );
+			
+			if( model->rowCount( idx ) > 0 )
+				notifyTocTree( model, delegate, idx );
+		}
 	}
 
 	void initUi()
@@ -135,10 +125,21 @@ struct MainWindowPrivate {
 		sv->setContentsMargins( 0, 0, 0, 0 );
 		sv->setSpacing( 0 );
 		sv->addWidget( tb );
-		tocTree = new QTreeWidget( sidebarPanel );
+		tocTree = new QTreeView( sidebarPanel );
+		tocModel = new TocModel( tocTree );
+		tocTree->setModel( tocModel );
 		tocTree->setHeaderHidden( true );
+		delegate = new WordWrapItemDelegate( tocTree );
+		tocTree->setItemDelegate( delegate );
+		
+		QObject::connect( tocTree->header(), &QHeaderView::sectionResized,
+			[this]( int, int, int )
+			{
+				notifyTocTree( this->tocModel, this->delegate, QModelIndex() );
+			} );
+		
 		sv->addWidget( tocTree );
-		auto spacer = new QSpacerItem( 0, 0, QSizePolicy::Fixed, QSizePolicy::Expanding );
+		spacer = new QSpacerItem( 0, 0, QSizePolicy::Fixed, QSizePolicy::Expanding );
 		sv->addSpacerItem( spacer );
 		tocTree->hide();
 		
@@ -371,9 +372,9 @@ struct MainWindowPrivate {
 			q, &MainWindow::onAddTOC );
 		
 		QObject::connect( tocBtn, &QToolButton::toggled,
-			[spacer, this] ( bool checked )
+			[this] ( bool checked )
 			{
-				spacer->changeSize( 0, 0, QSizePolicy::Fixed,
+				this->spacer->changeSize( 0, 0, QSizePolicy::Fixed,
 					checked ? QSizePolicy::Fixed : QSizePolicy::Expanding );
 				this->tocTree->setVisible( checked );
 				
@@ -403,6 +404,8 @@ struct MainWindowPrivate {
 				
 				this->initMarkdownMenu();
 			} );
+		
+		QObject::connect( tocTree, &QTreeView::clicked, q, &MainWindow::tocClicked );
 
 		q->readCfg();
 
@@ -475,12 +478,11 @@ struct MainWindowPrivate {
 	{
 		if( tocBtn->isChecked() )
 		{
-			tocTree->clear();
+			tocModel->clear();
 			
 			const auto doc = editor->currentDoc();
 			
-			std::vector< MenuItem* > current;
-			int level = 0;
+			std::vector< QModelIndex > current;
 			
 			for( auto it = doc->items().cbegin(), last = doc->items().cend(); it != last; ++it )
 			{
@@ -489,44 +491,38 @@ struct MainWindowPrivate {
 					auto h = static_cast< MD::Heading< MD::QStringTrait >* > ( it->get() );
 					
 					if( h->text() )
-					{
-						MenuItem * item = nullptr;
-						
+					{		
 						if( current.size() )
 						{
-							if( current.size() < h->level() && h->level() > level )
+							if( h->level() < tocModel->level( current.front() ) )
+								current.clear();
+							else
+								current.erase( std::find_if( current.cbegin(), current.cend(),
+										[h, this]( const auto & i )
+											{ return this->tocModel->level( i ) >= h->level(); } ),
+									current.cend() );
+							
+							if( current.empty() )
 							{
-								for( int i = (int) current.size(); i < h->level() - 1; ++i )
-									current.push_back( new MenuItem( current.back() ) );
+								tocModel->addTopLevelItem( paragraphToMenuText( h->text().get() ),
+									h->startLine(), h->level() );
+								current.push_back( tocModel->index( tocModel->rowCount() - 1, 0 ) );
 							}
 							else
 							{
-								if( h->level() < level )
-									current.clear();
-								else
-									current.erase( current.cbegin() + h->level() - 1, current.cend() );
-								
-								if( current.empty() )
-								{
-									item = new MenuItem( tocTree );
-									tocTree->addTopLevelItem( item );
-									level = h->level();
-								}
+								tocModel->addChildItem( current.back(),
+									paragraphToMenuText( h->text().get() ),
+									h->startLine(), h->level() );
+								current.push_back( tocModel->index(
+									tocModel->rowCount( current.back() ) - 1, 0, current.back() ) );
 							}
-							
-							if( !item )
-								item = new MenuItem( current.back() );
 						}
 						else
 						{
-							item = new MenuItem( tocTree );
-							tocTree->addTopLevelItem( item );
-							level = h->level();
+							tocModel->addTopLevelItem( paragraphToMenuText( h->text().get() ),
+								h->startLine(), h->level() );
+							current.push_back( tocModel->index( tocModel->rowCount() - 1, 0 ) );
 						}
-						
-						item->setText( 0, paragraphToMenuText( h->text().get() ) );
-						item->setStartLine( h->startLine() );
-						current.push_back( item );
 					}
 				}
 			}
@@ -541,6 +537,8 @@ struct MainWindowPrivate {
 	QWidget * sidebarPanel = nullptr;
 	QToolButton * tocBtn = nullptr;
 	HtmlDocument * html = nullptr;
+	QSpacerItem * spacer = nullptr;
+	WordWrapItemDelegate * delegate = nullptr;
 	Find * find = nullptr;
 	FindWeb * findWeb = nullptr;
 	GoToLine * gotoline = nullptr;
@@ -562,7 +560,8 @@ struct MainWindowPrivate {
 	QMenu * settingsMenu = nullptr;
 	QDockWidget * fileTreeDock = nullptr;
 	QTreeWidget * fileTree = nullptr;
-	QTreeWidget * tocTree = nullptr;
+	QTreeView * tocTree = nullptr;
+	TocModel * tocModel = nullptr;
 	QLabel * cursorPosLabel = nullptr;
 	bool init = false;
 	bool loadAllFlag = false;
@@ -2089,6 +2088,21 @@ MainWindow::onChangeColors()
 			saveCfg();
 		}
 	}
+}
+
+void
+MainWindow::tocClicked( const QModelIndex & index )
+{
+	auto c = d->editor->textCursor();
+	
+	c.setPosition( d->editor->document()->findBlockByNumber(
+		d->tocModel->lineNumber( index ) ).position() );
+	
+	d->editor->setTextCursor( c );
+	
+	d->editor->ensureCursorVisible();
+	
+	d->editor->setFocus();
 }
 
 } /* namespace MdEditor */

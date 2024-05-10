@@ -40,7 +40,11 @@ set( LIB_SRC
 	cfg.cfgconf
 	${CMAKE_CURRENT_BINARY_DIR}/cfg.hpp
 	closebutton.hpp
-	closebutton.cpp )
+	closebutton.cpp
+	toc.hpp
+	toc.cpp
+	wordwrapdelegate.hpp
+	wordwrapdelegate.cpp )
 
 set( SRC main.cpp )
 

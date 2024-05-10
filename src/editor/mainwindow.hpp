@@ -66,6 +66,7 @@ private slots:
 	void onConvertToPdf();
 	void onAddTOC();
 	void onChangeColors();
+	void tocClicked( const QModelIndex & index );
 
 private:
     bool isModified() const;
