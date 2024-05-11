@@ -9,6 +9,8 @@
 // Qt include.
 #include <QHeaderView>
 #include <QPainter>
+#include <QApplication>
+#include <QStyle>
 
 
 namespace MdEditor {
@@ -26,7 +28,9 @@ WordWrapItemDelegate::WordWrapItemDelegate( QTreeView * parent )
 QSize
 WordWrapItemDelegate::sizeHint( const QStyleOptionViewItem & option,
 	const QModelIndex & index ) const
-{
+{		
+	const auto w = QApplication::style()->pixelMetric( QStyle::PM_TreeViewIndentation );
+	
 	int level = 1;
 	auto i = index;
 	
@@ -37,9 +41,7 @@ WordWrapItemDelegate::sizeHint( const QStyleOptionViewItem & option,
 	}
 	
 	return option.fontMetrics.boundingRect(
-		QRect( 0, 0,
-			m_parent->header()->sectionSize( index.column() ) -
-				option.decorationSize.width() * level * 2, 0 ),
+		QRect( 0, 0, m_parent->header()->sectionSize( index.column() ) - w * level, 0 ),
 		Qt::AlignLeft | Qt::TextWordWrap,
 		index.data( Qt::DisplayRole ).toString() ).size();
 }
