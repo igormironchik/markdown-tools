@@ -45,12 +45,10 @@
 #include <QLineEdit>
 #include <QLabel>
 #include <QTextBlock>
-#include <QToolButton>
 #include <QTreeWidget>
 #include <QHeaderView>
 #include <QTabWidget>
 #include <QStyleOptionTab>
-
 
 // md4qt include.
 #define MD4QT_QT_SUPPORT
@@ -63,9 +61,6 @@
 
 // shared include.
 #include "license_dialog.hpp"
-
-// C++ include.
-#include <functional>
 
 
 namespace MdEditor {
