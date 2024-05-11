@@ -1006,12 +1006,6 @@ itemType( MD::ItemType t )
 	return QString();
 }
 
-inline bool
-inRange( long long int start, long long int end, int pos )
-{
-	return ( pos >= start && pos <= end );
-}
-
 } /* namespace anonymous */
 
 void
