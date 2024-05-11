@@ -1595,6 +1595,10 @@ MainWindow::onTogglePreviewAction( bool checked )
 		d->sidebarPanel->hide();
 		d->splitter->handle( 1 )->setCursor( Qt::ArrowCursor );
 		d->splitter->handle( 2 )->setCursor( Qt::ArrowCursor );
+		
+		if( d->tocBtn->isChecked() )
+			d->tocWidth = d->splitter->sizes()[ 0 ];
+		
 		d->splitter->setSizes( { 0, 0, centralWidget()->width() } );
 
 		if( d->fileTreeDock )
@@ -1614,11 +1618,23 @@ MainWindow::onTogglePreviewAction( bool checked )
 		d->newAction->setEnabled( true );
 		d->editor->setVisible( true );
 		d->sidebarPanel->show();
-		d->tocBtn->setChecked( false );
-		d->splitter->handle( 1 )->setCursor( Qt::ArrowCursor );
+		
+		{
+			const auto w = ( centralWidget()->width() - ( d->tocBtn->isChecked() ?
+				d->tocWidth : d->tocBtn->sizeHint().width() ) ) / 2;
+			d->splitter->setSizes( { d->tocBtn->isChecked() ?
+				d->tocWidth : d->tocBtn->sizeHint().width(), w, w } );
+		}
+		
+		if( d->tocBtn->isChecked() )
+			d->tocBtn->toggle();
+		
 		d->splitter->handle( 2 )->setCursor( d->splitterCursor );
-		const auto w = ( centralWidget()->width() - d->tocBtn->sizeHint().width() ) / 2;
-		d->splitter->setSizes( { d->tocBtn->sizeHint().width(), w, w } );
+		
+		{
+			const auto w = ( centralWidget()->width() - d->tocBtn->sizeHint().width() ) / 2;
+			d->splitter->setSizes( { d->tocBtn->sizeHint().width(), w, w } );
+		}
 
 		if( d->fileTreeDock )
 		{
