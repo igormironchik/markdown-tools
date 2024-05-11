@@ -1306,6 +1306,7 @@ MainWindow::loadAllLinkedFiles()
 		d->loadAllFlag = false;
 		
 		d->tabs->removeTab( 1 );
+		d->fileTree->hide();
 		
 		closeAllLinkedFiles();
 
@@ -1411,6 +1412,9 @@ MainWindow::loadAllLinkedFiles()
 	else
 	{
 		closeAllLinkedFiles();
+		
+		d->tabs->removeTab( 1 );
+		d->fileTree->hide();
 
 		QMessageBox::information( this, windowTitle(),
 			tr( "This document doesn't have linked documents." ) );
