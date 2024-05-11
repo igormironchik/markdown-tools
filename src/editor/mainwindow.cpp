@@ -40,7 +40,6 @@
 #include <QTextDocumentFragment>
 #include <QStatusBar>
 #include <QApplication>
-#include <QDockWidget>
 #include <QTreeView>
 #include <QProcess>
 #include <QLineEdit>
@@ -49,6 +48,8 @@
 #include <QToolButton>
 #include <QTreeWidget>
 #include <QHeaderView>
+#include <QTabWidget>
+#include <QStyleOptionTab>
 
 
 // md4qt include.
@@ -105,32 +106,24 @@ struct MainWindowPrivate {
 		
 		// Sidebar.
 		sidebarPanel = new QWidget( splitter );
-		auto tb = new QWidget( sidebarPanel );
-		tb->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
-		tocBtn = new QToolButton( tb );
-		tocBtn->setIcon( QIcon( ":/res/img/view-sidetree.png" ) );
-		tocBtn->setIconSize( { 16, 16 } );
-		tocBtn->setCheckable( true );
-		tocBtn->setChecked( false );
-		tocBtn->setToolTip( MainWindow::tr( "Markdown Menu" ) );
-		sidebarPanel->setFixedWidth( tocBtn->sizeHint().width() );
+		QVBoxLayout * sl = new QVBoxLayout( sidebarPanel );
+		sl->setContentsMargins( 0, 0, 0, 0 );
+		sl->setSpacing( 0 );
+		tabs = new QTabWidget( sidebarPanel );
+		sl->addWidget( tabs );
+		tabs->setTabPosition( QTabWidget::East );
 		
-		auto tbh = new QHBoxLayout( tb );
-		tbh->setContentsMargins( 0, 0, 0, 0 );
-		tbh->setSpacing( 0 );
-		tbh->addWidget( tocBtn );
-		tbh->addSpacerItem( new QSpacerItem( 0, 0, QSizePolicy::Expanding, QSizePolicy::Fixed ) );
-		
-		auto sv = new QVBoxLayout( sidebarPanel );
-		sv->setContentsMargins( 0, 0, 0, 0 );
-		sv->setSpacing( 0 );
-		sv->addWidget( tb );
-		tocTree = new QTreeView( sidebarPanel );
+		tocTree = new QTreeView( tabs );
 		tocModel = new TocModel( tocTree );
 		tocTree->setModel( tocModel );
 		tocTree->setHeaderHidden( true );
 		delegate = new WordWrapItemDelegate( tocTree );
 		tocTree->setItemDelegate( delegate );
+		tabs->addTab( tocTree, MainWindow::tr( "TOC" ) );
+		
+		fileTree = new QTreeWidget( tabs );
+		fileTree->setHeaderHidden( true );
+		fileTree->hide();
 		
 		QObject::connect( tocTree->header(), &QHeaderView::sectionResized,
 			[this]( int, int, int )
@@ -138,9 +131,6 @@ struct MainWindowPrivate {
 				notifyTocTree( this->tocModel, this->delegate, QModelIndex() );
 			} );
 		
-		sv->addWidget( tocTree );
-		spacer = new QSpacerItem( 0, 0, QSizePolicy::Fixed, QSizePolicy::Expanding );
-		sv->addSpacerItem( spacer );
 		tocTree->hide();
 		
 		// Editor.
@@ -370,41 +360,8 @@ struct MainWindowPrivate {
 			q, &MainWindow::onTogglePreviewAction );
 		QObject::connect( addTOCAction, &QAction::triggered,
 			q, &MainWindow::onAddTOC );
-		
-		QObject::connect( tocBtn, &QToolButton::toggled,
-			[this] ( bool checked )
-			{
-				this->spacer->changeSize( 0, 0, QSizePolicy::Fixed,
-					checked ? QSizePolicy::Fixed : QSizePolicy::Expanding );
-				this->tocTree->setVisible( checked );
-				
-				auto s = this->splitter->sizes();
-				
-				if( checked )
-				{
-					if( this->tocWidth == -1 )
-						this->tocWidth = 250;
-					
-					s[ 0 ] = this->tocWidth;
-					s[ 1 ] = s[ 1 ] - this->tocWidth + this->tocBtn->sizeHint().width();
-					this->sidebarPanel->setMaximumWidth( QWIDGETSIZE_MAX );
-					this->splitter->handle( 1 )->setCursor( this->splitterCursor );
-				}
-				else
-				{
-					this->tocWidth = s[ 0 ];
-					const auto w = s[ 0 ] - this->tocBtn->sizeHint().width();
-					s[ 0 ] = this->tocBtn->sizeHint().width();
-					s[ 1 ] = s[ 1 ] + w;
-					this->sidebarPanel->setFixedWidth( this->tocBtn->sizeHint().width() );
-					this->splitter->handle( 1 )->setCursor( Qt::ArrowCursor );
-				}
-				
-				this->splitter->setSizes( s );
-				
-				this->initMarkdownMenu();
-			} );
-		
+		QObject::connect( tabs, &QTabWidget::tabBarClicked,
+			q, &MainWindow::tabClicked );		
 		QObject::connect( tocTree, &QTreeView::clicked, q, &MainWindow::tocClicked );
 
 		q->readCfg();
@@ -476,15 +433,15 @@ struct MainWindowPrivate {
 
 	void initMarkdownMenu()
 	{
-		if( tocBtn->isChecked() )
+		if( tabsVisible && tocDoc != editor->currentDoc() )
 		{
 			tocModel->clear();
 			
-			const auto doc = editor->currentDoc();
+			tocDoc = editor->currentDoc();
 			
 			std::vector< QModelIndex > current;
 			
-			for( auto it = doc->items().cbegin(), last = doc->items().cend(); it != last; ++it )
+			for( auto it = tocDoc->items().cbegin(), last = tocDoc->items().cend(); it != last; ++it )
 			{
 				if( (*it)->type() == MD::ItemType::Heading )
 				{
@@ -535,13 +492,12 @@ struct MainWindowPrivate {
 	PreviewPage * page = nullptr;
 	QSplitter * splitter = nullptr;
 	QWidget * sidebarPanel = nullptr;
-	QToolButton * tocBtn = nullptr;
 	HtmlDocument * html = nullptr;
-	QSpacerItem * spacer = nullptr;
 	WordWrapItemDelegate * delegate = nullptr;
 	Find * find = nullptr;
 	FindWeb * findWeb = nullptr;
 	GoToLine * gotoline = nullptr;
+	QTabWidget * tabs = nullptr;
 	QAction * newAction = nullptr;
 	QAction * openAction = nullptr;
 	QAction * saveAction = nullptr;
@@ -558,7 +514,6 @@ struct MainWindowPrivate {
 	QAction * backtabAction = nullptr;
 	QMenu * standardEditMenu = nullptr;
 	QMenu * settingsMenu = nullptr;
-	QDockWidget * fileTreeDock = nullptr;
 	QTreeWidget * fileTree = nullptr;
 	QTreeView * tocTree = nullptr;
 	TocModel * tocModel = nullptr;
@@ -566,14 +521,17 @@ struct MainWindowPrivate {
 	bool init = false;
 	bool loadAllFlag = false;
 	bool previewMode = false;
+	bool tabsVisible = false;
 	QCursor splitterCursor;
 	std::shared_ptr< MD::Document< MD::QStringTrait > > mdDoc;
+	std::shared_ptr< MD::Document< MD::QStringTrait > > tocDoc;
 	QString baseUrl;
 	QString rootFilePath;
 	QString mdPdfExe;
 	QString launcherExe;
 	Colors mdColors;
-	int tocWidth = -1;
+	int tabWidth = -1;
+	int minTabWidth = -1;
 }; // struct MainWindowPrivate
 
 
@@ -620,11 +578,18 @@ MainWindow::resizeEvent( QResizeEvent * e )
 	if( !d->init )
 	{
 		d->init = true;
+		
+		QStyleOptionTab opt;
+		opt.initFrom( d->tabs );
+		
+		d->minTabWidth = opt.rect.height();
+		d->sidebarPanel->setFixedWidth( d->minTabWidth );
+		d->sidebarPanel->setMinimumWidth( d->minTabWidth );
 
-		auto w = ( centralWidget()->width() - d->tocBtn->sizeHint().width() ) / 2;
+		auto w = ( centralWidget()->width() - d->minTabWidth ) / 2;
 
 		if( !d->previewMode )
-			d->splitter->setSizes( { d->tocBtn->sizeHint().width(), w, w } );
+			d->splitter->setSizes( { d->minTabWidth, w, w } );
 		else
 			d->splitter->setSizes( { 0, 0, centralWidget()->width() } );
 	}
@@ -670,9 +635,10 @@ MainWindow::openFile( const QString & path )
 void
 MainWindow::openInPreviewMode( bool loadAllLinked )
 {
-	d->loadAllFlag = loadAllLinked;
-
 	d->viewAction->setChecked( true );
+	
+	if( loadAllLinked )
+		loadAllLinkedFiles();
 }
 
 bool
@@ -1338,20 +1304,14 @@ struct Node {
 }
 
 void
-MainWindow::loadAllLinkedFiles( bool doNotCloseDock )
+MainWindow::loadAllLinkedFiles()
 {
-	if( isModified() && !d->previewMode )
+	if( d->loadAllFlag )
 	{
-		QMessageBox::information( this, windowTitle(),
-			tr( "You have unsaved changes. Please save document first." ) );
-
-		d->editor->setFocus();
-
-		return;
-	}
-
-	if( !doNotCloseDock && d->fileTreeDock )
-	{
+		d->loadAllFlag = false;
+		
+		d->tabs->removeTab( 1 );
+		
 		closeAllLinkedFiles();
 
 		updateLoadAllLinkedFilesMenuText();
@@ -1360,111 +1320,105 @@ MainWindow::loadAllLinkedFiles( bool doNotCloseDock )
 
 		return;
 	}
-
-	d->loadAllFlag = true;
+	else
+	{
+		if( isModified() )
+		{
+			QMessageBox::information( this, windowTitle(),
+				tr( "You have unsaved changes. Please save document first." ) );
+	
+			d->editor->setFocus();
+	
+			return;
+		}
+		
+		d->loadAllFlag = true;
+	}
 
 	readAllLinked();
+	
+	d->fileTree->clear();
+	d->fileTree->show();
+	d->tabs->addTab( d->fileTree, tr( "Navigation" ) );
 
-	bool init = false;
+	const auto rootFolder = QFileInfo( d->rootFilePath ).absolutePath() + QStringLiteral( "/" );
 
-	if( !d->fileTreeDock )
+	Node root;
+
+	for( auto it = d->mdDoc->items().cbegin(), last = d->mdDoc->items().cend(); it != last; ++it )
 	{
-		init = true;
-
-		d->fileTreeDock = new QDockWidget( tr( "Navigation" ), this );
-		d->fileTreeDock->setFeatures( QDockWidget::NoDockWidgetFeatures );
-	}
-
-	if( !d->fileTree )
-	{
-		d->fileTree = new QTreeWidget( d->fileTreeDock );
-		d->fileTreeDock->setWidget( d->fileTree );
-		d->fileTree->setHeaderHidden( true );
-	}
-
-	if( init )
-	{
-		const auto rootFolder = QFileInfo( d->rootFilePath ).absolutePath() + QStringLiteral( "/" );
-
-		Node root;
-
-		for( auto it = d->mdDoc->items().cbegin(), last = d->mdDoc->items().cend(); it != last; ++it )
+		if( (*it)->type() == MD::ItemType::Anchor )
 		{
-			if( (*it)->type() == MD::ItemType::Anchor )
+			const auto fullFileName =
+				static_cast< MD::Anchor< MD::QStringTrait >* > ( it->get() )->label();
+
+			const auto fileName = fullFileName.startsWith( rootFolder ) ?
+				fullFileName.sliced( rootFolder.size() ) : fullFileName;
+
+			const auto parts = fileName.split( QStringLiteral( "/" ) );
+
+			Node * current = &root;
+
+			for( qsizetype i = 0; i < parts.size(); ++i )
 			{
-				const auto fullFileName =
-					static_cast< MD::Anchor< MD::QStringTrait >* > ( it->get() )->label();
+				const QString f = parts.at( i ).isEmpty() ? QStringLiteral( "/" ) : parts.at( i );
 
-				const auto fileName = fullFileName.startsWith( rootFolder ) ?
-					fullFileName.sliced( rootFolder.size() ) : fullFileName;
-
-				const auto parts = fileName.split( QStringLiteral( "/" ) );
-
-				Node * current = &root;
-
-				for( qsizetype i = 0; i < parts.size(); ++i )
+				if( i == parts.size() - 1 )
 				{
-					const QString f = parts.at( i ).isEmpty() ? QStringLiteral( "/" ) : parts.at( i );
-
-					if( i == parts.size() - 1 )
+					if( !current->keys.contains( f ) )
 					{
-						if( !current->keys.contains( f ) )
-						{
-							auto tmp = QSharedPointer< Node >::create();
-							auto item = new QTreeWidgetItem( current->self );
-							item->setIcon( 0, QIcon( ":/res/img/icon_16x16.png" ) );
-							item->setData( 0, Qt::UserRole, fullFileName );
-							tmp->self = item;
-							item->setText( 0, f );
-							current->children.push_back( { tmp, item } );
-							current->keys.push_back( f );
-							current = tmp.get();
-						}
+						auto tmp = QSharedPointer< Node >::create();
+						auto item = new QTreeWidgetItem( current->self );
+						item->setIcon( 0, QIcon( ":/res/img/icon_16x16.png" ) );
+						item->setData( 0, Qt::UserRole, fullFileName );
+						tmp->self = item;
+						item->setText( 0, f );
+						current->children.push_back( { tmp, item } );
+						current->keys.push_back( f );
+						current = tmp.get();
+					}
+				}
+				else
+				{
+					if( !current->keys.contains( f ) )
+					{
+						auto tmp = QSharedPointer< Node >::create();
+						auto item = new QTreeWidgetItem( current->self );
+						item->setIcon( 0, QIcon( ":/res/img/folder-yellow.png" ) );
+						tmp->self = item;
+						item->setText( 0, f );
+						current->children.push_back( { tmp, item } );
+						current->keys.push_back( f );
+						current = tmp.get();
 					}
 					else
-					{
-						if( !current->keys.contains( f ) )
-						{
-							auto tmp = QSharedPointer< Node >::create();
-							auto item = new QTreeWidgetItem( current->self );
-							item->setIcon( 0, QIcon( ":/res/img/folder-yellow.png" ) );
-							tmp->self = item;
-							item->setText( 0, f );
-							current->children.push_back( { tmp, item } );
-							current->keys.push_back( f );
-							current = tmp.get();
-						}
-						else
-							current = current->children.at( current->keys.indexOf( f ) ).first.get();
-					}
+						current = current->children.at( current->keys.indexOf( f ) ).first.get();
 				}
 			}
 		}
+	}
 
-		if( root.children.size() > 1 )
+	if( root.children.size() > 1 )
+	{
+		for( auto it = root.children.cbegin(), last = root.children.cend(); it != last; ++it )
+			d->fileTree->addTopLevelItem( it->second );
+
+		connect( d->fileTree, &QTreeWidget::itemDoubleClicked,
+			this, &MainWindow::onNavigationDoubleClicked );
+
+		if( !d->previewMode )
 		{
-			for( auto it = root.children.cbegin(), last = root.children.cend(); it != last; ++it )
-				d->fileTree->addTopLevelItem( it->second );
-
-			connect( d->fileTree, &QTreeWidget::itemDoubleClicked,
-				this, &MainWindow::onNavigationDoubleClicked );
-
-			if( !d->previewMode )
-			{
-				addDockWidget( Qt::LeftDockWidgetArea, d->fileTreeDock );
-
-				QMessageBox::information( this, windowTitle(),
-					tr( "HTML preview is ready. Modifications in files will not update "
-						"HTML preview till you save changes." ) );
-			}
-		}
-		else
-		{
-			closeAllLinkedFiles();
-
 			QMessageBox::information( this, windowTitle(),
-				tr( "This document doesn't have linked documents." ) );
+				tr( "HTML preview is ready. Modifications in files will not update "
+					"HTML preview till you save changes." ) );
 		}
+	}
+	else
+	{
+		closeAllLinkedFiles();
+
+		QMessageBox::information( this, windowTitle(),
+			tr( "This document doesn't have linked documents." ) );
 	}
 
 	if( !d->previewMode )
@@ -1477,15 +1431,6 @@ void
 MainWindow::closeAllLinkedFiles()
 {
 	d->loadAllFlag = false;
-
-	if( d->fileTreeDock )
-	{
-		removeDockWidget( d->fileTreeDock );
-		d->fileTreeDock->deleteLater();
-	}
-
-	d->fileTree = nullptr;
-	d->fileTreeDock = nullptr;
 
 	d->editor->setFocus();
 
@@ -1574,11 +1519,6 @@ MainWindow::onTogglePreviewAction( bool checked )
 {
 	d->previewMode = checked;
 
-	if( d->loadAllFlag )
-		loadAllLinkedFiles( true );
-	else
-		onTextChanged();
-
 	if( checked )
 	{
 		d->settingsMenu->menuAction()->setVisible( false );
@@ -1596,13 +1536,10 @@ MainWindow::onTogglePreviewAction( bool checked )
 		d->splitter->handle( 1 )->setCursor( Qt::ArrowCursor );
 		d->splitter->handle( 2 )->setCursor( Qt::ArrowCursor );
 		
-		if( d->tocBtn->isChecked() )
-			d->tocWidth = d->splitter->sizes()[ 0 ];
+		if( d->tabsVisible )
+			showOrHideTabs();
 		
 		d->splitter->setSizes( { 0, 0, centralWidget()->width() } );
-
-		if( d->fileTreeDock )
-			removeDockWidget( d->fileTreeDock );
 	}
 	else
 	{
@@ -1618,29 +1555,10 @@ MainWindow::onTogglePreviewAction( bool checked )
 		d->newAction->setEnabled( true );
 		d->editor->setVisible( true );
 		d->sidebarPanel->show();
-		
-		{
-			const auto w = ( centralWidget()->width() - ( d->tocBtn->isChecked() ?
-				d->tocWidth : d->tocBtn->sizeHint().width() ) ) / 2;
-			d->splitter->setSizes( { d->tocBtn->isChecked() ?
-				d->tocWidth : d->tocBtn->sizeHint().width(), w, w } );
-		}
-		
-		if( d->tocBtn->isChecked() )
-			d->tocBtn->toggle();
-		
 		d->splitter->handle( 2 )->setCursor( d->splitterCursor );
 		
-		{
-			const auto w = ( centralWidget()->width() - d->tocBtn->sizeHint().width() ) / 2;
-			d->splitter->setSizes( { d->tocBtn->sizeHint().width(), w, w } );
-		}
-
-		if( d->fileTreeDock )
-		{
-			addDockWidget( Qt::LeftDockWidgetArea, d->fileTreeDock );
-			d->fileTreeDock->show();
-		}
+		const auto w = ( centralWidget()->width() - d->minTabWidth ) / 2;
+		d->splitter->setSizes( { d->minTabWidth, w, w } );
 
 		d->editor->setFocus();
 	}
@@ -2119,6 +2037,48 @@ MainWindow::tocClicked( const QModelIndex & index )
 	d->editor->ensureCursorVisible();
 	
 	d->editor->setFocus();
+}
+
+void
+MainWindow::showOrHideTabs()
+{
+	d->tocTree->setVisible( !d->tabsVisible );
+	
+	auto s = d->splitter->sizes();
+	
+	if( !d->tabsVisible )
+	{
+		if( d->tabWidth == -1 )
+			d->tabWidth = 250;
+		
+		s[ 0 ] = d->tabWidth;
+		s[ 1 ] = s[ 1 ] - d->tabWidth + d->minTabWidth;
+		d->sidebarPanel->setMaximumWidth( QWIDGETSIZE_MAX );
+		d->splitter->handle( 1 )->setCursor( d->splitterCursor );
+	}
+	else
+	{
+		d->tabWidth = s[ 0 ];
+		const auto w = s[ 0 ] - d->minTabWidth;
+		s[ 0 ] = d->minTabWidth;
+		s[ 1 ] = s[ 1 ] + w;
+		d->sidebarPanel->setFixedWidth( d->minTabWidth );
+		d->splitter->handle( 1 )->setCursor( Qt::ArrowCursor );
+	}
+	
+	d->tabsVisible = !d->tabsVisible;
+	
+	d->splitter->setSizes( s );
+}
+
+void
+MainWindow::tabClicked( int index )
+{
+	if( d->tabs->currentIndex() == index || !d->tabsVisible )
+		showOrHideTabs();
+	
+	if( index == 0 )
+		d->initMarkdownMenu();
 }
 
 } /* namespace MdEditor */

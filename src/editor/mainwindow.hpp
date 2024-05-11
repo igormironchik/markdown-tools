@@ -35,7 +35,7 @@ public:
 public slots:
 	void openFile( const QString & path );
 	void openInPreviewMode( bool loadAllLinked );
-	void loadAllLinkedFiles( bool doNotCloseDock = false );
+	void loadAllLinkedFiles();
 
 protected:
 	void resizeEvent( QResizeEvent * e ) override;
@@ -67,6 +67,7 @@ private slots:
 	void onAddTOC();
 	void onChangeColors();
 	void tocClicked( const QModelIndex & index );
+	void tabClicked( int index );
 
 private:
     bool isModified() const;
@@ -78,6 +79,7 @@ private:
 	void updateLoadAllLinkedFilesMenuText();
 	void closeAllLinkedFiles();
 	QString configFileName( bool inPlace ) const;
+	void showOrHideTabs();
 
 private:
 	Q_DISABLE_COPY( MainWindow )
