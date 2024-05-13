@@ -8,7 +8,7 @@
 // md4qt include.
 #define MD4QT_QT_SUPPORT
 #include <md4qt/traits.hpp>
-#include <md4qt/visitor.hpp>
+#include <md4qt/poscache.hpp>
 
 // Qt include.
 #include <QScopedPointer>
@@ -30,7 +30,7 @@ struct SyntaxVisitorPrivate;
 
 //! Markdown syntax highlighter.
 class SyntaxVisitor
-	:	public MD::Visitor< MD::QStringTrait >
+	:	public MD::PosCache< MD::QStringTrait >
 {
 public:
 	explicit SyntaxVisitor( Editor * editor );
@@ -40,23 +40,15 @@ public:
 		const Colors & colors );
 	void setFont( const QFont & f );
 	void clearHighlighting();
-	
-	std::vector< MD::Item< MD::QStringTrait >* > findAllInCache(
-		const MD::WithPosition & pos ) const;
 
 protected:
-	void onAddLineEnding() override;
 	void onText( MD::Text< MD::QStringTrait > * t ) override;
 	void onMath( MD::Math< MD::QStringTrait > * m ) override;
-	void onLineBreak( MD::LineBreak< MD::QStringTrait > * b ) override;
-	void onParagraph( MD::Paragraph< MD::QStringTrait > * p, bool wrap ) override;
 	void onHeading( MD::Heading< MD::QStringTrait > * h ) override;
 	void onCode( MD::Code< MD::QStringTrait > * c ) override;
 	void onInlineCode( MD::Code< MD::QStringTrait > * c ) override;
 	void onBlockquote( MD::Blockquote< MD::QStringTrait > * b ) override;
-	void onList( MD::List< MD::QStringTrait > * l ) override;
 	void onTable( MD::Table< MD::QStringTrait > * t ) override;
-	void onAnchor( MD::Anchor< MD::QStringTrait > * a ) override;
 	void onRawHtml( MD::RawHtml< MD::QStringTrait > * h ) override;
 	void onHorizontalLine( MD::HorizontalLine< MD::QStringTrait > * l ) override;
 	void onLink( MD::Link< MD::QStringTrait > * l ) override;

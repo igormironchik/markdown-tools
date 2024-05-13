@@ -925,7 +925,7 @@ MainWindow::onTextChanged()
 	const auto lineNumber = d->editor->textCursor().block().blockNumber();
 	const auto lineLength = d->editor->textCursor().block().length();
 	
-	const auto items = d->editor->syntaxHighlighter().findAllInCache(
+	const auto items = d->editor->syntaxHighlighter().findFirstInCache(
 		{ 0, lineNumber, lineLength, lineNumber } );
 	
 	if( !items.empty() && items[ 0 ]->type() == MD::ItemType::Heading )
@@ -1011,7 +1011,7 @@ itemType( MD::ItemType t )
 void
 MainWindow::onLineHovered( int lineNumber, const QPoint & pos )
 {
-	const auto items = d->editor->syntaxHighlighter().findAllInCache(
+	const auto items = d->editor->syntaxHighlighter().findFirstInCache(
 		{ 0, lineNumber,
 			d->editor->document()->findBlockByLineNumber( lineNumber ).length(),
 			lineNumber } );

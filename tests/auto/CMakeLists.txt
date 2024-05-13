@@ -4,4 +4,3 @@
 project( tests )
 
 add_subdirectory( test_render )
-add_subdirectory( test_syntax_cache )
