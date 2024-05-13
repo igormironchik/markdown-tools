@@ -55,6 +55,7 @@
 #include <md4qt/traits.hpp>
 #include <md4qt/parser.hpp>
 #include <md4qt/html.hpp>
+#include <md4qt/algo.hpp>
 
 // cfgfile include.
 #include <cfgfile/all.hpp>
@@ -435,18 +436,17 @@ struct MainWindowPrivate {
 			tocDoc = editor->currentDoc();
 			
 			std::vector< QModelIndex > current;
-			
-			for( auto it = tocDoc->items().cbegin(), last = tocDoc->items().cend(); it != last; ++it )
-			{
-				if( (*it)->type() == MD::ItemType::Heading )
+					
+			MD::forEach< MD::QStringTrait >( { MD::ItemType::Heading }, tocDoc,
+				[this, &current]( MD::Item< MD::QStringTrait > * item )
 				{
-					auto h = static_cast< MD::Heading< MD::QStringTrait >* > ( it->get() );
+					auto h = static_cast< MD::Heading< MD::QStringTrait >* > ( item );
 					
 					if( h->text() )
 					{		
 						if( current.size() )
 						{
-							if( h->level() < tocModel->level( current.front() ) )
+							if( h->level() < this->tocModel->level( current.front() ) )
 								current.clear();
 							else
 								current.erase( std::find_if( current.cbegin(), current.cend(),
@@ -456,28 +456,28 @@ struct MainWindowPrivate {
 							
 							if( current.empty() )
 							{
-								tocModel->addTopLevelItem( paragraphToMenuText( h->text().get() ),
+								this->tocModel->addTopLevelItem( this->paragraphToMenuText( h->text().get() ),
 									h->startLine(), h->level() );
-								current.push_back( tocModel->index( tocModel->rowCount() - 1, 0 ) );
+								current.push_back( this->tocModel->index( this->tocModel->rowCount() - 1, 0 ) );
 							}
 							else
 							{
-								tocModel->addChildItem( current.back(),
-									paragraphToMenuText( h->text().get() ),
+								this->tocModel->addChildItem( current.back(),
+									this->paragraphToMenuText( h->text().get() ),
 									h->startLine(), h->level() );
-								current.push_back( tocModel->index(
-									tocModel->rowCount( current.back() ) - 1, 0, current.back() ) );
+								current.push_back( this->tocModel->index(
+									this->tocModel->rowCount( current.back() ) - 1, 0, current.back() ) );
 							}
 						}
 						else
 						{
-							tocModel->addTopLevelItem( paragraphToMenuText( h->text().get() ),
+							this->tocModel->addTopLevelItem( this->paragraphToMenuText( h->text().get() ),
 								h->startLine(), h->level() );
-							current.push_back( tocModel->index( tocModel->rowCount() - 1, 0 ) );
+							current.push_back( this->tocModel->index( this->tocModel->rowCount() - 1, 0 ) );
 						}
 					}
-				}
-			}
+				}, 1
+			);
 		}
 	}
 	
@@ -1606,42 +1606,43 @@ MainWindow::onAddTOC()
 	int offset = 0;
 	QString fileName;
 
-	for( auto it = d->mdDoc->items().cbegin(), last = d->mdDoc->items().cend();
-		it != last; ++it )
-	{
-		if( (*it)->type() == MD::ItemType::Anchor )
+	MD::forEach< MD::QStringTrait >( { MD::ItemType::Anchor, MD::ItemType::Heading }, d->mdDoc,
+		[&]( MD::Item< MD::QStringTrait > * item )
 		{
-			auto a = static_cast< MD::Anchor< MD::QStringTrait > * > ( it->get() );
-			fileName = a->label();
-		}
-		else if( (*it)->type() == MD::ItemType::Heading )
-		{
-			auto h = static_cast< MD::Heading< MD::QStringTrait > * > ( it->get() );
-
-			if( lvl )
+			if( item->type() == MD::ItemType::Anchor )
 			{
-				if( lvl < h->level() )
-					offset += 2;
-				else if( lvl > h->level() )
+				auto a = static_cast< MD::Anchor< MD::QStringTrait > * > ( item );
+				fileName = a->label();
+			}
+			else if( item->type() == MD::ItemType::Heading )
+			{
+				auto h = static_cast< MD::Heading< MD::QStringTrait > * > ( item );
+	
+				if( lvl )
 				{
-					while( lvl > h->level() && offset >= 2 )
+					if( lvl < h->level() )
+						offset += 2;
+					else if( lvl > h->level() )
 					{
-						--lvl;
-						offset -= 2;
+						while( lvl > h->level() && offset >= 2 )
+						{
+							--lvl;
+							offset -= 2;
+						}
 					}
 				}
+	
+				lvl = h->level();
+	
+				toc.append( QString( offset, QChar( ' ' ) ) );
+				toc.append( QStringLiteral( "* [" ) );
+				toc.append( paragraphToMD( h->text().get(), d->editor ) );
+				toc.append( QStringLiteral( "](" ) );
+				toc.append( simplifyLabel( h->label(), fileName ) );
+				toc.append( QStringLiteral( ")\n" ) );
 			}
-
-			lvl = h->level();
-
-			toc.append( QString( offset, QChar( ' ' ) ) );
-			toc.append( QStringLiteral( "* [" ) );
-			toc.append( paragraphToMD( h->text().get(), d->editor ) );
-			toc.append( QStringLiteral( "](" ) );
-			toc.append( simplifyLabel( h->label(), fileName ) );
-			toc.append( QStringLiteral( ")\n" ) );
-		}
-	}
+		}, 1
+	);
 
 	d->editor->insertPlainText( toc );
 }
