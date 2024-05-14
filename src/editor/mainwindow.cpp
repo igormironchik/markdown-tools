@@ -1602,9 +1602,9 @@ void
 MainWindow::onAddTOC()
 {
 	QString toc;
-	int lvl = 0;
 	int offset = 0;
 	QString fileName;
+	std::vector< int > current;
 
 	MD::forEach< MD::QStringTrait >( { MD::ItemType::Anchor, MD::ItemType::Heading }, d->mdDoc,
 		[&]( MD::Item< MD::QStringTrait > * item )
@@ -1617,22 +1617,19 @@ MainWindow::onAddTOC()
 			else if( item->type() == MD::ItemType::Heading )
 			{
 				auto h = static_cast< MD::Heading< MD::QStringTrait > * > ( item );
-	
-				if( lvl )
+				
+				if( current.size() )
 				{
-					if( lvl < h->level() )
-						offset += 2;
-					else if( lvl > h->level() )
-					{
-						while( lvl > h->level() && offset >= 2 )
-						{
-							--lvl;
-							offset -= 2;
-						}
-					}
+					if( h->level() < current.front() )
+						current.clear();
+					else
+						current.erase( std::find_if( current.cbegin(), current.cend(),
+								[h]( const auto & i ) { return i >= h->level(); } ),
+							current.cend() );
 				}
-	
-				lvl = h->level();
+					
+				current.push_back( h->level() );
+				offset = ( current.size() - 1 ) * 2;
 	
 				toc.append( QString( offset, QChar( ' ' ) ) );
 				toc.append( QStringLiteral( "* [" ) );
