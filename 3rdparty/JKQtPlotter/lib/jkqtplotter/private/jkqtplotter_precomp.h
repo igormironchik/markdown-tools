@@ -6,7 +6,7 @@
 #define jkqtmathtext_precomp_h
 
 /*
-    Copyright (c) 2008-2022 Jan W. Krieger (<jan@jkrieger.de>)
+    Copyright (c) 2008-2024 Jan W. Krieger (<jan@jkrieger.de>)
 
 
 
@@ -68,6 +68,7 @@
 #include <QGridLayout>
 #include <QGuiApplication>
 #include <QHash>
+#include <QHashFunctions>
 #include <QIcon>
 #include <QImage>
 #include <QKeyEvent>

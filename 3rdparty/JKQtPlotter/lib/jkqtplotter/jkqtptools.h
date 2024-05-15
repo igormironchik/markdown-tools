@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2008-2022 Jan W. Krieger (<jan@jkrieger.de>)
+    Copyright (c) 2008-2024 Jan W. Krieger (<jan@jkrieger.de>)
 
 
 
@@ -73,6 +73,8 @@ enum class JKQTPPlotStyleType {
     Impulses, /*!< impulse-type graphs  */
     Geometric, /*!< geometric elements (e.g. rectangles, circles, lines, ...) */
     Annotation, /*!< annotation elements */
+    FinancialPositive, /*!< financial positive elements */
+    FinancialNegative, /*!< financial negative elements */
 };
 
 /** \brief Styles in which to mark single positions during user actions in JKQTPlotter
@@ -442,7 +444,7 @@ JKQTPLOTTER_LIB_EXPORT QString JKQTPCADrawMode2String(JKQTPCADrawMode pos);
 JKQTPLOTTER_LIB_EXPORT JKQTPCADrawMode String2JKQTPCADrawMode(const QString& pos);
 
 
-/** \brief display mode for the axis labels
+/** \brief display mode for the (axis) labels
  * \ingroup jkqtpplottersupprt */
 enum JKQTPCALabelType {
     JKQTPCALTdefault=0, /*!< \brief simply print the numbers \image html axisstyle/JKQTPCALTdefault.png */
@@ -649,6 +651,7 @@ enum JKQTPKeyLayout {
 };
 
 
+
 /** \brief converts a JKQTPKeyLayout variable into a human-readable string
  * \ingroup jkqtpplottersupprt
  */
@@ -762,7 +765,6 @@ JKQTPLOTTER_LIB_EXPORT QString JKQTPSpecialLineType2String(JKQTPSpecialLineType 
  * \ingroup jkqtplotter_linesymbolgraphs_line
  */
 JKQTPLOTTER_LIB_EXPORT JKQTPSpecialLineType String2JKQTPSpecialLineType(const QString& pos);
-
 
 
 

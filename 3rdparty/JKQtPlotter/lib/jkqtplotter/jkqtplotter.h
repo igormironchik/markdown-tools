@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2008-2022 Jan W. Krieger (<jan@jkrieger.de>)
+    Copyright (c) 2008-2024 Jan W. Krieger (<jan@jkrieger.de>)
 
     
 
@@ -36,7 +36,7 @@
 #include <QToolBar>
 #include <QPointer>
 #include <QTimer>
-
+#include <QHash>
 #include <vector>
 #include <cmath>
 #include <iostream>
@@ -922,8 +922,8 @@ class JKQTPLOTTER_LIB_EXPORT JKQTPlotter: public QWidget {
         /** \copydoc JKQTBasePlotter::zoom()
          *  \deprecated The function JKQTPlotter::zoom() is deprecated and will be removed in future version, use JKQTPlotter::setXY() instead!
          */
-        inline void zoom(double nxmin, double nxmax, double nymin, double nymax, bool affectsSecondaryAxes=false) {
-            plotter->zoom(nxmin, nxmax, nymin, nymax, affectsSecondaryAxes);
+        inline void zoom(double xminn, double xmaxn, double yminn, double ymaxn, bool affectsSecondaryAxes=false) {
+            plotter->zoom(xminn, xmaxn, yminn, ymaxn, affectsSecondaryAxes);
         }
 
         /** \copydoc JKQTBasePlotter::setGrid()   */
@@ -1720,7 +1720,10 @@ inline size_t qHash(const QPair<Qt::MouseButton,Qt::KeyboardModifiers> &key, siz
 #else
 inline uint qHash(const QPair<Qt::MouseButton,Qt::KeyboardModifiers> &key, uint /*seed=0*/) {
 #endif
-    return static_cast<uint>(key.first)+static_cast<uint>(key.second);
+    std::size_t seed=0;
+    jkqtp_hash_combine(seed, key.first);
+    jkqtp_hash_combine(seed, key.second);
+    return seed;
 }
 
 /** \brief qHash-variant used by JKQTPlotter
@@ -1732,7 +1735,7 @@ inline size_t qHash(const Qt::MouseButton &key, size_t /*seed=0*/) {
 #else
 inline uint qHash(const Qt::MouseButton &key, uint /*seed=0*/) {
 #endif
-    return static_cast<uint>(key);
+    return qHash(static_cast<uint>(key),0);
 }
 
 /** \brief qHash-variant used by JKQTPlotter
@@ -1744,7 +1747,7 @@ inline size_t qHash(const Qt::KeyboardModifiers &key, size_t /*seed=0*/) {
 #else
 inline uint qHash(const Qt::KeyboardModifiers &key, uint /*seed=0*/) {
 #endif
-    return static_cast<uint>(key);
+    return qHash(static_cast<uint>(key),0);
 }
 
 QT_END_NAMESPACE

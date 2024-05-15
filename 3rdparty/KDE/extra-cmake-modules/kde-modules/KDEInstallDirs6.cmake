@@ -13,9 +13,6 @@
 KDEInstallDirs6
 ---------------
 
-THIS IS CURRENTLY ONLY AN ALPHA VERSION, FOR FRAMEWORKS USAGE ONLY,
-AND TO BE MODIFIED INCREMENTALLY. PLEASE DO NOT USE IN APPLICATIONS YET.
-
 Define KDE standard installation directories for Qt6/KF6 based software.
 
 Note that none of the variables defined by this module provide any
@@ -50,11 +47,11 @@ where ``<dir>`` is one of (default values in parentheses):
 ``CMAKEPACKAGEDIR``
     CMake packages, including config files (``LIBDIR/cmake``)
 ``QTPLUGINDIR``
-    Qt plugins (``LIBDIR/plugins`` or qmake-qt5's ``QT_INSTALL_PLUGINS``)
+    Qt plugins (``LIBDIR/plugins`` or qtpaths's ``QT_INSTALL_PLUGINS``)
 ``PLUGINDIR``
     Plugins (``QTPLUGINDIR``) [``PLUGIN_INSTALL_DIR``]
 ``QMLDIR``
-    QtQuick2 imports (``LIBDIR/qml`` or qmake-qt5's ``QT_INSTALL_QML``)
+    QtQuick2 imports (``LIBDIR/qml`` or qtpaths's ``QT_INSTALL_QML``)
 ``INCLUDEDIR``
     C and C++ header files (``include``)
 ``LOCALSTATEDIR``
@@ -62,7 +59,8 @@ where ``<dir>`` is one of (default values in parentheses):
 ``SHAREDSTATEDIR``
     modifiable architecture-independent data (``com``)
 ``DATAROOTDIR``
-    read-only architecture-independent data root (``share``)
+    read-only architecture-independent data root (``BINDIR/data`` on
+    Windows, ``share`` otherwise)
 ``DATADIR``
     read-only architecture-independent data (``DATAROOTDIR``)
 ``DOCBUNDLEDIR``
@@ -99,7 +97,7 @@ where ``<dir>`` is one of (default values in parentheses):
 ``METAINFODIR``
     AppStream component metadata files (``DATAROOTDIR/metainfo``)
 ``QTQCHDIR``
-    documentation bundles in QCH format for Qt-extending libraries (``DATAROOTDIR/doc/qch`` or qmake-qt5's ``QT_INSTALL_DOCS``)
+    documentation bundles in QCH format for Qt-extending libraries (``DATAROOTDIR/doc/qch`` or qtpaths's ``QT_INSTALL_DOCS``)
 ``QCHDIR``
     documentation bundles in QCH format (``DATAROOTDIR/doc/qch``)
 ``MANDIR``

@@ -6,7 +6,7 @@
 #define jkqtcommon_precomp_h
 
 /*
-    Copyright (c) 2008-2022 Jan W. Krieger (<jan@jkrieger.de>)
+    Copyright (c) 2008-2024 Jan W. Krieger (<jan@jkrieger.de>)
 
 
 
@@ -31,6 +31,7 @@
 #include <QColor>
 #include <QDebug>
 #include <QElapsedTimer>
+#include <QHashFunctions>
 #include <QIcon>
 #include <QImage>
 #include <QLine>

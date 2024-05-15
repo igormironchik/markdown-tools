@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2008-2022 Jan W. Krieger (<jan@jkrieger.de>)
+    Copyright (c) 2008-2024 Jan W. Krieger (<jan@jkrieger.de>)
 
 
 
@@ -30,8 +30,8 @@ JKQTPKeyStyle::JKQTPKeyStyle():
     frameRounding(0),
     backgroundBrush(QColor("white")),
     visible(true),
-    fontSize(QApplication::font().pointSizeF()),
-    fontName("GUI"),
+    fontSize(QApplication::font().pointSizeF()*1.2),
+    fontName("GUI+FIRA"),
     textColor(QColor("black")),
     sampleLineLength(3),
     sampleHeight(1),

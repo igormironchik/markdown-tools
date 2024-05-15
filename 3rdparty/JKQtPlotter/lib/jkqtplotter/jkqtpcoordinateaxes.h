@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2008-2022 Jan W. Krieger (<jan@jkrieger.de>)
+    Copyright (c) 2008-2024 Jan W. Krieger (<jan@jkrieger.de>)
 
     
 
@@ -491,6 +491,12 @@ class JKQTPLOTTER_LIB_EXPORT JKQTPCoordinateAxis: public QObject {
         /** \brief calls x2p() of the other axis (or returns \c NAN if the other axis does not exist */
         virtual double parentOtherAxisX2P(double x) const =0;
 
+        /** \brief convert a float to a tick label string */
+        QString floattolabel(double data) const;
+
+        /** \brief convert a float to a tick label string with a given precision */
+        QString floattolabel(double data, int past_comma) const;
+
     public Q_SLOTS:
         /** \brief set range of plot axis */
         void setRange(double amin, double amax);
@@ -741,15 +747,6 @@ class JKQTPLOTTER_LIB_EXPORT JKQTPCoordinateAxis: public QObject {
         const JKQTMathText* getParentMathText() const;
 
 
-        /** \brief convert a float to a string using \a format (\c f|e|E|g|G ) with given number of decimals after comma \a past_comma and optional removal of trailing zeros behind decimal separator \a remove_trail0. Uses current local, disables not use Group-Separator */
-        QString floattostringWithFormat(const QLocale & loc, double data, char format, int past_comma, bool remove_trail0=true) const;
-        /** \brief convert a float to a string using \a format (\c f|e|E|g|G ) with given number of decimals after comma \a past_comma and optional removal of trailing zeros behind decimal separator \a remove_trail0. Uses current local, disables not use Group-Separator */
-        QString floattostringWithFormat(double data, char format, int past_comma, bool remove_trail0=true) const;
-        /** \brief convert a float to a tick label string */
-        QString floattolabel(double data) const;
-
-        /** \brief convert a float to a tick label string with a given precision */
-        QString floattolabel(double data, int past_comma) const;
         /** \brief parent plotter class */
         JKQTBasePlotter* parent;
         /** \brief current view: minimum of axis */

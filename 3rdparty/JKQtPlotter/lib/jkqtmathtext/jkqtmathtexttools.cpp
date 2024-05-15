@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2008-2022 Jan W. Krieger (<jan@jkrieger.de>)
+    Copyright (c) 2008-2024 Jan W. Krieger (<jan@jkrieger.de>)
 
     
 
@@ -31,6 +31,7 @@
 #include <QApplication>
 #include <QFont>
 #include <QReadWriteLock>
+#include <QHashFunctions>
 #include <mutex>
 #include <functional>
 
@@ -710,7 +711,8 @@ QFont JKQTMathTextEnvironment::getFont(const JKQTMathText* parent) const {
     f.setCapitalization(capitalization);
     if (fontSizeUnit==POINTS) f.setPointSizeF(fontSize);
     else if (fontSizeUnit==PIXELS) f.setPixelSize(static_cast<int>(fontSize));
-    f.setStyleStrategy(QFont::NoFontMerging);
+    const QFont::StyleStrategy strat=static_cast<QFont::StyleStrategy>(QFont::NoFontMerging|QFont::PreferAntialias);
+    f.setStyleStrategy(strat);
     return f;
 }
 
@@ -918,12 +920,17 @@ namespace {
     };
 
 #if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
-    inline size_t qHash(const JKQTMathTextCacheKeyBase& data, size_t seed=0) {
+    inline size_t qHash(const JKQTMathTextCacheKeyBase& data, size_t /*seedin=0*/) {
 #else
-    inline uint qHash(const JKQTMathTextCacheKeyBase& data) {
-        const size_t seed=0;
+    inline uint qHash(const JKQTMathTextCacheKeyBase& data, uint /*seedin=0*/) {
 #endif
-        return  qHash(data.f)+::qHash(data.ldpiX,seed)+::qHash(data.ldpiY)+::qHash(data.pdpiX)+::qHash(data.pdpiY);
+        std::size_t seed=0;
+        jkqtp_combine_hash(seed, ::qHash(data.f,0));
+        jkqtp_combine_hash(seed, ::qHash(data.ldpiX,0));
+        jkqtp_combine_hash(seed, ::qHash(data.ldpiY,0));
+        jkqtp_combine_hash(seed, ::qHash(data.pdpiX,0));
+        jkqtp_combine_hash(seed, ::qHash(data.pdpiY,0));
+        return seed;
     }
 
     struct JKQTMathTextCacheKeyBaseExt: public JKQTMathTextCacheKeyBase {
@@ -966,10 +973,17 @@ namespace {
 #if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
     inline size_t qHash(const JKQTMathTextTBRDataH<TText>& data, size_t /*seed=0*/) {
 #else
-    inline uint qHash(const JKQTMathTextTBRDataH<TText>& data) {
+    inline uint qHash(const JKQTMathTextTBRDataH<TText>& data, uint /*seed=0*/) {
 #endif
-        return  qHash(data.f)+qHash(data.text)+::qHash(data.ldpiX)+::qHash(data.ldpiY)+::qHash(data.pdpiX)+::qHash(data.pdpiY);
-    }
+        std::size_t seed=0;
+        jkqtp_combine_hash(seed, ::qHash(data.f,0));
+        jkqtp_combine_hash(seed, ::qHash(data.text,0));
+        jkqtp_combine_hash(seed, ::qHash(data.ldpiX,0));
+        jkqtp_combine_hash(seed, ::qHash(data.ldpiY,0));
+        jkqtp_combine_hash(seed, ::qHash(data.pdpiX,0));
+        jkqtp_combine_hash(seed, ::qHash(data.pdpiY,0));
+        return seed;
+    };
 
     template <class TText=QString>
     struct JKQTMathTextTBRDataHExt: public JKQTMathTextTBRDataH<TText> {
@@ -984,35 +998,36 @@ namespace {
 
 }
 
-template<>
-struct std::hash<JKQTMathTextCacheKeyBase>
-{
-    std::size_t operator()(const JKQTMathTextCacheKeyBase& data) const noexcept
+namespace std {
+    template<>
+    struct hash<JKQTMathTextCacheKeyBase>
     {
-        return qHash(data.f)+std::hash<int>()(data.ldpiX)+std::hash<int>()(data.ldpiY)+std::hash<int>()(data.pdpiX)+std::hash<int>()(data.pdpiY);
-    }
-};
+        size_t operator()(const JKQTMathTextCacheKeyBase& data) const noexcept
+        {
+            return qHash(data.f)+hash<int>()(data.ldpiX)+hash<int>()(data.ldpiY)+hash<int>()(data.pdpiX)+hash<int>()(data.pdpiY);
+        }
+    };
 
 
 
-template<>
-struct std::hash<JKQTMathTextTBRDataH<QString>>
-{
-    std::size_t operator()(const JKQTMathTextTBRDataH<QString>& data) const noexcept
+    template<>
+    struct hash<JKQTMathTextTBRDataH<QString>>
     {
-        return qHash(data.f)+qHash(data.text)+std::hash<int>()(data.ldpiX)+std::hash<int>()(data.ldpiY)+std::hash<int>()(data.pdpiX)+std::hash<int>()(data.pdpiY);
-    }
-};
+        size_t operator()(const JKQTMathTextTBRDataH<QString>& data) const noexcept
+        {
+            return qHash(data.f)+qHash(data.text)+hash<int>()(data.ldpiX)+hash<int>()(data.ldpiY)+hash<int>()(data.pdpiX)+hash<int>()(data.pdpiY);
+        }
+    };
 
-template<>
-struct std::hash<JKQTMathTextTBRDataH<QChar>>
-{
-    std::size_t operator()(const JKQTMathTextTBRDataH<QChar>& data) const noexcept
+    template<>
+    struct hash<JKQTMathTextTBRDataH<QChar>>
     {
-        return qHash(data.f)+qHash(data.text)+std::hash<int>()(data.ldpiX)+std::hash<int>()(data.ldpiY)+std::hash<int>()(data.pdpiX)+std::hash<int>()(data.pdpiY);
-    }
-};
-
+        size_t operator()(const JKQTMathTextTBRDataH<QChar>& data) const noexcept
+        {
+            return qHash(data.f)+qHash(data.text)+hash<int>()(data.ldpiX)+hash<int>()(data.ldpiY)+hash<int>()(data.pdpiX)+hash<int>()(data.pdpiY);
+        }
+    };
+}
 
 
 QRectF JKQTMathTextGetTightBoundingRect(const QFont &f, const QString &text, QPaintDevice *pd)

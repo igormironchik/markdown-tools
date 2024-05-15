@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2008-2022 Jan W. Krieger (<jan@jkrieger.de>)
+    Copyright (c) 2008-2024 Jan W. Krieger (<jan@jkrieger.de>)
 
     
 
@@ -152,7 +152,7 @@ void JKQTPPlotElement::drawOutside(JKQTPEnhancedPainter& /*painter*/, QRect /*le
 }
 
 
-QString JKQTPPlotElement::formatHitTestDefaultLabel(double x, double y, int index, JKQTPDatastore* datastore) const {
+QString JKQTPPlotElement::formatHitTestDefaultLabel(double x, double y, int index, const JKQTPDatastore* datastore) const {
     const JKQTPXGraphErrorData* errgx=dynamic_cast<const JKQTPXGraphErrorData*>(this);
     QString xerrstr;
     // retrieve x-error data
@@ -160,11 +160,11 @@ QString JKQTPPlotElement::formatHitTestDefaultLabel(double x, double y, int inde
         if (errgx->getXErrorColumn()>=0) {
             if (errgx->getXErrorColumnLower()>=0) {
                 xerrstr=QString("\\:+%1\\:-%2")
-                            .arg(jkqtp_floattolatexqstr(datastore->get(errgx->getXErrorColumn(),static_cast<size_t>(index)), 3))
-                            .arg(jkqtp_floattolatexqstr(datastore->get(errgx->getXErrorColumnLower(),static_cast<size_t>(index)), 3));
+                            .arg(xFloatToString(datastore->get(errgx->getXErrorColumn(),static_cast<size_t>(index))))
+                            .arg(xFloatToString(datastore->get(errgx->getXErrorColumnLower(),static_cast<size_t>(index))));
             } else {
                 xerrstr=QString("{\\:}{\\pm}%1")
-                            .arg(jkqtp_floattolatexqstr(datastore->get(errgx->getXErrorColumn(),static_cast<size_t>(index)), 3));
+                            .arg(xFloatToString(datastore->get(errgx->getXErrorColumn(),static_cast<size_t>(index))));
             }
         }
     }
@@ -176,16 +176,28 @@ QString JKQTPPlotElement::formatHitTestDefaultLabel(double x, double y, int inde
         if (errgy->getYErrorColumn()>=0) {
             if (errgy->getYErrorColumnLower()>=0) {
                 yerrstr=QString("\\:+%1\\:-%2")
-                            .arg(jkqtp_floattolatexqstr(datastore->get(errgy->getYErrorColumn(),static_cast<size_t>(index)), 3))
-                            .arg(jkqtp_floattolatexqstr(datastore->get(errgy->getYErrorColumnLower(),static_cast<size_t>(index)), 3));
+                            .arg(yFloatToString(datastore->get(errgy->getYErrorColumn(),static_cast<size_t>(index))))
+                            .arg(yFloatToString(datastore->get(errgy->getYErrorColumnLower(),static_cast<size_t>(index))));
             } else {
                 yerrstr=QString("{\\:}{\\pm}%1")
-                            .arg(jkqtp_floattolatexqstr(datastore->get(errgy->getYErrorColumn(),static_cast<size_t>(index)), 3));
+                            .arg(yFloatToString(datastore->get(errgy->getYErrorColumn(),static_cast<size_t>(index))));
             }
         }
     }
-    return QString("\\ensuremath{\\left[{\\:}%1%3{\\;},{\\;}%2%4{\\:}\\right]}").arg(jkqtp_floattolatexqstr(x, 3)).arg(jkqtp_floattolatexqstr(y, 3)).arg(xerrstr).arg(yerrstr);
+    return QString("\\ensuremath{\\left[{\\:}%1%3{\\;},{\\;}%2%4{\\:}\\right]}").arg(xFloatToString(x)).arg(yFloatToString(y)).arg(xerrstr).arg(yerrstr);
 
+}
+
+QString JKQTPPlotElement::xFloatToString(double v, int past_comma) const
+{
+    if (past_comma<0) return getXAxis()->floattolabel(v);
+    else return getXAxis()->floattolabel(v, past_comma);
+}
+
+QString JKQTPPlotElement::yFloatToString(double v, int past_comma) const
+{
+    if (past_comma<0) return getYAxis()->floattolabel(v);
+    else return getYAxis()->floattolabel(v, past_comma);
 }
 
 double JKQTPPlotElement::hitTest(const QPointF & posSystem, QPointF* closestSpotSystem, QString* label, HitTestMode mode) const
@@ -522,7 +534,7 @@ double JKQTPXYGraph::hitTest(const QPointF &posSystem, QPointF *closestSpotSyste
         }
     }
     if (closest>=0) {
-        if (label) *label=formatHitTestDefaultLabel(closestPos.x(), closestPos.y(), closest);
+        if (label) *label=formatHitTestDefaultLabel(closestPos.x(), closestPos.y(), closest, datastore);
         if (closestSpotSystem) *closestSpotSystem=closestPos;
         return closedist;
     } else {
@@ -831,7 +843,7 @@ double JKQTPXYYGraph::hitTest(const QPointF &posSystem, QPointF *closestSpotSyst
         }
     }
     if (closest>=0) {
-        if (label) *label=formatHitTestDefaultLabel(closestPos.x(), closestPos.y(), closest);
+        if (label) *label=formatHitTestDefaultLabel(closestPos.x(), closestPos.y(), closest, datastore);
         if (closestSpotSystem) *closestSpotSystem=closestPos;
         return closedist;
     } else {
@@ -994,7 +1006,7 @@ double JKQTPXXYGraph::hitTest(const QPointF &posSystem, QPointF *closestSpotSyst
         }
     }
     if (closest>=0) {
-        if (label) *label=formatHitTestDefaultLabel(closestPos.x(), closestPos.y(), closest);
+        if (label) *label=formatHitTestDefaultLabel(closestPos.x(), closestPos.y(), closest, datastore);
         if (closestSpotSystem) *closestSpotSystem=closestPos;
         return closedist;
     } else {
@@ -1163,4 +1175,290 @@ JKQTPPlotAnnotationElement::JKQTPPlotAnnotationElement(JKQTBasePlotter *parent):
 JKQTPPlotAnnotationElement::~JKQTPPlotAnnotationElement()
 {
 
+}
+
+JKQTPXYAndVectorGraph::JKQTPXYAndVectorGraph(JKQTBasePlotter *parent):
+    JKQTPXYGraph(parent),
+    vectorDataLayout(DefaultVectorDataLayout),
+    dxColumn(-1), dyColumn(-1),
+    angleColumn(-1), lengthColumn(-1)
+{
+
+}
+
+bool JKQTPXYAndVectorGraph::getXMinMax(double &minx, double &maxx, double &smallestGreaterZero)
+{
+    return JKQTPXYGraph::getXMinMax(minx,maxx,smallestGreaterZero);
+}
+
+bool JKQTPXYAndVectorGraph::getYMinMax(double &miny, double &maxy, double &smallestGreaterZero)
+{
+    return JKQTPXYGraph::getYMinMax(miny,maxy,smallestGreaterZero);
+}
+
+bool JKQTPXYAndVectorGraph::usesColumn(int column) const
+{
+    if (vectorDataLayout==DeltaXDeltaYLayout) {
+        return (column==dxColumn) || (column==dyColumn) || JKQTPXYGraph::usesColumn(column);
+    } else {
+        return (column==angleColumn) || (column==lengthColumn) || JKQTPXYGraph::usesColumn(column);
+    }
+}
+
+int JKQTPXYAndVectorGraph::getDxColumn() const
+{
+    return dxColumn;
+}
+
+int JKQTPXYAndVectorGraph::getDyColumn() const
+{
+    return dyColumn;
+}
+
+int JKQTPXYAndVectorGraph::getAngleColumn() const
+{
+    return angleColumn;
+}
+
+int JKQTPXYAndVectorGraph::getLengthColumn() const
+{
+    return lengthColumn;
+}
+
+JKQTPXYAndVectorGraph::VectorDataLayout JKQTPXYAndVectorGraph::getVectorDataLayout() const
+{
+    return vectorDataLayout;
+}
+
+double JKQTPXYAndVectorGraph::hitTest(const QPointF &posSystem, QPointF *closestSpotSystem, QString *label, HitTestMode mode) const
+{
+    return JKQTPXYGraph::hitTest(posSystem, closestSpotSystem, label, mode);
+}
+
+QString JKQTPXYAndVectorGraph::formatHitTestDefaultLabel(double x, double y, int i, const JKQTPDatastore *datastore) const
+{
+    QString vec="\\mbox{no vector data}";
+    if (datastore) {
+        switch(vectorDataLayout) {
+        case DeltaXDeltaYLayout: {
+            const double dx=datastore->get(static_cast<size_t>(dxColumn),static_cast<size_t>(i));
+            const double dy=datastore->get(static_cast<size_t>(dyColumn),static_cast<size_t>(i));
+            vec="\\vec{\\mbox{\\delta}}=("+jkqtp_floattolatexqstr(dx, 3)+"{\\;},{\\;}"+jkqtp_floattolatexqstr(dy, 3)+")";
+        } break;
+        case AngleAndLengthLayout: {
+            const double a=datastore->get(static_cast<size_t>(angleColumn),static_cast<size_t>(i));
+            const double l=(lengthColumn<0) ? 1.0 : datastore->get(static_cast<size_t>(lengthColumn),static_cast<size_t>(i));
+            vec= "\\angle="+jkqtp_floattolatexqstr(a/M_PI*180.0, 1)+"\\degree{\\;},{\\;}l="+jkqtp_floattolatexqstr(l, 3);
+        } break;
+        }
+    }
+    return QString("\\ensuremath{\\left|\\stackrel{x=({\\:}%1{\\;},{\\;}%2{\\:}),}{ %3 }\\right.").arg(jkqtp_floattolatexqstr(x, 3)).arg(jkqtp_floattolatexqstr(y, 3)).arg(vec);
+}
+
+void JKQTPXYAndVectorGraph::setDxColumn(int col)
+{
+    dxColumn=col;
+    vectorDataLayout=DeltaXDeltaYLayout;
+}
+
+void JKQTPXYAndVectorGraph::setDyColumn(int col)
+{
+    dyColumn=col;
+    vectorDataLayout=DeltaXDeltaYLayout;
+}
+
+void JKQTPXYAndVectorGraph::setDxDyColumn(int colDx, int colDy)
+{
+    dxColumn=colDx;
+    dyColumn=colDy;
+    vectorDataLayout=DeltaXDeltaYLayout;
+
+}
+
+void JKQTPXYAndVectorGraph::setAngleColumn(int col)
+{
+    angleColumn=col;
+    vectorDataLayout=AngleAndLengthLayout;
+}
+
+void JKQTPXYAndVectorGraph::setAngleAndLengthColumn(int colAngle, int colLength)
+{
+    angleColumn=colAngle;
+    lengthColumn=colLength;
+    vectorDataLayout=AngleAndLengthLayout;
+}
+
+void JKQTPXYAndVectorGraph::setLengthColumn(int col)
+{
+    lengthColumn=col;
+    vectorDataLayout=AngleAndLengthLayout;
+}
+
+QPointF JKQTPXYAndVectorGraph::getVectorDxDy(int i) const
+{
+
+    const JKQTPDatastore* datastore=parent->getDatastore();
+    if (datastore) {
+        switch(vectorDataLayout) {
+        case DeltaXDeltaYLayout: {
+            const double dx=datastore->get(static_cast<size_t>(dxColumn),static_cast<size_t>(i));
+            const double dy=datastore->get(static_cast<size_t>(dyColumn),static_cast<size_t>(i));
+            return QPointF(dx,dy);
+        } break;
+        case AngleAndLengthLayout: {
+            const double a=datastore->get(static_cast<size_t>(angleColumn),static_cast<size_t>(i));
+            const double l=(lengthColumn<0) ? 1.0 : datastore->get(static_cast<size_t>(lengthColumn),static_cast<size_t>(i));
+            return QPointF(l*cos(a),l*sin(a));
+        } break;
+        }
+    }
+    return QPointF(JKQTP_NAN, JKQTP_NAN);
+}
+
+bool JKQTPXYAndVectorGraph::getIndexRange(int &imin, int &imax) const
+{
+    bool ok=JKQTPXYGraph::getIndexRange(imin, imax);
+    if (ok) {
+        if (vectorDataLayout==DeltaXDeltaYLayout) {
+            if (parent==nullptr)  return false;
+            if (dxColumn<0||dyColumn<0) return false;
+            const JKQTPDatastore* datastore=parent->getDatastore();
+            const int rowsDX=static_cast<int>(datastore->getRows(static_cast<size_t>(dxColumn)));
+            const int rowsDY=static_cast<int>(datastore->getRows(static_cast<size_t>(dyColumn)));
+            imax=qMin<int>(imax, qMin<int>(rowsDX,rowsDY));
+        } else  if (vectorDataLayout==AngleAndLengthLayout) {
+            if (parent==nullptr)  return false;
+            if (angleColumn<0 && lengthColumn<0) return false;
+            if (angleColumn<0) return false;
+            const JKQTPDatastore* datastore=parent->getDatastore();
+            const int rowsA=static_cast<int>(datastore->getRows(static_cast<size_t>(angleColumn)));
+            const int rowsL=(lengthColumn>=0)?static_cast<int>(datastore->getRows(static_cast<size_t>(lengthColumn))):0;
+            imax=qMin<int>(imax, qMin<int>(rowsA,rowsL));
+        }
+    }
+    return ok;
+}
+
+JKQTPXGraph::JKQTPXGraph(JKQTBasePlotter *parent):
+    JKQTPGraph(parent), xColumn(-1), sortData(Unsorted)
+{
+
+}
+
+bool JKQTPXGraph::getXMinMax(double &minx, double &maxx, double &smallestGreaterZero)
+{
+    bool start=true;
+    minx=0;
+    maxx=0;
+    smallestGreaterZero=0;
+
+    if (parent==nullptr)  return false;
+
+    const JKQTPDatastore* datastore=parent->getDatastore();
+    int imin=0;
+    int imax=0;
+    getIndexRange(imin, imax);
+
+    for (int i=imin; i<imax; i++) {
+        double xv=datastore->get(static_cast<size_t>(xColumn),static_cast<size_t>(i));
+        if (JKQTPIsOKFloat(xv)) {
+            if (start || xv>maxx) maxx=xv;
+            if (start || xv<minx) minx=xv;
+            double xvsgz;
+            xvsgz=xv; SmallestGreaterZeroCompare_xvsgz();
+            start=false;
+        }
+    }
+    return !start;
+}
+
+bool JKQTPXGraph::usesColumn(int column) const
+{
+    return (column==xColumn);
+}
+
+int JKQTPXGraph::getXColumn() const
+{
+    return xColumn;
+}
+
+JKQTPXGraph::DataSortOrder JKQTPXGraph::getDataSortOrder() const
+{
+    return sortData;
+}
+
+int JKQTPXGraph::getKeyColumn() const
+{
+    return getXColumn();
+}
+
+void JKQTPXGraph::setDataSortOrder(int __value)
+{
+    sortData=static_cast<DataSortOrder>(__value);
+}
+
+void JKQTPXGraph::setDataSortOrder(DataSortOrder __value)
+{
+    sortData=__value;
+}
+
+void JKQTPXGraph::setXColumn(int __value)
+{
+    xColumn = static_cast<int>(__value);
+}
+
+void JKQTPXGraph::setXColumn(size_t __value)
+{
+    xColumn = static_cast<int>(__value);
+}
+
+void JKQTPXGraph::setKeyColumn(int __value)
+{
+    setXColumn(__value);
+}
+
+void JKQTPXGraph::intSortData()
+{
+    sortedIndices.clear();
+
+
+
+    if (parent==nullptr)  return ;
+    if (sortData==JKQTPXGraph::Unsorted) return ;
+
+    JKQTPDatastore* datastore=parent->getDatastore();
+    int imin=0;
+    int imax=0;
+    getIndexRange(imin, imax);
+
+    QVector<double> datas;
+
+    if (sortData==SortedX) {
+
+        for (int i=0; i<imax; i++) {
+            double xv=datastore->get(static_cast<size_t>(xColumn),static_cast<size_t>(i));
+            sortedIndices<<i;
+            datas<<xv;
+        }
+
+        jkqtpQuicksortDual(datas.data(), sortedIndices.data(), datas.size());
+
+    }
+}
+
+bool JKQTPXGraph::getIndexRange(int &imin, int &imax) const
+{
+    if (parent==nullptr)  return false;
+    if (xColumn>=0) {
+        JKQTPDatastore* datastore=parent->getDatastore();
+        imin=0;
+        imax=static_cast<int>(datastore->getRows(static_cast<size_t>(xColumn)));
+        // ensure correct order, i.e. imin<=imax
+        if (imax<imin) qSwap(imin,imax);
+        // ranges are always >=0
+        if (imin<0) imin=0;
+        if (imax<0) imax=0;
+        return true;
+    }
+    return false;
 }

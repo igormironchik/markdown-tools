@@ -212,15 +212,16 @@ JKQTPExpected<QGradient, JKQTPCSSParser::GeneralError> JKQTPCSSParser::parseGrad
 
     if (get) getToken();
 
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 12, 0))
     static QMap<QString,QGradient::Preset> s_GradientPresets = []() {
         QMap<QString,QGradient::Preset> m;
-        for (int i=1; i<QGradient::Preset::NumPresets; i++) {
+        for (int i=1; i<QMetaEnum::fromType<QGradient::Preset>().keyCount(); i++) {
             const QString id=QString(QMetaEnum::fromType<QGradient::Preset>().valueToKey(static_cast<QGradient::Preset>(i))).toLower().trimmed().simplified();
             if (id.size()>0) m[id]=static_cast<QGradient::Preset>(i);
         }
         return m;
     }();
-
+#endif
     const QString func=CurrentToken.StringValue.trimmed().simplified().toLower();
     if (CurrentToken.is(Token::TokenType::NAME) && func=="linear-gradient") {
         QGradientStops colorStops;
@@ -321,10 +322,11 @@ JKQTPExpected<QGradient, JKQTPCSSParser::GeneralError> JKQTPCSSParser::parseGrad
             lgrad.setStops(colorStops);
             grad=lgrad;
         }
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 12, 0))
     } else if (CurrentToken.isNormStringAnyOf(s_GradientPresets.keys())) {
         grad=QGradient(s_GradientPresets[CurrentToken.getNormString()]);
         grad.setCoordinateMode(QGradient::ObjectBoundingMode);
-
+#endif
     } else {
         return {JKQTPUnexpected, UnexpectedTermError("supported gradient-function [linear-gradient|] or predefined gradient name", CurrentToken, pos) };
     }

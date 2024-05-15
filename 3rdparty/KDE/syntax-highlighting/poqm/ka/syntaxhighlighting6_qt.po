@@ -142,6 +142,10 @@ msgid "CartoCSS MSS"
 msgstr "CartoCSS MSS"
 
 msgctxt "Language|"
+msgid "CashScript"
+msgstr "CashScript"
+
+msgctxt "Language|"
 msgid "CleanCSS"
 msgstr "CleanCSS"
 
@@ -1262,6 +1266,10 @@ msgid "VRML"
 msgstr "VRML"
 
 msgctxt "Language|"
+msgid "Vue"
+msgstr "Vue"
+
+msgctxt "Language|"
 msgid "V"
 msgstr "V"
 
@@ -1637,15 +1645,15 @@ msgstr "სინტაქსის ყველა აღწერა გან
 
 #: lib/definitiondownloader.cpp:78
 #, qt-format
-msgctxt "QObject|"
-msgid "Downloading new syntax definition for '%1'..."
-msgstr "%1-სთვის ახალი სინტაქსის აღწერების გადმოწერა ..."
+msgctxt "QObject|@info"
+msgid "Downloading new syntax definition for '%1'…"
+msgstr "%1-სთვის ახალი სინტაქსის აღწერების გადმოწერა …"
 
 #: lib/definitiondownloader.cpp:85
 #, qt-format
-msgctxt "QObject|"
-msgid "Updating syntax definition for '%1' to version %2..."
-msgstr "%1-სთვის სინტაქსის აღწერის ახალ ვერსიამდე (%2) განახლება ..."
+msgctxt "QObject|@info"
+msgid "Updating syntax definition for '%1' to version %2…"
+msgstr "%1-სთვის სინტაქსის აღწერის ახალ ვერსიამდე (%2) განახლება …"
 
 #~ msgctxt "SyntaxHighlightingCLI|"
 #~ msgid "The source file to highlight."

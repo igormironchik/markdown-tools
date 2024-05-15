@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2016-09-08 07:30+0000\n"
-"PO-Revision-Date: 2024-03-07 11:03+0100\n"
+"PO-Revision-Date: 2024-05-09 11:59+0200\n"
 "Last-Translator: giovanni <g.sora@tiscali.it>\n"
 "Language-Team: Italian <kde-i18n-doc@kde.org>\n"
 "Language: ia\n"
@@ -146,6 +146,10 @@ msgstr "CartoCSS MML"
 msgctxt "Language|"
 msgid "CartoCSS MSS"
 msgstr "CartoCSS MSS"
+
+msgctxt "Language|"
+msgid "CashScript"
+msgstr "CashScript"
 
 msgctxt "Language|"
 msgid "CleanCSS"
@@ -1268,6 +1272,10 @@ msgid "VRML"
 msgstr "VRML"
 
 msgctxt "Language|"
+msgid "Vue"
+msgstr "Vue"
+
+msgctxt "Language|"
 msgid "V"
 msgstr "V"
 
@@ -1643,15 +1651,15 @@ msgstr "Omne definitiones de syntaxe es actualisate."
 
 #: lib/definitiondownloader.cpp:78
 #, qt-format
-msgctxt "QObject|"
-msgid "Downloading new syntax definition for '%1'..."
+msgctxt "QObject|@info"
+msgid "Downloading new syntax definition for '%1'…"
 msgstr "Discargante nove definition de syntaxe per '%1'..."
 
 #: lib/definitiondownloader.cpp:85
 #, qt-format
-msgctxt "QObject|"
-msgid "Updating syntax definition for '%1' to version %2..."
-msgstr "Actualisante definition de syntaxe per '%1' a version '%2'..."
+msgctxt "QObject|@info"
+msgid "Updating syntax definition for '%1' to version %2…"
+msgstr "Actualisante definition de syntaxe per '%1' a version %2.."
 
 #~ msgctxt "SyntaxHighlightingCLI|"
 #~ msgid "The source file to highlight."

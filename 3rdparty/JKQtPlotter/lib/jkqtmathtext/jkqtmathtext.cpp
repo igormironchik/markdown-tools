@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2008-2022 Jan W. Krieger (<jan@jkrieger.de>)
+    Copyright (c) 2008-2024 Jan W. Krieger (<jan@jkrieger.de>)
 
     
 
@@ -349,7 +349,7 @@ bool JKQTMathText::useFiraMath(bool mathModeOnly, bool useAsFallbackSymbol)
 {
     const JKQTMathTextFontSpecifier fira=JKQTMathTextFontSpecifier::getFIRAFamilies();
     bool res=false;
-    qDebug()<<"useFiraMath("<<mathModeOnly<<", "<<useAsFallbackSymbol<<")";
+    //qDebug()<<"useFiraMath("<<mathModeOnly<<", "<<useAsFallbackSymbol<<")";
 
     if (!mathModeOnly && !fira.fontName().isEmpty()) {
         setFontRoman(fira.fontName(), MTFEUnicode);

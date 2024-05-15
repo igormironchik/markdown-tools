@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2008-2022 Jan W. Krieger (<jan@jkrieger.de>)
+    Copyright (c) 2008-2024 Jan W. Krieger (<jan@jkrieger.de>)
 
     
 
@@ -33,32 +33,88 @@
 /** \brief This is a base-class for all bar graphs with vertical or horizontal orientation (the orientation is implemented in dervied classes!)
  *  \ingroup jkqtplotter_barcharts
  *
- *  This class plots a bargraph. This image explains the parameters:
+ *  This class provides basic properties and functionality for plotting a bargraph.
+ *  The latter is defined by a series of datapoints \c (x,y=f(x)) .
+ *  Bars are then drawn fromm a baseline (often \c =0 ) to the value \c y=f(x) at each position \c x.
+ *  Thus the class is derived from JKQTPXYBaselineGraph, which provides a baseline as well as columns for \c x and \c y values.
+ *
+ *  The width of each bar is determined from its distance to its direct neighbors. It occupies a fraction "width" (JKQTPBarGraphBase::setWidth(), JKQTPBarGraphBase::getWidth() )
+ *  of the available space. Typically \c width=0.9 so the bars occupy most space, but do not touch:
+ *
+ *  \image html bargraph_basics_width.png
+ *
+ *  \see JKQTPBarHorizontalGraph, JKQTPBarVerticalGraph for implementations of this virtual base class.
+ *
+ *
+ *  \section JKQTPBarGraphBase_SideBySide several JKQTPBarGraphBase side-by-side
+ *
+ *  If you draw several JKQTPBarGraphBase of the same orientation (vertical or honrizontal) into the same plot, these will by default
+ *  overlap, if all of the use the same x-values and have the same initial width parameter.
+ *  Typically in such a case, you want to group the bars by x-values and ensure they are drawn side-by-side and do not overlap (or overlap slightly in a controlled way).
+ *
+ *  To achieve this, an addition shift parameter (JKQTPBarGraphBase::setShift(), JKQTPBarGraphBase::getShift() ) was introduced, which moves each bar inside the available space:
  *
  *  \image html bargraph_basics.png
  *
- *  By default the sift parameter is, so the bar is centered at the x-value. The width is 0.9,
- *  so adjacent bars are plotted with a small distance between them. It is possible to use these two parameters
- *  to plot multiple bars for every x-value, by having on JKQTPSpecialLineHorizontalGraph object per
- *  set of bars that belong together. For example for three bars per x-value one would set:
+ *  By default the shift parameter (see JKQTPBarGraphBase::setShift() ) is, so the bar is centered at the x-value (i.e. \c shift=0 ).
+ *
+ *  You can now use shift to separate three JKQTPBarGraphBase in a graph, by setting e.g.:
  *  \verbatim
  *        width=0.3
  *        shift=-0.3 / 0 / +0.3
  *  \endverbatim
+ *
+ *  For convenience, two functions are provided (JKQTPBarGraphBase::autoscaleBarWidthAndShift(), JKQTPBarGraphBase::autoscaleBarWidthAndShiftSeparatedGroups() )
+ *  that can be applied to any JKQTPBarGraphBase in the plot and will calculate all bargraphs' shift and width parameter
+ *  in such a way that the graphs appear tidied up into groups as above. With these functions you don't have to calculate
+ *  the shift and width values by hand! A call always only affects the JKQTPBarGraphBase in the plot with the same orientation
+ *  (vertical or horizontal).
+ *
  *  This results in a bargraph, as shown here:
  *
  *  \image html JKQTPBarVerticalGraph.png
  *
- *  You can also set JKQTPBarGraphBase::FillMode::TwoColorFilling, which uses different fill styles for bars above and below
- *  the baseline of the graph:
+ *  \section JKQTPBarGraphBaseStyling Basic Bargraph Styling
+ *
+ *  There are several options that allow to style the barchraph. The most direct way is to use the setters from
+ *    - JKQTPGraphLineStyleMixin
+ *    - JKQTPGraphFillStyleMixin
+ *  .
+ *  that are available in the class and that allow directly chaning the appearance.
+ *  It is also possibly to draw the baseline itself (\c JKQTPBarGraphBase::setDrawBaseline(true) ).
+ *  Its style is defined in JKQTPBarGraphBase::baselineStyle() .
+ *
+ *  Several convenience functions allow to set these properties in a simplified way:
+ *    - JKQTPBarGraphBase::setFillColor_and_darkenedColor()
+ *  .
+ *
+ *  By default this class will draw boxes for each bar. They can be rounded at the corners by setting:
+ *    - JKQTPBarGraphBase::setRectRadiusAtValue()
+ *    - JKQTPBarGraphBase::setRectRadiusAtBaseline()
+ *    - JKQTPBarGraphBase::setRectRadius()
+ *  .
+ *
+ *
+ *
+ *  \section JKQTPBarGraphBaseDataDependentFilling Data-Dependent Styling of Bargraphs
+ *
+ *  You can also use <code>JKQTPBarGraphBase::setFillMode(JKQTPBarGraphBase::FillMode::TwoColorFilling)</code>,
+ *  which uses different fill styles for bars above and below the baseline of the graph:
  *
  *  \image html JKQTPBarVerticalGraphTwoColorFilling.png
  *
- *  If you use JKQTPBarGraphBase::FillMode::FunctorFilling you can specify the fill style by a functor, e.g.
+ *  The styles for above the baseline is set by the inherited JKQTPGraphLineStyleMixin and JKQTPGraphFillStyleMixin.
+ *  The alternate "below" style, can be modified using
+ *    - JKQTPBarGraphBase::fillStyleBelow()
+ *    - the line-style is the same as from the inherited JKQTPGraphLineStyleMixin
+ *  .
+ *
+ *  If you use <code>JKQTPBarGraphBase::setFillMode(JKQTPBarGraphBase::FillMode::FunctorFilling)</code> you can specify
+ *  the fill style (in the form of a  QBruch) for each bar by a custom functor, e.g.
  *  \code
  *    graph->setFillMode(JKQTPBarGraphBase::FillMode::FunctorFilling);
  *    graph->setFillBrushFunctor(
- *      [](double key, double value) {
+ *      [](double key, double value) -> QBrush {
  *        return QBrush(QColor::fromHsvF(key/12.0, 1.0, 1.0));
  *      }
  *    );
@@ -68,7 +124,11 @@
  *
  *  \image html JKQTPBarVerticalGraphFunctorFilling.png
  *
- *  You can also completely customize the drawing by defining a custom draw functor:
+ *
+ *
+ *  \section JKQTPBarGraphBaseCustomStyling Custom Bargraph Drawing
+ *
+ *  You can also completely customize the drawing by defining a custom draw functor. This allows to draw other shapes than the typical bars:
  *  \code
  *    graph->setCustomDrawingFunctor(
  *      [](JKQTPEnhancedPainter& painter, const QRectF& bar_px, const QPointF& datapoint, Qt::Orientation orientation, JKQTPBarGraphBase* graph) {
@@ -87,9 +147,7 @@
  *  The result may look like this:
  *
  *  \image html JKQTPBarVerticalGraphCustomDrawFunctor.png
-
  *
- *  \see JKQTPBarHorizontalGraph, JKQTPBarVerticalGraph
  */
 class JKQTPLOTTER_LIB_EXPORT JKQTPBarGraphBase: public JKQTPXYBaselineGraph, public JKQTPGraphLineStyleMixin, public JKQTPGraphFillStyleMixin {
         Q_OBJECT
@@ -123,9 +181,9 @@ class JKQTPLOTTER_LIB_EXPORT JKQTPBarGraphBase: public JKQTPXYBaselineGraph, pub
         /** \brief class constructor */
         JKQTPBarGraphBase(JKQTPlotter* parent);
 
-        /** \brief plots a key marker inside the specified rectangle \a rect */
+        /** \copydoc JKQTPXYBaselineGraph::drawKeyMarker() */
         virtual void drawKeyMarker(JKQTPEnhancedPainter& painter, const QRectF& rect) override;
-        /** \brief returns the color to be used for the key label */
+        /** \copydoc JKQTPXYBaselineGraph::getKeyLabelColor() */
         virtual QColor getKeyLabelColor() const override;
 
 
@@ -165,6 +223,8 @@ class JKQTPLOTTER_LIB_EXPORT JKQTPBarGraphBase: public JKQTPXYBaselineGraph, pub
         bool usesCustomDrawFunctor() const;
         /** \copydoc m_drawBaseline */
         bool getDrawBaseline() const;
+        /** \copydoc m_stackSeparation */
+        double getStackSeparation() const;
         /** \copydoc m_baselineStyle */
         JKQTPGraphLineStyleMixin &baselineStyle();
         /** \copydoc m_baselineStyle */
@@ -197,10 +257,31 @@ class JKQTPLOTTER_LIB_EXPORT JKQTPBarGraphBase: public JKQTPXYBaselineGraph, pub
          *  \param shrinkFactor factor, by which the bar are shrinked compared to the available space
          *
          *  \note This function will scale ALL graphs of the parent plot, which were derived from JKQTPBarHorizontalGraph, that match in orientation (as returned by isHorizontal() ).
+         *
+         *  Using \c autoscaleBarWidthAndSHift(0.75,1.0) You can separate the different groups by soe distance, but the bars touch each other:
+         *
+         *  \image html JKQTPBarVerticalAutoscaleMaxWidthOnly.png
+         *
+         *  On the other hand, using the other extreme \c autoscaleBarWidthAndSHift(1.0,0.9) there is no grouping of the bars, but they have a slight distance between each other.
+         *
+         *  \image html JKQTPBarVerticalAutoscaleShrinkOnly.png
+         *
+         *  Finally the default parameters \c autoscaleBarWidthAndSHift(0.75,0.9) will lead to a separation of the bars AND a grouping:
+         *
+         *  \image html JKQTPBarVerticalGraph.png
+         *
          */
-        virtual void autoscaleBarWidthAndShift(double maxWidth=0.9, double shrinkFactor=0.8);
+        virtual void autoscaleBarWidthAndShift(double maxWidth=0.75, double shrinkFactor=0.9);
 
-        /** \brief equivalent to \c autoscaleBarWidthAndShift(groupWidth,1);
+        /** \brief equivalent to \c autoscaleBarWidthAndShift(groupWidth,0.9);
+         *
+         *  The default parameters \c autoscaleBarWidthAndShiftSeparatedGroups(0.75) will lead to a separation of the bars AND a grouping:
+         *
+         *  \image html JKQTPBarVerticalGraph.png
+         *
+         *  On the other hand, using \c autoscaleBarWidthAndShiftSeparatedGroups(1.0) there is no grouping of the bars, but they have a slight distance between each other.
+         *
+         *  \image html JKQTPBarVerticalAutoscaleShrinkOnly.png
          */
         void autoscaleBarWidthAndShiftSeparatedGroups(double groupWidth=0.75);
         /** \copydoc shift */
@@ -210,6 +291,8 @@ class JKQTPLOTTER_LIB_EXPORT JKQTPBarGraphBase: public JKQTPXYBaselineGraph, pub
         /** \copydoc m_drawBaseline */
         void setDrawBaseline(bool __value);
 
+        /** \copydoc m_stackSeparation */
+        void setStackSeparation(double __value);
         /** \copydoc rectRadiusAtValue */
         void setRectRadiusAtValue(double __value);
         /** \copydoc rectRadiusAtBaseline */
@@ -244,13 +327,19 @@ class JKQTPLOTTER_LIB_EXPORT JKQTPBarGraphBase: public JKQTPXYBaselineGraph, pub
         /** \brief the width of the bargraphs, relative to the distance between the current and the next x-value
          *
          * See the following graphic to understand this concept:
-         *     \image html bargraph_basics.png
+         *     \image html bargraph_basics_width.png
+         *
+         * \note this parameter can be combined with shift !
+         *
+         * \see setWidth(), getWidth(), setShift(), getShift(), shift, autoscaleBarWidthAndShift(), autoscaleBarWidthAndShiftSeparatedGroups()
          */
         double width;
         /** \brief the shift of the bargraphs, relative to the distance between the current and the next x-value
          *
          * See the following graphic to understand this concept:
          *     \image html bargraph_basics.png
+         *
+         * \see setShift(), getShift(), setWidth(), getWidth(), autoscaleBarWidthAndShift(), autoscaleBarWidthAndShiftSeparatedGroups()
          */
         double shift;
         /** \brief corner radius (in pt) for bars at the "value" end */
@@ -271,6 +360,8 @@ class JKQTPLOTTER_LIB_EXPORT JKQTPBarGraphBase: public JKQTPXYBaselineGraph, pub
          *  \see baselineStyle() , setDrawBaseline() , m_baselineStyle
          */
         bool m_drawBaseline;
+        /** \brief separation (in pt) between two bars in a stack of bars */
+        double m_stackSeparation;
         /** \brief specifies how the area of the graph is filles
          *
          *  \note If any fill style other than FillStyle::SingleFill is used, the peroperty m_lineColorDerivationModeForSpecialFill
@@ -353,7 +444,9 @@ class JKQTPLOTTER_LIB_EXPORT JKQTPBarGraphBase: public JKQTPXYBaselineGraph, pub
         virtual FillBrushFunctor constructFillBrushFunctor() const;
 
         /** \brief this function is used by autoscaleBarWidthAndShift() to determine whether a given graph shall be taken into account when autoscaling. 
-		 *         Typically this returns \c true for all JKQTPBarGraphBase-derved objects with the same orientation (horizontal or vertical) */
+         *         Typically this returns \c true for all JKQTPBarGraphBase-derived objects with the same orientation (horizontal or vertical). For stacked
+         *         graphs it excludes everything except the bottom of the stack
+         */
         virtual bool considerForAutoscaling( JKQTPBarGraphBase* other) const=0;
 
         /** \brief used to generate stacked plots: returns the upper boundary of the parent plot in a stack, for the index-th datapoint */
@@ -376,7 +469,23 @@ class JKQTPLOTTER_LIB_EXPORT JKQTPBarGraphBase: public JKQTPXYBaselineGraph, pub
 
 
 
+/** \brief This is an interface-class for all stackable bargraphs ... it is used internally for autoscaling only
+ *  \ingroup jkqtplotter_barcharts
+ *
+ *  \c dynamic_cast 'ing to this indicates that a barchart is stackable.
+ *
+ *
+ */
+class JKQTPLOTTER_LIB_EXPORT JKQTPBarGraphStackInternalInterface {
+public:
+    inline virtual ~JKQTPBarGraphStackInternalInterface() {};
+protected:
 
+    /** \brief returns the barchart at the bottom of this stack (i.e. traverses the stack until there are no more parents */
+    virtual JKQTPBarGraphBase* getBottomOfStack()=0;
+
+    friend class JKQTPBarGraphBase;
+};
 
 
 

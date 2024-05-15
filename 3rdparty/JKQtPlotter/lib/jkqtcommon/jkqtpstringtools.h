@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2008-2022 Jan W. Krieger (<jan@jkrieger.de>)
+    Copyright (c) 2008-2024 Jan W. Krieger (<jan@jkrieger.de>)
 
     
 
@@ -58,7 +58,6 @@ JKQTCOMMON_LIB_EXPORT Qt::BrushStyle jkqtp_String2QBrushStyle(const QString& sty
  * \param style the string to be parsed
  * \param[out] gradient output parameter for a parsed gradient
  * \param[out] image output parameter for a parsed image
- * \param[out] rotationAngleDeg output parameter for a parsed rotation angle of the pattern in degrees, where the direction equals the direction of a clock hand, i.e. 0=12o'clock, 180=6o'clock, ...
  *
  * \see jkqtp_String2QBrushStyle()
  */
@@ -188,6 +187,16 @@ JKQTCOMMON_LIB_EXPORT std::string jkqtp_uinttostr(unsigned long data);
  */
 JKQTCOMMON_LIB_EXPORT std::string jkqtp_floattostr(double data, int past_comma=-1, bool remove_trail0=false, double belowIsZero=1e-16);
 
+/** \brief convert a float to a string using \a format (\c f|e|E|g|G ) with given number of decimals after comma \a past_comma and optional removal of trailing zeros behind decimal separator \a remove_trail0. Uses given QLocal \a loc .
+ * \ingroup jkqtptools_string
+ */
+JKQTCOMMON_LIB_EXPORT QString jkqtp_floattoqstr(const QLocale & loc, double data, char format='f', int past_comma=-1, bool remove_trail0=false);
+
+/** \brief convert a float to a string using \a format (\c f|e|E|g|G ) with given number of decimals after comma \a past_comma and optional removal of trailing zeros behind decimal separator \a remove_trail0. Uses system local, disables not use Group-Separator
+ * \ingroup jkqtptools_string
+ */
+JKQTCOMMON_LIB_EXPORT QString jkqtp_floattoqstr(double data, char format='f', int past_comma=-1, bool remove_trail0=false);
+
 /** \brief convert a boolean to a string
  * \ingroup jkqtptools_string
  */
@@ -224,7 +233,7 @@ JKQTCOMMON_LIB_EXPORT QString jkqtp_QColor2String(QColor color, bool useSpecialT
  *
  * \param color the color name to convert
  * \param namesOnly if \c true , the function only compares against the list of CSS colors; otherwise it passes the string also on to QColor()-constructor, which interprets e.g. \c #AABBCC
- * \param nameFound[out] optional return value that signifies whether a name was found
+ * \param[out] nameFound optional return value that signifies whether a name was found
  */
 JKQTCOMMON_LIB_EXPORT QColor jkqtp_lookupQColorName(const QString& color, bool namesOnly=false, bool* nameFound=nullptr);
 
@@ -279,6 +288,10 @@ JKQTCOMMON_LIB_EXPORT QString jkqtp_floattolatexqstr(double data, int past_comma
  * \ingroup jkqtptools_string
  */
 JKQTCOMMON_LIB_EXPORT QString jkqtp_floattohtmlqstr(double data, int past_comma=5, bool remove_trail0=false, double belowIsZero=1e-16, double minNoExponent=1e-3, double maxNoExponent=1e4);
+/** \brief convert a double to a LaTeX-encoded string, encoding powers of ten as characters, e.g. \c jkqtp_floattounitqstr(1000) will result in "1k"
+ * \ingroup jkqtptools_string
+ */
+JKQTCOMMON_LIB_EXPORT QString jkqtp_floattolatexunitqstr(double data, int past_comma=5, bool remove_trail0=false, double belowIsZero=std::numeric_limits<double>::min()*4);
 
 /** \brief convert a character to a string
  * \ingroup jkqtptools_string
@@ -347,7 +360,7 @@ JKQTCOMMON_LIB_EXPORT Qt::MouseButton jkqtp_String2MouseButton(const QString &bu
  *
  *  \see jkqtp_rxExactlyMatches(), jkqtp_rxIndexIn(), jkqtp_rxContains(), jkqtp_rxPartiallyMatchesAt()
  */
-JKQTCOMMON_LIB_EXPORT bool jkqtp_rxContains(const QString& text, const QString &regex, qsizetype offset=0, QStringList* caps=nullptr);
+JKQTCOMMON_LIB_EXPORT bool jkqtp_rxContains(const QString& text, const QString &regex, size_t offset=0, QStringList* caps=nullptr);
 
 /** \brief returns the next match (i.e. its index) of the given regular expression \a regex within \a text,
  *         starts from \a offset and optionally returns the match in \a caps \c =[fullmatch, cap1,cap2,...]
@@ -358,7 +371,7 @@ JKQTCOMMON_LIB_EXPORT bool jkqtp_rxContains(const QString& text, const QString &
  *
  *  \see jkqtp_rxExactlyMatches(), jkqtp_rxIndexIn(), jkqtp_rxContains(), jkqtp_rxPartiallyMatchesAt()
  */
-JKQTCOMMON_LIB_EXPORT qsizetype jkqtp_rxIndexIn(const QString& text, const QString &regex, qsizetype offset=0, QStringList* caps=nullptr);
+JKQTCOMMON_LIB_EXPORT size_t jkqtp_rxIndexIn(const QString& text, const QString &regex, size_t offset=0, QStringList* caps=nullptr);
 
 /** \brief returns \c true, if \a text exactly matches the given regular expression \a regex,
  *         starts from \a offset and optionally returns the match in \a caps \c =[fullmatch, cap1,cap2,...]
@@ -382,7 +395,7 @@ JKQTCOMMON_LIB_EXPORT bool jkqtp_rxExactlyMatches(const QString& text, const QSt
  *
  *  \see jkqtp_rxExactlyMatches(), jkqtp_rxIndexIn(), jkqtp_rxContains(), jkqtp_rxPartiallyMatchesAt()
  */
-JKQTCOMMON_LIB_EXPORT bool jkqtp_rxPartiallyMatchesAt(const QString& text, const QString &regex, qsizetype offset=0, QStringList* caps=nullptr);
+JKQTCOMMON_LIB_EXPORT bool jkqtp_rxPartiallyMatchesAt(const QString& text, const QString &regex, size_t offset=0, QStringList* caps=nullptr);
 
 
 #endif // JKQTPSTRINGTOOLS_H_INCLUDED

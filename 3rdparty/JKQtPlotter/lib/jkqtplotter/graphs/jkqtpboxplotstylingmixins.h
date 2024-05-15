@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2008-2022 Jan W. Krieger (<jan@jkrieger.de>)
+    Copyright (c) 2008-2024 Jan W. Krieger (<jan@jkrieger.de>)
 
     
 
@@ -34,7 +34,7 @@
 
 
 /*! \brief Styling Mix-In for Boxplots
-    \ingroup jkqtplotter_basegraphs_stylemixins
+    \ingroup jkqtplotter_specialgraphs_stylemixins
 
 
     \image html plot_boxplothorizontalelement.png

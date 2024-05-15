@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2008-2022 Jan W. Krieger (<jan@jkrieger.de>)
+    Copyright (c) 2008-2024 Jan W. Krieger (<jan@jkrieger.de>)
 
     
 
@@ -1996,7 +1996,7 @@ JKQTPLOTTER_LIB_EXPORT JKQTPXFunctionLineGraph* jkqtpstatAddLinearWeightedRegres
         jkqtpstatRegression(plot1->getPlotter(), JKQTPStatRegressionModelType::Exponential, datastore1->begin(colLinX), datastore1->end(colLinX), datastore1->begin(colLinY), datastore1->end(colLinY));
     \endcode
 
-    \image html datastore_regression_nonlinreg.png
+    \image html datastore_regression_nonlinreg_exp.png
 
     \see \ref JKQTPlotterBasicJKQTPDatastoreRegression, jkqtpstatRegression()
 */
@@ -2038,7 +2038,7 @@ inline JKQTPXFunctionLineGraph* jkqtpstatAddRegression(JKQTBasePlotter* plotter,
         jkqtpstatRegression(graphD, JKQTPStatRegressionModelType::Exponential);
     \endcode
 
-    \image html datastore_regression_nonlinreg.png
+    \image html datastore_regression_nonlinreg_exp.png
 
     \note The line graph is added to the same plotter that is the parent of \a datagraph !
 

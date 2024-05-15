@@ -152,6 +152,11 @@ msgctxt "Language|"
 msgid "CartoCSS MSS"
 msgstr "CartoCSS MSS"
 
+#, fuzzy
+msgctxt "Language|"
+msgid "CashScript"
+msgstr "Skript"
+
 msgctxt "Language|"
 msgid "CleanCSS"
 msgstr "CleanCSS"
@@ -1276,6 +1281,10 @@ msgid "VRML"
 msgstr "VRML"
 
 msgctxt "Language|"
+msgid "Vue"
+msgstr ""
+
+msgctxt "Language|"
 msgid "V"
 msgstr "V"
 
@@ -1651,13 +1660,13 @@ msgid "All syntax definitions are up-to-date."
 msgstr "Alle syntaksdefinisjonane er oppdaterte."
 
 #: lib/definitiondownloader.cpp:78
-#, qt-format
-msgctxt "QObject|"
-msgid "Downloading new syntax definition for '%1'..."
+#, fuzzy, qt-format
+msgctxt "QObject|@info"
+msgid "Downloading new syntax definition for '%1'…"
 msgstr "Lastar ned nye syntaksdefinisjonar for «%1» …"
 
 #: lib/definitiondownloader.cpp:85
-#, qt-format
-msgctxt "QObject|"
-msgid "Updating syntax definition for '%1' to version %2..."
+#, fuzzy, qt-format
+msgctxt "QObject|@info"
+msgid "Updating syntax definition for '%1' to version %2…"
 msgstr "Oppdaterer syntaksdefinisjonar for «%1» til versjon %2 …"

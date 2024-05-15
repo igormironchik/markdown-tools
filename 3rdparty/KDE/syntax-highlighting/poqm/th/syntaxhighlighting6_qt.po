@@ -206,6 +206,13 @@ msgctxt "Language|"
 msgid "CartoCSS MSS"
 msgstr ""
 
+#, fuzzy
+#| msgctxt "Language Section"
+#| msgid "Scripts"
+msgctxt "Language|"
+msgid "CashScript"
+msgstr "ภาษาสคริปต์"
+
 msgctxt "Language|"
 msgid "CleanCSS"
 msgstr ""
@@ -1685,6 +1692,10 @@ msgid "VRML"
 msgstr "ภาษา VRML"
 
 msgctxt "Language|"
+msgid "Vue"
+msgstr ""
+
+msgctxt "Language|"
 msgid "V"
 msgstr ""
 
@@ -2117,14 +2128,14 @@ msgstr ""
 
 #: lib/definitiondownloader.cpp:78
 #, qt-format
-msgctxt "QObject|"
-msgid "Downloading new syntax definition for '%1'..."
+msgctxt "QObject|@info"
+msgid "Downloading new syntax definition for '%1'…"
 msgstr ""
 
 #: lib/definitiondownloader.cpp:85
 #, qt-format
-msgctxt "QObject|"
-msgid "Updating syntax definition for '%1' to version %2..."
+msgctxt "QObject|@info"
+msgid "Updating syntax definition for '%1' to version %2…"
 msgstr ""
 
 #, fuzzy

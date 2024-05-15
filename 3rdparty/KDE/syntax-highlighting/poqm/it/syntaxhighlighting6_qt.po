@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: katepart4\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2016-09-08 07:30+0000\n"
-"PO-Revision-Date: 2024-03-07 11:59+0100\n"
+"PO-Revision-Date: 2024-05-08 17:16+0200\n"
 "Last-Translator: Vincenzo Reale <smart2128vr@gmail.com>\n"
 "Language-Team: Italian <kde-i18n-it@kde.org>\n"
 "Language: it\n"
@@ -21,7 +21,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 24.02.0\n"
+"X-Generator: Lokalize 24.02.2\n"
 "X-Qt-Contexts: true\n"
 
 msgctxt "Language|"
@@ -151,6 +151,10 @@ msgstr "CartoCSS MML"
 msgctxt "Language|"
 msgid "CartoCSS MSS"
 msgstr "CartoCSS MSS"
+
+msgctxt "Language|"
+msgid "CashScript"
+msgstr "CashScript"
 
 msgctxt "Language|"
 msgid "CleanCSS"
@@ -1279,6 +1283,10 @@ msgid "VRML"
 msgstr "VRML"
 
 msgctxt "Language|"
+msgid "Vue"
+msgstr "Vue"
+
+msgctxt "Language|"
 msgid "V"
 msgstr "V"
 
@@ -1653,14 +1661,14 @@ msgstr "Tutte le definizioni di sintassi sono aggiornate."
 
 #: lib/definitiondownloader.cpp:78
 #, qt-format
-msgctxt "QObject|"
-msgid "Downloading new syntax definition for '%1'..."
+msgctxt "QObject|@info"
+msgid "Downloading new syntax definition for '%1'…"
 msgstr "Scaricamento di una nuova definizione di sintassi per «%1»..."
 
 #: lib/definitiondownloader.cpp:85
 #, qt-format
-msgctxt "QObject|"
-msgid "Updating syntax definition for '%1' to version %2..."
+msgctxt "QObject|@info"
+msgid "Updating syntax definition for '%1' to version %2…"
 msgstr ""
 "Aggiornamento della definizione di sintassi per «%1» alla versione %2..."
 

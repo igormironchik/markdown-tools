@@ -153,6 +153,13 @@ msgctxt "Language|"
 msgid "CartoCSS MSS"
 msgstr "CartoCSS MSS"
 
+#, fuzzy
+#| msgctxt "Language Section|"
+#| msgid "Scripts"
+msgctxt "Language|"
+msgid "CashScript"
+msgstr "Skripte"
+
 msgctxt "Language|"
 msgid "CleanCSS"
 msgstr "CleanCSS"
@@ -1279,6 +1286,10 @@ msgid "VRML"
 msgstr "VRML"
 
 msgctxt "Language|"
+msgid "Vue"
+msgstr ""
+
+msgctxt "Language|"
 msgid "V"
 msgstr "V"
 
@@ -1671,15 +1682,19 @@ msgid "All syntax definitions are up-to-date."
 msgstr "Alle Syntax-Definitionen sind auf dem neuesten Stand."
 
 #: lib/definitiondownloader.cpp:78
-#, qt-format
-msgctxt "QObject|"
-msgid "Downloading new syntax definition for '%1'..."
+#, fuzzy, qt-format
+#| msgctxt "QObject|"
+#| msgid "Downloading new syntax definition for '%1'..."
+msgctxt "QObject|@info"
+msgid "Downloading new syntax definition for '%1'…"
 msgstr "Neue Syntax-Definition für „%1“ wird heruntergeladen ..."
 
 #: lib/definitiondownloader.cpp:85
-#, qt-format
-msgctxt "QObject|"
-msgid "Updating syntax definition for '%1' to version %2..."
+#, fuzzy, qt-format
+#| msgctxt "QObject|"
+#| msgid "Updating syntax definition for '%1' to version %2..."
+msgctxt "QObject|@info"
+msgid "Updating syntax definition for '%1' to version %2…"
 msgstr "Syntax-Definition für „%1“ wird auf Version %2 aktualisiert ..."
 
 #~ msgctxt "SyntaxHighlightingCLI|"

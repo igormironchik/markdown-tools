@@ -143,6 +143,13 @@ msgctxt "Language|"
 msgid "CartoCSS MSS"
 msgstr ""
 
+#, fuzzy
+#| msgctxt "Language Section|"
+#| msgid "Scripts"
+msgctxt "Language|"
+msgid "CashScript"
+msgstr "Skrip"
+
 msgctxt "Language|"
 msgid "CleanCSS"
 msgstr "CleanCSS"
@@ -1288,6 +1295,10 @@ msgid "VRML"
 msgstr "VRML"
 
 msgctxt "Language|"
+msgid "Vue"
+msgstr ""
+
+msgctxt "Language|"
 msgid "V"
 msgstr ""
 
@@ -1672,15 +1683,19 @@ msgid "All syntax definitions are up-to-date."
 msgstr "Semua definisi sintaks telah terbarukan."
 
 #: lib/definitiondownloader.cpp:78
-#, qt-format
-msgctxt "QObject|"
-msgid "Downloading new syntax definition for '%1'..."
+#, fuzzy, qt-format
+#| msgctxt "QObject|"
+#| msgid "Downloading new syntax definition for '%1'..."
+msgctxt "QObject|@info"
+msgid "Downloading new syntax definition for '%1'…"
 msgstr "Mengunduh definisi sintaks baru untuk '%1'..."
 
 #: lib/definitiondownloader.cpp:85
-#, qt-format
-msgctxt "QObject|"
-msgid "Updating syntax definition for '%1' to version %2..."
+#, fuzzy, qt-format
+#| msgctxt "QObject|"
+#| msgid "Updating syntax definition for '%1' to version %2..."
+msgctxt "QObject|@info"
+msgid "Updating syntax definition for '%1' to version %2…"
 msgstr "Mengupdate definisi sintaks untuk '%1' ke versi %2..."
 
 #~ msgctxt "SyntaxHighlightingCLI|"

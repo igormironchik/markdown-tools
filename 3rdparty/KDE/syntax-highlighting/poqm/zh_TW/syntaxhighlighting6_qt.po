@@ -17,7 +17,7 @@ msgstr ""
 "Project-Id-Version: katepart4\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2016-09-08 07:30+0000\n"
-"PO-Revision-Date: 2024-03-06 18:41+0900\n"
+"PO-Revision-Date: 2024-05-09 07:01+0900\n"
 "Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
 "Language-Team: Traditional Chinese <zh-l10n@lists.slat.org>\n"
 "Language: zh_TW\n"
@@ -155,6 +155,10 @@ msgstr "CartoCSS MML"
 msgctxt "Language|"
 msgid "CartoCSS MSS"
 msgstr "CartoCSS MSS"
+
+msgctxt "Language|"
+msgid "CashScript"
+msgstr "CashScript"
 
 msgctxt "Language|"
 msgid "CleanCSS"
@@ -1277,6 +1281,10 @@ msgid "VRML"
 msgstr "VRML"
 
 msgctxt "Language|"
+msgid "Vue"
+msgstr "Vue"
+
+msgctxt "Language|"
 msgid "V"
 msgstr "V"
 
@@ -1645,15 +1653,15 @@ msgstr "所有語法定義皆已最新。"
 
 #: lib/definitiondownloader.cpp:78
 #, qt-format
-msgctxt "QObject|"
-msgid "Downloading new syntax definition for '%1'..."
-msgstr "正在為 '%1' 下載新語法定義..."
+msgctxt "QObject|@info"
+msgid "Downloading new syntax definition for '%1'…"
+msgstr "正在為 '%1' 下載新語法定義…"
 
 #: lib/definitiondownloader.cpp:85
 #, qt-format
-msgctxt "QObject|"
-msgid "Updating syntax definition for '%1' to version %2..."
-msgstr "正在為 '%1' 更新語法定義到版本 %2 ..."
+msgctxt "QObject|@info"
+msgid "Updating syntax definition for '%1' to version %2…"
+msgstr "正在為 '%1' 更新語法定義到版本 %2…"
 
 #~ msgctxt "SyntaxHighlightingCLI|"
 #~ msgid "The source file to highlight."

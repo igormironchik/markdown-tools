@@ -13,6 +13,7 @@ target_sources(${lib_name} PRIVATE
     jkqtpevaluatedfunctionbase.cpp
     jkqtpevaluatedfunction.cpp
     jkqtpfilledcurve.cpp
+    jkqtpfinancial.cpp
     jkqtpgeometric.cpp
     jkqtpgeoannotations.cpp
     jkqtpgeobase.cpp
@@ -31,6 +32,9 @@ target_sources(${lib_name} PRIVATE
     jkqtpstatisticsadaptors.cpp
     jkqtpevaluatedparametriccurve.cpp
     jkqtplines.cpp
+    jkqtpgraphlabelstylemixin.cpp
+    jkqtpgraphlabels.cpp
+    jkqtpvectorfield.cpp
 )
 # ... and add headers
 target_sources(${lib_name} PUBLIC FILE_SET HEADERS TYPE HEADERS
@@ -41,6 +45,7 @@ target_sources(${lib_name} PUBLIC FILE_SET HEADERS TYPE HEADERS
       jkqtpevaluatedfunctionbase.h
       jkqtpevaluatedfunction.h
       jkqtpfilledcurve.h
+      jkqtpfinancial.h
       jkqtpgeometric.h
       jkqtpgeoannotations.h
       jkqtpgeobase.h
@@ -64,4 +69,7 @@ target_sources(${lib_name} PUBLIC FILE_SET HEADERS TYPE HEADERS
       jkqtpbarchart.h
       jkqtpevaluatedparametriccurve.h
       jkqtplines.h
+      jkqtpgraphlabelstylemixin.h
+      jkqtpgraphlabels.h
+      jkqtpvectorfield.h
 )

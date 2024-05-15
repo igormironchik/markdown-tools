@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2008-2022 Jan W. Krieger (<jan@jkrieger.de>)
+    Copyright (c) 2008-2024 Jan W. Krieger (<jan@jkrieger.de>)
 
 
     This software is free software: you can redistribute it and/or modify
@@ -899,7 +899,7 @@ QString JKQTPUserActionMarkerType2String(JKQTPUserActionMarkerType act)
 
 JKQTPUserActionMarkerType String2JKQTPUserActionMarkerType(const QString &act)
 {
-    QString m=act.trimmed().toLower();
+    const QString m=act.trimmed().toLower();
     if (m=="circle") return jkqtpuamtCircle;
     if (m=="crosshair" || m=="cross") return jkqtpuamtCrossHair;
     if (m=="circle+crosshair" || m=="circle+cross") return jkqtpuamtCircleAndCrossHair;
@@ -944,3 +944,4 @@ QList<JKQTPKeyPosition> JKQTPGetTypicalKeyPositions()
      };
     return pos;
 }
+

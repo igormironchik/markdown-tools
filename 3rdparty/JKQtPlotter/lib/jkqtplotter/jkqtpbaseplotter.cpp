@@ -464,15 +464,29 @@ void JKQTBasePlotter::initSettings() {
 void JKQTBasePlotter::zoomIn(double factor) {
     //std::cout<<(double)event->delta()/120.0<<":   "<<factor<<std::endl;
 
+
+
     for (auto ax: getXAxes(true)) {
-        const double xmin=ax->p2x(static_cast<long>(round(static_cast<double>(internalPlotWidth)/2.0-static_cast<double>(internalPlotWidth)/(2.0*factor))));
-        const double xmax=ax->p2x(static_cast<long>(round(static_cast<double>(internalPlotWidth)/2.0+static_cast<double>(internalPlotWidth)/(2.0*factor))));
-        ax->setRange(xmin, xmax);
+        const double old_mi=ax->x2p(ax->getMin());
+        const double old_ma=ax->x2p(ax->getMax());
+        const double range=fabs(old_ma-old_mi);
+        const double new_range=range/factor;
+        const double new_mi=qMin(old_mi,old_ma)-(new_range-range)/2.0;
+        const double new_ma=qMax(old_mi,old_ma)+(new_range-range)/2.0;
+        const double xmin=ax->p2x(new_mi);
+        const double xmax=ax->p2x(new_ma);
+        ax->setRange(qMin(xmin, xmax), qMax(xmin, xmax));
     }
     for (auto ax: getYAxes(true)) {
-        const double ymin=ax->p2x(static_cast<long>(round(static_cast<double>(internalPlotHeight)/2.0+static_cast<double>(internalPlotHeight)/(2.0*factor))));
-        const double ymax=ax->p2x(static_cast<long>(round(static_cast<double>(internalPlotHeight)/2.0-static_cast<double>(internalPlotHeight)/(2.0*factor))));
-        ax->setRange(ymin, ymax);
+        const double old_mi=ax->x2p(ax->getMin());
+        const double old_ma=ax->x2p(ax->getMax());
+        const double range=fabs(old_ma-old_mi);
+        const double new_range=range/factor;
+        const double new_mi=qMin(old_mi,old_ma)-(new_range-range)/2.0;
+        const double new_ma=qMax(old_mi,old_ma)+(new_range-range)/2.0;
+        const double xmin=ax->p2x(new_mi);
+        const double xmax=ax->p2x(new_ma);
+        ax->setRange(qMin(xmin, xmax), qMax(xmin, xmax));
     }
 
     redrawPlot();
@@ -3727,7 +3741,7 @@ bool JKQTBasePlotter::saveImage(const QString& filename, bool displayPreview) {
             QSharedPointer<QPaintDevice> paintDevice=QSharedPointer<QPaintDevice>(jkqtpPaintDeviceAdapters.get()[adapterID]->createPaintdevice(fn, jkqtp_roundTo<int>(gridPrintingSize.width()), jkqtp_roundTo<int>(gridPrintingSize.height())));
 
 #ifndef JKQTPLOTTER_COMPILE_WITHOUT_PRINTSUPPORT
-            if (!printpreviewNew(paintDevice.get(), jkqtpPaintDeviceAdapters.get()[adapterID]->getSetAbsolutePaperSize(), jkqtpPaintDeviceAdapters.get()[adapterID]->getPrintSizeXInMM(), jkqtpPaintDeviceAdapters.get()[adapterID]->getPrintSizeYInMM(), displayPreview)) {
+            if (!printpreviewNew(paintDevice.data(), jkqtpPaintDeviceAdapters.get()[adapterID]->getSetAbsolutePaperSize(), jkqtpPaintDeviceAdapters.get()[adapterID]->getPrintSizeXInMM(), jkqtpPaintDeviceAdapters.get()[adapterID]->getPrintSizeYInMM(), displayPreview)) {
                 if (QFile::exists(tempFM)) {
                     QFile::copy(tempFM, fn);
                     QFile::remove(tempFM);
@@ -3737,7 +3751,7 @@ bool JKQTBasePlotter::saveImage(const QString& filename, bool displayPreview) {
 #endif
             {
                 paintDevice.reset(jkqtpPaintDeviceAdapters.get()[adapterID]->createPaintdeviceMM(fn,printSizeX_Millimeter,printSizeY_Millimeter));
-                printpreviewPaintRequestedNewPaintDevice(paintDevice.get());
+                printpreviewPaintRequestedNewPaintDevice(paintDevice.data());
                 return true;
             }
 
@@ -4794,11 +4808,9 @@ void JKQTBasePlotter::setEmittingSignalsEnabled(bool enabled)
 
 
 
-JKQTBasePlotter::textSizeKey::textSizeKey(const QFont &f, const QString &text, QPaintDevice *pd):
-    text(), f(), ldpiX(0), ldpiY(0), pdpiX(0), pdpiY(0)
+JKQTBasePlotter::textSizeKey::textSizeKey(const QFont &f_, const QString &text_, QPaintDevice *pd):
+    text(text_), f(f_), ldpiX(0), ldpiY(0), pdpiX(0), pdpiY(0)
 {
-    this->text=text;
-    this->f=f;
     if (pd) {
         ldpiX=pd->logicalDpiX();
         ldpiY=pd->logicalDpiY();
@@ -4812,14 +4824,14 @@ JKQTBasePlotter::textSizeKey::textSizeKey(const QFont &f, const QString &text, Q
     }
 }
 
-JKQTBasePlotter::textSizeKey::textSizeKey(const QString &fontName, double fontSize, const QString &text, QPaintDevice *pd):
-    text(), f(), ldpiX(0), ldpiY(0), pdpiX(0), pdpiY(0)
+JKQTBasePlotter::textSizeKey::textSizeKey(const QString &fontName, double fontSize, const QString &text_, QPaintDevice *pd):
+    text(text_), f([&](){
+        QFont fnew;
+        fnew.setFamily(JKQTMathTextFontSpecifier::fromFontSpec(fontName).fontName());
+        fnew.setPointSizeF(fontSize);
+        return fnew;
+    }()), ldpiX(0), ldpiY(0), pdpiX(0), pdpiY(0)
 {
-    QFont f;
-    f.setFamily(JKQTMathTextFontSpecifier::fromFontSpec(fontName).fontName());
-    f.setPointSizeF(fontSize);
-    this->text=text;
-    this->f=f;
     if (pd) {
         ldpiX=pd->logicalDpiX();
         ldpiY=pd->logicalDpiY();

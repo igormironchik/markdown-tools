@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2008-2022 Jan W. Krieger (<jan@jkrieger.de>)
+    Copyright (c) 2008-2024 Jan W. Krieger (<jan@jkrieger.de>)
 
     This software is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License (LGPL) as published by
@@ -105,7 +105,7 @@ void JKQTPEnhancedPainter::drawComplexRoundedRect(const QRectF &rin, double rTop
     drawPath(path);
 }
 
-void JKQTPEnhancedPainter::drawRoundedRectOrRect(const QRectF &r, double radius, Qt::SizeMode mode)
+void JKQTPEnhancedPainter::drawRoundedRectOrRect(const QRectF &r, double radius, Qt::SizeMode /*mode*/)
 {
     if (radius<=0) {
         drawRect(r);
