@@ -171,6 +171,19 @@ SyntaxVisitor::onItemWithOpts( MD::ItemWithOpts< MD::QStringTrait > * i )
 }
 
 void
+SyntaxVisitor::onReferenceLink( MD::Link< MD::QStringTrait > * l )
+{
+	QTextCharFormat format;
+	format.setForeground( d->colors.referenceColor );
+	format.setFont( d->styleFont( d->additionalStyle ) );
+
+	d->setFormat( format, l->startLine(), l->startColumn(),
+		l->endLine(), l->endColumn() );
+	
+	MD::PosCache< MD::QStringTrait >::onReferenceLink( l );	
+}
+
+void
 SyntaxVisitor::onText( MD::Text< MD::QStringTrait > * t )
 {
 	QTextCharFormat format;
@@ -430,7 +443,7 @@ void
 SyntaxVisitor::onFootnote( MD::Footnote< MD::QStringTrait > * f )
 {
 	QTextCharFormat format;
-	format.setForeground( d->colors.footnoteColor );
+	format.setForeground( d->colors.referenceColor );
 	format.setFont( d->styleFont( d->additionalStyle ) );
 
 	d->setFormat( format, f->startLine(), f->startColumn(),

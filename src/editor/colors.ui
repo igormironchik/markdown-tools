@@ -167,7 +167,7 @@
        </widget>
       </item>
       <item row="9" column="1">
-       <widget class="MdShared::ColorWidget" name="footnoteColor">
+       <widget class="MdShared::ColorWidget" name="referenceColor">
         <property name="frameShape">
          <enum>QFrame::Shape::StyledPanel</enum>
         </property>
@@ -202,7 +202,7 @@
       <item row="9" column="0">
        <widget class="QLabel" name="label_11">
         <property name="text">
-         <string>Footnote</string>
+         <string>Reference</string>
         </property>
        </widget>
       </item>

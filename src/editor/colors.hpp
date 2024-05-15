@@ -34,7 +34,7 @@ struct Colors {
 	QColor blockquoteColor = QColor( 0, 0, 128 );
 	QColor codeColor = Qt::black;
 	QColor mathColor = QColor( 128, 0, 0 );
-	QColor footnoteColor = QColor( 128, 0, 0 );
+	QColor referenceColor = QColor( 128, 0, 0 );
 	QColor specialColor = QColor( 128, 0, 0 );
 	bool enabled = true;
 }; // struct Colors
@@ -73,7 +73,7 @@ private slots:
 	void chooseBlockquoteColor();
 	void chooseCodeColor();
 	void chooseMathColor();
-	void chooseFootnoteColor();
+	void chooseReferenceColor();
 	void chooseSpecialColor();
 	void colorsToggled( bool on );
 

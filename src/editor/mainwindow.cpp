@@ -955,7 +955,7 @@ MainWindow::onAboutQt()
 namespace /* anonymous */ {
 
 inline QString
-itemType( MD::ItemType t )
+itemType( MD::ItemType t, bool alone )
 {
 	switch( t )
 	{
@@ -974,7 +974,12 @@ itemType( MD::ItemType t )
 		case MD::ItemType::List :
 			return MainWindow::tr( "List" );
 		case MD::ItemType::Link :
-			return MainWindow::tr( "Link" );
+		{
+			if( alone )
+				return MainWindow::tr( "Reference Link" );
+			else
+				return MainWindow::tr( "Link" );
+		}
 		case MD::ItemType::Image :
 			return MainWindow::tr( "Image" );
 		case MD::ItemType::Code :
@@ -1020,10 +1025,11 @@ MainWindow::onLineHovered( int lineNumber, const QPoint & pos )
 	{
 		if( ( items.front()->type() != MD::ItemType::List &&
 			items.front()->type() != MD::ItemType::Footnote ) || items.size() == 1 )
-				QToolTip::showText( pos, itemType( items.front()->type() ) );
+				QToolTip::showText( pos, itemType( items.front()->type(), items.size() == 1 ) );
 		else
 			QToolTip::showText( pos, tr( "%1 in %2" )
-				.arg( itemType( items.at( 1 )->type() ), itemType( items.front()->type() ) ) );
+				.arg( itemType( items.at( 1 )->type(), items.size() == 1 ),
+					itemType( items.front()->type(), items.size() == 1 ) ) );
 	}
 }
 
@@ -1115,7 +1121,7 @@ MainWindow::saveCfg() const
 			cfg.set_blockquoteColor( d->mdColors.blockquoteColor.name( QColor::HexRgb ) );
 			cfg.set_codeColor( d->mdColors.codeColor.name( QColor::HexRgb ) );
 			cfg.set_mathColor( d->mdColors.mathColor.name( QColor::HexRgb ) );
-			cfg.set_footnoteColor( d->mdColors.footnoteColor.name( QColor::HexRgb ) );
+			cfg.set_referenceColor( d->mdColors.referenceColor.name( QColor::HexRgb ) );
 			cfg.set_specialColor( d->mdColors.specialColor.name( QColor::HexRgb ) );
 
 			tag_Cfg< cfgfile::qstring_trait_t > tag( cfg );
@@ -1190,8 +1196,8 @@ MainWindow::readCfg()
 			if( !cfg.mathColor().isEmpty() )
 				d->mdColors.mathColor = QColor( cfg.mathColor() );
 
-			if( !cfg.footnoteColor().isEmpty() )
-				d->mdColors.footnoteColor = QColor( cfg.footnoteColor() );
+			if( !cfg.referenceColor().isEmpty() )
+				d->mdColors.referenceColor = QColor( cfg.referenceColor() );
 			
 			if( !cfg.specialColor().isEmpty() )
 				d->mdColors.specialColor = QColor( cfg.specialColor() );

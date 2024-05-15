@@ -26,7 +26,7 @@ bool operator != ( const Colors & c1, const Colors & c2 )
 		c1.textColor != c2.textColor || c1.htmlColor != c2.htmlColor ||
 		c1.tableColor != c2.tableColor || c1.blockquoteColor != c2.blockquoteColor ||
 		c1.codeColor != c2.codeColor || c1.enabled != c2.enabled ||
-		c1.mathColor != c2.mathColor || c1.footnoteColor != c2.footnoteColor ||
+		c1.mathColor != c2.mathColor || c1.referenceColor != c2.referenceColor ||
 		c1.specialColor != c2.specialColor );
 }
 
@@ -75,6 +75,8 @@ ColorsDialog::ColorsDialog( const Colors & cols, QWidget * parent )
 		this, &ColorsDialog::colorsToggled );
 	connect( d->ui.specialColor, &MdShared::ColorWidget::clicked,
 		this, &ColorsDialog::chooseSpecialColor );
+	connect( d->ui.referenceColor, &MdShared::ColorWidget::clicked,
+		this, &ColorsDialog::chooseReferenceColor );
 }
 
 ColorsDialog::~ColorsDialog()
@@ -117,7 +119,7 @@ ColorsDialog::applyColors()
 	d->ui.blockquoteColor->setColor( d->colors.blockquoteColor );
 	d->ui.codeColor->setColor( d->colors.codeColor );
 	d->ui.mathColor->setColor( d->colors.mathColor );
-	d->ui.footnoteColor->setColor( d->colors.footnoteColor );
+	d->ui.referenceColor->setColor( d->colors.referenceColor );
 	d->ui.specialColor->setColor( d->colors.specialColor );
 }
 
@@ -188,9 +190,9 @@ ColorsDialog::chooseMathColor()
 }
 
 void
-ColorsDialog::chooseFootnoteColor()
+ColorsDialog::chooseReferenceColor()
 {
-	chooseColor( d->ui.footnoteColor, d->colors.footnoteColor );
+	chooseColor( d->ui.referenceColor, d->colors.referenceColor );
 }
 
 void

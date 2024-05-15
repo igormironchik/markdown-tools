@@ -80,7 +80,7 @@
 
 			{tagScalar
 				{valueType QString}
-				{name footnoteColor}
+				{name referenceColor}
 				{defaultValue ""}
 			}
 			
