@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Installer>
     <Name>Markdown Tools</Name>
-    <Version>0.0.81</Version>
+    <Version>0.11.0</Version>
     <Title>Markdown Tools Installer</Title>
     <Publisher>Igor Mironchik</Publisher>
     <StartMenuDir>Markdown Tools</StartMenuDir>
