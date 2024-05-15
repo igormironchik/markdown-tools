@@ -1113,12 +1113,10 @@ MainWindow::saveCfg() const
 			cfg.set_fontSize( f.pointSize() );
 			cfg.set_useColors( d->mdColors.enabled );
 			cfg.set_linkColor( d->mdColors.linkColor.name( QColor::HexRgb ) );
-			cfg.set_listColor( d->mdColors.listColor.name( QColor::HexRgb ) );
 			cfg.set_textColor( d->mdColors.textColor.name( QColor::HexRgb ) );
 			cfg.set_inlineColor( d->mdColors.inlineColor.name( QColor::HexRgb ) );
 			cfg.set_htmlColor( d->mdColors.htmlColor.name( QColor::HexRgb ) );
 			cfg.set_tableColor( d->mdColors.tableColor.name( QColor::HexRgb ) );
-			cfg.set_blockquoteColor( d->mdColors.blockquoteColor.name( QColor::HexRgb ) );
 			cfg.set_codeColor( d->mdColors.codeColor.name( QColor::HexRgb ) );
 			cfg.set_mathColor( d->mdColors.mathColor.name( QColor::HexRgb ) );
 			cfg.set_referenceColor( d->mdColors.referenceColor.name( QColor::HexRgb ) );
@@ -1172,9 +1170,6 @@ MainWindow::readCfg()
 			if( !cfg.linkColor().isEmpty() )
 				d->mdColors.linkColor = QColor( cfg.linkColor() );
 
-			if( !cfg.listColor().isEmpty() )
-				d->mdColors.listColor = QColor( cfg.listColor() );
-
 			if( !cfg.textColor().isEmpty() )
 				d->mdColors.textColor = QColor( cfg.textColor() );
 
@@ -1186,9 +1181,6 @@ MainWindow::readCfg()
 
 			if( !cfg.tableColor().isEmpty() )
 				d->mdColors.tableColor = QColor( cfg.tableColor() );
-
-			if( !cfg.blockquoteColor().isEmpty() )
-				d->mdColors.blockquoteColor = QColor( cfg.blockquoteColor() );
 
 			if( !cfg.codeColor().isEmpty() )
 				d->mdColors.codeColor = QColor( cfg.codeColor() );

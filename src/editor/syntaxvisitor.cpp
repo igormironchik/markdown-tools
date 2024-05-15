@@ -301,10 +301,6 @@ SyntaxVisitor::onInlineCode( MD::Code< MD::QStringTrait > * c )
 void
 SyntaxVisitor::onBlockquote( MD::Blockquote< MD::QStringTrait > * b )
 {
-	QTextCharFormat format;
-	format.setForeground( d->colors.blockquoteColor );
-	format.setFont( d->styleFont( d->additionalStyle ) );
-	
 	MD::PosCache< MD::QStringTrait >::onBlockquote( b );
 	
 	QTextCharFormat special;
@@ -319,12 +315,6 @@ void
 SyntaxVisitor::onListItem( MD::ListItem< MD::QStringTrait > * l, bool first )
 {
 	MD::PosCache< MD::QStringTrait >::onListItem( l, first );
-	
-	QTextCharFormat format;
-	format.setForeground( d->colors.listColor );
-	format.setFont( d->styleFont( d->additionalStyle ) );
-
-	MD::Visitor< MD::QStringTrait >::onListItem( l, first );
 	
 	QTextCharFormat special;
 	special.setForeground( d->colors.specialColor );

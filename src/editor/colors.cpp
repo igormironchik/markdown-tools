@@ -22,9 +22,8 @@ namespace MdEditor {
 bool operator != ( const Colors & c1, const Colors & c2 )
 {
 	return ( c1.enabled != c2.enabled || c1.inlineColor != c2.inlineColor ||
-		c1.linkColor != c2.linkColor || c1.listColor != c2.listColor ||
-		c1.textColor != c2.textColor || c1.htmlColor != c2.htmlColor ||
-		c1.tableColor != c2.tableColor || c1.blockquoteColor != c2.blockquoteColor ||
+		c1.linkColor != c2.linkColor || c1.textColor != c2.textColor ||
+		c1.htmlColor != c2.htmlColor || c1.tableColor != c2.tableColor ||
 		c1.codeColor != c2.codeColor || c1.enabled != c2.enabled ||
 		c1.mathColor != c2.mathColor || c1.referenceColor != c2.referenceColor ||
 		c1.specialColor != c2.specialColor );
@@ -57,8 +56,6 @@ ColorsDialog::ColorsDialog( const Colors & cols, QWidget * parent )
 		this, &ColorsDialog::clicked );
 	connect( d->ui.linkColor, &MdShared::ColorWidget::clicked,
 		this, &ColorsDialog::chooseLinkColor );
-	connect( d->ui.listColor, &MdShared::ColorWidget::clicked,
-		this, &ColorsDialog::chooseListColor );
 	connect( d->ui.textColor, &MdShared::ColorWidget::clicked,
 		this, &ColorsDialog::chooseTextColor );
 	connect( d->ui.inlineColor, &MdShared::ColorWidget::clicked,
@@ -67,8 +64,6 @@ ColorsDialog::ColorsDialog( const Colors & cols, QWidget * parent )
 		this, &ColorsDialog::chooseHtmlColor );
 	connect( d->ui.tableColor, &MdShared::ColorWidget::clicked,
 		this, &ColorsDialog::chooseTableColor );
-	connect( d->ui.blockquoteColor, &MdShared::ColorWidget::clicked,
-		this, &ColorsDialog::chooseBlockquoteColor );
 	connect( d->ui.codeColor, &MdShared::ColorWidget::clicked,
 		this, &ColorsDialog::chooseCodeColor );
 	connect( d->ui.colors, &QGroupBox::toggled,
@@ -112,11 +107,9 @@ ColorsDialog::applyColors()
 
 	d->ui.inlineColor->setColor( d->colors.inlineColor );
 	d->ui.linkColor->setColor( d->colors.linkColor );
-	d->ui.listColor->setColor( d->colors.listColor );
 	d->ui.textColor->setColor( d->colors.textColor );
 	d->ui.htmlColor->setColor( d->colors.htmlColor );
 	d->ui.tableColor->setColor( d->colors.tableColor );
-	d->ui.blockquoteColor->setColor( d->colors.blockquoteColor );
 	d->ui.codeColor->setColor( d->colors.codeColor );
 	d->ui.mathColor->setColor( d->colors.mathColor );
 	d->ui.referenceColor->setColor( d->colors.referenceColor );
@@ -142,12 +135,6 @@ ColorsDialog::chooseLinkColor()
 }
 
 void
-ColorsDialog::chooseListColor()
-{
-	chooseColor( d->ui.listColor, d->colors.listColor );
-}
-
-void
 ColorsDialog::chooseTextColor()
 {
 	chooseColor( d->ui.textColor, d->colors.textColor );
@@ -169,12 +156,6 @@ void
 ColorsDialog::chooseTableColor()
 {
 	chooseColor( d->ui.tableColor, d->colors.tableColor );
-}
-
-void
-ColorsDialog::chooseBlockquoteColor()
-{
-	chooseColor( d->ui.blockquoteColor, d->colors.blockquoteColor );
 }
 
 void

@@ -11,7 +11,7 @@
     <x>0</x>
     <y>0</y>
     <width>399</width>
-    <height>369</height>
+    <height>321</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,14 +27,7 @@
       <bool>true</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="8" column="0">
-       <widget class="QLabel" name="label_10">
-        <property name="text">
-         <string>Math</string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="1">
+      <item row="5" column="1">
        <widget class="MdShared::ColorWidget" name="codeColor">
         <property name="frameShape">
          <enum>QFrame::Shape::StyledPanel</enum>
@@ -45,89 +38,6 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="MdShared::ColorWidget" name="listColor">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="frameShape">
-         <enum>QFrame::Shape::StyledPanel</enum>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Shadow::Raised</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>List</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="MdShared::ColorWidget" name="htmlColor">
-        <property name="frameShape">
-         <enum>QFrame::Shape::StyledPanel</enum>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Shadow::Raised</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Inline</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="label_7">
-        <property name="text">
-         <string>Blockquote</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="label_6">
-        <property name="text">
-         <string>Table</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="1">
-       <widget class="MdShared::ColorWidget" name="blockquoteColor">
-        <property name="frameShape">
-         <enum>QFrame::Shape::StyledPanel</enum>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Shadow::Raised</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="10" column="0">
-       <widget class="QLabel" name="label_12">
-        <property name="text">
-         <string>Special Characters</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
        <widget class="MdShared::ColorWidget" name="textColor">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -143,14 +53,7 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="label_5">
-        <property name="text">
-         <string>HTML</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
+      <item row="2" column="1">
        <widget class="MdShared::ColorWidget" name="linkColor">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -166,17 +69,28 @@
         </property>
        </widget>
       </item>
-      <item row="9" column="1">
-       <widget class="MdShared::ColorWidget" name="referenceColor">
-        <property name="frameShape">
-         <enum>QFrame::Shape::StyledPanel</enum>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Shadow::Raised</enum>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Table</string>
         </property>
        </widget>
       </item>
-      <item row="8" column="1">
+      <item row="6" column="0">
+       <widget class="QLabel" name="label_10">
+        <property name="text">
+         <string>Math</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="0">
+       <widget class="QLabel" name="label_12">
+        <property name="text">
+         <string>Special Characters</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
        <widget class="MdShared::ColorWidget" name="mathColor">
         <property name="frameShape">
          <enum>QFrame::Shape::StyledPanel</enum>
@@ -187,7 +101,14 @@
        </widget>
       </item>
       <item row="3" column="0">
-       <widget class="QLabel" name="label_4">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>HTML</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_2">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -195,26 +116,12 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Link</string>
+         <string>Text</string>
         </property>
        </widget>
       </item>
-      <item row="9" column="0">
-       <widget class="QLabel" name="label_11">
-        <property name="text">
-         <string>Reference</string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="0">
-       <widget class="QLabel" name="label_8">
-        <property name="text">
-         <string>Code</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1">
-       <widget class="MdShared::ColorWidget" name="tableColor">
+      <item row="3" column="1">
+       <widget class="MdShared::ColorWidget" name="htmlColor">
         <property name="frameShape">
          <enum>QFrame::Shape::StyledPanel</enum>
         </property>
@@ -223,7 +130,17 @@
         </property>
        </widget>
       </item>
-      <item row="10" column="1">
+      <item row="7" column="1">
+       <widget class="MdShared::ColorWidget" name="referenceColor">
+        <property name="frameShape">
+         <enum>QFrame::Shape::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Shadow::Raised</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="1">
        <widget class="MdShared::ColorWidget" name="specialColor">
         <property name="frameShape">
          <enum>QFrame::Shape::StyledPanel</enum>
@@ -233,7 +150,27 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Inline</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="label_11">
+        <property name="text">
+         <string>Reference</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
        <widget class="MdShared::ColorWidget" name="inlineColor">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -249,8 +186,25 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_2">
+      <item row="4" column="1">
+       <widget class="MdShared::ColorWidget" name="tableColor">
+        <property name="frameShape">
+         <enum>QFrame::Shape::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Shadow::Raised</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>Code</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_4">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -258,7 +212,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Text</string>
+         <string>Link</string>
         </property>
        </widget>
       </item>

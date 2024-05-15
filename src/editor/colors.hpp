@@ -27,11 +27,9 @@ namespace MdEditor {
 struct Colors {
 	QColor textColor = QColor( 0, 0, 128 );
 	QColor linkColor = QColor( 0, 128, 0 );
-	QColor listColor = QColor( 0, 128, 0 );
 	QColor inlineColor = Qt::black;
 	QColor htmlColor = QColor( 128, 0, 0 );
 	QColor tableColor = Qt::black;
-	QColor blockquoteColor = QColor( 0, 0, 128 );
 	QColor codeColor = Qt::black;
 	QColor mathColor = QColor( 128, 0, 0 );
 	QColor referenceColor = QColor( 128, 0, 0 );
@@ -65,12 +63,10 @@ private slots:
 	void resetDefaults();
 	void applyColors();
 	void chooseLinkColor();
-	void chooseListColor();
 	void chooseTextColor();
 	void chooseInlineColor();
 	void chooseHtmlColor();
 	void chooseTableColor();
-	void chooseBlockquoteColor();
 	void chooseCodeColor();
 	void chooseMathColor();
 	void chooseReferenceColor();

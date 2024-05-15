@@ -32,12 +32,6 @@
 
 			{tagScalar
 				{valueType QString}
-				{name listColor}
-				{defaultValue ""}
-			}
-
-			{tagScalar
-				{valueType QString}
 				{name textColor}
 				{defaultValue ""}
 			}
@@ -57,12 +51,6 @@
 			{tagScalar
 				{valueType QString}
 				{name tableColor}
-				{defaultValue ""}
-			}
-
-			{tagScalar
-				{valueType QString}
-				{name blockquoteColor}
 				{defaultValue ""}
 			}
 
