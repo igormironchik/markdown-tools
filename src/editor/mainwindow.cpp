@@ -1476,6 +1476,8 @@ MainWindow::onNavigationDoubleClicked( QTreeWidgetItem * item, int )
 		d->editor->setFocus();
 
 		onCursorPositionChanged();
+		
+		d->initMarkdownMenu();
 	}
 }
 
