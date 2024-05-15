@@ -33,7 +33,6 @@ struct Colors {
 	QColor tableColor = Qt::black;
 	QColor blockquoteColor = QColor( 0, 0, 128 );
 	QColor codeColor = Qt::black;
-	QColor headingColor = QColor( 0, 0, 128 );
 	QColor mathColor = QColor( 128, 0, 0 );
 	QColor footnoteColor = QColor( 128, 0, 0 );
 	QColor specialColor = QColor( 128, 0, 0 );
@@ -73,7 +72,6 @@ private slots:
 	void chooseTableColor();
 	void chooseBlockquoteColor();
 	void chooseCodeColor();
-	void chooseHeadingColor();
 	void chooseMathColor();
 	void chooseFootnoteColor();
 	void chooseSpecialColor();

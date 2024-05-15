@@ -1114,7 +1114,6 @@ MainWindow::saveCfg() const
 			cfg.set_tableColor( d->mdColors.tableColor.name( QColor::HexRgb ) );
 			cfg.set_blockquoteColor( d->mdColors.blockquoteColor.name( QColor::HexRgb ) );
 			cfg.set_codeColor( d->mdColors.codeColor.name( QColor::HexRgb ) );
-			cfg.set_headingColor( d->mdColors.headingColor.name( QColor::HexRgb ) );
 			cfg.set_mathColor( d->mdColors.mathColor.name( QColor::HexRgb ) );
 			cfg.set_footnoteColor( d->mdColors.footnoteColor.name( QColor::HexRgb ) );
 			cfg.set_specialColor( d->mdColors.specialColor.name( QColor::HexRgb ) );
@@ -1187,9 +1186,6 @@ MainWindow::readCfg()
 
 			if( !cfg.codeColor().isEmpty() )
 				d->mdColors.codeColor = QColor( cfg.codeColor() );
-
-			if( !cfg.headingColor().isEmpty() )
-				d->mdColors.headingColor = QColor( cfg.headingColor() );
 
 			if( !cfg.mathColor().isEmpty() )
 				d->mdColors.mathColor = QColor( cfg.mathColor() );

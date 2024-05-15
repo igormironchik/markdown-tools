@@ -74,12 +74,6 @@
 
 			{tagScalar
 				{valueType QString}
-				{name headingColor}
-				{defaultValue ""}
-			}
-
-			{tagScalar
-				{valueType QString}
 				{name mathColor}
 				{defaultValue ""}
 			}
