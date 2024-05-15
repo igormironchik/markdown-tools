@@ -115,6 +115,7 @@ struct MainWindowPrivate {
 		tocTree->setHeaderHidden( true );
 		delegate = new WordWrapItemDelegate( tocTree );
 		tocTree->setItemDelegate( delegate );
+		tocTree->setAlternatingRowColors( true );
 		tabs->addTab( tocTree, MainWindow::tr( "TOC" ) );
 		
 		fileTree = new QTreeWidget( tabs );
