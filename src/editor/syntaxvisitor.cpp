@@ -20,6 +20,50 @@
 
 namespace MdEditor {
 
+namespace /* anonymous */ {
+
+std::shared_ptr< MD::Paragraph< MD::QStringTrait > >
+copyParagraphAndApplyOpts( std::shared_ptr< MD::Paragraph< MD::QStringTrait > > p, int opts )
+{
+	auto tmp = std::static_pointer_cast< MD::Paragraph< MD::QStringTrait > > ( p->clone() );
+
+	for( const auto & i : tmp->items() )
+	{
+		switch( i->type() )
+		{
+			case MD::ItemType::Text :
+			{
+				auto t = static_cast< MD::Text< MD::QStringTrait > * > ( i.get() );
+				t->setOpts( opts | t->opts() );
+			}
+				break;
+
+			case MD::ItemType::Link :
+			{
+				auto l = static_cast< MD::Link< MD::QStringTrait > * > ( i.get() );
+				l->setOpts( opts | l->opts() );
+				l->setP( copyParagraphAndApplyOpts( l->p(), opts ) );
+			}
+				break;
+
+			case MD::ItemType::Code :
+			{
+				auto c = static_cast< MD::Code< MD::QStringTrait > * > ( i.get() );
+				c->setOpts( opts | c->opts() );
+			}
+				break;
+
+			default :
+				break;
+		}
+	}
+
+	return tmp;
+}
+
+} /* namespace anonymous */
+
+
 //
 // SyntaxVisitorPrivate
 //
@@ -225,6 +269,9 @@ SyntaxVisitor::onHeading( MD::Heading< MD::QStringTrait > * h )
 	if( h->delim().startColumn() != -1 )
 		d->setFormat( special, h->delim() );
 	
+	if( h->text() )
+		h->setText( copyParagraphAndApplyOpts( h->text(), MD::BoldText ) );
+	
 	MD::PosCache< MD::QStringTrait >::onHeading( h );
 }
 
@@ -349,49 +396,6 @@ SyntaxVisitor::onHorizontalLine( MD::HorizontalLine< MD::QStringTrait > * l )
 	
 	MD::PosCache< MD::QStringTrait >::onHorizontalLine( l );
 }
-
-namespace /* anonymous */ {
-
-std::shared_ptr< MD::Paragraph< MD::QStringTrait > >
-copyParagraphAndApplyOpts( std::shared_ptr< MD::Paragraph< MD::QStringTrait > > p, int opts )
-{
-	auto tmp = std::static_pointer_cast< MD::Paragraph< MD::QStringTrait > > ( p->clone() );
-
-	for( const auto & i : tmp->items() )
-	{
-		switch( i->type() )
-		{
-			case MD::ItemType::Text :
-			{
-				auto t = static_cast< MD::Text< MD::QStringTrait > * > ( i.get() );
-				t->setOpts( opts | t->opts() );
-			}
-				break;
-
-			case MD::ItemType::Link :
-			{
-				auto l = static_cast< MD::Link< MD::QStringTrait > * > ( i.get() );
-				l->setOpts( opts | l->opts() );
-				l->setP( copyParagraphAndApplyOpts( l->p(), opts ) );
-			}
-				break;
-
-			case MD::ItemType::Code :
-			{
-				auto c = static_cast< MD::Code< MD::QStringTrait > * > ( i.get() );
-				c->setOpts( opts | c->opts() );
-			}
-				break;
-
-			default :
-				break;
-		}
-	}
-
-	return tmp;
-}
-
-} /* namespace anonymous */
 
 void
 SyntaxVisitor::onLink( MD::Link< MD::QStringTrait > * l )
