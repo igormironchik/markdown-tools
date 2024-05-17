@@ -129,6 +129,7 @@ struct TestRendering {
 		opts.m_mathFontSize = textFontSize;
 		opts.m_top = 50.0;
 		opts.m_dpi = 150;
+		opts.m_imageAlignment = ImageAlignment::Center;
 
 		opts.testData = data;
 		opts.printDrawings = c_printData;

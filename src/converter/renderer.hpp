@@ -102,6 +102,13 @@ struct DrawPrimitive {
 };
 #endif // MD_PDF_TESTING
 
+//! Image alignment.
+enum class ImageAlignment {
+	Left,
+	Center,
+	Right
+}; // enum ImageAlignment
+
 
 //
 // RenderOpts
@@ -138,6 +145,8 @@ struct RenderOpts
 	quint16 m_dpi;
 	//! Syntax highlighter.
 	std::shared_ptr< Syntax > m_syntax;
+	//! Image alignment.
+	ImageAlignment m_imageAlignment;
 
 #ifdef MD_PDF_TESTING
 	bool printDrawings = false;
@@ -202,7 +211,6 @@ struct CoordsPageAttribs {
 }; // struct CoordsPageAttribs
 
 class PdfRenderer;
-
 
 //! Auxiliary struct for rendering.
 struct PdfAuxData {
@@ -655,7 +663,8 @@ private:
 		double offset,
 		bool firstInParagraph,
 		CustomWidth * cw,
-		double scale );
+		double scale,
+		ImageAlignment alignment );
 	//! Draw math expression.
 	QPair< QRectF, unsigned int > drawMathExpr( PdfAuxData & pdfData,
 		const RenderOpts & renderOpts,

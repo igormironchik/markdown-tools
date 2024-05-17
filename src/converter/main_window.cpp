@@ -150,6 +150,80 @@ MainWidget::configFileName( bool inPlace ) const
 		return QApplication::applicationDirPath() + QDir::separator() + c_appCfgFileName;
 }
 
+static const QString c_leftAlignment = QStringLiteral( "left" );
+static const QString c_centerAlignment = QStringLiteral( "center" );
+static const QString c_rightAlignment = QStringLiteral( "right" );
+
+inline QString
+imageAlignmentToString( Render::ImageAlignment a )
+{
+	switch( a )
+	{
+		case Render::ImageAlignment::Left :
+			return c_leftAlignment;
+			
+		case Render::ImageAlignment::Center :
+			return c_centerAlignment;
+			
+		case Render::ImageAlignment::Right :
+			return c_rightAlignment;
+			
+		default :
+			return {};
+	}
+}
+
+inline Render::ImageAlignment
+stringToImageAlignment( const QString & a )
+{
+	if( a == c_leftAlignment )
+		return Render::ImageAlignment::Left;
+	else if( a == c_centerAlignment )
+		return Render::ImageAlignment::Center;
+	else if( a == c_rightAlignment )
+		return Render::ImageAlignment::Right;
+	else
+		return Render::ImageAlignment::Center;
+}
+
+inline Render::ImageAlignment
+imageAlignmentFromInt( int v )
+{
+	switch( v )
+	{
+		case 0 :
+			return Render::ImageAlignment::Left;
+			
+		case 1 :
+			return Render::ImageAlignment::Center;
+			
+		case 2 :
+			return Render::ImageAlignment::Right;
+			
+		default :
+			return Render::ImageAlignment::Center;
+	}
+}
+
+inline int
+imageAlignmentToInt( Render::ImageAlignment a )
+{
+	switch( a )
+	{
+		case Render::ImageAlignment::Left :
+			return 0;
+			
+		case Render::ImageAlignment::Center :
+			return 1;
+	
+		case Render::ImageAlignment::Right :
+			return 2;
+			
+		default :
+			return 1;
+	}
+}
+
 void
 MainWidget::readCfg()
 {
@@ -249,6 +323,8 @@ MainWidget::readCfg()
 			m_ui->m_right->setValue( m.right() );
 			m_ui->m_top->setValue( m.top() );
 			m_ui->m_bottom->setValue( m.bottom() );
+			m_ui->m_imageAlignment->setCurrentIndex( imageAlignmentToInt (
+				stringToImageAlignment( cfg.imageAlignment() ) ) );
 		}
 		catch( const cfgfile::exception_t< cfgfile::qstring_trait_t > & )
 		{
@@ -313,6 +389,8 @@ MainWidget::saveCfg()
 			m.set_bottom( m_ui->m_bottom->value() );
 			
 			cfg.set_margins( m );
+			cfg.set_imageAlignment( imageAlignmentToString(
+				imageAlignmentFromInt( m_ui->m_imageAlignment->currentIndex() ) ) );
 
 			tag_Cfg< cfgfile::qstring_trait_t > tag( cfg );
 
@@ -425,6 +503,7 @@ MainWidget::process()
 			opts.m_dpi = m_ui->m_dpi->value();
 			opts.m_syntax = m_syntax;
 			m_syntax->setTheme( m_syntax->themeForName( m_ui->m_codeTheme->currentText() ) );
+			opts.m_imageAlignment = imageAlignmentFromInt( m_ui->m_imageAlignment->currentIndex() );
 
 
 			ProgressDlg progress( pdf, this );

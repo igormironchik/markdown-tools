@@ -1272,7 +1272,8 @@ PdfRenderer::drawLink( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 					rects.append( drawImage( pdfData, renderOpts,
 						static_cast< MD::Image< MD::QStringTrait >* > ( it->get() ),
 						doc, newLine, offset,
-						( it == item->p()->items().begin() && firstInParagraph ), cw, scale ) );
+						( it == item->p()->items().begin() && firstInParagraph ), cw, scale,
+						renderOpts.m_imageAlignment ) );
 
 				default :
 					break;
@@ -1304,7 +1305,7 @@ PdfRenderer::drawLink( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 	// Otherwise image link.
 	else
 		rects.append( drawImage( pdfData, renderOpts, item->img().get(), doc, newLine, offset,
-			firstInParagraph, cw, scale ) );
+			firstInParagraph, cw, scale, renderOpts.m_imageAlignment ) );
 
 	rects = normalizeRects( rects );
 
@@ -1874,7 +1875,8 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 			case MD::ItemType::Image :
 				drawImage( pdfData, renderOpts,
 					static_cast< MD::Image< MD::QStringTrait >* > ( it->get() ),
-					doc, newLine, offset, ( firstInParagraph || lineBreak ), &cw, scale );
+					doc, newLine, offset, ( firstInParagraph || lineBreak ), &cw, scale,
+					renderOpts.m_imageAlignment );
 				lineBreak = false;
 				firstInParagraph = false;
 				break;
@@ -2076,7 +2078,8 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 
 				rects.append( drawImage( pdfData, renderOpts,
 					static_cast< MD::Image< MD::QStringTrait >* > ( it->get() ),
-					doc, newLine, offset, ( firstInParagraph || lineBreak ), &cw, scale ) );
+					doc, newLine, offset, ( firstInParagraph || lineBreak ), &cw, scale,
+					renderOpts.m_imageAlignment ) );
 				lineBreak = false;
 				firstInParagraph = false;
 			}
@@ -2627,7 +2630,8 @@ PdfRenderer::footnoteHeight( PdfAuxData & pdfData, const RenderOpts & renderOpts
 QPair< QRectF, unsigned int >
 PdfRenderer::drawImage( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 	MD::Image< MD::QStringTrait > * item, std::shared_ptr< MD::Document< MD::QStringTrait > > doc,
-	bool & newLine, double offset, bool firstInParagraph, CustomWidth * cw, double scale )
+	bool & newLine, double offset, bool firstInParagraph, CustomWidth * cw, double scale,
+	ImageAlignment alignment )
 {
 	Q_UNUSED( doc )
 
@@ -2670,8 +2674,6 @@ PdfRenderer::drawImage( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 				if( cw && !cw->isImage() )
 					cw->moveToNextLine();
 			}
-			else
-				pdfData.coords.x += offset;
 
 			double x = 0.0;
 			double imgScale = 1.0;
@@ -2708,7 +2710,26 @@ PdfRenderer::drawImage( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 			}
 
 			if( iWidth * imgScale < availableWidth )
-				x = ( availableWidth - iWidth * imgScale ) / 2.0;
+			{
+				switch( alignment )
+				{
+					case ImageAlignment::Left :
+						x = 0.0;
+						break;
+						
+					case ImageAlignment::Center :
+						x = ( availableWidth - iWidth * imgScale ) / 2.0;
+						break;
+						
+					case ImageAlignment::Right :
+						x = pdfData.coords.pageWidth - pdfData.coords.margins.right -
+							iWidth * imgScale - pdfData.coords.x;
+						break;
+						
+					default :
+						break;
+				}
+			}
 
 			const double dpiScale = (double) pdfImg->GetWidth() / iWidth;
 

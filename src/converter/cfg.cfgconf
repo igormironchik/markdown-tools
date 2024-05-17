@@ -89,6 +89,11 @@
 				{valueType QString}
 				{name codeTheme}
 			}
+			
+			{tagScalar
+				{valueType QString}
+				{name imageAlignment}
+			}
 
 			{tagScalar
 				{valueType int}
