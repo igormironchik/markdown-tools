@@ -4254,7 +4254,25 @@ PdfRenderer::drawTableRow( QVector< QVector< CellData > > & table, int row, PdfA
 				auto o = 0.0;
 
 				if( w < table[ column ][ 0 ].width )
-					o = ( table[ column ][ 0 ].width - w ) / 2.0;
+				{
+					switch( table[ column ][ 0 ].alignment )
+					{
+						case MD::Table< MD::QStringTrait >::AlignLeft :
+							o = 0.0;
+							break;
+							
+						case MD::Table< MD::QStringTrait >::AlignCenter :
+							o = ( table[ column ][ 0 ].width - w ) / 2.0;
+							break;
+							
+						case MD::Table< MD::QStringTrait >::AlignRight :
+							o = ( table[ column ][ 0 ].width - w );
+							break;
+							
+						default :
+							break;
+					}
+				}
 
 				y -= iHeight * ratio;
 
