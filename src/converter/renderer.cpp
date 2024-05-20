@@ -1133,7 +1133,7 @@ PdfRenderer::drawText( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 	MD::Text< MD::QStringTrait > * item, std::shared_ptr< MD::Document< MD::QStringTrait > > doc,
 	bool & newLine, Font * footnoteFont, double footnoteFontSize, double footnoteFontScale,
 	MD::Item< MD::QStringTrait > * nextItem, int footnoteNum,
-	double offset, bool firstInParagraph, CustomWidth * cw, double scale )
+	double offset, bool firstInParagraph, CustomWidth & cw, double scale )
 {
 	pdfData.startLine = item->startLine();
 	pdfData.startPos = item->startColumn();
@@ -1199,7 +1199,7 @@ PdfRenderer::drawLink( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 	MD::Link< MD::QStringTrait > * item, std::shared_ptr< MD::Document< MD::QStringTrait > > doc,
 	bool & newLine, Font * footnoteFont, double footnoteFontSize, double footnoteFontScale,
 	MD::Item< MD::QStringTrait > * nextItem, int footnoteNum,
-	double offset, bool firstInParagraph, CustomWidth * cw, double scale )
+	double offset, bool firstInParagraph, CustomWidth & cw, double scale )
 {
 	pdfData.startLine = item->startLine();
 	pdfData.startPos = item->startColumn();
@@ -1217,7 +1217,7 @@ PdfRenderer::drawLink( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 
 	bool draw = true;
 
-	if( cw && !cw->isDrawing() )
+	if( !cw.isDrawing() )
 		draw = false;
 
 	auto * font = createFont( renderOpts.m_textFont, item->opts() & MD::TextOption::BoldText,
@@ -1348,7 +1348,7 @@ PdfRenderer::drawString( PdfAuxData & pdfData, const RenderOpts & renderOpts, co
 	Font * footnoteFont, double footnoteFontSize, double footnoteFontScale,
 	MD::Item< MD::QStringTrait > * nextItem,
 	int footnoteNum, double offset,
-	bool firstInParagraph, CustomWidth * cw, const QColor & background,
+	bool firstInParagraph, CustomWidth & cw, const QColor & background,
 	bool strikeout, long long int startLine, long long int startPos,
 	long long int endLine, long long int endPos )
 {
@@ -1362,7 +1362,7 @@ PdfRenderer::drawString( PdfAuxData & pdfData, const RenderOpts & renderOpts, co
 
 	bool draw = true;
 
-	if( cw && !cw->isDrawing() )
+	if( !cw.isDrawing() )
 		draw = false;
 
 	bool footnoteAtEnd = false;
@@ -1382,10 +1382,10 @@ PdfRenderer::drawString( PdfAuxData & pdfData, const RenderOpts & renderOpts, co
 	double ascent = pdfData.fontAscent( font, fontSize, fontScale );
 	double d = 0.0;
 
-	if( cw && cw->isDrawing() )
+	if( cw.isDrawing() )
 	{
-		h = cw->height();
-		descent = cw->descent();
+		h = cw.height();
+		descent = cw.descent();
 		d = ( h - ascent ) / 2.0;
 	}
 
@@ -1395,18 +1395,17 @@ PdfRenderer::drawString( PdfAuxData & pdfData, const RenderOpts & renderOpts, co
 
 		if( draw )
 		{
-			if( cw )
-				cw->moveToNextLine();
+			cw.moveToNextLine();
 
-			moveToNewLine( pdfData, offset, cw->height(), 1.0, cw->height() );
+			moveToNewLine( pdfData, offset, cw.height(), 1.0, cw.height() );
 
-			h = cw->height();
-			descent = cw->descent();
+			h = cw.height();
+			descent = cw.descent();
 			d = ( h - ascent ) / 2.0;
 		}
-		else if( cw )
+		else
 		{
-			cw->append( { 0.0, lineHeight, 0.0, false, true, true, false, "" } );
+			cw.append( { 0.0, lineHeight, 0.0, false, true, true, false, "" } );
 			pdfData.coords.x = pdfData.coords.margins.left + offset;
 		}
 	};
@@ -1435,8 +1434,8 @@ PdfRenderer::drawString( PdfAuxData & pdfData, const RenderOpts & renderOpts, co
 
 		auto scale = 100.0;
 
-		if( draw && cw )
-			scale = cw->scale();
+		if( draw )
+			scale = cw.scale();
 
 		const auto xv = pdfData.coords.x + w * scale / 100.0 + pdfData.stringWidth( font,
 			fontSize, fontScale, createUtf8String( words.first() ) ) +
@@ -1452,8 +1451,8 @@ PdfRenderer::drawString( PdfAuxData & pdfData, const RenderOpts & renderOpts, co
 					firstSpaceFont, firstSpaceFontSize * firstSpaceFontScale,
 					scale / 100.0, false );
 			}
-			else if( cw )
-				cw->append( { w, lineHeight, 0.0, true, false, true, false, " " } );
+			else
+				cw.append( { w, lineHeight, 0.0, true, false, true, false, " " } );
 
 			ret.append( qMakePair( QRectF( pdfData.coords.x,
 				pdfData.coords.y + d,
@@ -1508,8 +1507,8 @@ PdfRenderer::drawString( PdfAuxData & pdfData, const RenderOpts & renderOpts, co
 
 				auto scale = 100.0;
 
-				if( draw && cw )
-					scale = cw->scale();
+				if( draw )
+					scale = cw.scale();
 
 				const auto availableWidth = wv - ( pdfData.coords.x > 0.0 ? pdfData.coords.x : 0.0 ) -
 					spaceWidth * scale / 100.0;
@@ -1545,8 +1544,8 @@ PdfRenderer::drawString( PdfAuxData & pdfData, const RenderOpts & renderOpts, co
 						pdfData.drawText( pdfData.coords.x, pdfData.coords.y + d, " ",
 							spaceFont, spaceFontSize * spaceFontScale, scale / 100.0, strikeout );
 					}
-					else if( cw )
-						cw->append( { spaceWidth, lineHeight, 0.0, true, false, true, false, " " } );
+					else
+						cw.append( { spaceWidth, lineHeight, 0.0, true, false, true, false, " " } );
 
 					pdfData.coords.x += spaceWidth * scale / 100.0;
 				}
@@ -1592,8 +1591,8 @@ PdfRenderer::drawString( PdfAuxData & pdfData, const RenderOpts & renderOpts, co
 					pdfData.coords.y + d,
 					length, lineHeight ), pdfData.currentPageIndex() ) );
 			}
-			else if( cw )
-				cw->append( { length + ( it + 1 == last && footnoteAtEnd ? footnoteWidth : 0.0 ),
+			else
+				cw.append( { length + ( it + 1 == last && footnoteAtEnd ? footnoteWidth : 0.0 ),
 					lineHeight, 0.0, false, false, true, false, *it } );
 
 			pdfData.coords.x += length;
@@ -1629,8 +1628,8 @@ PdfRenderer::drawString( PdfAuxData & pdfData, const RenderOpts & renderOpts, co
 								pdfData.coords.y + d, w, lineHeight ),
 							pdfData.currentPageIndex() ) );
 					}
-					else if( cw )
-						cw->append( { w, lineHeight, 0.0, false, false, true, false, tmp } );
+					else
+						cw.append( { w, lineHeight, 0.0, false, false, true, false, tmp } );
 
 					newLine = false;
 
@@ -1642,8 +1641,8 @@ PdfRenderer::drawString( PdfAuxData & pdfData, const RenderOpts & renderOpts, co
 						newLineFn();
 				}
 
-				if( !draw && cw && it + 1 == last && footnoteAtEnd )
-					cw->append( { footnoteWidth, lineHeight, 0.0, false, false, true, false,
+				if( !draw && it + 1 == last && footnoteAtEnd )
+					cw.append( { footnoteWidth, lineHeight, 0.0, false, false, true, false,
 						QString::number( footnoteNum ) } );
 
 				drawSpaceIfNeeded();
@@ -1688,7 +1687,7 @@ QVector< QPair< QRectF, unsigned int > >
 PdfRenderer::drawInlinedCode( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 	MD::Code< MD::QStringTrait > * item, std::shared_ptr< MD::Document< MD::QStringTrait > > doc,
 	bool & newLine, double offset,
-	bool firstInParagraph, CustomWidth * cw,
+	bool firstInParagraph, CustomWidth & cw,
 	double scale )
 {
 	pdfData.startLine = item->startLine();
@@ -1849,7 +1848,7 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 					static_cast< MD::Text< MD::QStringTrait >* > ( it->get() ),
 					doc, newLine, footnoteFont, renderOpts.m_textFontSize * scale, c_footnoteScale,
 					( it + 1 != last ? ( it + 1 )->get() : nullptr ),
-					nextFootnoteNum, offset, ( firstInParagraph || lineBreak ), &cw, scale );
+					nextFootnoteNum, offset, ( firstInParagraph || lineBreak ), cw, scale );
 				lineBreak = false;
 				firstInParagraph = false;
 				break;
@@ -1857,7 +1856,7 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 			case MD::ItemType::Code :
 				drawInlinedCode( pdfData, renderOpts,
 					static_cast< MD::Code< MD::QStringTrait >* > ( it->get() ),
-				doc, newLine, offset, ( firstInParagraph || lineBreak ), &cw, scale );
+				doc, newLine, offset, ( firstInParagraph || lineBreak ), cw, scale );
 				lineBreak = false;
 				firstInParagraph = false;
 				break;
@@ -1867,7 +1866,7 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 					static_cast< MD::Link< MD::QStringTrait >* > ( it->get() ),
 					doc, newLine, footnoteFont, renderOpts.m_textFontSize * scale, c_footnoteScale,
 					( it + 1 != last ? ( it + 1 )->get() : nullptr ),
-					nextFootnoteNum, offset, ( firstInParagraph || lineBreak ), &cw, scale );
+					nextFootnoteNum, offset, ( firstInParagraph || lineBreak ), cw, scale );
 				lineBreak = false;
 				firstInParagraph = false;
 				break;
@@ -1875,7 +1874,7 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 			case MD::ItemType::Image :
 				drawImage( pdfData, renderOpts,
 					static_cast< MD::Image< MD::QStringTrait >* > ( it->get() ),
-					doc, newLine, offset, ( firstInParagraph || lineBreak ), &cw, scale,
+					doc, newLine, offset, ( firstInParagraph || lineBreak ), cw, scale,
 					renderOpts.m_imageAlignment );
 				lineBreak = false;
 				firstInParagraph = false;
@@ -1886,7 +1885,7 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 					static_cast< MD::Math< MD::QStringTrait >* > ( it->get() ),
 					doc, newLine, offset, ( std::next( it ) != last),
 					( firstInParagraph || lineBreak ),
-					&cw, scale );
+					cw, scale );
 				lineBreak = false;
 				firstInParagraph = false;
 				break;
@@ -1920,7 +1919,7 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 						static_cast< MD::Text< MD::QStringTrait >* > ( it->get() ),
 						doc, newLine, footnoteFont, renderOpts.m_textFontSize * scale, c_footnoteScale,
 						( it + 1 != last ? ( it + 1 )->get() : nullptr ),
-						nextFootnoteNum, offset, ( firstInParagraph || lineBreak ), &cw, scale );
+						nextFootnoteNum, offset, ( firstInParagraph || lineBreak ), cw, scale );
 
 				lineBreak = false;
 				firstInParagraph = false;
@@ -2040,7 +2039,7 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 				rects.append( drawText( pdfData, renderOpts,
 					static_cast< MD::Text< MD::QStringTrait >* > ( it->get() ),
 					doc, newLine, nullptr, 0.0, 1.0, nullptr, nextFootnoteNum,
-					offset, ( firstInParagraph || lineBreak ), &cw, scale ) );
+					offset, ( firstInParagraph || lineBreak ), cw, scale ) );
 				lineBreak = false;
 				firstInParagraph = false;
 			}
@@ -2050,7 +2049,7 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 			{
 				rects.append( drawInlinedCode( pdfData, renderOpts,
 					static_cast< MD::Code< MD::QStringTrait >* > ( it->get() ),
-					doc, newLine, offset, ( firstInParagraph || lineBreak ), &cw, scale ) );
+					doc, newLine, offset, ( firstInParagraph || lineBreak ), cw, scale ) );
 				lineBreak = false;
 				firstInParagraph = false;
 			}
@@ -2065,7 +2064,7 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 
 				rects.append( drawLink( pdfData, renderOpts, link,
 					doc, newLine, nullptr, 0.0, 1.0, nullptr, nextFootnoteNum,
-					offset, ( firstInParagraph || lineBreak ), &cw, scale ) );
+					offset, ( firstInParagraph || lineBreak ), cw, scale ) );
 				lineBreak = false;
 				firstInParagraph = false;
 			}
@@ -2078,7 +2077,7 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 
 				rects.append( drawImage( pdfData, renderOpts,
 					static_cast< MD::Image< MD::QStringTrait >* > ( it->get() ),
-					doc, newLine, offset, ( firstInParagraph || lineBreak ), &cw, scale,
+					doc, newLine, offset, ( firstInParagraph || lineBreak ), cw, scale,
 					renderOpts.m_imageAlignment ) );
 				lineBreak = false;
 				firstInParagraph = false;
@@ -2091,7 +2090,7 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 					static_cast< MD::Math< MD::QStringTrait >* > ( it->get() ),
 					doc, newLine, offset, ( std::next( it ) != last ),
 					( firstInParagraph || lineBreak ),
-					&cw, scale ) );
+					cw, scale ) );
 				lineBreak = false;
 				firstInParagraph = false;
 			}
@@ -2152,7 +2151,7 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 					rects.append( drawText( pdfData, renderOpts,
 						static_cast< MD::Text< MD::QStringTrait >* > ( it->get() ),
 						doc, newLine, nullptr, 0.0, 1.0, nullptr, nextFootnoteNum,
-						offset, ( firstInParagraph || lineBreak ), &cw, scale ) );
+						offset, ( firstInParagraph || lineBreak ), cw, scale ) );
 
 				firstInParagraph = false;
 			}
@@ -2175,7 +2174,7 @@ QPair< QRectF, unsigned int >
 PdfRenderer::drawMathExpr( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 	MD::Math< MD::QStringTrait > * item, std::shared_ptr< MD::Document< MD::QStringTrait > > doc,
 	bool & newLine, double offset, bool hasNext,
-	bool firstInParagraph, CustomWidth * cw, double scale )
+	bool firstInParagraph, CustomWidth & cw, double scale )
 {
 	pdfData.startLine = item->startLine();
 	pdfData.startPos = item->startColumn();
@@ -2207,16 +2206,16 @@ PdfRenderer::drawMathExpr( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 
 	bool draw = true;
 
-	if( cw && !cw->isDrawing() )
+	if( !cw.isDrawing() )
 		draw = false;
 
-	if( cw && cw->isDrawing() && !item->isInline() )
+	if( cw.isDrawing() && !item->isInline() )
 	{
-		cw->moveToNextLine();
+		cw.moveToNextLine();
 		moveToNewLine( pdfData, offset, 0.0, 1.0, 0.0 );
 	}
 
-	double h = ( cw && cw->isDrawing() ? cw->height() : 0.0 );
+	double h = ( cw.isDrawing() ? cw.height() : 0.0 );
 
 	if( draw )
 	{
@@ -2278,8 +2277,7 @@ PdfRenderer::drawMathExpr( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 
 			pdfData.coords.y -= h;
 
-			if( cw )
-				cw->moveToNextLine();
+			cw.moveToNextLine();
 
 			if( hasNext )
 				moveToNewLine( pdfData, offset, lineHeight, 1.0, lineHeight );
@@ -2290,8 +2288,7 @@ PdfRenderer::drawMathExpr( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 		{
 			auto sscale = 100.0;
 
-			if( cw )
-				sscale = cw->scale();
+			sscale = cw.scale();
 
 			const auto spaceWidth = pdfData.stringWidth( font,
 				renderOpts.m_textFontSize, scale, " " );
@@ -2306,11 +2303,8 @@ PdfRenderer::drawMathExpr( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 
 			if( size.width() - availableWidth > 0.01 )
 			{
-				if( cw )
-				{
-					cw->moveToNextLine();
-					h = cw->height();
-				}
+				cw.moveToNextLine();
+				h = cw.height();
 
 				moveToNewLine( pdfData, offset, h, 1.0, h );
 			}
@@ -2392,8 +2386,8 @@ PdfRenderer::drawMathExpr( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 
 			pdfData.coords.x = pdfData.coords.margins.left + offset;
 
-			cw->append( { 0.0, 0.0, descent, false, true, false, false, "" } );
-			cw->append( { 0.0, height, descent, false, true, false, true, "" } );
+			cw.append( { 0.0, 0.0, descent, false, true, false, false, "" } );
+			cw.append( { 0.0, height, descent, false, true, false, true, "" } );
 		}
 		else
 		{
@@ -2410,11 +2404,11 @@ PdfRenderer::drawMathExpr( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 
 			if( size.width() - availableWidth > 0.01 )
 			{
-				cw->append( { 0.0, lineHeight, descent, false, true, true, false, "" } );
+				cw.append( { 0.0, lineHeight, descent, false, true, true, false, "" } );
 				pdfData.coords.x = pdfData.coords.margins.left + offset;
 			}
 			else
-				cw->append( { spaceWidth, lineHeight, descent, true, false, true, false, " " } );
+				cw.append( { spaceWidth, lineHeight, descent, true, false, true, false, " " } );
 
 			double imgScale = 1.0;
 
@@ -2429,7 +2423,7 @@ PdfRenderer::drawMathExpr( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 
 			pdfData.coords.x += size.width() * imgScale;
 
-			cw->append( { size.width() * imgScale,
+			cw.append( { size.width() * imgScale,
 				size.height() * imgScale - pdfData.fontDescent( font, renderOpts.m_textFontSize, scale ),
 				descent, false, false, hasNext, false, "" } );
 		}
@@ -2630,7 +2624,7 @@ PdfRenderer::footnoteHeight( PdfAuxData & pdfData, const RenderOpts & renderOpts
 QPair< QRectF, unsigned int >
 PdfRenderer::drawImage( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 	MD::Image< MD::QStringTrait > * item, std::shared_ptr< MD::Document< MD::QStringTrait > > doc,
-	bool & newLine, double offset, bool firstInParagraph, CustomWidth * cw, double scale,
+	bool & newLine, double offset, bool firstInParagraph, CustomWidth & cw, double scale,
 	ImageAlignment alignment )
 {
 	Q_UNUSED( doc )
@@ -2641,57 +2635,84 @@ PdfRenderer::drawImage( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 	pdfData.endLine = item->endLine();
 	pdfData.endPos = item->endColumn();
 
-	if( cw && !cw->isDrawing() )
+	if( !cw.isDrawing() )
 		draw = false;
 
-	if( draw )
+	emit status( tr( "Loading image." ) );
+
+	const auto img = loadImage( item, *pdfData.resvgOpts.get() );
+
+	if( !img.isNull() )
 	{
-		emit status( tr( "Loading image." ) );
+		auto pdfImg = pdfData.doc->CreateImage();
+		pdfImg->LoadFromBuffer( { img.data() , static_cast< size_t > ( img.size() ) } );
 
-		const auto img = loadImage( item, *pdfData.resvgOpts.get() );
+		const double iWidth = std::round( (double) pdfImg->GetWidth() /
+			(double) pdfData.dpi * 72.0 );
+		const double iHeight = std::round( (double) pdfImg->GetHeight() /
+			(double) pdfData.dpi * 72.0 );
 
-		if( !img.isNull() )
+		newLine = false;
+
+		auto * font = createFont( renderOpts.m_textFont, false, false,
+			renderOpts.m_textFontSize, pdfData.doc, scale, pdfData );
+
+		const auto lineHeight = pdfData.lineSpacing( font, renderOpts.m_textFontSize, scale );
+		
+		double x = 0.0;
+		double imgScale = 1.0;
+		const double totalAvailableWidth = pdfData.coords.pageWidth - pdfData.coords.margins.left -
+			pdfData.coords.margins.right - offset;
+		double availableHeight = pdfData.coords.y - pdfData.currentPageAllowedY();
+		const double pageHeight = pdfData.topY( pdfData.currentPageIndex() ) -
+			pdfData.coords.margins.bottom;
+		const bool onLine = ( totalAvailableWidth / 5.0 > iWidth &&
+			iHeight < lineHeight * 2.0 );
+		const double availableWidth = pdfData.coords.pageWidth - pdfData.coords.x -
+			pdfData.coords.margins.right;
+		const auto spaceWidth = pdfData.stringWidth( font, renderOpts.m_textFontSize, scale, " " );
+		bool addSpace = onLine && !firstInParagraph;
+		double height = 0.0;
+		
+		const auto availableAfter = availableWidth - ( iWidth +
+			( addSpace ? spaceWidth * ( draw ? cw.scale() / 100.0 : 1.0 ) : 0.0 ) );
+
+		if( !onLine && !firstInParagraph ||
+			( onLine && availableAfter < 0 && qAbs( availableAfter ) > 0.1 ) )
 		{
-			auto pdfImg = pdfData.doc->CreateImage();
-			pdfImg->LoadFromBuffer( { img.data() , static_cast< size_t > ( img.size() ) } );
-
-			const double iWidth = std::round( (double) pdfImg->GetWidth() /
-				(double) pdfData.dpi * 72.0 );
-			const double iHeight = std::round( (double) pdfImg->GetHeight() /
-				(double) pdfData.dpi * 72.0 );
-
 			newLine = true;
 
-			auto * font = createFont( renderOpts.m_textFont, false, false,
-				renderOpts.m_textFontSize, pdfData.doc, scale, pdfData );
-
-			const auto lineHeight = pdfData.lineSpacing( font, renderOpts.m_textFontSize, scale );
-
-			if( !firstInParagraph )
+			if( draw )
 			{
-				moveToNewLine( pdfData, offset, lineHeight, 1.0, lineHeight );
-
-				if( cw && !cw->isImage() )
-					cw->moveToNextLine();
+				if( !cw.isImage() )
+					cw.moveToNextLine();
 			}
+			else
+			{
+				if( !onLine )
+					height += lineHeight;
+				
+				cw.append( { 0.0, 0.0, 0.0, false, true, onLine, false, "" } );
+			}
+			
+			if( draw )
+				moveToNewLine( pdfData, offset, ( onLine ? cw.height() : lineHeight ), 1.0, lineHeight );
+			else
+				pdfData.coords.x = pdfData.coords.margins.left + offset;
+			
+			addSpace = false;
+		}
 
-			double x = 0.0;
-			double imgScale = 1.0;
-			const double availableWidth = pdfData.coords.pageWidth - pdfData.coords.margins.left -
-				pdfData.coords.margins.right - offset;
-			double availableHeight = pdfData.coords.y - pdfData.currentPageAllowedY();
-
-			if( iWidth > availableWidth )
-				imgScale = ( availableWidth / iWidth ) * scale;
-
-			const double pageHeight = pdfData.topY( pdfData.currentPageIndex() ) -
-				pdfData.coords.margins.bottom;
+		if( !onLine )
+		{
+			if( iWidth > totalAvailableWidth )
+				imgScale = ( totalAvailableWidth / iWidth );
 
 			if( iHeight * imgScale > pageHeight )
 			{
-				imgScale = ( pageHeight / ( iHeight * imgScale ) ) * scale;
+				imgScale = ( pageHeight / ( iHeight * imgScale ) );
 
-				if( !pdfData.firstOnPage )
+				if( !pdfData.firstOnPage && draw )
 				{
 					createPage( pdfData );
 
@@ -2702,14 +2723,17 @@ PdfRenderer::drawImage( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 			}
 			else if( iHeight * imgScale > availableHeight )
 			{
-				createPage( pdfData );
-
-				pdfData.freeSpaceOn( pdfData.currentPageIndex() );
-
-				pdfData.coords.x += offset;
+				if( draw )
+				{
+					createPage( pdfData );
+	
+					pdfData.freeSpaceOn( pdfData.currentPageIndex() );
+	
+					pdfData.coords.x += offset;
+				}
 			}
 
-			if( iWidth * imgScale < availableWidth )
+			if( iWidth * imgScale < totalAvailableWidth )
 			{
 				switch( alignment )
 				{
@@ -2718,7 +2742,7 @@ PdfRenderer::drawImage( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 						break;
 						
 					case ImageAlignment::Center :
-						x = ( availableWidth - iWidth * imgScale ) / 2.0;
+						x = ( totalAvailableWidth - iWidth * imgScale ) / 2.0;
 						break;
 						
 					case ImageAlignment::Right :
@@ -2730,84 +2754,65 @@ PdfRenderer::drawImage( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 						break;
 				}
 			}
+		}
 
-			const double dpiScale = (double) pdfImg->GetWidth() / iWidth;
-
-			pdfData.drawImage( pdfData.coords.x + x,
-				pdfData.coords.y - iHeight * imgScale,
-				pdfImg.get(), imgScale / dpiScale, imgScale / dpiScale );
-
-			pdfData.coords.y -= iHeight * imgScale;
-
-			QRectF r( pdfData.coords.x + x, pdfData.coords.y,
-				iWidth * imgScale, iHeight * imgScale );
-
-			moveToNewLine( pdfData, offset, lineHeight, 1.0, lineHeight );
-
-			if( cw )
-				cw->moveToNextLine();
-
-			return qMakePair( r, pdfData.currentPageIndex() );
+		const double dpiScale = (double) pdfImg->GetWidth() / iWidth;
+		double dy = 0.0;
+		imgScale *= scale;
+		
+		if( draw )
+		{
+			if( !onLine )
+				pdfData.coords.y -= iHeight * imgScale;
+			else if( firstInParagraph )
+				pdfData.coords.y -= cw.height();
+				
+			if( onLine && addSpace )
+				pdfData.coords.x += spaceWidth * cw.scale() / 100.0;
+			
+			dy = ( onLine ? ( cw.height() - iHeight * imgScale ) / 2.0 : 0.0 );
+	
+			pdfData.drawImage( pdfData.coords.x + x, pdfData.coords.y + dy,
+				pdfImg.get(), imgScale / dpiScale, imgScale / dpiScale );	
 		}
 		else
-			throw PdfRendererError( tr( "Unable to load image: %1.\n\n"
-				"If this image is in Web, please be sure you are connected to the Internet. I'm "
-				"sorry for the inconvenience." )
-					.arg( item->url() ) );
-	}
-	else
-	{
-		emit status( tr( "Loading image." ) );
-
-		const auto img = loadImage( item, *pdfData.resvgOpts.get() );
-
-		auto height = 0.0;
-
-		if( !img.isNull() )
 		{
-			auto pdfImg = pdfData.doc->CreateImage();
-			pdfImg->LoadFromBuffer( { img.data(), static_cast< size_t > ( img.size() ) } );
-
-			const double iWidth = std::round( (double) pdfImg->GetWidth() /
-				(double) pdfData.dpi * 72.0 );
-			const double iHeight = std::round( (double) pdfImg->GetHeight() /
-				(double) pdfData.dpi * 72.0 );
-
-			newLine = true;
-
-			auto * font = createFont( renderOpts.m_textFont, false, false,
-				renderOpts.m_textFontSize, pdfData.doc, scale, pdfData );
-
-			const auto lineHeight = pdfData.lineSpacing( font, renderOpts.m_textFontSize, scale );
-
-			if( !firstInParagraph )
-				height += lineHeight;
-
-			double imgScale = 1.0;
-			const double availableWidth = pdfData.coords.pageWidth - pdfData.coords.margins.left -
-				pdfData.coords.margins.right - offset;
-
-			if( iWidth > availableWidth )
-				imgScale = ( availableWidth / iWidth ) * scale;
-
-			const double pageHeight = pdfData.topY( pdfData.currentPageIndex() ) -
-				pdfData.coords.margins.bottom;
-
-			if( iHeight * imgScale > pageHeight )
-				imgScale = ( pageHeight / ( iHeight * imgScale ) ) * scale;
-
+			if( onLine && addSpace )
+			{
+				cw.append( { spaceWidth, lineHeight, 0.0, true, false, true, false, " " } );
+				pdfData.coords.x += spaceWidth;
+			}
+			
 			height += iHeight * imgScale;
 		}
 
-		pdfData.coords.x = pdfData.coords.margins.left + offset;
+		QRectF r( pdfData.coords.x + x, pdfData.coords.y + dy,
+			iWidth * imgScale, iHeight * imgScale );
+		
+		if( onLine )
+			pdfData.coords.x += iWidth * imgScale + x;
+		else
+			pdfData.coords.x = pdfData.coords.margins.left + offset;
 
-		if( !cw->isNewLineAtEnd() && !firstInParagraph )
-			cw->append( { 0.0, 0.0, 0.0, false, true, false, false, "" } );
+		if( draw && !onLine )
+		{
+			newLine = true;
+			
+			moveToNewLine( pdfData, offset, lineHeight, 1.0, lineHeight );
 
-		cw->append( { 0.0, height, 0.0, false, true, false, true, "" } );
+			cw.moveToNextLine();
+		}
+		
+		if( !draw )
+			cw.append( { iWidth * imgScale, height, 0.0, false, !onLine, false, !onLine, "" } );
 
-		return qMakePair( QRectF(), pdfData.currentPageIndex() );
+		return qMakePair( r, pdfData.currentPageIndex() );
 	}
+	else
+		throw PdfRendererError( tr( "Unable to load image: %1.\n\n"
+			"If this image is in Web, please be sure you are connected to the Internet. I'm "
+			"sorry for the inconvenience." )
+				.arg( item->url() ) );
 }
 
 //

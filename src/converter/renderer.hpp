@@ -598,7 +598,7 @@ private:
 		int footnoteNum,
 		double offset,
 		bool firstInParagraph,
-		CustomWidth * cw,
+		CustomWidth & cw,
 		double scale );
 	//! Draw inlined code.
 	QVector< QPair< QRectF, unsigned int > > drawInlinedCode( PdfAuxData & pdfData,
@@ -608,7 +608,7 @@ private:
 		bool & newLine,
 		double offset,
 		bool firstInParagraph,
-		CustomWidth * cw,
+		CustomWidth & cw,
 		double scale );
 	//! Draw string.
 	QVector< QPair< QRectF, unsigned int > > drawString( PdfAuxData & pdfData,
@@ -632,7 +632,7 @@ private:
 		MD::Item< MD::QStringTrait > * nextItem,
 		int footnoteNum, double offset,
 		bool firstInParagraph,
-		CustomWidth * cw,
+		CustomWidth & cw,
 		const QColor & background,
 		bool strikeout,
 		long long int startLine,
@@ -652,7 +652,7 @@ private:
 		int footnoteNum,
 		double offset,
 		bool firstInParagraph,
-		CustomWidth * cw,
+		CustomWidth & cw,
 		double scale );
 	//! Draw image.
 	QPair< QRectF, unsigned int > drawImage( PdfAuxData & pdfData,
@@ -662,7 +662,7 @@ private:
 		bool & newLine,
 		double offset,
 		bool firstInParagraph,
-		CustomWidth * cw,
+		CustomWidth & cw,
 		double scale,
 		ImageAlignment alignment );
 	//! Draw math expression.
@@ -674,7 +674,7 @@ private:
 		double offset,
 		bool hasNext,
 		bool firstInParagraph,
-		CustomWidth * cw,
+		CustomWidth & cw,
 		double scale );
 
 	//! Font in table.

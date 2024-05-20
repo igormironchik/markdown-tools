@@ -96,6 +96,9 @@ private slots:
 	void testMath();
 	//! Test math.
 	void testMathBigFont();
+	
+	//! Test placing of images.
+	void testImagesPlacing();
 }; // class TestRender
 
 
@@ -432,6 +435,12 @@ void
 TestRender::testVeryLongFootnoteBigFont()
 {
 	doTest( QStringLiteral( "footnotes4.md" ), QStringLiteral( "_big" ), 16.0, 14.0 );
+}
+
+void
+TestRender::testImagesPlacing()
+{
+	doTest( QStringLiteral( "images_placing.md" ), QString(), 8.0, 8.0 );
 }
 
 QTEST_MAIN( TestRender )
