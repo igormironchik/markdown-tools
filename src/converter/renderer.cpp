@@ -1335,8 +1335,6 @@ PdfRenderer::drawLink( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 
 	if( !item->p()->isEmpty() )
 	{
-		pdfData.setColor( renderOpts.m_linkColor );
-
 		for( auto it = item->p()->items().begin(), last = item->p()->items().end();
 			it != last; ++it )
 		{
@@ -1366,7 +1364,7 @@ PdfRenderer::drawLink( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 						text->opts() & MD::StrikethroughText ||
 							item->opts() & MD::StrikethroughText,
 						text->startLine(), text->startColumn(),
-						text->endLine(), text->endColumn() ) );
+						text->endLine(), text->endColumn(), renderOpts.m_linkColor ) );
 				}
 					break;
 
@@ -1374,7 +1372,8 @@ PdfRenderer::drawLink( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 					rects.append( drawInlinedCode( pdfData, renderOpts,
 						static_cast< MD::Code< MD::QStringTrait >* > ( it->get() ),
 						doc, newLine, offset,
-						( it == item->p()->items().begin() && firstInParagraph ), cw, scale ) );
+						( it == item->p()->items().begin() && firstInParagraph ), cw, scale,
+						renderOpts.m_linkColor ) );
 					break;
 
 				case MD::ItemType::Image :
@@ -1388,8 +1387,6 @@ PdfRenderer::drawLink( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 					break;
 			}
 		}
-
-		pdfData.restoreColor();
 	}
 	else if( item->img()->isEmpty() )
 	{
@@ -1801,7 +1798,7 @@ PdfRenderer::drawInlinedCode( PdfAuxData & pdfData, const RenderOpts & renderOpt
 	MD::Code< MD::QStringTrait > * item, std::shared_ptr< MD::Document< MD::QStringTrait > > doc,
 	bool & newLine, double offset,
 	bool firstInParagraph, CustomWidth & cw,
-	double scale )
+	double scale, const QColor & color )
 {
 	pdfData.startLine = item->startLine();
 	pdfData.startPos = item->startColumn();
@@ -1826,7 +1823,7 @@ PdfRenderer::drawInlinedCode( PdfAuxData & pdfData, const RenderOpts & renderOpt
 		renderOpts.m_syntax->theme().editorColor( KSyntaxHighlighting::Theme::CodeFolding ),
 		item->opts() & MD::TextOption::StrikethroughText,
 		item->startLine(), item->startColumn(),
-		item->endLine(), item->endColumn() );
+		item->endLine(), item->endColumn(), color );
 }
 
 void

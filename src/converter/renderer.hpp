@@ -616,7 +616,8 @@ private:
 		double offset,
 		bool firstInParagraph,
 		CustomWidth & cw,
-		double scale );
+		double scale,
+		const QColor & color = Qt::black );
 	//! Draw string.
 	QVector< QPair< QRectF, unsigned int > > drawString( PdfAuxData & pdfData,
 		const RenderOpts & renderOpts,
