@@ -99,6 +99,11 @@ private slots:
 	
 	//! Test placing of images.
 	void testImagesPlacing();
+	
+	//! Test highlights of blockquotes.
+	void testBlockquoteHighlighting();
+	//! Test highlights of blockquotes.
+	void testBlockquoteHighlightingBig();
 }; // class TestRender
 
 
@@ -441,6 +446,18 @@ void
 TestRender::testImagesPlacing()
 {
 	doTest( QStringLiteral( "images_placing.md" ), QString(), 8.0, 8.0 );
+}
+
+void
+TestRender::testBlockquoteHighlighting()
+{
+	doTest( QStringLiteral( "highlighted_quotes.md" ), QString(), 8.0, 8.0 );
+}
+
+void
+TestRender::testBlockquoteHighlightingBig()
+{
+	doTest( QStringLiteral( "highlighted_quotes.md" ), QStringLiteral( "_big" ), 16.0, 14.0 );
 }
 
 QTEST_MAIN( TestRender )

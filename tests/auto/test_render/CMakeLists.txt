@@ -24,6 +24,8 @@ set( SRC main.cpp
 	../../../src/converter/podofo_paintdevice.cpp
 	../../../src/converter/podofo_paintdevice.hpp )
 
+qt6_add_resources( SRC ../../../src/converter/resources.qrc )
+
 add_definitions( -DMD_PDF_TESTING )
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}

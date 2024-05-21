@@ -266,6 +266,8 @@ struct PdfAuxData {
 	QMap< MD::Footnote< MD::QStringTrait > *, QPair< QString, int > > footnotesAnchorsMap;
 	//! Resvg options.
 	QSharedPointer< ResvgOptions > resvgOpts;
+	//! Special blockquotes that should be highlighted.
+	QMap< MD::Blockquote< MD::QStringTrait > *, QColor > highlightedBlockquotes;
 
 #ifdef MD_PDF_TESTING
 	QMap< QString, QString > fonts;
@@ -393,7 +395,9 @@ private:
 	void moveToNewLine( PdfAuxData & pdfData, double xOffset, double yOffset,
 		double yOffsetMultiplier, double yOffsetOnNewPage );
 	//! Load image.
-	QByteArray loadImage( MD::Image< MD::QStringTrait > * item, const ResvgOptions & opts );
+	QByteArray loadImage( MD::Image< MD::QStringTrait > * item,
+		const ResvgOptions & opts,
+		double height = 1.0, bool scale = false, bool cache = true );
 	//! Make all links clickable.
 	void resolveLinks( PdfAuxData & pdfData );
 	//! Max width of numbered list bullet.
@@ -429,7 +433,9 @@ private:
 		double offset,
 		bool withNewLine,
 		CalcHeightOpt heightCalcOpt,
-		double scale );
+		double scale,
+		const QColor & color = Qt::black,
+		bool scaleImagesToLineHeight = false );
 	//! Draw block of code.
 	QPair< QVector< WhereDrawn >, WhereDrawn > drawCode( PdfAuxData & pdfData,
 		const RenderOpts & renderOpts,
@@ -599,7 +605,8 @@ private:
 		double offset,
 		bool firstInParagraph,
 		CustomWidth & cw,
-		double scale );
+		double scale,
+		const QColor & color = Qt::black );
 	//! Draw inlined code.
 	QVector< QPair< QRectF, unsigned int > > drawInlinedCode( PdfAuxData & pdfData,
 		const RenderOpts & renderOpts,
@@ -638,7 +645,8 @@ private:
 		long long int startLine,
 		long long int startPos,
 		long long int endLine,
-		long long int endPos );
+		long long int endPos,
+		const QColor & color = Qt::black );
 	//! Draw link.
 	QVector< QPair< QRectF, unsigned int > > drawLink( PdfAuxData & pdfData,
 		const RenderOpts & renderOpts,
@@ -664,7 +672,8 @@ private:
 		bool firstInParagraph,
 		CustomWidth & cw,
 		double scale,
-		ImageAlignment alignment );
+		ImageAlignment alignment,
+		bool scaleImagesToLineHeight = false );
 	//! Draw math expression.
 	QPair< QRectF, unsigned int > drawMathExpr( PdfAuxData & pdfData,
 		const RenderOpts & renderOpts,
@@ -849,7 +858,8 @@ signals:
 	void start();
 
 public:
-	LoadImageFromNetwork( const QUrl & url, QThread * thread, const ResvgOptions & opts );
+	LoadImageFromNetwork( const QUrl & url, QThread * thread, const ResvgOptions & opts,
+		double height, bool scale );
 	~LoadImageFromNetwork() override = default;
 
 	const QImage & image() const;
@@ -868,6 +878,8 @@ private:
 	QNetworkReply * m_reply;
 	QUrl m_url;
 	const ResvgOptions & m_opts;
+	double m_height;
+	bool m_scale;
 }; // class LoadImageFromNetwork
 
 } /* namespace Render */
