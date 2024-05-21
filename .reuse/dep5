@@ -11,7 +11,7 @@ Files: 3rdparty/KDE/syntax-highlighting/*
 Copyright: 2020 Christoph Cullmann <cullmann@kde.org>
 License: MIT
 
-Files: tests/auto/test_render/*.data tests/manual/* converter.png editor.png viewer.png src/shared/icon.ico src/converter/md-pdf.rc src/editor/md-editor.rc src/converter/resources.qrc src/editor/resources.qrc README.md .gitignore  .github/* .gitmodules conanfile.py codecov.yml installer/* script/*
+Files: tests/auto/test_render/*.data tests/manual/* converter.png editor.png viewer.png src/shared/icon.ico src/converter/md-pdf.rc src/editor/md-editor.rc src/converter/resources.qrc src/editor/resources.qrc README.md  roadmap.md .gitignore  .github/* .gitmodules conanfile.py codecov.yml installer/* script/* src/converter/svg/*
 Copyright: 2024 Igor Mironchik <igor.mironchik@gmail.com>
 License: GPL-3.0-or-later
 
@@ -22,6 +22,10 @@ License: CC0-1.0
 Files: src/shared/icon/*
 Copyright: none
 License: GPL-3.0-or-later
+
+Files: 3rdparty/doctest/*
+Copyright: 2016-2023 Viktor Kirilov
+License: MIT
 
 Files: src/editor/res/katex/*
 Copyright: none

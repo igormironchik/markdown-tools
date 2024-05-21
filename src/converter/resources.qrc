@@ -2,5 +2,10 @@
     <qresource prefix="/">
         <file>img/application-exit.png</file>
         <file>img/bookmarks-organize.png</file>
+        <file>svg/caution.svg</file>
+        <file>svg/important.svg</file>
+        <file>svg/note.svg</file>
+        <file>svg/tip.svg</file>
+        <file>svg/warning.svg</file>
     </qresource>
 </RCC>
