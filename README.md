@@ -75,7 +75,7 @@ work both in this editor and on `GitHub`.
 * Strange behaviour of font combo box in fonts dialog on check in/out check box to constraint
 fonts to monospaced due to [QTBUG-112145](https://bugreports.qt.io/browse/QTBUG-112145)
 
-* I do not render HTML tags in Markdown.
+* I do not render HTML tags in PDF.
 
 * Some LaTeX Math expressions can be wrongly rendered. I use very good
 library `JKQtPlotter` to render LaTeX Math, and not everything is
