@@ -2,6 +2,8 @@
 
 ## TODO
 
+* [ ] Implement filter for TOC in editor.
+
 ## Done
 
 * [x] Implement images alignment in converter to `PDF` both in text and tables.
