@@ -49,6 +49,7 @@
 #include <QHeaderView>
 #include <QTabWidget>
 #include <QStyleOptionTab>
+#include <QSortFilterProxyModel>
 
 // md4qt include.
 #define MD4QT_QT_SUPPORT
@@ -76,7 +77,7 @@ struct MainWindowPrivate {
 	{
 	}
 	
-	void notifyTocTree( TocModel * model, WordWrapItemDelegate * delegate,
+	void notifyTocTree( QAbstractItemModel * model, WordWrapItemDelegate * delegate,
 		const QModelIndex & parent )
 	{
 		for( int i = 0; i < model->rowCount( parent ); ++i )
@@ -109,14 +110,26 @@ struct MainWindowPrivate {
 		sl->addWidget( tabs );
 		tabs->setTabPosition( QTabWidget::East );
 		
-		tocTree = new QTreeView( tabs );
+		tocPanel = new QWidget( tabs );
+		auto tpv = new QVBoxLayout( tocPanel );
+		tpv->setContentsMargins( 3, 3, 3, 3 );
+		tpv->setSpacing( 3 );
+		auto tocFilterLine = new QLineEdit( tocPanel );
+		tpv->addWidget( tocFilterLine );
+		tocTree = new QTreeView( tocPanel );
 		tocModel = new TocModel( tocTree );
-		tocTree->setModel( tocModel );
+		filterTocModel = new QSortFilterProxyModel( tocTree );
+		filterTocModel->setSourceModel( tocModel );
+		filterTocModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
+		filterTocModel->setRecursiveFilteringEnabled( true );
+		tocTree->setModel( filterTocModel );
 		tocTree->setHeaderHidden( true );
 		delegate = new WordWrapItemDelegate( tocTree );
 		tocTree->setItemDelegate( delegate );
 		tocTree->setAlternatingRowColors( true );
-		tabs->addTab( tocTree, MainWindow::tr( "TOC" ) );
+		tocTree->setSortingEnabled( false );
+		tpv->addWidget( tocTree );
+		tabs->addTab( tocPanel, MainWindow::tr( "TOC" ) );
 		
 		fileTree = new QTreeWidget( tabs );
 		fileTree->setHeaderHidden( true );
@@ -125,10 +138,16 @@ struct MainWindowPrivate {
 		QObject::connect( tocTree->header(), &QHeaderView::sectionResized,
 			[this]( int, int, int )
 			{
-				notifyTocTree( this->tocModel, this->delegate, QModelIndex() );
+				notifyTocTree( this->filterTocModel, this->delegate, QModelIndex() );
 			} );
 		
-		tocTree->hide();
+		QObject::connect( tocFilterLine, &QLineEdit::textChanged,
+			[this]( const QString & text )
+			{
+				this->filterTocModel->setFilterFixedString( text );
+			} );
+		
+		tocPanel->hide();
 		
 		// Editor.
 		auto editorPanel = new QWidget( splitter );
@@ -511,8 +530,10 @@ struct MainWindowPrivate {
 	QMenu * standardEditMenu = nullptr;
 	QMenu * settingsMenu = nullptr;
 	QTreeWidget * fileTree = nullptr;
+	QWidget * tocPanel = nullptr;
 	QTreeView * tocTree = nullptr;
 	TocModel * tocModel = nullptr;
+	QSortFilterProxyModel * filterTocModel = nullptr;
 	QLabel * cursorPosLabel = nullptr;
 	bool init = false;
 	bool loadAllFlag = false;
@@ -2018,7 +2039,7 @@ MainWindow::tocClicked( const QModelIndex & index )
 	auto c = d->editor->textCursor();
 	
 	c.setPosition( d->editor->document()->findBlockByNumber(
-		d->tocModel->lineNumber( index ) ).position() );
+		d->tocModel->lineNumber( d->filterTocModel->mapToSource( index ) ) ).position() );
 	
 	d->editor->setTextCursor( c );
 	
@@ -2030,7 +2051,7 @@ MainWindow::tocClicked( const QModelIndex & index )
 void
 MainWindow::showOrHideTabs()
 {
-	d->tocTree->setVisible( !d->tabsVisible );
+	d->tocPanel->setVisible( !d->tabsVisible );
 	
 	auto s = d->splitter->sizes();
 	
