@@ -349,6 +349,8 @@ SyntaxVisitor::onRawHtml( MD::RawHtml< MD::QStringTrait > * h )
 	d->setFormat( format, h->startLine(), h->startColumn(),
 		h->endLine(), h->endColumn() );
 	
+	onItemWithOpts( h );
+	
 	MD::PosCache< MD::QStringTrait >::onRawHtml( h );
 }
 
