@@ -1380,7 +1380,7 @@ PdfRenderer::drawLink( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 					rects.append( drawImage( pdfData, renderOpts,
 						static_cast< MD::Image< MD::QStringTrait >* > ( it->get() ),
 						doc, newLine, offset,
-						( it == item->p()->items().begin() && firstInParagraph ), cw, scale,
+						( it == item->p()->items().begin() && firstInParagraph ), cw, 1.0,
 						renderOpts.m_imageAlignment ) );
 
 				default :
@@ -1411,7 +1411,7 @@ PdfRenderer::drawLink( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 	// Otherwise image link.
 	else
 		rects.append( drawImage( pdfData, renderOpts, item->img().get(), doc, newLine, offset,
-			firstInParagraph, cw, scale, renderOpts.m_imageAlignment ) );
+			firstInParagraph, cw, 1.0, renderOpts.m_imageAlignment ) );
 
 	rects = normalizeRects( rects );
 
@@ -1985,7 +1985,7 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 			case MD::ItemType::Image :
 				drawImage( pdfData, renderOpts,
 					static_cast< MD::Image< MD::QStringTrait >* > ( it->get() ),
-					doc, newLine, offset, ( firstInParagraph || lineBreak ), cw, scale,
+					doc, newLine, offset, ( firstInParagraph || lineBreak ), cw, 1.0,
 					renderOpts.m_imageAlignment, scaleImagesToLineHeight );
 				lineBreak = false;
 				firstInParagraph = false;
@@ -2188,7 +2188,7 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 
 				rects.append( drawImage( pdfData, renderOpts,
 					static_cast< MD::Image< MD::QStringTrait >* > ( it->get() ),
-					doc, newLine, offset, ( firstInParagraph || lineBreak ), cw, scale,
+					doc, newLine, offset, ( firstInParagraph || lineBreak ), cw, 1.0,
 					renderOpts.m_imageAlignment, scaleImagesToLineHeight ) );
 				lineBreak = false;
 				firstInParagraph = false;
