@@ -1484,16 +1484,12 @@ PdfRenderer::drawString( PdfAuxData & pdfData, const RenderOpts & renderOpts, co
 			createUtf8String( QString::number( footnoteNum ) ) );
 
 	double h = lineHeight;
-	double descent = 0.0;
-	double ascent = pdfData.fontAscent( font, fontSize, fontScale );
-	double d = 0.0;
+	const double actualLineHeight = pdfData.lineSpacing( font, fontSize, fontScale );
+	const double d = -pdfData.fontDescent( font, fontSize, fontScale ) +
+		( h - actualLineHeight ) / 2.0;
 
 	if( cw.isDrawing() )
-	{
 		h = cw.height();
-		descent = cw.descent();
-		d = ( h - ascent ) / 2.0;
-	}
 
 	auto newLineFn = [&] ()
 	{
@@ -1506,8 +1502,6 @@ PdfRenderer::drawString( PdfAuxData & pdfData, const RenderOpts & renderOpts, co
 			moveToNewLine( pdfData, offset, cw.height(), 1.0, cw.height() );
 
 			h = cw.height();
-			descent = cw.descent();
-			d = ( h - ascent ) / 2.0;
 		}
 		else
 		{
@@ -1561,7 +1555,7 @@ PdfRenderer::drawString( PdfAuxData & pdfData, const RenderOpts & renderOpts, co
 				cw.append( { w, lineHeight, 0.0, true, false, true, false, " " } );
 
 			ret.append( qMakePair( QRectF( pdfData.coords.x,
-				pdfData.coords.y + d,
+				pdfData.coords.y,
 				w * scale / 100.0, lineHeight ), pdfData.currentPageIndex() ) );
 
 			pdfData.coords.x += w * scale / 100.0;
@@ -1633,7 +1627,7 @@ PdfRenderer::drawString( PdfAuxData & pdfData, const RenderOpts & renderOpts, co
 					if( draw )
 					{
 						ret.append( qMakePair( QRectF( pdfData.coords.x,
-							pdfData.coords.y + d,
+							pdfData.coords.y,
 							spaceWidth * scale / 100.0, lineHeight ), pdfData.currentPageIndex() ) );
 
 						if( background.isValid() )
@@ -1696,7 +1690,7 @@ PdfRenderer::drawString( PdfAuxData & pdfData, const RenderOpts & renderOpts, co
 				pdfData.restoreColor();
 
 				ret.append( qMakePair( QRectF( pdfData.coords.x,
-					pdfData.coords.y + d,
+					pdfData.coords.y,
 					length, lineHeight ), pdfData.currentPageIndex() ) );
 			}
 			else
@@ -1735,7 +1729,7 @@ PdfRenderer::drawString( PdfAuxData & pdfData, const RenderOpts & renderOpts, co
 						pdfData.restoreColor();
 
 						ret.append( qMakePair( QRectF( pdfData.coords.x,
-								pdfData.coords.y + d, w, lineHeight ),
+								pdfData.coords.y, w, lineHeight ),
 							pdfData.currentPageIndex() ) );
 					}
 					else
@@ -2248,13 +2242,14 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 
 					pdfData.setColor( renderOpts.m_linkColor );
 
-					pdfData.setColor( color );
 					pdfData.drawText( pdfData.coords.x, pdfData.coords.y + lineHeight -
 							pdfData.lineSpacing( footnoteFont,
-								renderOpts.m_textFontSize * c_footnoteScale, scale ), str,
+								renderOpts.m_textFontSize * c_footnoteScale, scale ) -
+							pdfData.fontDescent( footnoteFont,
+								renderOpts.m_textFontSize * c_footnoteScale, scale ),
+						str,
 						footnoteFont, renderOpts.m_textFontSize * c_footnoteScale * scale,
 						1.0, false );
-					pdfData.restoreColor();
 
 					pdfData.restoreColor();
 
@@ -2702,14 +2697,16 @@ PdfRenderer::drawFootnote( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 			const auto w = pdfData.stringWidth( font, renderOpts.m_textFontSize,
 				c_footnoteScale, str );
 			const auto y = ret.constFirst().y + ret.constFirst().height -
-				pdfData.lineSpacing( font, renderOpts.m_textFontSize, c_footnoteScale );
+				pdfData.lineSpacing( font, renderOpts.m_textFontSize, c_footnoteScale ) -
+				pdfData.fontDescent( font, renderOpts.m_textFontSize, c_footnoteScale );
 			const auto x = pdfData.coords.margins.left + footnoteOffset -
 				c_offset - w;
 			const auto p = ret.constFirst().pageIdx;
 
 			m_dests.insert( footnoteRefId,
 				std::make_shared< Destination > ( pdfData.doc->GetPages().GetPageAt( p ),
-					x, y + pdfData.lineSpacing( font, renderOpts.m_textFontSize, c_footnoteScale ),
+					x, y + pdfData.lineSpacing( font, renderOpts.m_textFontSize, c_footnoteScale ) +
+						pdfData.fontDescent( font, renderOpts.m_textFontSize, c_footnoteScale ),
 					0.0 ) );
 
 			pdfData.currentPainterIdx = p;
@@ -3204,7 +3201,8 @@ PdfRenderer::drawCode( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 				 h + lineHeight, PoDoFo::PdfPathDrawMode::Fill );
 			pdfData.restoreColor();
 
-			ret.append( { pdfData.currentPageIndex(), y, h + lineHeight } );
+			ret.append( { pdfData.currentPageIndex(), y +
+				pdfData.fontDescent( font, renderOpts.m_codeFontSize, scale ), h + lineHeight } );
 		}
 
 		for( ; i < j; ++i )
@@ -3533,7 +3531,7 @@ PdfRenderer::drawListItem( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 		pdfData.stringWidth( font, renderOpts.m_textFontSize, scale, "9" ) * bulletWidth +
 		pdfData.stringWidth( font, renderOpts.m_textFontSize, scale, "." );
 	const auto spaceWidth = pdfData.stringWidth( font, renderOpts.m_textFontSize, scale, " " );
-	const auto unorderedMarkWidth = spaceWidth * 0.75;
+	const auto unorderedMarkWidth = lineHeight * 0.25;
 
 	if( heightCalcOpt == CalcHeightOpt::Unknown )
 		offset += orderedListNumberWidth + spaceWidth;
@@ -3640,9 +3638,10 @@ PdfRenderer::drawListItem( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 
 			case MD::ItemType::List :
 			{
+				auto list = static_cast< MD::List< MD::QStringTrait >* > ( it->get() );
+				
 				const auto where = drawList( pdfData, renderOpts,
-					static_cast< MD::List< MD::QStringTrait >* > ( it->get() ),
-					doc, bulletWidth, offset, heightCalcOpt,
+					list, doc, maxListNumberWidth( list ), offset, heightCalcOpt,
 					scale, true );
 
 				ret.append( where.first );
@@ -3727,8 +3726,7 @@ PdfRenderer::drawListItem( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 
 				pdfData.drawText(
 					pdfData.coords.margins.left + offset - ( orderedListNumberWidth + spaceWidth ),
-					firstLine.y + qAbs( firstLine.height -
-						pdfData.fontAscent( font, renderOpts.m_textFontSize, scale ) ) / 2.0,
+					firstLine.y - pdfData.fontDescent( font, renderOpts.m_textFontSize, scale ),
 					createUtf8String( idxText ),
 					font, renderOpts.m_textFontSize * scale, 1.0, false );
 			}
@@ -3740,8 +3738,8 @@ PdfRenderer::drawListItem( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 				const auto r = unorderedMarkWidth / 2.0;
 				(*pdfData.painters)[ pdfData.currentPainterIdx ]->DrawCircle(
 					pdfData.coords.margins.left + offset + r - ( orderedListNumberWidth + spaceWidth ),
-					firstLine.y + qAbs( firstLine.height - unorderedMarkWidth ) / 2.0, r,
-					PoDoFo::PdfPathDrawMode::Fill );
+					firstLine.y + qAbs( firstLine.height - unorderedMarkWidth ) / 2.0 +
+						unorderedMarkWidth / 2.0, r, PoDoFo::PdfPathDrawMode::Fill );
 				pdfData.restoreColor();
 			}
 
@@ -3767,27 +3765,16 @@ PdfRenderer::maxListNumberWidth( MD::List< MD::QStringTrait > * list ) const
 				++counter;
 		}
 	}
-
-	for( auto it = list->items().cbegin(), last = list->items().cend(); it != last; ++it )
+	
+	int ret = 0;
+	
+	while( counter )
 	{
-		if( (*it)->type() == MD::ItemType::ListItem )
-		{
-			auto * item = static_cast< MD::ListItem< MD::QStringTrait >* > ( it->get() );
-
-			for( auto lit = item->items().cbegin(), llast = item->items().cend(); lit != llast; ++lit )
-			{
-				if( (*lit)->type() == MD::ItemType::List )
-				{
-					auto i = maxListNumberWidth( static_cast< MD::List< MD::QStringTrait >* > ( lit->get() ) );
-
-					if( i > counter )
-						counter = i;
-				}
-			}
-		}
+		counter /= 10;
+		++ret;
 	}
 
-	return ( counter / 10 + 1 );
+	return ret ? ret : 1;
 }
 
 bool
