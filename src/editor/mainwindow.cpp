@@ -115,6 +115,7 @@ struct MainWindowPrivate {
 		tpv->setContentsMargins( 3, 3, 3, 3 );
 		tpv->setSpacing( 3 );
 		auto tocFilterLine = new QLineEdit( tocPanel );
+		tocFilterLine->setPlaceholderText( MainWindow::tr( "Filter ToC" ) );
 		tpv->addWidget( tocFilterLine );
 		tocTree = new QTreeView( tocPanel );
 		tocModel = new TocModel( tocTree );
@@ -129,7 +130,7 @@ struct MainWindowPrivate {
 		tocTree->setAlternatingRowColors( true );
 		tocTree->setSortingEnabled( false );
 		tpv->addWidget( tocTree );
-		tabs->addTab( tocPanel, MainWindow::tr( "TOC" ) );
+		tabs->addTab( tocPanel, MainWindow::tr( "ToC" ) );
 		
 		fileTree = new QTreeWidget( tabs );
 		fileTree->setHeaderHidden( true );
@@ -266,7 +267,7 @@ struct MainWindowPrivate {
 		toggleGoToLineAction->setShortcut( MainWindow::tr( "Ctrl+L" ) );
 		q->addAction( toggleGoToLineAction );
 
-		addTOCAction = new QAction( MainWindow::tr( "Add TOC" ), q );
+		addTOCAction = new QAction( MainWindow::tr( "Add ToC" ), q );
 		
 		auto formatMenu = q->menuBar()->addMenu( MainWindow::tr( "F&ormat" ) );
 		
