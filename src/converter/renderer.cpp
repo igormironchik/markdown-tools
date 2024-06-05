@@ -3489,7 +3489,7 @@ PdfRenderer::drawList( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 			const auto where = drawListItem( pdfData, renderOpts,
 				static_cast< MD::ListItem< MD::QStringTrait >* > ( it->get() ), doc, idx,
 				prevListItemType, bulletWidth, offset, heightCalcOpt,
-				scale, first && !nested );
+				scale, first && !nested, first );
 
 			ret.append( where.first );
 
@@ -3516,7 +3516,7 @@ QPair< QVector< WhereDrawn >, WhereDrawn >
 PdfRenderer::drawListItem( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 	MD::ListItem< MD::QStringTrait > * item, std::shared_ptr< MD::Document< MD::QStringTrait > > doc, int & idx,
 	ListItemType & prevListItemType, int bulletWidth, double offset, CalcHeightOpt heightCalcOpt,
-	double scale, bool firstInList )
+	double scale, bool firstInList, bool firstItem )
 {
 	pdfData.startLine = item->startLine();
 	pdfData.startPos = item->startColumn();
@@ -3715,8 +3715,8 @@ PdfRenderer::drawListItem( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 			}
 			else if( item->listType() == MD::ListItem< MD::QStringTrait >::Ordered )
 			{
-				if( prevListItemType == ListItemType::Unordered )
-					idx = 1;
+				if( prevListItemType == ListItemType::Unordered || firstItem )
+					idx = item->startNumber();
 				else if( prevListItemType == ListItemType::Ordered )
 					++idx;
 
@@ -3754,6 +3754,7 @@ int
 PdfRenderer::maxListNumberWidth( MD::List< MD::QStringTrait > * list ) const
 {
 	int counter = 0;
+	bool first = true;
 
 	for( auto it = list->items().cbegin(), last = list->items().cend(); it != last; ++it )
 	{
@@ -3762,8 +3763,15 @@ PdfRenderer::maxListNumberWidth( MD::List< MD::QStringTrait > * list ) const
 			auto * item = static_cast< MD::ListItem< MD::QStringTrait >* > ( it->get() );
 
 			if( item->listType() == MD::ListItem< MD::QStringTrait >::Ordered )
-				++counter;
+			{
+				if( first )
+					counter = item->startNumber();
+				else
+					++counter;
+			}
 		}
+		
+		first = false;
 	}
 	
 	int ret = 0;

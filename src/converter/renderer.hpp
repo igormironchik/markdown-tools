@@ -528,7 +528,10 @@ private:
 		double offset,
 		CalcHeightOpt heightCalcOpt,
 		double scale,
-		bool firstInList );
+		//! A very first item in list, even not nested first item in nested list.
+		bool firstInList,
+		//! Just first item in list, possibly in nested list.
+		bool firstItem );
 
 	//! Auxiliary struct for calculation of spaces scales to shrink text to width.
 	struct CustomWidth {
