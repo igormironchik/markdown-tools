@@ -78,28 +78,28 @@ class TabBar
 	:	public QTabBar
 {
 	Q_OBJECT
-	
+
 signals:
 	void activated();
-	
+
 public:
 	explicit TabBar( QWidget * parent )
 		:	QTabBar( parent )
 	{
 	}
-	
+
 	~TabBar() override = default;
-	
+
 protected:
 	bool event( QEvent * e ) override
 	{
 		if( e->type() == QEvent::Shortcut )
 		{
 			const auto res = QTabBar::event( e );
-			
+
 			if( res )
 				emit activated();
-			
+
 			return res;
 		}
 		else
@@ -117,33 +117,60 @@ class TabWidget
 	:	public QTabWidget
 {
 	Q_OBJECT
-	
+
 signals:
 	//! Return key was pressed on tab.
 	void activated();
-	
+
 public:
 	explicit TabWidget( QWidget * parent )
 		:	QTabWidget( parent )
 	{
 		auto bar = new TabBar( this );
-		
+
 		setTabBar( bar );
-		
+
 		connect( bar, &TabBar::activated, this, &TabWidget::activated );
 	}
-	
+
 	~TabWidget() override = default;
-	
+
 protected:
 	void keyPressEvent( QKeyEvent * e ) override
 	{
 		if( e->key() == Qt::Key_Return )
 			emit activated();
-		
+
 		QTabWidget::keyPressEvent( e );
 	}
 }; // class TabWidget
+
+
+//
+// TocTreeView
+//
+
+//! Tree view for ToC.
+class TocTreeView
+	:	public QTreeView
+{
+public:
+	explicit TocTreeView( QWidget * parent )
+		:	QTreeView( parent )
+	{
+	}
+
+	~TocTreeView() override = default;
+
+protected:
+	void keyPressEvent( QKeyEvent * e ) override
+	{
+		QTreeView::keyPressEvent( e );
+
+		if( e->key() == Qt::Key_Return )
+			e->accept();
+	}
+}; // class TocTreeView
 
 //
 // MainWindowPrivate
@@ -154,16 +181,16 @@ struct MainWindowPrivate {
 		:	q( parent )
 	{
 	}
-	
+
 	void notifyTocTree( QAbstractItemModel * model, WordWrapItemDelegate * delegate,
 		const QModelIndex & parent )
 	{
 		for( int i = 0; i < model->rowCount( parent ); ++i )
 		{
 			const auto idx = model->index( i, 0, parent );
-			
+
 			emit delegate->sizeHintChanged( idx );
-			
+
 			if( model->rowCount( idx ) > 0 )
 				notifyTocTree( model, delegate, idx );
 		}
@@ -178,7 +205,7 @@ struct MainWindowPrivate {
 
 		splitter = new QSplitter( w );
 		splitter->setOrientation( Qt::Orientation::Horizontal );
-		
+
 		// Sidebar.
 		sidebarPanel = new QWidget( splitter );
 		QVBoxLayout * sl = new QVBoxLayout( sidebarPanel );
@@ -187,26 +214,37 @@ struct MainWindowPrivate {
 		tabs = new TabWidget( sidebarPanel );
 		sl->addWidget( tabs );
 		tabs->setTabPosition( QTabWidget::East );
-		
+
 		QObject::connect( tabs, &TabWidget::activated,
 			[this] () {
 				if( !this->tabsVisible || this->currentTab == this->tabs->currentIndex() )
 					this->q->showOrHideTabs();
-			
+
 				if( this->tabs->currentIndex() == 0 )
 					this->initMarkdownMenu();
-				
+
 				this->currentTab = this->tabs->currentIndex();
 			} );
-		
+
 		tocPanel = new QWidget( tabs );
 		auto tpv = new QVBoxLayout( tocPanel );
 		tpv->setContentsMargins( 3, 3, 3, 3 );
 		tpv->setSpacing( 3 );
-		auto tocFilterLine = new QLineEdit( tocPanel );
-		tocFilterLine->setPlaceholderText( MainWindow::tr( "Filter ToC" ) );
+		tocFilterLine = new QLineEdit( tocPanel );
+		tocFilterLine->setPlaceholderText( MainWindow::tr( "Filter ToC (Ctrl+Alt+F)" ) );
 		tpv->addWidget( tocFilterLine );
-		tocTree = new QTreeView( tocPanel );
+		auto tocFilterAction = new QAction( q );
+		tocFilterAction->setShortcut( MainWindow::tr( "Ctrl+Alt+F" ) );
+		tocFilterAction->setShortcutContext( Qt::ApplicationShortcut );
+		q->addAction( tocFilterAction );
+
+		QObject::connect( tocFilterAction, &QAction::triggered,
+			[this] () {
+				this->tocFilterLine->setFocus();
+				this->tocFilterLine->selectAll();
+			} );
+
+		tocTree = new TocTreeView( tocPanel );
 		tocModel = new TocModel( tocTree );
 		filterTocModel = new QSortFilterProxyModel( tocTree );
 		filterTocModel->setSourceModel( tocModel );
@@ -220,25 +258,25 @@ struct MainWindowPrivate {
 		tocTree->setSortingEnabled( false );
 		tpv->addWidget( tocTree );
 		tabs->addTab( tocPanel, MainWindow::tr( "To&C" ) );
-		
+
 		fileTree = new QTreeWidget( tabs );
 		fileTree->setHeaderHidden( true );
 		fileTree->hide();
-		
+
 		QObject::connect( tocTree->header(), &QHeaderView::sectionResized,
 			[this]( int, int, int )
 			{
 				notifyTocTree( this->filterTocModel, this->delegate, QModelIndex() );
 			} );
-		
+
 		QObject::connect( tocFilterLine, &QLineEdit::textChanged,
 			[this]( const QString & text )
 			{
 				this->filterTocModel->setFilterFixedString( text );
 			} );
-		
+
 		tocPanel->hide();
-		
+
 		// Editor.
 		auto editorPanel = new QWidget( splitter );
 		auto v = new QVBoxLayout( editorPanel );
@@ -268,7 +306,7 @@ struct MainWindowPrivate {
 		splitter->addWidget( sidebarPanel );
 		splitter->addWidget( editorPanel );
 		splitter->addWidget( previewPanel );
-		
+
 		splitterCursor = splitter->handle( 1 )->cursor();
 		this->splitter->handle( 1 )->setCursor( Qt::ArrowCursor );
 
@@ -357,9 +395,9 @@ struct MainWindowPrivate {
 		q->addAction( toggleGoToLineAction );
 
 		addTOCAction = new QAction( MainWindow::tr( "Add ToC" ), q );
-		
+
 		auto formatMenu = q->menuBar()->addMenu( MainWindow::tr( "F&ormat" ) );
-		
+
 		tabAction = new QAction( MainWindow::tr( "Indent" ), formatMenu );
 		tabAction->setShortcut( MainWindow::tr( "Tab" ) );
 		tabAction->setShortcutContext( Qt::WidgetShortcut );
@@ -369,7 +407,7 @@ struct MainWindowPrivate {
 					new QKeyEvent( QEvent::KeyPress, Qt::Key_Tab, Qt::NoModifier ) );
 			} );
 		formatMenu->addAction( tabAction );
-		
+
 		backtabAction = new QAction( MainWindow::tr( "Unindent" ), formatMenu );
 		backtabAction->setShortcut( MainWindow::tr( "Shift+Tab" ) );
 		backtabAction->setShortcutContext( Qt::WidgetShortcut );
@@ -467,7 +505,8 @@ struct MainWindowPrivate {
 		QObject::connect( addTOCAction, &QAction::triggered,
 			q, &MainWindow::onAddTOC );
 		QObject::connect( tabs, &QTabWidget::tabBarClicked,
-			q, &MainWindow::onTabClicked );		
+			q, &MainWindow::onTabClicked );
+		QObject::connect( tocTree, &QTreeView::activated, q, &MainWindow::onTocClicked );
 		QObject::connect( tocTree, &QTreeView::clicked, q, &MainWindow::onTocClicked );
 
 		q->readCfg();
@@ -484,11 +523,11 @@ struct MainWindowPrivate {
 		q->setTabOrder( find->editLine(), find->replaceLine() );
 		q->setTabOrder( find->replaceLine(), findWeb->line() );
 	}
-	
+
 	QString paragraphToMenuText( MD::Paragraph< MD::QStringTrait > * p )
 	{
 		QString res;
-		
+
 		for( auto it = p->items().cbegin(), last = p->items().cend(); it != last; ++it )
 		{
 			switch( (*it)->type() )
@@ -496,10 +535,10 @@ struct MainWindowPrivate {
 				case MD::ItemType::Text :
 				{
 					auto t = static_cast< MD::Text< MD::QStringTrait >* > ( it->get() );
-					
+
 					if( !res.isEmpty() )
 						res.append( QStringLiteral( " " ) );
-					
+
 					res.append( t->text() );
 				}
 					break;
@@ -507,10 +546,10 @@ struct MainWindowPrivate {
 				case MD::ItemType::Code :
 				{
 					auto c = static_cast< MD::Code< MD::QStringTrait >* > ( it->get() );
-					
+
 					if( !res.isEmpty() )
 						res.append( QStringLiteral( " " ) );
-					
+
 					res.append( c->text() );
 				}
 					break;
@@ -518,12 +557,12 @@ struct MainWindowPrivate {
 				case MD::ItemType::Link :
 				{
 					auto l = static_cast< MD::Link< MD::QStringTrait >* > ( it->get() );
-					
+
 					if( !l->p()->isEmpty() )
 					{
 						if( !res.isEmpty() )
 							res.append( QStringLiteral( " " ) );
-						
+
 						res.append( paragraphToMenuText( l->p().get() ) );
 					}
 				}
@@ -533,7 +572,7 @@ struct MainWindowPrivate {
 					break;
 			}
 		}
-		
+
 		return res;
 	}
 
@@ -542,18 +581,18 @@ struct MainWindowPrivate {
 		if( tabsVisible && tocDoc != editor->currentDoc() )
 		{
 			tocModel->clear();
-			
+
 			tocDoc = editor->currentDoc();
-			
+
 			std::vector< QModelIndex > current;
-					
+
 			MD::forEach< MD::QStringTrait >( { MD::ItemType::Heading }, tocDoc,
 				[this, &current]( MD::Item< MD::QStringTrait > * item )
 				{
 					auto h = static_cast< MD::Heading< MD::QStringTrait >* > ( item );
-					
+
 					if( h->text() )
-					{		
+					{
 						if( current.size() )
 						{
 							if( h->level() < this->tocModel->level( current.front() ) )
@@ -563,7 +602,7 @@ struct MainWindowPrivate {
 										[h, this]( const auto & i )
 											{ return this->tocModel->level( i ) >= h->level(); } ),
 									current.cend() );
-							
+
 							if( current.empty() )
 							{
 								this->tocModel->addTopLevelItem( this->paragraphToMenuText( h->text().get() ),
@@ -590,7 +629,7 @@ struct MainWindowPrivate {
 			);
 		}
 	}
-	
+
 	MainWindow * q = nullptr;
 	Editor * editor = nullptr;
 	WebView * preview = nullptr;
@@ -621,10 +660,11 @@ struct MainWindowPrivate {
 	QMenu * settingsMenu = nullptr;
 	QTreeWidget * fileTree = nullptr;
 	QWidget * tocPanel = nullptr;
-	QTreeView * tocTree = nullptr;
+	TocTreeView * tocTree = nullptr;
 	TocModel * tocModel = nullptr;
 	QSortFilterProxyModel * filterTocModel = nullptr;
 	QLabel * cursorPosLabel = nullptr;
+	QLineEdit * tocFilterLine = nullptr;
 	bool init = false;
 	bool loadAllFlag = false;
 	bool previewMode = false;
@@ -686,10 +726,10 @@ MainWindow::resizeEvent( QResizeEvent * e )
 	if( !d->init )
 	{
 		d->init = true;
-		
+
 		QStyleOptionTab opt;
 		opt.initFrom( d->tabs );
-		
+
 		d->minTabWidth = opt.rect.height();
 		d->sidebarPanel->setFixedWidth( d->minTabWidth );
 		d->sidebarPanel->setMinimumWidth( d->minTabWidth );
@@ -744,7 +784,7 @@ void
 MainWindow::openInPreviewMode( bool loadAllLinked )
 {
 	d->viewAction->setChecked( true );
-	
+
 	if( loadAllLinked )
 		loadAllLinkedFiles();
 }
@@ -844,7 +884,7 @@ MainWindow::onFileSave()
 	updateWindowTitle();
 
 	readAllLinked();
-	
+
 	d->initMarkdownMenu();
 }
 
@@ -1034,13 +1074,13 @@ MainWindow::onTextChanged()
 		d->html->setText( MD::toHtml( d->mdDoc, false,
 			QStringLiteral( "qrc:/res/img/go-jump.png" ) ) );
 	}
-	
+
 	const auto lineNumber = d->editor->textCursor().block().blockNumber();
 	const auto lineLength = d->editor->textCursor().block().length();
-	
+
 	const auto items = d->editor->syntaxHighlighter().findFirstInCache(
 		{ 0, lineNumber, lineLength, lineNumber } );
-	
+
 	if( !items.empty() && items[ 0 ]->type() == MD::ItemType::Heading )
 		d->initMarkdownMenu();
 }
@@ -1133,7 +1173,7 @@ MainWindow::onLineHovered( int lineNumber, const QPoint & pos )
 		{ 0, lineNumber,
 			d->editor->document()->findBlockByLineNumber( lineNumber ).length(),
 			lineNumber } );
-	
+
 	if( !items.empty() )
 	{
 		if( ( items.front()->type() != MD::ItemType::List &&
@@ -1196,7 +1236,7 @@ QString
 MainWindow::configFileName( bool inPlace ) const
 {
 	const auto folders = QStandardPaths::standardLocations( QStandardPaths::ConfigLocation );
-	
+
 	if( !folders.isEmpty() && !inPlace )
 		return folders.front() + QDir::separator() + c_appCfgFolderName + QDir::separator() +
 			c_appCfgFileName;
@@ -1208,12 +1248,12 @@ void
 MainWindow::saveCfg() const
 {
 	auto fileName = configFileName( false );
-	
+
 	const QDir dir( "./" );
-	
+
 	if( !dir.mkpath( QFileInfo( fileName ).absolutePath() ) )
 		fileName = configFileName( true );
-	
+
 	QFile file( fileName );
 
 	if( file.open( QIODevice::WriteOnly ) )
@@ -1254,10 +1294,10 @@ void
 MainWindow::readCfg()
 {
 	auto fileName = configFileName( false );
-	
+
 	if( !QFileInfo::exists( fileName ) )
 		fileName = configFileName( true );
-	
+
 	QFile file( fileName );
 
 	if( file.open( QIODevice::ReadOnly ) )
@@ -1303,7 +1343,7 @@ MainWindow::readCfg()
 
 			if( !cfg.referenceColor().isEmpty() )
 				d->mdColors.referenceColor = QColor( cfg.referenceColor() );
-			
+
 			if( !cfg.specialColor().isEmpty() )
 				d->mdColors.specialColor = QColor( cfg.specialColor() );
 
@@ -1373,7 +1413,7 @@ MainWindow::onCursorPositionChanged()
 		this, &MainWindow::onEditMenuActionTriggered );
 
 	const auto c = d->editor->textCursor();
-	
+
 	d->tabAction->setEnabled( c.hasSelection() );
 	d->backtabAction->setEnabled( c.hasSelection() );
 
@@ -1405,10 +1445,10 @@ MainWindow::loadAllLinkedFiles()
 	if( d->loadAllFlag )
 	{
 		d->loadAllFlag = false;
-		
+
 		d->tabs->removeTab( 1 );
 		d->fileTree->hide();
-		
+
 		closeAllLinkedFiles();
 
 		updateLoadAllLinkedFilesMenuText();
@@ -1423,17 +1463,17 @@ MainWindow::loadAllLinkedFiles()
 		{
 			QMessageBox::information( this, windowTitle(),
 				tr( "You have unsaved changes. Please save document first." ) );
-	
+
 			d->editor->setFocus();
-	
+
 			return;
 		}
-		
+
 		d->loadAllFlag = true;
 	}
 
 	readAllLinked();
-	
+
 	d->fileTree->clear();
 	d->fileTree->show();
 	d->tabs->addTab( d->fileTree, tr( "&Navigation" ) );
@@ -1513,7 +1553,7 @@ MainWindow::loadAllLinkedFiles()
 	else
 	{
 		closeAllLinkedFiles();
-		
+
 		d->tabs->removeTab( 1 );
 		d->fileTree->hide();
 
@@ -1588,7 +1628,7 @@ MainWindow::onNavigationDoubleClicked( QTreeWidgetItem * item, int )
 		d->editor->setFocus();
 
 		onCursorPositionChanged();
-		
+
 		d->initMarkdownMenu();
 	}
 }
@@ -1637,10 +1677,10 @@ MainWindow::onTogglePreviewAction( bool checked )
 		d->sidebarPanel->hide();
 		d->splitter->handle( 1 )->setCursor( Qt::ArrowCursor );
 		d->splitter->handle( 2 )->setCursor( Qt::ArrowCursor );
-		
+
 		if( d->tabsVisible )
 			showOrHideTabs();
-		
+
 		d->splitter->setSizes( { 0, 0, centralWidget()->width() } );
 	}
 	else
@@ -1658,7 +1698,7 @@ MainWindow::onTogglePreviewAction( bool checked )
 		d->editor->setVisible( true );
 		d->sidebarPanel->show();
 		d->splitter->handle( 2 )->setCursor( d->splitterCursor );
-		
+
 		const auto w = ( centralWidget()->width() - d->minTabWidth ) / 2;
 		d->splitter->setSizes( { d->minTabWidth, w, w } );
 
@@ -1726,7 +1766,7 @@ MainWindow::onAddTOC()
 			else if( item->type() == MD::ItemType::Heading )
 			{
 				auto h = static_cast< MD::Heading< MD::QStringTrait > * > ( item );
-				
+
 				if( current.size() )
 				{
 					if( h->level() < current.front() )
@@ -1736,10 +1776,10 @@ MainWindow::onAddTOC()
 								[h]( const auto & i ) { return i >= h->level(); } ),
 							current.cend() );
 				}
-					
+
 				current.push_back( h->level() );
 				offset = ( current.size() - 1 ) * 2;
-	
+
 				toc.append( QString( offset, QChar( ' ' ) ) );
 				toc.append( QStringLiteral( "* [" ) );
 				toc.append( paragraphToMD( h->text().get(), d->editor ) );
@@ -2078,7 +2118,7 @@ MainWindow::onShowLicenses()
 			"LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, "
 			"OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE "
 			"SOFTWARE.</p>" ) );
-	
+
 	msg.addLicense( QStringLiteral( "hightlight-blockquote" ),
 		QStringLiteral( "<p><b>hightlight-blockquote</b>\n\n</p>"
 			"<p>The MIT License (MIT)</p>\n"
@@ -2101,7 +2141,7 @@ MainWindow::onShowLicenses()
 			"FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, "
 			"ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE "
 			"SOFTWARE.</p>" ) );
-	
+
 
 	msg.exec();
 }
@@ -2128,14 +2168,14 @@ void
 MainWindow::onTocClicked( const QModelIndex & index )
 {
 	auto c = d->editor->textCursor();
-	
+
 	c.setPosition( d->editor->document()->findBlockByNumber(
 		d->tocModel->lineNumber( d->filterTocModel->mapToSource( index ) ) ).position() );
-	
+
 	d->editor->setTextCursor( c );
-	
+
 	d->editor->ensureCursorVisible();
-	
+
 	d->editor->setFocus();
 }
 
@@ -2143,14 +2183,14 @@ void
 MainWindow::showOrHideTabs()
 {
 	d->tocPanel->setVisible( !d->tabsVisible );
-	
+
 	auto s = d->splitter->sizes();
-	
+
 	if( !d->tabsVisible )
 	{
 		if( d->tabWidth == -1 )
 			d->tabWidth = 250;
-		
+
 		s[ 0 ] = d->tabWidth;
 		s[ 1 ] = s[ 1 ] - d->tabWidth + d->minTabWidth;
 		d->sidebarPanel->setMaximumWidth( QWIDGETSIZE_MAX );
@@ -2164,10 +2204,11 @@ MainWindow::showOrHideTabs()
 		s[ 1 ] = s[ 1 ] + w;
 		d->sidebarPanel->setFixedWidth( d->minTabWidth );
 		d->splitter->handle( 1 )->setCursor( Qt::ArrowCursor );
+		d->editor->setFocus();
 	}
-	
+
 	d->tabsVisible = !d->tabsVisible;
-	
+
 	d->splitter->setSizes( s );
 }
 
@@ -2176,9 +2217,9 @@ MainWindow::onTabClicked( int index )
 {
 	if( d->tabs->currentIndex() == index || !d->tabsVisible )
 		showOrHideTabs();
-	
+
 	d->currentTab = index;
-	
+
 	if( index == 0 )
 		d->initMarkdownMenu();
 }
