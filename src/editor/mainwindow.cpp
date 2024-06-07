@@ -50,6 +50,8 @@
 #include <QTabWidget>
 #include <QStyleOptionTab>
 #include <QSortFilterProxyModel>
+#include <QKeyEvent>
+#include <QTabBar>
 
 // md4qt include.
 #define MD4QT_QT_SUPPORT
@@ -66,6 +68,82 @@
 
 
 namespace MdEditor {
+
+//
+// TabBar
+//
+
+//! Tab bar for tabs.
+class TabBar
+	:	public QTabBar
+{
+	Q_OBJECT
+	
+signals:
+	void activated();
+	
+public:
+	explicit TabBar( QWidget * parent )
+		:	QTabBar( parent )
+	{
+	}
+	
+	~TabBar() override = default;
+	
+protected:
+	bool event( QEvent * e ) override
+	{
+		if( e->type() == QEvent::Shortcut )
+		{
+			const auto res = QTabBar::event( e );
+			
+			if( res )
+				emit activated();
+			
+			return res;
+		}
+		else
+			return QTabBar::event( e );
+	}
+}; // class TabBar
+
+
+//
+// TabWidget
+//
+
+//! Tabs in main window.
+class TabWidget
+	:	public QTabWidget
+{
+	Q_OBJECT
+	
+signals:
+	//! Return key was pressed on tab.
+	void activated();
+	
+public:
+	explicit TabWidget( QWidget * parent )
+		:	QTabWidget( parent )
+	{
+		auto bar = new TabBar( this );
+		
+		setTabBar( bar );
+		
+		connect( bar, &TabBar::activated, this, &TabWidget::activated );
+	}
+	
+	~TabWidget() override = default;
+	
+protected:
+	void keyPressEvent( QKeyEvent * e ) override
+	{
+		if( e->key() == Qt::Key_Return )
+			emit activated();
+		
+		QTabWidget::keyPressEvent( e );
+	}
+}; // class TabWidget
 
 //
 // MainWindowPrivate
@@ -106,9 +184,20 @@ struct MainWindowPrivate {
 		QVBoxLayout * sl = new QVBoxLayout( sidebarPanel );
 		sl->setContentsMargins( 0, 0, 0, 0 );
 		sl->setSpacing( 0 );
-		tabs = new QTabWidget( sidebarPanel );
+		tabs = new TabWidget( sidebarPanel );
 		sl->addWidget( tabs );
 		tabs->setTabPosition( QTabWidget::East );
+		
+		QObject::connect( tabs, &TabWidget::activated,
+			[this] () {
+				if( !this->tabsVisible || this->currentTab == this->tabs->currentIndex() )
+					this->q->showOrHideTabs();
+			
+				if( this->tabs->currentIndex() == 0 )
+					this->initMarkdownMenu();
+				
+				this->currentTab = this->tabs->currentIndex();
+			} );
 		
 		tocPanel = new QWidget( tabs );
 		auto tpv = new QVBoxLayout( tocPanel );
@@ -130,7 +219,7 @@ struct MainWindowPrivate {
 		tocTree->setAlternatingRowColors( true );
 		tocTree->setSortingEnabled( false );
 		tpv->addWidget( tocTree );
-		tabs->addTab( tocPanel, MainWindow::tr( "ToC" ) );
+		tabs->addTab( tocPanel, MainWindow::tr( "To&C" ) );
 		
 		fileTree = new QTreeWidget( tabs );
 		fileTree->setHeaderHidden( true );
@@ -378,8 +467,8 @@ struct MainWindowPrivate {
 		QObject::connect( addTOCAction, &QAction::triggered,
 			q, &MainWindow::onAddTOC );
 		QObject::connect( tabs, &QTabWidget::tabBarClicked,
-			q, &MainWindow::tabClicked );		
-		QObject::connect( tocTree, &QTreeView::clicked, q, &MainWindow::tocClicked );
+			q, &MainWindow::onTabClicked );		
+		QObject::connect( tocTree, &QTreeView::clicked, q, &MainWindow::onTocClicked );
 
 		q->readCfg();
 
@@ -513,7 +602,7 @@ struct MainWindowPrivate {
 	Find * find = nullptr;
 	FindWeb * findWeb = nullptr;
 	GoToLine * gotoline = nullptr;
-	QTabWidget * tabs = nullptr;
+	TabWidget * tabs = nullptr;
 	QAction * newAction = nullptr;
 	QAction * openAction = nullptr;
 	QAction * saveAction = nullptr;
@@ -550,6 +639,7 @@ struct MainWindowPrivate {
 	Colors mdColors;
 	int tabWidth = -1;
 	int minTabWidth = -1;
+	int currentTab = 0;
 }; // struct MainWindowPrivate
 
 
@@ -1346,7 +1436,7 @@ MainWindow::loadAllLinkedFiles()
 	
 	d->fileTree->clear();
 	d->fileTree->show();
-	d->tabs->addTab( d->fileTree, tr( "Navigation" ) );
+	d->tabs->addTab( d->fileTree, tr( "&Navigation" ) );
 
 	const auto rootFolder = QFileInfo( d->rootFilePath ).absolutePath() + QStringLiteral( "/" );
 
@@ -2035,7 +2125,7 @@ MainWindow::onChangeColors()
 }
 
 void
-MainWindow::tocClicked( const QModelIndex & index )
+MainWindow::onTocClicked( const QModelIndex & index )
 {
 	auto c = d->editor->textCursor();
 	
@@ -2082,13 +2172,17 @@ MainWindow::showOrHideTabs()
 }
 
 void
-MainWindow::tabClicked( int index )
+MainWindow::onTabClicked( int index )
 {
 	if( d->tabs->currentIndex() == index || !d->tabsVisible )
 		showOrHideTabs();
+	
+	d->currentTab = index;
 	
 	if( index == 0 )
 		d->initMarkdownMenu();
 }
 
 } /* namespace MdEditor */
+
+#include "mainwindow.moc"
