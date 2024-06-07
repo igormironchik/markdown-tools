@@ -1677,6 +1677,7 @@ MainWindow::onTogglePreviewAction( bool checked )
 		d->sidebarPanel->hide();
 		d->splitter->handle( 1 )->setCursor( Qt::ArrowCursor );
 		d->splitter->handle( 2 )->setCursor( Qt::ArrowCursor );
+		d->cursorPosLabel->hide();
 
 		if( d->tabsVisible )
 			showOrHideTabs();
@@ -1698,6 +1699,7 @@ MainWindow::onTogglePreviewAction( bool checked )
 		d->editor->setVisible( true );
 		d->sidebarPanel->show();
 		d->splitter->handle( 2 )->setCursor( d->splitterCursor );
+		d->cursorPosLabel->show();
 
 		const auto w = ( centralWidget()->width() - d->minTabWidth ) / 2;
 		d->splitter->setSizes( { d->minTabWidth, w, w } );
