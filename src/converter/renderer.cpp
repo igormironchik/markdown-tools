@@ -661,36 +661,36 @@ PdfRenderer::renderImpl()
 		else
 			pdfData.testData = m_opts.testData;
 #endif // MD_PDF_TESTING
-		
+
 		MD::forEach< MD::QStringTrait >( { MD::ItemType::Blockquote }, m_doc,
 			[&pdfData]( MD::Item< MD::QStringTrait > * i )
 			{
 				auto b = static_cast< MD::Blockquote< MD::QStringTrait > * > ( i );
-				
+
 				if( !b->items().empty() && b->items().front()->type() == MD::ItemType::Paragraph )
 				{
 					auto p = static_cast< MD::Paragraph< MD::QStringTrait > * > (
 						b->items().front().get() );
-					
+
 					if( !p->items().empty() && p->items().front()->type() == MD::ItemType::Text )
 					{
 						auto t = static_cast< MD::Text< MD::QStringTrait > * > (
 							p->items().front().get() );
-						
+
 						auto isAloneMark = [] ( MD::Paragraph< MD::QStringTrait > * p ) -> bool
-						{		
+						{
 							return ( p->items().size() > 1 ?
 								p->items().at( 1 )->startLine() != p->items().front()->startLine() :
 								true );
 						};
-						
+
 						if( !t->opts() )
 						{
 							QColor c;
 							bool highlight = false;
 							QString url;
 							QString text;
-							
+
 							if( t->text() == QStringLiteral( "[!NOTE]" ) )
 							{
 								if( isAloneMark( p ) )
@@ -741,14 +741,14 @@ PdfRenderer::renderImpl()
 									text = QStringLiteral( "Important" );
 								}
 							}
-							
+
 							if( highlight )
 							{
 								p->removeItemAt( 0 );
-								
+
 								if( p->items().empty() )
 									b->removeItemAt( 0 );
-								
+
 								auto np = std::make_shared< MD::Paragraph< MD::QStringTrait > > ();
 								auto i = std::make_shared< MD::Image< MD::QStringTrait > > ();
 								i->setUrl( url );
@@ -757,9 +757,9 @@ PdfRenderer::renderImpl()
 								nt->setSpaceBefore( true );
 								nt->setText( text );
 								np->appendItem( nt );
-								
+
 								b->insertItem( 0, np );
-								
+
 								pdfData.highlightedBlockquotes.insert( b, c );
 							}
 						}
@@ -1392,7 +1392,7 @@ PdfRenderer::drawLink( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 	{
 		auto * spaceFont = createFont( renderOpts.m_textFont, false, false,
 			renderOpts.m_textFontSize, pdfData.doc, scale, pdfData );
-		
+
 		pdfData.setColor( renderOpts.m_linkColor );
 
 		rects = drawString( pdfData, renderOpts, url,
@@ -1405,7 +1405,7 @@ PdfRenderer::drawLink( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 			firstInParagraph, cw, QColor(),
 			item->opts() & MD::TextOption::StrikethroughText,
 			item->startLine(), item->startColumn(), item->endLine(), item->endColumn() );
-		
+
 		pdfData.restoreColor();
 	}
 	// Otherwise image link.
@@ -2164,8 +2164,12 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 			{
 				auto link = static_cast< MD::Link< MD::QStringTrait >* > ( it->get() );
 
-				if( cw.isImage() && extraOnFirstLine )
-					pdfData.coords.y += cw.height();
+				if( ( cw.isImage() ||
+					( !link->img()->isEmpty() &&
+						!link->p()->isEmpty() &&
+						link->p()->getItemAt( 0 )->type() == MD::ItemType::Image ) ) &&
+					extraOnFirstLine )
+						pdfData.coords.y += cw.height();
 
 				rects.append( drawLink( pdfData, renderOpts, link,
 					doc, newLine, nullptr, 0.0, 1.0, nullptr, nextFootnoteNum,
@@ -2751,7 +2755,7 @@ PdfRenderer::drawImage( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 		draw = false;
 
 	emit status( tr( "Loading image." ) );
-	
+
 	auto * font = createFont( renderOpts.m_textFont, false, false,
 		renderOpts.m_textFontSize, pdfData.doc, scale, pdfData );
 
@@ -2771,7 +2775,7 @@ PdfRenderer::drawImage( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 			(double) pdfData.dpi * 72.0 );
 
 		newLine = false;
-		
+
 		double x = 0.0;
 		double imgScale = ( scaleImagesToLineHeight ? lineHeight / iHeight : 1.0 );
 		const double totalAvailableWidth = pdfData.coords.pageWidth - pdfData.coords.margins.left -
@@ -2786,7 +2790,7 @@ PdfRenderer::drawImage( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 		const auto spaceWidth = pdfData.stringWidth( font, renderOpts.m_textFontSize, scale, " " );
 		bool addSpace = onLine && !firstInParagraph;
 		double height = 0.0;
-		
+
 		const auto availableAfter = availableWidth - ( iWidth * imgScale +
 			( addSpace ? spaceWidth * ( draw ? cw.scale() / 100.0 : 1.0 ) : 0.0 ) );
 
@@ -2804,15 +2808,15 @@ PdfRenderer::drawImage( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 			{
 				if( !onLine )
 					height += lineHeight;
-				
+
 				cw.append( { 0.0, 0.0, 0.0, false, true, onLine, false, "" } );
 			}
-			
+
 			if( draw )
 				moveToNewLine( pdfData, offset, ( onLine ? cw.height() : lineHeight ), 1.0, lineHeight );
 			else
 				pdfData.coords.x = pdfData.coords.margins.left + offset;
-			
+
 			addSpace = false;
 		}
 
@@ -2839,9 +2843,9 @@ PdfRenderer::drawImage( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 				if( draw )
 				{
 					createPage( pdfData );
-	
+
 					pdfData.freeSpaceOn( pdfData.currentPageIndex() );
-	
+
 					pdfData.coords.x += offset;
 				}
 			}
@@ -2853,16 +2857,16 @@ PdfRenderer::drawImage( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 					case ImageAlignment::Left :
 						x = 0.0;
 						break;
-						
+
 					case ImageAlignment::Center :
 						x = ( totalAvailableWidth - iWidth * imgScale ) / 2.0;
 						break;
-						
+
 					case ImageAlignment::Right :
 						x = pdfData.coords.pageWidth - pdfData.coords.margins.right -
 							iWidth * imgScale - pdfData.coords.x;
 						break;
-						
+
 					default :
 						break;
 				}
@@ -2872,21 +2876,21 @@ PdfRenderer::drawImage( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 		const double dpiScale = (double) pdfImg->GetWidth() / iWidth;
 		double dy = 0.0;
 		imgScale *= scale;
-		
+
 		if( draw )
 		{
 			if( !onLine )
 				pdfData.coords.y -= iHeight * imgScale;
 			else if( firstInParagraph )
 				pdfData.coords.y -= cw.height();
-				
+
 			if( onLine && addSpace )
 				pdfData.coords.x += spaceWidth * cw.scale() / 100.0;
-			
+
 			dy = ( onLine ? ( cw.height() - iHeight * imgScale ) / 2.0 : 0.0 );
-	
+
 			pdfData.drawImage( pdfData.coords.x + x, pdfData.coords.y + dy,
-				pdfImg.get(), imgScale / dpiScale, imgScale / dpiScale );	
+				pdfImg.get(), imgScale / dpiScale, imgScale / dpiScale );
 		}
 		else
 		{
@@ -2895,13 +2899,13 @@ PdfRenderer::drawImage( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 				cw.append( { spaceWidth, lineHeight, 0.0, true, false, true, false, " " } );
 				pdfData.coords.x += spaceWidth;
 			}
-			
+
 			height += iHeight * imgScale;
 		}
 
 		QRectF r( pdfData.coords.x + x, pdfData.coords.y + dy,
 			iWidth * imgScale, iHeight * imgScale );
-		
+
 		if( onLine )
 			pdfData.coords.x += iWidth * imgScale + x;
 		else
@@ -2910,12 +2914,12 @@ PdfRenderer::drawImage( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 		if( draw && !onLine )
 		{
 			newLine = true;
-			
+
 			moveToNewLine( pdfData, offset, lineHeight, 1.0, lineHeight );
 
 			cw.moveToNextLine();
 		}
-		
+
 		if( !draw )
 			cw.append( { iWidth * imgScale, height, 0.0, false, !onLine, false, !onLine, "" } );
 
@@ -2977,11 +2981,11 @@ LoadImageFromNetwork::loadFinished()
 {
 	const auto data = m_reply->readAll();
 	const auto svg = QString( data.mid( 0, 4 ).toLower() );
-	
+
 	if( svg == QStringLiteral( "<svg" ) || svg == QStringLiteral( "<?xm" ) )
-	{		
+	{
 		ResvgRenderer r( data, m_opts );
-		
+
 		if( r.isValid() )
 		{
 			double s = m_height / (double) r.defaultSize().height();
@@ -3017,9 +3021,9 @@ PdfRenderer::loadImage( MD::Image< MD::QStringTrait > * item, const ResvgOptions
 	{
 		if( item->url().toLower().endsWith( QStringLiteral( "svg" ) ) ||
 			item->url().toLower().endsWith( QStringLiteral( "svgz" ) ) )
-		{	
+		{
 			ResvgRenderer r( item->url(), opts );
-			
+
 			if( r.isValid() )
 			{
 				double s = height / (double) r.defaultSize().height();
@@ -3272,12 +3276,12 @@ PdfRenderer::drawBlockquote( PdfAuxData & pdfData, const RenderOpts & renderOpts
 
 	bool first  = true;
 	WhereDrawn firstLine = {};
-	
+
 	QColor color;
-	
+
 	if( pdfData.highlightedBlockquotes.contains( item ) )
 		color = pdfData.highlightedBlockquotes[ item ];
-		
+
 
 	// Draw items.
 	for( auto it = item->items().cbegin(), last = item->items().cend(); it != last; ++it )
@@ -3639,7 +3643,7 @@ PdfRenderer::drawListItem( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 			case MD::ItemType::List :
 			{
 				auto list = static_cast< MD::List< MD::QStringTrait >* > ( it->get() );
-				
+
 				const auto where = drawList( pdfData, renderOpts,
 					list, doc, maxListNumberWidth( list ), offset, heightCalcOpt,
 					scale, true );
@@ -3770,12 +3774,12 @@ PdfRenderer::maxListNumberWidth( MD::List< MD::QStringTrait > * list ) const
 					++counter;
 			}
 		}
-		
+
 		first = false;
 	}
-	
+
 	int ret = 0;
-	
+
 	while( counter )
 	{
 		counter /= 10;
@@ -4395,15 +4399,15 @@ PdfRenderer::drawTableRow( QVector< QVector< CellData > > & table, int row, PdfA
 						case MD::Table< MD::QStringTrait >::AlignLeft :
 							o = 0.0;
 							break;
-							
+
 						case MD::Table< MD::QStringTrait >::AlignCenter :
 							o = ( table[ column ][ 0 ].width - w ) / 2.0;
 							break;
-							
+
 						case MD::Table< MD::QStringTrait >::AlignRight :
 							o = ( table[ column ][ 0 ].width - w );
 							break;
-							
+
 						default :
 							break;
 					}
