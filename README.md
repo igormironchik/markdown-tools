@@ -12,7 +12,7 @@ This is a set of applications to work with `Markdown`, including editor, `HTML`
 preview viewer, converter to `PDF`.
 
 
-| ![](editor.png) | ![](converter.png) | ![](viewer.png) |
+| ![](doc/editor.png) | ![](doc/converter.png) | ![](doc/viewer.png) |
 | --- | --- | --- |
 
 # License
