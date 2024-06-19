@@ -609,6 +609,7 @@ private:
 		bool & newLine,
 		double offset,
 		bool firstInParagraph,
+		bool spaceBefore,
 		CustomWidth & cw,
 		double scale,
 		const QColor & color = Qt::black );

@@ -1328,6 +1328,8 @@ PdfRenderer::drawLink( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 
 	if( !item->p()->isEmpty() )
 	{
+		bool spaceAfterText = false;
+
 		for( auto it = item->p()->items().begin(), last = item->p()->items().end();
 			it != last; ++it )
 		{
@@ -1358,6 +1360,8 @@ PdfRenderer::drawLink( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 							item->opts() & MD::StrikethroughText,
 						text->startLine(), text->startColumn(),
 						text->endLine(), text->endColumn(), renderOpts.m_linkColor ) );
+
+					spaceAfterText = text->isSpaceAfter();
 				}
 					break;
 
@@ -1365,16 +1369,21 @@ PdfRenderer::drawLink( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 					rects.append( drawInlinedCode( pdfData, renderOpts,
 						static_cast< MD::Code< MD::QStringTrait >* > ( it->get() ),
 						doc, newLine, offset,
-						( it == item->p()->items().begin() && firstInParagraph ), cw, scale,
-						renderOpts.m_linkColor ) );
+						( it == item->p()->items().begin() && firstInParagraph ),
+						spaceAfterText, cw, scale, renderOpts.m_linkColor ) );
 					break;
 
 				case MD::ItemType::Image :
+				{
 					rects.append( drawImage( pdfData, renderOpts,
 						static_cast< MD::Image< MD::QStringTrait >* > ( it->get() ),
 						doc, newLine, offset,
 						( it == item->p()->items().begin() && firstInParagraph ), cw, 1.0,
 						renderOpts.m_imageAlignment ) );
+
+					spaceAfterText = true;
+				}
+					break;
 
 				default :
 					break;
@@ -1784,7 +1793,7 @@ QVector< QPair< QRectF, unsigned int > >
 PdfRenderer::drawInlinedCode( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 	MD::Code< MD::QStringTrait > * item, std::shared_ptr< MD::Document< MD::QStringTrait > > doc,
 	bool & newLine, double offset,
-	bool firstInParagraph, CustomWidth & cw,
+	bool firstInParagraph, bool spaceBefore, CustomWidth & cw,
 	double scale, const QColor & color )
 {
 	pdfData.startLine = item->startLine();
@@ -1806,7 +1815,7 @@ PdfRenderer::drawInlinedCode( PdfAuxData & pdfData, const RenderOpts & renderOpt
 		pdfData.lineSpacing( textFont, renderOpts.m_textFontSize, scale ),
 		doc, newLine,
 		nullptr, 0.0, 0.0, nullptr, m_footnoteNum,
-		offset, firstInParagraph, true, cw,
+		offset, firstInParagraph, spaceBefore, cw,
 		renderOpts.m_syntax->theme().editorColor( KSyntaxHighlighting::Theme::CodeFolding ),
 		item->opts() & MD::TextOption::StrikethroughText,
 		item->startLine(), item->startColumn(),
@@ -1911,6 +1920,7 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 
 	bool lineBreak = false;
 	bool firstInParagraph = true;
+	bool spaceAfterText = false;
 
 	// Calculate words/lines/spaces widthes.
 	for( auto it = item->items().begin(), last = item->items().end(); it != last; ++it )
@@ -1952,13 +1962,15 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 					text->isSpaceBefore(), cw, scale, color );
 				lineBreak = false;
 				firstInParagraph = false;
+				spaceAfterText = text->isSpaceAfter();
 			}
 				break;
 
 			case MD::ItemType::Code :
 				drawInlinedCode( pdfData, renderOpts,
 					static_cast< MD::Code< MD::QStringTrait >* > ( it->get() ),
-				doc, newLine, offset, ( firstInParagraph || lineBreak ), cw, scale );
+					doc, newLine, offset, ( firstInParagraph || lineBreak ), spaceAfterText,
+					cw, scale );
 				lineBreak = false;
 				firstInParagraph = false;
 				break;
@@ -1971,6 +1983,7 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 					nextFootnoteNum, offset, ( firstInParagraph || lineBreak ), cw, scale );
 				lineBreak = false;
 				firstInParagraph = false;
+				spaceAfterText = true;
 				break;
 
 			case MD::ItemType::Image :
@@ -1980,6 +1993,7 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 					renderOpts.m_imageAlignment, scaleImagesToLineHeight );
 				lineBreak = false;
 				firstInParagraph = false;
+				spaceAfterText = true;
 				break;
 
 			case MD::ItemType::Math :
@@ -1990,6 +2004,7 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 					cw, scale );
 				lineBreak = false;
 				firstInParagraph = false;
+				spaceAfterText = true;
 				break;
 
 			case MD::ItemType::LineBreak :
@@ -2015,6 +2030,8 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 						pdfData.footnotesAnchorsMap.insert( fit->second.get(),
 							{ pdfData.currentFile, m_footnoteNum++ } );
 					}
+
+					spaceAfterText = true;
 				}
 				else
 				{
@@ -2025,6 +2042,8 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 						( it + 1 != last ? ( it + 1 )->get() : nullptr ),
 						nextFootnoteNum, offset, ( firstInParagraph || lineBreak ),
 						text->isSpaceBefore(), cw, scale, color );
+
+					spaceAfterText = text->isSpaceAfter();
 				}
 
 				lineBreak = false;
@@ -2110,6 +2129,7 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 
 	lineBreak = false;
 	firstInParagraph = true;
+	spaceAfterText = false;
 
 	// Actual drawing.
 	for( auto it = item->items().begin(), last = item->items().end(); it != last; ++it )
@@ -2150,6 +2170,7 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 					cw, scale, color ) );
 				lineBreak = false;
 				firstInParagraph = false;
+				spaceAfterText = text->isSpaceAfter();
 			}
 				break;
 
@@ -2157,7 +2178,8 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 			{
 				rects.append( drawInlinedCode( pdfData, renderOpts,
 					static_cast< MD::Code< MD::QStringTrait >* > ( it->get() ),
-					doc, newLine, offset, ( firstInParagraph || lineBreak ), cw, scale ) );
+					doc, newLine, offset, ( firstInParagraph || lineBreak ),
+					spaceAfterText, cw, scale ) );
 				lineBreak = false;
 				firstInParagraph = false;
 			}
@@ -2180,6 +2202,7 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 					offset, ( firstInParagraph || lineBreak ), cw, scale ) );
 				lineBreak = false;
 				firstInParagraph = false;
+				spaceAfterText = true;
 			}
 				break;
 
@@ -2194,6 +2217,7 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 					renderOpts.m_imageAlignment, scaleImagesToLineHeight ) );
 				lineBreak = false;
 				firstInParagraph = false;
+				spaceAfterText = true;
 			}
 				break;
 
@@ -2208,6 +2232,7 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 				pdfData.restoreColor();
 				lineBreak = false;
 				firstInParagraph = false;
+				spaceAfterText = true;
 			}
 				break;
 
@@ -2264,6 +2289,8 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 					pdfData.coords.x += w;
 
 					addFootnote( ref->id(), fit->second, pdfData, renderOpts, doc );
+
+					spaceAfterText = true;
 				}
 				else
 				{
@@ -2273,6 +2300,8 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 						doc, newLine, nullptr, 0.0, 1.0, nullptr, nextFootnoteNum,
 						offset, ( firstInParagraph || lineBreak ),
 						text->isSpaceBefore(), cw, scale, color ) );
+
+					spaceAfterText = text->isSpaceAfter();
 				}
 
 				firstInParagraph = false;
