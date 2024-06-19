@@ -1234,7 +1234,7 @@ PdfRenderer::drawText( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 	MD::Text< MD::QStringTrait > * item, std::shared_ptr< MD::Document< MD::QStringTrait > > doc,
 	bool & newLine, Font * footnoteFont, double footnoteFontSize, double footnoteFontScale,
 	MD::Item< MD::QStringTrait > * nextItem, int footnoteNum,
-	double offset, bool firstInParagraph, CustomWidth & cw, double scale,
+	double offset, bool firstInParagraph, bool spaceBefore, CustomWidth & cw, double scale,
 	const QColor & color )
 {
 	pdfData.startLine = item->startLine();
@@ -1256,7 +1256,7 @@ PdfRenderer::drawText( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 		pdfData.lineSpacing( font, renderOpts.m_textFontSize, scale ),
 		doc, newLine,
 		footnoteFont, footnoteFontSize, footnoteFontScale, nextItem, footnoteNum, offset,
-		firstInParagraph, cw, QColor(),
+		firstInParagraph, spaceBefore, cw, QColor(),
 		item->opts() & MD::TextOption::StrikethroughText,
 		item->startLine(), item->startColumn(), item->endLine(), item->endColumn(), color );
 }
@@ -1353,7 +1353,7 @@ PdfRenderer::drawLink( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 						doc, newLine, footnoteFont, footnoteFontSize, footnoteFontScale,
 						( it == std::prev( last ) ? nextItem : nullptr ), footnoteNum, offset,
 						( it == item->p()->items().begin() && firstInParagraph ),
-						cw, QColor(),
+						text->isSpaceBefore(), cw, QColor(),
 						text->opts() & MD::StrikethroughText ||
 							item->opts() & MD::StrikethroughText,
 						text->startLine(), text->startColumn(),
@@ -1395,7 +1395,7 @@ PdfRenderer::drawLink( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 			pdfData.lineSpacing( font, renderOpts.m_textFontSize, scale ),
 			doc, newLine,
 			footnoteFont, footnoteFontSize, footnoteFontScale, nextItem, footnoteNum, offset,
-			firstInParagraph, cw, QColor(),
+			firstInParagraph, true, cw, QColor(),
 			item->opts() & MD::TextOption::StrikethroughText,
 			item->startLine(), item->startColumn(), item->endLine(), item->endColumn() );
 
@@ -1447,7 +1447,7 @@ PdfRenderer::drawString( PdfAuxData & pdfData, const RenderOpts & renderOpts, co
 	Font * footnoteFont, double footnoteFontSize, double footnoteFontScale,
 	MD::Item< MD::QStringTrait > * nextItem,
 	int footnoteNum, double offset,
-	bool firstInParagraph, CustomWidth & cw, const QColor & background,
+	bool firstInParagraph, bool spaceBefore, CustomWidth & cw, const QColor & background,
 	bool strikeout, long long int startLine, long long int startPos,
 	long long int endLine, long long int endPos, const QColor & color )
 {
@@ -1520,7 +1520,7 @@ PdfRenderer::drawString( PdfAuxData & pdfData, const RenderOpts & renderOpts, co
 
 	// We need to draw space char if first word is a word.
 	if( !firstInParagraph && !newLine && !words.isEmpty() &&
-		!charsWithoutSpaceBefore.contains( words.first() ) )
+		!charsWithoutSpaceBefore.contains( words.first() ) && spaceBefore )
 	{
 		const auto w = pdfData.stringWidth( firstSpaceFont, firstSpaceFontSize,
 			firstSpaceFontScale, " " );
@@ -1806,7 +1806,7 @@ PdfRenderer::drawInlinedCode( PdfAuxData & pdfData, const RenderOpts & renderOpt
 		pdfData.lineSpacing( textFont, renderOpts.m_textFontSize, scale ),
 		doc, newLine,
 		nullptr, 0.0, 0.0, nullptr, m_footnoteNum,
-		offset, firstInParagraph, cw,
+		offset, firstInParagraph, true, cw,
 		renderOpts.m_syntax->theme().editorColor( KSyntaxHighlighting::Theme::CodeFolding ),
 		item->opts() & MD::TextOption::StrikethroughText,
 		item->startLine(), item->startColumn(),
@@ -1942,13 +1942,17 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 		switch( (*it)->type() )
 		{
 			case MD::ItemType::Text :
-				drawText( pdfData, renderOpts,
-					static_cast< MD::Text< MD::QStringTrait >* > ( it->get() ),
+			{
+				auto text = static_cast< MD::Text< MD::QStringTrait >* > ( it->get() );
+
+				drawText( pdfData, renderOpts, text,
 					doc, newLine, footnoteFont, renderOpts.m_textFontSize * scale, c_footnoteScale,
 					( it + 1 != last ? ( it + 1 )->get() : nullptr ),
-					nextFootnoteNum, offset, ( firstInParagraph || lineBreak ), cw, scale, color );
+					nextFootnoteNum, offset, ( firstInParagraph || lineBreak ),
+					text->isSpaceBefore(), cw, scale, color );
 				lineBreak = false;
 				firstInParagraph = false;
+			}
 				break;
 
 			case MD::ItemType::Code :
@@ -2013,11 +2017,15 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 					}
 				}
 				else
-					drawText( pdfData, renderOpts,
-						static_cast< MD::Text< MD::QStringTrait >* > ( it->get() ),
+				{
+					auto text = static_cast< MD::Text< MD::QStringTrait >* > ( it->get() );
+
+					drawText( pdfData, renderOpts, text,
 						doc, newLine, footnoteFont, renderOpts.m_textFontSize * scale, c_footnoteScale,
 						( it + 1 != last ? ( it + 1 )->get() : nullptr ),
-						nextFootnoteNum, offset, ( firstInParagraph || lineBreak ), cw, scale, color );
+						nextFootnoteNum, offset, ( firstInParagraph || lineBreak ),
+						text->isSpaceBefore(), cw, scale, color );
+				}
 
 				lineBreak = false;
 				firstInParagraph = false;
@@ -2134,10 +2142,12 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 		{
 			case MD::ItemType::Text :
 			{
-				rects.append( drawText( pdfData, renderOpts,
-					static_cast< MD::Text< MD::QStringTrait >* > ( it->get() ),
+				auto text = static_cast< MD::Text< MD::QStringTrait >* > ( it->get() );
+
+				rects.append( drawText( pdfData, renderOpts, text,
 					doc, newLine, nullptr, 0.0, 1.0, nullptr, nextFootnoteNum,
-					offset, ( firstInParagraph || lineBreak ), cw, scale, color ) );
+					offset, ( firstInParagraph || lineBreak ), text->isSpaceBefore(),
+					cw, scale, color ) );
 				lineBreak = false;
 				firstInParagraph = false;
 			}
@@ -2256,10 +2266,14 @@ PdfRenderer::drawParagraph( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 					addFootnote( ref->id(), fit->second, pdfData, renderOpts, doc );
 				}
 				else
-					rects.append( drawText( pdfData, renderOpts,
-						static_cast< MD::Text< MD::QStringTrait >* > ( it->get() ),
+				{
+					auto text = static_cast< MD::Text< MD::QStringTrait >* > ( it->get() );
+
+					rects.append( drawText( pdfData, renderOpts, text,
 						doc, newLine, nullptr, 0.0, 1.0, nullptr, nextFootnoteNum,
-						offset, ( firstInParagraph || lineBreak ), cw, scale, color ) );
+						offset, ( firstInParagraph || lineBreak ),
+						text->isSpaceBefore(), cw, scale, color ) );
+				}
 
 				firstInParagraph = false;
 			}

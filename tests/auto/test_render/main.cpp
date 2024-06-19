@@ -96,10 +96,10 @@ private slots:
 	void testMath();
 	//! Test math.
 	void testMathBigFont();
-	
+
 	//! Test placing of images.
 	void testImagesPlacing();
-	
+
 	//! Test highlights of blockquotes.
 	void testBlockquoteHighlighting();
 	//! Test highlights of blockquotes.

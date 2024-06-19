@@ -597,6 +597,7 @@ private:
 		int footnoteNum,
 		double offset,
 		bool firstInParagraph,
+		bool spaceBefore,
 		CustomWidth & cw,
 		double scale,
 		const QColor & color = Qt::black );
@@ -633,6 +634,7 @@ private:
 		MD::Item< MD::QStringTrait > * nextItem,
 		int footnoteNum, double offset,
 		bool firstInParagraph,
+		bool spaceBefore,
 		CustomWidth & cw,
 		const QColor & background,
 		bool strikeout,
