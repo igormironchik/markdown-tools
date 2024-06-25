@@ -9,7 +9,7 @@ find_package( Qt6Core REQUIRED )
 find_package( Qt6Widgets REQUIRED )
 find_package( Qt6WebEngineWidgets REQUIRED )
 
-set( LIB_SRC 
+set( LIB_SRC
 	editor.hpp
 	editor.cpp
 	mainwindow.hpp
@@ -32,9 +32,9 @@ set( LIB_SRC
 	fontdlg.hpp
 	fontdlg.cpp
 	fontdlg.ui
-	colors.hpp
-	colors.cpp
-	colors.ui
+	colorsdlg.hpp
+	colorsdlg.cpp
+	colorsdlg.ui
 	syntaxvisitor.cpp
 	syntaxvisitor.hpp
 	cfg.cfgconf
@@ -44,7 +44,16 @@ set( LIB_SRC
 	toc.hpp
 	toc.cpp
 	wordwrapdelegate.hpp
-	wordwrapdelegate.cpp )
+	wordwrapdelegate.cpp
+	settings.ui
+	font.ui
+	colors.ui
+	colors.hpp
+	colors.cpp
+	font.hpp
+	font.cpp
+	settings.hpp
+	settings.cpp )
 
 set( SRC main.cpp )
 

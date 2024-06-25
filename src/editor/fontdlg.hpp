@@ -10,14 +10,14 @@
 #include <QScopedPointer>
 #include <QFont>
 
+#include "ui_fontdlg.h"
+
 
 namespace MdEditor {
 
 //
 // FontDlg
 //
-
-struct FontDlgPrivate;
 
 //! Font dialog.
 class FontDlg
@@ -27,19 +27,14 @@ class FontDlg
 
 public:
 	FontDlg( const QFont & f, QWidget * parent );
-	~FontDlg() override;
+	~FontDlg() override = default;
 
-	QFont font() const;
-
-private slots:
-	void onShowOnlyMonospaced( int state );
+	QFont currentFont() const;
 
 private:
-	friend struct FontDlgPrivate;
-
 	Q_DISABLE_COPY( FontDlg )
 
-	QScopedPointer< FontDlgPrivate > d;
+	Ui::FontDlg m_ui;
 }; // class FontDlg
 
 } /* namespace MdEditor */

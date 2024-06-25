@@ -4,22 +4,22 @@
   SPDX-FileCopyrightText: none
   SPDX-License-Identifier: GPL-3.0-or-later
  </author>
- <class>FontDlg</class>
- <widget class="QDialog" name="FontDlg">
+ <class>ColorsDialog</class>
+ <widget class="QDialog" name="ColorsDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>486</width>
-    <height>181</height>
+    <width>399</width>
+    <height>321</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Font...</string>
+   <string>Colors...</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="MdEditor::FontPage" name="m_page" native="true"/>
+    <widget class="MdEditor::ColorsPage" name="m_page" native="true"/>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
@@ -27,7 +27,7 @@
       <enum>Qt::Orientation::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
+      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok|QDialogButtonBox::StandardButton::RestoreDefaults</set>
      </property>
     </widget>
    </item>
@@ -35,9 +35,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>MdEditor::FontPage</class>
+   <class>MdEditor::ColorsPage</class>
    <extends>QWidget</extends>
-   <header>font.hpp</header>
+   <header>colors.hpp</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -46,7 +46,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>FontDlg</receiver>
+   <receiver>ColorsDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -62,7 +62,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>FontDlg</receiver>
+   <receiver>ColorsDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

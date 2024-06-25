@@ -71,11 +71,23 @@
 				{name referenceColor}
 				{defaultValue ""}
 			}
-			
+
 			{tagScalar
 				{valueType QString}
 				{name specialColor}
 				{defaultValue ""}
+			}
+
+			{tagScalar
+				{valueType bool}
+				{name enableRightMargin}
+				{defaultValue false}
+			}
+
+			{tagScalar
+				{valueType int}
+				{name rightMargin}
+				{defaultValue 80}
 			}
 		}
 	}

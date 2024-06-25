@@ -15,10 +15,11 @@
 #include "fontdlg.hpp"
 #include "cfg.hpp"
 #include "version.hpp"
-#include "colors.hpp"
+#include "colorsdlg.hpp"
 #include "syntaxvisitor.hpp"
 #include "toc.hpp"
 #include "wordwrapdelegate.hpp"
+#include "settings.hpp"
 
 // Qt include.
 #include <QSplitter>
@@ -461,6 +462,12 @@ struct MainWindowPrivate {
 		settingsMenu->addAction( QIcon( QStringLiteral( ":/res/img/fill-color.png" ) ),
 			MainWindow::tr( "Colors..." ),
 			q, &MainWindow::onChangeColors );
+
+		settingsMenu->addSeparator();
+
+		settingsMenu->addAction( QIcon( QStringLiteral( ":/res/img/configure.png" ) ),
+			MainWindow::tr( "Settings" ),
+			q, &MainWindow::onSettings );
 
 
 		auto helpMenu = q->menuBar()->addMenu( MainWindow::tr( "&Help" ) );
@@ -1223,7 +1230,7 @@ MainWindow::onChooseFont()
 
 	if( dlg.exec() == QDialog::Accepted )
 	{
-		d->editor->applyFont( dlg.font() );
+		d->editor->applyFont( dlg.currentFont() );
 
 		saveCfg();
 	}
@@ -1274,6 +1281,8 @@ MainWindow::saveCfg() const
 			cfg.set_mathColor( d->mdColors.mathColor.name( QColor::HexRgb ) );
 			cfg.set_referenceColor( d->mdColors.referenceColor.name( QColor::HexRgb ) );
 			cfg.set_specialColor( d->mdColors.specialColor.name( QColor::HexRgb ) );
+			cfg.set_enableRightMargin( d->editor->margins().m_enable );
+			cfg.set_rightMargin( d->editor->margins().m_length );
 
 			tag_Cfg< cfgfile::qstring_trait_t > tag( cfg );
 
@@ -1346,6 +1355,9 @@ MainWindow::readCfg()
 
 			if( !cfg.specialColor().isEmpty() )
 				d->mdColors.specialColor = QColor( cfg.specialColor() );
+
+			d->editor->margins().m_enable = cfg.enableRightMargin();
+			d->editor->margins().m_length = cfg.rightMargin();
 
 			d->mdColors.enabled = cfg.useColors();
 		}
@@ -2224,6 +2236,43 @@ MainWindow::onTabClicked( int index )
 
 	if( index == 0 )
 		d->initMarkdownMenu();
+}
+
+void
+MainWindow::onSettings()
+{
+	SettingsDlg dlg( d->mdColors, d->editor->font(), d->editor->margins(), this );
+
+	if( dlg.exec() == QDialog::Accepted )
+	{
+		bool save = false;
+
+		if( dlg.colors() != d->mdColors )
+		{
+			d->mdColors = dlg.colors();
+
+			d->editor->applyColors( d->mdColors );
+
+			save = true;
+		}
+
+		if( dlg.currentFont() != d->editor->font() )
+		{
+			d->editor->applyFont( dlg.currentFont() );
+
+			save = true;
+		}
+
+		if( dlg.editorMargins() != d->editor->margins() )
+		{
+			d->editor->margins() = dlg.editorMargins();
+
+			save = true;
+		}
+
+		if( save )
+			saveCfg();
+	}
 }
 
 } /* namespace MdEditor */

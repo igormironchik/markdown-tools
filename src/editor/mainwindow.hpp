@@ -68,6 +68,7 @@ private slots:
 	void onChangeColors();
 	void onTocClicked( const QModelIndex & index );
 	void onTabClicked( int index );
+	void onSettings();
 
 private:
     bool isModified() const;

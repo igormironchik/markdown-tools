@@ -103,5 +103,7 @@
         <file>res/css/emoji.css</file>
         <file>res/emoji.js</file>
         <file>res/img/view-sidetree.png</file>
+        <file>res/img/configure.png</file>
+        <file>res/img/document-properties.png</file>
     </qresource>
 </RCC>

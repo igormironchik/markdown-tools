@@ -19,6 +19,11 @@
 
 namespace MdEditor {
 
+bool operator != ( const Margins & l, const Margins & r )
+{
+	return ( l.m_enable != r.m_enable || l.m_length != r.m_length );
+}
+
 //
 // EditorPrivate
 //
@@ -68,6 +73,7 @@ struct EditorPrivate {
 	Colors colors;
 	std::shared_ptr< MD::Document< MD::QStringTrait > > currentDoc;
 	SyntaxVisitor syntax;
+	Margins margins;
 }; // struct EditorPrivate
 
 
@@ -90,6 +96,12 @@ SyntaxVisitor &
 Editor::syntaxHighlighter() const
 {
 	return d->syntax;
+}
+
+Margins &
+Editor::margins()
+{
+	return d->margins;
 }
 
 bool
@@ -212,9 +224,28 @@ Editor::resizeEvent( QResizeEvent * e )
 }
 
 void
+Editor::paintEvent( QPaintEvent * event )
+{
+	if( d->margins.m_enable )
+	{
+		QPainter painter( viewport() );
+
+		QRect r = viewport()->rect();
+		const auto w = fontMetrics().horizontalAdvance( QLatin1Char( '9' ) ) * d->margins.m_length;
+		r.setX( w );
+
+		painter.setBrush( QColor( 239, 239, 239 ) );
+		painter.setPen( Qt::NoPen );
+		painter.drawRect( r );
+	}
+
+	QPlainTextEdit::paintEvent( event );
+}
+
+void
 Editor::highlightCurrentLine()
 {
-	static const QColor lineColor = QColor( Qt::yellow ).lighter( 180 );
+	static const QColor lineColor = QColor( 255, 255, 0, 75 );
 
 	d->currentLine.format.setBackground( lineColor );
 	d->currentLine.format.setProperty( QTextFormat::FullWidthSelection, true );
@@ -430,7 +461,7 @@ void
 Editor::onFindNext()
 {
 	if( !d->extraSelections.isEmpty() )
-	{		
+	{
 		if( !markSelection( d->extraSelections.cbegin(), d->extraSelections.cend(),
 			textCursor(), this ) )
 		{
@@ -527,7 +558,7 @@ Editor::onContentChanged()
 	QTextStream stream( &md );
 
 	MD::Parser< MD::QStringTrait > parser;
-	
+
 	QFileInfo info( d->docName );
 
 	d->currentDoc = parser.parse( stream, info.absolutePath(), info.fileName() );
@@ -535,7 +566,7 @@ Editor::onContentChanged()
 	highlightSyntax( d->colors, d->currentDoc );
 
 	highlightCurrent();
-	
+
 	emit ready();
 }
 
@@ -577,7 +608,7 @@ Editor::goToLine( int l )
 
 void
 Editor::setText( const QString & t )
-{	
+{
 	setPlainText( t );
 }
 
@@ -592,7 +623,7 @@ void
 Editor::keyPressEvent( QKeyEvent * event )
 {
 	auto c = textCursor();
-	
+
 	if( c.hasSelection() )
 	{
 		switch( event->key() )
@@ -605,19 +636,19 @@ Editor::keyPressEvent( QKeyEvent * event )
 				const auto start = c.blockNumber();
 				c.setPosition( se, QTextCursor::KeepAnchor );
 				const auto end = c.blockNumber();
-				
+
 				c.beginEditBlock();
-				
+
 				for( auto i = start; i <= end; ++i )
 				{
 					QTextCursor add( document()->findBlockByNumber( i ) );
 					add.insertText( QStringLiteral( "\t" ) );
 				}
-				
+
 				c.endEditBlock();
 			}
 				break;
-				
+
 			case Qt::Key_Backtab :
 			{
 				const auto ss = c.selectionStart();
@@ -626,21 +657,21 @@ Editor::keyPressEvent( QKeyEvent * event )
 				const auto start = c.blockNumber();
 				c.setPosition( se, QTextCursor::KeepAnchor );
 				const auto end = c.blockNumber();
-				
+
 				c.beginEditBlock();
-				
+
 				for( auto i = start; i <= end; ++i )
 				{
 					QTextCursor del( document()->findBlockByNumber( i ) );
-					
+
 					if( del.block().text().startsWith( QStringLiteral( "\t" ) ) )
 						del.deleteChar();
 				}
-				
+
 				c.endEditBlock();
 			}
 				break;
-				
+
 			default:
 				QPlainTextEdit::keyPressEvent( event );
 		}

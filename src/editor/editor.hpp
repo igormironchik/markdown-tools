@@ -10,7 +10,7 @@
 #include <QScopedPointer>
 
 // md-editor include.
-#include "colors.hpp"
+#include "colorsdlg.hpp"
 
 // md4qt include.
 #define MD4QT_QT_SUPPORT
@@ -19,6 +19,18 @@
 
 
 namespace MdEditor {
+
+//
+// Margins
+//
+
+struct Margins {
+	bool m_enable = false;
+	int m_length = 80;
+}; // struct Margins
+
+bool operator != ( const Margins & l, const Margins & r );
+
 
 //
 // Editor
@@ -53,6 +65,7 @@ public:
 	std::shared_ptr< MD::Document< MD::QStringTrait > > currentDoc() const;
 	void applyFont( const QFont & f );
 	SyntaxVisitor & syntaxHighlighter() const;
+	Margins & margins();
 
 public slots:
 	void showUnprintableCharacters( bool on );
@@ -79,6 +92,7 @@ private slots:
 protected:
 	void resizeEvent( QResizeEvent * event ) override;
 	void keyPressEvent( QKeyEvent * event ) override;
+	void paintEvent( QPaintEvent * event ) override;
 
 protected:
 	int lineNumber( const QPoint & p );

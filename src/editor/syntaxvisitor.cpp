@@ -6,7 +6,7 @@
 // md-editor include.
 #include "syntaxvisitor.hpp"
 #include "editor.hpp"
-#include "colors.hpp"
+#include "colorsdlg.hpp"
 
 // Qt include.
 #include <QTextCursor>

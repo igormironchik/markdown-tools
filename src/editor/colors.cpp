@@ -5,16 +5,9 @@
 
 // md-editor include.
 #include "colors.hpp"
-#include "ui_colors.h"
 
 // Qt include.
-#include <QDialogButtonBox>
 #include <QColorDialog>
-#include <QPushButton>
-#include <QGroupBox>
-
-// shared include.
-#include "color_widget.hpp"
 
 
 namespace MdEditor {
@@ -30,94 +23,74 @@ bool operator != ( const Colors & c1, const Colors & c2 )
 }
 
 //
-// ColorsDialogPrivate
+// ColorsPage
 //
 
-struct ColorsDialogPrivate {
-	Colors colors;
-	Ui::ColorsDialog ui;
-}; // struct ColorsDialogPrivate
-
-//
-// ColorsDialog
-//
-
-ColorsDialog::ColorsDialog( const Colors & cols, QWidget * parent )
-	:	QDialog( parent )
-	,	d( new ColorsDialogPrivate )
+ColorsPage::ColorsPage( QWidget * parent )
+	:	QWidget( parent )
 {
-	d->colors = cols;
+	m_ui.setupUi( this );
 
-	d->ui.setupUi( this );
-
-	applyColors();
-
-	connect( d->ui.buttonBox, &QDialogButtonBox::clicked,
-		this, &ColorsDialog::clicked );
-	connect( d->ui.linkColor, &MdShared::ColorWidget::clicked,
-		this, &ColorsDialog::chooseLinkColor );
-	connect( d->ui.textColor, &MdShared::ColorWidget::clicked,
-		this, &ColorsDialog::chooseTextColor );
-	connect( d->ui.inlineColor, &MdShared::ColorWidget::clicked,
-		this, &ColorsDialog::chooseInlineColor );
-	connect( d->ui.htmlColor, &MdShared::ColorWidget::clicked,
-		this, &ColorsDialog::chooseHtmlColor );
-	connect( d->ui.tableColor, &MdShared::ColorWidget::clicked,
-		this, &ColorsDialog::chooseTableColor );
-	connect( d->ui.codeColor, &MdShared::ColorWidget::clicked,
-		this, &ColorsDialog::chooseCodeColor );
-	connect( d->ui.colors, &QGroupBox::toggled,
-		this, &ColorsDialog::colorsToggled );
-	connect( d->ui.specialColor, &MdShared::ColorWidget::clicked,
-		this, &ColorsDialog::chooseSpecialColor );
-	connect( d->ui.referenceColor, &MdShared::ColorWidget::clicked,
-		this, &ColorsDialog::chooseReferenceColor );
+	connect( m_ui.linkColor, &MdShared::ColorWidget::clicked,
+		this, &ColorsPage::chooseLinkColor );
+	connect( m_ui.textColor, &MdShared::ColorWidget::clicked,
+		this, &ColorsPage::chooseTextColor );
+	connect( m_ui.inlineColor, &MdShared::ColorWidget::clicked,
+		this, &ColorsPage::chooseInlineColor );
+	connect( m_ui.htmlColor, &MdShared::ColorWidget::clicked,
+		this, &ColorsPage::chooseHtmlColor );
+	connect( m_ui.tableColor, &MdShared::ColorWidget::clicked,
+		this, &ColorsPage::chooseTableColor );
+	connect( m_ui.codeColor, &MdShared::ColorWidget::clicked,
+		this, &ColorsPage::chooseCodeColor );
+	connect( m_ui.colors, &QGroupBox::toggled,
+		this, &ColorsPage::colorsToggled );
+	connect( m_ui.specialColor, &MdShared::ColorWidget::clicked,
+		this, &ColorsPage::chooseSpecialColor );
+	connect( m_ui.referenceColor, &MdShared::ColorWidget::clicked,
+		this, &ColorsPage::chooseReferenceColor );
+	connect( m_ui.mathColor, &MdShared::ColorWidget::clicked,
+		this, &ColorsPage::chooseMathColor );
 }
 
-ColorsDialog::~ColorsDialog()
+Ui::ColorsPage &
+ColorsPage::ui()
 {
+	return m_ui;
 }
 
-const Colors &
-ColorsDialog::colors() const
+Colors &
+ColorsPage::colors()
 {
-	return d->colors;
+	return m_colors;
 }
 
 void
-ColorsDialog::clicked( QAbstractButton * btn )
+ColorsPage::resetDefaults()
 {
-	if( static_cast< QAbstractButton* > ( d->ui.buttonBox->button(
-		QDialogButtonBox::RestoreDefaults ) ) == btn )
-			resetDefaults();
-}
-
-void
-ColorsDialog::resetDefaults()
-{
-	d->colors = {};
+	m_colors = {};
 
 	applyColors();
 }
 
 void
-ColorsDialog::applyColors()
+ColorsPage::applyColors()
 {
-	d->ui.colors->setChecked( d->colors.enabled );
+	m_ui.colors->setChecked( m_colors.enabled );
 
-	d->ui.inlineColor->setColor( d->colors.inlineColor );
-	d->ui.linkColor->setColor( d->colors.linkColor );
-	d->ui.textColor->setColor( d->colors.textColor );
-	d->ui.htmlColor->setColor( d->colors.htmlColor );
-	d->ui.tableColor->setColor( d->colors.tableColor );
-	d->ui.codeColor->setColor( d->colors.codeColor );
-	d->ui.mathColor->setColor( d->colors.mathColor );
-	d->ui.referenceColor->setColor( d->colors.referenceColor );
-	d->ui.specialColor->setColor( d->colors.specialColor );
+	m_ui.inlineColor->setColor( m_colors.inlineColor );
+	m_ui.linkColor->setColor( m_colors.linkColor );
+	m_ui.textColor->setColor( m_colors.textColor );
+	m_ui.htmlColor->setColor( m_colors.htmlColor );
+	m_ui.tableColor->setColor( m_colors.tableColor );
+	m_ui.codeColor->setColor( m_colors.codeColor );
+	m_ui.mathColor->setColor( m_colors.mathColor );
+	m_ui.referenceColor->setColor( m_colors.referenceColor );
+	m_ui.specialColor->setColor( m_colors.specialColor );
 }
 
 void
-ColorsDialog::chooseColor( MdShared::ColorWidget * w, QColor & c )
+ColorsPage::chooseColor( MdShared::ColorWidget * w, QColor & c )
 {
 	QColorDialog dlg( c, this );
 
@@ -129,63 +102,63 @@ ColorsDialog::chooseColor( MdShared::ColorWidget * w, QColor & c )
 }
 
 void
-ColorsDialog::chooseLinkColor()
+ColorsPage::chooseLinkColor()
 {
-	chooseColor( d->ui.linkColor, d->colors.linkColor );
+	chooseColor( m_ui.linkColor, m_colors.linkColor );
 }
 
 void
-ColorsDialog::chooseTextColor()
+ColorsPage::chooseTextColor()
 {
-	chooseColor( d->ui.textColor, d->colors.textColor );
+	chooseColor( m_ui.textColor, m_colors.textColor );
 }
 
 void
-ColorsDialog::chooseInlineColor()
+ColorsPage::chooseInlineColor()
 {
-	chooseColor( d->ui.inlineColor, d->colors.inlineColor );
+	chooseColor( m_ui.inlineColor, m_colors.inlineColor );
 }
 
 void
-ColorsDialog::chooseHtmlColor()
+ColorsPage::chooseHtmlColor()
 {
-	chooseColor( d->ui.htmlColor, d->colors.htmlColor );
+	chooseColor( m_ui.htmlColor, m_colors.htmlColor );
 }
 
 void
-ColorsDialog::chooseTableColor()
+ColorsPage::chooseTableColor()
 {
-	chooseColor( d->ui.tableColor, d->colors.tableColor );
+	chooseColor( m_ui.tableColor, m_colors.tableColor );
 }
 
 void
-ColorsDialog::chooseCodeColor()
+ColorsPage::chooseCodeColor()
 {
-	chooseColor( d->ui.codeColor, d->colors.codeColor );
+	chooseColor( m_ui.codeColor, m_colors.codeColor );
 }
 
 void
-ColorsDialog::chooseMathColor()
+ColorsPage::chooseMathColor()
 {
-	chooseColor( d->ui.mathColor, d->colors.mathColor );
+	chooseColor( m_ui.mathColor, m_colors.mathColor );
 }
 
 void
-ColorsDialog::chooseReferenceColor()
+ColorsPage::chooseReferenceColor()
 {
-	chooseColor( d->ui.referenceColor, d->colors.referenceColor );
+	chooseColor( m_ui.referenceColor, m_colors.referenceColor );
 }
 
 void
-ColorsDialog::chooseSpecialColor()
+ColorsPage::chooseSpecialColor()
 {
-	chooseColor( d->ui.specialColor, d->colors.specialColor );
+	chooseColor( m_ui.specialColor, m_colors.specialColor );
 }
 
 void
-ColorsDialog::colorsToggled( bool on )
+ColorsPage::colorsToggled( bool on )
 {
-	d->colors.enabled = on;
+	m_colors.enabled = on;
 }
 
 } /* namespace MdEditor */

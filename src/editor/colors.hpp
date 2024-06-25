@@ -6,16 +6,11 @@
 #pragma once
 
 // Qt include.
-#include <QDialog>
-#include <QColor>
-#include <QScopedPointer>
-#include <QAbstractButton>
+#include <QWidget>
 
-namespace MdShared {
+// md-editor include.
+#include "ui_colors.h"
 
-class ColorWidget;
-
-} /* namespace MdShared */
 
 namespace MdEditor {
 
@@ -39,27 +34,24 @@ struct Colors {
 
 bool operator != ( const Colors & c1, const Colors & c2 );
 
-
 //
-// ColorsDialog
+// ColorsPage
 //
 
-struct ColorsDialogPrivate;
-
-//! Colors dialog.
-class ColorsDialog
-	:	public QDialog
+//! Page with colors.
+class ColorsPage
+	:	public QWidget
 {
 	Q_OBJECT
 
 public:
-	explicit ColorsDialog( const Colors & cols, QWidget * parent = nullptr );
-	~ColorsDialog() override;
+	explicit ColorsPage( QWidget * parent = nullptr );
+	~ColorsPage() override = default;
 
-	const Colors & colors() const;
+	Ui::ColorsPage & ui();
+	Colors & colors();
 
-private slots:
-	void clicked( QAbstractButton * btn );
+public slots:
 	void resetDefaults();
 	void applyColors();
 	void chooseLinkColor();
@@ -77,9 +69,10 @@ private:
 	void chooseColor( MdShared::ColorWidget * w, QColor & c );
 
 private:
-	Q_DISABLE_COPY( ColorsDialog )
+	Q_DISABLE_COPY( ColorsPage )
 
-	QScopedPointer< ColorsDialogPrivate > d;
-}; // class ColorsDialog
+	Ui::ColorsPage m_ui;
+	Colors m_colors;
+}; // class ColorsPage
 
 } /* namespace MdEditor */
