@@ -229,10 +229,11 @@ Editor::paintEvent( QPaintEvent * event )
 	if( d->margins.m_enable )
 	{
 		QPainter painter( viewport() );
-
 		QRect r = viewport()->rect();
-		const auto w = fontMetrics().horizontalAdvance( QLatin1Char( '9' ) ) * d->margins.m_length;
-		r.setX( w );
+		QFontMetricsF fm( font() );
+
+		r.setX( document()->documentMargin() +
+			qRound( fm.averageCharWidth() * d->margins.m_length ) );
 
 		painter.setBrush( QColor( 239, 239, 239 ) );
 		painter.setPen( Qt::NoPen );
