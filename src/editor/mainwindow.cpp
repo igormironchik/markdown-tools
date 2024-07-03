@@ -785,6 +785,8 @@ MainWindow::openFile( const QString & path )
 	closeAllLinkedFiles();
 	updateLoadAllLinkedFilesMenuText();
 	d->initMarkdownMenu();
+
+	setWindowModified( false );
 }
 
 void
@@ -836,6 +838,8 @@ MainWindow::onFileNew()
 	closeAllLinkedFiles();
 	updateLoadAllLinkedFilesMenuText();
 	d->initMarkdownMenu();
+
+	setWindowModified( false );
 }
 
 void
