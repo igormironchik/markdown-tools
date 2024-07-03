@@ -54,6 +54,9 @@ private:
 	void readCfg();
 	void saveCfg();
 
+protected:
+	void showEvent( QShowEvent * event ) override;
+
 private:
 	QScopedPointer< Ui::MainWindow > m_ui;
 	QThread * m_thread;
