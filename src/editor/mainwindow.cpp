@@ -120,8 +120,10 @@ class TabWidget
 	Q_OBJECT
 
 signals:
-	//! Return key was pressed on tab.
+	//! Return key was pressed on tab or tab was activated by shortcut.
 	void activated();
+	//! Tab removed.
+	void removed();
 
 public:
 	explicit TabWidget( QWidget * parent )
@@ -143,6 +145,13 @@ protected:
 			emit activated();
 
 		QTabWidget::keyPressEvent( e );
+	}
+
+	void tabRemoved( int index ) override
+	{
+		QTabWidget::tabRemoved( index );
+
+		emit removed();
 	}
 }; // class TabWidget
 
@@ -216,16 +225,9 @@ struct MainWindowPrivate {
 		sl->addWidget( tabs );
 		tabs->setTabPosition( QTabWidget::East );
 
-		QObject::connect( tabs, &TabWidget::activated,
-			[this] () {
-				if( !this->tabsVisible || this->currentTab == this->tabs->currentIndex() )
-					this->q->showOrHideTabs();
-
-				if( this->tabs->currentIndex() == 0 )
-					this->initMarkdownMenu();
-
-				this->currentTab = this->tabs->currentIndex();
-			} );
+		QObject::connect( tabs, &TabWidget::activated, q, &MainWindow::onTabActivated );
+		QObject::connect( tabs, &TabWidget::removed,
+			[this] () { this->handleCurrentTab(); } );
 
 		tocPanel = new QWidget( tabs );
 		auto tpv = new QVBoxLayout( tocPanel );
@@ -531,6 +533,14 @@ struct MainWindowPrivate {
 		q->setTabOrder( find->replaceLine(), findWeb->line() );
 	}
 
+	void handleCurrentTab()
+	{
+		if( tabs->currentIndex() == 0 )
+			initMarkdownMenu();
+
+		currentTab = tabs->currentIndex();
+	}
+
 	QString paragraphToMenuText( MD::Paragraph< MD::QStringTrait > * p )
 	{
 		QString res;
@@ -706,6 +716,15 @@ MainWindow::~MainWindow()
 		d->standardEditMenu->deleteLater();
 
 	d->standardEditMenu = nullptr;
+}
+
+void
+MainWindow::onTabActivated()
+{
+	if( !d->tabsVisible || d->currentTab == d->tabs->currentIndex() )
+		showOrHideTabs();
+
+	d->handleCurrentTab();
 }
 
 void

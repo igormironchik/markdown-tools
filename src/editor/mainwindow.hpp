@@ -69,6 +69,7 @@ private slots:
 	void onTocClicked( const QModelIndex & index );
 	void onTabClicked( int index );
 	void onSettings();
+	void onTabActivated();
 
 private:
     bool isModified() const;
