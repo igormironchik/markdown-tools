@@ -13,6 +13,7 @@
 #include <QTextEdit>
 #include <QTextCharFormat>
 #include <QTextBlock>
+#include <QScopedValueRollback>
 
 // C++ include.
 #include <algorithm>
@@ -229,13 +230,9 @@ SyntaxVisitor::onMath( MD::Math< MD::QStringTrait > * m )
 void
 SyntaxVisitor::onHeading( MD::Heading< MD::QStringTrait > * h )
 {
-	const auto tmp = d->additionalStyle;
-
-	d->additionalStyle |= MD::BoldText;
+	QScopedValueRollback style( d->additionalStyle, d->additionalStyle | MD::BoldText );
 
 	MD::PosCache< MD::QStringTrait >::onHeading( h );
-
-	d->additionalStyle = tmp;
 
 	QTextCharFormat special;
 	special.setForeground( d->colors.specialColor );
