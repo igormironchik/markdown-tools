@@ -71,8 +71,8 @@ struct SyntaxVisitorPrivate {
 			r.start = ( i == startLine ? startColumn : 0 );
 			r.length = ( i == startLine ?
 				( i == endLine ? endColumn - startColumn + 1 :
-					formats[ i ].block.length() - startColumn ) :
-				( i == endLine ? endColumn + 1 : formats[ i ].block.length() ) );
+					formats[ i ].block.length() - 1 - startColumn ) :
+				( i == endLine ? endColumn + 1 : formats[ i ].block.length() - 1 ) );
 
 			formats[ i ].format.push_back( r );
 		}
