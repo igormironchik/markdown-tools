@@ -382,14 +382,11 @@ SyntaxVisitor::onLink( MD::Link< MD::QStringTrait > * l )
 	d->setFormat( format, l->startLine(), l->startColumn(),
 		l->endLine(), l->endColumn() );
 
-	const auto tmp = d->additionalStyle;
-	d->additionalStyle |= l->opts();
+	QScopedValueRollback style( d->additionalStyle, d->additionalStyle | l->opts() );
 
 	MD::PosCache< MD::QStringTrait >::onLink( l );
 
 	onItemWithOpts( l );
-
-	d->additionalStyle = tmp;
 }
 
 void
