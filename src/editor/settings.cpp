@@ -45,6 +45,13 @@ SettingsDlg::SettingsDlg( const Colors & c, const QFont & f,
 		this, &SettingsDlg::onEnableRightMargin );
 
 	m_ui.buttonBox->addButton( QDialogButtonBox::StandardButton::RestoreDefaults );
+
+	m_ui.m_menu->item( 0 )->setIcon( QIcon::fromTheme( QStringLiteral( "fill-color" ),
+		QIcon( QStringLiteral( "qrc:/res/img/fill-color.png" ) ) ) );
+	m_ui.m_menu->item( 1 )->setIcon( QIcon::fromTheme( QStringLiteral( "preferences-desktop-font" ),
+		QIcon( QStringLiteral( "qrc:/res/img/preferences-desktop-font.png" ) ) ) );
+	m_ui.m_menu->item( 2 )->setIcon( QIcon::fromTheme( QStringLiteral( "document-properties" ),
+		QIcon( QStringLiteral( "qrc:/res/img/document-properties.png" ) ) ) );
 }
 
 const Colors &
