@@ -574,15 +574,17 @@ MainWindow::MainWindow()
 	setWindowTitle( tr( "MD-PDF Converter" ) );
 
 	auto file = menuBar()->addMenu( tr( "&File" ) );
-	file->addAction( QIcon( QStringLiteral( ":/img/application-exit.png" ) ), tr( "&Quit" ),
+	file->addAction( QIcon::fromTheme( QStringLiteral( "application-exit" ),
+			QIcon( QStringLiteral( ":/img/application-exit.png" ) ) ), tr( "&Quit" ),
 		this, &MainWindow::quit );
 
 	auto help = menuBar()->addMenu( tr( "&Help" ) );
 	help->addAction( QIcon( QStringLiteral( ":/icon/icon_24x24.png" ) ), tr( "About" ),
 		this, &MainWindow::about );
-	help->addAction( QIcon( QStringLiteral( ":/img/Qt-logo-neon-transparent.png" ) ), tr( "About Qt" ),
-		this, &MainWindow::aboutQt );
-	help->addAction( QIcon( QStringLiteral( ":/img/bookmarks-organize.png" ) ),
+	help->addAction( QIcon( QStringLiteral( ":/img/Qt-logo-neon-transparent.png" ) ),
+		tr( "About Qt" ), this, &MainWindow::aboutQt );
+	help->addAction( QIcon::fromTheme( QStringLiteral( "bookmarks-organize" ),
+			QIcon( QStringLiteral( ":/img/bookmarks-organize.png" ) ) ),
 		tr( "Licenses" ), this, &MainWindow::licenses );
 
 	ui = new MainWidget( this );

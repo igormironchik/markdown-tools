@@ -351,14 +351,18 @@ struct MainWindowPrivate {
 			QDir::Executable | QDir::Files );
 
 		auto fileMenu = q->menuBar()->addMenu( MainWindow::tr( "&File" ) );
-		newAction = fileMenu->addAction( QIcon( QStringLiteral( ":/res/img/document-new.png" ) ),
+		newAction = fileMenu->addAction( QIcon::fromTheme( QStringLiteral( "document-new" ),
+					QIcon( QStringLiteral( ":/res/img/document-new.png" ) ) ),
 				MainWindow::tr( "New" ), MainWindow::tr( "Ctrl+N" ), q, &MainWindow::onFileNew );
-		openAction = fileMenu->addAction( QIcon( QStringLiteral( ":/res/img/document-open.png" ) ),
+		openAction = fileMenu->addAction( QIcon::fromTheme( QStringLiteral( "document-open" ),
+					QIcon( QStringLiteral( ":/res/img/document-open.png" ) ) ),
 				MainWindow::tr( "Open" ), MainWindow::tr( "Ctrl+O" ), q, &MainWindow::onFileOpen );
 		fileMenu->addSeparator();
-		saveAction = fileMenu->addAction( QIcon( QStringLiteral( ":/res/img/document-save.png" ) ),
+		saveAction = fileMenu->addAction( QIcon::fromTheme( QStringLiteral( "document-save" ),
+					QIcon( QStringLiteral( ":/res/img/document-save.png" ) ) ),
 			MainWindow::tr( "Save" ), MainWindow::tr( "Ctrl+S" ), q, &MainWindow::onFileSave );
-		saveAsAction = fileMenu->addAction( QIcon( QStringLiteral( ":/res/img/document-save-as.png" ) ),
+		saveAsAction = fileMenu->addAction( QIcon::fromTheme( QStringLiteral( "document-save-as" ),
+					QIcon( QStringLiteral( ":/res/img/document-save-as.png" ) ) ),
 			MainWindow::tr( "Save As" ), q, &MainWindow::onFileSaveAs );
 		fileMenu->addSeparator();
 		loadAllAction = fileMenu->addAction( MainWindow::tr( "Load All Linked Files..." ),
@@ -376,24 +380,25 @@ struct MainWindowPrivate {
 		}
 
 		fileMenu->addSeparator();
-		fileMenu->addAction( QIcon( QStringLiteral( ":/res/img/application-exit.png" ) ),
+		fileMenu->addAction( QIcon::fromTheme( QStringLiteral( "application-exit" ),
+				QIcon( QStringLiteral( ":/res/img/application-exit.png" ) ) ),
 			MainWindow::tr( "Quit" ), MainWindow::tr( "Ctrl+Q" ), q, &QWidget::close );
 
 		editMenuAction = q->menuBar()->addAction( MainWindow::tr( "&Edit" ) );
-		toggleFindAction = new QAction(
-			QIcon( QStringLiteral( ":/res/img/edit-find.png" ) ),
+		toggleFindAction = new QAction( QIcon::fromTheme( QStringLiteral( "edit-find" ),
+				QIcon( QStringLiteral( ":/res/img/edit-find.png" ) ) ),
 			MainWindow::tr( "Find/Replace" ), q );
 		toggleFindAction->setShortcut( MainWindow::tr( "Ctrl+F" ) );
 		q->addAction( toggleFindAction );
 
-		toggleFindWebAction = new QAction(
-			QIcon( QStringLiteral( ":/res/img/edit-find.png" ) ),
+		toggleFindWebAction = new QAction( QIcon::fromTheme( QStringLiteral( "edit-find" ),
+				QIcon( QStringLiteral( ":/res/img/edit-find.png" ) ) ),
 			MainWindow::tr( "Find In Preview" ), q );
 		toggleFindWebAction->setShortcut( MainWindow::tr( "Ctrl+W" ) );
 		q->addAction( toggleFindWebAction );
 
-		toggleGoToLineAction = new QAction(
-			QIcon( QStringLiteral( ":/res/img/go-next-use.png" ) ),
+		toggleGoToLineAction = new QAction( QIcon::fromTheme( QStringLiteral( "go-next-use" ),
+			QIcon( QStringLiteral( ":/res/img/go-next-use.png" ) ) ),
 			MainWindow::tr( "Go to Line" ), q );
 		toggleGoToLineAction->setShortcut( MainWindow::tr( "Ctrl+L" ) );
 		q->addAction( toggleGoToLineAction );
@@ -423,7 +428,8 @@ struct MainWindowPrivate {
 		formatMenu->addAction( backtabAction );
 
 		auto viewMenu = q->menuBar()->addMenu( MainWindow::tr( "&View" ) );
-		viewAction = new QAction( QIcon( QStringLiteral( ":/res/img/view-preview.png" ) ),
+		viewAction = new QAction( QIcon::fromTheme( QStringLiteral( "view-preview" ),
+				QIcon( QStringLiteral( ":/res/img/view-preview.png" ) ) ),
 			MainWindow::tr( "Toggle Preview Mode" ) );
 		viewAction->setShortcut( MainWindow::tr( "Ctrl+P" ) );
 		viewAction->setCheckable( true );
@@ -431,16 +437,18 @@ struct MainWindowPrivate {
 		viewMenu->addAction( viewAction );
 
 		settingsMenu = q->menuBar()->addMenu( MainWindow::tr( "&Settings" ) );
-		auto toggleLineNumbersAction = new QAction(
-			QIcon( QStringLiteral( ":/res/img/view-table-of-contents-ltr.png" ) ),
+		auto toggleLineNumbersAction = new QAction( QIcon::fromTheme(
+				QStringLiteral( "view-table-of-contents-ltr" ),
+				QIcon( QStringLiteral( ":/res/img/view-table-of-contents-ltr.png" ) ) ),
 			MainWindow::tr( "Show Line Numbers" ), q );
 		toggleLineNumbersAction->setCheckable( true );
 		toggleLineNumbersAction->setShortcut( MainWindow::tr( "Alt+L" ) );
 		toggleLineNumbersAction->setChecked( true );
 		settingsMenu->addAction( toggleLineNumbersAction );
 
-		auto toggleUnprintableCharacters = new QAction(
-			QIcon( QStringLiteral( ":/res/img/character-set.png" ) ),
+		auto toggleUnprintableCharacters = new QAction( QIcon::fromTheme(
+				QStringLiteral( "character-set" ),
+				QIcon( QStringLiteral( ":/res/img/character-set.png" ) ) ),
 			MainWindow::tr( "Show Tabs/Spaces" ), q );
 		toggleUnprintableCharacters->setCheckable( true );
 		toggleUnprintableCharacters->setShortcut( MainWindow::tr( "Alt+T" ) );
@@ -449,26 +457,31 @@ struct MainWindowPrivate {
 
 		settingsMenu->addSeparator();
 
-		settingsMenu->addAction( QIcon( QStringLiteral( ":/res/img/format-font-size-less.png" ) ),
+		settingsMenu->addAction( QIcon::fromTheme( QStringLiteral( "format-font-size-less" ),
+				QIcon( QStringLiteral( ":/res/img/format-font-size-less.png" ) ) ),
 			MainWindow::tr( "Decrease Font Size" ), MainWindow::tr( "Ctrl+-" ),
 			q, &MainWindow::onLessFontSize );
-		settingsMenu->addAction( QIcon( QStringLiteral( ":/res/img/format-font-size-more.png" ) ),
+		settingsMenu->addAction( QIcon::fromTheme( QStringLiteral( "format-font-size-more" ),
+				QIcon( QStringLiteral( ":/res/img/format-font-size-more.png" ) ) ),
 			MainWindow::tr( "Increase Font Size" ), MainWindow::tr( "Ctrl+=" ),
 			q, &MainWindow::onMoreFontSize );
 
 		settingsMenu->addSeparator();
 
-		settingsMenu->addAction( QIcon( QStringLiteral( ":/res/img/preferences-desktop-font.png" ) ),
+		settingsMenu->addAction( QIcon::fromTheme( QStringLiteral( "preferences-desktop-font" ),
+				QIcon( QStringLiteral( ":/res/img/preferences-desktop-font.png" ) ) ),
 			MainWindow::tr( "Font..." ),
 			q, &MainWindow::onChooseFont );
 
-		settingsMenu->addAction( QIcon( QStringLiteral( ":/res/img/fill-color.png" ) ),
+		settingsMenu->addAction( QIcon::fromTheme( QStringLiteral( "fill-color" ),
+				QIcon( QStringLiteral( ":/res/img/fill-color.png" ) ) ),
 			MainWindow::tr( "Colors..." ),
 			q, &MainWindow::onChangeColors );
 
 		settingsMenu->addSeparator();
 
-		settingsMenu->addAction( QIcon( QStringLiteral( ":/res/img/configure.png" ) ),
+		settingsMenu->addAction( QIcon::fromTheme( QStringLiteral( "configure" ),
+				QIcon( QStringLiteral( ":/res/img/configure.png" ) ) ),
 			MainWindow::tr( "Settings" ),
 			q, &MainWindow::onSettings );
 
@@ -478,8 +491,9 @@ struct MainWindowPrivate {
 			MainWindow::tr( "About" ), q, &MainWindow::onAbout );
 		helpMenu->addAction( QIcon( QStringLiteral( ":/img/Qt-logo-neon-transparent.png" ) ),
 			MainWindow::tr( "About Qt" ), q, &MainWindow::onAboutQt );
-		helpMenu->addAction( QIcon( QStringLiteral( ":/res/img/bookmarks-organize.png" ) ),
-				MainWindow::tr( "Licenses" ), q, &MainWindow::onShowLicenses );
+		helpMenu->addAction( QIcon::fromTheme( QStringLiteral( "bookmarks-organize" ),
+				QIcon( QStringLiteral( ":/res/img/bookmarks-organize.png" ) ) ),
+			MainWindow::tr( "Licenses" ), q, &MainWindow::onShowLicenses );
 
 		cursorPosLabel = new QLabel( q );
 		q->statusBar()->addPermanentWidget( cursorPosLabel );
@@ -1588,7 +1602,8 @@ MainWindow::loadAllLinkedFiles()
 					{
 						auto tmp = QSharedPointer< Node >::create();
 						auto item = new QTreeWidgetItem( current->self );
-						item->setIcon( 0, QIcon( ":/res/img/folder-yellow.png" ) );
+						item->setIcon( 0, QIcon::fromTheme( QStringLiteral( "folder-yellow" ),
+							QIcon( ":/res/img/folder-yellow.png" ) ) );
 						tmp->self = item;
 						item->setText( 0, f );
 						current->children.push_back( { tmp, item } );
