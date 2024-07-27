@@ -21,6 +21,8 @@
 
 namespace MdPdf {
 
+class Cfg;
+
 //
 // MainWidget
 //
@@ -36,6 +38,8 @@ public:
 	~MainWidget() override;
 
 	void setMarkdownFile( const QString & fileName );
+	void initCfg( Cfg & cfg ) const;
+	void applyCfg( const Cfg & cfg );
 
 private slots:
 	void changeLinkColor();
@@ -50,9 +54,6 @@ private slots:
 
 private:
 	void changeStateOfStartButton();
-	QString configFileName( bool inPlace ) const;
-	void readCfg();
-	void saveCfg();
 
 protected:
 	void showEvent( QShowEvent * event ) override;
@@ -83,6 +84,10 @@ public:
 
 	void setMarkdownFile( const QString & fileName );
 
+protected:
+	void closeEvent( QCloseEvent * event ) override;
+	void showEvent( QShowEvent * event ) override;
+
 private slots:
 	//! About.
 	void about();
@@ -92,6 +97,11 @@ private slots:
 	void licenses();
 	//! Quit.
 	void quit();
+
+private:
+	QString configFileName( bool inPlace ) const;
+	void readCfg();
+	void saveCfg();
 
 private:
 	MainWidget * ui = nullptr;

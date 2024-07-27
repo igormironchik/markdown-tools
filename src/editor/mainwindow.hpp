@@ -41,6 +41,7 @@ protected:
 	void resizeEvent( QResizeEvent * e ) override;
     void closeEvent( QCloseEvent * e ) override;
 	bool event( QEvent * event ) override;
+	void showEvent( QShowEvent * e ) override;
 
 private slots:
     void onFileNew();

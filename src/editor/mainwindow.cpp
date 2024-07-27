@@ -53,6 +53,7 @@
 #include <QSortFilterProxyModel>
 #include <QKeyEvent>
 #include <QTabBar>
+#include <QWindow>
 
 // md4qt include.
 #define MD4QT_QT_SUPPORT
@@ -518,8 +519,6 @@ struct MainWindowPrivate {
 		QObject::connect( tocTree, &QTreeView::activated, q, &MainWindow::onTocClicked );
 		QObject::connect( tocTree, &QTreeView::clicked, q, &MainWindow::onTocClicked );
 
-		q->readCfg();
-
 		q->onCursorPositionChanged();
 
 		editor->setFocus();
@@ -772,6 +771,14 @@ MainWindow::resizeEvent( QResizeEvent * e )
 }
 
 void
+MainWindow::showEvent( QShowEvent * e )
+{
+	readCfg();
+
+	e->accept();
+}
+
+void
 MainWindow::openFile( const QString & path )
 {
 	QFile f( path );
@@ -960,6 +967,8 @@ MainWindow::closeEvent( QCloseEvent * e )
 		if( button != QMessageBox::Yes )
 			e->ignore();
 	}
+
+	saveCfg();
 }
 
 bool
@@ -1307,6 +1316,16 @@ MainWindow::saveCfg() const
 			cfg.set_enableRightMargin( d->editor->margins().m_enable );
 			cfg.set_rightMargin( d->editor->margins().m_length );
 
+			Rect r;
+			r.set_x( windowHandle()->x() );
+			r.set_y( windowHandle()->y() );
+			r.set_width( width() );
+			r.set_height( height() );
+			r.set_isMaximized( isMaximized() );
+
+			cfg.set_windowRect( r );
+			cfg.set_sidebarWidth( d->tabWidth );
+
 			tag_Cfg< cfgfile::qstring_trait_t > tag( cfg );
 
 			QTextStream stream( &file );
@@ -1383,6 +1402,19 @@ MainWindow::readCfg()
 			d->editor->margins().m_length = cfg.rightMargin();
 
 			d->mdColors.enabled = cfg.useColors();
+
+			if( cfg.windowRect().width() != 0 && cfg.windowRect().height() != 0 )
+			{
+				resize( cfg.windowRect().width(), cfg.windowRect().height() );
+				windowHandle()->setX( cfg.windowRect().x() );
+				windowHandle()->setY( cfg.windowRect().y() );
+
+				if( cfg.windowRect().isMaximized() )
+					showMaximized();
+			}
+
+			if( cfg.sidebarWidth() != -1 )
+				d->tabWidth = cfg.sidebarWidth();
 		}
 		catch( const cfgfile::exception_t< cfgfile::qstring_trait_t > & )
 		{

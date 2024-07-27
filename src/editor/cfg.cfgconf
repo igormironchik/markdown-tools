@@ -6,6 +6,42 @@
 {forGeneration MDEDITOR__CFG_HPP
 
 	{namespace MdEditor
+		{class Rect
+			{tagScalar
+				{valueType int}
+				{name x}
+				{required}
+				{defaultValue 0}
+			}
+
+			{tagScalar
+				{valueType int}
+				{name y}
+				{required}
+				{defaultValue 0}
+			}
+
+			{tagScalar
+				{valueType int}
+				{name width}
+				{required}
+				{defaultValue 0}
+			}
+
+			{tagScalar
+				{valueType int}
+				{name height}
+				{required}
+				{defaultValue 0}
+			}
+
+			{tagScalar
+				{valueType bool}
+				{name isMaximized}
+				{defaultValue false}
+			}
+		}
+
 		{class Cfg
 			{tagScalar
 				{valueType QString}
@@ -88,6 +124,17 @@
 				{valueType int}
 				{name rightMargin}
 				{defaultValue 80}
+			}
+
+			{tag
+				{valueType MdEditor::Rect}
+				{name windowRect}
+			}
+
+			{tagScalar
+				{valueType int}
+				{name sidebarWidth}
+				{defaultValue -1}
 			}
 		}
 	}

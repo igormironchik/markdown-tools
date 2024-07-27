@@ -6,6 +6,42 @@
 {forGeneration MDPDF__CFG_HPP
 
 	{namespace MdPdf
+		{class Rect
+			{tagScalar
+				{valueType int}
+				{name x}
+				{required}
+				{defaultValue 0}
+			}
+
+			{tagScalar
+				{valueType int}
+				{name y}
+				{required}
+				{defaultValue 0}
+			}
+
+			{tagScalar
+				{valueType int}
+				{name width}
+				{required}
+				{defaultValue 0}
+			}
+
+			{tagScalar
+				{valueType int}
+				{name height}
+				{required}
+				{defaultValue 0}
+			}
+
+			{tagScalar
+				{valueType bool}
+				{name isMaximized}
+				{defaultValue false}
+			}
+		}
+
         {class Font
             {tagScalar
 				{valueType QString}
@@ -89,7 +125,7 @@
 				{valueType QString}
 				{name codeTheme}
 			}
-			
+
 			{tagScalar
 				{valueType QString}
 				{name imageAlignment}
@@ -99,6 +135,11 @@
 				{valueType int}
 				{name dpiForImages}
 				{minMaxConstraint {min 50} {max 2400}}
+			}
+
+			{tag
+				{valueType MdPdf::Rect}
+				{name windowRect}
 			}
 		}
 	}
