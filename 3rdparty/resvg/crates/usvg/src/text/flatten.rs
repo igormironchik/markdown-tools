@@ -33,7 +33,7 @@ fn push_outline_paths(
     if let Some(path) = builder.finish().and_then(|p| {
         Path::new(
             String::new(),
-            span.visibility,
+            span.visible,
             span.fill.clone(),
             span.stroke.clone(),
             span.paint_order,
@@ -85,8 +85,8 @@ pub(crate) fn flatten(text: &mut Text, fontdb: &fontdb::Database) -> Option<(Gro
 
                 new_children.push(Node::Group(Box::new(group)));
             }
-            // An SVG glyph. Will return the usvg tree containing the glyph descriptions.
-            else if let Some(tree) = fontdb.svg(glyph.font, glyph.id) {
+            // An SVG glyph. Will return the usvg node containing the glyph descriptions.
+            else if let Some(node) = fontdb.svg(glyph.font, glyph.id) {
                 push_outline_paths(span, &mut span_builder, &mut new_children, rendering_mode);
 
                 let mut group = Group {
@@ -94,7 +94,7 @@ pub(crate) fn flatten(text: &mut Text, fontdb: &fontdb::Database) -> Option<(Gro
                     ..Group::empty()
                 };
                 // TODO: Probably need to update abs_transform of children?
-                group.children.push(Node::Group(Box::new(tree.root)));
+                group.children.push(node);
                 group.calculate_bounding_boxes();
 
                 new_children.push(Node::Group(Box::new(group)));
@@ -189,7 +189,7 @@ impl ttf_parser::OutlineBuilder for PathBuilder {
 pub(crate) trait DatabaseExt {
     fn outline(&self, id: ID, glyph_id: GlyphId) -> Option<tiny_skia_path::Path>;
     fn raster(&self, id: ID, glyph_id: GlyphId) -> Option<BitmapImage>;
-    fn svg(&self, id: ID, glyph_id: GlyphId) -> Option<Tree>;
+    fn svg(&self, id: ID, glyph_id: GlyphId) -> Option<Node>;
     fn colr(&self, id: ID, glyph_id: GlyphId) -> Option<Tree>;
 }
 
@@ -226,7 +226,7 @@ impl DatabaseExt for Database {
                 let bitmap_image = BitmapImage {
                     image: Image {
                         id: String::new(),
-                        visibility: Visibility::Visible,
+                        visible: true,
                         size: Size::from_wh(image.width as f32, image.height as f32)?,
                         rendering_mode: ImageRendering::OptimizeQuality,
                         kind: ImageKind::PNG(Arc::new(image.data.into())),
@@ -253,14 +253,32 @@ impl DatabaseExt for Database {
         })?
     }
 
-    fn svg(&self, id: ID, glyph_id: GlyphId) -> Option<Tree> {
+    fn svg(&self, id: ID, glyph_id: GlyphId) -> Option<Node> {
         // TODO: Technically not 100% accurate because the SVG format in a OTF font
         // is actually a subset/superset of a normal SVG, but it seems to work fine
         // for Twitter Color Emoji, so might as well use what we already have.
-        self.with_face_data(id, |data, face_index| -> Option<Tree> {
+
+        // TODO: Glyph records can contain the data for multiple glyphs. We should
+        // add a cache so we don't need to reparse the data every time.
+        self.with_face_data(id, |data, face_index| -> Option<Node> {
             let font = ttf_parser::Face::parse(data, face_index).ok()?;
             let image = font.glyph_svg_image(glyph_id)?;
-            Tree::from_data(image.data, &Options::default(), &fontdb::Database::new()).ok()
+            let tree = Tree::from_data(image.data, &Options::default()).ok()?;
+
+            // Twitter Color Emoji seems to always have one SVG record per glyph,
+            // while Noto Color Emoji sometimes contains multiple ones. It's kind of hacky,
+            // but the best we have for now.
+            let node = if image.start_glyph_id == image.end_glyph_id {
+                Node::Group(Box::new(tree.root))
+            } else {
+                tree.node_by_id(&format!("glyph{}", glyph_id.0))
+                    .log_none(|| {
+                        log::warn!("Failed to find SVG glyph node for glyph {}", glyph_id.0)
+                    })
+                    .cloned()?
+            };
+
+            Some(node)
         })?
     }
 
@@ -300,12 +318,7 @@ impl DatabaseExt for Database {
             )?;
             svg.end_element();
 
-            Tree::from_data(
-                &svg.end_document().as_bytes(),
-                &Options::default(),
-                &fontdb::Database::new(),
-            )
-            .ok()
+            Tree::from_data(&svg.end_document().as_bytes(), &Options::default()).ok()
         })?
     }
 }

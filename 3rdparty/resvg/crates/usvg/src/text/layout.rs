@@ -11,16 +11,14 @@ use kurbo::{ParamCurve, ParamCurveArclen, ParamCurveDeriv};
 use rustybuzz::ttf_parser;
 use rustybuzz::ttf_parser::{GlyphId, Tag};
 use strict_num::NonZeroPositiveF32;
-use svgtypes::FontFamily;
 use tiny_skia_path::{NonZeroRect, Transform};
 use unicode_script::UnicodeScript;
 
 use crate::tree::{BBox, IsValidLength};
 use crate::{
     AlignmentBaseline, ApproxZeroUlps, BaselineShift, DominantBaseline, Fill, FillRule, Font,
-    FontStretch, FontStyle, LengthAdjust, PaintOrder, Path, ShapeRendering, Stroke, Text,
-    TextAnchor, TextChunk, TextDecorationStyle, TextFlow, TextPath, TextSpan, Visibility,
-    WritingMode,
+    FontResolver, LengthAdjust, PaintOrder, Path, ShapeRendering, Stroke, Text, TextAnchor,
+    TextChunk, TextDecorationStyle, TextFlow, TextPath, TextSpan, WritingMode,
 };
 
 /// A glyph that has already been positioned correctly.
@@ -45,39 +43,37 @@ pub struct PositionedGlyph {
     pub id: GlyphId,
     /// The text from the original string that corresponds to that glyph.
     pub text: String,
-    /// The ID of the font the glyph should be taken from.
+    /// The ID of the font the glyph should be taken from. Can be used with the
+    /// [font database of the tree](crate::Tree::fontdb) this glyph is part of.
     pub font: ID,
 }
 
 impl PositionedGlyph {
+    /// Returns the transform of glyph.
+    pub fn transform(&self) -> Transform {
+        let sx = self.font_size / self.units_per_em as f32;
+
+        self.span_ts
+            .pre_concat(self.cluster_ts)
+            .pre_concat(Transform::from_scale(sx, sx))
+            .pre_concat(self.glyph_ts)
+    }
+
     /// Returns the transform of glyph, assuming that an outline
     /// glyph is being used (i.e. from the `glyf` or `CFF/CFF2` table).
     pub fn outline_transform(&self) -> Transform {
-        let mut ts = Transform::identity();
-
         // Outlines are mirrored by default.
-        ts = ts.pre_scale(1.0, -1.0);
-
-        let sx = self.font_size / self.units_per_em as f32;
-
-        ts = ts.pre_scale(sx, sx);
-        ts = ts
-            .pre_concat(self.glyph_ts)
-            .post_concat(self.cluster_ts)
-            .post_concat(self.span_ts);
-
-        ts
+        self.transform()
+            .pre_concat(Transform::from_scale(1.0, -1.0))
     }
 
     /// Returns the transform for the glyph, assuming that a CBTD-based raster glyph
     /// is being used.
     pub fn cbdt_transform(&self, x: f32, y: f32, pixels_per_em: f32, height: f32) -> Transform {
-        self.span_ts
-            .pre_concat(self.cluster_ts)
-            .pre_concat(self.glyph_ts)
+        self.transform()
             .pre_concat(Transform::from_scale(
-                self.font_size / pixels_per_em,
-                self.font_size / pixels_per_em,
+                self.units_per_em as f32 / pixels_per_em,
+                self.units_per_em as f32 / pixels_per_em,
             ))
             // Right now, the top-left corner of the image would be placed in
             // on the "text cursor", but we want the bottom-left corner to be there,
@@ -97,7 +93,7 @@ impl PositionedGlyph {
         height: f32,
     ) -> Transform {
         // In contrast to CBDT, we also need to look at the outline bbox of the glyph and add a shift if necessary.
-        let bbox_x_shift = self.font_size * (-x_min / self.units_per_em as f32);
+        let bbox_x_shift = -x_min;
 
         let bbox_y_shift = if y_min.approx_zero_ulps(4) {
             // For unknown reasons, using Apple Color Emoji will lead to a vertical shift on MacOS, but this shift
@@ -110,18 +106,16 @@ impl PositionedGlyph {
             // We can still remove this if it turns out to be a problem, but Apple Color Emoji is pretty
             // much the only `sbix` font out there and they all seem to have a y-shift of 0, so it
             // makes sense to keep it.
-            0.128 * self.font_size
+            0.128 * self.units_per_em as f32
         } else {
-            self.font_size * (-y_min / self.units_per_em as f32)
+            -y_min
         };
 
-        self.span_ts
-            .pre_concat(self.cluster_ts)
-            .pre_concat(self.glyph_ts)
+        self.transform()
             .pre_concat(Transform::from_translate(bbox_x_shift, bbox_y_shift))
             .pre_concat(Transform::from_scale(
-                self.font_size / pixels_per_em,
-                self.font_size / pixels_per_em,
+                self.units_per_em as f32 / pixels_per_em,
+                self.units_per_em as f32 / pixels_per_em,
             ))
             // Right now, the top-left corner of the image would be placed in
             // on the "text cursor", but we want the bottom-left corner to be there,
@@ -132,17 +126,7 @@ impl PositionedGlyph {
     /// Returns the transform for the glyph, assuming that an SVG glyph is
     /// being used.
     pub fn svg_transform(&self) -> Transform {
-        let mut ts = Transform::identity();
-
-        let sx = self.font_size / self.units_per_em as f32;
-
-        ts = ts.pre_scale(sx, sx);
-        ts = ts
-            .pre_concat(self.glyph_ts)
-            .post_concat(self.cluster_ts)
-            .post_concat(self.span_ts);
-
-        ts
+        self.transform()
     }
 
     /// Returns the transform for the glyph, assuming that a COLR glyph is
@@ -165,7 +149,7 @@ pub struct Span {
     /// The font size of the span.
     pub font_size: NonZeroPositiveF32,
     /// The visibility of the span.
-    pub visibility: Visibility,
+    pub visible: bool,
     /// The glyphs that make up the span.
     pub positioned_glyphs: Vec<PositionedGlyph>,
     /// An underline text decoration of the span.
@@ -206,14 +190,17 @@ impl GlyphCluster {
 
 pub(crate) fn layout_text(
     text_node: &Text,
-    fontdb: &fontdb::Database,
+    resolver: &FontResolver,
+    fontdb: &mut Arc<fontdb::Database>,
 ) -> Option<(Vec<Span>, NonZeroRect)> {
     let mut fonts_cache: FontsCache = HashMap::new();
 
     for chunk in &text_node.chunks {
         for span in &chunk.spans {
             if !fonts_cache.contains_key(&span.font) {
-                if let Some(font) = resolve_font(&span.font, fontdb) {
+                if let Some(font) =
+                    (resolver.select_font)(&span.font, fontdb).and_then(|id| fontdb.load_font(id))
+                {
                     fonts_cache.insert(span.font.clone(), Arc::new(font));
                 }
             }
@@ -231,7 +218,7 @@ pub(crate) fn layout_text(
             TextFlow::Path(_) => (0.0, 0.0),
         };
 
-        let mut clusters = process_chunk(chunk, &fonts_cache, fontdb);
+        let mut clusters = process_chunk(chunk, &fonts_cache, resolver, fontdb);
         if clusters.is_empty() {
             char_offset += chunk.text.chars().count();
             continue;
@@ -357,7 +344,7 @@ pub(crate) fn layout_text(
                     stroke: span.stroke.clone(),
                     paint_order: span.paint_order,
                     font_size: span.font_size,
-                    visibility: span.visibility,
+                    visible: span.visible,
                     positioned_glyphs,
                     underline,
                     overline,
@@ -492,7 +479,7 @@ pub(crate) fn convert_decoration(
 
     Path::new(
         String::new(),
-        span.visibility,
+        span.visible,
         decoration.fill.take(),
         decoration.stroke.take(),
         PaintOrder::default(),
@@ -862,7 +849,8 @@ fn collect_normals(
 fn process_chunk(
     chunk: &TextChunk,
     fonts_cache: &FontsCache,
-    fontdb: &fontdb::Database,
+    resolver: &FontResolver,
+    fontdb: &mut Arc<fontdb::Database>,
 ) -> Vec<GlyphCluster> {
     // The way this function works is a bit tricky.
     //
@@ -907,6 +895,7 @@ fn process_chunk(
             font,
             span.small_caps,
             span.apply_kerning,
+            resolver,
             fontdb,
         );
 
@@ -1143,7 +1132,7 @@ fn form_glyph_clusters(glyphs: &[Glyph], text: &str, font_size: f32) -> GlyphClu
         // but the later one will have an offset from the "current position".
         // So we have to keep an advance.
         // TODO: should be done only inside a single text span
-        let ts = Transform::from_translate(x + glyph.dx as f32, glyph.dy as f32);
+        let ts = Transform::from_translate(x + glyph.dx as f32, -glyph.dy as f32);
 
         positioned_glyphs.push(PositionedGlyph {
             glyph_ts: ts,
@@ -1181,62 +1170,6 @@ fn form_glyph_clusters(glyphs: &[Glyph], text: &str, font_size: f32) -> GlyphClu
         glyphs: positioned_glyphs,
         visible: true,
     }
-}
-
-fn resolve_font(font: &Font, fontdb: &fontdb::Database) -> Option<ResolvedFont> {
-    let mut name_list = Vec::new();
-    for family in &font.families {
-        name_list.push(match family {
-            FontFamily::Serif => fontdb::Family::Serif,
-            FontFamily::SansSerif => fontdb::Family::SansSerif,
-            FontFamily::Cursive => fontdb::Family::Cursive,
-            FontFamily::Fantasy => fontdb::Family::Fantasy,
-            FontFamily::Monospace => fontdb::Family::Monospace,
-            FontFamily::Named(s) => fontdb::Family::Name(s),
-        });
-    }
-
-    // Use the default font as fallback.
-    name_list.push(fontdb::Family::Serif);
-
-    let stretch = match font.stretch {
-        FontStretch::UltraCondensed => fontdb::Stretch::UltraCondensed,
-        FontStretch::ExtraCondensed => fontdb::Stretch::ExtraCondensed,
-        FontStretch::Condensed => fontdb::Stretch::Condensed,
-        FontStretch::SemiCondensed => fontdb::Stretch::SemiCondensed,
-        FontStretch::Normal => fontdb::Stretch::Normal,
-        FontStretch::SemiExpanded => fontdb::Stretch::SemiExpanded,
-        FontStretch::Expanded => fontdb::Stretch::Expanded,
-        FontStretch::ExtraExpanded => fontdb::Stretch::ExtraExpanded,
-        FontStretch::UltraExpanded => fontdb::Stretch::UltraExpanded,
-    };
-
-    let style = match font.style {
-        FontStyle::Normal => fontdb::Style::Normal,
-        FontStyle::Italic => fontdb::Style::Italic,
-        FontStyle::Oblique => fontdb::Style::Oblique,
-    };
-
-    let query = fontdb::Query {
-        families: &name_list,
-        weight: fontdb::Weight(font.weight),
-        stretch,
-        style,
-    };
-
-    let id = fontdb.query(&query);
-    if id.is_none() {
-        log::warn!(
-            "No match for '{}' font-family.",
-            font.families
-                .iter()
-                .map(|f| f.to_string())
-                .collect::<Vec<_>>()
-                .join(", ")
-        );
-    }
-
-    fontdb.load_font(id?)
 }
 
 pub(crate) trait DatabaseExt {
@@ -1336,7 +1269,8 @@ pub(crate) fn shape_text(
     font: Arc<ResolvedFont>,
     small_caps: bool,
     apply_kerning: bool,
-    fontdb: &fontdb::Database,
+    resolver: &FontResolver,
+    fontdb: &mut Arc<fontdb::Database>,
 ) -> Vec<Glyph> {
     let mut glyphs = shape_text_with_font(text, font.clone(), small_caps, apply_kerning, fontdb)
         .unwrap_or_default();
@@ -1355,7 +1289,9 @@ pub(crate) fn shape_text(
         }
 
         if let Some(c) = missing {
-            let fallback_font = match find_font_for_char(c, &used_fonts, fontdb) {
+            let fallback_font = match (resolver.select_fallback)(c, &used_fonts, fontdb)
+                .and_then(|id| fontdb.load_font(id))
+            {
                 Some(v) => Arc::new(v),
                 None => break 'outer,
             };
@@ -1496,55 +1432,6 @@ fn shape_text_with_font(
 
         Some(glyphs)
     })?
-}
-
-/// Finds a font with a specified char.
-///
-/// This is a rudimentary font fallback algorithm.
-fn find_font_for_char(
-    c: char,
-    exclude_fonts: &[fontdb::ID],
-    fontdb: &fontdb::Database,
-) -> Option<ResolvedFont> {
-    let base_font_id = exclude_fonts[0];
-
-    // Iterate over fonts and check if any of them support the specified char.
-    for face in fontdb.faces() {
-        // Ignore fonts, that were used for shaping already.
-        if exclude_fonts.contains(&face.id) {
-            continue;
-        }
-
-        // Check that the new face has the same style.
-        let base_face = fontdb.face(base_font_id)?;
-        if base_face.style != face.style
-            && base_face.weight != face.weight
-            && base_face.stretch != face.stretch
-        {
-            continue;
-        }
-
-        if !fontdb.has_char(face.id, c) {
-            continue;
-        }
-
-        let base_family = base_face
-            .families
-            .iter()
-            .find(|f| f.1 == fontdb::Language::English_UnitedStates)
-            .unwrap_or(&base_face.families[0]);
-
-        let new_family = face
-            .families
-            .iter()
-            .find(|f| f.1 == fontdb::Language::English_UnitedStates)
-            .unwrap_or(&base_face.families[0]);
-
-        log::warn!("Fallback from {} to {}.", base_family.0, new_family.0);
-        return fontdb.load_font(face.id);
-    }
-
-    None
 }
 
 /// An iterator over glyph clusters.

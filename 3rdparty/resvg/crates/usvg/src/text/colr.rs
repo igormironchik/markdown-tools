@@ -153,6 +153,8 @@ impl<'a> GlyphPainter<'a> {
         let gradient_id = format!("rg{}", self.gradient_index);
         self.gradient_index += 1;
 
+        let gradient_transform = paint_transform(self.outline_transform, self.transform);
+
         self.svg.start_element("radialGradient");
         self.svg.write_attribute("id", &gradient_id);
         self.svg.write_attribute("cx", &gradient.x1);
@@ -164,7 +166,7 @@ impl<'a> GlyphPainter<'a> {
         self.svg.write_attribute("gradientUnits", &"userSpaceOnUse");
         self.svg.write_spread_method_attribute(gradient.extend);
         self.svg
-            .write_transform_attribute("gradientTransform", self.transform);
+            .write_transform_attribute("gradientTransform", gradient_transform);
         self.write_gradient_stops(
             gradient.stops(self.palette_index, self.face.variation_coordinates()),
         );
@@ -292,26 +294,6 @@ impl<'a> ttf_parser::colr::Painter<'a> for GlyphPainter<'a> {
 
     fn pop_layer(&mut self) {
         self.svg.end_element(); // g
-    }
-
-    fn push_translate(&mut self, tx: f32, ty: f32) {
-        self.push_transform(ttf_parser::Transform::new(1.0, 0.0, 0.0, 1.0, tx, ty));
-    }
-
-    fn push_scale(&mut self, sx: f32, sy: f32) {
-        self.push_transform(ttf_parser::Transform::new(sx, 0.0, 0.0, sy, 0.0, 0.0));
-    }
-
-    fn push_rotate(&mut self, angle: f32) {
-        let cc = (angle * std::f32::consts::PI).cos();
-        let ss = (angle * std::f32::consts::PI).sin();
-        self.push_transform(ttf_parser::Transform::new(cc, ss, -ss, cc, 0.0, 0.0));
-    }
-
-    fn push_skew(&mut self, skew_x: f32, skew_y: f32) {
-        let x = (-skew_x * std::f32::consts::PI).tan();
-        let y = (skew_y * std::f32::consts::PI).tan();
-        self.push_transform(ttf_parser::Transform::new(1.0, y, x, 1.0, 0.0, 0.0));
     }
 
     fn push_transform(&mut self, transform: ttf_parser::Transform) {

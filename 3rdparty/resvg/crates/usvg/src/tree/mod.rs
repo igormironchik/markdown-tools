@@ -79,7 +79,7 @@ pub(crate) enum Units {
 /// `visibility` attribute in the SVG.
 #[allow(missing_docs)]
 #[derive(Clone, Copy, PartialEq, Debug)]
-pub enum Visibility {
+pub(crate) enum Visibility {
     Visible,
     Hidden,
     Collapse,
@@ -1231,7 +1231,7 @@ impl Default for PaintOrder {
 #[derive(Clone, Debug)]
 pub struct Path {
     pub(crate) id: String,
-    pub(crate) visibility: Visibility,
+    pub(crate) visible: bool,
     pub(crate) fill: Option<Fill>,
     pub(crate) stroke: Option<Stroke>,
     pub(crate) paint_order: PaintOrder,
@@ -1248,7 +1248,7 @@ impl Path {
     pub(crate) fn new_simple(data: Arc<tiny_skia_path::Path>) -> Option<Self> {
         Self::new(
             String::new(),
-            Visibility::default(),
+            true,
             None,
             None,
             PaintOrder::default(),
@@ -1260,7 +1260,7 @@ impl Path {
 
     pub(crate) fn new(
         id: String,
-        visibility: Visibility,
+        visible: bool,
         fill: Option<Fill>,
         stroke: Option<Stroke>,
         paint_order: PaintOrder,
@@ -1289,7 +1289,7 @@ impl Path {
 
         Some(Path {
             id,
-            visibility,
+            visible,
             fill,
             stroke,
             paint_order,
@@ -1313,8 +1313,8 @@ impl Path {
     }
 
     /// Element visibility.
-    pub fn visibility(&self) -> Visibility {
-        self.visibility
+    pub fn is_visible(&self) -> bool {
+        self.visible
     }
 
     /// Fill style.
@@ -1424,6 +1424,8 @@ pub enum ImageKind {
     PNG(Arc<Vec<u8>>),
     /// A reference to raw GIF data. Should be decoded by the caller.
     GIF(Arc<Vec<u8>>),
+    /// A reference to raw WebP data. Should be decoded by the caller.
+    WEBP(Arc<Vec<u8>>),
     /// A preprocessed SVG tree. Can be rendered as is.
     SVG(Tree),
 }
@@ -1431,12 +1433,13 @@ pub enum ImageKind {
 impl ImageKind {
     pub(crate) fn actual_size(&self) -> Option<Size> {
         match self {
-            ImageKind::JPEG(ref data) | ImageKind::PNG(ref data) | ImageKind::GIF(ref data) => {
-                imagesize::blob_size(data)
-                    .ok()
-                    .and_then(|size| Size::from_wh(size.width as f32, size.height as f32))
-                    .log_none(|| log::warn!("Image has an invalid size. Skipped."))
-            }
+            ImageKind::JPEG(ref data)
+            | ImageKind::PNG(ref data)
+            | ImageKind::GIF(ref data)
+            | ImageKind::WEBP(ref data) => imagesize::blob_size(data)
+                .ok()
+                .and_then(|size| Size::from_wh(size.width as f32, size.height as f32))
+                .log_none(|| log::warn!("Image has an invalid size. Skipped.")),
             ImageKind::SVG(ref svg) => Some(svg.size),
         }
     }
@@ -1448,6 +1451,7 @@ impl std::fmt::Debug for ImageKind {
             ImageKind::JPEG(_) => f.write_str("ImageKind::JPEG(..)"),
             ImageKind::PNG(_) => f.write_str("ImageKind::PNG(..)"),
             ImageKind::GIF(_) => f.write_str("ImageKind::GIF(..)"),
+            ImageKind::WEBP(_) => f.write_str("ImageKind::WEBP(..)"),
             ImageKind::SVG(_) => f.write_str("ImageKind::SVG(..)"),
         }
     }
@@ -1459,7 +1463,7 @@ impl std::fmt::Debug for ImageKind {
 #[derive(Clone, Debug)]
 pub struct Image {
     pub(crate) id: String,
-    pub(crate) visibility: Visibility,
+    pub(crate) visible: bool,
     pub(crate) size: Size,
     pub(crate) rendering_mode: ImageRendering,
     pub(crate) kind: ImageKind,
@@ -1478,8 +1482,8 @@ impl Image {
     }
 
     /// Element visibility.
-    pub fn visibility(&self) -> Visibility {
-        self.visibility
+    pub fn is_visible(&self) -> bool {
+        self.visible
     }
 
     /// The actual image size.
@@ -1545,6 +1549,8 @@ pub struct Tree {
     pub(crate) clip_paths: Vec<Arc<ClipPath>>,
     pub(crate) masks: Vec<Arc<Mask>>,
     pub(crate) filters: Vec<Arc<filter::Filter>>,
+    #[cfg(feature = "text")]
+    pub(crate) fontdb: Arc<fontdb::Database>,
 }
 
 impl Tree {
@@ -1606,6 +1612,12 @@ impl Tree {
     /// Returns a list of all unique [`Filter`](filter::Filter)s in the tree.
     pub fn filters(&self) -> &[Arc<filter::Filter>] {
         &self.filters
+    }
+
+    /// Returns the font database that applies to all text nodes in the tree.
+    #[cfg(feature = "text")]
+    pub fn fontdb(&self) -> &Arc<fontdb::Database> {
+        &self.fontdb
     }
 
     pub(crate) fn collect_paint_servers(&mut self) {
