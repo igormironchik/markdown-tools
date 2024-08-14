@@ -44,11 +44,11 @@ cp -r ./build-markdown-tools/lib ./installer/packages/mironchik.igor.markdown/da
 
 rm -f ./installer/packages/mironchik.igor.markdown/data/lib/*.a || exit 1
 
-cp -r ./Qt/6.6.2/macos/lib ./installer/packages/mironchik.igor.markdown/data || exit 1
+cp -r ./Qt/6.7.2/macos/lib ./installer/packages/mironchik.igor.markdown/data || exit 1
 
-cp -r ./Qt/6.6.2/macos/plugins ./installer/packages/mironchik.igor.markdown/data || exit 1
+cp -r ./Qt/6.7.2/macos/plugins ./installer/packages/mironchik.igor.markdown/data || exit 1
 
-cp -r ./Qt/6.6.2/macos/translations ./installer/packages/mironchik.igor.markdown/data || exit 1
+cp -r ./Qt/6.7.2/macos/translations ./installer/packages/mironchik.igor.markdown/data || exit 1
 
 cp -r ./3rdparty/resvg/target/release/libresvg.dylib ./installer/packages/mironchik.igor.markdown/data/lib/libresvg.dylib || exit 1
 
