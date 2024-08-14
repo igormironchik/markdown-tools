@@ -1395,8 +1395,6 @@ PdfRenderer::drawLink( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 		auto * spaceFont = createFont( renderOpts.m_textFont, false, false,
 			renderOpts.m_textFontSize, pdfData.doc, scale, pdfData );
 
-		pdfData.setColor( renderOpts.m_linkColor );
-
 		rects = drawString( pdfData, renderOpts, url,
 			spaceFont, renderOpts.m_textFontSize, scale,
 			spaceFont, renderOpts.m_textFontSize, scale,
@@ -1406,9 +1404,8 @@ PdfRenderer::drawLink( PdfAuxData & pdfData, const RenderOpts & renderOpts,
 			footnoteFont, footnoteFontSize, footnoteFontScale, nextItem, footnoteNum, offset,
 			firstInParagraph, true, cw, QColor(),
 			item->opts() & MD::TextOption::StrikethroughText,
-			item->startLine(), item->startColumn(), item->endLine(), item->endColumn() );
-
-		pdfData.restoreColor();
+			item->startLine(), item->startColumn(), item->endLine(), item->endColumn(),
+			renderOpts.m_linkColor );
 	}
 	// Otherwise image link.
 	else
