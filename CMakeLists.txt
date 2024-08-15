@@ -37,15 +37,13 @@ set( MDEDITOR_VERSION ${MD_TOOLS_VERSION} )
 find_package( QT NAMES Qt6 REQUIRED COMPONENTS Core )
 
 if( UNIX AND NOT APPLE )
-	list( PREPEND CMAKE_INSTALL_RPATH "${QT6_INSTALL_PREFIX}/lib:\$ORIGIN/../lib" )
+	list( PREPEND CMAKE_INSTALL_RPATH "\$ORIGIN/../lib" )
 else()
-	list( PREPEND CMAKE_INSTALL_RPATH "${QT6_INSTALL_PREFIX}/lib" )
 	list( PREPEND CMAKE_INSTALL_RPATH "@executable_path/../lib" )
 	list( PREPEND CMAKE_INSTALL_RPATH "@loader_path/../lib" )
 endif()
 
 set( CMAKE_BUILD_WITH_INSTALL_RPATH TRUE )
-set( CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE )
 set( CMAKE_MACOSX_RPATH TRUE )
 
 link_directories( ${CMAKE_BINARY_DIR}/lib )
@@ -103,6 +101,12 @@ add_custom_target( build_resvg ALL
 	COMMAND cargo build --release
 	WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg/crates/c-api"
 	BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg/target/release/${CMAKE_STATIC_LIBRARY_PREFIX}resvg${CMAKE_SHARED_LIBRARY_SUFFIX}${CMAKE_STATIC_LIBRARY_SUFFIX} )
+
+if( UNIX AND NOT APPLE )
+	add_custom_command( TARGET build_resvg POST_BUILD
+		COMMAND patchelf --set-soname libresvg.so libresvg.so
+		WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg/target/release" )
+endif()
 
 if( WIN32 )
 	set_target_properties( resvg PROPERTIES
