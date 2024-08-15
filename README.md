@@ -77,14 +77,14 @@ fonts to monospaced due to [QTBUG-112145](https://bugreports.qt.io/browse/QTBUG-
 
 * I do not render HTML tags in PDF.
 
-* Some LaTeX Math expressions can be wrongly rendered. I use very good
+* Some LaTeX Math expressions can be wrongly rendered in PDF. I use very good
 library `JKQtPlotter` to render LaTeX Math, and not everything is
 implemented there. But most common math things are done.
 
 * I don't support right-to-left languages and languages that don't separate words
 with spaces. I don't know theirs rules to adapt algorithms[^1].
 
-* `LaTeX` math expressions can be rendered a little differently on different platforms
+* `LaTeX` math expressions can be rendered a little differently in PDF on different platforms
 due to [QTBUG-104790](https://bugreports.qt.io/browse/QTBUG-104790), that is why I don't
 have auto tests for them.
  
