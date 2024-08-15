@@ -37,7 +37,7 @@ To build these applications first of all install dependencies:
  * `fontconfig`
  * `extra-cmake-modules`
  * `kf6-syntax-highlighting`
- * `Qt6`
+ * `Qt >= 6.7`
 
 With these dependencies installed just open `CMakeLists.txt` in `QtCreator`
 (or use `CMake` from command line) and run build.
@@ -47,6 +47,9 @@ You can use `Conan` to install some dependencies.
 `Fontconfig` should be installed in system, as using `Fontconfig` from `Conan` leads to ugly UI.
 
 One more thing - don't use `jom`.
+
+On `KDE` I suggest to use system's `Qt` libraries, as in this case applications will use
+`KDE`'s Platform Plugin, that makes better integration with system.
 
 ## On what platforms better use `Conan` to build `markdown-tools`?
 
