@@ -256,7 +256,7 @@ struct MainWindowPrivate {
 		filterTocModel->setRecursiveFilteringEnabled( true );
 		tocTree->setModel( filterTocModel );
 		tocTree->setHeaderHidden( true );
-		delegate = new WordWrapItemDelegate( tocTree );
+		delegate = new WordWrapItemDelegate( tocTree, tocModel, filterTocModel );
 		tocTree->setItemDelegate( delegate );
 		tocTree->setAlternatingRowColors( true );
 		tocTree->setSortingEnabled( false );
@@ -554,9 +554,9 @@ struct MainWindowPrivate {
 		currentTab = tabs->currentIndex();
 	}
 
-	QString paragraphToMenuText( MD::Paragraph< MD::QStringTrait > * p )
+	StringDataVec paragraphToMenuText( MD::Paragraph< MD::QStringTrait > * p )
 	{
-		QString res;
+		StringDataVec res;
 
 		for( auto it = p->items().cbegin(), last = p->items().cend(); it != last; ++it )
 		{
@@ -566,10 +566,7 @@ struct MainWindowPrivate {
 				{
 					auto t = static_cast< MD::Text< MD::QStringTrait >* > ( it->get() );
 
-					if( !res.isEmpty() )
-						res.append( QStringLiteral( " " ) );
-
-					res.append( t->text() );
+					res.append( { t->text(), false } );
 				}
 					break;
 
@@ -577,10 +574,7 @@ struct MainWindowPrivate {
 				{
 					auto c = static_cast< MD::Code< MD::QStringTrait >* > ( it->get() );
 
-					if( !res.isEmpty() )
-						res.append( QStringLiteral( " " ) );
-
-					res.append( c->text() );
+					res.append( { c->text(), true } );
 				}
 					break;
 
@@ -589,12 +583,7 @@ struct MainWindowPrivate {
 					auto l = static_cast< MD::Link< MD::QStringTrait >* > ( it->get() );
 
 					if( !l->p()->isEmpty() )
-					{
-						if( !res.isEmpty() )
-							res.append( QStringLiteral( " " ) );
-
 						res.append( paragraphToMenuText( l->p().get() ) );
-					}
 				}
 					break;
 

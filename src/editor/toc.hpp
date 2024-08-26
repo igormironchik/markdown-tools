@@ -11,6 +11,20 @@
 namespace MdEditor {
 
 //
+// StringData
+//
+
+struct StringData {
+	StringData( const QString & t, bool c );
+
+	QString text;
+	bool code = false;
+}; // struct StringData
+
+using StringDataVec = QVector< StringData >;
+
+
+//
 // TocModel
 //
 
@@ -23,12 +37,12 @@ class TocModel final
 public:
 	explicit TocModel( QObject * parent );
 	~TocModel() override;
-	
+
 	//! Add top-level item.
-	void addTopLevelItem( const QString & text, long long int line,
+	void addTopLevelItem( const StringDataVec & text, long long int line,
 		int level );
 	//! Add child item.
-	void addChildItem( const QModelIndex & parent, const QString & text,
+	void addChildItem( const QModelIndex & parent, const StringDataVec & text,
 		long long int line, int level );
 	//! Clear.
 	void clear();
@@ -36,7 +50,9 @@ public:
 	int level( const QModelIndex & index ) const;
 	//! \return Line number.
 	int lineNumber( const QModelIndex & index ) const;
-	
+	//! \return String data.
+	const StringDataVec & stringData( const QModelIndex & index ) const;
+
 	//! \return Count of the rows.
 	int rowCount( const QModelIndex & parent = QModelIndex() ) const override;
 	//! \return Count of the columns.
@@ -60,7 +76,7 @@ public:
 
 private:
 	QScopedPointer< TocModelPrivate > d;
-	
+
 	Q_DISABLE_COPY( TocModel )
 }; // class TocModel
 
