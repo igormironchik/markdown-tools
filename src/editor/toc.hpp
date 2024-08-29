@@ -19,6 +19,7 @@ struct StringData {
 
 	QString text;
 	bool code = false;
+	QStringList splittedText;
 }; // struct StringData
 
 using StringDataVec = QVector< StringData >;

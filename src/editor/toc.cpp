@@ -12,6 +12,7 @@ namespace MdEditor {
 StringData::StringData( const QString & t, bool c )
 	:	text( t )
 	,	code( c )
+	,	splittedText( t.split( QStringLiteral( " " ), Qt::SkipEmptyParts ) )
 {
 }
 

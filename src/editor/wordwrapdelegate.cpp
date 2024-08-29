@@ -14,6 +14,8 @@
 #include <QStyle>
 #include <QSortFilterProxyModel>
 
+#include <chrono>
+
 
 namespace MdEditor {
 
@@ -52,20 +54,21 @@ WordWrapItemDelegate::sizeHint( const QStyleOptionViewItem & option,
 	const auto sw = option.fontMetrics.horizontalAdvance( QLatin1Char( ' ' ) );
 	const auto width = m_parent->header()->sectionSize( index.column() ) - w * level;
 	int x = 0;
-	int height = option.fontMetrics.height();
+	const auto lh = option.fontMetrics.height();
+	int height = lh;
 
-	for( const auto & d : data )
+	for( const auto & d : std::as_const( data ) )
 	{
-		for( const auto & text : d.text.split( QStringLiteral( " " ), Qt::SkipEmptyParts ) )
+		for( const auto & text : std::as_const( d.splittedText ) )
 		{
-			auto w = option.fontMetrics.boundingRect( text ).width();
+			auto w = option.fontMetrics.horizontalAdvance( text );
 
 			if( w + x > width )
 			{
 				if( w > width )
 				{
 					if( x > 0 )
-						height += option.fontMetrics.height();
+						height += lh;
 
 					QString str, tmpStr = text;
 
@@ -76,21 +79,21 @@ WordWrapItemDelegate::sizeHint( const QStyleOptionViewItem & option,
 							str.prepend( tmpStr.back() );
 							tmpStr.removeLast();
 
-							w = option.fontMetrics.boundingRect( tmpStr ).width();
+							w = option.fontMetrics.horizontalAdvance( tmpStr );
 						}
 
-						height += option.fontMetrics.height();
+						height += lh;
 						tmpStr = str;
 						str.clear();
 
-						w = option.fontMetrics.boundingRect( tmpStr ).width();
+						w = option.fontMetrics.horizontalAdvance( tmpStr );
 
 						if( w <= width )
 							break;
 					}
 				}
 				else
-					height += option.fontMetrics.height();
+					height += lh;
 
 				x = 0;
 			}
@@ -110,6 +113,8 @@ WordWrapItemDelegate::paint( QPainter * painter,
 
 	const auto & data = m_model->stringData( m_sortModel->mapToSource( index ) );
 	const auto sw = option.fontMetrics.horizontalAdvance( QLatin1Char( ' ' ) );
+	const auto descend = option.fontMetrics.descent();
+	const auto lh = option.fontMetrics.height();
 
 	auto x = option.rect.x();
 	auto y = option.rect.y();
@@ -117,7 +122,7 @@ WordWrapItemDelegate::paint( QPainter * painter,
 	QVector< QRect > backgroundRects;
 	QVector< QPair< QRect, StringData > > textRects;
 
-	for( const auto & d : data )
+	for( const auto & d : std::as_const( data ) )
 	{
 		if( d.code )
 		{
@@ -127,22 +132,22 @@ WordWrapItemDelegate::paint( QPainter * painter,
 
 		codeWidth = 0;
 
-		for( const auto & tt : d.text.split( QStringLiteral( " " ), Qt::SkipEmptyParts ) )
+		for( const auto & tt : std::as_const( d.splittedText ) )
 		{
 			auto text = tt;
 
-			auto w = option.fontMetrics.boundingRect( text ).width();
+			auto w = option.fontMetrics.horizontalAdvance( text );
 
 			if( w + x > option.rect.width() + option.rect.x() )
 			{
 				if( d.code && codeWidth > 0 )
-					backgroundRects.append( { startCodeX, startCodeY, codeWidth, option.fontMetrics.height() } );
+					backgroundRects.append( { startCodeX, startCodeY, codeWidth, lh } );
 
 				if( w > option.rect.width() )
 				{
 					if( x > option.rect.x() )
 					{
-						y += option.fontMetrics.height();
+						y += lh;
 						x = option.rect.x();
 					}
 
@@ -155,23 +160,22 @@ WordWrapItemDelegate::paint( QPainter * painter,
 							str.prepend( tmpStr.back() );
 							tmpStr.removeLast();
 
-							w = option.fontMetrics.boundingRect( tmpStr ).width();
+							w = option.fontMetrics.horizontalAdvance( tmpStr );
 						}
 
-						textRects.append( std::make_pair( QRect( option.rect.x(), y,
-								w, option.fontMetrics.height() ),
+						textRects.append( std::make_pair( QRect( option.rect.x(), y, w, lh ),
 							StringData( tmpStr, d.code ) ) );
 
 						if( d.code )
-							backgroundRects.append( { option.rect.x(), y, w, option.fontMetrics.height() } );
+							backgroundRects.append( { option.rect.x(), y, w, lh } );
 
-						y += option.fontMetrics.height();
+						y += lh;
 
 						tmpStr = str;
 						str.clear();
 						text = tmpStr;
 
-						w = option.fontMetrics.boundingRect( tmpStr ).width();
+						w = option.fontMetrics.horizontalAdvance( tmpStr );
 
 						if( w <= option.rect.width() )
 							break;
@@ -179,7 +183,7 @@ WordWrapItemDelegate::paint( QPainter * painter,
 				}
 
 				if( x > option.rect.x() )
-					y += option.fontMetrics.height();
+					y += lh;
 
 				x = option.rect.x();
 				startCodeX = x;
@@ -192,15 +196,14 @@ WordWrapItemDelegate::paint( QPainter * painter,
 			if( d.code )
 				codeWidth += w;
 
-			textRects.append( std::make_pair( QRect( x, y, w, option.fontMetrics.height() ),
+			textRects.append( std::make_pair( QRect( x, y, w, lh ),
 				StringData( text, d.code ) ) );
 
 			x += w + sw;
 		}
 
 		if( d.code && codeWidth > 0 )
-			backgroundRects.append( { startCodeX, startCodeY,
-				codeWidth, option.fontMetrics.height() } );
+			backgroundRects.append( { startCodeX, startCodeY, codeWidth, lh } );
 
 		painter->setPen( Qt::NoPen );
 		painter->setBrush( c_codeBackgroundColor );
@@ -217,7 +220,7 @@ WordWrapItemDelegate::paint( QPainter * painter,
 			else
 				painter->setPen( option.palette.color( QPalette::Text ) );
 
-			painter->drawText( p.first, 0, p.second.text );
+			painter->drawText( p.first.bottomLeft() - QPoint( 0, descend ), p.second.text );
 		}
 
 		backgroundRects.clear();
