@@ -1,4 +1,4 @@
-set self_dir=%CD%
+set /P qt_version=<%CD%\script\qt.version
 
 echo "Building markdown-tools..."
 
@@ -10,7 +10,7 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-cmake -DCMAKE_BUILD_TYPE=Release -S . -B build-markdown-tools -DBUILD_MDPDF_TESTS=OFF -DCMAKE_PREFIX_PATH=%CD%\Qt\6.7.2\msvc2019_64 -DECM_DIR=%CD%\..\KDE\share\ECM\cmake -DKF6SyntaxHighlighting_DIR=%CD%\..\KDE\lib\cmake\KF6SyntaxHighlighting -DOPENSSL_ROOT_DIR=%CD%\Qt\Tools\OpenSSLv3\Win_x64
+cmake -DCMAKE_BUILD_TYPE=Release -S . -B build-markdown-tools -DBUILD_MDPDF_TESTS=OFF -DCMAKE_PREFIX_PATH=%CD%\Qt\%qt_version%\msvc2019_64 -DECM_DIR=%CD%\..\KDE\share\ECM\cmake -DKF6SyntaxHighlighting_DIR=%CD%\..\KDE\lib\cmake\KF6SyntaxHighlighting -DOPENSSL_ROOT_DIR=%CD%\Qt\Tools\OpenSSLv3\Win_x64
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
