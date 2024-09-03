@@ -1,3 +1,5 @@
+qt_version=$(cat $PWD/script/qt.version)
+
 echo "Installing Qt Installer Framework..."
 
 aqt install-tool --outputdir ./Qt linux desktop tools_ifw qt.tools.ifw.47 || exit 1
@@ -44,15 +46,15 @@ cp -r ./build-markdown-tools/lib ./installer/packages/mironchik.igor.markdown/da
 
 rm -f ./installer/packages/mironchik.igor.markdown/data/lib/*.a || exit 1
 
-cp -r ./Qt/6.7.2/gcc_64/lib ./installer/packages/mironchik.igor.markdown/data || exit 1
+cp -r ./Qt/$qt_version/gcc_64/lib ./installer/packages/mironchik.igor.markdown/data || exit 1
 
-cp ./Qt/6.7.2/gcc_64/libexec/QtWebEngineProcess ./installer/packages/mironchik.igor.markdown/data/libexec/QtWebEngineProcess || exit 1
+cp ./Qt/$qt_version/gcc_64/libexec/QtWebEngineProcess ./installer/packages/mironchik.igor.markdown/data/libexec/QtWebEngineProcess || exit 1
 
-cp -r ./Qt/6.7.2/gcc_64/plugins ./installer/packages/mironchik.igor.markdown/data || exit 1
+cp -r ./Qt/$qt_version/gcc_64/plugins ./installer/packages/mironchik.igor.markdown/data || exit 1
 
-cp -r ./Qt/6.7.2/gcc_64/resources ./installer/packages/mironchik.igor.markdown/data || exit 1
+cp -r ./Qt/$qt_version/gcc_64/resources ./installer/packages/mironchik.igor.markdown/data || exit 1
 
-cp -r ./Qt/6.7.2/gcc_64/translations ./installer/packages/mironchik.igor.markdown/data || exit 1
+cp -r ./Qt/$qt_version/gcc_64/translations ./installer/packages/mironchik.igor.markdown/data || exit 1
 
 cp -r ./3rdparty/resvg/target/release/libresvg.so ./installer/packages/mironchik.igor.markdown/data/lib/libresvg.so || exit 1
 

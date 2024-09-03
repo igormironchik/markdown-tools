@@ -1,9 +1,11 @@
 echo "Installing aqt..."
 
-./python/bin/pip3 install aqtinstall
+./python/bin/pip3 install aqtinstall --upgrade
 
 mkdir Qt
 
+qt_version=$(cat $PWD/script/qt.version)
+
 echo "Installing Qt..."
 
-./python/bin/aqt install-qt --outputdir ./Qt mac desktop 6.7.2 -m qtimageformats qtwebchannel qtwebengine qtwebview qtpositioning || exit 1
+./python/bin/aqt install-qt --outputdir ./Qt mac desktop $qt_version -m qtimageformats qtwebchannel qtwebengine qtwebview qtpositioning || exit 1
