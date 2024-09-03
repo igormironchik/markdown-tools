@@ -24,6 +24,14 @@ preview viewer, converter to `PDF`.
 */
 ```
 
+# Installers
+
+You can get installers for `Windows` and `Linux` at
+[actions page](https://github.com/igormironchik/markdown-tools/actions). Just check
+for artifact at corresponding `deploy_linux` or `deploy_win` latest workflow run.
+But for `Linux`, espcially for `KDE`, I'd recommend to use your own build with system
+`Qt`, in this case you won't have issues with platform integration in `KDE`.
+
 # Building
 
 To build these applications first of all install dependencies:
