@@ -238,11 +238,6 @@ void PdfParser::readNextTrailer(InputStreamDevice& device)
 
     if (trailer->GetDictionary().HasKey("XRefStm"))
     {
-        // Whenever we read a XRefStm key, 
-        // we know that the file was updated.
-        if (!trailer->GetDictionary().HasKey("Prev"))
-            m_IncrementalUpdateCount++;
-
         try
         {
             ReadXRefStreamContents(device, static_cast<size_t>(trailer->GetDictionary().FindKeyAs<int64_t>("XRefStm", 0)), false);
@@ -265,19 +260,11 @@ void PdfParser::readNextTrailer(InputStreamDevice& device)
             // we know that the file was updated.
             m_IncrementalUpdateCount++;
 
-            try
-            {
-                if (m_visitedXRefOffsets.find((size_t)offset) == m_visitedXRefOffsets.end())
-                    ReadXRefContents(device, (size_t)offset);
-                else
-                    PoDoFo::LogMessage(PdfLogSeverity::Warning, "XRef contents at offset {} requested twice, skipping the second read",
-                        static_cast<int64_t>(offset));
-            }
-            catch (PdfError& e)
-            {
-                PODOFO_PUSH_FRAME_INFO(e, "Unable to load /Prev xref entries");
-                throw e;
-            }
+            if (m_visitedXRefOffsets.find((size_t)offset) == m_visitedXRefOffsets.end())
+                ReadXRefContents(device, (size_t)offset, false);
+            else
+                PoDoFo::LogMessage(PdfLogSeverity::Warning, "XRef contents at offset {} requested twice, skipping the second read",
+                    static_cast<int64_t>(offset));
         }
         else
         {
@@ -410,18 +397,7 @@ void PdfParser::ReadXRefContents(InputStreamDevice& device, size_t offset, bool 
         }
     }
 
-    try
-    {
-        readNextTrailer(device);
-    }
-    catch (PdfError& e)
-    {
-        if (e != PdfErrorCode::NoTrailer)
-        {
-            PODOFO_PUSH_FRAME(e);
-            throw e;
-        }
-    }
+    readNextTrailer(device);
 }
 
 bool CheckEOL(char e1, char e2)

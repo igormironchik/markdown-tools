@@ -38,7 +38,7 @@ TEST_CASE("TestImage2")
     PdfMemDocument doc;
     doc.Load(TestUtils::GetTestInputFilePath("Hierarchies1.pdf"));
     // Try to extract jpeg image
-    auto imageObj = doc.GetObjects().GetObject(PdfReference(36, 0));
+    auto imageObj = doc.GetObjects().GetObject(PdfReference(156, 0));
     charbuff buffer;
 
     // Unpacking directly the stream shall throw since it has jpeg content
@@ -99,7 +99,7 @@ TEST_CASE("TestImage3")
         painter.SetCanvas(page);
         auto img = doc.CreateImage();
         img->Load(TestUtils::GetTestInputFilePath("ReferenceImage.png"));
-        painter.DrawImage(*img.get(), 50.0, 50.0);
+        painter.DrawImage(*img, 50.0, 50.0);
         painter.FinishDrawing();
         doc.Save(outputFile);
     }
@@ -183,5 +183,27 @@ TEST_CASE("TestImage5")
             PdfPixelFormat::BGRA, image->GetWidth(), image->GetHeight());
 
         TestUtils::WriteTestOutputFile(TestUtils::GetTestOutputFilePath("YCCK-jpeg.ppm"), ppmbuffer);
+    }
+}
+
+TEST_CASE("TestImage7")
+{
+    auto outputFile = TestUtils::GetTestOutputFilePath("TestImage7.pdf");
+    {
+        PdfMemDocument doc;
+        PdfPainter painter;
+        auto& page = doc.GetPages().CreatePage(PdfPage::CreateStandardPageSize(PdfPageSize::A4));
+        painter.SetCanvas(page);
+
+        auto img1 = doc.CreateImage();
+        img1->Load(TestUtils::GetTestInputFilePath("MultipleFormats.tif"));
+        painter.DrawImage(*img1, 50, 700, 0.5, 0.5);
+
+        auto img2 = doc.CreateImage();
+        img2->Load(TestUtils::GetTestInputFilePath("MultipleFormats.tif"), 8);
+        painter.DrawImage(*img2, 50, 600, 0.5, 0.5);
+
+        painter.FinishDrawing();
+        doc.Save(outputFile);
     }
 }

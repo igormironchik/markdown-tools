@@ -166,7 +166,7 @@ TEST_CASE("TestReadXRefContents")
     }
     catch (PdfError& error)
     {
-        REQUIRE(error.GetCode() == PdfErrorCode::InvalidXRef);
+        REQUIRE(error.GetCode() == PdfErrorCode::NoTrailer);
     }
     catch (exception&)
     {
@@ -204,7 +204,7 @@ TEST_CASE("TestReadXRefContents")
     }
     catch (PdfError& error)
     {
-        REQUIRE(error.GetCode() == PdfErrorCode::InvalidXRef);
+        REQUIRE(error.GetCode() == PdfErrorCode::NoTrailer);
     }
     catch (exception&)
     {
@@ -2705,6 +2705,21 @@ TEST_CASE("testLoopingOutlines")
     {
         REQUIRE(error.GetCode() == PdfErrorCode::InvalidXRef);
     }
+}
+
+TEST_CASE("TestManyTrailer")
+{
+    try
+    {
+        PdfCommon::SetMaxRecursionDepth(256);
+        PdfMemDocument doc;
+        doc.Load(TestUtils::GetTestInputFilePath("Empty160trailer.pdf"));
+    }
+    catch (PdfError&)
+    {
+        return;
+    }
+    FAIL("Should fail with stack overflow");
 }
 
 string generateXRefEntries(size_t count)
