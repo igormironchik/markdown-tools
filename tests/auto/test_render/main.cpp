@@ -8,7 +8,7 @@
 
 // md4qt include.
 #define MD4QT_QT_SUPPORT
-#include <md4qt/parser.hpp>
+#include <md4qt/parser.h>
 
 #include "test_const.hpp"
 

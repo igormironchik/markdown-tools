@@ -33,7 +33,7 @@
 #include <functional>
 
 // md4qt include.
-#include <md4qt/algo.hpp>
+#include <md4qt/algo.h>
 
 
 namespace MdPdf {

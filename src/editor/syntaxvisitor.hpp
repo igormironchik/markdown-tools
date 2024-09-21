@@ -7,8 +7,8 @@
 
 // md4qt include.
 #define MD4QT_QT_SUPPORT
-#include <md4qt/traits.hpp>
-#include <md4qt/poscache.hpp>
+#include <md4qt/traits.h>
+#include <md4qt/poscache.h>
 
 // Qt include.
 #include <QScopedPointer>
@@ -57,7 +57,7 @@ protected:
 	void onFootnoteRef( MD::FootnoteRef< MD::QStringTrait > * ref ) override;
 	void onFootnote( MD::Footnote< MD::QStringTrait > * f ) override;
 	void onListItem( MD::ListItem< MD::QStringTrait > * l, bool first ) override;
-	
+
 private:
 	void onItemWithOpts( MD::ItemWithOpts< MD::QStringTrait > * i );
 
