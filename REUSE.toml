@@ -1,0 +1,160 @@
+version = 1
+SPDX-PackageName = "markdown-tools"
+SPDX-PackageSupplier = "Igor Mironchik <igor.mironchik@gmail.com>"
+SPDX-PackageDownloadLocation = "https://github.com/igormironchik/markdown-tools"
+
+[[annotations]]
+path = "3rdparty/KDE/extra-cmake-modules/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "none"
+SPDX-License-Identifier = "BSD-3-Clause"
+
+[[annotations]]
+path = "3rdparty/KDE/syntax-highlighting/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2020 Christoph Cullmann <cullmann@kde.org>"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = ["tests/auto/test_render/**.data", "tests/manual/**", "doc/**.png", "src/shared/icon.ico", "src/converter/md-pdf.rc", "src/editor/md-editor.rc", "src/converter/resources.qrc", "src/editor/resources.qrc", "README.md", "roadmap.md", ".gitignore", "src/editor/**.ui", ".github/**", ".gitmodules", "conanfile.py", "codecov.yml", "installer/**", "script/**", "src/converter/svg/**", "REUSE.toml"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 Igor Mironchik <igor.mironchik@gmail.com>"
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = "tests/manual/img/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "none"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "src/shared/icon/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "none"
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = "3rdparty/doctest/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2016-2023 Viktor Kirilov"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "src/editor/res/katex/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "none"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "3rdparty/JKQtPlotter/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2008-2024 Jan W. Krieger <jan@jkrieger.de>"
+SPDX-License-Identifier = "LGPL-2.1-or-later"
+
+[[annotations]]
+path = "3rdparty/JKQtPlotter/lib/jkqtmathtext/resources/xits/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "none"
+SPDX-License-Identifier = "OFL-1.1"
+
+[[annotations]]
+path = "3rdparty/JKQtPlotter/lib/jkqtmathtext/resources/firaMath/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2018–2021 Xiangdong Zeng"
+SPDX-License-Identifier = "OFL-1.1"
+
+[[annotations]]
+path = ["src/editor/res/css/emoji.css", "src/editor/res/emoji.js"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Cal Henderson"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "src/editor/res/css/github-markdown.css"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Sindre Sorhus <sindresorhus@gmail.com>"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = ["src/editor/res/css/github.css", "src/editor/res/highlight.js"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2006 Ivan Sagalaev"
+SPDX-License-Identifier = "BSD-3-Clause"
+
+[[annotations]]
+path = ["src/editor/res/img/**", "src/converter/img/**"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2007 Nuno Pinheiro <nuno@oxygen-icons.org>, 2007 David Vignoni <david@icon-king.com>, 2007 David Miller <miller@oxygen-icons.org>, Johann Ollivier Lapeyre <johann@oxygen-icons.org>, Kenneth Wimer <kwwii@bootsplash.org>, 2007 Riccardo Iaconelli <riccardo@oxygen-icons.org>"
+SPDX-License-Identifier = "LGPL-3.0-or-later"
+
+[[annotations]]
+path = "3rdparty/podofo/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2006 Dominik Seichter <domseichter@web.de>, 2021 Francesco Pretto <ceztko@gmail.com>"
+SPDX-License-Identifier = "LGPL-2.0-or-later"
+
+[[annotations]]
+path = "3rdparty/podofo/3rdparty/numerics/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2012 The Chromium Authors"
+SPDX-License-Identifier = "BSD-3-Clause"
+
+[[annotations]]
+path = "3rdparty/podofo/3rdparty/date/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2015, 2016, 2017 Howard Hinnant, 2016 Adrian Colomitchi, 2017 Florian Dang, 2017 Paul Thompson, 2018, 2019 Tomasz Kamiński, 2019 Jiangang Zhuang"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "3rdparty/podofo/3rdparty/fmt/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2012-present Victor Zverovich"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "3rdparty/podofo/3rdparty/pdfium/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2014 The PDFium Authors"
+SPDX-License-Identifier = "BSD-3-Clause"
+
+[[annotations]]
+path = "3rdparty/podofo/3rdparty/utf8cpp/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2006 Nemanja Trifunovic"
+SPDX-License-Identifier = "BSL-1.0"
+
+[[annotations]]
+path = "3rdparty/podofo/3rdparty/fast_float.h"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Daniel Lemire, João Paulo Magalhaes, Eugene Golushkov, Maksim Kita, Marcin Wojdyr, Neal Richardson, Tim Paine, Fabio Pellacini"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "src/shared/img/Qt-logo-neon-transparent.png"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2023 The Qt Company Ltd and other contributors"
+SPDX-License-Identifier = "LGPL-3.0-or-later"
+
+[[annotations]]
+path = "tests/fonts/DroidSerif/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "none"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "tests/fonts/SpaceMono/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "none"
+SPDX-License-Identifier = "OFL-1.1"
+
+[[annotations]]
+path = "3rdparty/hightlight-blockquote/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 Ivan Stanevich, 2024 Igor Mironchik <igor.mironchik@gmail.com>"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "3rdparty/resvg/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "none"
+SPDX-License-Identifier = "MPL-2.0"
