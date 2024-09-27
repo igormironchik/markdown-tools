@@ -434,6 +434,13 @@ struct MainWindowPrivate {
 		viewAction->setCheckable( true );
 		viewAction->setChecked( false );
 		viewMenu->addAction( viewAction );
+		livePreviewAction = new QAction( QIcon::fromTheme( QStringLiteral( "layer-visible-on" ),
+				QIcon( QStringLiteral( ":/res/img/layer-visible-on.png" ) ) ),
+			MainWindow::tr( "Live Preview" ) );
+		livePreviewAction->setShortcut( MainWindow::tr( "Ctrl+Alt+P" ) );
+		livePreviewAction->setCheckable( true );
+		livePreviewAction->setChecked( true );
+		viewMenu->addAction( livePreviewAction );
 
 		settingsMenu = q->menuBar()->addMenu( MainWindow::tr( "&Settings" ) );
 		auto toggleLineNumbersAction = new QAction( QIcon::fromTheme(
@@ -525,6 +532,8 @@ struct MainWindowPrivate {
 			q, &MainWindow::onCursorPositionChanged );
 		QObject::connect( viewAction, &QAction::toggled,
 			q, &MainWindow::onTogglePreviewAction );
+		QObject::connect( livePreviewAction, &QAction::toggled,
+			q, &MainWindow::onToggleLivePreviewAction );
 		QObject::connect( addTOCAction, &QAction::triggered,
 			q, &MainWindow::onAddTOC );
 		QObject::connect( tabs, &QTabWidget::tabBarClicked,
@@ -670,6 +679,7 @@ struct MainWindowPrivate {
 	QAction * editMenuAction = nullptr;
 	QAction * loadAllAction = nullptr;
 	QAction * viewAction = nullptr;
+	QAction * livePreviewAction = nullptr;
 	QAction * convertToPdfAction = nullptr;
 	QAction * addTOCAction = nullptr;
 	QAction * tabAction = nullptr;
@@ -687,6 +697,7 @@ struct MainWindowPrivate {
 	bool loadAllFlag = false;
 	bool previewMode = false;
 	bool tabsVisible = false;
+	bool livePreviewVisible = true;
 	QCursor splitterCursor;
 	std::shared_ptr< MD::Document< MD::QStringTrait > > mdDoc;
 	std::shared_ptr< MD::Document< MD::QStringTrait > > tocDoc;
@@ -766,7 +777,11 @@ MainWindow::resizeEvent( QResizeEvent * e )
 		if( !d->previewMode )
 			d->splitter->setSizes( { d->minTabWidth, w, w } );
 		else
+		{
 			d->splitter->setSizes( { 0, 0, centralWidget()->width() } );
+			d->splitter->handle( 1 )->setCursor( Qt::ArrowCursor );
+			d->splitter->handle( 2 )->setCursor( Qt::ArrowCursor );
+		}
 	}
 
 	e->accept();
@@ -846,7 +861,7 @@ MainWindow::onFileNew()
 	}
 
 	d->editor->setDocName( QStringLiteral( "default.md" ) );
-	d->editor->setText( "" );
+	d->editor->setText( {} );
 	d->editor->document()->setModified( false );
 	d->editor->document()->clearUndoRedoStacks();
 	updateWindowTitle();
@@ -1112,8 +1127,9 @@ MainWindow::onTextChanged()
 	{
 		d->mdDoc = d->editor->currentDoc();
 
-		d->html->setText( MD::toHtml( d->mdDoc, false,
-			QStringLiteral( "qrc:/res/img/go-jump.png" ) ) );
+		if( d->livePreviewVisible )
+			d->html->setText( MD::toHtml( d->mdDoc, false,
+				QStringLiteral( "qrc:/res/img/go-jump.png" ) ) );
 	}
 
 	const auto lineNumber = d->editor->textCursor().block().blockNumber();
@@ -1657,8 +1673,9 @@ MainWindow::readAllLinked()
 		d->mdDoc = parser.parse( d->rootFilePath, true,
 			{ QStringLiteral( "md" ), QStringLiteral( "mkd" ), QStringLiteral( "markdown" ) } );
 
-		d->html->setText( MD::toHtml( d->mdDoc, false,
-			QStringLiteral( "qrc:/res/img/go-jump.png" ) ) );
+		if( d->livePreviewVisible )
+			d->html->setText( MD::toHtml( d->mdDoc, false,
+				QStringLiteral( "qrc:/res/img/go-jump.png" ) ) );
 	}
 }
 
@@ -1744,6 +1761,8 @@ MainWindow::onTogglePreviewAction( bool checked )
 		d->newAction->setVisible( false );
 		d->newAction->setEnabled( false );
 		d->editor->setVisible( false );
+		d->livePreviewAction->setVisible( false );
+		d->livePreviewAction->setEnabled( false );
 		d->sidebarPanel->hide();
 		d->splitter->handle( 1 )->setCursor( Qt::ArrowCursor );
 		d->splitter->handle( 2 )->setCursor( Qt::ArrowCursor );
@@ -1768,11 +1787,25 @@ MainWindow::onTogglePreviewAction( bool checked )
 		d->newAction->setEnabled( true );
 		d->editor->setVisible( true );
 		d->sidebarPanel->show();
-		d->splitter->handle( 2 )->setCursor( d->splitterCursor );
+		d->livePreviewAction->setVisible( true );
+		d->livePreviewAction->setEnabled( true );
+
+		if( d->livePreviewVisible )
+			d->splitter->handle( 2 )->setCursor( d->splitterCursor );
+
 		d->cursorPosLabel->show();
 
 		const auto w = ( centralWidget()->width() - d->minTabWidth ) / 2;
-		d->splitter->setSizes( { d->minTabWidth, w, w } );
+
+		QList< int > s = { d->minTabWidth, w, w };
+
+		if( !d->livePreviewVisible )
+		{
+			s[ 1 ] += s[ 2 ];
+			s[ 2 ] = 0;
+		}
+
+		d->splitter->setSizes( s );
 
 		d->editor->setFocus();
 	}
@@ -1780,6 +1813,37 @@ MainWindow::onTogglePreviewAction( bool checked )
 	updateLoadAllLinkedFilesMenuText();
 
 	updateWindowTitle();
+}
+
+void
+MainWindow::onToggleLivePreviewAction( bool checked )
+{
+	d->livePreviewVisible = checked;
+
+	auto s = d->splitter->sizes();
+
+	if( !d->livePreviewVisible )
+	{
+		s[ 1 ] += s[ 2 ];
+		s[ 2 ] = 0;
+
+		d->splitter->handle( 2 )->setCursor( Qt::ArrowCursor );
+	}
+	else
+	{
+		s[ 2 ] = s[ 1 ] / 2;
+		s[ 1 ] = s[ 2 ];
+
+		d->splitter->handle( 2 )->setCursor( d->splitterCursor );
+
+		if( d->mdDoc )
+			d->html->setText( MD::toHtml( d->mdDoc, false,
+				QStringLiteral( "qrc:/res/img/go-jump.png" ) ) );
+		else
+			d->html->setText( {} );
+	}
+
+	d->splitter->setSizes( s );
 }
 
 namespace /* anonymous */ {
@@ -1827,7 +1891,8 @@ MainWindow::onAddTOC()
 	QString fileName;
 	std::vector< int > current;
 
-	MD::forEach< MD::QStringTrait >( { MD::ItemType::Anchor, MD::ItemType::Heading }, d->mdDoc,
+	MD::forEach< MD::QStringTrait >( { MD::ItemType::Anchor, MD::ItemType::Heading },
+		d->editor->currentDoc(),
 		[&]( MD::Item< MD::QStringTrait > * item )
 		{
 			if( item->type() == MD::ItemType::Anchor )
