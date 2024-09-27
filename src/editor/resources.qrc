@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
+		<file>res/index.html</file>
         <file>res/img/preferences-desktop-font.png</file>
         <file>res/img/fill-color.png</file>
         <file>res/img/folder-yellow.png</file>

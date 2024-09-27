@@ -208,6 +208,19 @@ struct MainWindowPrivate {
 
 	void initUi()
 	{
+		{
+			QFile wrapperHtmlFile( ":/res/index.html" );
+
+			if( !wrapperHtmlFile.open( QFile::ReadOnly | QFile::Text ) )
+				htmlContent = MainWindow::tr( "Error loading res/index.html" );
+			else
+			{
+				QTextStream stream( &wrapperHtmlFile );
+				htmlContent = stream.readAll();
+				wrapperHtmlFile.close();
+			}
+		}
+
 		auto w = new QWidget( q );
 		auto l = new QVBoxLayout( w );
 		l->setContentsMargins( 0, 0, 0, 0 );
@@ -705,6 +718,7 @@ struct MainWindowPrivate {
 	QString rootFilePath;
 	QString mdPdfExe;
 	QString launcherExe;
+	QString htmlContent;
 	Colors mdColors;
 	int tabWidth = -1;
 	int minTabWidth = -1;
@@ -1037,87 +1051,10 @@ MainWindow::onToolHide()
 	}
 }
 
-QString
+const QString &
 MainWindow::htmlContent() const
 {
-	return QStringLiteral( "<!doctype html>\n"
-		"<meta charset=\"utf-8\">\n"
-		"<head>\n"
-		"  <script src=\"qrc:/qtwebchannel/qwebchannel.js\"></script>\n"
-		"  <link rel=\"stylesheet\" href=\"qrc:/res/css/github.css\">\n"
-		"  <link rel=\"stylesheet\" href=\"qrc:/res/css/github-markdown.css\">\n"
-		"  <script src=\"qrc:/res/highlight.js\"></script>\n"
-		"  <script>hljs.configure({languages:[]});</script>\n"
-		"  <link rel=\"stylesheet\" href=\"qrc:/res/katex/katex.min.css\">\n"
-		"  <script src=\"qrc:/res/katex/katex.min.js\"></script>\n"
-		"  <script src=\"qrc:/res/katex/contrib/auto-render.min.js\"></script>\n"
-		"  <link href=\"qrc:/res/css/emoji.css\" rel=\"stylesheet\" type=\"text/css\" />\n"
-		"  <script src=\"qrc:/res/emoji.js\" type=\"text/javascript\"></script>\n"
-		"</head>\n"
-		"<body>\n"
-		"  <div id=\"placeholder\"></div>\n"
-		"  <script type=\"module\">\n"
-		"  import { replaceBadges } from \"qrc:/res/hightlight-blockquote.js\";\n"
-		"  (() => {\n"
-		"  'use strict';\n"
-		"\n"
-		"  let placeholder = document.getElementById('placeholder');\n"
-		"  let emoji = new EmojiConvertor();\n"
-		"  emoji.replace_mode = 'unified';\n"
-		"  emoji.allow_native = true;\n"
-		"  emoji.addAliases({\n"
-		"    'robot' : '1f916',\n"
-		"    'metal' : '1f918',\n"
-		"    'fu' : '1f595'\n"
-		"  });\n"
-		"\n"
-		"  function replace_emoji() {\n"
-		"    let elementsToReplace = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, li, table');\n"
-		"    let elementsToIgnore = document.querySelectorAll('code');\n"
-		"    for (let i = 0; i < elementsToReplace.length; i++) {\n"
-		"      replace_emoji_in_node(elementsToReplace[i]);\n"
-		"    }\n"
-		"\n"
-		"    function replace_emoji_in_node(node) {\n"
-		"      if (node.constructor === Text) {\n"
-		"	    node.data = emoji.replace_colons(node.data);\n"
-		"      } else if (node.constructor === HTMLScriptElement || [].indexOf.call(elementsToIgnore, node) >= 0) {\n"
-		"        return;\n"
-		"      } else {\n"
-		"        let childNodes = node.childNodes;\n"
-		"        for (let i = 0; i < childNodes.length; i++) {\n"
-		"          replace_emoji_in_node(childNodes[i]);\n"
-		"        }\n"
-		"      }\n"
-		"    }\n"
-		"  }\n"
-		"\n"
-		"  let updateText = function(text) {\n"
-		"     placeholder.innerHTML = text;\n"
-		"     hljs.highlightAll();\n"
-		"     renderMathInElement(document.body, {\n"
-		"         delimiters: [\n"
-		"             {left: '$$', right: '$$', display: true},\n"
-		"             {left: '$', right: '$', display: false},\n"
-		"         ],\n"
-		"         throwOnError : false,\n"
-		"         strict : false,\n"
-		"         trust : true\n"
-		"     });\n"
-		"     replaceBadges(placeholder);\n"
-		"     replace_emoji();\n"
-		"  }\n"
-		"\n"
-		"  new QWebChannel(qt.webChannelTransport,\n"
-		"	function(channel) {\n"
-		"	  let content = channel.objects.content;\n"
-		"	  updateText(content.text);\n"
-		"	  content.textChanged.connect(updateText);\n"
-		"	}\n"
-		"  );\n"
-		"  })();</script>\n"
-		"</body>\n"
-		"</html>" );
+	return d->htmlContent;
 }
 
 void

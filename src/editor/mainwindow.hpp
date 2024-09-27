@@ -75,7 +75,7 @@ private slots:
 
 private:
     bool isModified() const;
-	QString htmlContent() const;
+	const QString & htmlContent() const;
 	void saveCfg() const;
 	void readCfg();
 	void readAllLinked();
