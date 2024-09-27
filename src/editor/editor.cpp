@@ -11,6 +11,9 @@
 #include <QPainter>
 #include <QTextBlock>
 #include <QTextDocument>
+#include <QThread>
+#include <QMutex>
+#include <QMutexLocker>
 
 // C++ include.
 #include <functional>
@@ -25,14 +28,125 @@ bool operator != ( const Margins & l, const Margins & r )
 }
 
 //
+// ParsingThread
+//
+
+class ParsingThread
+	:	public QThread
+{
+	Q_OBJECT
+
+signals:
+	void done();
+
+public:
+	void run() override
+	{
+		while( true )
+		{
+			QString md;
+			QString currentPath;
+			QString currentFileName;
+
+			{
+				QMutexLocker lock( &mutex );
+
+				if( !data.isEmpty() )
+				{
+					md = data[ 0 ];
+					currentPath = path;
+					currentFileName = fileName;
+					data.clear();
+				}
+			}
+
+			if( !md.isEmpty() )
+			{
+				QTextStream stream( &md );
+
+				auto parsedDoc = parser.parse( stream, currentPath, currentFileName );
+
+				QMutexLocker lock( &mutex );
+
+				doc = parsedDoc;
+
+				if( data.isEmpty() )
+				{
+					doneFlag = true;
+
+					emit done();
+				}
+			}
+			else
+				QThread::msleep( 10 );
+
+			{
+				QMutexLocker lock( &mutex );
+
+				if( doStop )
+					break;
+			}
+		}
+	}
+
+	bool isDone()
+	{
+		QMutexLocker lock( &mutex );
+
+		return doneFlag;
+	}
+
+	std::shared_ptr< MD::Document< MD::QStringTrait > > document()
+	{
+		QMutexLocker lock( &mutex );
+
+		return doc;
+	}
+
+	void stop()
+	{
+		QMutexLocker lock( &mutex );
+
+		doStop = true;
+	}
+
+	void parseMd( const QString & md, const QString & currentPath, const QString & currentFileName )
+	{
+		QMutexLocker lock( &mutex );
+
+		doneFlag = false;
+		data.clear();
+		data.push_back( md );
+		path = currentPath;
+		fileName = currentFileName;
+	}
+
+private:
+	QMutex mutex;
+	std::shared_ptr< MD::Document< MD::QStringTrait > > doc;
+	bool doneFlag = true;
+	bool doStop = false;
+	QStringList data;
+	QString path;
+	QString fileName;
+	MD::Parser< MD::QStringTrait > parser;
+}; // class ParsingThread
+
+//
 // EditorPrivate
 //
 
 struct EditorPrivate {
-	EditorPrivate( Editor * parent )
+	explicit EditorPrivate( Editor * parent )
 		:	q( parent )
 		,	syntax( parent )
 	{
+	}
+
+	~EditorPrivate()
+	{
+		parsingThread.stop();
+		parsingThread.wait();
 	}
 
 	void initUi()
@@ -43,6 +157,8 @@ struct EditorPrivate {
 			q, &Editor::highlightCurrentLine );
 		QObject::connect( q, &QPlainTextEdit::textChanged,
 			q, &Editor::onContentChanged );
+		QObject::connect( &parsingThread, &ParsingThread::done,
+			q, &Editor::onParsingDone, Qt::QueuedConnection );
 
 		q->showLineNumbers( true );
 		q->applyFont( QFontDatabase::systemFont( QFontDatabase::FixedFont ) );
@@ -51,6 +167,8 @@ struct EditorPrivate {
 		q->showUnprintableCharacters( true );
 		q->setFocusPolicy( Qt::ClickFocus );
 		q->setCenterOnScroll( true );
+
+		parsingThread.start();
 	}
 
 	void setExtraSelections()
@@ -74,6 +192,7 @@ struct EditorPrivate {
 	std::shared_ptr< MD::Document< MD::QStringTrait > > currentDoc;
 	SyntaxVisitor syntax;
 	Margins margins;
+	ParsingThread parsingThread;
 }; // struct EditorPrivate
 
 
@@ -555,20 +674,27 @@ Editor::replaceAll( const QString & with )
 void
 Editor::onContentChanged()
 {
-	auto md = toPlainText();
-	QTextStream stream( &md );
-
-	MD::Parser< MD::QStringTrait > parser;
-
+	const auto md = toPlainText();
 	QFileInfo info( d->docName );
 
-	d->currentDoc = parser.parse( stream, info.absolutePath(), info.fileName() );
+	d->parsingThread.parseMd( md, info.absolutePath(), info.fileName() );
+}
 
-	highlightSyntax( d->colors, d->currentDoc );
+void
+Editor::onParsingDone()
+{
+	if( d->parsingThread.isDone() )
+	{
+		d->currentDoc = d->parsingThread.document();
 
-	highlightCurrent();
+		highlightSyntax( d->colors, d->currentDoc );
 
-	emit ready();
+		highlightCurrent();
+
+		viewport()->update();
+
+		emit ready();
+	}
 }
 
 void
@@ -682,3 +808,5 @@ Editor::keyPressEvent( QKeyEvent * event )
 }
 
 } /* namespace MdEditor */
+
+#include "editor.moc"

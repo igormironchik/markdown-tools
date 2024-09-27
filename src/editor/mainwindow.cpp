@@ -1127,7 +1127,7 @@ MainWindow::onTextChanged()
 	{
 		d->mdDoc = d->editor->currentDoc();
 
-		if( d->livePreviewVisible )
+		if( d->livePreviewVisible && d->mdDoc )
 			d->html->setText( MD::toHtml( d->mdDoc, false,
 				QStringLiteral( "qrc:/res/img/go-jump.png" ) ) );
 	}
@@ -1567,55 +1567,58 @@ MainWindow::loadAllLinkedFiles()
 
 	Node root;
 
-	for( auto it = d->mdDoc->items().cbegin(), last = d->mdDoc->items().cend(); it != last; ++it )
+	if( d->mdDoc )
 	{
-		if( (*it)->type() == MD::ItemType::Anchor )
+		for( auto it = d->mdDoc->items().cbegin(), last = d->mdDoc->items().cend(); it != last; ++it )
 		{
-			const auto fullFileName =
-				static_cast< MD::Anchor< MD::QStringTrait >* > ( it->get() )->label();
-
-			const auto fileName = fullFileName.startsWith( rootFolder ) ?
-				fullFileName.sliced( rootFolder.size() ) : fullFileName;
-
-			const auto parts = fileName.split( QStringLiteral( "/" ) );
-
-			Node * current = &root;
-
-			for( qsizetype i = 0; i < parts.size(); ++i )
+			if( (*it)->type() == MD::ItemType::Anchor )
 			{
-				const QString f = parts.at( i ).isEmpty() ? QStringLiteral( "/" ) : parts.at( i );
+				const auto fullFileName =
+					static_cast< MD::Anchor< MD::QStringTrait >* > ( it->get() )->label();
 
-				if( i == parts.size() - 1 )
+				const auto fileName = fullFileName.startsWith( rootFolder ) ?
+					fullFileName.sliced( rootFolder.size() ) : fullFileName;
+
+				const auto parts = fileName.split( QStringLiteral( "/" ) );
+
+				Node * current = &root;
+
+				for( qsizetype i = 0; i < parts.size(); ++i )
 				{
-					if( !current->keys.contains( f ) )
+					const QString f = parts.at( i ).isEmpty() ? QStringLiteral( "/" ) : parts.at( i );
+
+					if( i == parts.size() - 1 )
 					{
-						auto tmp = QSharedPointer< Node >::create();
-						auto item = new QTreeWidgetItem( current->self );
-						item->setIcon( 0, QIcon( ":/res/img/icon_16x16.png" ) );
-						item->setData( 0, Qt::UserRole, fullFileName );
-						tmp->self = item;
-						item->setText( 0, f );
-						current->children.push_back( { tmp, item } );
-						current->keys.push_back( f );
-						current = tmp.get();
-					}
-				}
-				else
-				{
-					if( !current->keys.contains( f ) )
-					{
-						auto tmp = QSharedPointer< Node >::create();
-						auto item = new QTreeWidgetItem( current->self );
-						item->setIcon( 0, QIcon::fromTheme( QStringLiteral( "folder-yellow" ),
-							QIcon( ":/res/img/folder-yellow.png" ) ) );
-						tmp->self = item;
-						item->setText( 0, f );
-						current->children.push_back( { tmp, item } );
-						current->keys.push_back( f );
-						current = tmp.get();
+						if( !current->keys.contains( f ) )
+						{
+							auto tmp = QSharedPointer< Node >::create();
+							auto item = new QTreeWidgetItem( current->self );
+							item->setIcon( 0, QIcon( ":/res/img/icon_16x16.png" ) );
+							item->setData( 0, Qt::UserRole, fullFileName );
+							tmp->self = item;
+							item->setText( 0, f );
+							current->children.push_back( { tmp, item } );
+							current->keys.push_back( f );
+							current = tmp.get();
+						}
 					}
 					else
-						current = current->children.at( current->keys.indexOf( f ) ).first.get();
+					{
+						if( !current->keys.contains( f ) )
+						{
+							auto tmp = QSharedPointer< Node >::create();
+							auto item = new QTreeWidgetItem( current->self );
+							item->setIcon( 0, QIcon::fromTheme( QStringLiteral( "folder-yellow" ),
+								QIcon( ":/res/img/folder-yellow.png" ) ) );
+							tmp->self = item;
+							item->setText( 0, f );
+							current->children.push_back( { tmp, item } );
+							current->keys.push_back( f );
+							current = tmp.get();
+						}
+						else
+							current = current->children.at( current->keys.indexOf( f ) ).first.get();
+					}
 				}
 			}
 		}

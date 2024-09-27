@@ -87,6 +87,7 @@ private slots:
 	void onContentChanged();
 	void highlightSyntax( const Colors & colors,
 		std::shared_ptr< MD::Document< MD::QStringTrait > > doc );
+	void onParsingDone();
 
 protected:
 	void resizeEvent( QResizeEvent * event ) override;
