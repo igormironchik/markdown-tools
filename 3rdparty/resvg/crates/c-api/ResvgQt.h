@@ -14,9 +14,9 @@
 #define RESVG_QT_H
 
 #define RESVG_QT_MAJOR_VERSION 0
-#define RESVG_QT_MINOR_VERSION 43
+#define RESVG_QT_MINOR_VERSION 44
 #define RESVG_QT_PATCH_VERSION 0
-#define RESVG_QT_VERSION "0.43.0"
+#define RESVG_QT_VERSION "0.44.0"
 
 #include <cmath>
 
@@ -467,7 +467,7 @@ public:
             return QRectF();
 
         resvg_rect bbox;
-        if (resvg_get_image_bbox(d->tree, &bbox))
+        if (resvg_get_object_bbox(d->tree, &bbox))
             return QRectF(bbox.x, bbox.y, bbox.width, bbox.height);
 
         return QRectF();
