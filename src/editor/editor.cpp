@@ -12,12 +12,11 @@
 #include <QTextBlock>
 #include <QTextDocument>
 #include <QThread>
-#include <QMutex>
-#include <QMutexLocker>
 
 // C++ include.
 #include <functional>
 #include <utility>
+#include <limits>
 
 
 namespace MdEditor {
@@ -28,109 +27,103 @@ bool operator != ( const Margins & l, const Margins & r )
 }
 
 //
-// ParsingThread
+// DataProvider
 //
 
-class ParsingThread
-	:	public QThread
+class DataProvider
+	:	public QObject
 {
 	Q_OBJECT
 
 signals:
-	void done();
+	void newData();
 
 public:
-	void run() override
+	DataProvider( QStringList & data,
+		QString & path,
+		QString & fileName,
+		unsigned long long int & counter )
+		:	m_data( data )
+		,	m_path( path )
+		,	m_fileName( fileName )
+		,	m_counter( counter )
 	{
-		while( true )
-		{
-			QString md;
-			QString currentPath;
-			QString currentFileName;
-
-			{
-				QMutexLocker lock( &mutex );
-
-				if( !data.isEmpty() )
-				{
-					md = data[ 0 ];
-					currentPath = path;
-					currentFileName = fileName;
-					data.clear();
-				}
-			}
-
-			if( !md.isEmpty() )
-			{
-				QTextStream stream( &md );
-
-				auto parsedDoc = parser.parse( stream, currentPath, currentFileName );
-
-				QMutexLocker lock( &mutex );
-
-				doc = parsedDoc;
-
-				if( data.isEmpty() )
-				{
-					doneFlag = true;
-
-					emit done();
-				}
-			}
-			else
-				QThread::msleep( 10 );
-
-			{
-				QMutexLocker lock( &mutex );
-
-				if( doStop )
-					break;
-			}
-		}
 	}
 
-	bool isDone()
+	~DataProvider() override
 	{
-		QMutexLocker lock( &mutex );
-
-		return doneFlag;
 	}
 
-	std::shared_ptr< MD::Document< MD::QStringTrait > > document()
+public slots:
+	void onParse( const QString & md, const QString & path, const QString & fileName,
+		unsigned long long int counter )
 	{
-		QMutexLocker lock( &mutex );
+		m_data.clear();
+		m_data.push_back( md );
+		m_path = path;
+		m_fileName = fileName;
+		m_counter = counter;
 
-		return doc;
-	}
-
-	void stop()
-	{
-		QMutexLocker lock( &mutex );
-
-		doStop = true;
-	}
-
-	void parseMd( const QString & md, const QString & currentPath, const QString & currentFileName )
-	{
-		QMutexLocker lock( &mutex );
-
-		doneFlag = false;
-		data.clear();
-		data.push_back( md );
-		path = currentPath;
-		fileName = currentFileName;
+		emit newData();
 	}
 
 private:
-	QMutex mutex;
-	std::shared_ptr< MD::Document< MD::QStringTrait > > doc;
-	bool doneFlag = true;
-	bool doStop = false;
-	QStringList data;
-	QString path;
-	QString fileName;
-	MD::Parser< MD::QStringTrait > parser;
-}; // class ParsingThread
+	QStringList & m_data;
+	QString & m_path;
+	QString & m_fileName;
+	unsigned long long int & m_counter;
+};
+
+//
+// DataParser
+//
+
+class DataParser
+	:	public QObject
+{
+	Q_OBJECT
+
+signals:
+	void done( std::shared_ptr< MD::Document< MD::QStringTrait > >, unsigned long long int );
+
+public:
+	DataParser( QStringList & data,
+		QString & path,
+		QString & fileName,
+		unsigned long long int & counter )
+		:	m_data( data )
+		,	m_path( path )
+		,	m_fileName( fileName )
+		,	m_counter( counter )
+	{
+	}
+
+	~DataParser() override
+	{
+	}
+
+public slots:
+	void onParse()
+	{
+		if( !m_data.isEmpty() )
+		{
+			QTextStream stream( &m_data.back() );
+
+			const auto doc = m_parser.parse( stream, m_path, m_fileName );
+
+			m_data.clear();
+
+			emit done( doc, m_counter );
+		}
+	}
+
+private:
+	QStringList & m_data;
+	QString & m_path;
+	QString & m_fileName;
+	unsigned long long int & m_counter;
+	MD::Parser< MD::QStringTrait > m_parser;
+};
 
 //
 // EditorPrivate
@@ -140,13 +133,27 @@ struct EditorPrivate {
 	explicit EditorPrivate( Editor * parent )
 		:	q( parent )
 		,	syntax( parent )
+		,	parsingThread( new QThread( q ) )
+		,	provider( new DataProvider( parsingData, parsingPath,
+				parsingFileName, parsingCounter ) )
+		,	parser( new DataParser( parsingData, parsingPath,
+				parsingFileName, parsingCounter ) )
 	{
+		provider->moveToThread( parsingThread );
+		parser->moveToThread( parsingThread );
+
+		QObject::connect( q, &Editor::doParsing, provider, &DataProvider::onParse,
+			Qt::QueuedConnection );
+		QObject::connect( provider, &DataProvider::newData, parser, &DataParser::onParse,
+			Qt::QueuedConnection );
+		QObject::connect( parser, &DataParser::done, q, &Editor::onParsingDone,
+			Qt::QueuedConnection );
 	}
 
 	~EditorPrivate()
 	{
-		parsingThread.stop();
-		parsingThread.wait();
+		parsingThread->quit();
+		parsingThread->wait();
 	}
 
 	void initUi()
@@ -157,8 +164,6 @@ struct EditorPrivate {
 			q, &Editor::highlightCurrentLine );
 		QObject::connect( q, &QPlainTextEdit::textChanged,
 			q, &Editor::onContentChanged );
-		QObject::connect( &parsingThread, &ParsingThread::done,
-			q, &Editor::onParsingDone, Qt::QueuedConnection );
 
 		q->showLineNumbers( true );
 		q->applyFont( QFontDatabase::systemFont( QFontDatabase::FixedFont ) );
@@ -168,7 +173,7 @@ struct EditorPrivate {
 		q->setFocusPolicy( Qt::ClickFocus );
 		q->setCenterOnScroll( true );
 
-		parsingThread.start();
+		parsingThread->start();
 	}
 
 	void setExtraSelections()
@@ -192,7 +197,14 @@ struct EditorPrivate {
 	std::shared_ptr< MD::Document< MD::QStringTrait > > currentDoc;
 	SyntaxVisitor syntax;
 	Margins margins;
-	ParsingThread parsingThread;
+	QThread * parsingThread = nullptr;
+	DataProvider * provider = nullptr;
+	DataParser * parser = nullptr;
+	QStringList parsingData;
+	QString parsingPath;
+	QString parsingFileName;
+	unsigned long long int parsingCounter = 0;
+	unsigned long long int currentParsingCounter = 0;
 }; // struct EditorPrivate
 
 
@@ -677,15 +689,21 @@ Editor::onContentChanged()
 	const auto md = toPlainText();
 	QFileInfo info( d->docName );
 
-	d->parsingThread.parseMd( md, info.absolutePath(), info.fileName() );
+	if( d->currentParsingCounter == std::numeric_limits< unsigned long long int >::max() )
+		d->currentParsingCounter = 0;
+
+	++d->currentParsingCounter;
+
+	emit doParsing( md, info.absolutePath(), info.fileName(), d->currentParsingCounter );
 }
 
 void
-Editor::onParsingDone()
+Editor::onParsingDone( std::shared_ptr< MD::Document< MD::QStringTrait > > doc,
+	unsigned long long int counter )
 {
-	if( d->parsingThread.isDone() )
+	if( d->currentParsingCounter == counter )
 	{
-		d->currentDoc = d->parsingThread.document();
+		d->currentDoc = doc;
 
 		highlightSyntax( d->colors, d->currentDoc );
 

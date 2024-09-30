@@ -48,6 +48,8 @@ signals:
 	void lineHovered( int lineNumber, const QPoint & pos );
 	void hoverLeaved();
 	void ready();
+	void doParsing( const QString & md, const QString & path, const QString & fileName,
+		unsigned long long int counter );
 
 public:
 	explicit Editor( QWidget * parent );
@@ -87,7 +89,8 @@ private slots:
 	void onContentChanged();
 	void highlightSyntax( const Colors & colors,
 		std::shared_ptr< MD::Document< MD::QStringTrait > > doc );
-	void onParsingDone();
+	void onParsingDone( std::shared_ptr< MD::Document< MD::QStringTrait > > doc,
+		unsigned long long int counter );
 
 protected:
 	void resizeEvent( QResizeEvent * event ) override;
