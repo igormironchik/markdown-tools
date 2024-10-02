@@ -27,35 +27,29 @@ bool operator != ( const Margins & l, const Margins & r )
 }
 
 //
-// DataProvider
+// DataParser
 //
 
-class DataProvider
+class DataParser
 	:	public QObject
 {
 	Q_OBJECT
 
 signals:
-	void newData();
+    void newData();
+	void done( std::shared_ptr< MD::Document< MD::QStringTrait > >, unsigned long long int );
 
 public:
-	DataProvider( QStringList & data,
-		QString & path,
-		QString & fileName,
-		unsigned long long int & counter )
-		:	m_data( data )
-		,	m_path( path )
-		,	m_fileName( fileName )
-		,	m_counter( counter )
-	{
-	}
+	DataParser()
+    {
+        connect( this, &DataParser::newData, this, &DataParser::onParse,
+            Qt::QueuedConnection );
+    }
 
-	~DataProvider() override
-	{
-	}
+	~DataParser() override = default;
 
 public slots:
-	void onParse( const QString & md, const QString & path, const QString & fileName,
+    void onData( const QString & md, const QString & path, const QString & fileName,
 		unsigned long long int counter )
 	{
 		m_data.clear();
@@ -67,42 +61,7 @@ public slots:
 		emit newData();
 	}
 
-private:
-	QStringList & m_data;
-	QString & m_path;
-	QString & m_fileName;
-	unsigned long long int & m_counter;
-};
-
-//
-// DataParser
-//
-
-class DataParser
-	:	public QObject
-{
-	Q_OBJECT
-
-signals:
-	void done( std::shared_ptr< MD::Document< MD::QStringTrait > >, unsigned long long int );
-
-public:
-	DataParser( QStringList & data,
-		QString & path,
-		QString & fileName,
-		unsigned long long int & counter )
-		:	m_data( data )
-		,	m_path( path )
-		,	m_fileName( fileName )
-		,	m_counter( counter )
-	{
-	}
-
-	~DataParser() override
-	{
-	}
-
-public slots:
+private slots:
 	void onParse()
 	{
 		if( !m_data.isEmpty() )
@@ -118,10 +77,10 @@ public slots:
 	}
 
 private:
-	QStringList & m_data;
-	QString & m_path;
-	QString & m_fileName;
-	unsigned long long int & m_counter;
+	QStringList m_data;
+	QString m_path;
+	QString m_fileName;
+	unsigned long long int m_counter;
 	MD::Parser< MD::QStringTrait > m_parser;
 };
 
@@ -134,17 +93,11 @@ struct EditorPrivate {
 		:	q( parent )
 		,	syntax( parent )
 		,	parsingThread( new QThread( q ) )
-		,	provider( new DataProvider( parsingData, parsingPath,
-				parsingFileName, parsingCounter ) )
-		,	parser( new DataParser( parsingData, parsingPath,
-				parsingFileName, parsingCounter ) )
+		,	parser( new DataParser )
 	{
-		provider->moveToThread( parsingThread );
 		parser->moveToThread( parsingThread );
 
-		QObject::connect( q, &Editor::doParsing, provider, &DataProvider::onParse,
-			Qt::QueuedConnection );
-		QObject::connect( provider, &DataProvider::newData, parser, &DataParser::onParse,
+		QObject::connect( q, &Editor::doParsing, parser, &DataParser::onData,
 			Qt::QueuedConnection );
 		QObject::connect( parser, &DataParser::done, q, &Editor::onParsingDone,
 			Qt::QueuedConnection );
@@ -198,12 +151,7 @@ struct EditorPrivate {
 	SyntaxVisitor syntax;
 	Margins margins;
 	QThread * parsingThread = nullptr;
-	DataProvider * provider = nullptr;
 	DataParser * parser = nullptr;
-	QStringList parsingData;
-	QString parsingPath;
-	QString parsingFileName;
-	unsigned long long int parsingCounter = 0;
 	unsigned long long int currentParsingCounter = 0;
 }; // struct EditorPrivate
 
