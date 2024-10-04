@@ -36,7 +36,7 @@ class DataParser
 	Q_OBJECT
 
 signals:
-    void newData();
+	void newData();
 	void done( std::shared_ptr< MD::Document< MD::QStringTrait > >, unsigned long long int );
 
 public:
