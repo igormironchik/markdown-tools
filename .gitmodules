@@ -3,4 +3,4 @@
 	url = https://github.com/igormironchik/cfgfile.git
 [submodule "3rdparty/md4qt"]
 	path = 3rdparty/md4qt
-	url = https://invent.kde.org/imironchik/md4qt.git
+	url = https://invent.kde.org/libraries/md4qt.git
