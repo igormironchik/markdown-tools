@@ -1,6 +1,6 @@
 /*
-	SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
-	SPDX-License-Identifier: GPL-3.0-or-later
+    SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
+    SPDX-License-Identifier: GPL-3.0-or-later
 */
 
 #pragma once
@@ -13,33 +13,27 @@ QT_BEGIN_NAMESPACE
 class QSortFilterProxyModel;
 QT_END_NAMESPACE
 
-
-namespace MdEditor {
+namespace MdEditor
+{
 
 class TocModel;
 
-
 //! Item delegate for word wrapping.
-class WordWrapItemDelegate final
-	:	public QStyledItemDelegate
+class WordWrapItemDelegate final : public QStyledItemDelegate
 {
 public:
-	WordWrapItemDelegate( QTreeView * parent, TocModel * model,
-		QSortFilterProxyModel * sortModel );
+    WordWrapItemDelegate(QTreeView *parent, TocModel *model, QSortFilterProxyModel *sortModel);
 
-	QSize sizeHint( const QStyleOptionViewItem & option,
-		const QModelIndex & index ) const override;
-	void paint( QPainter * painter, const QStyleOptionViewItem & option,
-		const QModelIndex & index) const override;
+    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 
 protected:
-	void initStyleOption( QStyleOptionViewItem * option,
-		const QModelIndex & index ) const override;
+    void initStyleOption(QStyleOptionViewItem *option, const QModelIndex &index) const override;
 
 private:
-  QTreeView * m_parent;
-  TocModel * m_model;
-  QSortFilterProxyModel * m_sortModel;
+    QTreeView *m_parent;
+    TocModel *m_model;
+    QSortFilterProxyModel *m_sortModel;
 }; // class WordWrapItemDelegate
 
 } /* namespace MdEditor */

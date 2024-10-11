@@ -1,85 +1,82 @@
 /*
-	SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
-	SPDX-License-Identifier: GPL-3.0-or-later
+    SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
+    SPDX-License-Identifier: GPL-3.0-or-later
 */
 
 // md-editor include.
 #include "toc.hpp"
 
+namespace MdEditor
+{
 
-namespace MdEditor {
-
-StringData::StringData( const QString & t, bool c )
-	:	text( t )
-	,	code( c )
-	,	splittedText( t.split( QStringLiteral( " " ), Qt::SkipEmptyParts ) )
+StringData::StringData(const QString &t, bool c)
+    : m_text(t)
+    , m_code(c)
+    , m_splittedText(t.split(QStringLiteral(" "), Qt::SkipEmptyParts))
 {
 }
-
 
 //
 // TocData
 //
 
 struct TocData {
-	TocData( const StringDataVec & t, long long int l, int v, TocData * p = nullptr )
-		:	text( t )
-		,	line( l )
-		,	level( v )
-		,	parent( p )
-	{
-	}
+    TocData(const StringDataVec &t, long long int l, int v, TocData *p = nullptr)
+        : m_text(t)
+        , m_line(l)
+        , m_level(v)
+        , m_parent(p)
+    {
+    }
 
-	QString concatenatedText() const
-	{
-		QString tmp;
-		bool first = true;
+    QString concatenatedText() const
+    {
+        QString tmp;
+        bool first = true;
 
-		for( const auto & t : std::as_const( text ) )
-		{
-			if( !first )
-				tmp.append( QStringLiteral( " " ) );
+        for (const auto &t : std::as_const(m_text)) {
+            if (!first) {
+                tmp.append(QStringLiteral(" "));
+            }
 
-			tmp.append( t.text );
+            tmp.append(t.m_text);
 
-			first = false;
-		}
+            first = false;
+        }
 
-		return tmp;
-	}
+        return tmp;
+    }
 
-	StringDataVec text;
-	long long int line = -1;
-	int level = -1;
-	TocData * parent = nullptr;
-	std::vector< std::shared_ptr< TocData > > children;
+    StringDataVec m_text;
+    long long int m_line = -1;
+    int m_level = -1;
+    TocData *m_parent = nullptr;
+    std::vector<std::shared_ptr<TocData>> m_children;
 }; // struct TocData
-
 
 //
 // TocModelPrivate
 //
 
 struct TocModelPrivate {
-	TocModelPrivate( TocModel * parent )
-		:	q( parent )
-	{
-	}
+    TocModelPrivate(TocModel *parent)
+        : m_q(parent)
+    {
+    }
 
-	//! Parent.
-	TocModel * q;
-	//! Model's data.
-	std::vector< std::shared_ptr< TocData > > data;
+    //! Parent.
+    TocModel *m_q;
+    //! Model's m_data.
+    std::vector<std::shared_ptr<TocData>> m_data;
 }; // struct TocModelPrivate
-
 
 //
 // TocModel
 //
 
-TocModel::TocModel( QObject * parent )
-	:	QAbstractItemModel( parent )
-	,	d( new TocModelPrivate( this ) )
+TocModel::TocModel(QObject *parent)
+    : QAbstractItemModel(parent)
+    , m_d(new TocModelPrivate(this))
 {
 }
 
@@ -87,141 +84,127 @@ TocModel::~TocModel()
 {
 }
 
-void
-TocModel::addTopLevelItem( const StringDataVec & text, long long int line,
-	int level )
+void TocModel::addTopLevelItem(const StringDataVec &text, long long int line, int level)
 {
-	beginInsertRows( QModelIndex(), d->data.size(), d->data.size() );
-	d->data.push_back( std::make_shared< TocData >( text, line, level ) );
-	endInsertRows();
+    beginInsertRows(QModelIndex(), m_d->m_data.size(), m_d->m_data.size());
+    m_d->m_data.push_back(std::make_shared<TocData>(text, line, level));
+    endInsertRows();
 }
 
-void
-TocModel::addChildItem( const QModelIndex & parent, const StringDataVec & text,
-	long long int line, int level )
+void TocModel::addChildItem(const QModelIndex &parent, const StringDataVec &text, long long int line, int level)
 {
-	auto data = static_cast< TocData* > ( parent.internalPointer() );
+    auto data = static_cast<TocData *>(parent.internalPointer());
 
-	beginInsertRows( parent, data->children.size(), data->children.size() );
-	data->children.push_back( std::make_shared< TocData >( text, line, level, data ) ) ;
-	endInsertRows();
+    beginInsertRows(parent, data->m_children.size(), data->m_children.size());
+    data->m_children.push_back(std::make_shared<TocData>(text, line, level, data));
+    endInsertRows();
 }
 
-void
-TocModel::clear()
+void TocModel::clear()
 {
-	beginResetModel();
-	d->data.clear();
-	endResetModel();
+    beginResetModel();
+    m_d->m_data.clear();
+    endResetModel();
 }
 
-int
-TocModel::level( const QModelIndex & index ) const
+int TocModel::level(const QModelIndex &index) const
 {
-	return static_cast< TocData* > ( index.internalPointer() )->level;
+    return static_cast<TocData *>(index.internalPointer())->m_level;
 }
 
-int
-TocModel::lineNumber( const QModelIndex & index ) const
+int TocModel::lineNumber(const QModelIndex &index) const
 {
-	return static_cast< TocData* > ( index.internalPointer() )->line;
+    return static_cast<TocData *>(index.internalPointer())->m_line;
 }
 
-const StringDataVec &
-TocModel::stringData( const QModelIndex & index ) const
+const StringDataVec &TocModel::stringData(const QModelIndex &index) const
 {
-	return static_cast< TocData* > ( index.internalPointer() )->text;
+    return static_cast<TocData *>(index.internalPointer())->m_text;
 }
 
-int
-TocModel::rowCount( const QModelIndex & parent ) const
+int TocModel::rowCount(const QModelIndex &parent) const
 {
-	if( !parent.isValid() )
-		return d->data.size();
-	else
-		return static_cast< TocData* > ( parent.internalPointer() )->children.size();
+    if (!parent.isValid()) {
+        return m_d->m_data.size();
+    } else {
+        return static_cast<TocData *>(parent.internalPointer())->m_children.size();
+    }
 }
 
-int
-TocModel::columnCount( const QModelIndex & parent ) const
+int TocModel::columnCount(const QModelIndex &parent) const
 {
-	Q_UNUSED( parent )
+    Q_UNUSED(parent)
 
-	return 1;
+    return 1;
 }
 
-QVariant
-TocModel::data( const QModelIndex & index, int role ) const
+QVariant TocModel::data(const QModelIndex &index, int role) const
 {
-	if( role == Qt::DisplayRole )
-		return static_cast< TocData* > ( index.internalPointer() )->concatenatedText();
-	else
-		return QVariant();
+    if (role == Qt::DisplayRole) {
+        return static_cast<TocData *>(index.internalPointer())->concatenatedText();
+    } else {
+        return QVariant();
+    }
 }
 
-bool
-TocModel::setData( const QModelIndex & index, const QVariant & value, int role )
+bool TocModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-	Q_UNUSED( index )
-	Q_UNUSED( value )
-	Q_UNUSED( role )
+    Q_UNUSED(index)
+    Q_UNUSED(value)
+    Q_UNUSED(role)
 
-	return true;
+    return true;
 }
 
-Qt::ItemFlags
-TocModel::flags( const QModelIndex & index ) const
+Qt::ItemFlags TocModel::flags(const QModelIndex &index) const
 {
-	return ( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
+    return (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 }
 
-QVariant
-TocModel::headerData( int section, Qt::Orientation orientation, int role ) const
+QVariant TocModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-	Q_UNUSED( section )
-	Q_UNUSED( orientation )
-	Q_UNUSED( role )
+    Q_UNUSED(section)
+    Q_UNUSED(orientation)
+    Q_UNUSED(role)
 
-	return {};
+    return {};
 }
 
-QModelIndex
-TocModel::index( int row, int column,
-	const QModelIndex & parent ) const
+QModelIndex TocModel::index(int row, int column, const QModelIndex &parent) const
 {
-	if( !parent.isValid() )
-		return createIndex( row, column, d->data[ row ].get() );
-	else
-	{
-		auto data = static_cast< TocData* >( parent.internalPointer() );
+    if (!parent.isValid()) {
+        return createIndex(row, column, m_d->m_data[row].get());
+    } else {
+        auto data = static_cast<TocData *>(parent.internalPointer());
 
-		return createIndex( row, column, data->children[ row ].get() );
-	}
+        return createIndex(row, column, data->m_children[row].get());
+    }
 }
 
-QModelIndex
-TocModel::parent( const QModelIndex & index ) const
+QModelIndex TocModel::parent(const QModelIndex &index) const
 {
-	auto data = static_cast< TocData* > ( index.internalPointer() );
+    auto data = static_cast<TocData *>(index.internalPointer());
 
-	if( data->parent )
-	{
-		int row = -1;
+    if (data->m_parent) {
+        int row = -1;
 
-		if( data->parent->parent )
-			row = std::distance( data->parent->parent->children.cbegin(),
-				std::find_if( data->parent->parent->children.cbegin(),
-					data->parent->parent->children.cend(),
-					[data] ( const auto & dd ) { return ( data->parent->line == dd->line ); } ) );
-		else
-			row = std::distance( d->data.cbegin(),
-				std::find_if( d->data.cbegin(), d->data.cend(),
-					[data] ( const auto & dd ) { return ( data->parent->line == dd->line ); } ) );
+        if (data->m_parent->m_parent) {
+            row = std::distance(data->m_parent->m_parent->m_children.cbegin(),
+                                std::find_if(data->m_parent->m_parent->m_children.cbegin(), data->m_parent->m_parent->m_children.cend(),
+                                            [data](const auto &dd) {
+                                                return (data->m_parent->m_line == dd->m_line);
+                                            }));
+        } else {
+            row = std::distance(m_d->m_data.cbegin(), std::find_if(m_d->m_data.cbegin(), m_d->m_data.cend(),
+                                            [data](const auto &dd) {
+                                                return (data->m_parent->m_line == dd->m_line);
+                                            }));
+        }
 
-		return createIndex( row, 0, data->parent );
-	}
-	else
-		return QModelIndex();
+        return createIndex(row, 0, data->m_parent);
+    } else {
+        return QModelIndex();
+    }
 }
 
 } /* namespace MdEditor */

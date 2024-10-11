@@ -1,40 +1,39 @@
 /*
-	SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
-	SPDX-License-Identifier: GPL-3.0-or-later
+    SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
+    SPDX-License-Identifier: GPL-3.0-or-later
 */
 
 #pragma once
 
 // Qt include.
 #include <QDialog>
-#include <QScopedPointer>
 #include <QFont>
+#include <QScopedPointer>
 
 #include "ui_fontdlg.h"
 
-
-namespace MdEditor {
+namespace MdEditor
+{
 
 //
 // FontDlg
 //
 
 //! Font dialog.
-class FontDlg
-	:	public QDialog
+class FontDlg : public QDialog
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	FontDlg( const QFont & f, QWidget * parent );
-	~FontDlg() override = default;
+    FontDlg(const QFont &f, QWidget *parent);
+    ~FontDlg() override = default;
 
-	QFont currentFont() const;
+    QFont currentFont() const;
 
 private:
-	Q_DISABLE_COPY( FontDlg )
+    Q_DISABLE_COPY(FontDlg)
 
-	Ui::FontDlg m_ui;
+    Ui::FontDlg m_ui;
 }; // class FontDlg
 
 } /* namespace MdEditor */

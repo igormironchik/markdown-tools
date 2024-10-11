@@ -1,6 +1,6 @@
 /*
-	SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
-	SPDX-License-Identifier: GPL-3.0-or-later
+    SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
+    SPDX-License-Identifier: GPL-3.0-or-later
 */
 
 #pragma once
@@ -13,8 +13,8 @@
 // podofo include.
 #include <podofo/podofo.h>
 
-
-namespace MdPdf {
+namespace MdPdf
+{
 
 //
 // PoDoFoPaintDevice
@@ -23,26 +23,24 @@ namespace MdPdf {
 struct PoDoFoPaintDevicePrivate;
 
 //! Paint device to draw on PoDoFo page.
-class PoDoFoPaintDevice final
-	:	public QPaintDevice
+class PoDoFoPaintDevice final : public QPaintDevice
 {
 public:
-	PoDoFoPaintDevice();
-	~PoDoFoPaintDevice() override;
+    PoDoFoPaintDevice();
+    ~PoDoFoPaintDevice() override;
 
-	void setPdfPainter( PoDoFo::PdfPainter & p, PoDoFo::PdfDocument & doc );
+    void setPdfPainter(PoDoFo::PdfPainter &p, PoDoFo::PdfDocument &doc);
 
-	QPaintEngine * paintEngine() const override;
+    QPaintEngine *paintEngine() const override;
 
 protected:
-	int metric( QPaintDevice::PaintDeviceMetric metric ) const override;
+    int metric(QPaintDevice::PaintDeviceMetric metric) const override;
 
 private:
-	Q_DISABLE_COPY( PoDoFoPaintDevice )
+    Q_DISABLE_COPY(PoDoFoPaintDevice)
 
-	QScopedPointer< PoDoFoPaintDevicePrivate > d;
+    QScopedPointer<PoDoFoPaintDevicePrivate> d;
 }; // class PoDoFoPaintDevice
-
 
 //
 // PoDoFoPaintEngine
@@ -51,52 +49,48 @@ private:
 struct PoDoFoPaintEnginePrivate;
 
 //! Paint engine to draw on PoDoFo page.
-class PoDoFoPaintEngine final
-	:	public QPaintEngine
+class PoDoFoPaintEngine final : public QPaintEngine
 {
 public:
-	PoDoFoPaintEngine();
-	~PoDoFoPaintEngine() override;
+    PoDoFoPaintEngine();
+    ~PoDoFoPaintEngine() override;
 
-	void setPdfPainter( PoDoFo::PdfPainter & p, PoDoFo::PdfDocument & doc );
-	PoDoFo::PdfPainter * pdfPainter() const;
+    void setPdfPainter(PoDoFo::PdfPainter &p, PoDoFo::PdfDocument &doc);
+    PoDoFo::PdfPainter *pdfPainter() const;
 
-	bool begin( QPaintDevice * pdev ) override;
-	void drawEllipse( const QRectF & rect ) override;
-	void drawEllipse( const QRect & rect ) override;
-	void drawImage( const QRectF & rectangle, const QImage & image,
-		const QRectF & sr, Qt::ImageConversionFlags flags = Qt::AutoColor ) override;
-	void drawLines( const QLineF * lines, int lineCount ) override;
-	void drawLines( const QLine * lines, int lineCount ) override;
-	void drawPath( const QPainterPath & path ) override;
-	void drawPixmap( const QRectF & r, const QPixmap & pm, const QRectF & sr) override;
-	void drawPoints( const QPointF * points, int pointCount ) override;
-	void drawPoints( const QPoint * points, int pointCount ) override;
-	void drawPolygon( const QPointF * points, int pointCount,
-		QPaintEngine::PolygonDrawMode mode ) override;
-	void drawPolygon( const QPoint * points, int pointCount,
-		QPaintEngine::PolygonDrawMode mode ) override;
-	void drawRects( const QRectF * rects, int rectCount ) override;
-	void drawRects( const QRect * rects, int rectCount ) override;
-	void drawTextItem( const QPointF & p, const QTextItem & textItem ) override;
-	void drawTiledPixmap( const QRectF & rect, const QPixmap & pixmap,
-		const QPointF & p ) override;
-	bool end() override;
-	QPaintEngine::Type type() const override;
-	void updateState( const QPaintEngineState & state ) override;
+    bool begin(QPaintDevice *pdev) override;
+    void drawEllipse(const QRectF &rect) override;
+    void drawEllipse(const QRect &rect) override;
+    void drawImage(const QRectF &rectangle, const QImage &image, const QRectF &sr,
+                   Qt::ImageConversionFlags flags = Qt::AutoColor) override;
+    void drawLines(const QLineF *lines, int lineCount) override;
+    void drawLines(const QLine *lines, int lineCount) override;
+    void drawPath(const QPainterPath &path) override;
+    void drawPixmap(const QRectF &r, const QPixmap &pm, const QRectF &sr) override;
+    void drawPoints(const QPointF *points, int pointCount) override;
+    void drawPoints(const QPoint *points, int pointCount) override;
+    void drawPolygon(const QPointF *points, int pointCount, QPaintEngine::PolygonDrawMode mode) override;
+    void drawPolygon(const QPoint *points, int pointCount, QPaintEngine::PolygonDrawMode mode) override;
+    void drawRects(const QRectF *rects, int rectCount) override;
+    void drawRects(const QRect *rects, int rectCount) override;
+    void drawTextItem(const QPointF &p, const QTextItem &textItem) override;
+    void drawTiledPixmap(const QRectF &rect, const QPixmap &pixmap, const QPointF &p) override;
+    bool end() override;
+    QPaintEngine::Type type() const override;
+    void updateState(const QPaintEngineState &state) override;
 
 private:
-	double qXtoPoDoFo( double x );
-	double qYtoPoDoFo( double y );
-	double qWtoPoDoFo( double w );
-	double qHtoPoDoFo( double h );
-	PoDoFo::Rect qRectFtoPoDoFo( const QRectF & r );
-	QPair< PoDoFo::PdfFont*, double > qFontToPoDoFo( const QFont & f );
+    double qXtoPoDoFo(double x);
+    double qYtoPoDoFo(double y);
+    double qWtoPoDoFo(double w);
+    double qHtoPoDoFo(double h);
+    PoDoFo::Rect qRectFtoPoDoFo(const QRectF &r);
+    QPair<PoDoFo::PdfFont *, double> qFontToPoDoFo(const QFont &f);
 
 private:
-	Q_DISABLE_COPY( PoDoFoPaintEngine )
+    Q_DISABLE_COPY(PoDoFoPaintEngine)
 
-	QScopedPointer< PoDoFoPaintEnginePrivate > d;
+    QScopedPointer<PoDoFoPaintEnginePrivate> d;
 }; // class PoDoFoPaintEngine
 
 } /* namespace MdPdf */

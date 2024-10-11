@@ -1,6 +1,6 @@
 /*
-	SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
-	SPDX-License-Identifier: GPL-3.0-or-later
+    SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
+    SPDX-License-Identifier: GPL-3.0-or-later
 */
 
 // md-editor include.
@@ -11,51 +11,48 @@
 #include <QDialogButtonBox>
 #include <QPushButton>
 
-
-namespace MdEditor {
+namespace MdEditor
+{
 
 //
 // ColorsDialogPrivate
 //
 
 struct ColorsDialogPrivate {
-	Ui::ColorsDialog ui;
+    Ui::ColorsDialog m_ui;
 }; // struct ColorsDialogPrivate
 
 //
 // ColorsDialog
 //
 
-ColorsDialog::ColorsDialog( const Colors & cols, QWidget * parent )
-	:	QDialog( parent )
-	,	d( new ColorsDialogPrivate )
+ColorsDialog::ColorsDialog(const Colors &cols, QWidget *parent)
+    : QDialog(parent)
+    , m_d(new ColorsDialogPrivate)
 {
-	d->ui.setupUi( this );
+    m_d->m_ui.setupUi(this);
 
-	d->ui.m_page->colors() = cols;
+    m_d->m_ui.m_page->colors() = cols;
 
-	d->ui.m_page->applyColors();
+    m_d->m_ui.m_page->applyColors();
 
-	connect( d->ui.buttonBox, &QDialogButtonBox::clicked,
-		this, &ColorsDialog::clicked );
+    connect(m_d->m_ui.buttonBox, &QDialogButtonBox::clicked, this, &ColorsDialog::clicked);
 }
 
 ColorsDialog::~ColorsDialog()
 {
 }
 
-const Colors &
-ColorsDialog::colors() const
+const Colors &ColorsDialog::colors() const
 {
-	return d->ui.m_page->colors();
+    return m_d->m_ui.m_page->colors();
 }
 
-void
-ColorsDialog::clicked( QAbstractButton * btn )
+void ColorsDialog::clicked(QAbstractButton *btn)
 {
-	if( static_cast< QAbstractButton* > ( d->ui.buttonBox->button(
-		QDialogButtonBox::RestoreDefaults ) ) == btn )
-			d->ui.m_page->resetDefaults();
+    if (static_cast<QAbstractButton *>(m_d->m_ui.buttonBox->button(QDialogButtonBox::RestoreDefaults)) == btn) {
+        m_d->m_ui.m_page->resetDefaults();
+    }
 }
 
 } /* namespace MdEditor */

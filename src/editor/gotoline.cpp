@@ -1,95 +1,88 @@
 /*
-	SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
-	SPDX-License-Identifier: GPL-3.0-or-later
+    SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
+    SPDX-License-Identifier: GPL-3.0-or-later
 */
 
 // md-editor include.
 #include "gotoline.hpp"
-#include "ui_gotoline.h"
 #include "editor.hpp"
 #include "mainwindow.hpp"
+#include "ui_gotoline.h"
 
 // Qt include.
 #include <QIntValidator>
 
-
-namespace MdEditor {
+namespace MdEditor
+{
 
 //
 // GoToLinePrivate
 //
 
 struct GoToLinePrivate {
-	GoToLinePrivate( MainWindow * w, Editor * e, GoToLine * parent )
-		:	q( parent )
-		,	editor( e )
-		,	window( w )
-	{
-	}
+    GoToLinePrivate(MainWindow *w, Editor *e, GoToLine *parent)
+        : m_q(parent)
+        , m_editor(e)
+        , m_window(w)
+    {
+    }
 
-	void initUi()
-	{
-		ui.setupUi( q );
+    void initUi()
+    {
+        m_ui.setupUi(m_q);
 
-		auto intValidator = new QIntValidator( 1, 999999, ui.line );
-		ui.line->setValidator( intValidator );
+        auto intValidator = new QIntValidator(1, 999999, m_ui.line);
+        m_ui.line->setValidator(intValidator);
 
-		QObject::connect( ui.line, &QLineEdit::returnPressed,
-			q, &GoToLine::onEditingFinished );
+        QObject::connect(m_ui.line, &QLineEdit::returnPressed, m_q, &GoToLine::onEditingFinished);
 
-		QObject::connect( ui.close, &QAbstractButton::clicked,
-			q, &GoToLine::onClose );
-	}
+        QObject::connect(m_ui.close, &QAbstractButton::clicked, m_q, &GoToLine::onClose);
+    }
 
-	GoToLine * q = nullptr;
-	Editor * editor = nullptr;
-	MainWindow * window = nullptr;
-	Ui::GoToLine ui;
+    GoToLine *m_q = nullptr;
+    Editor *m_editor = nullptr;
+    MainWindow *m_window = nullptr;
+    Ui::GoToLine m_ui;
 }; // struct FindPrivate
-
 
 //
 // GoToLine
 //
 
-GoToLine::GoToLine( MainWindow * window, Editor * editor, QWidget * parent )
-	:	QFrame( parent )
-	,	d( new GoToLinePrivate( window, editor, this ) )
+GoToLine::GoToLine(MainWindow *window, Editor *editor, QWidget *parent)
+    : QFrame(parent)
+    , m_d(new GoToLinePrivate(window, editor, this))
 {
-	d->initUi();
+    m_d->initUi();
 }
 
 GoToLine::~GoToLine()
 {
 }
 
-QLineEdit *
-GoToLine::line() const
+QLineEdit *GoToLine::line() const
 {
-	return d->ui.line;
+    return m_d->m_ui.line;
 }
 
-void
-GoToLine::setFocusOnLine()
+void GoToLine::setFocusOnLine()
 {
-	d->ui.line->setFocus();
-	d->ui.line->selectAll();
+    m_d->m_ui.line->setFocus();
+    m_d->m_ui.line->selectAll();
 }
 
-void
-GoToLine::onEditingFinished()
+void GoToLine::onEditingFinished()
 {
-	d->editor->goToLine( d->ui.line->text().toInt() );
+    m_d->m_editor->goToLine(m_d->m_ui.line->text().toInt());
 
-	hide();
+    hide();
 }
 
-void
-GoToLine::onClose()
+void GoToLine::onClose()
 {
-	hide();
+    hide();
 
-	d->window->onToolHide();
+    m_d->m_window->onToolHide();
 }
 
 } /* namespace MdEditor */

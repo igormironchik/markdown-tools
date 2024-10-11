@@ -1,73 +1,68 @@
 /*
-	SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
-	SPDX-License-Identifier: GPL-3.0-or-later
+    SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
+    SPDX-License-Identifier: GPL-3.0-or-later
 */
 
 // md-editor include.
 #include "webview.hpp"
 
 // Qt include.
-#include <QContextMenuEvent>
 #include <QApplication>
 #include <QClipboard>
+#include <QContextMenuEvent>
 
-
-namespace MdEditor {
+namespace MdEditor
+{
 
 //
 // WebViewPrivate
 //
 
 struct WebViewPrivate {
-	WebViewPrivate( WebView * parent )
-		:	q( parent )
-	{
-	}
+    WebViewPrivate(WebView *parent)
+        : m_q(parent)
+    {
+    }
 
-	void initUi()
-	{
-		copyAction = new QAction( WebView::tr( "Copy" ), q );
-		q->addAction( copyAction );
-		copyAction->setEnabled( false );
-		q->setContextMenuPolicy( Qt::ActionsContextMenu );
-		q->setFocusPolicy( Qt::ClickFocus );
+    void initUi()
+    {
+        m_copyAction = new QAction(WebView::tr("Copy"), m_q);
+        m_q->addAction(m_copyAction);
+        m_copyAction->setEnabled(false);
+        m_q->setContextMenuPolicy(Qt::ActionsContextMenu);
+        m_q->setFocusPolicy(Qt::ClickFocus);
 
-		QObject::connect( copyAction, &QAction::triggered,
-			q, &WebView::onCopy );
-		QObject::connect( q, &QWebEngineView::selectionChanged,
-			q, &WebView::onSelectionChanged );
-	}
+        QObject::connect(m_copyAction, &QAction::triggered, m_q, &WebView::onCopy);
+        QObject::connect(m_q, &QWebEngineView::selectionChanged, m_q, &WebView::onSelectionChanged);
+    }
 
-	WebView * q;
-	QAction * copyAction = nullptr;
+    WebView *m_q;
+    QAction *m_copyAction = nullptr;
 }; // struct WebViewPrivate
-
 
 //
 // WebView
 //
 
-WebView::WebView( QWidget * parent )
-	:	QWebEngineView( parent )
-	,	d( new WebViewPrivate( this ) )
+WebView::WebView(QWidget *parent)
+    : QWebEngineView(parent)
+    , m_d(new WebViewPrivate(this))
 {
-	d->initUi();
+    m_d->initUi();
 }
 
 WebView::~WebView()
 {
 }
 
-void
-WebView::onSelectionChanged()
+void WebView::onSelectionChanged()
 {
-	d->copyAction->setEnabled( hasSelection() );
+    m_d->m_copyAction->setEnabled(hasSelection());
 }
 
-void
-WebView::onCopy()
+void WebView::onCopy()
 {
-	QApplication::clipboard()->setText( selectedText() );
+    QApplication::clipboard()->setText(selectedText());
 }
 
 } /* namespace MdEditor */

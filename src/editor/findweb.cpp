@@ -1,161 +1,146 @@
 /*
-	SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
-	SPDX-License-Identifier: GPL-3.0-or-later
+    SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
+    SPDX-License-Identifier: GPL-3.0-or-later
 */
 
 // md-editor include.
 #include "findweb.hpp"
-#include "ui_findweb.h"
 #include "mainwindow.hpp"
+#include "ui_findweb.h"
 #include "webview.hpp"
 
 // Qt include.
-#include <QWebEngineFindTextResult>
 #include <QPalette>
+#include <QWebEngineFindTextResult>
 
-
-namespace MdEditor {
+namespace MdEditor
+{
 
 //
 // FindWebPrivate
 //
 
 struct FindWebPrivate {
-	FindWebPrivate( MainWindow * w, WebView * wb, FindWeb * parent )
-		:	q( parent )
-		,	web( wb )
-		,	window( w )
-	{
-	}
+    FindWebPrivate(MainWindow *w, WebView *wb, FindWeb *parent)
+        : m_q(parent)
+        , m_web(wb)
+        , m_window(w)
+    {
+    }
 
-	void initUi()
-	{
-		ui.setupUi( q );
+    void initUi()
+    {
+        m_ui.setupUi(m_q);
 
-		QObject::connect( ui.findEdit, &QLineEdit::textChanged,
-			q, &FindWeb::onFindWebTextChanged );
+        QObject::connect(m_ui.findEdit, &QLineEdit::textChanged, m_q, &FindWeb::onFindWebTextChanged);
 
-		auto findPrevAction = new QAction( FindWeb::tr( "Find Previous" ), q );
-		findPrevAction->setShortcutContext( Qt::ApplicationShortcut );
-		findPrevAction->setShortcut( FindWeb::tr( "Shift+F4" ) );
-		findPrevAction->setToolTip( FindWeb::tr( "Find Previous <small>Shift+F4</small>" ) );
-		ui.findPrevBtn->setDefaultAction( findPrevAction );
-		ui.findPrevBtn->setEnabled( false );
+        auto findPrevAction = new QAction(FindWeb::tr("Find Previous"), m_q);
+        findPrevAction->setShortcutContext(Qt::ApplicationShortcut);
+        findPrevAction->setShortcut(FindWeb::tr("Shift+F4"));
+        findPrevAction->setToolTip(FindWeb::tr("Find Previous <small>Shift+F4</small>"));
+        m_ui.findPrevBtn->setDefaultAction(findPrevAction);
+        m_ui.findPrevBtn->setEnabled(false);
 
-		auto findNextAction = new QAction( FindWeb::tr( "Find Next" ), q );
-		findNextAction->setShortcutContext( Qt::ApplicationShortcut );
-		findNextAction->setShortcut( FindWeb::tr( "F4" ) );
-		findNextAction->setToolTip( FindWeb::tr( "Find Next <small>F4</small>" ) );
-		ui.findNextBtn->setDefaultAction( findNextAction );
-		ui.findNextBtn->setEnabled( false );
+        auto findNextAction = new QAction(FindWeb::tr("Find Next"), m_q);
+        findNextAction->setShortcutContext(Qt::ApplicationShortcut);
+        findNextAction->setShortcut(FindWeb::tr("F4"));
+        findNextAction->setToolTip(FindWeb::tr("Find Next <small>F4</small>"));
+        m_ui.findNextBtn->setDefaultAction(findNextAction);
+        m_ui.findNextBtn->setEnabled(false);
 
-		textColor = ui.findEdit->palette().color( QPalette::Text );
+        m_textColor = m_ui.findEdit->palette().color(QPalette::Text);
 
-		QObject::connect( findPrevAction, &QAction::triggered,
-			q, &FindWeb::onFindPrev );
-		QObject::connect( findNextAction, &QAction::triggered,
-			q, &FindWeb::onFindNext );
-		QObject::connect( ui.close, &QAbstractButton::clicked,
-			q, &FindWeb::onClose );
-	}
+        QObject::connect(findPrevAction, &QAction::triggered, m_q, &FindWeb::onFindPrev);
+        QObject::connect(findNextAction, &QAction::triggered, m_q, &FindWeb::onFindNext);
+        QObject::connect(m_ui.close, &QAbstractButton::clicked, m_q, &FindWeb::onClose);
+    }
 
-	FindWeb * q = nullptr;
-	WebView * web = nullptr;
-	MainWindow * window = nullptr;
-	QColor textColor;
-	Ui::FindWeb ui;
+    FindWeb *m_q = nullptr;
+    WebView *m_web = nullptr;
+    MainWindow *m_window = nullptr;
+    QColor m_textColor;
+    Ui::FindWeb m_ui;
 }; // struct FindWebPrivate
-
 
 //
 // FindWeb
 //
 
-FindWeb::FindWeb( MainWindow * window, WebView * web, QWidget * parent )
-	:	QFrame( parent )
-	,	d( new FindWebPrivate( window, web, this ) )
+FindWeb::FindWeb(MainWindow *window, WebView *web, QWidget *parent)
+    : QFrame(parent)
+    , m_d(new FindWebPrivate(window, web, this))
 {
-	d->initUi();
+    m_d->initUi();
 }
 
 FindWeb::~FindWeb()
 {
 }
 
-QLineEdit *
-FindWeb::line() const
+QLineEdit *FindWeb::line() const
 {
-	return d->ui.findEdit;
+    return m_d->m_ui.findEdit;
 }
 
-void
-FindWeb::onFindWebTextChanged( const QString & str )
+void FindWeb::onFindWebTextChanged(const QString &str)
 {
-	auto result = [&]( const QWebEngineFindTextResult & r )
-	{
-		QColor c = d->textColor;
+    auto result = [&](const QWebEngineFindTextResult &r) {
+        QColor c = m_d->m_textColor;
 
-		if( !r.numberOfMatches() )
-			c = Qt::red;
+        if (!r.numberOfMatches())
+            c = Qt::red;
 
-		d->ui.findNextBtn->setEnabled( r.numberOfMatches() );
-		d->ui.findPrevBtn->setEnabled( r.numberOfMatches() );
-		d->ui.findNextBtn->defaultAction()->setEnabled( r.numberOfMatches() );
-		d->ui.findPrevBtn->defaultAction()->setEnabled( r.numberOfMatches() );
+        m_d->m_ui.findNextBtn->setEnabled(r.numberOfMatches());
+        m_d->m_ui.findPrevBtn->setEnabled(r.numberOfMatches());
+        m_d->m_ui.findNextBtn->defaultAction()->setEnabled(r.numberOfMatches());
+        m_d->m_ui.findPrevBtn->defaultAction()->setEnabled(r.numberOfMatches());
 
-		QPalette palette = d->ui.findEdit->palette();
-		palette.setColor( QPalette::Text, c );
-		d->ui.findEdit->setPalette( palette );
-	};
+        QPalette palette = m_d->m_ui.findEdit->palette();
+        palette.setColor(QPalette::Text, c);
+        m_d->m_ui.findEdit->setPalette(palette);
+    };
 
-	d->web->findText( str, QWebEnginePage::FindCaseSensitively, result );
+    m_d->m_web->findText(str, QWebEnginePage::FindCaseSensitively, result);
 }
 
-void
-FindWeb::setFindWebText( const QString & text )
+void FindWeb::setFindWebText(const QString &text)
 {
-	d->ui.findEdit->setText( text );
+    m_d->m_ui.findEdit->setText(text);
 
-	setFocusOnFindWeb();
+    setFocusOnFindWeb();
 }
 
-void
-FindWeb::setFocusOnFindWeb()
+void FindWeb::setFocusOnFindWeb()
 {
-	d->ui.findEdit->setFocus();
-	d->ui.findEdit->selectAll();
-	d->web->findText( d->ui.findEdit->text(), QWebEnginePage::FindCaseSensitively );
+    m_d->m_ui.findEdit->setFocus();
+    m_d->m_ui.findEdit->selectAll();
+    m_d->m_web->findText(m_d->m_ui.findEdit->text(), QWebEnginePage::FindCaseSensitively);
 }
 
-void
-FindWeb::onClose()
+void FindWeb::onClose()
 {
-	hide();
+    hide();
 
-	d->window->onToolHide();
+    m_d->m_window->onToolHide();
 }
 
-void
-FindWeb::onFindNext()
+void FindWeb::onFindNext()
 {
-	d->web->findText( d->ui.findEdit->text(), QWebEnginePage::FindCaseSensitively );
+    m_d->m_web->findText(m_d->m_ui.findEdit->text(), QWebEnginePage::FindCaseSensitively);
 }
 
-void
-FindWeb::onFindPrev()
+void FindWeb::onFindPrev()
 {
-	d->web->findText( d->ui.findEdit->text(), QWebEnginePage::FindBackward |
-		QWebEnginePage::FindCaseSensitively );
+    m_d->m_web->findText(m_d->m_ui.findEdit->text(), QWebEnginePage::FindBackward | QWebEnginePage::FindCaseSensitively);
 }
 
-void
-FindWeb::hideEvent( QHideEvent * event )
+void FindWeb::hideEvent(QHideEvent *event)
 {
-	d->web->findText( QString() );
-	d->web->setFocus();
-	d->web->triggerPageAction( QWebEnginePage::Unselect, true );
+    m_d->m_web->findText(QString());
+    m_d->m_web->setFocus();
+    m_d->m_web->triggerPageAction(QWebEnginePage::Unselect, true);
 
-	QFrame::hideEvent( event );
+    QFrame::hideEvent(event);
 }
 
 } /* namespace MdEditor */

@@ -1,188 +1,168 @@
 /*
-	SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
-	SPDX-License-Identifier: GPL-3.0-or-later
+    SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
+    SPDX-License-Identifier: GPL-3.0-or-later
 */
 
 // md-editor include.
 #include "find.hpp"
-#include "ui_find.h"
 #include "editor.hpp"
 #include "mainwindow.hpp"
+#include "ui_find.h"
 
 // Qt include.
 #include <QPalette>
 
-
-namespace MdEditor {
+namespace MdEditor
+{
 
 //
 // FindPrivate
 //
 
 struct FindPrivate {
-	FindPrivate( MainWindow * w, Editor * e, Find * parent )
-		:	q( parent )
-		,	editor( e )
-		,	window( w )
-	{
-	}
+    FindPrivate(MainWindow *w, Editor *e, Find *parent)
+        : m_q(parent)
+        , m_editor(e)
+        , m_window(w)
+    {
+    }
 
-	void initUi()
-	{
-		ui.setupUi( q );
+    void initUi()
+    {
+        m_ui.setupUi(m_q);
 
-		QObject::connect( ui.findEdit, &QLineEdit::textChanged,
-			q, &Find::onFindTextChanged );
-		QObject::connect( ui.replaceEdit, &QLineEdit::textChanged,
-			q, &Find::onReplaceTextChanged );
+        QObject::connect(m_ui.findEdit, &QLineEdit::textChanged, m_q, &Find::onFindTextChanged);
+        QObject::connect(m_ui.replaceEdit, &QLineEdit::textChanged, m_q, &Find::onReplaceTextChanged);
 
-		auto findPrevAction = new QAction( Find::tr( "Find Previous" ), q );
-		findPrevAction->setShortcutContext( Qt::ApplicationShortcut );
-		findPrevAction->setShortcut( Find::tr( "Shift+F3" ) );
-		findPrevAction->setToolTip( Find::tr( "Find Previous <small>Shift+F3</small>" ) );
-		ui.findPrevBtn->setDefaultAction( findPrevAction );
-		ui.findPrevBtn->setEnabled( false );
+        auto findPrevAction = new QAction(Find::tr("Find Previous"), m_q);
+        findPrevAction->setShortcutContext(Qt::ApplicationShortcut);
+        findPrevAction->setShortcut(Find::tr("Shift+F3"));
+        findPrevAction->setToolTip(Find::tr("Find Previous <small>Shift+F3</small>"));
+        m_ui.findPrevBtn->setDefaultAction(findPrevAction);
+        m_ui.findPrevBtn->setEnabled(false);
 
-		auto findNextAction = new QAction( Find::tr( "Find Next" ), q );
-		findNextAction->setShortcutContext( Qt::ApplicationShortcut );
-		findNextAction->setShortcut( Find::tr( "F3" ) );
-		findNextAction->setToolTip( Find::tr( "Find Next <small>F3</small>" ) );
-		ui.findNextBtn->setDefaultAction( findNextAction );
-		ui.findNextBtn->setEnabled( false );
+        auto findNextAction = new QAction(Find::tr("Find Next"), m_q);
+        findNextAction->setShortcutContext(Qt::ApplicationShortcut);
+        findNextAction->setShortcut(Find::tr("F3"));
+        findNextAction->setToolTip(Find::tr("Find Next <small>F3</small>"));
+        m_ui.findNextBtn->setDefaultAction(findNextAction);
+        m_ui.findNextBtn->setEnabled(false);
 
-		auto replaceAction = new QAction( Find::tr( "Replace" ), q );
-		replaceAction->setToolTip( Find::tr( "Replace Selected" ) );
-		ui.replaceBtn->setDefaultAction( replaceAction );
-		ui.replaceBtn->setEnabled( false );
+        auto replaceAction = new QAction(Find::tr("Replace"), m_q);
+        replaceAction->setToolTip(Find::tr("Replace Selected"));
+        m_ui.replaceBtn->setDefaultAction(replaceAction);
+        m_ui.replaceBtn->setEnabled(false);
 
-		auto replaceAllAction = new QAction( Find::tr( "Replace All" ), q );
-		replaceAllAction->setToolTip( Find::tr( "Replace All" ) );
-		ui.replaceAllBtn->setDefaultAction( replaceAllAction );
-		ui.replaceAllBtn->setEnabled( false );
+        auto replaceAllAction = new QAction(Find::tr("Replace All"), m_q);
+        replaceAllAction->setToolTip(Find::tr("Replace All"));
+        m_ui.replaceAllBtn->setDefaultAction(replaceAllAction);
+        m_ui.replaceAllBtn->setEnabled(false);
 
-		textColor = ui.findEdit->palette().color( QPalette::Text );
+        m_textColor = m_ui.findEdit->palette().color(QPalette::Text);
 
-		QObject::connect( findPrevAction, &QAction::triggered,
-			editor, &Editor::onFindPrev );
-		QObject::connect( findNextAction, &QAction::triggered,
-			editor, &Editor::onFindNext );
-		QObject::connect( replaceAction, &QAction::triggered,
-			q, &Find::onReplace );
-		QObject::connect( replaceAllAction, &QAction::triggered,
-			q, &Find::onReplaceAll );
-		QObject::connect( editor, &QPlainTextEdit::selectionChanged,
-			q, &Find::onSelectionChanged );
-		QObject::connect( ui.close, &QAbstractButton::clicked,
-			q, &Find::onClose );
-	}
+        QObject::connect(findPrevAction, &QAction::triggered, m_editor, &Editor::onFindPrev);
+        QObject::connect(findNextAction, &QAction::triggered, m_editor, &Editor::onFindNext);
+        QObject::connect(replaceAction, &QAction::triggered, m_q, &Find::onReplace);
+        QObject::connect(replaceAllAction, &QAction::triggered, m_q, &Find::onReplaceAll);
+        QObject::connect(m_editor, &QPlainTextEdit::selectionChanged, m_q, &Find::onSelectionChanged);
+        QObject::connect(m_ui.close, &QAbstractButton::clicked, m_q, &Find::onClose);
+    }
 
-	Find * q = nullptr;
-	Editor * editor = nullptr;
-	MainWindow * window = nullptr;
-	QColor textColor;
-	Ui::Find ui;
+    Find *m_q = nullptr;
+    Editor *m_editor = nullptr;
+    MainWindow *m_window = nullptr;
+    QColor m_textColor;
+    Ui::Find m_ui;
 }; // struct FindPrivate
-
 
 //
 // Find
 //
 
-Find::Find( MainWindow * window, Editor * editor, QWidget * parent )
-	:	QFrame( parent )
-	,	d( new FindPrivate( window, editor, this ) )
+Find::Find(MainWindow *window, Editor *editor, QWidget *parent)
+    : QFrame(parent)
+    , m_d(new FindPrivate(window, editor, this))
 {
-	d->initUi();
+    m_d->initUi();
 }
 
 Find::~Find()
 {
 }
 
-QLineEdit *
-Find::editLine() const
+QLineEdit *Find::editLine() const
 {
-	return d->ui.findEdit;
+    return m_d->m_ui.findEdit;
 }
 
-QLineEdit *
-Find::replaceLine() const
+QLineEdit *Find::replaceLine() const
 {
-	return d->ui.replaceEdit;
+    return m_d->m_ui.replaceEdit;
 }
 
-void
-Find::onFindTextChanged( const QString & str )
+void Find::onFindTextChanged(const QString &str)
 {
-	d->editor->highlight( d->ui.findEdit->text(), true );
+    m_d->m_editor->highlight(m_d->m_ui.findEdit->text(), true);
 
-	QColor c = d->textColor;
+    QColor c = m_d->m_textColor;
 
-	if( !d->editor->foundHighlighted() )
-		c = Qt::red;
+    if (!m_d->m_editor->foundHighlighted()) {
+        c = Qt::red;
+    }
 
-	d->ui.findNextBtn->setEnabled( d->editor->foundHighlighted() );
-	d->ui.findPrevBtn->setEnabled( d->editor->foundHighlighted() );
-	d->ui.findNextBtn->defaultAction()->setEnabled( d->editor->foundHighlighted() );
-	d->ui.findPrevBtn->defaultAction()->setEnabled( d->editor->foundHighlighted() );
+    m_d->m_ui.findNextBtn->setEnabled(m_d->m_editor->foundHighlighted());
+    m_d->m_ui.findPrevBtn->setEnabled(m_d->m_editor->foundHighlighted());
+    m_d->m_ui.findNextBtn->defaultAction()->setEnabled(m_d->m_editor->foundHighlighted());
+    m_d->m_ui.findPrevBtn->defaultAction()->setEnabled(m_d->m_editor->foundHighlighted());
 
-	QPalette palette = d->ui.findEdit->palette();
-	palette.setColor( QPalette::Text, c );
-	d->ui.findEdit->setPalette( palette );
+    QPalette palette = m_d->m_ui.findEdit->palette();
+    palette.setColor(QPalette::Text, c);
+    m_d->m_ui.findEdit->setPalette(palette);
 }
 
-void
-Find::onReplaceTextChanged( const QString & )
+void Find::onReplaceTextChanged(const QString &)
 {
-	onSelectionChanged();
+    onSelectionChanged();
 }
 
-void
-Find::setFindText( const QString & text )
+void Find::setFindText(const QString &text)
 {
-	d->ui.findEdit->setText( text );
+    m_d->m_ui.findEdit->setText(text);
 
-	setFocusOnFind();
+    setFocusOnFind();
 
-	onSelectionChanged();
+    onSelectionChanged();
 }
 
-void
-Find::setFocusOnFind()
+void Find::setFocusOnFind()
 {
-	d->ui.findEdit->setFocus();
-	d->ui.findEdit->selectAll();
+    m_d->m_ui.findEdit->setFocus();
+    m_d->m_ui.findEdit->selectAll();
 
-	d->editor->highlight( d->ui.findEdit->text(), true );
+    m_d->m_editor->highlight(m_d->m_ui.findEdit->text(), true);
 }
 
-void
-Find::onReplace()
+void Find::onReplace()
 {
-	d->editor->replaceCurrent( d->ui.replaceEdit->text() );
+    m_d->m_editor->replaceCurrent(m_d->m_ui.replaceEdit->text());
 }
 
-void
-Find::onReplaceAll()
+void Find::onReplaceAll()
 {
-	d->editor->replaceAll( d->ui.replaceEdit->text() );
+    m_d->m_editor->replaceAll(m_d->m_ui.replaceEdit->text());
 }
 
-void
-Find::onSelectionChanged()
+void Find::onSelectionChanged()
 {
-	d->ui.replaceBtn->setEnabled( d->editor->foundSelected() &&
-		!d->ui.replaceEdit->text().isEmpty() );
-	d->ui.replaceAllBtn->setEnabled( d->editor->foundHighlighted() &&
-		!d->ui.replaceEdit->text().isEmpty() );
+    m_d->m_ui.replaceBtn->setEnabled(m_d->m_editor->foundSelected() && !m_d->m_ui.replaceEdit->text().isEmpty());
+    m_d->m_ui.replaceAllBtn->setEnabled(m_d->m_editor->foundHighlighted() && !m_d->m_ui.replaceEdit->text().isEmpty());
 }
 
-void
-Find::onClose()
+void Find::onClose()
 {
-	hide();
+    hide();
 
-	d->window->onToolHide();
+    m_d->m_window->onToolHide();
 }
 
 } /* namespace MdEditor */

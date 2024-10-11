@@ -1,6 +1,6 @@
 /*
-	SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
-	SPDX-License-Identifier: GPL-3.0-or-later
+    SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
+    SPDX-License-Identifier: GPL-3.0-or-later
 */
 
 #pragma once
@@ -8,40 +8,39 @@
 // Qt include.
 #include <QFrame>
 
-
-namespace MdShared {
+namespace MdShared
+{
 
 //
 // ColorWidget
 //
 
 //! Color widget.
-class ColorWidget final
-	:	public QFrame
+class ColorWidget final : public QFrame
 {
-	Q_OBJECT
+    Q_OBJECT
 
 signals:
-	//! Clicked.
-	void clicked();
+    //! Clicked.
+    void clicked();
 
 public:
-	ColorWidget( QWidget * parent );
-	~ColorWidget() override = default;
+    ColorWidget(QWidget *parent);
+    ~ColorWidget() override = default;
 
-	const QColor & color() const;
-	void setColor( const QColor & c );
+    const QColor &color() const;
+    void setColor(const QColor &c);
 
 protected:
-	void paintEvent( QPaintEvent * ) override;
-	void mousePressEvent( QMouseEvent * e ) override;
-	void mouseReleaseEvent( QMouseEvent * e ) override;
+    void paintEvent(QPaintEvent *) override;
+    void mousePressEvent(QMouseEvent *e) override;
+    void mouseReleaseEvent(QMouseEvent *e) override;
 
 private:
-	QColor m_color;
-	bool m_pressed;
+    QColor m_color;
+    bool m_pressed;
 
-	Q_DISABLE_COPY( ColorWidget )
+    Q_DISABLE_COPY(ColorWidget)
 }; // class ColorWidget
 
 } /* namespace MdShared */

@@ -1,6 +1,6 @@
 /*
-	SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
-	SPDX-License-Identifier: GPL-3.0-or-later
+    SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
+    SPDX-License-Identifier: GPL-3.0-or-later
 */
 
 // md-editor include.
@@ -9,102 +9,96 @@
 // Qt include.
 #include <QEnterEvent>
 #include <QPainter>
-#include <QPixmap>
 #include <QPalette>
+#include <QPixmap>
 
-
-namespace MdEditor {
+namespace MdEditor
+{
 
 //
 // CloseButtonPrivate
 //
 
 struct CloseButtonPrivate {
-	CloseButtonPrivate( CloseButton * parent )
-		:	q( parent )
-	{
-	}
+    CloseButtonPrivate(CloseButton *parent)
+        : m_q(parent)
+    {
+    }
 
-	void initUi()
-	{
-		q->setCheckable( false );
+    void initUi()
+    {
+        m_q->setCheckable(false);
 
-		activePixmap = QPixmap( QStringLiteral( ":/res/img/dialog-close.png" ) );
+        m_activePixmap = QPixmap(QStringLiteral(":/res/img/dialog-close.png"));
 
-		auto source = activePixmap.toImage();
-		QImage target = QImage( source.width(), source.height(), QImage::Format_ARGB32 );
+        auto source = m_activePixmap.toImage();
+        QImage target = QImage(source.width(), source.height(), QImage::Format_ARGB32);
 
-		for( int x = 0; x < source.width(); ++x )
-		{
-			for( int y = 0; y < source.height(); ++y )
-			{
-				const auto g = qGray( source.pixel( x, y ) );
-				target.setPixelColor( x, y, QColor( g, g, g, source.pixelColor( x, y ).alpha() ) );
-			}
-		}
+        for (int x = 0; x < source.width(); ++x) {
+            for (int y = 0; y < source.height(); ++y) {
+                const auto g = qGray(source.pixel(x, y));
+                target.setPixelColor(x, y, QColor(g, g, g, source.pixelColor(x, y).alpha()));
+            }
+        }
 
-		inactivePixmap = QPixmap::fromImage( target );
+        m_inactivePixmap = QPixmap::fromImage(target);
 
-		q->setFocusPolicy( Qt::NoFocus );
-	}
+        m_q->setFocusPolicy(Qt::NoFocus);
+    }
 
-	CloseButton * q = nullptr;
-	bool hovered = false;
-	QPixmap activePixmap;
-	QPixmap inactivePixmap;
+    CloseButton *m_q = nullptr;
+    bool m_hovered = false;
+    QPixmap m_activePixmap;
+    QPixmap m_inactivePixmap;
 }; // struct CloseButtonPrivate
-
 
 //
 // CloseButton
 //
 
-CloseButton::CloseButton( QWidget * parent )
-	:	QAbstractButton( parent )
-	,	d( new CloseButtonPrivate( this ) )
+CloseButton::CloseButton(QWidget *parent)
+    : QAbstractButton(parent)
+    , m_d(new CloseButtonPrivate(this))
 {
-	d->initUi();
+    m_d->initUi();
 }
 
 CloseButton::~CloseButton()
 {
 }
 
-QSize
-CloseButton::sizeHint() const
+QSize CloseButton::sizeHint() const
 {
-	return { 16, 16 };
+    return {16, 16};
 }
 
-void
-CloseButton::paintEvent( QPaintEvent * e )
+void CloseButton::paintEvent(QPaintEvent *e)
 {
-	QPainter p( this );
+    QPainter p(this);
 
-	if( d->hovered )
-		p.drawPixmap( rect(), d->activePixmap );
-	else
-		p.drawPixmap( rect(), d->inactivePixmap );
+    if (m_d->m_hovered) {
+        p.drawPixmap(rect(), m_d->m_activePixmap);
+    } else {
+        p.drawPixmap(rect(), m_d->m_inactivePixmap);
+    }
 }
 
-void
-CloseButton::enterEvent( QEnterEvent * event )
+void CloseButton::enterEvent(QEnterEvent *event)
 {
-	d->hovered = true;
+    m_d->m_hovered = true;
 
-	update();
+    update();
 
-	event->accept();
+    event->accept();
 }
 
-void
-CloseButton::leaveEvent( QEvent * event )
+void CloseButton::leaveEvent(QEvent *event)
 {
-	d->hovered = false;
+    m_d->m_hovered = false;
 
-	update();
+    update();
 
-	event->accept();
+    event->accept();
 }
 
 } /* namespace MdEditor */

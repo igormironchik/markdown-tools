@@ -1,25 +1,23 @@
 /*
-	SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
-	SPDX-License-Identifier: GPL-3.0-or-later
+    SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
+    SPDX-License-Identifier: GPL-3.0-or-later
 */
 
 // md-pdf include.
 #include "ui_main_window.h"
+#include "syntax.hpp"
 
 // Qt include.
-#include <QWidget>
+#include <QMainWindow>
 #include <QScopedPointer>
 #include <QThread>
-#include <QMainWindow>
+#include <QWidget>
 
 // C++ include.
 #include <memory>
 
-// md-pdf include.
-#include "syntax.hpp"
-
-
-namespace MdPdf {
+namespace MdPdf
+{
 
 class Cfg;
 
@@ -28,83 +26,80 @@ class Cfg;
 //
 
 //! Main window.
-class MainWidget final
-	:	public QWidget
+class MainWidget final : public QWidget
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	explicit MainWidget( QWidget * parent );
-	~MainWidget() override;
+    explicit MainWidget(QWidget *parent);
+    ~MainWidget() override;
 
-	void setMarkdownFile( const QString & fileName );
-	void initCfg( Cfg & cfg ) const;
-	void applyCfg( const Cfg & cfg );
+    void setMarkdownFile(const QString &fileName);
+    void initCfg(Cfg &cfg) const;
+    void applyCfg(const Cfg &cfg);
 
 private slots:
-	void changeLinkColor();
-	void changeBorderColor();
-	void selectMarkdown();
-	void process();
-	void codeFontSizeChanged( int i );
-	void textFontSizeChanged( int i );
-	void mmButtonToggled( bool on );
-	void textFontChanged( const QFont & f );
-	void codeFontChanged( const QFont & f );
+    void changeLinkColor();
+    void changeBorderColor();
+    void selectMarkdown();
+    void process();
+    void codeFontSizeChanged(int i);
+    void textFontSizeChanged(int i);
+    void mmButtonToggled(bool on);
+    void textFontChanged(const QFont &f);
+    void codeFontChanged(const QFont &f);
 
 private:
-	void changeStateOfStartButton();
+    void changeStateOfStartButton();
 
 protected:
-	void showEvent( QShowEvent * event ) override;
+    void showEvent(QShowEvent *event) override;
 
 private:
-	QScopedPointer< Ui::MainWindow > m_ui;
-	QThread * m_thread;
-	bool m_textFontOk;
-	bool m_codeFontOk;
-	std::shared_ptr< Syntax > m_syntax;
+    QScopedPointer<Ui::MainWindow> m_ui;
+    QThread *m_thread;
+    bool m_textFontOk;
+    bool m_codeFontOk;
+    std::shared_ptr<Syntax> m_syntax;
 
-	Q_DISABLE_COPY( MainWidget )
+    Q_DISABLE_COPY(MainWidget)
 }; // class MainWindow
-
 
 //
 // MainWindow
 //
 
-class MainWindow
-	:	public QMainWindow
+class MainWindow : public QMainWindow
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	MainWindow();
-	~MainWindow() override = default;
+    MainWindow();
+    ~MainWindow() override = default;
 
-	void setMarkdownFile( const QString & fileName );
+    void setMarkdownFile(const QString &fileName);
 
 protected:
-	void closeEvent( QCloseEvent * event ) override;
-	void showEvent( QShowEvent * event ) override;
+    void closeEvent(QCloseEvent *event) override;
+    void showEvent(QShowEvent *event) override;
 
 private slots:
-	//! About.
-	void about();
-	//! About Qt.
-	void aboutQt();
-	//! Licenses.
-	void licenses();
-	//! Quit.
-	void quit();
+    //! About.
+    void about();
+    //! About Qt.
+    void aboutQt();
+    //! Licenses.
+    void licenses();
+    //! Quit.
+    void quit();
 
 private:
-	QString configFileName( bool inPlace ) const;
-	void readCfg();
-	void saveCfg();
+    QString configFileName(bool inPlace) const;
+    void readCfg();
+    void saveCfg();
 
 private:
-	MainWidget * ui = nullptr;
+    MainWidget *ui = nullptr;
 }; // class MainWindow
 
 } /* namespace MdPdf */

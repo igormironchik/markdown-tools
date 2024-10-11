@@ -1,76 +1,71 @@
 /*
-	SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
-	SPDX-License-Identifier: GPL-3.0-or-later
+    SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
+    SPDX-License-Identifier: GPL-3.0-or-later
 */
 
 // md-pdf include.
 #include "color_widget.hpp"
 
 // Qt include.
-#include <QPainter>
 #include <QMouseEvent>
+#include <QPainter>
 
-
-namespace MdShared {
+namespace MdShared
+{
 
 //
 // ColorWidget
 //
 
-ColorWidget::ColorWidget( QWidget * parent )
-	:	QFrame( parent )
-	,	m_pressed( false )
+ColorWidget::ColorWidget(QWidget *parent)
+    : QFrame(parent)
+    , m_pressed(false)
 {
-	setFrameStyle( QFrame::Panel | QFrame::Sunken );
-	setColor( Qt::white );
+    setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    setColor(Qt::white);
 }
 
-const QColor &
-ColorWidget::color() const
+const QColor &ColorWidget::color() const
 {
-	return m_color;
+    return m_color;
 }
 
-void
-ColorWidget::setColor( const QColor & c )
+void ColorWidget::setColor(const QColor &c)
 {
-	m_color = c;
+    m_color = c;
 
-	update();
+    update();
 }
 
-void
-ColorWidget::paintEvent( QPaintEvent * e )
+void ColorWidget::paintEvent(QPaintEvent *e)
 {
-	QPainter p( this );
+    QPainter p(this);
 
-	p.setPen( m_color );
-	p.setBrush( m_color );
-	p.drawRect( frameRect() );
+    p.setPen(m_color);
+    p.setBrush(m_color);
+    p.drawRect(frameRect());
 
-	QFrame::paintEvent( e );
+    QFrame::paintEvent(e);
 }
 
-void
-ColorWidget::mousePressEvent( QMouseEvent * e )
+void ColorWidget::mousePressEvent(QMouseEvent *e)
 {
-	if( e->button() == Qt::LeftButton )
-		m_pressed = true;
+    if (e->button() == Qt::LeftButton) {
+        m_pressed = true;
+    }
 
-	e->accept();
+    e->accept();
 }
 
-void
-ColorWidget::mouseReleaseEvent( QMouseEvent * e )
+void ColorWidget::mouseReleaseEvent(QMouseEvent *e)
 {
-	if( m_pressed && e->button() == Qt::LeftButton )
-	{
-		m_pressed = false;
+    if (m_pressed && e->button() == Qt::LeftButton) {
+        m_pressed = false;
 
-		emit clicked();
-	}
+        emit clicked();
+    }
 
-	e->accept();
+    e->accept();
 }
 
 } /* namespace MdShared */

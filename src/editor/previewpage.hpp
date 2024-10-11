@@ -1,6 +1,6 @@
 /*
-	SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
-	SPDX-License-Identifier: GPL-3.0-or-later
+    SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
+    SPDX-License-Identifier: GPL-3.0-or-later
 */
 
 #pragma once
@@ -8,23 +8,21 @@
 // Qt include.
 #include <QWebEnginePage>
 
-
-namespace MdEditor {
+namespace MdEditor
+{
 
 //
 // PreviewPage
 //
 
-class PreviewPage
-	:	public QWebEnginePage
+class PreviewPage : public QWebEnginePage
 {
 public:
-	explicit PreviewPage( QObject * parent );
-	~PreviewPage() override = default;
+    explicit PreviewPage(QObject *parent);
+    ~PreviewPage() override = default;
 
 protected:
-	bool acceptNavigationRequest( const QUrl & url, NavigationType type,
-		bool isMainFrame ) override;
+    bool acceptNavigationRequest(const QUrl &url, NavigationType type, bool isMainFrame) override;
 }; // class PreviewPage
 
 } /* namespace MdEditor */

@@ -1,6 +1,6 @@
 /*
-	SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
-	SPDX-License-Identifier: GPL-3.0-or-later
+    SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
+    SPDX-License-Identifier: GPL-3.0-or-later
 */
 
 #pragma once
@@ -9,13 +9,12 @@
 #include <QFrame>
 #include <QScopedPointer>
 
-
 QT_BEGIN_NAMESPACE
 class QLineEdit;
 QT_END_NAMESPACE
 
-
-namespace MdEditor {
+namespace MdEditor
+{
 
 //
 // FindWeb
@@ -26,36 +25,35 @@ class MainWindow;
 class WebView;
 
 //! FindWeb/replace widget.
-class FindWeb
-	:	public QFrame
+class FindWeb : public QFrame
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	FindWeb( MainWindow * window, WebView * web, QWidget * parent );
-	~FindWeb() override;
+    FindWeb(MainWindow *window, WebView *web, QWidget *parent);
+    ~FindWeb() override;
 
-	QLineEdit * line() const;
+    QLineEdit *line() const;
 
 public slots:
-	void setFindWebText( const QString & text );
-	void setFocusOnFindWeb();
+    void setFindWebText(const QString &text);
+    void setFocusOnFindWeb();
 
 private slots:
-	void onFindWebTextChanged( const QString & str );
-	void onClose();
-	void onFindPrev();
-	void onFindNext();
+    void onFindWebTextChanged(const QString &str);
+    void onClose();
+    void onFindPrev();
+    void onFindNext();
 
 protected:
-	void hideEvent( QHideEvent * event ) override;
+    void hideEvent(QHideEvent *event) override;
 
 private:
-	friend struct FindWebPrivate;
+    friend struct FindWebPrivate;
 
-	Q_DISABLE_COPY( FindWeb )
+    Q_DISABLE_COPY(FindWeb)
 
-	QScopedPointer< FindWebPrivate > d;
+    QScopedPointer<FindWebPrivate> m_d;
 }; // class FindWeb
 
 } /* namespace MdEditor */

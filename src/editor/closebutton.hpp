@@ -1,6 +1,6 @@
 /*
-	SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
-	SPDX-License-Identifier: GPL-3.0-or-later
+    SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
+    SPDX-License-Identifier: GPL-3.0-or-later
 */
 
 #pragma once
@@ -9,8 +9,8 @@
 #include <QAbstractButton>
 #include <QScopedPointer>
 
-
-namespace MdEditor {
+namespace MdEditor
+{
 
 //
 // CloseButton
@@ -19,28 +19,27 @@ namespace MdEditor {
 struct CloseButtonPrivate;
 
 //! Close button.
-class CloseButton
-	:	public QAbstractButton
+class CloseButton : public QAbstractButton
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	explicit CloseButton( QWidget * parent );
-	~CloseButton() override;
+    explicit CloseButton(QWidget *parent);
+    ~CloseButton() override;
 
-	QSize sizeHint() const override;
+    QSize sizeHint() const override;
 
 protected:
-	void paintEvent( QPaintEvent * e ) override;
-	void enterEvent( QEnterEvent * event ) override;
-	void leaveEvent( QEvent * event ) override;
+    void paintEvent(QPaintEvent *e) override;
+    void enterEvent(QEnterEvent *event) override;
+    void leaveEvent(QEvent *event) override;
 
 private:
-	friend struct CloseButtonPrivate;
+    friend struct CloseButtonPrivate;
 
-	Q_DISABLE_COPY( CloseButton )
+    Q_DISABLE_COPY(CloseButton)
 
-	QScopedPointer< CloseButtonPrivate > d;
+    QScopedPointer<CloseButtonPrivate> m_d;
 }; // class CloseButton
 
 } /* namespace MdEditor */

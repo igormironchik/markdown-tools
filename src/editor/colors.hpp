@@ -1,6 +1,6 @@
 /*
-	SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
-	SPDX-License-Identifier: GPL-3.0-or-later
+    SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
+    SPDX-License-Identifier: GPL-3.0-or-later
 */
 
 #pragma once
@@ -11,8 +11,8 @@
 // md-editor include.
 #include "ui_colors.h"
 
-
-namespace MdEditor {
+namespace MdEditor
+{
 
 //
 // Colors
@@ -20,59 +20,58 @@ namespace MdEditor {
 
 //! Color scheme.
 struct Colors {
-	QColor textColor = QColor( 0, 0, 128 );
-	QColor linkColor = QColor( 0, 128, 0 );
-	QColor inlineColor = Qt::black;
-	QColor htmlColor = QColor( 128, 0, 0 );
-	QColor tableColor = Qt::black;
-	QColor codeColor = Qt::black;
-	QColor mathColor = QColor( 128, 0, 0 );
-	QColor referenceColor = QColor( 128, 0, 0 );
-	QColor specialColor = QColor( 128, 0, 0 );
-	bool enabled = true;
+    QColor m_textColor = QColor(0, 0, 128);
+    QColor m_linkColor = QColor(0, 128, 0);
+    QColor m_inlineColor = Qt::black;
+    QColor m_htmlColor = QColor(128, 0, 0);
+    QColor m_tableColor = Qt::black;
+    QColor m_codeColor = Qt::black;
+    QColor m_mathColor = QColor(128, 0, 0);
+    QColor m_referenceColor = QColor(128, 0, 0);
+    QColor m_specialColor = QColor(128, 0, 0);
+    bool m_enabled = true;
 }; // struct Colors
 
-bool operator != ( const Colors & c1, const Colors & c2 );
+bool operator!=(const Colors &c1, const Colors &c2);
 
 //
 // ColorsPage
 //
 
 //! Page with colors.
-class ColorsPage
-	:	public QWidget
+class ColorsPage : public QWidget
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	explicit ColorsPage( QWidget * parent = nullptr );
-	~ColorsPage() override = default;
+    explicit ColorsPage(QWidget *parent = nullptr);
+    ~ColorsPage() override = default;
 
-	Ui::ColorsPage & ui();
-	Colors & colors();
+    Ui::ColorsPage &ui();
+    Colors &colors();
 
 public slots:
-	void resetDefaults();
-	void applyColors();
-	void chooseLinkColor();
-	void chooseTextColor();
-	void chooseInlineColor();
-	void chooseHtmlColor();
-	void chooseTableColor();
-	void chooseCodeColor();
-	void chooseMathColor();
-	void chooseReferenceColor();
-	void chooseSpecialColor();
-	void colorsToggled( bool on );
+    void resetDefaults();
+    void applyColors();
+    void chooseLinkColor();
+    void chooseTextColor();
+    void chooseInlineColor();
+    void chooseHtmlColor();
+    void chooseTableColor();
+    void chooseCodeColor();
+    void chooseMathColor();
+    void chooseReferenceColor();
+    void chooseSpecialColor();
+    void colorsToggled(bool on);
 
 private:
-	void chooseColor( MdShared::ColorWidget * w, QColor & c );
+    void chooseColor(MdShared::ColorWidget *w, QColor &c);
 
 private:
-	Q_DISABLE_COPY( ColorsPage )
+    Q_DISABLE_COPY(ColorsPage)
 
-	Ui::ColorsPage m_ui;
-	Colors m_colors;
+    Ui::ColorsPage m_ui;
+    Colors m_colors;
 }; // class ColorsPage
 
 } /* namespace MdEditor */

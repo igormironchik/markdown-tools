@@ -1,6 +1,6 @@
 /*
-	SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
-	SPDX-License-Identifier: GPL-3.0-or-later
+    SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
+    SPDX-License-Identifier: GPL-3.0-or-later
 */
 
 // md-editor include.
@@ -9,51 +9,47 @@
 // Qt include.
 #include <QCheckBox>
 
-
-namespace MdEditor {
+namespace MdEditor
+{
 
 //
 // FontPage
 //
 
-FontPage::FontPage( QWidget * parent )
-	:	QWidget( parent )
+FontPage::FontPage(QWidget *parent)
+    : QWidget(parent)
 {
-	m_ui.setupUi( this );
+    m_ui.setupUi(this);
 
-	QObject::connect( m_ui.monospacedCheckBox, &QCheckBox::stateChanged,
-		this, &FontPage::onShowOnlyMonospaced );
+    QObject::connect(m_ui.monospacedCheckBox, &QCheckBox::stateChanged, this, &FontPage::onShowOnlyMonospaced);
 }
 
-Ui::FontPage &
-FontPage::ui()
+Ui::FontPage &FontPage::ui()
 {
-	return m_ui;
+    return m_ui;
 }
 
-QFont
-FontPage::currentFont() const
+QFont FontPage::currentFont() const
 {
-	QFont f = m_ui.fontComboBox->currentFont();
-	f.setPointSize( m_ui.fontSize->value() );
+    QFont f = m_ui.fontComboBox->currentFont();
+    f.setPointSize(m_ui.fontSize->value());
 
-	return f;
+    return f;
 }
 
-void
-FontPage::initWithFont( const QFont & f )
+void FontPage::initWithFont(const QFont &f)
 {
-	m_ui.fontComboBox->setCurrentFont( f );
-	m_ui.fontSize->setValue( f.pointSize() );
+    m_ui.fontComboBox->setCurrentFont(f);
+    m_ui.fontSize->setValue(f.pointSize());
 }
 
-void
-FontPage::onShowOnlyMonospaced( int state )
+void FontPage::onShowOnlyMonospaced(int state)
 {
-	if( state == Qt::Checked )
-		m_ui.fontComboBox->setFontFilters( QFontComboBox::MonospacedFonts );
-	else
-		m_ui.fontComboBox->setFontFilters( QFontComboBox::AllFonts );
+    if (state == Qt::Checked) {
+        m_ui.fontComboBox->setFontFilters(QFontComboBox::MonospacedFonts);
+    } else {
+        m_ui.fontComboBox->setFontFilters(QFontComboBox::AllFonts);
+    }
 }
 
 } /* namespace MdEditor */

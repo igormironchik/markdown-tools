@@ -1,6 +1,6 @@
 /*
-	SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
-	SPDX-License-Identifier: GPL-3.0-or-later
+    SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
+    SPDX-License-Identifier: GPL-3.0-or-later
 */
 
 // md-editor include.
@@ -15,73 +15,69 @@
 
 // C++ include.
 #include <functional>
-#include <utility>
 #include <limits>
+#include <utility>
 
-
-namespace MdEditor {
-
-bool operator != ( const Margins & l, const Margins & r )
+namespace MdEditor
 {
-	return ( l.m_enable != r.m_enable || l.m_length != r.m_length );
+
+bool operator!=(const Margins &l, const Margins &r)
+{
+    return (l.m_enable != r.m_enable || l.m_length != r.m_length);
 }
 
 //
 // DataParser
 //
 
-class DataParser
-	:	public QObject
+class DataParser : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 
 signals:
-	void newData();
-	void done( std::shared_ptr< MD::Document< MD::QStringTrait > >, unsigned long long int );
+    void newData();
+    void done(std::shared_ptr<MD::Document<MD::QStringTrait>>, unsigned long long int);
 
 public:
-	DataParser()
+    DataParser()
     {
-        connect( this, &DataParser::newData, this, &DataParser::onParse,
-            Qt::QueuedConnection );
+        connect(this, &DataParser::newData, this, &DataParser::onParse, Qt::QueuedConnection);
     }
 
-	~DataParser() override = default;
+    ~DataParser() override = default;
 
 public slots:
-    void onData( const QString & md, const QString & path, const QString & fileName,
-		unsigned long long int counter )
-	{
-		m_data.clear();
-		m_data.push_back( md );
-		m_path = path;
-		m_fileName = fileName;
-		m_counter = counter;
+    void onData(const QString &md, const QString &path, const QString &fileName, unsigned long long int counter)
+    {
+        m_data.clear();
+        m_data.push_back(md);
+        m_path = path;
+        m_fileName = fileName;
+        m_counter = counter;
 
-		emit newData();
-	}
+        emit newData();
+    }
 
 private slots:
-	void onParse()
-	{
-		if( !m_data.isEmpty() )
-		{
-			QTextStream stream( &m_data.back() );
+    void onParse()
+    {
+        if (!m_data.isEmpty()) {
+            QTextStream stream(&m_data.back());
 
-			const auto doc = m_parser.parse( stream, m_path, m_fileName );
+            const auto doc = m_parser.parse(stream, m_path, m_fileName);
 
-			m_data.clear();
+            m_data.clear();
 
-			emit done( doc, m_counter );
-		}
-	}
+            emit done(doc, m_counter);
+        }
+    }
 
 private:
-	QStringList m_data;
-	QString m_path;
-	QString m_fileName;
-	unsigned long long int m_counter;
-	MD::Parser< MD::QStringTrait > m_parser;
+    QStringList m_data;
+    QString m_path;
+    QString m_fileName;
+    unsigned long long int m_counter;
+    MD::Parser<MD::QStringTrait> m_parser;
 };
 
 //
@@ -89,688 +85,605 @@ private:
 //
 
 struct EditorPrivate {
-	explicit EditorPrivate( Editor * parent )
-		:	q( parent )
-		,	syntax( parent )
-		,	parsingThread( new QThread( q ) )
-		,	parser( new DataParser )
-	{
-		parser->moveToThread( parsingThread );
+    explicit EditorPrivate(Editor *parent)
+        : m_q(parent)
+        , m_syntax(parent)
+        , m_parsingThread(new QThread(m_q))
+        , m_parser(new DataParser)
+    {
+        m_parser->moveToThread(m_parsingThread);
 
-		QObject::connect( q, &Editor::doParsing, parser, &DataParser::onData,
-			Qt::QueuedConnection );
-		QObject::connect( parser, &DataParser::done, q, &Editor::onParsingDone,
-			Qt::QueuedConnection );
-	}
+        QObject::connect(m_q, &Editor::doParsing, m_parser, &DataParser::onData, Qt::QueuedConnection);
+        QObject::connect(m_parser, &DataParser::done, m_q, &Editor::onParsingDone, Qt::QueuedConnection);
+    }
 
-	~EditorPrivate()
-	{
-		parsingThread->quit();
-		parsingThread->wait();
-	}
+    ~EditorPrivate()
+    {
+        m_parsingThread->quit();
+        m_parsingThread->wait();
+    }
 
-	void initUi()
-	{
-		lineNumberArea = new LineNumberArea( q );
+    void initUi()
+    {
+        m_lineNumberArea = new LineNumberArea(m_q);
 
-		QObject::connect( q, &Editor::cursorPositionChanged,
-			q, &Editor::highlightCurrentLine );
-		QObject::connect( q, &QPlainTextEdit::textChanged,
-			q, &Editor::onContentChanged );
+        QObject::connect(m_q, &Editor::cursorPositionChanged, m_q, &Editor::highlightCurrentLine);
+        QObject::connect(m_q, &QPlainTextEdit::textChanged, m_q, &Editor::onContentChanged);
 
-		q->showLineNumbers( true );
-		q->applyFont( QFontDatabase::systemFont( QFontDatabase::FixedFont ) );
-		q->updateLineNumberAreaWidth( 0 );
-		q->highlightCurrentLine();
-		q->showUnprintableCharacters( true );
-		q->setFocusPolicy( Qt::ClickFocus );
-		q->setCenterOnScroll( true );
+        m_q->showLineNumbers(true);
+        m_q->applyFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
+        m_q->updateLineNumberAreaWidth(0);
+        m_q->highlightCurrentLine();
+        m_q->showUnprintableCharacters(true);
+        m_q->setFocusPolicy(Qt::ClickFocus);
+        m_q->setCenterOnScroll(true);
 
-		parsingThread->start();
-	}
+        m_parsingThread->start();
+    }
 
-	void setExtraSelections()
-	{
-		QList< QTextEdit::ExtraSelection > tmp = syntaxHighlighting;
-		tmp << extraSelections;
-		tmp.prepend( currentLine );
+    void setExtraSelections()
+    {
+        QList<QTextEdit::ExtraSelection> tmp = m_syntaxHighlighting;
+        tmp << m_extraSelections;
+        tmp.prepend(m_currentLine);
 
-		q->setExtraSelections( tmp );
-	}
+        m_q->setExtraSelections(tmp);
+    }
 
-	Editor * q = nullptr;
-	LineNumberArea * lineNumberArea = nullptr;
-	QString docName;
-	bool showLineNumberArea = true;
-	QList< QTextEdit::ExtraSelection > extraSelections;
-	QList< QTextEdit::ExtraSelection > syntaxHighlighting;
-	QTextEdit::ExtraSelection currentLine;
-	QString highlightedText;
-	Colors colors;
-	std::shared_ptr< MD::Document< MD::QStringTrait > > currentDoc;
-	SyntaxVisitor syntax;
-	Margins margins;
-	QThread * parsingThread = nullptr;
-	DataParser * parser = nullptr;
-	unsigned long long int currentParsingCounter = 0;
+    Editor *m_q = nullptr;
+    LineNumberArea *m_lineNumberArea = nullptr;
+    QString m_docName;
+    bool m_showLineNumberArea = true;
+    QList<QTextEdit::ExtraSelection> m_extraSelections;
+    QList<QTextEdit::ExtraSelection> m_syntaxHighlighting;
+    QTextEdit::ExtraSelection m_currentLine;
+    QString m_highlightedText;
+    Colors m_colors;
+    std::shared_ptr<MD::Document<MD::QStringTrait>> m_currentDoc;
+    SyntaxVisitor m_syntax;
+    Margins m_margins;
+    QThread *m_parsingThread = nullptr;
+    DataParser *m_parser = nullptr;
+    unsigned long long int m_currentParsingCounter = 0;
 }; // struct EditorPrivate
-
 
 //
 // Editor
 //
 
-Editor::Editor( QWidget * parent )
-	:	QPlainTextEdit( parent )
-	,	d( new EditorPrivate( this ) )
+Editor::Editor(QWidget *parent)
+    : QPlainTextEdit(parent)
+    , m_d(new EditorPrivate(this))
 {
-	d->initUi();
+    m_d->initUi();
 }
 
 Editor::~Editor()
 {
 }
 
-SyntaxVisitor &
-Editor::syntaxHighlighter() const
+SyntaxVisitor &Editor::syntaxHighlighter() const
 {
-	return d->syntax;
+    return m_d->m_syntax;
 }
 
-Margins &
-Editor::margins()
+Margins &Editor::margins()
 {
-	return d->margins;
+    return m_d->m_margins;
 }
 
-bool
-Editor::foundHighlighted() const
+bool Editor::foundHighlighted() const
 {
-	return !d->extraSelections.isEmpty();
+    return !m_d->m_extraSelections.isEmpty();
 }
 
-bool
-Editor::foundSelected() const
+bool Editor::foundSelected() const
 {
-	const auto c = textCursor();
+    const auto c = textCursor();
 
-	for( const auto & s : std::as_const( d->extraSelections ) )
-	{
-		if( c.position() == s.cursor.position() )
-		{
-			if( c.hasSelection() &&
-				c.selectionStart() == s.cursor.selectionStart() &&
-				c.selectionEnd() == s.cursor.selectionEnd() )
-					return true;
-			else
-				return false;
-		}
-	}
+    for (const auto &s : std::as_const(m_d->m_extraSelections)) {
+        if (c.position() == s.cursor.position()) {
+            if (c.hasSelection() && c.selectionStart() == s.cursor.selectionStart()
+                && c.selectionEnd() == s.cursor.selectionEnd()) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
 
-	return false;
+    return false;
 }
 
-void
-Editor::applyColors( const Colors & colors )
+void Editor::applyColors(const Colors &colors)
 {
-	d->colors = colors;
+    m_d->m_colors = colors;
 
-	if( d->colors.enabled )
-		onContentChanged();
-	else
-		d->syntax.clearHighlighting();
+    if (m_d->m_colors.m_enabled) {
+        onContentChanged();
+    } else {
+        m_d->m_syntax.clearHighlighting();
+    }
 
-	viewport()->update();
+    viewport()->update();
 }
 
-std::shared_ptr< MD::Document< MD::QStringTrait > >
-Editor::currentDoc() const
+std::shared_ptr<MD::Document<MD::QStringTrait>> Editor::currentDoc() const
 {
-	return d->currentDoc;
+    return m_d->m_currentDoc;
 }
 
-void
-Editor::applyFont( const QFont & f )
+void Editor::applyFont(const QFont &f)
 {
-	setFont( f );
+    setFont(f);
 
-	d->syntax.setFont( f );
+    m_d->m_syntax.setFont(f);
 
-	highlightSyntax( d->colors, d->currentDoc );
+    highlightSyntax(m_d->m_colors, m_d->m_currentDoc);
 }
 
-void
-Editor::setDocName( const QString & name )
+void Editor::setDocName(const QString &name)
 {
-	d->docName = name;
+    m_d->m_docName = name;
 }
 
-const QString &
-Editor::docName() const
+const QString &Editor::docName() const
 {
-	return d->docName;
+    return m_d->m_docName;
 }
 
-int
-Editor::lineNumberAreaWidth()
+int Editor::lineNumberAreaWidth()
 {
-	int digits = 1;
-	int max = qMax( 1, blockCount() );
+    int digits = 1;
+    int max = qMax(1, blockCount());
 
-	while( max >= 10 )
-	{
-		max /= 10;
-		++digits;
-	}
+    while (max >= 10) {
+        max /= 10;
+        ++digits;
+    }
 
-	if( digits < 2 )
-		digits = 2;
+    if (digits < 2) {
+        digits = 2;
+    }
 
-	int space = 3 + fontMetrics().horizontalAdvance( QLatin1Char( '9' ) ) * digits;
+    int space = 3 + fontMetrics().horizontalAdvance(QLatin1Char('9')) * digits;
 
-	return space;
+    return space;
 }
 
-void
-Editor::updateLineNumberAreaWidth( int /* newBlockCount */ )
+void Editor::updateLineNumberAreaWidth(int /* newBlockCount */)
 {
-	if( d->showLineNumberArea )
-		setViewportMargins( lineNumberAreaWidth(), 0, 0, 0 );
-	else
-		setViewportMargins( 0, 0, 0, 0 );
+    if (m_d->m_showLineNumberArea) {
+        setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);
+    } else {
+        setViewportMargins(0, 0, 0, 0);
+    }
 }
 
-void
-Editor::updateLineNumberArea( const QRect & rect, int dy )
+void Editor::updateLineNumberArea(const QRect &rect, int dy)
 {
-    if( dy )
-        d->lineNumberArea->scroll( 0, dy );
-    else
-        d->lineNumberArea->update( 0, rect.y(), d->lineNumberArea->width(), rect.height() );
+    if (dy) {
+        m_d->m_lineNumberArea->scroll(0, dy);
+    } else {
+        m_d->m_lineNumberArea->update(0, rect.y(), m_d->m_lineNumberArea->width(), rect.height());
+    }
 
-    if( rect.contains( viewport()->rect() ) )
-        updateLineNumberAreaWidth( 0 );
+    if (rect.contains(viewport()->rect())) {
+        updateLineNumberAreaWidth(0);
+    }
 }
 
-void
-Editor::resizeEvent( QResizeEvent * e )
+void Editor::resizeEvent(QResizeEvent *e)
 {
-	QPlainTextEdit::resizeEvent( e );
+    QPlainTextEdit::resizeEvent(e);
 
-	QRect cr = contentsRect();
-	d->lineNumberArea->setGeometry( QRect( cr.left(), cr.top(),
-		lineNumberAreaWidth(), cr.height() ) );
+    QRect cr = contentsRect();
+    m_d->m_lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
 }
 
-void
-Editor::paintEvent( QPaintEvent * event )
+void Editor::paintEvent(QPaintEvent *event)
 {
-	if( d->margins.m_enable )
-	{
-		QPainter painter( viewport() );
-		QRect r = viewport()->rect();
-		QFontMetricsF fm( font() );
+    if (m_d->m_margins.m_enable) {
+        QPainter painter(viewport());
+        QRect r = viewport()->rect();
+        QFontMetricsF fm(font());
 
-		r.setX( document()->documentMargin() +
-			qRound( fm.averageCharWidth() * d->margins.m_length ) );
+        r.setX(document()->documentMargin() + qRound(fm.averageCharWidth() * m_d->m_margins.m_length));
 
-		painter.setBrush( QColor( 239, 239, 239 ) );
-		painter.setPen( Qt::NoPen );
-		painter.drawRect( r );
-	}
+        painter.setBrush(QColor(239, 239, 239));
+        painter.setPen(Qt::NoPen);
+        painter.drawRect(r);
+    }
 
-	QPlainTextEdit::paintEvent( event );
+    QPlainTextEdit::paintEvent(event);
 }
 
-void
-Editor::highlightCurrentLine()
+void Editor::highlightCurrentLine()
 {
-	static const QColor lineColor = QColor( 255, 255, 0, 75 );
+    static const QColor lineColor = QColor(255, 255, 0, 75);
 
-	d->currentLine.format.setBackground( lineColor );
-	d->currentLine.format.setProperty( QTextFormat::FullWidthSelection, true );
-	d->currentLine.cursor = textCursor();
-	d->currentLine.cursor.clearSelection();
+    m_d->m_currentLine.format.setBackground(lineColor);
+    m_d->m_currentLine.format.setProperty(QTextFormat::FullWidthSelection, true);
+    m_d->m_currentLine.cursor = textCursor();
+    m_d->m_currentLine.cursor.clearSelection();
 
-	d->setExtraSelections();
+    m_d->setExtraSelections();
 }
 
-void
-Editor::lineNumberAreaPaintEvent( QPaintEvent * event )
+void Editor::lineNumberAreaPaintEvent(QPaintEvent *event)
 {
-	QPainter painter( d->lineNumberArea );
-	painter.fillRect( event->rect(), Qt::lightGray );
+    QPainter painter(m_d->m_lineNumberArea);
+    painter.fillRect(event->rect(), Qt::lightGray);
 
-	QTextBlock block = firstVisibleBlock();
-	int blockNumber = block.blockNumber();
-	int top = qRound( blockBoundingGeometry( block ).translated( contentOffset() ).top() );
-	int bottom = top + qRound( blockBoundingRect( block ).height() );
+    QTextBlock block = firstVisibleBlock();
+    int blockNumber = block.blockNumber();
+    int top = qRound(blockBoundingGeometry(block).translated(contentOffset()).top());
+    int bottom = top + qRound(blockBoundingRect(block).height());
 
-	while( block.isValid() && top <= event->rect().bottom() )
-	{
-		if( block.isVisible() && bottom >= event->rect().top() )
-		{
-			QString number = QString::number( blockNumber + 1 );
-			painter.setPen( Qt::black );
-			painter.drawText( 0, top, d->lineNumberArea->width(), fontMetrics().height(),
-				Qt::AlignRight, number );
-		}
+    while (block.isValid() && top <= event->rect().bottom()) {
+        if (block.isVisible() && bottom >= event->rect().top()) {
+            QString number = QString::number(blockNumber + 1);
+            painter.setPen(Qt::black);
+            painter.drawText(0, top, m_d->m_lineNumberArea->width(), fontMetrics().height(), Qt::AlignRight, number);
+        }
 
-		block = block.next();
-		top = bottom;
-		bottom = top + qRound( blockBoundingRect( block ).height() );
-		++blockNumber;
-	}
+        block = block.next();
+        top = bottom;
+        bottom = top + qRound(blockBoundingRect(block).height());
+        ++blockNumber;
+    }
 }
 
-int
-Editor::lineNumber( const QPoint & p )
+int Editor::lineNumber(const QPoint &p)
 {
-	QTextBlock block = firstVisibleBlock();
-	int blockNumber = block.blockNumber();
-	int top = qRound( blockBoundingGeometry( block ).translated( contentOffset() ).top() );
-	int bottom = top + qRound( blockBoundingRect( block ).height() );
+    QTextBlock block = firstVisibleBlock();
+    int blockNumber = block.blockNumber();
+    int top = qRound(blockBoundingGeometry(block).translated(contentOffset()).top());
+    int bottom = top + qRound(blockBoundingRect(block).height());
 
-	while( block.isValid() && top <= p.y() )
-	{
-		if( block.isVisible() && bottom >= p.y() )
-			return blockNumber;
+    while (block.isValid() && top <= p.y()) {
+        if (block.isVisible() && bottom >= p.y()) {
+            return blockNumber;
+        }
 
-		block = block.next();
-		top = bottom;
-		bottom = top + qRound( blockBoundingRect( block ).height() );
-		++blockNumber;
-	}
+        block = block.next();
+        top = bottom;
+        bottom = top + qRound(blockBoundingRect(block).height());
+        ++blockNumber;
+    }
 
-	return -1;
+    return -1;
 }
 
-void
-LineNumberArea::enterEvent( QEnterEvent * event )
+void LineNumberArea::enterEvent(QEnterEvent *event)
 {
-	onHover( event->position().toPoint() );
+    onHover(event->position().toPoint());
 
-	event->ignore();
+    event->ignore();
 }
 
-void
-LineNumberArea::mouseMoveEvent( QMouseEvent * event )
+void LineNumberArea::mouseMoveEvent(QMouseEvent *event)
 {
-	onHover( event->position().toPoint() );
+    onHover(event->position().toPoint());
 
-	event->ignore();
+    event->ignore();
 }
 
-void
-LineNumberArea::leaveEvent( QEvent * event )
+void LineNumberArea::leaveEvent(QEvent *event)
 {
-	lineNumber = -1;
+    m_lineNumber = -1;
 
-	emit hoverLeaved();
+    emit hoverLeaved();
 
-	event->ignore();
+    event->ignore();
 }
 
-void
-LineNumberArea::onHover( const QPoint & p )
+void LineNumberArea::onHover(const QPoint &p)
 {
-	const auto ln = codeEditor->lineNumber( p );
+    const auto ln = m_codeEditor->lineNumber(p);
 
-	if( ln != lineNumber )
-	{
-		lineNumber = ln;
+    if (ln != m_lineNumber) {
+        m_lineNumber = ln;
 
-		emit lineHovered( lineNumber, mapToGlobal( QPoint( width(), p.y() ) ) );
-	}
+        emit lineHovered(m_lineNumber, mapToGlobal(QPoint(width(), p.y())));
+    }
 }
 
-void
-Editor::showUnprintableCharacters( bool on )
+void Editor::showUnprintableCharacters(bool on)
 {
-	if( on )
-	{
-		QTextOption opt;
-		opt.setFlags( QTextOption::ShowTabsAndSpaces );
+    if (on) {
+        QTextOption opt;
+        opt.setFlags(QTextOption::ShowTabsAndSpaces);
 
-		document()->setDefaultTextOption( opt );
-	}
-	else
-		document()->setDefaultTextOption( {} );
+        document()->setDefaultTextOption(opt);
+    } else {
+        document()->setDefaultTextOption({});
+    }
 
-	setTabStopDistance( fontMetrics().horizontalAdvance( QLatin1Char( ' ' ) ) * 4 );
+    setTabStopDistance(fontMetrics().horizontalAdvance(QLatin1Char(' ')) * 4);
 }
 
-void
-Editor::showLineNumbers( bool on )
+void Editor::showLineNumbers(bool on)
 {
-	if( on )
-	{
-		connect( this, &Editor::blockCountChanged,
-			this, &Editor::updateLineNumberAreaWidth );
-		connect( this, &Editor::updateRequest,
-			this, &Editor::updateLineNumberArea );
-		connect( d->lineNumberArea, &LineNumberArea::lineHovered,
-			this, &Editor::lineHovered );
-		connect( d->lineNumberArea, &LineNumberArea::hoverLeaved,
-			this, &Editor::hoverLeaved );
+    if (on) {
+        connect(this, &Editor::blockCountChanged, this, &Editor::updateLineNumberAreaWidth);
+        connect(this, &Editor::updateRequest, this, &Editor::updateLineNumberArea);
+        connect(m_d->m_lineNumberArea, &LineNumberArea::lineHovered, this, &Editor::lineHovered);
+        connect(m_d->m_lineNumberArea, &LineNumberArea::hoverLeaved, this, &Editor::hoverLeaved);
 
-		d->lineNumberArea->show();
-		d->showLineNumberArea = true;
-	}
-	else
-	{
-		disconnect( this, &Editor::blockCountChanged,
-			this, &Editor::updateLineNumberAreaWidth );
-		disconnect( this, &Editor::updateRequest,
-			this, &Editor::updateLineNumberArea );
-		disconnect( d->lineNumberArea, &LineNumberArea::lineHovered,
-			this, &Editor::lineHovered );
-		disconnect( d->lineNumberArea, &LineNumberArea::hoverLeaved,
-			this, &Editor::hoverLeaved );
+        m_d->m_lineNumberArea->show();
+        m_d->m_showLineNumberArea = true;
+    } else {
+        disconnect(this, &Editor::blockCountChanged, this, &Editor::updateLineNumberAreaWidth);
+        disconnect(this, &Editor::updateRequest, this, &Editor::updateLineNumberArea);
+        disconnect(m_d->m_lineNumberArea, &LineNumberArea::lineHovered, this, &Editor::lineHovered);
+        disconnect(m_d->m_lineNumberArea, &LineNumberArea::hoverLeaved, this, &Editor::hoverLeaved);
 
-		d->lineNumberArea->hide();
-		d->showLineNumberArea = false;
-	}
+        m_d->m_lineNumberArea->hide();
+        m_d->m_showLineNumberArea = false;
+    }
 
-	updateLineNumberAreaWidth( 0 );
+    updateLineNumberAreaWidth(0);
 }
 
-namespace /* anonymous */ {
-
-template< class Iterator, class C = std::less<> >
-bool markSelection( Iterator first, Iterator last, QTextCursor c, Editor * e, C cmp = C{} )
+namespace /* anonymous */
 {
-	for( ; first != last; ++first )
-	{
-		if( cmp( c.position(), first->cursor.position() ) )
-		{
-			c.setPosition( first->cursor.selectionStart() );
-			c.setPosition( first->cursor.selectionEnd(), QTextCursor::KeepAnchor );
-			e->setTextCursor( c );
 
-			return true;
-		}
-	}
+template<class Iterator, class C = std::less<>>
+bool markSelection(Iterator first, Iterator last, QTextCursor c, Editor *e, C cmp = C{})
+{
+    for (; first != last; ++first) {
+        if (cmp(c.position(), first->cursor.position())) {
+            c.setPosition(first->cursor.selectionStart());
+            c.setPosition(first->cursor.selectionEnd(), QTextCursor::KeepAnchor);
+            e->setTextCursor(c);
 
-	return false;
+            return true;
+        }
+    }
+
+    return false;
 }
 
 } /* namespace anonymous */
 
-void
-Editor::highlight( const QString & text, bool initCursor )
+void Editor::highlight(const QString &text, bool initCursor)
 {
-	d->highlightedText = text;
+    m_d->m_highlightedText = text;
 
-	d->extraSelections.clear();
+    m_d->m_extraSelections.clear();
 
-	if( !text.isEmpty() )
-	{
-		QTextCursor c( document() );
+    if (!text.isEmpty()) {
+        QTextCursor c(document());
 
-		static const QColor color = QColor( Qt::yellow );
+        static const QColor color = QColor(Qt::yellow);
 
-		while( !c.isNull() )
-		{
-			QTextEdit::ExtraSelection s;
+        while (!c.isNull()) {
+            QTextEdit::ExtraSelection s;
 
-			s.format.setBackground( color );
-			s.cursor = document()->find( text, c, QTextDocument::FindCaseSensitively );
+            s.format.setBackground(color);
+            s.cursor = document()->find(text, c, QTextDocument::FindCaseSensitively);
 
-			if( !s.cursor.isNull() )
-				d->extraSelections.append( s );
+            if (!s.cursor.isNull())
+                m_d->m_extraSelections.append(s);
 
-			c = s.cursor;
-		}
-	}
+            c = s.cursor;
+        }
+    }
 
-	d->setExtraSelections();
+    m_d->setExtraSelections();
 
-	if( !d->extraSelections.isEmpty() && initCursor )
-	{
-		if( !markSelection( d->extraSelections.cbegin(), d->extraSelections.cend(),
-			QTextCursor( firstVisibleBlock() ), this ) )
-		{
-			markSelection( d->extraSelections.crbegin(), d->extraSelections.crend(),
-				QTextCursor( firstVisibleBlock() ), this, std::greater<> {} );
-		}
-	}
+    if (!m_d->m_extraSelections.isEmpty() && initCursor) {
+        if (!markSelection(m_d->m_extraSelections.cbegin(), m_d->m_extraSelections.cend(),
+                           QTextCursor(firstVisibleBlock()), this)) {
+            markSelection(m_d->m_extraSelections.crbegin(), m_d->m_extraSelections.crend(),
+                          QTextCursor(firstVisibleBlock()), this, std::greater<>{});
+        }
+    }
 }
 
-void
-Editor::onFindNext()
+void Editor::onFindNext()
 {
-	if( !d->extraSelections.isEmpty() )
-	{
-		if( !markSelection( d->extraSelections.cbegin(), d->extraSelections.cend(),
-			textCursor(), this ) )
-		{
-			auto s = d->extraSelections.at( 0 ).cursor;
-			auto c = textCursor();
-			c.setPosition( s.selectionStart() );
-			c.setPosition( s.selectionEnd(), QTextCursor::KeepAnchor );
-			setTextCursor( c );
-		}
-	}
+    if (!m_d->m_extraSelections.isEmpty()) {
+        if (!markSelection(m_d->m_extraSelections.cbegin(), m_d->m_extraSelections.cend(), textCursor(), this)) {
+            auto s = m_d->m_extraSelections.at(0).cursor;
+            auto c = textCursor();
+            c.setPosition(s.selectionStart());
+            c.setPosition(s.selectionEnd(), QTextCursor::KeepAnchor);
+            setTextCursor(c);
+        }
+    }
 }
 
-void
-Editor::onFindPrev()
+void Editor::onFindPrev()
 {
-	if( !d->extraSelections.isEmpty() )
-	{
-		auto c = textCursor();
+    if (!m_d->m_extraSelections.isEmpty()) {
+        auto c = textCursor();
 
-		if( !markSelection( d->extraSelections.crbegin(), d->extraSelections.crend(),
-			textCursor(), this, std::greater<> {} ) )
-		{
-			auto s = d->extraSelections.at( d->extraSelections.size() - 1 ).cursor;
-			auto c = textCursor();
-			c.setPosition( s.selectionStart() );
-			c.setPosition( s.selectionEnd(), QTextCursor::KeepAnchor );
-			setTextCursor( c );
-		}
-	}
+        if (!markSelection(m_d->m_extraSelections.crbegin(), m_d->m_extraSelections.crend(),
+                           textCursor(), this, std::greater<>{})) {
+            auto s = m_d->m_extraSelections.at(m_d->m_extraSelections.size() - 1).cursor;
+            auto c = textCursor();
+            c.setPosition(s.selectionStart());
+            c.setPosition(s.selectionEnd(), QTextCursor::KeepAnchor);
+            setTextCursor(c);
+        }
+    }
 }
 
-void
-Editor::clearExtraSelections()
+void Editor::clearExtraSelections()
 {
-	d->highlightedText.clear();
-	d->extraSelections.clear();
+    m_d->m_highlightedText.clear();
+    m_d->m_extraSelections.clear();
 
-	d->setExtraSelections();
+    m_d->setExtraSelections();
 }
 
-void
-Editor::replaceCurrent( const QString & with )
+void Editor::replaceCurrent(const QString &with)
 {
-	if( foundSelected() )
-	{
-		auto c = textCursor();
-		c.beginEditBlock();
-		c.removeSelectedText();
-		c.insertText( with );
-		c.endEditBlock();
-	}
+    if (foundSelected()) {
+        auto c = textCursor();
+        c.beginEditBlock();
+        c.removeSelectedText();
+        c.insertText(with);
+        c.endEditBlock();
+    }
 }
 
-void
-Editor::replaceAll( const QString & with )
+void Editor::replaceAll(const QString &with)
 {
-	if( foundHighlighted() )
-	{
-		disconnect( this, &QPlainTextEdit::textChanged, this, &Editor::onContentChanged );
+    if (foundHighlighted()) {
+        disconnect(this, &QPlainTextEdit::textChanged, this, &Editor::onContentChanged);
 
-		QTextCursor editCursor( document() );
+        QTextCursor editCursor(document());
 
-		editCursor.beginEditBlock();
+        editCursor.beginEditBlock();
 
-		QTextCursor found = editCursor;
+        QTextCursor found = editCursor;
 
-		while( !found.isNull() )
-		{
-			found = document()->find( d->highlightedText, editCursor,
-				QTextDocument::FindCaseSensitively );
+        while (!found.isNull()) {
+            found = document()->find(m_d->m_highlightedText, editCursor, QTextDocument::FindCaseSensitively);
 
-			if( !found.isNull() )
-			{
-				editCursor.setPosition( found.selectionStart() );
-				editCursor.setPosition( found.selectionEnd(), QTextCursor::KeepAnchor );
+            if (!found.isNull()) {
+                editCursor.setPosition(found.selectionStart());
+                editCursor.setPosition(found.selectionEnd(), QTextCursor::KeepAnchor);
 
-				editCursor.removeSelectedText();
-				editCursor.insertText( with );
-			}
-		}
+                editCursor.removeSelectedText();
+                editCursor.insertText(with);
+            }
+        }
 
-		editCursor.endEditBlock();
+        editCursor.endEditBlock();
 
-		clearExtraSelections();
-	}
+        clearExtraSelections();
+    }
 
-	connect( this, &QPlainTextEdit::textChanged, this, &Editor::onContentChanged );
+    connect(this, &QPlainTextEdit::textChanged, this, &Editor::onContentChanged);
 }
 
-void
-Editor::onContentChanged()
+void Editor::onContentChanged()
 {
-	const auto md = toPlainText();
-	QFileInfo info( d->docName );
+    const auto md = toPlainText();
+    QFileInfo info(m_d->m_docName);
 
-	if( d->currentParsingCounter == std::numeric_limits< unsigned long long int >::max() )
-		d->currentParsingCounter = 0;
+    if (m_d->m_currentParsingCounter == std::numeric_limits<unsigned long long int>::max()) {
+        m_d->m_currentParsingCounter = 0;
+    }
 
-	++d->currentParsingCounter;
+    ++m_d->m_currentParsingCounter;
 
-	emit doParsing( md, info.absolutePath(), info.fileName(), d->currentParsingCounter );
+    emit doParsing(md, info.absolutePath(), info.fileName(), m_d->m_currentParsingCounter);
 }
 
-void
-Editor::onParsingDone( std::shared_ptr< MD::Document< MD::QStringTrait > > doc,
-	unsigned long long int counter )
+void Editor::onParsingDone(std::shared_ptr<MD::Document<MD::QStringTrait>> doc, unsigned long long int counter)
 {
-	if( d->currentParsingCounter == counter )
-	{
-		d->currentDoc = doc;
+    if (m_d->m_currentParsingCounter == counter) {
+        m_d->m_currentDoc = doc;
 
-		highlightSyntax( d->colors, d->currentDoc );
+        highlightSyntax(m_d->m_colors, m_d->m_currentDoc);
 
-		highlightCurrent();
+        highlightCurrent();
 
-		viewport()->update();
+        viewport()->update();
 
-		emit ready();
-	}
+        emit ready();
+    }
 }
 
-void
-Editor::highlightCurrent()
+void Editor::highlightCurrent()
 {
-	highlight( d->highlightedText, false );
+    highlight(m_d->m_highlightedText, false);
 }
 
-void
-Editor::clearHighlighting()
+void Editor::clearHighlighting()
 {
-	clearExtraSelections();
+    clearExtraSelections();
 }
 
-void
-Editor::goToLine( int l )
+void Editor::goToLine(int l)
 {
-	QTextBlock block = document()->begin();
-	int blockNumber = block.blockNumber() + 1;
+    QTextBlock block = document()->begin();
+    int blockNumber = block.blockNumber() + 1;
 
-	while( block.isValid() && blockNumber < l )
-	{
-		block = block.next();
-		++blockNumber;
-	}
+    while (block.isValid() && blockNumber < l) {
+        block = block.next();
+        ++blockNumber;
+    }
 
-	if( !block.isValid() )
-		block = document()->lastBlock();
+    if (!block.isValid()) {
+        block = document()->lastBlock();
+    }
 
-	auto cursor = textCursor();
-	cursor.setPosition( block.position() );
-	setTextCursor( cursor );
+    auto cursor = textCursor();
+    cursor.setPosition(block.position());
+    setTextCursor(cursor);
 
-	ensureCursorVisible();
+    ensureCursorVisible();
 
-	setFocus();
+    setFocus();
 }
 
-void
-Editor::setText( const QString & t )
+void Editor::setText(const QString &t)
 {
-	setPlainText( t );
+    setPlainText(t);
 }
 
-void
-Editor::highlightSyntax( const Colors & colors,
-	std::shared_ptr< MD::Document< MD::QStringTrait > > doc )
+void Editor::highlightSyntax(const Colors &colors, std::shared_ptr<MD::Document<MD::QStringTrait>> doc)
 {
-	d->syntax.highlight( doc, colors );
+    m_d->m_syntax.highlight(doc, colors);
 }
 
-void
-Editor::keyPressEvent( QKeyEvent * event )
+void Editor::keyPressEvent(QKeyEvent *event)
 {
-	auto c = textCursor();
+    auto c = textCursor();
 
-	if( c.hasSelection() )
-	{
-		switch( event->key() )
-		{
-			case Qt::Key_Tab :
-			{
-				const auto ss = c.selectionStart();
-				const auto se = c.selectionEnd();
-				c.setPosition( ss );
-				const auto start = c.blockNumber();
-				c.setPosition( se, QTextCursor::KeepAnchor );
-				const auto end = c.blockNumber();
+    if (c.hasSelection()) {
+        switch (event->key()) {
+        case Qt::Key_Tab: {
+            const auto ss = c.selectionStart();
+            const auto se = c.selectionEnd();
+            c.setPosition(ss);
+            const auto start = c.blockNumber();
+            c.setPosition(se, QTextCursor::KeepAnchor);
+            const auto end = c.blockNumber();
 
-				c.beginEditBlock();
+            c.beginEditBlock();
 
-				for( auto i = start; i <= end; ++i )
-				{
-					QTextCursor add( document()->findBlockByNumber( i ) );
-					add.insertText( QStringLiteral( "\t" ) );
-				}
+            for (auto i = start; i <= end; ++i) {
+                QTextCursor add(document()->findBlockByNumber(i));
+                add.insertText(QStringLiteral("\t"));
+            }
 
-				c.endEditBlock();
-			}
-				break;
+            c.endEditBlock();
+        } break;
 
-			case Qt::Key_Backtab :
-			{
-				const auto ss = c.selectionStart();
-				const auto se = c.selectionEnd();
-				c.setPosition( ss );
-				const auto start = c.blockNumber();
-				c.setPosition( se, QTextCursor::KeepAnchor );
-				const auto end = c.blockNumber();
+        case Qt::Key_Backtab: {
+            const auto ss = c.selectionStart();
+            const auto se = c.selectionEnd();
+            c.setPosition(ss);
+            const auto start = c.blockNumber();
+            c.setPosition(se, QTextCursor::KeepAnchor);
+            const auto end = c.blockNumber();
 
-				c.beginEditBlock();
+            c.beginEditBlock();
 
-				for( auto i = start; i <= end; ++i )
-				{
-					QTextCursor del( document()->findBlockByNumber( i ) );
+            for (auto i = start; i <= end; ++i) {
+                QTextCursor del(document()->findBlockByNumber(i));
 
-					if( del.block().text().startsWith( QStringLiteral( "\t" ) ) )
-						del.deleteChar();
-				}
+                if (del.block().text().startsWith(QStringLiteral("\t"))) {
+                    del.deleteChar();
+                }
+            }
 
-				c.endEditBlock();
-			}
-				break;
+            c.endEditBlock();
+        } break;
 
-			default:
-				QPlainTextEdit::keyPressEvent( event );
-		}
-	}
-	else
-		QPlainTextEdit::keyPressEvent( event );
+        default:
+            QPlainTextEdit::keyPressEvent(event);
+        }
+    } else {
+        QPlainTextEdit::keyPressEvent(event);
+    }
 }
 
 } /* namespace MdEditor */
