@@ -337,7 +337,7 @@ public:
     ~PdfRenderer() override = default;
 
     //! \return Is font can be created?
-    static bool isFontCreatable(const QString &font);
+    static bool isFontCreatable(const QString &font, bool monospace);
 
     //! Convert QString to UTF-8.
     static Utf8String createUtf8String(const QString &text);

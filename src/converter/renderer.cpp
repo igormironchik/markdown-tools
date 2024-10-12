@@ -990,7 +990,17 @@ Font *PdfRenderer::createFont(const QString &name, bool bold, bool italic, doubl
 #endif // MD_PDF_TESTING
 }
 
-bool PdfRenderer::isFontCreatable(const QString &name)
+namespace /* anonymous */
+{
+
+inline bool isGoodWidth(double w)
+{
+    return (!std::isinf(w) && !std::isnan(w) && w > 0.0);
+}
+
+} /* namespace anonymous */
+
+bool PdfRenderer::isFontCreatable(const QString &name, bool monospace)
 {
     Document doc;
 
@@ -999,7 +1009,30 @@ bool PdfRenderer::isFontCreatable(const QString &name)
 
     auto font = doc.GetFonts().SearchFont(name.toLocal8Bit().data(), params);
 
-    return (font != nullptr);
+    if (font) {
+        PdfAuxData pdfData;
+
+        const auto w1 = pdfData.stringWidth(font, 10.0, 1.0, createUtf8String(" "));
+        const auto w2 = pdfData.stringWidth(font, 10.0, 1.0, createUtf8String("A"));
+        const auto w3 = pdfData.stringWidth(font, 10.0, 1.0, createUtf8String("ABC"));
+
+        if (isGoodWidth(w1) && isGoodWidth(w2) && isGoodWidth(w3)) {
+            if (monospace) {
+                if (std::abs(w1 - w2) > 0.001 || std::abs(w1 * 3.0 - w3) > 0.001) {
+                    return false;
+                } else {
+                    return true;
+                }
+            } else {
+                return true;
+            }
+
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
 }
 
 void PdfRenderer::createPage(PdfAuxData &pdfData)

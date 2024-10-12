@@ -84,9 +84,9 @@ MainWidget::MainWidget(QWidget *parent)
 
     m_thread->start();
 
-    if (!Render::PdfRenderer::isFontCreatable(m_ui->m_textFont->currentText())) {
+    if (!Render::PdfRenderer::isFontCreatable(m_ui->m_textFont->currentText(), false)) {
         for (int i = 0; i < m_ui->m_textFont->count(); ++i) {
-            if (Render::PdfRenderer::isFontCreatable(m_ui->m_textFont->itemText(i))) {
+            if (Render::PdfRenderer::isFontCreatable(m_ui->m_textFont->itemText(i), false)) {
                 m_ui->m_textFont->setCurrentIndex(i);
 
                 break;
@@ -94,9 +94,9 @@ MainWidget::MainWidget(QWidget *parent)
         }
     }
 
-    if (!Render::PdfRenderer::isFontCreatable(m_ui->m_codeFont->currentText())) {
+    if (!Render::PdfRenderer::isFontCreatable(m_ui->m_codeFont->currentText(), true)) {
         for (int i = 0; i < m_ui->m_codeFont->count(); ++i) {
-            if (Render::PdfRenderer::isFontCreatable(m_ui->m_codeFont->itemText(i))) {
+            if (Render::PdfRenderer::isFontCreatable(m_ui->m_codeFont->itemText(i), true)) {
                 m_ui->m_codeFont->setCurrentIndex(i);
 
                 break;
@@ -486,7 +486,7 @@ void MainWidget::textFontChanged(const QFont &f)
 {
     static const QString defaultColor = m_ui->m_textFont->palette().color(QPalette::Text).name();
 
-    if (!Render::PdfRenderer::isFontCreatable(f.family())) {
+    if (!Render::PdfRenderer::isFontCreatable(f.family(), false)) {
         m_ui->m_textFont->setStyleSheet(QStringLiteral("QFontComboBox { color: red }"));
         m_textFontOk = false;
 
@@ -507,7 +507,7 @@ void MainWidget::codeFontChanged(const QFont &f)
 {
     static const QString defaultColor = m_ui->m_codeFont->palette().color(QPalette::Text).name();
 
-    if (!Render::PdfRenderer::isFontCreatable(f.family())) {
+    if (!Render::PdfRenderer::isFontCreatable(f.family(), true)) {
         m_ui->m_codeFont->setStyleSheet(QStringLiteral("QFontComboBox { color: red }"));
         m_codeFontOk = false;
 
