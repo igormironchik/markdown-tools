@@ -81,7 +81,7 @@ work both in this editor and on `GitHub`.
 `GitHub` do a magick in this case, it just deletes `class` attribute, but this editor places
 `HTML` tags as they present.
 
-* Links hovering may not change cursor shape due to [QTBUG-111927](https://bugreports.qt.io/browse/QTBUG-111927)
+* Links hovering may not change cursor shape due to [QTBUG-111927](https://bugreports.qt.io/browse/QTBUG-111927). **Fixed in Qt 6.7.3**
 
 * Strange behaviour of font combo box in fonts dialog on check in/out check box to constraint
 fonts to monospaced due to [QTBUG-112145](https://bugreports.qt.io/browse/QTBUG-112145)
