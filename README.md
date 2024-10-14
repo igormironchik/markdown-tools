@@ -100,4 +100,5 @@ due to [QTBUG-104790](https://bugreports.qt.io/browse/QTBUG-104790), that is why
 have auto tests for them.
  
 [^1]: If you are one from these groups of people - you are welcome to make PRs to adapt
- this application to your language.
+ this application to your language, or just explain me your rules, you are welcome to
+write me to igor.mironchik@gmail.com
