@@ -12,6 +12,7 @@
 #include <QTextBlock>
 #include <QTextDocument>
 #include <QThread>
+#include <QTextLayout>
 
 // C++ include.
 #include <functional>
@@ -81,6 +82,71 @@ private:
 };
 
 //
+// DocumentLayoutWithRightAlignment
+//
+
+class DocumentLayoutWithRightAlignment : public QPlainTextDocumentLayout
+{
+public:
+    DocumentLayoutWithRightAlignment(QTextDocument *doc, QWidget *viewport)
+        : QPlainTextDocumentLayout(doc)
+        , m_viewport(viewport)
+    {
+    }
+    ~DocumentLayoutWithRightAlignment() override = default;
+
+    QRectF blockBoundingRect(const QTextBlock &block) const override
+    {
+        const auto r = QPlainTextDocumentLayout::blockBoundingRect(block);
+
+        bool alignRight = false;
+
+        switch (block.textDirection()) {
+        case Qt::RightToLeft:
+            alignRight = true;
+            break;
+
+        case Qt::LayoutDirectionAuto:
+            alignRight = block.text().isRightToLeft();
+            break;
+
+        default:
+            break;
+        }
+
+        if (alignRight) {
+            auto tl = block.layout();
+            auto option = document()->defaultTextOption();
+            tl->setTextOption(option);
+            auto margin = document()->documentMargin();
+            int extraMargin = 0;
+            if (option.flags() & QTextOption::AddSpaceForLineAndParagraphSeparators) {
+                QFontMetrics fm(block.charFormat().font());
+                extraMargin += fm.horizontalAdvance(QChar(0x21B5));
+            }
+
+            qreal availableWidth = m_viewport->width();
+            if (availableWidth <= 0) {
+                availableWidth = qreal(INT_MAX);
+            }
+            availableWidth -= 2*margin + extraMargin;
+
+            QFontMetrics fm(block.charFormat().font());
+
+            for (int i = 0; i < tl->lineCount(); ++i) {
+                auto line = tl->lineAt(i);
+                line.setPosition({margin + availableWidth - line.naturalTextWidth(), line.position().y()});
+            }
+        }
+
+        return r;
+    }
+
+private:
+    QWidget *m_viewport;
+};
+
+//
 // EditorPrivate
 //
 
@@ -117,6 +183,8 @@ struct EditorPrivate {
         m_q->showUnprintableCharacters(true);
         m_q->setFocusPolicy(Qt::ClickFocus);
         m_q->setCenterOnScroll(true);
+
+        m_q->document()->setDocumentLayout(new DocumentLayoutWithRightAlignment(m_q->document(), m_q->viewport()));
 
         m_parsingThread->start();
     }
