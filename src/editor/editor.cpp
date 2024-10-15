@@ -99,43 +99,45 @@ public:
     {
         const auto r = QPlainTextDocumentLayout::blockBoundingRect(block);
 
-        bool alignRight = false;
+        if (block.isValid()) {
+            bool alignRight = false;
 
-        switch (block.textDirection()) {
-        case Qt::RightToLeft:
-            alignRight = true;
-            break;
+            switch (block.textDirection()) {
+            case Qt::RightToLeft:
+                alignRight = true;
+                break;
 
-        case Qt::LayoutDirectionAuto:
-            alignRight = block.text().isRightToLeft();
-            break;
+            case Qt::LayoutDirectionAuto:
+                alignRight = block.text().isRightToLeft();
+                break;
 
-        default:
-            break;
-        }
+            default:
+                break;
+            }
 
-        if (alignRight) {
-            auto tl = block.layout();
-            auto option = document()->defaultTextOption();
-            tl->setTextOption(option);
-            auto margin = document()->documentMargin();
-            int extraMargin = 0;
-            if (option.flags() & QTextOption::AddSpaceForLineAndParagraphSeparators) {
+            if (alignRight) {
+                auto tl = block.layout();
+                auto option = document()->defaultTextOption();
+                tl->setTextOption(option);
+                auto margin = document()->documentMargin();
+                int extraMargin = 0;
+                if (option.flags() & QTextOption::AddSpaceForLineAndParagraphSeparators) {
+                    QFontMetrics fm(block.charFormat().font());
+                    extraMargin += fm.horizontalAdvance(QChar(0x21B5));
+                }
+
+                qreal availableWidth = m_viewport->width();
+                if (availableWidth <= 0) {
+                    availableWidth = qreal(INT_MAX);
+                }
+                availableWidth -= 2*margin + extraMargin;
+
                 QFontMetrics fm(block.charFormat().font());
-                extraMargin += fm.horizontalAdvance(QChar(0x21B5));
-            }
 
-            qreal availableWidth = m_viewport->width();
-            if (availableWidth <= 0) {
-                availableWidth = qreal(INT_MAX);
-            }
-            availableWidth -= 2*margin + extraMargin;
-
-            QFontMetrics fm(block.charFormat().font());
-
-            for (int i = 0; i < tl->lineCount(); ++i) {
-                auto line = tl->lineAt(i);
-                line.setPosition({margin + availableWidth - line.naturalTextWidth(), line.position().y()});
+                for (int i = 0; i < tl->lineCount(); ++i) {
+                    auto line = tl->lineAt(i);
+                    line.setPosition({margin + availableWidth - line.naturalTextWidth(), line.position().y()});
+                }
             }
         }
 
