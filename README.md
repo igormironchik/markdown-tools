@@ -93,12 +93,9 @@ library `JKQtPlotter` to render LaTeX Math, and not everything is
 implemented there. But most common math things are done.
 
 * I don't support right-to-left languages and languages that don't separate words
-with spaces. I don't know theirs rules to adapt algorithms[^1].
+with spaces in converter to `PDF`. Support of right-to-left languages will be added,
+but languages that don't use spaces - no (I don't know their rules).
 
 * `LaTeX` math expressions can be rendered a little differently in PDF on different platforms
 due to [QTBUG-104790](https://bugreports.qt.io/browse/QTBUG-104790), that is why I don't
 have auto tests for them.
- 
-[^1]: If you are one from these groups of people - you are welcome to make PRs to adapt
- this application to your language, or just explain me your rules, you are welcome to
-write me to igor.mironchik@gmail.com
