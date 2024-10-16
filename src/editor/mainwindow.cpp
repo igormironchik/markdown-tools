@@ -546,29 +546,43 @@ struct MainWindowPrivate {
         m_currentTab = m_tabs->currentIndex();
     }
 
-    StringDataVec paragraphToMenuText(MD::Paragraph<MD::QStringTrait> *p)
+    StringDataVec paragraphToMenuText(MD::Paragraph<MD::QStringTrait> *p, bool skipRtl = false)
     {
         StringDataVec res;
+        bool rtl = false;
+        bool first = !skipRtl;
 
         for (auto it = p->items().cbegin(), last = p->items().cend(); it != last; ++it) {
             switch ((*it)->type()) {
             case MD::ItemType::Text: {
                 auto t = static_cast<MD::Text<MD::QStringTrait> *>(it->get());
 
-                res.append({t->text(), false});
+                if (first) {
+                    first = false;
+                    rtl = t->text().isRightToLeft();
+                }
+
+                res.append({t->text(), false, rtl});
             } break;
 
             case MD::ItemType::Code: {
                 auto c = static_cast<MD::Code<MD::QStringTrait> *>(it->get());
 
-                res.append({c->text(), true});
+                if (first) {
+                    first = false;
+                    rtl = c->text().isRightToLeft();
+                }
+
+                res.append({c->text(), true, rtl});
             } break;
 
             case MD::ItemType::Link: {
                 auto l = static_cast<MD::Link<MD::QStringTrait> *>(it->get());
 
+                first = false;
+
                 if (!l->p()->isEmpty())
-                    res.append(paragraphToMenuText(l->p().get()));
+                    res.append(paragraphToMenuText(l->p().get(), true));
             } break;
 
             default:

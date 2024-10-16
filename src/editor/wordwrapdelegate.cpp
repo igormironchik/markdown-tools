@@ -55,7 +55,7 @@ QSize WordWrapItemDelegate::sizeHint(const QStyleOptionViewItem &option, const Q
 
     for (const auto &d : std::as_const(data)) {
         for (const auto &text : std::as_const(d.m_splittedText)) {
-            auto w = option.fontMetrics.horizontalAdvance(text);
+            auto w = option.fontMetrics.horizontalAdvance(text.first);
 
             if (w + x > width) {
                 if (w > width) {
@@ -63,7 +63,7 @@ QSize WordWrapItemDelegate::sizeHint(const QStyleOptionViewItem &option, const Q
                         height += lh;
                     }
 
-                    QString str, tmpStr = text;
+                    QString str, tmpStr = text.first;
 
                     while (!tmpStr.isEmpty()) {
                         while (w > width) {
@@ -96,62 +96,137 @@ QSize WordWrapItemDelegate::sizeHint(const QStyleOptionViewItem &option, const Q
     return {width, height};
 }
 
+namespace /* anonymous */
+{
+
+struct LayoutDirectionHandler
+{
+    LayoutDirectionHandler(bool rightToLeft, int leftX, int width, int y, int lineHeight)
+        : m_rightToLeft(rightToLeft)
+        , m_leftX(leftX)
+        , m_width(width)
+        , m_y(y)
+        , m_lineHeight(lineHeight)
+        , m_x(startX())
+    {
+    }
+
+    bool isRightToLeft() const { return m_rightToLeft; }
+
+    bool isFit(int width) const
+    {
+        return (isRightToLeft() ? m_x - width >= m_leftX : m_x + width <= m_leftX + m_width );
+    }
+
+    QRect codeRect(int startCodeX, int startCodeY, int codeWidth) const
+    {
+        return (isRightToLeft() ? QRect{startCodeX - codeWidth, startCodeY, codeWidth, m_lineHeight} :
+                                  QRect{startCodeX, startCodeY, codeWidth, m_lineHeight});
+    }
+
+    bool isWider(int width) const { return width > m_width; }
+
+    void moveToNewLine()
+    {
+        m_y += m_lineHeight;
+        m_x = startX();
+    }
+
+    void moveToNewLineIfSomethingThere()
+    {
+        if (isRightToLeft() ? m_x < startX() : m_x > startX()) {
+            moveToNewLine();
+        }
+    }
+
+    QRect rect(int width) const
+    {
+        return (isRightToLeft() ? QRect{m_x - width, m_y, width, m_lineHeight} :
+                                  QRect{m_x, m_y, width, m_lineHeight});
+    }
+
+    int startX() const { return (isRightToLeft() ? m_leftX + m_width : m_leftX); }
+
+    void moveXBy(int delta)
+    {
+        if (isRightToLeft()) {
+            m_x -= delta;
+        } else {
+            m_x += delta;
+        }
+    }
+
+    int x() const { return m_x; }
+
+    int y() const { return m_y; }
+
+    bool m_rightToLeft;
+    int m_leftX;
+    int m_width;
+    int m_y;
+    int m_lineHeight;
+    int m_x;
+}; // struct LayoutDirectionHandler
+
+} /* namespace anonymous */
+
 void WordWrapItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     QStyledItemDelegate::paint(painter, option, index);
 
     const auto &data = m_model->stringData(m_sortModel->mapToSource(index));
+
+    if (data.isEmpty()) {
+        return;
+    }
+
     const auto sw = option.fontMetrics.horizontalAdvance(QLatin1Char(' '));
     const auto descend = option.fontMetrics.descent();
-    const auto lh = option.fontMetrics.height();
 
-    auto x = option.rect.x();
-    auto y = option.rect.y();
     int startCodeX, startCodeY, codeWidth;
     QVector<QRect> backgroundRects;
     QVector<QPair<QRect, StringData>> textRects;
+    LayoutDirectionHandler layout(data.first().m_text.isRightToLeft(), option.rect.x(),
+                                  option.rect.width(), option.rect.y(), option.fontMetrics.height());
 
     for (const auto &d : std::as_const(data)) {
         if (d.m_code) {
-            startCodeX = x;
-            startCodeY = y;
+            startCodeX = layout.x();
+            startCodeY = layout.y();
         }
 
         codeWidth = 0;
 
         for (const auto &tt : std::as_const(d.m_splittedText)) {
-            auto text = tt;
+            auto text = tt.first;
 
             auto w = option.fontMetrics.horizontalAdvance(text);
 
-            if (w + x > option.rect.width() + option.rect.x()) {
+            if (!layout.isFit(w)) {
                 if (d.m_code && codeWidth > 0) {
-                    backgroundRects.append({startCodeX, startCodeY, codeWidth, lh});
+                    backgroundRects.append(layout.codeRect(startCodeX, startCodeY, codeWidth));
                 }
 
-                if (w > option.rect.width()) {
-                    if (x > option.rect.x()) {
-                        y += lh;
-                        x = option.rect.x();
-                    }
+                if (layout.isWider(w)) {
+                    layout.moveToNewLineIfSomethingThere();
 
                     QString str, tmpStr = text;
 
                     while (!tmpStr.isEmpty()) {
-                        while (w > option.rect.width()) {
+                        while (layout.isWider(w)) {
                             str.prepend(tmpStr.back());
                             tmpStr.removeLast();
 
                             w = option.fontMetrics.horizontalAdvance(tmpStr);
                         }
 
-                        textRects.append(std::make_pair(QRect(option.rect.x(), y, w, lh), StringData(tmpStr, d.m_code)));
+                        textRects.append(std::make_pair(layout.rect(w), StringData(tmpStr, d.m_code, tt.second)));
 
                         if (d.m_code) {
-                            backgroundRects.append({option.rect.x(), y, w, lh});
+                            backgroundRects.append(layout.rect(w));
                         }
 
-                        y += lh;
+                        layout.moveToNewLine();
 
                         tmpStr = str;
                         str.clear();
@@ -159,19 +234,16 @@ void WordWrapItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &
 
                         w = option.fontMetrics.horizontalAdvance(tmpStr);
 
-                        if (w <= option.rect.width()) {
+                        if (!layout.isWider(w)) {
                             break;
                         }
                     }
                 }
 
-                if (x > option.rect.x()) {
-                    y += lh;
-                }
+                layout.moveToNewLineIfSomethingThere();
 
-                x = option.rect.x();
-                startCodeX = x;
-                startCodeY = y;
+                startCodeX = layout.x();
+                startCodeY = layout.y();
                 codeWidth = 0;
             } else if (codeWidth > 0) {
                 codeWidth += sw;
@@ -181,13 +253,13 @@ void WordWrapItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &
                 codeWidth += w;
             }
 
-            textRects.append(std::make_pair(QRect(x, y, w, lh), StringData(text, d.m_code)));
+            textRects.append(std::make_pair(layout.rect(w), StringData(text, d.m_code, tt.second)));
 
-            x += w + sw;
+            layout.moveXBy(w + sw);
         }
 
         if (d.m_code && codeWidth > 0) {
-            backgroundRects.append({startCodeX, startCodeY, codeWidth, lh});
+            backgroundRects.append(layout.codeRect(startCodeX, startCodeY, codeWidth));
         }
 
         painter->setPen(Qt::NoPen);
@@ -202,6 +274,12 @@ void WordWrapItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &
                 painter->setPen(s_codeColor);
             } else {
                 painter->setPen(option.palette.color(QPalette::Text));
+            }
+
+            if (p.second.m_isRightToLeft) {
+                painter->setLayoutDirection(Qt::RightToLeft);
+            } else {
+                painter->setLayoutDirection(Qt::LeftToRight);
             }
 
             painter->drawText(p.first.bottomLeft() - QPoint(0, descend), p.second.m_text);

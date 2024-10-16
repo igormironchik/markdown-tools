@@ -15,11 +15,12 @@ namespace MdEditor
 //
 
 struct StringData {
-    StringData(const QString &t, bool c);
+    StringData(const QString &t, bool c, bool rtl);
 
     QString m_text;
     bool m_code = false;
-    QStringList m_splittedText;
+    bool m_isRightToLeft = false;
+    QVector<QPair<QString, bool>> m_splittedText;
 }; // struct StringData
 
 using StringDataVec = QVector<StringData>;
