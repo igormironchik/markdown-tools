@@ -324,7 +324,11 @@ int Editor::lineNumberAreaWidth()
 void Editor::updateLineNumberAreaWidth(int /* newBlockCount */)
 {
     if (m_d->m_showLineNumberArea) {
-        setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);
+        if (layoutDirection() == Qt::LeftToRight) {
+            setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);
+        } else {
+            setViewportMargins(0, 0, lineNumberAreaWidth(), 0);
+        }
     } else {
         setViewportMargins(0, 0, 0, 0);
     }
@@ -348,7 +352,13 @@ void Editor::resizeEvent(QResizeEvent *e)
     QPlainTextEdit::resizeEvent(e);
 
     QRect cr = contentsRect();
-    m_d->m_lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
+
+    if (layoutDirection() == Qt::LeftToRight) {
+        m_d->m_lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
+    } else {
+        m_d->m_lineNumberArea->setGeometry(QRect(cr.left() + cr.width() - lineNumberAreaWidth(), cr.top(),
+                                                 lineNumberAreaWidth(), cr.height()));
+    }
 }
 
 void Editor::paintEvent(QPaintEvent *event)
