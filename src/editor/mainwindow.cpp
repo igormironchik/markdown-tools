@@ -595,7 +595,10 @@ struct MainWindowPrivate {
 
     void initMarkdownMenu()
     {
+        m_initMarkdownMenuRequested = true;
+
         if (m_tabsVisible && m_tocDoc != m_editor->currentDoc()) {
+            m_initMarkdownMenuRequested = false;
             m_tocModel->clear();
 
             m_tocDoc = m_editor->currentDoc();
@@ -679,6 +682,7 @@ struct MainWindowPrivate {
     bool m_previewMode = false;
     bool m_tabsVisible = false;
     bool m_livePreviewVisible = true;
+    bool m_initMarkdownMenuRequested = false;
     QCursor m_splitterCursor;
     std::shared_ptr<MD::Document<MD::QStringTrait>> m_mdDoc;
     std::shared_ptr<MD::Document<MD::QStringTrait>> m_tocDoc;
@@ -1018,7 +1022,7 @@ void MainWindow::onTextChanged()
 
     const auto items = m_d->m_editor->syntaxHighlighter().findFirstInCache({0, lineNumber, lineLength, lineNumber});
 
-    if (!items.empty() && items[0]->type() == MD::ItemType::Heading) {
+    if ((!items.empty() && items[0]->type() == MD::ItemType::Heading) || m_d->m_initMarkdownMenuRequested) {
         m_d->initMarkdownMenu();
     }
 }
