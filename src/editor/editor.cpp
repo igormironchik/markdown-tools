@@ -368,7 +368,12 @@ void Editor::paintEvent(QPaintEvent *event)
         QRect r = viewport()->rect();
         QFontMetricsF fm(font());
 
-        r.setX(document()->documentMargin() + qRound(fm.averageCharWidth() * m_d->m_margins.m_length));
+        if (layoutDirection() == Qt::LeftToRight) {
+            r.setX(document()->documentMargin() + qRound(fm.averageCharWidth() * m_d->m_margins.m_length));
+        } else {
+            r.setWidth(r.width() - qRound(fm.averageCharWidth() * m_d->m_margins.m_length)
+                       - document()->documentMargin());
+        }
 
         painter.setBrush(QColor(239, 239, 239));
         painter.setPen(Qt::NoPen);
