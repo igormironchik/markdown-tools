@@ -644,35 +644,35 @@ void PdfRenderer::renderImpl()
                                     c = QColor::fromString(QStringLiteral("#1f6feb"));
                                     highlight = true;
                                     url = QStringLiteral("qrc:/svg/note.svg");
-                                    text = QStringLiteral("Note");
+                                    text = QStringLiteral("Note ");
                                 }
                             } else if (t->text() == QStringLiteral("[!TIP]")) {
                                 if (isAloneMark(p)) {
                                     c = QColor::fromString(QStringLiteral("#238636"));
                                     highlight = true;
                                     url = QStringLiteral("qrc:/svg/tip.svg");
-                                    text = QStringLiteral("Tip");
+                                    text = QStringLiteral("Tip ");
                                 }
                             } else if (t->text() == QStringLiteral("[!WARNING]")) {
                                 if (isAloneMark(p)) {
                                     c = QColor::fromString(QStringLiteral("#9e6a03"));
                                     highlight = true;
                                     url = QStringLiteral("qrc:/svg/warning.svg");
-                                    text = QStringLiteral("Warning");
+                                    text = QStringLiteral("Warning ");
                                 }
                             } else if (t->text() == QStringLiteral("[!CAUTION]")) {
                                 if (isAloneMark(p)) {
                                     c = QColor::fromString(QStringLiteral("#da3633"));
                                     highlight = true;
                                     url = QStringLiteral("qrc:/svg/caution.svg");
-                                    text = QStringLiteral("Caution");
+                                    text = QStringLiteral("Caution ");
                                 }
                             } else if (t->text() == QStringLiteral("[!IMPORTANT]")) {
                                 if (isAloneMark(p)) {
                                     c = QColor::fromString(QStringLiteral("#8250df"));
                                     highlight = true;
                                     url = QStringLiteral("qrc:/svg/important.svg");
-                                    text = QStringLiteral("Important");
+                                    text = QStringLiteral("Important ");
                                 }
                             }
 
@@ -688,7 +688,6 @@ void PdfRenderer::renderImpl()
                                 i->setUrl(url);
                                 np->appendItem(i);
                                 auto nt = std::make_shared<MD::Text<MD::QStringTrait>>();
-                                nt->setSpaceBefore(true);
                                 nt->setText(text);
                                 np->appendItem(nt);
 
@@ -1346,7 +1345,7 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
                                         footnoteNum,
                                         offset,
                                         (it == item->p()->items().begin() && firstInParagraph),
-                                        text->isSpaceBefore(),
+                                        true,
                                         cw,
                                         QColor(),
                                         text->opts() & MD::StrikethroughText || item->opts() & MD::StrikethroughText,
@@ -1356,7 +1355,7 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
                                         text->endColumn(),
                                         renderOpts.m_linkColor));
 
-                spaceAfterText = text->isSpaceAfter();
+                spaceAfterText = true;
             } break;
 
             case MD::ItemType::Code:
@@ -1986,13 +1985,13 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                      nextFootnoteNum,
                      offset,
                      (firstInParagraph || lineBreak),
-                     text->isSpaceBefore(),
+                     true,
                      cw,
                      scale,
                      color);
             lineBreak = false;
             firstInParagraph = false;
-            spaceAfterText = text->isSpaceAfter();
+            spaceAfterText = true;
         } break;
 
         case MD::ItemType::Code:
@@ -2097,12 +2096,12 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                          nextFootnoteNum,
                          offset,
                          (firstInParagraph || lineBreak),
-                         text->isSpaceBefore(),
+                         true,
                          cw,
                          scale,
                          color);
 
-                spaceAfterText = text->isSpaceAfter();
+                spaceAfterText = true;
             }
 
             lineBreak = false;
@@ -2227,13 +2226,13 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                                   nextFootnoteNum,
                                   offset,
                                   (firstInParagraph || lineBreak),
-                                  text->isSpaceBefore(),
+                                  true,
                                   cw,
                                   scale,
                                   color));
             lineBreak = false;
             firstInParagraph = false;
-            spaceAfterText = text->isSpaceAfter();
+            spaceAfterText = true;
         } break;
 
         case MD::ItemType::Code: {
@@ -2380,12 +2379,12 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                                       nextFootnoteNum,
                                       offset,
                                       (firstInParagraph || lineBreak),
-                                      text->isSpaceBefore(),
+                                      true,
                                       cw,
                                       scale,
                                       color));
 
-                spaceAfterText = text->isSpaceAfter();
+                spaceAfterText = true;
             }
 
             firstInParagraph = false;
