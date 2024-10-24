@@ -6,13 +6,13 @@ qt_version=$(cat $PWD/script/qt.version)
 
 build_type=$1
 
-if [ -z "$1" ] then
+if [ -z "$1" ]; then
     build_type="Release"
 fi
 
 build_opts=""
 
-if [ $build_type -eq "Debug" ] then
+if [ "$build_type" = "Debug" ]; then
     build_opts="-DENABLE_COVERAGE=ON"
 fi
 
