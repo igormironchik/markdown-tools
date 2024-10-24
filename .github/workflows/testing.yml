@@ -48,6 +48,7 @@ jobs:
     - name: Test
       run: |
         export QT_QPA_PLATFORM=offscreen
+        export LD_LIBRARY_PATH="${{ github.workspace }}\Qt\6.7.3\gcc_64\lib"
         ctest --test-dir build-markdown-tools --output-on-failure --verbose -C Debug
 
     - name: Upload coverage info
