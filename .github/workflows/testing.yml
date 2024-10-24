@@ -43,12 +43,12 @@ jobs:
       run: ./script/linux/install-kde.sh
 
     - name: Build
-      run: ./script/linux/build.sh
+      run: ./script/linux/build.sh Debug
 
     - name: Test
       run: |
         export QT_QPA_PLATFORM=offscreen
-        ctest --test-dir build-markdown-tools --output-on-failure --verbose -C Release
+        ctest --test-dir build-markdown-tools --output-on-failure --verbose -C Debug
 
     - name: Upload coverage info
       run: |
