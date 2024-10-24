@@ -16,40 +16,55 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        # Override automatic language detection by changing the below list
-        # Supported options are ['csharp', 'cpp', 'go', 'java', 'javascript', 'python']
         language: ['cpp']
-        # Learn more...
-        # https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#overriding-automatic-language-detection
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         submodules: recursive
-          
+
+    - run: sudo apt update
+
+    - run: sudo apt upgrade
+
+    - run: sudo apt install libfreetype6-dev libjpeg-dev libpng-dev zlib1g zlib1g-dev libfontconfig1-dev fontconfig libxml2-dev libtiff-dev freeglut3-dev libxcb-icccm4  libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-shape0 libxcb-xinerama0 libxcb-xkb1 libxkbcommon-x11-0 patchelf libcups2-dev lcov
+
     - name: Install Qt
-      uses: jurplel/install-qt-action@v3
+      uses: jurplel/install-qt-action@v4
       with:
-        version: '6.6.2'
-        modules: qtwebchannel qtwebengine qtwebview qtpositioning
-        
-    - run: sudo apt install libfreetype6-dev libjpeg-dev libpng-dev zlib1g zlib1g-dev libfontconfig1-dev fontconfig lcov libxml2-dev libtiff-dev libssl-dev patchelf
+        version: '6.7.3'
+        modules: 'qtimageformats qtwebchannel qtwebengine qtwebview qtpositioning'
+        set-env: 'true'
 
-    - run: ./script/linux/install-kde.sh
+    - run: chmod a+x ./script/linux/install-kde.sh
 
-    - name: Generate Makefiles
-      run: cmake -DENABLE_COVERAGE=ON -DCMAKE_BUILD_TYPE=Debug -S . -B build -DECM_DIR=$PWD/../KDE/share/ECM/cmake -DKF6SyntaxHighlighting_DIR=$PWD/../KDE/lib/x86_64-linux-gnu/cmake/KF6SyntaxHighlighting
+    - run: chmod a+x ./script/linux/build.sh
+
+    - name: Install KDE
+      run: ./script/linux/install-kde.sh
 
     - name: Build
-      run: cmake --build build --config Debug
+      run: ./script/linux/build.sh Debug ON
+
+    - name: Copy libresvg.so
+      run: cp "${{ github.workspace }}/3rdparty/resvg/target/release/libresvg.so" "${{ github.workspace }}/build-markdown-tools/lib"
+
+    - name: Copy libKF6SyntaxHighlighting.so.6.3.0
+      run: cp "${{ github.workspace }}/../KDE/lib/x86_64-linux-gnu/libKF6SyntaxHighlighting.so.6.3.0" "${{ github.workspace }}/build-markdown-tools/lib"
+
+    - name: Copy libKF6SyntaxHighlighting.so.6
+      run: cp "${{ github.workspace }}/../KDE/lib/x86_64-linux-gnu/libKF6SyntaxHighlighting.so.6" "${{ github.workspace }}/build-markdown-tools/lib"
+
+    - name: Copy libKF6SyntaxHighlighting.so
+      run: cp "${{ github.workspace }}/../KDE/lib/x86_64-linux-gnu/libKF6SyntaxHighlighting.so" "${{ github.workspace }}/build-markdown-tools/lib"
 
     - name: Test
       run: |
         export QT_QPA_PLATFORM=offscreen
-        ctest --test-dir build --output-on-failure --verbose -C Debug
+        ctest --test-dir build-markdown-tools --output-on-failure --verbose -C Debug
 
-    - name: Upload coverage info
+    - name: Generate coverage info
       run: |
         lcov --directory . --capture --output-file coverage.info
         lcov --remove coverage.info '/usr/*' --output-file coverage.info
@@ -60,50 +75,3 @@ jobs:
       with:
         fail_ci_if_error: true
         token: ${{ secrets.CODECOV_TOKEN }}
-
-#   windows:
-#     name: windows
-#     runs-on: windows-2019
-#
-#     strategy:
-#       fail-fast: true
-#       matrix:
-#         language: ['cpp']
-#
-#     steps:
-#     - name: Checkout repository
-#       uses: actions/checkout@v3
-#       with:
-#         submodules: recursive
-#
-#     - name: Install Conan
-#       id: conan
-#       uses: turtlebrowser/get-conan@main
-#
-#     - run: conan profile detect
-#
-#     - name: Install Qt
-#       uses: jurplel/install-qt-action@v3
-#       with:
-#         version: '6.6.2'
-#         modules: qtwebengine qtwebchannel qtwebview qtpositioning
-#
-#     - run: mkdir build
-#
-#     - name: Install dependencies with Conan
-#       run: conan install -of build --build=missing .
-#
-#     - name: Install ECM
-#       run: cmd /c script\windows\install-extra-cmake-modules.bat
-#
-#     - name: Generate Makefiles
-#       run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Relese
-#
-#     - name: Append PATH with packages
-#       run: echo "${{ github.workspace }}\build\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-#
-#     - name: Build
-#       run: cmake --build build --config Release
-#
-#     - name: Test
-#       run: ctest --output-on-failure --verbose --test-dir build -C Release

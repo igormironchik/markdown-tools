@@ -609,7 +609,6 @@ private:
                                                   int footnoteNum,
                                                   double offset,
                                                   bool firstInParagraph,
-                                                  bool spaceBefore,
                                                   CustomWidth &cw,
                                                   double scale,
                                                   const QColor &color = Qt::black);
@@ -621,7 +620,6 @@ private:
                                                          bool &newLine,
                                                          double offset,
                                                          bool firstInParagraph,
-                                                         bool spaceBefore,
                                                          CustomWidth &cw,
                                                          double scale,
                                                          const QColor &color = Qt::black);
@@ -629,9 +627,6 @@ private:
     QVector<QPair<QRectF, unsigned int>> drawString(PdfAuxData &pdfData,
                                                     const RenderOpts &renderOpts,
                                                     const QString &str,
-                                                    Font *firstSpaceFont,
-                                                    double firstSpaceFontSize,
-                                                    double firstSpaceFontScale,
                                                     Font *spaceFont,
                                                     double spaceFontSize,
                                                     double spaceFontScale,
@@ -648,7 +643,6 @@ private:
                                                     int footnoteNum,
                                                     double offset,
                                                     bool firstInParagraph,
-                                                    bool spaceBefore,
                                                     CustomWidth &cw,
                                                     const QColor &background,
                                                     bool strikeout,
@@ -656,7 +650,10 @@ private:
                                                     long long int startPos,
                                                     long long int endLine,
                                                     long long int endPos,
-                                                    const QColor &color = Qt::black);
+                                                    const QColor &color = Qt::black,
+                                                    Font *regularSpaceFont = nullptr,
+                                                    double regularSpaceFontSize = 0.0,
+                                                    double regularSpaceFontScale = 0.0);
     //! Draw link.
     QVector<QPair<QRectF, unsigned int>> drawLink(PdfAuxData &pdfData,
                                                   const RenderOpts &renderOpts,

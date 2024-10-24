@@ -376,6 +376,7 @@ void PdfRenderer::CustomWidth::calcScale(double lineWidth)
     double sw = 0.0;
     double ww = 0.0;
     double h = 0.0;
+    double lastSpaceWidth = 0.0;
 
     for (int i = 0, last = m_width.size(); i < last; ++i) {
         if (m_width.at(i).m_height > h) {
@@ -386,11 +387,22 @@ void PdfRenderer::CustomWidth::calcScale(double lineWidth)
 
         if (m_width.at(i).m_isSpace) {
             sw += m_width.at(i).m_width;
+            lastSpaceWidth = m_width.at(i).m_width;
         } else {
             ww += m_width.at(i).m_width;
+
+            if (m_width.at(i).m_width > 0.0) {
+                lastSpaceWidth = 0.0;
+            }
         }
 
         if (m_width.at(i).m_isNewLine) {
+            if (lastSpaceWidth > 0.0) {
+                w -= lastSpaceWidth;
+                sw -= lastSpaceWidth;
+                lastSpaceWidth = 0.0;
+            }
+
             if (m_width.at(i).m_shrink) {
                 auto ss = (lineWidth - ww) / sw;
 
@@ -644,35 +656,35 @@ void PdfRenderer::renderImpl()
                                     c = QColor::fromString(QStringLiteral("#1f6feb"));
                                     highlight = true;
                                     url = QStringLiteral("qrc:/svg/note.svg");
-                                    text = QStringLiteral("Note");
+                                    text = QStringLiteral(" Note");
                                 }
                             } else if (t->text() == QStringLiteral("[!TIP]")) {
                                 if (isAloneMark(p)) {
                                     c = QColor::fromString(QStringLiteral("#238636"));
                                     highlight = true;
                                     url = QStringLiteral("qrc:/svg/tip.svg");
-                                    text = QStringLiteral("Tip");
+                                    text = QStringLiteral(" Tip");
                                 }
                             } else if (t->text() == QStringLiteral("[!WARNING]")) {
                                 if (isAloneMark(p)) {
                                     c = QColor::fromString(QStringLiteral("#9e6a03"));
                                     highlight = true;
                                     url = QStringLiteral("qrc:/svg/warning.svg");
-                                    text = QStringLiteral("Warning");
+                                    text = QStringLiteral(" Warning");
                                 }
                             } else if (t->text() == QStringLiteral("[!CAUTION]")) {
                                 if (isAloneMark(p)) {
                                     c = QColor::fromString(QStringLiteral("#da3633"));
                                     highlight = true;
                                     url = QStringLiteral("qrc:/svg/caution.svg");
-                                    text = QStringLiteral("Caution");
+                                    text = QStringLiteral(" Caution");
                                 }
                             } else if (t->text() == QStringLiteral("[!IMPORTANT]")) {
                                 if (isAloneMark(p)) {
                                     c = QColor::fromString(QStringLiteral("#8250df"));
                                     highlight = true;
                                     url = QStringLiteral("qrc:/svg/important.svg");
-                                    text = QStringLiteral("Important");
+                                    text = QStringLiteral(" Important");
                                 }
                             }
 
@@ -684,12 +696,23 @@ void PdfRenderer::renderImpl()
                                 }
 
                                 auto np = std::make_shared<MD::Paragraph<MD::QStringTrait>>();
+                                np->setStartColumn(t->startColumn());
+                                np->setStartLine(t->startLine());
+                                np->setEndColumn(t->endColumn());
+                                np->setEndLine(t->endLine());
                                 auto i = std::make_shared<MD::Image<MD::QStringTrait>>();
                                 i->setUrl(url);
+                                i->setStartColumn(t->startColumn());
+                                i->setStartLine(t->startLine());
+                                i->setEndColumn(i->startColumn());
+                                i->setEndLine(t->endLine());
                                 np->appendItem(i);
                                 auto nt = std::make_shared<MD::Text<MD::QStringTrait>>();
-                                nt->setSpaceBefore(true);
                                 nt->setText(text);
+                                nt->setStartColumn(t->startColumn() + 1);
+                                nt->setStartLine(t->startLine());
+                                nt->setEndColumn(t->endColumn());
+                                nt->setEndLine(t->endLine());
                                 np->appendItem(nt);
 
                                 b->insertItem(0, np);
@@ -1176,17 +1199,12 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawText(PdfAuxData &pdfData,
                                                            int footnoteNum,
                                                            double offset,
                                                            bool firstInParagraph,
-                                                           bool spaceBefore,
                                                            CustomWidth &cw,
                                                            double scale,
                                                            const QColor &color)
 {
-    pdfData.m_startLine = item->startLine();
-    pdfData.m_startPos = item->startColumn();
-    pdfData.m_endLine = item->endLine();
-    pdfData.m_endPos = item->endColumn();
-
-    auto *spaceFont = createFont(renderOpts.m_textFont, false, false, renderOpts.m_textFontSize, pdfData.m_doc, scale, pdfData);
+    auto *spaceFont = createFont(renderOpts.m_textFont, false, false,
+                                 renderOpts.m_textFontSize, pdfData.m_doc, scale, pdfData);
 
     auto *font = createFont(renderOpts.m_textFont,
                             item->opts() & MD::TextOption::BoldText,
@@ -1199,9 +1217,6 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawText(PdfAuxData &pdfData,
     return drawString(pdfData,
                       renderOpts,
                       item->text(),
-                      spaceFont,
-                      renderOpts.m_textFontSize,
-                      scale,
                       spaceFont,
                       renderOpts.m_textFontSize,
                       scale,
@@ -1218,7 +1233,6 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawText(PdfAuxData &pdfData,
                       footnoteNum,
                       offset,
                       firstInParagraph,
-                      spaceBefore,
                       cw,
                       QColor(),
                       item->opts() & MD::TextOption::StrikethroughText,
@@ -1276,11 +1290,6 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
                                                            CustomWidth &cw,
                                                            double scale)
 {
-    pdfData.m_startLine = item->startLine();
-    pdfData.m_startPos = item->startColumn();
-    pdfData.m_endLine = item->endLine();
-    pdfData.m_endPos = item->endColumn();
-
     QVector<QPair<QRectF, unsigned int>> rects;
 
     QString url = item->url();
@@ -1306,8 +1315,6 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
                             pdfData);
 
     if (!item->p()->isEmpty()) {
-        bool spaceAfterText = false;
-
         for (auto it = item->p()->items().begin(), last = item->p()->items().end(); it != last; ++it) {
             switch ((*it)->type()) {
             case MD::ItemType::Text: {
@@ -1330,9 +1337,6 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
                                         spaceFont,
                                         renderOpts.m_textFontSize,
                                         scale,
-                                        spaceFont,
-                                        renderOpts.m_textFontSize,
-                                        scale,
                                         font,
                                         renderOpts.m_textFontSize,
                                         scale,
@@ -1346,7 +1350,6 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
                                         footnoteNum,
                                         offset,
                                         (it == item->p()->items().begin() && firstInParagraph),
-                                        text->isSpaceBefore(),
                                         cw,
                                         QColor(),
                                         text->opts() & MD::StrikethroughText || item->opts() & MD::StrikethroughText,
@@ -1355,8 +1358,6 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
                                         text->endLine(),
                                         text->endColumn(),
                                         renderOpts.m_linkColor));
-
-                spaceAfterText = text->isSpaceAfter();
             } break;
 
             case MD::ItemType::Code:
@@ -1367,7 +1368,6 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
                                              newLine,
                                              offset,
                                              (it == item->p()->items().begin() && firstInParagraph),
-                                             spaceAfterText,
                                              cw,
                                              scale,
                                              renderOpts.m_linkColor));
@@ -1384,8 +1384,6 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
                                        cw,
                                        1.0,
                                        renderOpts.m_imageAlignment));
-
-                spaceAfterText = true;
             } break;
 
             default:
@@ -1402,9 +1400,6 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
                            spaceFont,
                            renderOpts.m_textFontSize,
                            scale,
-                           spaceFont,
-                           renderOpts.m_textFontSize,
-                           scale,
                            font,
                            renderOpts.m_textFontSize,
                            scale,
@@ -1418,7 +1413,6 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
                            footnoteNum,
                            offset,
                            firstInParagraph,
-                           true,
                            cw,
                            QColor(),
                            item->opts() & MD::TextOption::StrikethroughText,
@@ -1461,12 +1455,43 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
     return rects;
 }
 
+namespace /* anonymous */
+{
+
+QStringList splitString(const QString &str)
+{
+    QStringList res;
+    qsizetype first = 0;
+    bool space = false;
+
+    for(qsizetype i = 0; i < str.length(); ++i) {
+        if (str[i].isSpace() && !space) {
+            if (first < i) {
+                res.append(str.sliced(first, i - first));
+            }
+            res.append(QStringLiteral(" "));
+            space = true;
+        } else {
+            if (space) {
+                first = i;
+            }
+
+            space = false;
+        }
+    }
+
+    if (!space && first < str.length()) {
+        res.append(str.sliced(first));
+    }
+
+    return res;
+}
+
+} /* namespace anonymous */
+
 QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawString(PdfAuxData &pdfData,
                                                              const RenderOpts &renderOpts,
                                                              const QString &str,
-                                                             Font *firstSpaceFont,
-                                                             double firstSpaceFontSize,
-                                                             double firstSpaceFontScale,
                                                              Font *spaceFont,
                                                              double spaceFontSize,
                                                              double spaceFontScale,
@@ -1483,7 +1508,6 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawString(PdfAuxData &pdfData
                                                              int footnoteNum,
                                                              double offset,
                                                              bool firstInParagraph,
-                                                             bool spaceBefore,
                                                              CustomWidth &cw,
                                                              const QColor &background,
                                                              bool strikeout,
@@ -1491,10 +1515,15 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawString(PdfAuxData &pdfData
                                                              long long int startPos,
                                                              long long int endLine,
                                                              long long int endPos,
-                                                             const QColor &color)
+                                                             const QColor &color,
+                                                             Font *regularSpaceFont,
+                                                             double regularSpaceFontSize,
+                                                             double regularSpaceFontScale)
 {
     Q_UNUSED(doc)
     Q_UNUSED(renderOpts)
+
+    const bool onNewMdLine = pdfData.m_endLine != startLine;
 
     pdfData.m_startLine = startLine;
     pdfData.m_startPos = startPos;
@@ -1552,123 +1581,84 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawString(PdfAuxData &pdfData
             return ret;
     }
 
-    static const QString charsWithoutSpaceBefore = QLatin1String(".,;");
-
-    const auto words = str.split(QRegularExpression("[ \n]"), Qt::SkipEmptyParts);
+    auto words = splitString(str);
 
     const auto wv = pdfData.m_coords.m_pageWidth - pdfData.m_coords.m_margins.m_right;
 
-    // We need to draw space char if first word is a word.
-    if (!firstInParagraph && !newLine && !words.isEmpty() && !charsWithoutSpaceBefore.contains(words.first()) && spaceBefore) {
-        const auto w = pdfData.stringWidth(firstSpaceFont, firstSpaceFontSize, firstSpaceFontScale, " ");
+    const auto fullWidth = pdfData.m_coords.m_pageWidth - pdfData.m_coords.m_margins.m_left -
+            pdfData.m_coords.m_margins.m_right;
 
+    const auto spaceWidth = pdfData.stringWidth(spaceFont, spaceFontSize, spaceFontScale, " ");
+
+    bool firstSpaceDrawn = false;
+
+    auto drawSpace = [&](bool useRegularSpace) {
+        firstSpaceDrawn = true;
         auto scale = 100.0;
 
         if (draw) {
             scale = cw.scale();
         }
 
-        const auto xv = pdfData.m_coords.m_x + w * scale / 100.0
-            + pdfData.stringWidth(font, fontSize, fontScale, createUtf8String(words.first()))
-            + (words.size() == 1 && footnoteAtEnd ? footnoteWidth : 0.0);
+        const auto currentSpaceWidth = (useRegularSpace && regularSpaceFont ?
+            pdfData.stringWidth(regularSpaceFont, regularSpaceFontSize, regularSpaceFontScale, " ") :
+            spaceWidth);
 
-        if (xv < wv || qAbs(xv - wv) < 0.01) {
+        const auto xv = pdfData.m_coords.m_x + currentSpaceWidth * scale / 100.0;
+
+        if ((xv < wv || qAbs(xv - wv) < 0.01)) {
             newLine = false;
 
             if (draw) {
-                pdfData.drawText(pdfData.m_coords.m_x, pdfData.m_coords.m_y + d, " ", firstSpaceFont,
-                                 firstSpaceFontSize * firstSpaceFontScale, scale / 100.0, false);
+                ret.append(qMakePair(QRectF(pdfData.m_coords.m_x, pdfData.m_coords.m_y,
+                                            currentSpaceWidth * scale / 100.0, lineHeight), pdfData.currentPageIndex()));
+
+                if (background.isValid() &&!useRegularSpace) {
+                    pdfData.setColor(background);
+                    pdfData.drawRectangle(pdfData.m_coords.m_x,
+                                          pdfData.m_coords.m_y + pdfData.fontDescent(font, fontSize, fontScale) + d,
+                                          currentSpaceWidth * scale / 100.0,
+                                          pdfData.lineSpacing(font, fontSize, fontScale),
+                                          PoDoFo::PdfPathDrawMode::Fill);
+                    pdfData.restoreColor();
+                }
+
+                Font *font = (useRegularSpace && regularSpaceFont ? regularSpaceFont : spaceFont);
+                const auto size = (useRegularSpace && regularSpaceFont ? regularSpaceFontSize * regularSpaceFontScale :
+                                                                         spaceFontSize * spaceFontScale);
+                pdfData.drawText(pdfData.m_coords.m_x, pdfData.m_coords.m_y + d, " ",
+                                 font, size, scale / 100.0, strikeout);
             } else {
-                cw.append({w, lineHeight, true, false, true, " "});
+                cw.append({currentSpaceWidth, lineHeight, true, false, true, " "});
             }
 
-            ret.append(qMakePair(QRectF(pdfData.m_coords.m_x, pdfData.m_coords.m_y,
-                                        w * scale / 100.0, lineHeight), pdfData.currentPageIndex()));
-
-            pdfData.m_coords.m_x += w * scale / 100.0;
-        } else {
-            newLineFn();
+            pdfData.m_coords.m_x += currentSpaceWidth * scale / 100.0;
         }
-    }
+    }; // drawSpace
 
-    const auto fullWidth = pdfData.m_coords.m_pageWidth - pdfData.m_coords.m_margins.m_left -
-            pdfData.m_coords.m_margins.m_right;
+    auto countCharsForAvailableSpace =
+        [](const QString &s, double availableWidth, Font *font, const PdfAuxData &pdfData,
+            double fontSize, double fontScale, QString &tmp) -> qsizetype {
+        qsizetype i = 0;
 
-    const auto spaceWidth = pdfData.stringWidth(font, fontSize, fontScale, " ");
+        for (; i < s.length(); ++i) {
+            tmp.push_back(s[i]);
+            const auto l = pdfData.stringWidth(font, fontSize, fontScale, createUtf8String(tmp));
+
+            if (l > availableWidth && !(qAbs(l - availableWidth) < 0.01)) {
+                tmp.removeLast();
+
+                --i;
+
+                break;
+            }
+        }
+
+        return (i < s.length() ? ++i : i);
+    }; // countCharsForAvailableSpace
 
     // Draw words.
     for (auto it = words.begin(), last = words.end(); it != last; ++it) {
-        auto countCharsForAvailableSpace =
-            [](const QString &s, double availableWidth, Font *font, const PdfAuxData &pdfData,
-                double fontSize, double fontScale, QString &tmp) -> qsizetype {
-            qsizetype i = 0;
-
-            for (; i < s.length(); ++i) {
-                tmp.push_back(s[i]);
-                const auto l = pdfData.stringWidth(font, fontSize, fontScale, createUtf8String(tmp));
-
-                if (l > availableWidth && !(qAbs(l - availableWidth) < 0.01)) {
-                    tmp.removeLast();
-
-                    --i;
-
-                    break;
-                }
-            }
-
-            return (i < s.length() ? ++i : i);
-        }; // countCharsForAvailableSpace
-
-        auto drawSpaceIfNeeded = [&]() {
-            if (it + 1 != last) {
-                const auto nextLength =
-                    pdfData.stringWidth(font, fontSize, fontScale,
-                                        createUtf8String(*(it + 1))) + (it + 2 == last && footnoteAtEnd ? footnoteWidth : 0.0);
-
-                auto scale = 100.0;
-
-                if (draw) {
-                    scale = cw.scale();
-                }
-
-                const auto availableWidth = wv - (pdfData.m_coords.m_x > 0.0 ? pdfData.m_coords.m_x : 0.0) - spaceWidth * scale / 100.0;
-
-                const auto xv = pdfData.m_coords.m_x + spaceWidth * scale / 100.0 + nextLength;
-
-                QString tmp;
-
-                if ((xv < wv || qAbs(xv - wv) < 0.01)
-                    || (nextLength > fullWidth * 2.0 / 3.0
-                        && countCharsForAvailableSpace(*(it + 1), availableWidth, font, pdfData, fontSize, fontScale, tmp) > 4)) {
-                    newLine = false;
-
-                    if (draw) {
-                        ret.append(qMakePair(QRectF(pdfData.m_coords.m_x, pdfData.m_coords.m_y,
-                                                    spaceWidth * scale / 100.0, lineHeight), pdfData.currentPageIndex()));
-
-                        if (background.isValid()) {
-                            pdfData.setColor(background);
-                            pdfData.drawRectangle(pdfData.m_coords.m_x,
-                                                  pdfData.m_coords.m_y + pdfData.fontDescent(font, fontSize, fontScale) + d,
-                                                  spaceWidth * scale / 100.0,
-                                                  pdfData.lineSpacing(font, fontSize, fontScale),
-                                                  PoDoFo::PdfPathDrawMode::Fill);
-                            pdfData.restoreColor();
-                        }
-
-                        pdfData.drawText(pdfData.m_coords.m_x, pdfData.m_coords.m_y + d, " ",
-                                         spaceFont, spaceFontSize * spaceFontScale, scale / 100.0, strikeout);
-                    } else {
-                        cw.append({spaceWidth, lineHeight, true, false, true, " "});
-                    }
-
-                    pdfData.m_coords.m_x += spaceWidth * scale / 100.0;
-                } else {
-                    newLineFn();
-                }
-            }
-        }; // drawSpaceIfNeeded
-
         {
             QMutexLocker lock(&m_mutex);
 
@@ -1679,100 +1669,108 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawString(PdfAuxData &pdfData
 
         const auto str = createUtf8String(*it);
 
-        const auto length = pdfData.stringWidth(font, fontSize, fontScale, str);
-
-        const auto xv = pdfData.m_coords.m_x + length + (it + 1 == last && footnoteAtEnd ? footnoteWidth : 0.0);
-
-        if (xv < wv || qAbs(xv - wv) < 0.01) {
-            newLine = false;
-
-            if (draw) {
-                if (background.isValid()) {
-                    pdfData.setColor(background);
-                    pdfData.drawRectangle(pdfData.m_coords.m_x,
-                                          pdfData.m_coords.m_y + pdfData.fontDescent(font, fontSize, fontScale) + d,
-                                          length,
-                                          pdfData.lineSpacing(font, fontSize, fontScale),
-                                          PoDoFo::PdfPathDrawMode::Fill);
-                    pdfData.restoreColor();
-                }
-
-                pdfData.setColor(color);
-                pdfData.drawText(pdfData.m_coords.m_x, pdfData.m_coords.m_y + d, str, font, fontSize * fontScale, 1.0, strikeout);
-                pdfData.restoreColor();
-
-                ret.append(qMakePair(QRectF(pdfData.m_coords.m_x, pdfData.m_coords.m_y, length, lineHeight), pdfData.currentPageIndex()));
-            } else {
-                cw.append({length + (it + 1 == last && footnoteAtEnd ? footnoteWidth : 0.0), lineHeight, false, false, true, *it});
+        if (*it == QStringLiteral(" ")) {
+            if (!newLine) {
+                drawSpace(false);
+            }
+        } else {
+            if (onNewMdLine && !firstSpaceDrawn && !firstInParagraph && !newLine) {
+                drawSpace(true);
+                --it;
+                continue;
             }
 
-            pdfData.m_coords.m_x += length;
+            const auto length = pdfData.stringWidth(font, fontSize, fontScale, str);
 
-            drawSpaceIfNeeded();
-        }
-        // Need to move to new line.
-        else {
-            const auto worldLength = length + (it + 1 == last && footnoteAtEnd ? footnoteWidth : 0.0);
-            auto availableWidth = (wv - (pdfData.m_coords.m_x > 0.0 ? pdfData.m_coords.m_x : 0.0));
+            const auto xv = pdfData.m_coords.m_x + length + (it + 1 == last && footnoteAtEnd ? footnoteWidth : 0.0);
 
-            auto splitAndDraw = [&](QString s) {
-                while (s.length()) {
-                    QString tmp;
-                    const auto i = countCharsForAvailableSpace(s, availableWidth, font, pdfData, fontSize, fontScale, tmp);
+            if (xv < wv || qAbs(xv - wv) < 0.01) {
+                newLine = false;
 
-                    s.remove(0, i);
-
-                    const auto p = createUtf8String(tmp);
-                    const auto w = pdfData.stringWidth(font, fontSize, fontScale, p);
-
-                    if (draw) {
-                        pdfData.setColor(color);
-                        pdfData.drawText(pdfData.m_coords.m_x, pdfData.m_coords.m_y + d, p, font, fontSize * fontScale, 1.0, strikeout);
+                if (draw) {
+                    if (background.isValid()) {
+                        pdfData.setColor(background);
+                        pdfData.drawRectangle(pdfData.m_coords.m_x,
+                                              pdfData.m_coords.m_y + pdfData.fontDescent(font, fontSize, fontScale) + d,
+                                              length,
+                                              pdfData.lineSpacing(font, fontSize, fontScale),
+                                              PoDoFo::PdfPathDrawMode::Fill);
                         pdfData.restoreColor();
-
-                        ret.append(qMakePair(QRectF(pdfData.m_coords.m_x, pdfData.m_coords.m_y, w, lineHeight), pdfData.currentPageIndex()));
-                    } else {
-                        cw.append({w, lineHeight, false, false, true, tmp});
                     }
 
-                    newLine = false;
+                    pdfData.setColor(color);
+                    pdfData.drawText(pdfData.m_coords.m_x, pdfData.m_coords.m_y + d, str, font, fontSize * fontScale, 1.0, strikeout);
+                    pdfData.restoreColor();
 
-                    availableWidth = fullWidth;
-
-                    pdfData.m_coords.m_x += w;
-
-                    if (s.length()) {
-                        newLineFn();
-                    }
-                }
-
-                if (!draw && it + 1 == last && footnoteAtEnd) {
-                    cw.append({footnoteWidth, lineHeight, false, false, true, QString::number(footnoteNum)});
-                }
-
-                drawSpaceIfNeeded();
-            }; // splitAndDraw
-
-            if (worldLength > fullWidth * 2.0 / 3.0) {
-                QString tmp;
-
-                if (countCharsForAvailableSpace(*it, availableWidth, font, pdfData, fontSize, fontScale, tmp) > 4) {
-                    splitAndDraw(*it);
+                    ret.append(qMakePair(QRectF(pdfData.m_coords.m_x, pdfData.m_coords.m_y, length, lineHeight), pdfData.currentPageIndex()));
                 } else {
-                    if (worldLength < fullWidth || qAbs(worldLength - fullWidth) < 0.01) {
-                        newLineFn();
-
-                        --it;
-                    } else {
-                        newLineFn();
-
-                        splitAndDraw(*it);
-                    }
+                    cw.append({length + (it + 1 == last && footnoteAtEnd ? footnoteWidth : 0.0), lineHeight, false, false, true, *it});
                 }
-            } else {
-                newLineFn();
 
-                --it;
+                pdfData.m_coords.m_x += length;
+            }
+            // Need to move to new line.
+            else {
+                const auto worldLength = length + (it + 1 == last && footnoteAtEnd ? footnoteWidth : 0.0);
+                auto availableWidth = (wv - (pdfData.m_coords.m_x > 0.0 ? pdfData.m_coords.m_x : 0.0));
+
+                auto splitAndDraw = [&](QString s) {
+                    while (s.length()) {
+                        QString tmp;
+                        const auto i = countCharsForAvailableSpace(s, availableWidth, font, pdfData, fontSize, fontScale, tmp);
+
+                        s.remove(0, i);
+
+                        const auto p = createUtf8String(tmp);
+                        const auto w = pdfData.stringWidth(font, fontSize, fontScale, p);
+
+                        if (draw) {
+                            pdfData.setColor(color);
+                            pdfData.drawText(pdfData.m_coords.m_x, pdfData.m_coords.m_y + d, p, font, fontSize * fontScale, 1.0, strikeout);
+                            pdfData.restoreColor();
+
+                            ret.append(qMakePair(QRectF(pdfData.m_coords.m_x, pdfData.m_coords.m_y, w, lineHeight), pdfData.currentPageIndex()));
+                        } else {
+                            cw.append({w, lineHeight, false, false, true, tmp});
+                        }
+
+                        newLine = false;
+
+                        availableWidth = fullWidth;
+
+                        pdfData.m_coords.m_x += w;
+
+                        if (s.length()) {
+                            newLineFn();
+                        }
+                    }
+
+                    if (!draw && it + 1 == last && footnoteAtEnd) {
+                        cw.append({footnoteWidth, lineHeight, false, false, true, QString::number(footnoteNum)});
+                    }
+                }; // splitAndDraw
+
+                if (worldLength > fullWidth * 2.0 / 3.0) {
+                    QString tmp;
+
+                    if (countCharsForAvailableSpace(*it, availableWidth, font, pdfData, fontSize, fontScale, tmp) > 4) {
+                        splitAndDraw(*it);
+                    } else {
+                        if (worldLength < fullWidth || qAbs(worldLength - fullWidth) < 0.01) {
+                            newLineFn();
+
+                            --it;
+                        } else {
+                            newLineFn();
+
+                            splitAndDraw(*it);
+                        }
+                    }
+                } else {
+                    newLineFn();
+
+                    --it;
+                }
             }
         }
     }
@@ -1787,17 +1785,12 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawInlinedCode(PdfAuxData &pd
                                                                   bool &newLine,
                                                                   double offset,
                                                                   bool firstInParagraph,
-                                                                  bool spaceBefore,
                                                                   CustomWidth &cw,
                                                                   double scale,
                                                                   const QColor &color)
 {
-    pdfData.m_startLine = item->startLine();
-    pdfData.m_startPos = item->startColumn();
-    pdfData.m_endLine = item->endLine();
-    pdfData.m_endPos = item->endColumn();
-
-    auto *textFont = createFont(renderOpts.m_textFont, false, false, renderOpts.m_textFontSize, pdfData.m_doc, scale, pdfData);
+    auto *textFont = createFont(renderOpts.m_textFont, false, false,
+                                renderOpts.m_textFontSize, pdfData.m_doc, scale, pdfData);
 
     auto *font = createFont(renderOpts.m_codeFont,
                             item->opts() & MD::TextOption::BoldText,
@@ -1810,9 +1803,6 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawInlinedCode(PdfAuxData &pd
     return drawString(pdfData,
                       renderOpts,
                       item->text(),
-                      textFont,
-                      renderOpts.m_textFontSize,
-                      scale,
                       font,
                       renderOpts.m_codeFontSize,
                       scale,
@@ -1829,7 +1819,6 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawInlinedCode(PdfAuxData &pd
                       m_footnoteNum,
                       offset,
                       firstInParagraph,
-                      spaceBefore,
                       cw,
                       renderOpts.m_syntax->theme().editorColor(KSyntaxHighlighting::Theme::CodeFolding),
                       item->opts() & MD::TextOption::StrikethroughText,
@@ -1837,7 +1826,10 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawInlinedCode(PdfAuxData &pd
                       item->startColumn(),
                       item->endLine(),
                       item->endColumn(),
-                      color);
+                      color,
+                      textFont,
+                      renderOpts.m_textFontSize,
+                      scale);
 }
 
 void PdfRenderer::moveToNewLine(PdfAuxData &pdfData, double xOffset, double yOffset, double yOffsetMultiplier, double yOffsetOnNewPage)
@@ -1942,7 +1934,6 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
 
     bool lineBreak = false;
     bool firstInParagraph = true;
-    bool spaceAfterText = false;
 
     // Calculate words/lines/spaces widthes.
     for (auto it = item->items().begin(), last = item->items().end(); it != last; ++it) {
@@ -1986,13 +1977,11 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                      nextFootnoteNum,
                      offset,
                      (firstInParagraph || lineBreak),
-                     text->isSpaceBefore(),
                      cw,
                      scale,
                      color);
             lineBreak = false;
             firstInParagraph = false;
-            spaceAfterText = text->isSpaceAfter();
         } break;
 
         case MD::ItemType::Code:
@@ -2003,7 +1992,6 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                             newLine,
                             offset,
                             (firstInParagraph || lineBreak),
-                            spaceAfterText,
                             cw,
                             scale);
             lineBreak = false;
@@ -2027,7 +2015,6 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                      scale);
             lineBreak = false;
             firstInParagraph = false;
-            spaceAfterText = true;
             break;
 
         case MD::ItemType::Image:
@@ -2044,7 +2031,6 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                       scaleImagesToLineHeight);
             lineBreak = false;
             firstInParagraph = false;
-            spaceAfterText = true;
             break;
 
         case MD::ItemType::Math:
@@ -2060,7 +2046,6 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                          scale);
             lineBreak = false;
             firstInParagraph = false;
-            spaceAfterText = true;
             break;
 
         case MD::ItemType::LineBreak: {
@@ -2080,8 +2065,6 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                 if (anchorIt == pdfData.m_footnotesAnchorsMap.cend()) {
                     pdfData.m_footnotesAnchorsMap.insert(fit->second.get(), {pdfData.m_currentFile, m_footnoteNum++});
                 }
-
-                spaceAfterText = true;
             } else {
                 auto text = static_cast<MD::Text<MD::QStringTrait> *>(it->get());
 
@@ -2097,12 +2080,9 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                          nextFootnoteNum,
                          offset,
                          (firstInParagraph || lineBreak),
-                         text->isSpaceBefore(),
                          cw,
                          scale,
                          color);
-
-                spaceAfterText = text->isSpaceAfter();
             }
 
             lineBreak = false;
@@ -2183,7 +2163,6 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
 
     lineBreak = false;
     firstInParagraph = true;
-    spaceAfterText = false;
 
     // Actual drawing.
     for (auto it = item->items().begin(), last = item->items().end(); it != last; ++it) {
@@ -2227,13 +2206,11 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                                   nextFootnoteNum,
                                   offset,
                                   (firstInParagraph || lineBreak),
-                                  text->isSpaceBefore(),
                                   cw,
                                   scale,
                                   color));
             lineBreak = false;
             firstInParagraph = false;
-            spaceAfterText = text->isSpaceAfter();
         } break;
 
         case MD::ItemType::Code: {
@@ -2244,7 +2221,6 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                                          newLine,
                                          offset,
                                          (firstInParagraph || lineBreak),
-                                         spaceAfterText,
                                          cw,
                                          scale));
             lineBreak = false;
@@ -2274,7 +2250,6 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                                   scale));
             lineBreak = false;
             firstInParagraph = false;
-            spaceAfterText = true;
         } break;
 
         case MD::ItemType::Image: {
@@ -2295,7 +2270,6 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                                    scaleImagesToLineHeight));
             lineBreak = false;
             firstInParagraph = false;
-            spaceAfterText = true;
         } break;
 
         case MD::ItemType::Math: {
@@ -2313,7 +2287,6 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
             pdfData.restoreColor();
             lineBreak = false;
             firstInParagraph = false;
-            spaceAfterText = true;
         } break;
 
         case MD::ItemType::LineBreak: {
@@ -2363,8 +2336,6 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                 pdfData.m_coords.m_x += w;
 
                 addFootnote(ref->id(), fit->second, pdfData, renderOpts, doc);
-
-                spaceAfterText = true;
             } else {
                 auto text = static_cast<MD::Text<MD::QStringTrait> *>(it->get());
 
@@ -2380,12 +2351,9 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                                       nextFootnoteNum,
                                       offset,
                                       (firstInParagraph || lineBreak),
-                                      text->isSpaceBefore(),
                                       cw,
                                       scale,
                                       color));
-
-                spaceAfterText = text->isSpaceAfter();
             }
 
             firstInParagraph = false;
