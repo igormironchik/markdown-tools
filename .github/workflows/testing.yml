@@ -36,8 +36,6 @@ jobs:
 
     - run: chmod a+x ./script/linux/build.sh
 
-    - run: chmod a+x ./script/linux/deploy.sh
-
     - name: Install Qt
       run: ./script/linux/install-qt.sh
 
