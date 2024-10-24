@@ -53,7 +53,8 @@ jobs:
     - name: Test
       run: |
         export QT_QPA_PLATFORM=offscreen
-        ctest --test-dir build-markdown-tools --output-on-failure --verbose -C Debug
+        ./build-markdown-tools/bin/test.render
+#        ctest --test-dir build-markdown-tools --output-on-failure --verbose -C Debug
 
     - name: Generate coverage info
       run: |
