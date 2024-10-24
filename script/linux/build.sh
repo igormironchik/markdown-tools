@@ -4,7 +4,7 @@ mkdir build-markdown-tools
 
 qt_version=$(cat $PWD/script/qt.version)
 
-build_type = $1
+build_type=$1
 
 if [ -z "$1" ] then
     build_type="Release"
