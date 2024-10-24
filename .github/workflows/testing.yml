@@ -50,9 +50,9 @@ jobs:
     - name: Test
       run: |
         export QT_QPA_PLATFORM=offscreen
-        ctest --test-dir build-markdown-tools --output-on-failure --verbose -C Debug
+        ./build-markdown-tools/bin/test.render
 
-    - name: Upload coverage info
+    - name: Generate coverage info
       run: |
         lcov --directory . --capture --output-file coverage.info
         lcov --remove coverage.info '/usr/*' --output-file coverage.info
@@ -63,50 +63,3 @@ jobs:
       with:
         fail_ci_if_error: true
         token: ${{ secrets.CODECOV_TOKEN }}
-
-#   windows:
-#     name: windows
-#     runs-on: windows-2019
-#
-#     strategy:
-#       fail-fast: true
-#       matrix:
-#         language: ['cpp']
-#
-#     steps:
-#     - name: Checkout repository
-#       uses: actions/checkout@v3
-#       with:
-#         submodules: recursive
-#
-#     - name: Install Conan
-#       id: conan
-#       uses: turtlebrowser/get-conan@main
-#
-#     - run: conan profile detect
-#
-#     - name: Install Qt
-#       uses: jurplel/install-qt-action@v3
-#       with:
-#         version: '6.6.2'
-#         modules: qtwebengine qtwebchannel qtwebview qtpositioning
-#
-#     - run: mkdir build
-#
-#     - name: Install dependencies with Conan
-#       run: conan install -of build --build=missing .
-#
-#     - name: Install ECM
-#       run: cmd /c script\windows\install-extra-cmake-modules.bat
-#
-#     - name: Generate Makefiles
-#       run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Relese
-#
-#     - name: Append PATH with packages
-#       run: echo "${{ github.workspace }}\build\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-#
-#     - name: Build
-#       run: cmake --build build --config Release
-#
-#     - name: Test
-#       run: ctest --output-on-failure --verbose --test-dir build -C Release
