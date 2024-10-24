@@ -47,10 +47,13 @@ jobs:
     - name: Build
       run: ./script/linux/build.sh Debug ON
 
+    - name: Copy libresvg.so
+      run: cp "${{ github.workspace }}/3rdparty/resvg/target/release/libresvg.so" "${{ github.workspace }}/build-markdown-tools/lib"
+
     - name: Test
       run: |
         export QT_QPA_PLATFORM=offscreen
-        ./build-markdown-tools/bin/test.render
+        ctest --test-dir build-markdown-tools --output-on-failure --verbose -C Debug
 
     - name: Generate coverage info
       run: |
