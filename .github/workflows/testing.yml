@@ -16,34 +16,41 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        # Override automatic language detection by changing the below list
-        # Supported options are ['csharp', 'cpp', 'go', 'java', 'javascript', 'python']
         language: ['cpp']
-        # Learn more...
-        # https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#overriding-automatic-language-detection
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         submodules: recursive
-        
+
+    - run: sudo apt update
+
+    - run: sudo apt upgrade
+
     - run: sudo apt install libfreetype6-dev libjpeg-dev libpng-dev zlib1g zlib1g-dev libfontconfig1-dev fontconfig libxml2-dev libtiff-dev freeglut3-dev libxcb-icccm4  libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-shape0 libxcb-xinerama0 libxcb-xkb1 libxkbcommon-x11-0 patchelf libcups2-dev
 
-    - run: ./script/linux/install-qt.sh
+    - run: chmod a+x ./script/linux/install-qt.sh
 
-    - run: ./script/linux/install-kde.sh
+    - run: chmod a+x ./script/linux/install-kde.sh
 
-    - name: Generate Makefiles
-      run: cmake -DENABLE_COVERAGE=ON -DCMAKE_BUILD_TYPE=Debug -S . -B build -DECM_DIR=$PWD/../KDE/share/ECM/cmake -DKF6SyntaxHighlighting_DIR=$PWD/../KDE/lib/x86_64-linux-gnu/cmake/KF6SyntaxHighlighting
+    - run: chmod a+x ./script/linux/build.sh
+
+    - run: chmod a+x ./script/linux/deploy.sh
+
+    - name: Install Qt
+      run: ./script/linux/install-qt.sh
+
+    - name: Install KDE
+      run: ./script/linux/install-kde.sh
 
     - name: Build
-      run: cmake --build build --config Debug
+      run: ./script/linux/build.sh
 
     - name: Test
       run: |
         export QT_QPA_PLATFORM=offscreen
-        ctest --test-dir build --output-on-failure --verbose -C Debug
+        ctest --test-dir build-markdown-tools --output-on-failure --verbose -C Release
 
     - name: Upload coverage info
       run: |
