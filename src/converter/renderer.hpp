@@ -202,6 +202,11 @@ struct CoordsPageAttribs {
 
 class PdfRenderer;
 
+//! Layout direction handler.
+struct LayoutDirectionHandler {
+
+}; // struct LayoutDirectionHandler
+
 //! Auxiliary struct for rendering.
 struct PdfAuxData {
     //! Document.
