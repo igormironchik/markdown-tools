@@ -204,7 +204,40 @@ class PdfRenderer;
 
 //! Layout direction handler.
 struct LayoutDirectionHandler {
+    double x() const { return m_coords.m_x; }
+    double y() const { return m_coords.m_y; }
+    void setRightToLeft(bool on) { m_isRightToLeft = on; }
+    bool isRightToLeft() const { return m_isRightToLeft; }
+    void setX(double value) { m_coords.m_x = value; }
+    void addX(double value) { m_coords.m_x += xIncrementDirection() * value; }
+    void moveXToBegin(double offset = 0.0) { setX(borderStartX() + xIncrementDirection() * offset); }
+    void setY(double value) { m_coords.m_y = value; }
+    void addY(double value, double direction = 1.0) { m_coords.m_y -= direction * value; }
 
+    bool isFit(double width) const
+    {
+        return (isRightToLeft() ? (x() - width >= m_coords.m_margins.m_left ||
+                                   qAbs(m_coords.m_margins.m_left - x() + width) < 0.01) :
+                                  (x() + width <= m_coords.m_pageWidth - m_coords.m_margins.m_right ||
+                                   qAbs(x() + width - m_coords.m_pageWidth + m_coords.m_margins.m_right) < 0.01));
+    }
+
+    double topY() const { return m_coords.m_pageHeight - m_coords.m_margins.m_top; }
+    const PageMargins & margins() const { return m_coords.m_margins; }
+    PageMargins & margins() { return m_coords.m_margins; }
+    double pageWidth() const { return m_coords.m_pageWidth; }
+    double pageHeight() const { return m_coords.m_pageHeight; }
+    double borderStartX() const { return (isRightToLeft() ? m_coords.m_pageWidth - m_coords.m_margins.m_right :
+                                                           m_coords.m_margins.m_left); }
+    double xIncrementDirection() const { return (isRightToLeft() ? -1.0 : 1.0); }
+    QRectF currentRect(double width, double height) const { return QRectF(startX(width), y(), width, height); }
+    double startX(double width) const { return (isRightToLeft() ? x() - width : x()); }
+    double availableWidth() const { return (isRightToLeft() ? x() - m_coords.m_margins.m_left :
+                                                              pageWidth() - x() - m_coords.m_margins.m_right); }
+
+    //! Coordinates and margins.
+    CoordsPageAttribs m_coords;
+    bool m_isRightToLeft = false;
 }; // struct LayoutDirectionHandler
 
 //! Auxiliary struct for rendering.
@@ -217,8 +250,8 @@ struct PdfAuxData {
     Page *m_page = nullptr;
     //! Index of the current page.
     int m_currentPageIdx = -1;
-    //! Coordinates and margins.
-    CoordsPageAttribs m_coords;
+    //! Layout direction handler.
+    LayoutDirectionHandler m_layout;
     //! Anchors in document.
     QStringList m_anchors;
     //! Reserved spaces on the pages for footnotes.
