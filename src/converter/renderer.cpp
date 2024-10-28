@@ -744,6 +744,8 @@ void PdfRenderer::renderImpl()
             }
         }
 
+        RTLFlag rtl;
+
         for (auto it = m_doc->items().cbegin(), last = m_doc->items().cend(); it != last; ++it) {
             ++itemIdx;
 
@@ -765,34 +767,41 @@ void PdfRenderer::renderImpl()
                             // height to glue heading with it.
                             (it + 1 != last ? minNecessaryHeight(pdfData, m_opts, *(it + 1), m_doc, 0.0, 1.0) : 0.0),
                             CalcHeightOpt::Unknown,
-                            1.0);
+                            1.0,
+                            true, &rtl);
+                resetRTLFlagToDefaults(&rtl);
                 break;
 
             case MD::ItemType::Paragraph:
                 drawParagraph(pdfData, m_opts, static_cast<MD::Paragraph<MD::QStringTrait> *>(it->get()),
-                              m_doc, 0.0, true, CalcHeightOpt::Unknown, 1.0);
+                              m_doc, 0.0, true, CalcHeightOpt::Unknown, 1.0, Qt::black, false, &rtl);
+                resetRTLFlagToDefaults(&rtl);
                 break;
 
             case MD::ItemType::Code:
                 drawCode(pdfData, m_opts, static_cast<MD::Code<MD::QStringTrait> *>(it->get()),
                          m_doc, 0.0, CalcHeightOpt::Unknown, 1.0);
+                resetRTLFlagToDefaults(&rtl);
                 break;
 
             case MD::ItemType::Blockquote:
                 drawBlockquote(pdfData, m_opts, static_cast<MD::Blockquote<MD::QStringTrait> *>(it->get()),
-                               m_doc, 0.0, CalcHeightOpt::Unknown, 1.0);
+                               m_doc, 0.0, CalcHeightOpt::Unknown, 1.0, &rtl);
+                resetRTLFlagToDefaults(&rtl);
                 break;
 
             case MD::ItemType::List: {
                 auto *list = static_cast<MD::List<MD::QStringTrait> *>(it->get());
                 const auto bulletWidth = maxListNumberWidth(list);
 
-                drawList(pdfData, m_opts, list, m_doc, bulletWidth);
+                drawList(pdfData, m_opts, list, m_doc, bulletWidth, 0.0, CalcHeightOpt::Unknown, 1.0, false, &rtl);
+                resetRTLFlagToDefaults(&rtl);
             } break;
 
             case MD::ItemType::Table:
                 drawTable(pdfData, m_opts, static_cast<MD::Table<MD::QStringTrait> *>(it->get()),
-                          m_doc, 0.0, CalcHeightOpt::Unknown, 1.0);
+                          m_doc, 0.0, CalcHeightOpt::Unknown, 1.0, &rtl);
+                resetRTLFlagToDefaults(&rtl);
                 break;
 
             case MD::ItemType::PageBreak: {
@@ -1159,7 +1168,8 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawHeading(PdfAuxData &pdfD
                                                                 double nextItemMinHeight,
                                                                 CalcHeightOpt heightCalcOpt,
                                                                 double scale,
-                                                                bool withNewLine)
+                                                                bool withNewLine,
+                                                                RTLFlag *rtl)
 {
     Q_UNUSED(nextItemMinHeight)
 
@@ -1201,7 +1211,8 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawText(PdfAuxData &pdfData,
                                                            bool firstInParagraph,
                                                            CustomWidth &cw,
                                                            double scale,
-                                                           const QColor &color)
+                                                           const QColor &color,
+                                                           RTLFlag *rtl)
 {
     auto *spaceFont = createFont(renderOpts.m_textFont, false, false,
                                  renderOpts.m_textFontSize, pdfData.m_doc, scale, pdfData);
@@ -1240,7 +1251,11 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawText(PdfAuxData &pdfData,
                       item->startColumn(),
                       item->endLine(),
                       item->endColumn(),
-                      color);
+                      color,
+                      nullptr,
+                      0.0,
+                      0.0,
+                      rtl);
 }
 
 namespace /* anonymous */
@@ -1288,7 +1303,8 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
                                                            double offset,
                                                            bool firstInParagraph,
                                                            CustomWidth &cw,
-                                                           double scale)
+                                                           double scale,
+                                                           RTLFlag *rtl)
 {
     QVector<QPair<QRectF, unsigned int>> rects;
 
@@ -1357,10 +1373,14 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
                                         text->startColumn(),
                                         text->endLine(),
                                         text->endColumn(),
-                                        renderOpts.m_linkColor));
+                                        renderOpts.m_linkColor,
+                                        nullptr,
+                                        0.0,
+                                        0.0,
+                                        rtl));
             } break;
 
-            case MD::ItemType::Code:
+            case MD::ItemType::Code: {
                 rects.append(drawInlinedCode(pdfData,
                                              renderOpts,
                                              static_cast<MD::Code<MD::QStringTrait> *>(it->get()),
@@ -1370,7 +1390,11 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
                                              (it == item->p()->items().begin() && firstInParagraph),
                                              cw,
                                              scale,
-                                             renderOpts.m_linkColor));
+                                             renderOpts.m_linkColor,
+                                             rtl));
+
+                setRTLFlagToFalseIfCheck(rtl);
+            }
                 break;
 
             case MD::ItemType::Image: {
@@ -1384,6 +1408,8 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
                                        cw,
                                        1.0,
                                        renderOpts.m_imageAlignment));
+
+                setRTLFlagToFalseIfCheck(rtl);
             } break;
 
             default:
@@ -1420,12 +1446,18 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
                            item->startColumn(),
                            item->endLine(),
                            item->endColumn(),
-                           renderOpts.m_linkColor);
+                           renderOpts.m_linkColor,
+                           nullptr,
+                           0.0,
+                           0.0,
+                           rtl);
     }
     // Otherwise image link.
     else {
         rects.append(drawImage(pdfData, renderOpts, item->img().get(), doc, newLine, offset,
                                firstInParagraph, cw, 1.0, renderOpts.m_imageAlignment));
+
+        setRTLFlagToFalseIfCheck(rtl);
     }
 
     rects = normalizeRects(rects);
@@ -1458,18 +1490,43 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
 namespace /* anonymous */
 {
 
-QStringList splitString(const QString &str)
+inline bool isRightToLeft(const QChar &ch)
 {
-    QStringList res;
+    switch (ch.direction()) {
+    case QChar::DirAL:
+    case QChar::DirAN:
+    case QChar::DirR:
+        return true;
+
+    default:
+        return false;
+    }
+}
+
+inline bool isRightToLeft(const QVector<QPair<QString, bool>> &words)
+{
+    for (const auto & w : std::as_const(words)) {
+        if (w.first != QStringLiteral(" ")) {
+            return w.second;
+        }
+    }
+
+    return false;
+}
+
+QVector<QPair<QString, bool>> splitString(const QString &str)
+{
+    QVector<QPair<QString, bool>> res;
     qsizetype first = 0;
     bool space = false;
 
     for(qsizetype i = 0; i < str.length(); ++i) {
         if (str[i].isSpace() && !space) {
             if (first < i) {
-                res.append(str.sliced(first, i - first));
+                const auto word = str.sliced(first, i - first);
+                res.append({word, isRightToLeft(word[0])});
             }
-            res.append(QStringLiteral(" "));
+            res.append({QStringLiteral(" "), false});
             space = true;
         } else {
             if (space) {
@@ -1481,7 +1538,8 @@ QStringList splitString(const QString &str)
     }
 
     if (!space && first < str.length()) {
-        res.append(str.sliced(first));
+        const auto word = str.sliced(first);
+        res.append({word, isRightToLeft(word[0])});
     }
 
     return res;
@@ -1518,7 +1576,8 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawString(PdfAuxData &pdfData
                                                              const QColor &color,
                                                              Font *regularSpaceFont,
                                                              double regularSpaceFontSize,
-                                                             double regularSpaceFontScale)
+                                                             double regularSpaceFontScale,
+                                                             RTLFlag *rtl)
 {
     Q_UNUSED(doc)
     Q_UNUSED(renderOpts)
@@ -1568,7 +1627,7 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawString(PdfAuxData &pdfData
             h = cw.height();
         } else {
             cw.append({0.0, lineHeight, false, true, true, ""});
-            pdfData.m_layout.moveXToBegin(offset);
+            pdfData.m_layout.moveXToBegin();
         }
     };
 
@@ -1580,6 +1639,14 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawString(PdfAuxData &pdfData
         if (m_terminate)
             return ret;
     }
+
+    if (rtl && rtl->isCheck()) {
+        pdfData.m_layout.setRightToLeft(str.isRightToLeft());
+        rtl->m_check = false;
+        rtl->m_isOn = pdfData.m_layout.isRightToLeft();
+    }
+
+    const auto autoOffset = pdfData.m_layout.addOffset(offset, !pdfData.m_layout.isRightToLeft());
 
     auto words = splitString(str);
 
@@ -1665,9 +1732,9 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawString(PdfAuxData &pdfData
             }
         }
 
-        const auto str = createUtf8String(*it);
+        const auto str = createUtf8String(it->first);
 
-        if (*it == QStringLiteral(" ")) {
+        if (it->first == QStringLiteral(" ")) {
             if (!newLine) {
                 drawSpace(false);
             }
@@ -1697,20 +1764,26 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawString(PdfAuxData &pdfData
                     }
 
                     pdfData.setColor(color);
-                    pdfData.drawText(pdfData.m_layout.startX(length), pdfData.m_layout.y() + d, str,
+
+                    if (it->second) {
+                        std::reverse(it->first.begin(), it->first.end());
+                    }
+
+                    pdfData.drawText(pdfData.m_layout.startX(length), pdfData.m_layout.y() + d,
+                                     createUtf8String(it->first),
                                      font, fontSize * fontScale, 1.0, strikeout);
                     pdfData.restoreColor();
 
                     ret.append(qMakePair(pdfData.m_layout.currentRect(length, lineHeight), pdfData.currentPageIndex()));
                 } else {
-                    cw.append({length + (it + 1 == last && footnoteAtEnd ? footnoteWidth : 0.0), lineHeight, false, false, true, *it});
+                    cw.append({length + (it + 1 == last && footnoteAtEnd ? footnoteWidth : 0.0), lineHeight, false, false, true, it->first});
                 }
 
                 pdfData.m_layout.addX(length);
             }
             // Need to move to new line.
             else {
-                auto splitAndDraw = [&](QString s) {
+                auto splitAndDraw = [&](QString s, bool rtl) {
                     while (s.length()) {
                         QString tmp;
                         const auto i = countCharsForAvailableSpace(s, pdfData.m_layout.availableWidth(),
@@ -1718,12 +1791,16 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawString(PdfAuxData &pdfData
 
                         s.remove(0, i);
 
-                        const auto p = createUtf8String(tmp);
-                        const auto w = pdfData.stringWidth(font, fontSize, fontScale, p);
+                        const auto w = pdfData.stringWidth(font, fontSize, fontScale, createUtf8String(tmp));
 
                         if (draw) {
                             pdfData.setColor(color);
-                            pdfData.drawText(pdfData.m_layout.startX(w), pdfData.m_layout.y() + d, p,
+
+                            if (pdfData.m_layout.isRightToLeft()) {
+                                std::reverse(tmp.begin(), tmp.end());
+                            }
+
+                            pdfData.drawText(pdfData.m_layout.startX(w), pdfData.m_layout.y() + d, createUtf8String(tmp),
                                              font, fontSize * fontScale, 1.0, strikeout);
                             pdfData.restoreColor();
 
@@ -1749,9 +1826,9 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawString(PdfAuxData &pdfData
                 if (width > fullWidth * 2.0 / 3.0) {
                     QString tmp;
 
-                    if (countCharsForAvailableSpace(*it, pdfData.m_layout.availableWidth(),
+                    if (countCharsForAvailableSpace(it->first, pdfData.m_layout.availableWidth(),
                                                     font, pdfData, fontSize, fontScale, tmp) > 4) {
-                        splitAndDraw(*it);
+                        splitAndDraw(it->first, it->second);
                     } else {
                         if (width < fullWidth || qAbs(width - fullWidth) < 0.01) {
                             newLineFn();
@@ -1760,7 +1837,7 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawString(PdfAuxData &pdfData
                         } else {
                             newLineFn();
 
-                            splitAndDraw(*it);
+                            splitAndDraw(it->first, it->second);
                         }
                     }
                 } else {
@@ -1784,8 +1861,11 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawInlinedCode(PdfAuxData &pd
                                                                   bool firstInParagraph,
                                                                   CustomWidth &cw,
                                                                   double scale,
-                                                                  const QColor &color)
+                                                                  const QColor &color,
+                                                                  RTLFlag *rtl)
 {
+    Q_UNUSED(rtl)
+
     auto *textFont = createFont(renderOpts.m_textFont, false, false,
                                 renderOpts.m_textFontSize, pdfData.m_doc, scale, pdfData);
 
@@ -1831,13 +1911,15 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawInlinedCode(PdfAuxData &pd
 
 void PdfRenderer::moveToNewLine(PdfAuxData &pdfData, double xOffset, double yOffset, double yOffsetMultiplier, double yOffsetOnNewPage)
 {
-    pdfData.m_layout.moveXToBegin(xOffset);
+    Q_UNUSED(xOffset)
+
+    pdfData.m_layout.moveXToBegin();
     pdfData.m_layout.addY(yOffset * yOffsetMultiplier);
 
     if (pdfData.m_layout.y() < pdfData.currentPageAllowedY() && qAbs(pdfData.m_layout.y() - pdfData.currentPageAllowedY()) > 0.1) {
         createPage(pdfData);
 
-        pdfData.m_layout.moveXToBegin(xOffset);
+        pdfData.m_layout.moveXToBegin();
         pdfData.m_layout.addY(yOffsetOnNewPage);
     }
 }
@@ -1884,6 +1966,41 @@ double totalHeight(const QVector<WhereDrawn> &where)
     });
 }
 
+bool isRightToLeft(MD::Paragraph<MD::QStringTrait> *p)
+{
+    auto isTextRightToLeft = [](MD::Item<MD::QStringTrait> *i) -> bool {
+        return static_cast<MD::Text<MD::QStringTrait>*>(i)->text().isRightToLeft();
+    };
+
+    if (!p->isEmpty()) {
+        switch (p->items().front()->type() ) {
+        case MD::ItemType::Text:
+            return isTextRightToLeft(p->items().front().get());
+
+        case MD::ItemType::Link:
+        {
+            auto l = static_cast<MD::Link<MD::QStringTrait>*>(p->items().front().get());
+
+            if (!l->p()->isEmpty()) {
+                if (l->p()->items().front()->type() == MD::ItemType::Text) {
+                    return isTextRightToLeft(l->p()->items().front().get());
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+            break;
+
+        default:
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
+
 } /* namespace anonymous */
 
 QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pdfData,
@@ -1895,12 +2012,15 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                                                                   CalcHeightOpt heightCalcOpt,
                                                                   double scale,
                                                                   const QColor &color,
-                                                                  bool scaleImagesToLineHeight)
+                                                                  bool scaleImagesToLineHeight,
+                                                                  RTLFlag *rtl)
 {
     pdfData.m_startLine = item->startLine();
     pdfData.m_startPos = item->startColumn();
     pdfData.m_endLine = item->endLine();
     pdfData.m_endPos = item->endColumn();
+
+    const auto wasRightToLeft = pdfData.m_layout.isRightToLeft();
 
     QVector<QPair<QRectF, unsigned int>> rects;
 
@@ -1924,7 +2044,9 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
 
     pdfData.m_lineHeight = lineHeight;
 
-    pdfData.m_layout.moveXToBegin(offset);
+    const auto autoOffset = pdfData.m_layout.addOffset(offset, !isRightToLeft(item));
+
+    pdfData.m_layout.moveXToBegin();
 
     bool newLine = false;
     CustomWidth cw;
@@ -1976,7 +2098,8 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                      (firstInParagraph || lineBreak),
                      cw,
                      scale,
-                     color);
+                     color,
+                     rtl);
             lineBreak = false;
             firstInParagraph = false;
         } break;
@@ -1990,7 +2113,9 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                             offset,
                             (firstInParagraph || lineBreak),
                             cw,
-                            scale);
+                            scale,
+                            Qt::black,
+                            rtl);
             lineBreak = false;
             firstInParagraph = false;
             break;
@@ -2009,7 +2134,8 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                      offset,
                      (firstInParagraph || lineBreak),
                      cw,
-                     scale);
+                     scale,
+                     rtl);
             lineBreak = false;
             firstInParagraph = false;
             break;
@@ -2028,6 +2154,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                       scaleImagesToLineHeight);
             lineBreak = false;
             firstInParagraph = false;
+            setRTLFlagToFalseIfCheck(rtl);
             break;
 
         case MD::ItemType::Math:
@@ -2043,12 +2170,13 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                          scale);
             lineBreak = false;
             firstInParagraph = false;
+            setRTLFlagToFalseIfCheck(rtl);
             break;
 
         case MD::ItemType::LineBreak: {
             lineBreak = true;
             cw.append({0.0, lineHeight, false, true, false, ""});
-            pdfData.m_layout.moveXToBegin(offset);
+            pdfData.m_layout.moveXToBegin();
         } break;
 
         case MD::ItemType::FootnoteRef: {
@@ -2084,6 +2212,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
 
             lineBreak = false;
             firstInParagraph = false;
+            setRTLFlagToFalseIfCheck(rtl);
         } break;
 
         default:
@@ -2141,6 +2270,10 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
         break;
     }
 
+    if (rtl) {
+        pdfData.m_layout.setRightToLeft(rtl->isRightToLeft());
+    }
+
     if ((withNewLine && !pdfData.m_firstOnPage && heightCalcOpt == CalcHeightOpt::Unknown)
         || (withNewLine && pdfData.m_drawFootnotes && heightCalcOpt == CalcHeightOpt::Unknown)) {
         moveToNewLine(pdfData, offset, lineHeight + cw.height(), 1.0, (pdfData.m_drawFootnotes ? lineHeight + cw.height() : cw.height()));
@@ -2148,7 +2281,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
         moveToNewLine(pdfData, offset, cw.height(), 1.0, cw.height());
     }
 
-    pdfData.m_layout.moveXToBegin(offset);
+    pdfData.m_layout.moveXToBegin();
 
     bool extraOnFirstLine = true;
     newLine = false;
@@ -2206,7 +2339,8 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                                   (firstInParagraph || lineBreak),
                                   cw,
                                   scale,
-                                  color));
+                                  color,
+                                  rtl));
             lineBreak = false;
             firstInParagraph = false;
         } break;
@@ -2223,6 +2357,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                                          scale));
             lineBreak = false;
             firstInParagraph = false;
+            setRTLFlagToFalseIfCheck(rtl);
         } break;
 
         case MD::ItemType::Link: {
@@ -2246,7 +2381,8 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                                   offset,
                                   (firstInParagraph || lineBreak),
                                   cw,
-                                  scale));
+                                  scale,
+                                  rtl));
             lineBreak = false;
             firstInParagraph = false;
         } break;
@@ -2269,6 +2405,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                                    scaleImagesToLineHeight));
             lineBreak = false;
             firstInParagraph = false;
+            setRTLFlagToFalseIfCheck(rtl);
         } break;
 
         case MD::ItemType::Math: {
@@ -2286,6 +2423,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
             pdfData.restoreColor();
             lineBreak = false;
             firstInParagraph = false;
+            setRTLFlagToFalseIfCheck(rtl);
         } break;
 
         case MD::ItemType::LineBreak: {
@@ -2355,6 +2493,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
             }
 
             firstInParagraph = false;
+            setRTLFlagToFalseIfCheck(rtl);
         } break;
 
         default:
@@ -2365,6 +2504,8 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
     }
 
     pdfData.m_continueParagraph = false;
+
+    pdfData.m_layout.setRightToLeft(wasRightToLeft);
 
     return {toWhereDrawn(normalizeRects(rects), pdfData.m_layout.pageHeight()),
         {firstLinePageIdx, firstLineY, firstLineHeight}};
@@ -2417,6 +2558,8 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
         cw.moveToNextLine();
         moveToNewLine(pdfData, offset, 0.0, 1.0, 0.0);
     }
+
+    const auto autoOffset = pdfData.m_layout.addOffset(offset, !pdfData.m_layout.isRightToLeft());
 
     double h = (cw.isDrawing() ? cw.height() : 0.0);
 
@@ -2576,7 +2719,7 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
 
             height += size.height() * imgScale - pdfData.fontDescent(font, renderOpts.m_textFontSize, scale);
 
-            pdfData.m_layout.moveXToBegin(offset);
+            pdfData.m_layout.moveXToBegin();
 
             cw.append({0.0, 0.0, false, true, false, ""});
             cw.append({0.0, height, false, true, false, ""});
@@ -2593,7 +2736,7 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
 
             if (size.width() - availableWidth > 0.01) {
                 cw.append({0.0, lineHeight, false, true, true, ""});
-                pdfData.m_layout.moveXToBegin(offset);
+                pdfData.m_layout.moveXToBegin();
             } else {
                 cw.append({spaceWidth, lineHeight, true, false, true, " "});
             }
@@ -2682,7 +2825,8 @@ QVector<WhereDrawn> PdfRenderer::drawFootnote(PdfAuxData &pdfData,
                                               const QString &footnoteRefId,
                                               MD::Footnote<MD::QStringTrait> *note,
                                               CalcHeightOpt heightCalcOpt,
-                                              double *lineHeight)
+                                              double *lineHeight,
+                                              RTLFlag *rtl)
 {
     QVector<WhereDrawn> ret;
 
@@ -2708,6 +2852,9 @@ QVector<WhereDrawn> PdfRenderer::drawFootnote(PdfAuxData &pdfData,
         *lineHeight = pdfData.lineSpacing(font, renderOpts.m_textFontSize, s_footnoteScale);
     }
 
+    bool first = true;
+    bool firstItemIsRightToLeft = false;
+
     for (auto it = note->items().cbegin(), last = note->items().cend(); it != last; ++it) {
         {
             QMutexLocker lock(&m_mutex);
@@ -2728,9 +2875,20 @@ QVector<WhereDrawn> PdfRenderer::drawFootnote(PdfAuxData &pdfData,
                                    // height to glue heading with it.
                                    (it + 1 != last ? minNecessaryHeight(pdfData, renderOpts, *(it + 1), doc, 0.0, s_footnoteScale) : 0.0),
                                    heightCalcOpt,
-                                   s_footnoteScale)
+                                   s_footnoteScale,
+                                   true,
+                                   rtl)
                            .first);
+
             pdfData.m_continueParagraph = true;
+
+            if (first) {
+                firstItemIsRightToLeft = (rtl ? rtl->isRightToLeft() : false);
+                first = false;
+            }
+
+            resetRTLFlagToDefaults(rtl);
+
             break;
 
         case MD::ItemType::Paragraph:
@@ -2741,9 +2899,21 @@ QVector<WhereDrawn> PdfRenderer::drawFootnote(PdfAuxData &pdfData,
                                      footnoteOffset,
                                      true,
                                      heightCalcOpt,
-                                     s_footnoteScale)
+                                     s_footnoteScale,
+                                     Qt::black,
+                                     false,
+                                     rtl)
                            .first);
+
             pdfData.m_continueParagraph = true;
+
+            if (first) {
+                firstItemIsRightToLeft = (rtl ? rtl->isRightToLeft() : false);
+                first = false;
+            }
+
+            resetRTLFlagToDefaults(rtl);
+
             break;
 
         case MD::ItemType::Code:
@@ -2751,6 +2921,14 @@ QVector<WhereDrawn> PdfRenderer::drawFootnote(PdfAuxData &pdfData,
                 drawCode(pdfData, renderOpts, static_cast<MD::Code<MD::QStringTrait> *>(
                              it->get()), doc, footnoteOffset, heightCalcOpt, s_footnoteScale).first);
             pdfData.m_continueParagraph = true;
+
+            if (first) {
+                firstItemIsRightToLeft = (rtl ? rtl->isRightToLeft() : false);
+                first = false;
+            }
+
+            resetRTLFlagToDefaults(rtl);
+
             break;
 
         case MD::ItemType::Blockquote:
@@ -2760,31 +2938,60 @@ QVector<WhereDrawn> PdfRenderer::drawFootnote(PdfAuxData &pdfData,
                                       doc,
                                       footnoteOffset,
                                       heightCalcOpt,
-                                      s_footnoteScale)
+                                      s_footnoteScale,
+                                      rtl)
                            .first);
+
             pdfData.m_continueParagraph = true;
+
+            if (first) {
+                firstItemIsRightToLeft = (rtl ? rtl->isRightToLeft() : false);
+                first = false;
+            }
+
+            resetRTLFlagToDefaults(rtl);
+
             break;
 
         case MD::ItemType::List: {
             auto *list = static_cast<MD::List<MD::QStringTrait> *>(it->get());
             const auto bulletWidth = maxListNumberWidth(list);
 
-            ret.append(drawList(pdfData, renderOpts, list, doc, bulletWidth, footnoteOffset, heightCalcOpt, s_footnoteScale).first);
+            ret.append(drawList(pdfData, renderOpts, list, doc, bulletWidth, footnoteOffset,
+                                heightCalcOpt, s_footnoteScale, false, rtl).first);
 
             pdfData.m_continueParagraph = true;
+
+            if (first) {
+                firstItemIsRightToLeft = (rtl ? rtl->isRightToLeft() : false);
+                first = false;
+            }
+
+            resetRTLFlagToDefaults(rtl);
         } break;
 
         case MD::ItemType::Table:
             ret.append(
                 drawTable(pdfData, renderOpts, static_cast<MD::Table<MD::QStringTrait> *>(
-                              it->get()), doc, footnoteOffset, heightCalcOpt, s_footnoteScale)
+                              it->get()), doc, footnoteOffset, heightCalcOpt, s_footnoteScale, rtl)
                     .first);
+
             pdfData.m_continueParagraph = true;
+
+            if (first) {
+                firstItemIsRightToLeft = (rtl ? rtl->isRightToLeft() : false);
+                first = false;
+            }
+
+            resetRTLFlagToDefaults(rtl);
+
             break;
 
         default:
             break;
         }
+
+        pdfData.m_layout.setRightToLeft(firstItemIsRightToLeft);
 
         // Draw footnote number.
         if (it == note->items().cbegin() && heightCalcOpt == CalcHeightOpt::Unknown) {
@@ -2813,6 +3020,8 @@ QVector<WhereDrawn> PdfRenderer::drawFootnote(PdfAuxData &pdfData,
             ++pdfData.m_currentFootnote;
         }
     }
+
+    pdfData.m_layout.setRightToLeft(false);
 
     pdfData.m_continueParagraph = false;
 
@@ -2860,6 +3069,8 @@ QPair<QRectF, unsigned int> PdfRenderer::drawImage(PdfAuxData &pdfData,
     const auto img = loadImage(item, *pdfData.m_resvgOpts.get(),
                                lineHeight / 72.0 * pdfData.m_dpi, scaleImagesToLineHeight, !scaleImagesToLineHeight);
 
+    const auto autoOffset = pdfData.m_layout.addOffset(offset, !pdfData.m_layout.isRightToLeft());
+
     if (!img.isNull()) {
         auto pdfImg = pdfData.m_doc->CreateImage();
         pdfImg->LoadFromBuffer({img.data(), static_cast<size_t>(img.size())});
@@ -2899,7 +3110,7 @@ QPair<QRectF, unsigned int> PdfRenderer::drawImage(PdfAuxData &pdfData,
             if (draw) {
                 moveToNewLine(pdfData, offset, (onLine ? cw.height() : lineHeight), 1.0, lineHeight);
             } else {
-                pdfData.m_layout.moveXToBegin(offset);
+                pdfData.m_layout.moveXToBegin();
             }
 
             addSpace = false;
@@ -2989,7 +3200,7 @@ QPair<QRectF, unsigned int> PdfRenderer::drawImage(PdfAuxData &pdfData,
         if (onLine) {
             pdfData.m_layout.addX(iWidth * imgScale);
         } else {
-            pdfData.m_layout.moveXToBegin(offset);
+            pdfData.m_layout.moveXToBegin();
         }
 
         if (draw && !onLine) {
@@ -3160,6 +3371,10 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawCode(PdfAuxData &pdfData
 {
     Q_UNUSED(doc)
 
+    const auto wasRightToLeft = pdfData.m_layout.isRightToLeft();
+    const auto autoOffset = pdfData.m_layout.addOffset(offset, !wasRightToLeft);
+    pdfData.m_layout.setRightToLeft(false);
+
     pdfData.m_startLine = item->startLine();
     pdfData.m_startPos = item->startColumn();
     pdfData.m_endLine = item->endLine();
@@ -3188,7 +3403,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawCode(PdfAuxData &pdfData
             pdfData.m_layout.addY(textLHeight * 2.0);
         }
 
-        pdfData.m_layout.moveXToBegin(offset);
+        pdfData.m_layout.moveXToBegin();
     }
 
     lines = item->text().split(QLatin1Char('\n'), Qt::KeepEmptyParts);
@@ -3273,7 +3488,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawCode(PdfAuxData &pdfData
         }
 
         for (; i < j; ++i) {
-            pdfData.m_layout.moveXToBegin(offset);
+            pdfData.m_layout.moveXToBegin();
 
             while (true) {
                 if (currentWord == colored.size() || colored[currentWord].line != i) {
@@ -3313,10 +3528,12 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawCode(PdfAuxData &pdfData
 
         if (i < lines.size()) {
             createPage(pdfData);
-            pdfData.m_layout.moveXToBegin(offset);
+            pdfData.m_layout.moveXToBegin();
             pdfData.m_layout.addY(lineHeight);
         }
     }
+
+    pdfData.m_layout.setRightToLeft(wasRightToLeft);
 
     return {ret, {firstLinePageIdx, firstLineY, firstLineHeight}};
 }
@@ -3327,7 +3544,8 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawBlockquote(PdfAuxData &p
                                                                    std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
                                                                    double offset,
                                                                    CalcHeightOpt heightCalcOpt,
-                                                                   double scale)
+                                                                   double scale,
+                                                                   RTLFlag *rtl)
 {
     pdfData.m_startLine = item->startLine();
     pdfData.m_startPos = item->startColumn();
@@ -3370,7 +3588,9 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawBlockquote(PdfAuxData &p
                                 (it + 1 != last ? minNecessaryHeight(pdfData, renderOpts, *(it + 1), doc,
                                                                      offset + s_blockquoteBaseOffset, scale) : 0.0),
                                 heightCalcOpt,
-                                scale);
+                                scale,
+                                true,
+                                rtl);
 
                 ret.append(where.first);
 
@@ -3395,7 +3615,8 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawBlockquote(PdfAuxData &p
                                              heightCalcOpt,
                                              scale,
                                              (color.isValid() && first ? color : Qt::black),
-                                             (color.isValid() && first ? true : false));
+                                             (color.isValid() && first ? true : false),
+                                             rtl);
 
             ret.append(where.first);
 
@@ -3409,6 +3630,8 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawBlockquote(PdfAuxData &p
             const auto where =
                 drawCode(pdfData, renderOpts, static_cast<MD::Code<MD::QStringTrait> *>(
                              it->get()), doc, offset + s_blockquoteBaseOffset, heightCalcOpt, scale);
+
+            setRTLFlagToFalseIfCheck(rtl);
 
             ret.append(where.first);
 
@@ -3425,7 +3648,8 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawBlockquote(PdfAuxData &p
                                               doc,
                                               offset + s_blockquoteBaseOffset,
                                               heightCalcOpt,
-                                              scale);
+                                              scale,
+                                              rtl);
 
             ret.append(where.first);
 
@@ -3440,7 +3664,8 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawBlockquote(PdfAuxData &p
             const auto bulletWidth = maxListNumberWidth(list);
 
             const auto where = drawList(pdfData, renderOpts, list, doc, bulletWidth,
-                                        offset + s_blockquoteBaseOffset, heightCalcOpt, scale);
+                                        offset + s_blockquoteBaseOffset, heightCalcOpt, scale,
+                                        false, rtl);
 
             ret.append(where.first);
 
@@ -3457,7 +3682,8 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawBlockquote(PdfAuxData &p
                                          doc,
                                          offset + s_blockquoteBaseOffset,
                                          heightCalcOpt,
-                                         scale);
+                                         scale,
+                                         rtl);
 
             ret.append(where.first);
 
@@ -3521,7 +3747,8 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawList(PdfAuxData &pdfData
                                                              double offset,
                                                              CalcHeightOpt heightCalcOpt,
                                                              double scale,
-                                                             bool nested)
+                                                             bool nested,
+                                                             RTLFlag *rtl)
 {
     pdfData.m_startLine = item->startLine();
     pdfData.m_startPos = item->startColumn();
@@ -3595,7 +3822,8 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawListItem(PdfAuxData &pdf
                                                                  CalcHeightOpt heightCalcOpt,
                                                                  double scale,
                                                                  bool firstInList,
-                                                                 bool firstItem)
+                                                                 bool firstItem,
+                                                                 RTLFlag *rtl)
 {
     pdfData.m_startLine = item->startLine();
     pdfData.m_startPos = item->startColumn();
@@ -4107,7 +4335,8 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTable(PdfAuxData &pdfDat
                                                               std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
                                                               double offset,
                                                               CalcHeightOpt heightCalcOpt,
-                                                              double scale)
+                                                              double scale,
+                                                              RTLFlag *rtl)
 {
     QVector<WhereDrawn> ret;
 
@@ -4858,7 +5087,8 @@ double PdfRenderer::minNecessaryHeight(PdfAuxData &pdfData,
 
     PdfAuxData tmp = pdfData;
     tmp.m_layout.setY(tmp.m_layout.topY());
-    tmp.m_layout.moveXToBegin(offset);
+    const auto autoOffset = tmp.m_layout.addOffset(offset, !pdfData.m_layout.isRightToLeft());
+    tmp.m_layout.moveXToBegin();
 
     switch (item->type()) {
     case MD::ItemType::Heading:
