@@ -829,6 +829,8 @@ private:
         QColor m_background;
         std::shared_ptr<MD::Footnote<MD::QStringTrait>> m_footnoteObj;
         FontAttribs m_font;
+        bool m_isRightToLeft = false;
+        bool m_code = false;
 
         //! \return Width of the item.
         double width(PdfAuxData &pdfData, PdfRenderer *render, double scale) const;
@@ -840,6 +842,7 @@ private:
         double m_height = 0.0;
         MD::Table<MD::QStringTrait>::Alignment m_alignment;
         QVector<CellItem> m_items;
+        bool m_isRightToLeft = false;
 
         void setWidth(double w)
         {
