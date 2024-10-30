@@ -10,7 +10,7 @@
 
 > [!CAUTION]
 >
-> In editor and converter implemented support of RTL languages. But I don't know any of such
+> In editor and converter is implemented support of RTL languages. But I don't know any of such
 > languages. I need testers to check if I implemented everything right. Thank you.
 
 # About
