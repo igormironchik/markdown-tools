@@ -1181,7 +1181,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawHeading(PdfAuxData &pdfD
 
         const auto where =
             drawParagraph(pdfData, renderOpts, item->text().get(), doc, offset, withNewLine,
-                          heightCalcOpt, scale * (1.0 + (7 - item->level()) * 0.25));
+                          heightCalcOpt, scale * (1.0 + (7 - item->level()) * 0.25), Qt::black, false, rtl);
 
         if (heightCalcOpt == CalcHeightOpt::Unknown && !item->label().isEmpty() && !where.first.isEmpty()) {
             m_dests.insert(item->label(),
@@ -1561,18 +1561,20 @@ void orderWords(QVector<QPair<QString, bool>> & text)
     };
 
     for (qsizetype i = 0; i < text.size(); ++i) {
-        if (!text[i].second) {
-            if (start == -1 ) {
-                start = i;
-                end = i;
+        if (text[i].first != QStringLiteral(" ")) {
+            if (!text[i].second) {
+                if (start == -1 ) {
+                    start = i;
+                    end = i;
+                } else {
+                    end = i;
+                }
             } else {
-                end = i;
-            }
-        } else {
-            reverseItems(start, end, text);
+                reverseItems(start, end, text);
 
-            start = -1;
-            end = -1;
+                start = -1;
+                end = -1;
+            }
         }
     }
 
