@@ -1545,6 +1545,40 @@ QVector<QPair<QString, bool>> splitString(const QString &str)
     return res;
 }
 
+void orderWords(QVector<QPair<QString, bool>> & text)
+{
+    qsizetype start = -1;
+    qsizetype end = -1;
+
+    auto reverseItems = [] (qsizetype start, qsizetype end, QVector<QPair<QString, bool>> & data) {
+        if (start > -1 && end > start) {
+            while (end - start > 0) {
+                data.swapItemsAt(start, end);
+                ++start;
+                --end;
+            }
+        }
+    };
+
+    for (qsizetype i = 0; i < text.size(); ++i) {
+        if (!text[i].second) {
+            if (start == -1 ) {
+                start = i;
+                end = i;
+            } else {
+                end = i;
+            }
+        } else {
+            reverseItems(start, end, text);
+
+            start = -1;
+            end = -1;
+        }
+    }
+
+    reverseItems(start, end, text);
+}
+
 } /* namespace anonymous */
 
 QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawString(PdfAuxData &pdfData,
@@ -1651,6 +1685,10 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawString(PdfAuxData &pdfData
     const auto autoOffset = pdfData.m_layout.addOffset(offset, !pdfData.m_layout.isRightToLeft());
 
     auto words = splitString(str);
+
+    if (pdfData.m_layout.isRightToLeft()) {
+        orderWords(words);
+    }
 
     const auto fullWidth = pdfData.m_layout.pageWidth() - pdfData.m_layout.margins().m_left -
             pdfData.m_layout.margins().m_right;
@@ -4128,6 +4166,10 @@ void PdfRenderer::createAuxCell(const RenderOpts &renderOpts,
 
         auto words = splitString(t->text());
 
+        if (t->text().isRightToLeft()) {
+            orderWords(words);
+        }
+
         for (auto it = words.begin(), last = words.end(); it != last; ++it) {
             CellItem item;
 
@@ -4160,6 +4202,10 @@ void PdfRenderer::createAuxCell(const RenderOpts &renderOpts,
         auto *c = static_cast<MD::Code<MD::QStringTrait> *>(item);
 
         auto words = splitString(c->text());
+
+        if (data.m_isRightToLeft) {
+            orderWords(words);
+        }
 
         for (auto it = words.begin(), last = words.end(); it != last; ++it) {
             CellItem item;
@@ -4208,6 +4254,10 @@ void PdfRenderer::createAuxCell(const RenderOpts &renderOpts,
             data.m_items.append(item);
         } else if (!l->text().isEmpty()) {
             auto words = splitString(l->text());
+
+            if (l->text().isRightToLeft()) {
+                orderWords(words);
+            }
 
             for (auto it = words.begin(), last = words.end(); it != last; ++it) {
                 CellItem item;
