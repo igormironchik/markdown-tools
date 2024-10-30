@@ -4612,6 +4612,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTableRow(QVector<QVector
         const auto autoOffset = pdfData.m_layout.addOffset(offset, !pdfData.m_layout.isRightToLeft());
         auto startX = (pdfData.m_layout.isRightToLeft() ? pdfData.m_layout.rightBorderXWithOffset() :
                                                           pdfData.m_layout.leftBorderXWithOffset());
+        text.m_isRightToLeft = it->at(row).m_isRightToLeft;
 
         for (int i = 0; i < column; ++i) {
             startX += pdfData.m_layout.xIncrementDirection() * (table[i][0].m_width + s_tableMargin * 2.0);
@@ -4910,10 +4911,24 @@ void PdfRenderer::drawTextLineInTable(const RenderOpts &renderOpts,
                                       QVector<QPair<QString, std::shared_ptr<MD::Footnote<MD::QStringTrait>>>> &footnotes,
                                       double scale)
 {
-    if (!text.m_text.first().m_code && text.m_text.first().m_word == QStringLiteral(" ")) {
-        text.m_width -= text.m_text.first().width(pdfData, this, scale);
+    auto removeIfSpace = [this, &pdfData, scale](TextToDraw &text, qsizetype idx) {
+        if (!text.m_text[idx].m_code && text.m_text[idx].m_word == QStringLiteral(" ")) {
+            text.m_width -= text.m_text[idx].width(pdfData, this, scale);
 
-        text.m_text.removeFirst();
+            text.m_text.remove(idx);
+        }
+    };
+
+    if (!text.m_text.isEmpty()) {
+        removeIfSpace(text, 0);
+    }
+
+    if (!text.m_text.isEmpty()) {
+        removeIfSpace(text, text.m_text.size() - 1);
+    }
+
+    if (text.m_text.isEmpty()) {
+        return;
     }
 
     y -= lineHeight;
@@ -4931,11 +4946,15 @@ void PdfRenderer::drawTextLineInTable(const RenderOpts &renderOpts,
     if (text.m_width < text.m_availableWidth || qAbs(text.m_width - text.m_availableWidth) < 0.01) {
         switch (text.m_alignment) {
         case MD::Table<MD::QStringTrait>::AlignRight:
-            x = x + text.m_availableWidth - text.m_width;
+            x += (text.m_isRightToLeft ? 0.0 : text.m_availableWidth - text.m_width);
             break;
 
         case MD::Table<MD::QStringTrait>::AlignCenter:
-            x = x + (text.m_availableWidth - text.m_width) / 2.0;
+            x += (text.m_isRightToLeft ? -1.0 : 1.0) * ((text.m_availableWidth - text.m_width) / 2.0);
+            break;
+
+        case MD::Table<MD::QStringTrait>::AlignLeft:
+            x -= (text.m_isRightToLeft ? text.m_availableWidth - text.m_width : 0.0);
             break;
 
         default:
@@ -4973,12 +4992,14 @@ void PdfRenderer::drawTextLineInTable(const RenderOpts &renderOpts,
         auto *f = createFont(it->m_font.m_family, it->m_font.m_bold, it->m_font.m_italic,
                              it->m_font.m_size, pdfData.m_doc, scale, pdfData);
 
+        const auto w = it->width(pdfData, this, scale);
+
         if (it->m_background.isValid()) {
             pdfData.setColor(it->m_background);
 
-            pdfData.drawRectangle(x,
+            pdfData.drawRectangle(x - (text.m_isRightToLeft ? w : 0.0),
                                   y + pdfData.fontDescent(f, it->m_font.m_size, scale),
-                                  it->width(pdfData, this, scale),
+                                  w,
                                   pdfData.lineSpacing(f, it->m_font.m_size, scale),
                                   PoDoFo::PdfPathDrawMode::Fill);
 
@@ -4989,16 +5010,17 @@ void PdfRenderer::drawTextLineInTable(const RenderOpts &renderOpts,
             pdfData.setColor(it->m_color);
         }
 
-        pdfData.drawText(x, y, createUtf8String(it->m_word.isEmpty() ? it->m_url : it->m_word), f,
+        pdfData.drawText(x - (text.m_isRightToLeft ? w : 0.0), y,
+                         createUtf8String(it->m_word.isEmpty() ? it->m_url : it->m_word), f,
                          it->m_font.m_size * scale, 1.0, it->m_font.m_strikethrough);
 
         pdfData.restoreColor();
 
         if (!it->m_url.isEmpty()) {
-            links[it->m_url].append(qMakePair(QRectF(x, y, it->width(pdfData, this, scale), lineHeight), currentPage));
+            links[it->m_url].append(qMakePair(QRectF(x - (text.m_isRightToLeft ? w : 0.0), y, w, lineHeight), currentPage));
         }
 
-        x += it->width(pdfData, this, scale);
+        x += (text.m_isRightToLeft ? -1.0 : 1.0) * w;
 
         if (it + 1 != last && !(it + 1)->m_footnote.isEmpty()) {
             ++it;
@@ -5012,7 +5034,7 @@ void PdfRenderer::drawTextLineInTable(const RenderOpts &renderOpts,
 
             pdfData.setColor(renderOpts.m_linkColor);
 
-            pdfData.drawText(x,
+            pdfData.drawText(x - (text.m_isRightToLeft ? w : 0.0),
                              y + lineHeight - pdfData.lineSpacing(f, it->m_font.m_size * s_footnoteScale, scale),
                              str,
                              f,
@@ -5022,7 +5044,7 @@ void PdfRenderer::drawTextLineInTable(const RenderOpts &renderOpts,
 
             pdfData.restoreColor();
 
-            x += w;
+            x += (text.m_isRightToLeft ? -1.0 : 1.0) * w;
 
             footnotes.append({it->m_footnoteRef, it->m_footnoteObj});
         }

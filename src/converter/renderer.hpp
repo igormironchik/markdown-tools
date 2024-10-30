@@ -899,6 +899,7 @@ private:
         double m_lineHeight = 0.0;
         MD::Table<MD::QStringTrait>::Alignment m_alignment;
         QVector<CellItem> m_text;
+        bool m_isRightToLeft = false;
 
         void clear()
         {
