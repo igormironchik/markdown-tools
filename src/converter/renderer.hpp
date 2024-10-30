@@ -202,6 +202,79 @@ struct CoordsPageAttribs {
 
 class PdfRenderer;
 
+//! Layout direction handler.
+struct LayoutDirectionHandler {
+    double x() const { return m_coords.m_x; }
+    double y() const { return m_coords.m_y; }
+    void setRightToLeft(bool on) { m_isRightToLeft = on; }
+    bool isRightToLeft() const { return m_isRightToLeft; }
+    void setX(double value) { m_coords.m_x = value; }
+    void addX(double value) { m_coords.m_x += xIncrementDirection() * value; }
+    void moveXToBegin() { setX((isRightToLeft() ? rightBorderXWithOffset() : leftBorderXWithOffset())); }
+    void setY(double value) { m_coords.m_y = value; }
+    void addY(double value, double direction = 1.0) { m_coords.m_y -= direction * value; }
+    double leftBorderXWithOffset() const { return (m_coords.m_margins.m_left +
+                                                   (!m_offset.empty() && m_offset.back()->m_left ?
+                                                        m_offset.back()->m_value : 0.0)); }
+    double rightBorderXWithOffset() const { return (m_coords.m_pageWidth - m_coords.m_margins.m_right -
+                                                    (!m_offset.empty() && !m_offset.back()->m_left ?
+                                                         m_offset.back()->m_value : 0.0)); }
+
+    bool isFit(double width) const
+    {
+        return (isRightToLeft() ? (x() - width >= leftBorderXWithOffset() ||
+                                   qAbs(leftBorderXWithOffset() - x() + width) < 0.01) :
+                                  (x() + width <= rightBorderXWithOffset() ||
+                                   qAbs(x() + width - rightBorderXWithOffset()) < 0.01));
+    }
+
+    double topY() const { return m_coords.m_pageHeight - m_coords.m_margins.m_top; }
+    const PageMargins & margins() const { return m_coords.m_margins; }
+    PageMargins & margins() { return m_coords.m_margins; }
+    double pageWidth() const { return m_coords.m_pageWidth; }
+    double pageHeight() const { return m_coords.m_pageHeight; }
+    double borderStartX() const { return (isRightToLeft() ? m_coords.m_pageWidth - m_coords.m_margins.m_right :
+                                                           m_coords.m_margins.m_left); }
+    double xIncrementDirection() const { return (isRightToLeft() ? -1.0 : 1.0); }
+    QRectF currentRect(double width, double height) const { return QRectF(startX(width), y(), width, height); }
+    double startX(double width) const { return (isRightToLeft() ? x() - width : x()); }
+    double availableWidth() const { return (isRightToLeft() ? x() - leftBorderXWithOffset() :
+                                                              rightBorderXWithOffset() - x()); }
+
+    struct Offset {
+        Offset(std::vector<Offset*> &offsets, double value, bool left)
+            : m_value(value)
+            , m_left(left)
+            , m_offsets(offsets)
+        {
+            m_offsets.push_back(this);
+        }
+
+        ~Offset()
+        {
+            m_offsets.pop_back();
+        }
+
+        Offset(const Offset &) = delete;
+        Offset & operator=(const Offset &) = delete;
+
+        double m_value = 0.0;
+        bool m_left = true;
+
+    private:
+        std::vector<Offset*> &m_offsets;
+    };
+
+    Offset addOffset(double value, bool left) { return Offset(m_offset, value, left); }
+
+    //! Coordinates and margins.
+    CoordsPageAttribs m_coords;
+
+private:
+    bool m_isRightToLeft = false;
+    std::vector<Offset*> m_offset;
+}; // struct LayoutDirectionHandler
+
 //! Auxiliary struct for rendering.
 struct PdfAuxData {
     //! Document.
@@ -212,8 +285,8 @@ struct PdfAuxData {
     Page *m_page = nullptr;
     //! Index of the current page.
     int m_currentPageIdx = -1;
-    //! Coordinates and margins.
-    CoordsPageAttribs m_coords;
+    //! Layout direction handler.
+    LayoutDirectionHandler m_layout;
     //! Anchors in document.
     QStringList m_anchors;
     //! Reserved spaces on the pages for footnotes.
@@ -402,6 +475,35 @@ private:
     //! Finish pages.
     void finishPages(PdfAuxData &pdfData);
 
+    struct RTLFlag {
+        RTLFlag()
+            : m_isOn(false)
+            , m_check(true)
+        {
+        }
+
+        bool isCheck() const { return m_check; }
+        bool isRightToLeft() const { return m_isOn; }
+
+        bool m_isOn = false;
+        bool m_check = true;
+    };
+
+    void setRTLFlagToFalseIfCheck(RTLFlag *rtl)
+    {
+        if (rtl && rtl->isCheck()) {
+            rtl->m_check = false;
+            rtl->m_isOn = false;
+        }
+    }
+
+    void resetRTLFlagToDefaults(RTLFlag *rtl)
+    {
+        if (rtl) {
+            *rtl = {};
+        }
+    }
+
     //! Draw heading.
     QPair<QVector<WhereDrawn>, WhereDrawn> drawHeading(PdfAuxData &pdfData,
                                                        const RenderOpts &renderOpts,
@@ -411,7 +513,8 @@ private:
                                                        double nextItemMinHeight,
                                                        CalcHeightOpt heightCalcOpt,
                                                        double scale,
-                                                       bool withNewLine = true);
+                                                       bool withNewLine = true,
+                                                       RTLFlag *rtl = nullptr);
     //! Draw paragraph.
     QPair<QVector<WhereDrawn>, WhereDrawn> drawParagraph(PdfAuxData &pdfData,
                                                          const RenderOpts &renderOpts,
@@ -422,7 +525,8 @@ private:
                                                          CalcHeightOpt heightCalcOpt,
                                                          double scale,
                                                          const QColor &color = Qt::black,
-                                                         bool scaleImagesToLineHeight = false);
+                                                         bool scaleImagesToLineHeight = false,
+                                                         RTLFlag *rtl = nullptr);
     //! Draw block of code.
     QPair<QVector<WhereDrawn>, WhereDrawn> drawCode(PdfAuxData &pdfData,
                                                     const RenderOpts &renderOpts,
@@ -438,7 +542,8 @@ private:
                                                           std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
                                                           double offset,
                                                           CalcHeightOpt heightCalcOpt,
-                                                          double scale);
+                                                          double scale,
+                                                          RTLFlag *rtl = nullptr);
     //! Draw list.
     QPair<QVector<WhereDrawn>, WhereDrawn> drawList(PdfAuxData &pdfData,
                                                     const RenderOpts &renderOpts,
@@ -448,7 +553,8 @@ private:
                                                     double offset = 0.0,
                                                     CalcHeightOpt heightCalcOpt = CalcHeightOpt::Unknown,
                                                     double scale = 1.0,
-                                                    bool nested = false);
+                                                    bool nested = false,
+                                                    RTLFlag *rtl = nullptr);
     //! Draw table.
     QPair<QVector<WhereDrawn>, WhereDrawn> drawTable(PdfAuxData &pdfData,
                                                      const RenderOpts &renderOpts,
@@ -456,7 +562,8 @@ private:
                                                      std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
                                                      double offset,
                                                      CalcHeightOpt heightCalcOpt,
-                                                     double scale);
+                                                     double scale,
+                                                     RTLFlag *rtl = nullptr);
 
     //! \return Minimum necessary height to draw item, meant at least one line.
     double minNecessaryHeight(PdfAuxData &pdfData,
@@ -472,7 +579,8 @@ private:
                                      const QString &footnoteRefId,
                                      MD::Footnote<MD::QStringTrait> *note,
                                      CalcHeightOpt heightCalcOpt,
-                                     double *lineHeight = nullptr);
+                                     double *lineHeight = nullptr,
+                                     RTLFlag *rtl = nullptr);
     //! \return Height of the footnote.
     QVector<WhereDrawn> footnoteHeight(PdfAuxData &pdfData,
                                        const RenderOpts &renderOpts,
@@ -517,7 +625,8 @@ private:
                                                         //! A very first item in list, even not nested first item in nested list.
                                                         bool firstInList,
                                                         //! Just first item in list, possibly in nested list.
-                                                        bool firstItem);
+                                                        bool firstItem,
+                                                        RTLFlag *rtl = nullptr);
 
     //! Auxiliary struct for calculation of spaces scales to shrink text to width.
     struct CustomWidth {
@@ -611,7 +720,8 @@ private:
                                                   bool firstInParagraph,
                                                   CustomWidth &cw,
                                                   double scale,
-                                                  const QColor &color = Qt::black);
+                                                  const QColor &color = Qt::black,
+                                                  RTLFlag *rtl = nullptr);
     //! Draw inlined code.
     QVector<QPair<QRectF, unsigned int>> drawInlinedCode(PdfAuxData &pdfData,
                                                          const RenderOpts &renderOpts,
@@ -622,7 +732,8 @@ private:
                                                          bool firstInParagraph,
                                                          CustomWidth &cw,
                                                          double scale,
-                                                         const QColor &color = Qt::black);
+                                                         const QColor &color = Qt::black,
+                                                         RTLFlag *rtl = nullptr);
     //! Draw string.
     QVector<QPair<QRectF, unsigned int>> drawString(PdfAuxData &pdfData,
                                                     const RenderOpts &renderOpts,
@@ -653,7 +764,8 @@ private:
                                                     const QColor &color = Qt::black,
                                                     Font *regularSpaceFont = nullptr,
                                                     double regularSpaceFontSize = 0.0,
-                                                    double regularSpaceFontScale = 0.0);
+                                                    double regularSpaceFontScale = 0.0,
+                                                    RTLFlag *rtl = nullptr);
     //! Draw link.
     QVector<QPair<QRectF, unsigned int>> drawLink(PdfAuxData &pdfData,
                                                   const RenderOpts &renderOpts,
@@ -668,7 +780,8 @@ private:
                                                   double offset,
                                                   bool firstInParagraph,
                                                   CustomWidth &cw,
-                                                  double scale);
+                                                  double scale,
+                                                  RTLFlag *rtl = nullptr);
     //! Draw image.
     QPair<QRectF, unsigned int> drawImage(PdfAuxData &pdfData,
                                           const RenderOpts &renderOpts,
@@ -716,6 +829,8 @@ private:
         QColor m_background;
         std::shared_ptr<MD::Footnote<MD::QStringTrait>> m_footnoteObj;
         FontAttribs m_font;
+        bool m_isRightToLeft = false;
+        bool m_code = false;
 
         //! \return Width of the item.
         double width(PdfAuxData &pdfData, PdfRenderer *render, double scale) const;
@@ -727,6 +842,7 @@ private:
         double m_height = 0.0;
         MD::Table<MD::QStringTrait>::Alignment m_alignment;
         QVector<CellItem> m_items;
+        bool m_isRightToLeft = false;
 
         void setWidth(double w)
         {
@@ -783,6 +899,7 @@ private:
         double m_lineHeight = 0.0;
         MD::Table<MD::QStringTrait>::Alignment m_alignment;
         QVector<CellItem> m_text;
+        bool m_isRightToLeft = false;
 
         void clear()
         {
