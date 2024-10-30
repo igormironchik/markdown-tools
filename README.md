@@ -8,6 +8,11 @@
   * [On what platforms better use `Conan` to build `markdown-tools`?](#on-what-platforms-better-use-conan-to-build-markdown-tools)
 * [Known issues](#known-issues)
 
+> [!CAUTION]
+>
+> In editor and converter implemented support of RTL languages. But I don't know any of such
+> languages. I need testers to check if I implemented everything right. Thank you.
+
 # About
 
 This is a set of applications to work with `Markdown`, including editor, `HTML`
