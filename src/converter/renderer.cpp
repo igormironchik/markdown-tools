@@ -4988,7 +4988,7 @@ void PdfRenderer::drawTextLineInTable(const RenderOpts &renderOpts,
         text.m_text.first().m_word = res;
     }
 
-    for (auto it = text.m_text.cbegin(), last = text.m_text.cend(); it != last; ++it) {
+    for (auto it = text.m_text.begin(), last = text.m_text.end(); it != last; ++it) {
         auto *f = createFont(it->m_font.m_family, it->m_font.m_bold, it->m_font.m_italic,
                              it->m_font.m_size, pdfData.m_doc, scale, pdfData);
 
@@ -5008,6 +5008,10 @@ void PdfRenderer::drawTextLineInTable(const RenderOpts &renderOpts,
 
         if (it->m_color.isValid()) {
             pdfData.setColor(it->m_color);
+        }
+
+        if (it->m_isRightToLeft) {
+            std::reverse(it->m_word.begin(), it->m_word.end());
         }
 
         pdfData.drawText(x - (text.m_isRightToLeft ? w : 0.0), y,
