@@ -37,7 +37,8 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR}
 	${md4qt_INCLUDE_DIRECTORIES}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/ksyntaxhighlighting/lib
-	${CMAKE_CURRENT_BINARY_DIR}/../../../3rdparty/ksyntaxhighlighting/lib )
+    ${CMAKE_CURRENT_BINARY_DIR}/../../../3rdparty/ksyntaxhighlighting/lib
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/shared)
 
 link_directories( ${CMAKE_CURRENT_BINARY_DIR}/../../../3rdparty/podofo/src/podofo )
 link_directories( ${CMAKE_CURRENT_BINARY_DIR}/../../../3rdparty/podofo/src )
@@ -60,7 +61,7 @@ qt6_add_resources( SRC ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/converter/resour
 
 add_executable( test.render ${SRC} )
 
-target_link_libraries( test.render syntax podofo_shared
+target_link_libraries( test.render syntax podofo_shared markdown-widgets
 	JKQTMathText6 JKQTCommon6
 	Qt6::Widgets Qt6::Gui Qt6::Network Qt6::Test Qt6::Core resvg )
 

@@ -8,6 +8,9 @@
 #include "const.hpp"
 #include "podofo_paintdevice.hpp"
 
+// shared include.
+#include "utils.hpp"
+
 #ifdef MD_PDF_TESTING
 #include <QtTest/QtTest>
 #include <test_const.hpp>
@@ -1490,19 +1493,6 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
 namespace /* anonymous */
 {
 
-inline bool isRightToLeft(const QChar &ch)
-{
-    switch (ch.direction()) {
-    case QChar::DirAL:
-    case QChar::DirAN:
-    case QChar::DirR:
-        return true;
-
-    default:
-        return false;
-    }
-}
-
 inline bool isRightToLeft(const QVector<QPair<QString, bool>> &words)
 {
     for (const auto & w : std::as_const(words)) {
@@ -1512,73 +1502,6 @@ inline bool isRightToLeft(const QVector<QPair<QString, bool>> &words)
     }
 
     return false;
-}
-
-QVector<QPair<QString, bool>> splitString(const QString &str)
-{
-    QVector<QPair<QString, bool>> res;
-    qsizetype first = 0;
-    bool space = false;
-
-    for(qsizetype i = 0; i < str.length(); ++i) {
-        if (str[i].isSpace() && !space) {
-            if (first < i) {
-                const auto word = str.sliced(first, i - first);
-                res.append({word, isRightToLeft(word[0])});
-            }
-            res.append({QStringLiteral(" "), false});
-            space = true;
-        } else {
-            if (space) {
-                first = i;
-            }
-
-            space = false;
-        }
-    }
-
-    if (!space && first < str.length()) {
-        const auto word = str.sliced(first);
-        res.append({word, isRightToLeft(word[0])});
-    }
-
-    return res;
-}
-
-void orderWords(QVector<QPair<QString, bool>> & text)
-{
-    qsizetype start = -1;
-    qsizetype end = -1;
-
-    auto reverseItems = [] (qsizetype start, qsizetype end, QVector<QPair<QString, bool>> & data) {
-        if (start > -1 && end > start) {
-            while (end - start > 0) {
-                data.swapItemsAt(start, end);
-                ++start;
-                --end;
-            }
-        }
-    };
-
-    for (qsizetype i = 0; i < text.size(); ++i) {
-        if (text[i].first != QStringLiteral(" ")) {
-            if (!text[i].second) {
-                if (start == -1 ) {
-                    start = i;
-                    end = i;
-                } else {
-                    end = i;
-                }
-            } else {
-                reverseItems(start, end, text);
-
-                start = -1;
-                end = -1;
-            }
-        }
-    }
-
-    reverseItems(start, end, text);
 }
 
 } /* namespace anonymous */
@@ -1686,7 +1609,7 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawString(PdfAuxData &pdfData
 
     const auto autoOffset = pdfData.m_layout.addOffset(offset, !pdfData.m_layout.isRightToLeft());
 
-    auto words = splitString(str);
+    auto words = splitString(str, false);
 
     if (pdfData.m_layout.isRightToLeft()) {
         orderWords(words);
@@ -4166,7 +4089,7 @@ void PdfRenderer::createAuxCell(const RenderOpts &renderOpts,
     auto handleText = [&]() {
         auto *t = static_cast<MD::Text<MD::QStringTrait> *>(item);
 
-        auto words = splitString(t->text());
+        auto words = splitString(t->text(), false);
 
         if (t->text().isRightToLeft()) {
             orderWords(words);
@@ -4203,7 +4126,7 @@ void PdfRenderer::createAuxCell(const RenderOpts &renderOpts,
     case MD::ItemType::Code: {
         auto *c = static_cast<MD::Code<MD::QStringTrait> *>(item);
 
-        auto words = splitString(c->text());
+        auto words = splitString(c->text(), false);
 
         if (data.m_isRightToLeft) {
             orderWords(words);
@@ -4255,7 +4178,7 @@ void PdfRenderer::createAuxCell(const RenderOpts &renderOpts,
 
             data.m_items.append(item);
         } else if (!l->text().isEmpty()) {
-            auto words = splitString(l->text());
+            auto words = splitString(l->text(), false);
 
             if (l->text().isRightToLeft()) {
                 orderWords(words);

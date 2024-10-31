@@ -6,91 +6,20 @@
 // md-editor include.
 #include "toc.hpp"
 
+// shared include.
+#include "utils.hpp"
+
 namespace MdEditor
 {
-
-namespace /* anonymous */
-{
-
-inline bool isRightToLeft(const QChar &ch)
-{
-    switch (ch.direction()) {
-    case QChar::DirAL:
-    case QChar::DirAN:
-    case QChar::DirR:
-        return true;
-
-    default:
-        return false;
-    }
-}
-
-QVector<QPair<QString, bool>> splitString(const QString & s)
-{
-    QVector<QPair<QString, bool>> res;
-    qsizetype i = 0;
-    bool rightToLeft = false;
-    QString word;
-
-    for (; i < s.length(); ++i) {
-        if (!s[i].isSpace()) {
-            if (word.isEmpty()) {
-                rightToLeft = isRightToLeft(s[i]);
-            }
-
-            word.append(s[i]);
-        } else if (!word.isEmpty()) {
-            res.append({word, rightToLeft});
-            word.clear();
-        }
-    }
-
-    if (!word.isEmpty()) {
-        res.append({word, rightToLeft});
-    }
-
-    return res;
-}
-
-} /* namespace anonymous */
 
 StringData::StringData(const QString &t, bool c, bool rtl)
     : m_text(t)
     , m_code(c)
     , m_isRightToLeft(rtl)
-    , m_splittedText(splitString(m_text))
+    , m_splittedText(splitString(m_text, true))
 {
     if (m_isRightToLeft) {
-        qsizetype start = -1;
-        qsizetype end = -1;
-
-        auto reverseItems = [] (qsizetype start, qsizetype end, QVector<QPair<QString, bool>> & data) {
-            if (start > -1 && end > start) {
-                while (end - start > 0) {
-                    data.swapItemsAt(start, end);
-                    ++start;
-                    --end;
-                }
-            }
-        };
-
-        for (qsizetype i = 0; i < m_splittedText.size(); ++i) {
-            if (!m_splittedText[i].second) {
-                if (start == -1 ) {
-                    start = i;
-                    end = i;
-                } else {
-                    end = i;
-                }
-            } else {
-                reverseItems(start, end, m_splittedText);
-
-                start = -1;
-                end = -1;
-            }
-        }
-
-        reverseItems(start, end, m_splittedText);
+        orderWords(m_splittedText);
     }
 }
 
