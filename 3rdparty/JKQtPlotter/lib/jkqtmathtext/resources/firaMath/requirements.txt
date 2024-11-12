@@ -1,4 +1,0 @@
-fontmake
-fontTools
-glyphsLib
-toml
