@@ -39,6 +39,7 @@ set( GUI_SRC main.cpp
 	${CMAKE_CURRENT_BINARY_DIR}/cfg.hpp )
 	
 qt6_add_resources( GUI_SRC resources.qrc )
+qt6_add_resources(GUI_SRC ../../3rdparty/MicroTeX/latex.qrc)
 
 if( WIN32 )
 	list( APPEND GUI_SRC md-pdf.rc )
@@ -49,8 +50,8 @@ set( LIB_SYNTAX_SRC syntax.cpp
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/podofo/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/MicroTeX/src
 	${CMAKE_CURRENT_BINARY_DIR}/../../3rdparty/podofo/src/podofo
-	${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/JKQtPlotter/lib
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/../shared )
 
@@ -65,7 +66,7 @@ add_custom_command( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/cfg.hpp
 
 configure_file( version.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/version.hpp )
 
-add_definitions( -DCFGFILE_QT_SUPPORT )
+add_definitions( -DCFGFILE_QT_SUPPORT -DBUILD_QT)
 
 add_library( syntax STATIC ${LIB_SYNTAX_SRC} )
 
@@ -83,6 +84,6 @@ install( TARGETS md-pdf-gui )
 install( TARGETS md-launcher )
 
 target_link_libraries( md-pdf-gui syntax markdown-widgets
-	JKQTMathText6 JKQTCommon6 KF${KF_MAJOR_VERSION}::SyntaxHighlighting
+    KF${KF_MAJOR_VERSION}::SyntaxHighlighting LaTeX
 	Qt6::Widgets Qt6::Network Qt6::Core
 	podofo::podofo resvg )

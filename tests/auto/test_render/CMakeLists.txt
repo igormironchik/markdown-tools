@@ -7,7 +7,6 @@ find_package( Qt6Test 6.5.0 REQUIRED )
 find_package( Qt6Gui 6.5.0 REQUIRED )
 find_package( Qt6Widgets 6.5.0 REQUIRED )
 find_package( Qt6Network 6.5.0 REQUIRED )
-find_package( Qt6Svg 6.5.0 REQUIRED )
 
 add_definitions( -DPODOFO_SHARED )
 
@@ -26,14 +25,14 @@ set( SRC main.cpp
 
 qt6_add_resources( SRC ../../../src/converter/resources.qrc )
 
-add_definitions( -DMD_PDF_TESTING )
+add_definitions(-DMD_PDF_TESTING -DBUILD_QT)
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/../../..
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/podofo/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/MicroTeX/src
 	${CMAKE_CURRENT_BINARY_DIR}/../../../3rdparty/podofo/src/podofo
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/JKQtPlotter/lib
 	${md4qt_INCLUDE_DIRECTORIES}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/ksyntaxhighlighting/lib
@@ -58,11 +57,11 @@ configure_file( test_const.hpp.in test_const.hpp @ONLY )
 link_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../../../lib )
 
 qt6_add_resources( SRC ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/converter/resources.qrc )
+qt6_add_resources(SRC ../../../3rdparty/MicroTeX/latex.qrc)
 
 add_executable( test.render ${SRC} )
 
-target_link_libraries( test.render syntax podofo_shared markdown-widgets
-	JKQTMathText6 JKQTCommon6
+target_link_libraries( test.render syntax podofo_shared markdown-widgets LaTeX
 	Qt6::Widgets Qt6::Gui Qt6::Network Qt6::Test Qt6::Core resvg )
 
 add_test( NAME test.render

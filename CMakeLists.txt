@@ -72,12 +72,7 @@ set( _DISABLE_INSTALLATION TRUE )
 set( PODOFO_BUILD_LIB_ONLY ON CACHE INTERNAL "" FORCE )
 add_subdirectory( 3rdparty/podofo )
 
-set( JKQtPlotter_BUILD_EXAMPLES OFF CACHE INTERNAL "" FORCE )
-set( JKQtPlotter_BUILD_TOOLS OFF CACHE INTERNAL "" FORCE )
-set( JKQtPlotter_BUILD_TESTS OFF CACHE INTERNAL "" FORCE )
-set( JKQtPlotter_BUILD_LIB_JKQTFASTPLOTTER OFF CACHE INTERNAL "" FORCE )
-set( JKQtPlotter_BUILD_LIB_JKQTPLOTTER OFF CACHE INTERNAL "" FORCE )
-add_subdirectory( 3rdparty/JKQtPlotter )
+add_subdirectory( 3rdparty/MicroTeX )
 
 set( BUILD_MD4QT_QT_TESTS OFF CACHE INTERNAL "" FORCE )
 add_subdirectory( 3rdparty/md4qt )
@@ -90,9 +85,7 @@ add_subdirectory( 3rdparty/cfgfile/generator )
 set( _DISABLE_INSTALLATION FALSE )
 
 install( TARGETS podofo_shared )
-install( TARGETS JKQTCommon${QT_VERSION_MAJOR} )
-install( TARGETS JKQTMath${QT_VERSION_MAJOR} )
-install( TARGETS JKQTMathText${QT_VERSION_MAJOR} )
+install(TARGETS LaTeX)
 
 set( CFGFILE_GENERATOR ${CMAKE_CURRENT_BINARY_DIR}/bin/cfgfile.generator${CMAKE_EXECUTABLE_SUFFIX} )
 

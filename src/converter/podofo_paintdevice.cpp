@@ -10,6 +10,15 @@
 #include <QPainterPath>
 #include <QTextItem>
 #include <QTransform>
+#include <QFile>
+
+#include <QDebug>
+
+// MicroTeX include.
+#include <fonts/font_info.h>
+
+// C++ include.
+#include <stdexcept>
 
 namespace MdPdf
 {
@@ -119,7 +128,8 @@ struct PoDoFoPaintEnginePrivate {
 //
 
 PoDoFoPaintEngine::PoDoFoPaintEngine()
-    : d(new PoDoFoPaintEnginePrivate(this))
+    : QPaintEngine(QPaintEngine::AllFeatures)
+    , d(new PoDoFoPaintEnginePrivate(this))
 {
 }
 
@@ -153,6 +163,7 @@ void PoDoFoPaintEngine::drawEllipse(const QRect &)
 
 void PoDoFoPaintEngine::drawImage(const QRectF &, const QImage &, const QRectF &, Qt::ImageConversionFlags)
 {
+    qDebug() << "draw image";
 }
 
 double PoDoFoPaintEngine::qXtoPoDoFo(double x)
@@ -255,10 +266,12 @@ void PoDoFoPaintEngine::drawPoints(const QPoint *, int)
 
 void PoDoFoPaintEngine::drawPolygon(const QPointF *, int, QPaintEngine::PolygonDrawMode)
 {
+    qDebug() << "draw polygon";
 }
 
 void PoDoFoPaintEngine::drawPolygon(const QPoint *, int, QPaintEngine::PolygonDrawMode)
 {
+    qDebug() << "draw polygon";
 }
 
 double PoDoFoPaintEngine::qWtoPoDoFo(double w)
@@ -361,20 +374,47 @@ inline PoDoFo::PdfColor color(const QColor &c)
 
 QPair<PoDoFo::PdfFont *, double> PoDoFoPaintEngine::qFontToPoDoFo(const QFont &f)
 {
-    PoDoFo::PdfFontSearchParams params;
-    params.Style = PoDoFo::PdfFontStyle::Regular;
-    if (f.bold()) {
-        params.Style.value() |= PoDoFo::PdfFontStyle::Bold;
+    //const double size = (f.pointSizeF() > 0.0 ? f.pointSizeF() : f.pixelSize() / paintDevice()->physicalDpiY() * 72.0);
+
+    // This code is for MicroTeX, the author do thing not right with font sizes.
+    const auto bv = d->m_transform.m21();
+    const auto dv = d->m_transform.m22();
+    const auto scale = std::sqrt(bv * bv + dv * dv);
+
+    const double size = f.pointSize() * scale / paintDevice()->physicalDpiY() * 72.0;
+
+    auto id = tex::FontInfo::__id(f.family().toStdString());
+
+    if (id != -1) {
+        const auto path = QStringLiteral(":/") + QString(tex::FontInfo::__get(id)->getPath().c_str());
+        QFile fontFile(path);
+
+        if (fontFile.open(QIODevice::ReadOnly)) {
+            auto content = fontFile.readAll();
+            fontFile.close();
+
+            auto &font = d->m_doc->GetFonts().GetOrCreateFontFromBuffer(
+                        PoDoFo::bufferview(content.data(), content.size()));
+
+            return {&font, size};
+        } else {
+            throw std::runtime_error("Unable to load font from file: \":/" +
+                                     tex::FontInfo::__get(id)->getPath() + "\".");
+        }
+    } else {
+        PoDoFo::PdfFontSearchParams params;
+        params.Style = PoDoFo::PdfFontStyle::Regular;
+        if (f.bold()) {
+            params.Style.value() |= PoDoFo::PdfFontStyle::Bold;
+        }
+        if (f.italic()) {
+            params.Style.value() |= PoDoFo::PdfFontStyle::Italic;
+        }
+
+        auto *font = d->m_doc->GetFonts().SearchFont(f.family().toLocal8Bit().data(), params);
+
+        return {font, size};
     }
-    if (f.italic()) {
-        params.Style.value() |= PoDoFo::PdfFontStyle::Italic;
-    }
-
-    auto *font = d->m_doc->GetFonts().SearchFont(f.family().toLocal8Bit().data(), params);
-
-    const double size = f.pointSizeF() > 0.0 ? f.pointSizeF() : f.pixelSize() / paintDevice()->physicalDpiY() * 72.0;
-
-    return {font, size};
 }
 
 void PoDoFoPaintEngine::updateState(const QPaintEngineState &state)

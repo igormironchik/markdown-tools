@@ -44,9 +44,7 @@ else ()
         message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no c++11 support. Please use a different one that supports c++11.")
     endif ()
 endif ()
-# copy res dir
 
-file(COPY res DESTINATION .)
 if (MSVC)
     find_package(tinyxml2 CONFIG REQUIRED)
     target_link_libraries(LaTeX PRIVATE tinyxml2::tinyxml2)
@@ -146,117 +144,13 @@ target_sources(LaTeX PRIVATE
         )
 target_include_directories(LaTeX PUBLIC src)
 
-# check operating system
 
-if (QT)
-    message(STATUS, "Cross platform build using Qt")
-    target_compile_definitions(LaTeX PUBLIC -DBUILD_QT)
-    find_package(QT NAMES Qt6 Qt5 COMPONENTS Gui Widgets PrintSupport REQUIRED)
-    find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Gui Widgets PrintSupport REQUIRED)
-    target_sources(LaTeX PRIVATE
-            src/platform/qt/graphic_qt.cpp
-            )
-    target_link_libraries(LaTeX PRIVATE
-            Qt${QT_VERSION_MAJOR}::Gui
-            )
-    add_executable(LaTeXQtSample
-            src/samples/qt_texwidget.cpp
-            src/samples/qt_mainwindow.cpp
-            src/samples/qt_main.cpp
-            )
-    target_link_libraries(LaTeXQtSample PRIVATE
-            Qt${QT_VERSION_MAJOR}::Widgets
-            Qt${QT_VERSION_MAJOR}::PrintSupport
-            LaTeX)
-    set_target_properties(LaTeXQtSample PROPERTIES OUTPUT_NAME LaTeX)
-    set_target_properties(LaTeXQtSample PROPERTIES AUTOMOC ON)
-elseif (SKIA)
-    message(STATUS, "Cross platform build using Qt and Skia for rendering")
-    target_compile_definitions(LaTeX PUBLIC -DBUILD_SKIA -DSK_GL)
-    target_include_directories(LaTeX PUBLIC src)
-    if (MSVC)
-        find_package(skia REQUIRED)
-        target_link_libraries(LaTeX INTERFACE skia skia::skia)
-    else ()
-        include_directories(../skia ../skia/include)
-        link_directories(../skia)
-    endif ()
-    find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Widgets REQUIRED)
-    find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Widgets REQUIRED)
-    target_sources(LaTeX PRIVATE
-            src/platform/skia/graphic_skia.cpp
-            )
-    target_link_libraries(LaTeX PRIVATE
-            Qt${QT_VERSION_MAJOR}::Core
-            )
-    add_executable(LaTeXQtSkiaSample
-            src/samples/qt_skiatexwidget.cpp
-            src/samples/qt_mainwindow.cpp
-            src/samples/qt_main.cpp
-            )
-    target_link_libraries(LaTeXQtSkiaSample PRIVATE
-            Qt${QT_VERSION_MAJOR}::Widgets LaTeX)
-    set_target_properties(LaTeXQtSkiaSample PROPERTIES OUTPUT_NAME LaTeX)
-    set_target_properties(LaTeXQtSkiaSample PROPERTIES AUTOMOC ON)
-elseif (WIN32)
-    message(STATUS "We are working on Windows")
-    target_compile_definitions(LaTeX PUBLIC -DBUILD_WIN32 -D_HAS_STD_BYTE=0)
-    add_executable(LaTeXWin32Sample WIN32
-            src/platform/gdi_win/graphic_win32.cpp
-            src/samples/win32_main.cpp
-            )
-    target_link_libraries(LaTeXWin32Sample PRIVATE gdiplus LaTeX)
-    set_target_properties(LaTeXWin32Sample PROPERTIES OUTPUT_NAME LaTeX)
-elseif (UNIX)
-    message(STATUS "We are working with GTK on a Unix like OS")
-    target_compile_definitions(LaTeX PUBLIC -DBUILD_GTK)
-    find_package(Fontconfig REQUIRED)
-    pkg_check_modules(GTKMM REQUIRED IMPORTED_TARGET gtkmm-3.0)
-    pkg_check_modules(GSVMM REQUIRED IMPORTED_TARGET gtksourceviewmm-3.0)
-    pkg_check_modules(CairoMM REQUIRED IMPORTED_TARGET cairomm-1.0)
-    target_sources(LaTeX PRIVATE
-            src/platform/cairo/graphic_cairo.cpp
-            )
-    target_link_libraries(LaTeX PRIVATE
-            PkgConfig::GTKMM #include <pangomm/fontdescription.h>
-            PkgConfig::CairoMM #include <cairomm/context.h>
-            Fontconfig::Fontconfig
-            )
-    add_executable(LaTeXGtkSample
-            src/samples/gtkmm_main.cpp
-            )
-    target_link_libraries(LaTeXGtkSample PRIVATE
-            PkgConfig::GSVMM
-            LaTeX
-            )
-    set_target_properties(LaTeXGtkSample PROPERTIES OUTPUT_NAME LaTeX)
-else ()
-    message(STATUS "We are working on a unknown platform")
-    # other platforms...
-endif ()
-
-# compile options
-
-option(HAVE_LOG "If enable log" ON)
-if (HAVE_LOG)
-    add_definitions(-DHAVE_LOG)
-endif ()
-
-option(GRAPHICS_DEBUG "If enable graphics debug" ON)
-if (GRAPHICS_DEBUG)
-    add_definitions(-DGRAPHICS_DEBUG)
-endif ()
-
-option(MEM_CHECK "If compile for memory check only" OFF)
-if (MEM_CHECK)
-    add_definitions(-DMEM_CHECK)
-endif ()
-
-option(QT "Compile using Qt instead of Win32/Gtk" OFF)
-
-
-option(BUILD_EXAMPLE "Build examples" OFF)
-if (BUILD_EXAMPLE)
-    add_subdirectory(example)
-endif ()
-
+target_compile_definitions(LaTeX PUBLIC -DBUILD_QT)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Gui REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Gui REQUIRED)
+target_sources(LaTeX PRIVATE
+        src/platform/qt/graphic_qt.cpp
+        )
+target_link_libraries(LaTeX PRIVATE
+        Qt${QT_VERSION_MAJOR}::Gui
+        )

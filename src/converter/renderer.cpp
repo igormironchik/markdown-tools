@@ -27,8 +27,9 @@
 #include <QTemporaryFile>
 #include <QThread>
 
-// JKQtPlotter include.
-#include <jkqtmathtext/jkqtmathtext.h>
+// MicroTeX include.
+#include <platform/qt/graphic_qt.h>
+#include <latex.h>
 
 // C++ include.
 #include <cmath>
@@ -2501,10 +2502,19 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
     pdfData.m_endLine = item->endLine();
     pdfData.m_endPos = item->endColumn();
 
-    JKQTMathText mt;
-    mt.useAnyUnicode(renderOpts.m_mathFont, renderOpts.m_mathFont);
-    mt.setFontPointSize(renderOpts.m_mathFontSize);
-    mt.parse(item->expr());
+    float fontSize = (float) renderOpts.m_textFontSize;
+
+    {
+        PoDoFoPaintDevice pd;
+        fontSize = fontSize / 72.f * (float) pd.physicalDpiY();
+    }
+
+    auto latexRender = std::unique_ptr<tex::TeXRender>(tex::LaTeX::parse(
+            item->expr().toStdWString(),
+            0,
+            fontSize,
+            fontSize / 3.f,
+            tex::black));
 
     QSizeF pxSize = {}, size = {};
     double descent = 0.0;
@@ -2512,8 +2522,11 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
     {
         PoDoFoPaintDevice pd;
         QPainter p(&pd);
-        pxSize = mt.getSize(p);
-        size = {pxSize.width() * (1.0 / pd.physicalDpiX() * 72.0), pxSize.height() * (1.0 / pd.physicalDpiY() * 72.0)};
+        tex::Graphics2D_qt g2(&p);
+        latexRender->draw(g2, 0, 0);
+        pxSize = {(qreal)latexRender->getWidth(), (qreal)latexRender->getHeight()};
+        size = {pxSize.width() / (qreal) pd.physicalDpiX() * 72.0, pxSize.height() / (qreal) pd.physicalDpiY() * 72.0};
+        descent = latexRender->getBaseline() / (qreal) pd.physicalDpiY() * 72.0;
     }
 
     auto *font = createFont(renderOpts.m_textFont, false, false, renderOpts.m_textFontSize, pdfData.m_doc, scale, pdfData);
@@ -2581,12 +2594,10 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
 
             pdfData.m_layout.addX(x);
 
-            mt.draw(p,
-                    0,
-                    QRectF(QPointF((pdfData.m_layout.startX(size.width() * imgScale)) / 72.0 * pd.physicalDpiX(),
-                                   (pdfData.m_layout.pageHeight() - pdfData.m_layout.y() + (h - size.height() * imgScale) / 2.0 + descent * imgScale) / 72.0
-                                       * pd.physicalDpiY()),
-                           pxSize));
+            tex::Graphics2D_qt g2(&p);
+            latexRender->draw(g2, pdfData.m_layout.startX(size.width() * imgScale) / 72.0 * pd.physicalDpiX(),
+                    (pdfData.m_layout.pageHeight() - pdfData.m_layout.y() + (h - size.height() * imgScale) / 2.0 + descent * imgScale) / 72.0
+                        * pd.physicalDpiY());
 
             const QRectF r = {pdfData.m_layout.startX(size.width() * imgScale),
                               pdfData.m_layout.y() - (h - size.height() * imgScale) / 2.0 - descent * imgScale,
@@ -2651,13 +2662,12 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
             pd.setPdfPainter(*(*pdfData.m_painters)[pdfData.m_currentPainterIdx].get(), *pdfData.m_doc);
             QPainter p(&pd);
 
-            mt.draw(p,
-                    0,
-                    QRectF(QPointF((pdfData.m_layout.startX(size.width() * imgScale)) / 72.0 * pd.physicalDpiX(),
+            tex::Graphics2D_qt g2(&p);
+            latexRender->draw(g2,
+                    pdfData.m_layout.startX(size.width() * imgScale) / 72.0 * pd.physicalDpiX(),
                                    (pdfData.m_layout.pageHeight() - pdfData.m_layout.y() - h +
                                     (h - size.height() * imgScale) / 2.0 + descent * imgScale) / 72.0
-                                       * pd.physicalDpiY()),
-                           pxSize));
+                                       * pd.physicalDpiY());
 
             const QRectF r = {pdfData.m_layout.startX(size.width() * imgScale),
                               pdfData.m_layout.y() + h - (h - size.height() * imgScale) / 2.0 - descent * imgScale,
