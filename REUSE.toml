@@ -46,10 +46,10 @@ SPDX-FileCopyrightText = "none"
 SPDX-License-Identifier = "MIT"
 
 [[annotations]]
-path = "3rdparty/JKQtPlotter/**"
+path = "3rdparty/MicroTeX/**"
 precedence = "aggregate"
-SPDX-FileCopyrightText = "2008-2024 Jan W. Krieger <jan@jkrieger.de>"
-SPDX-License-Identifier = "LGPL-2.1-or-later"
+SPDX-FileCopyrightText = "2020 Nano Michael"
+SPDX-License-Identifier = "MIT"
 
 [[annotations]]
 path = "3rdparty/JKQtPlotter/lib/jkqtmathtext/resources/xits/**"
