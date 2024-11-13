@@ -121,10 +121,6 @@ struct RenderOpts {
     QString m_codeFont;
     //! Code font size.
     int m_codeFontSize;
-    //! Math font.
-    QString m_mathFont;
-    //! Math font size.
-    int m_mathFontSize;
     //! Links color.
     QColor m_linkColor;
     //! Borders color.

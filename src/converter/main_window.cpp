@@ -220,13 +220,6 @@ void MainWidget::initCfg(Cfg &cfg) const
         cfg.set_codeFont(f);
     }
 
-    {
-        MdPdf::Font f;
-        f.set_name(m_ui->m_mathFont->currentFont().family());
-        f.set_size(m_ui->m_mathFontSize->value());
-        cfg.set_mathFont(f);
-    }
-
     cfg.set_linkColor(m_ui->m_linkColor->color().name(QColor::HexRgb));
     cfg.set_borderColor(m_ui->m_borderColor->color().name(QColor::HexRgb));
     cfg.set_codeTheme(m_ui->m_codeTheme->currentText());
@@ -287,25 +280,6 @@ void MainWidget::applyCfg(const Cfg &cfg)
 
         m_ui->m_codeFont->setCurrentFont(f);
         m_ui->m_codeFontSize->setValue(fs);
-    }
-
-    const auto &mFont = cfg.mathFont();
-
-    if (!mFont.name().isEmpty()) {
-        auto fs = mFont.size();
-
-        if (fs < 5) {
-            fs = 5;
-        }
-
-        if (fs > 14) {
-            fs = 14;
-        }
-
-        const QFont f(mFont.name(), fs);
-
-        m_ui->m_mathFont->setCurrentFont(f);
-        m_ui->m_mathFontSize->setValue(fs);
     }
 
     if (!cfg.linkColor().isEmpty()) {
@@ -409,8 +383,6 @@ void MainWidget::process()
             opts.m_textFontSize = m_ui->m_textFontSize->value();
             opts.m_codeFont = m_ui->m_codeFont->currentFont().family();
             opts.m_codeFontSize = m_ui->m_codeFontSize->value();
-            opts.m_mathFont = m_ui->m_mathFont->currentFont().family();
-            opts.m_mathFontSize = m_ui->m_mathFontSize->value();
             opts.m_linkColor = m_ui->m_linkColor->color();
             opts.m_borderColor = m_ui->m_borderColor->color();
             opts.m_left = (m_ui->m_pt->isChecked() ? m_ui->m_left->value() : m_ui->m_left->value() / s_mmInPt);

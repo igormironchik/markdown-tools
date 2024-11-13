@@ -129,8 +129,6 @@ struct TestRendering {
         opts.m_right = 50.0;
         opts.m_textFont = QStringLiteral("Droid Serif");
         opts.m_textFontSize = textFontSize;
-        opts.m_mathFont = QStringLiteral("Droid Serif");
-        opts.m_mathFontSize = textFontSize;
         opts.m_top = 50.0;
         opts.m_dpi = 150;
         opts.m_imageAlignment = ImageAlignment::Center;
