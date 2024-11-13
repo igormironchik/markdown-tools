@@ -9,6 +9,8 @@
 #include <QPaintDevice>
 #include <QPaintEngine>
 #include <QScopedPointer>
+#include <QSharedPointer>
+#include <QTemporaryFile>
 
 // podofo include.
 #include <podofo/podofo.h>
@@ -26,7 +28,7 @@ struct PoDoFoPaintDevicePrivate;
 class PoDoFoPaintDevice final : public QPaintDevice
 {
 public:
-    PoDoFoPaintDevice();
+    explicit PoDoFoPaintDevice(QMap<QString, QSharedPointer<QTemporaryFile>> & fontsCache);
     ~PoDoFoPaintDevice() override;
 
     void setPdfPainter(PoDoFo::PdfPainter &p, PoDoFo::PdfDocument &doc);
@@ -52,7 +54,7 @@ struct PoDoFoPaintEnginePrivate;
 class PoDoFoPaintEngine final : public QPaintEngine
 {
 public:
-    PoDoFoPaintEngine();
+    explicit PoDoFoPaintEngine(QMap<QString, QSharedPointer<QTemporaryFile>> & fontsCache);
     ~PoDoFoPaintEngine() override;
 
     void setPdfPainter(PoDoFo::PdfPainter &p, PoDoFo::PdfDocument &doc);

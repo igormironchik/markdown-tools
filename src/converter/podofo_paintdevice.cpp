@@ -7,12 +7,11 @@
 #include "podofo_paintdevice.hpp"
 
 // Qt include.
+#include <QMap>
 #include <QPainterPath>
 #include <QTextItem>
 #include <QTransform>
 #include <QFile>
-
-#include <QDebug>
 
 // MicroTeX include.
 #include <fonts/font_info.h>
@@ -28,8 +27,9 @@ namespace MdPdf
 //
 
 struct PoDoFoPaintDevicePrivate {
-    PoDoFoPaintDevicePrivate(PoDoFoPaintDevice *parent)
+    PoDoFoPaintDevicePrivate(PoDoFoPaintDevice *parent, QMap<QString, QSharedPointer<QTemporaryFile>> & fontsCache)
         : m_q(parent)
+        , m_engine(fontsCache)
     {
     }
 
@@ -43,8 +43,8 @@ struct PoDoFoPaintDevicePrivate {
 // PoDoFoPaintDevice
 //
 
-PoDoFoPaintDevice::PoDoFoPaintDevice()
-    : d(new PoDoFoPaintDevicePrivate(this))
+PoDoFoPaintDevice::PoDoFoPaintDevice(QMap<QString, QSharedPointer<QTemporaryFile>> & fontsCache)
+    : d(new PoDoFoPaintDevicePrivate(this, fontsCache))
 {
 }
 
@@ -108,8 +108,9 @@ int PoDoFoPaintDevice::metric(QPaintDevice::PaintDeviceMetric metric) const
 //
 
 struct PoDoFoPaintEnginePrivate {
-    PoDoFoPaintEnginePrivate(PoDoFoPaintEngine *parent)
+    PoDoFoPaintEnginePrivate(PoDoFoPaintEngine *parent, QMap<QString, QSharedPointer<QTemporaryFile>> & fontsCache)
         : m_q(parent)
+        , m_fonts(fontsCache)
     {
     }
 
@@ -121,15 +122,17 @@ struct PoDoFoPaintEnginePrivate {
     PoDoFo::PdfDocument *m_doc = nullptr;
     //! Transformation.
     QTransform m_transform;
+    //! Cache of fonts.
+    QMap<QString, QSharedPointer<QTemporaryFile>> & m_fonts;
 }; // struct PoDoFoPaintEnginePrivate
 
 //
 // PoDoFoPaintEngine
 //
 
-PoDoFoPaintEngine::PoDoFoPaintEngine()
+PoDoFoPaintEngine::PoDoFoPaintEngine(QMap<QString, QSharedPointer<QTemporaryFile>> & fontsCache)
     : QPaintEngine(QPaintEngine::AllFeatures)
-    , d(new PoDoFoPaintEnginePrivate(this))
+    , d(new PoDoFoPaintEnginePrivate(this, fontsCache))
 {
 }
 
@@ -163,7 +166,6 @@ void PoDoFoPaintEngine::drawEllipse(const QRect &)
 
 void PoDoFoPaintEngine::drawImage(const QRectF &, const QImage &, const QRectF &, Qt::ImageConversionFlags)
 {
-    qDebug() << "draw image";
 }
 
 double PoDoFoPaintEngine::qXtoPoDoFo(double x)
@@ -266,12 +268,10 @@ void PoDoFoPaintEngine::drawPoints(const QPoint *, int)
 
 void PoDoFoPaintEngine::drawPolygon(const QPointF *, int, QPaintEngine::PolygonDrawMode)
 {
-    qDebug() << "draw polygon";
 }
 
 void PoDoFoPaintEngine::drawPolygon(const QPoint *, int, QPaintEngine::PolygonDrawMode)
 {
-    qDebug() << "draw polygon";
 }
 
 double PoDoFoPaintEngine::qWtoPoDoFo(double w)
@@ -313,14 +313,12 @@ void PoDoFoPaintEngine::drawTextItem(const QPointF &p, const QTextItem &textItem
         const auto f = qFontToPoDoFo(textItem.font());
         const auto pp = d->m_transform.map(p);
 
-        qDebug() << textItem.font().family() << textItem.text();
-
         d->m_painter->TextObject.Begin();
         d->m_painter->TextObject.MoveTo(qXtoPoDoFo(pp.x()), qYtoPoDoFo(pp.y()));
         d->m_painter->TextState.SetFont(*f.first, f.second);
         d->m_painter->TextState.SetFontScale(1.0);
         const auto utf8 = textItem.text().toUtf8();
-        d->m_painter->TextObject.AddText(utf8.data());
+        d->m_painter->TextObject.AddText(utf8.constData());
         d->m_painter->TextObject.End();
     }
 }
@@ -389,23 +387,39 @@ QPair<PoDoFo::PdfFont *, double> PoDoFoPaintEngine::qFontToPoDoFo(const QFont &f
 
     if (id != -1) {
         const auto path = QStringLiteral(":/") + QString(tex::FontInfo::__get(id)->getPath().c_str());
-        QFile fontFile(path);
 
-        if (fontFile.open(QIODevice::ReadOnly)) {
-            auto content = fontFile.readAll();
-            fontFile.close();
+        if (!d->m_fonts.contains(path)) {
+            QFile fontFile(path);
 
-            PoDoFo::PdfFontCreateParams params;
-            params.Flags = PoDoFo::PdfFontCreateFlags::DontSubset;
+            if (fontFile.open(QIODevice::ReadOnly)) {
+                const auto content = fontFile.readAll();
+                fontFile.close();
 
-            auto &font = d->m_doc->GetFonts().GetOrCreateFontFromBuffer(
-                        PoDoFo::bufferview(content.data(), content.size()), params);
+                auto tmp = QSharedPointer<QTemporaryFile>(new QTemporaryFile);
 
-            return {&font, size};
-        } else {
-            throw std::runtime_error("Unable to load font from file: \":/" +
-                                     tex::FontInfo::__get(id)->getPath() + "\".");
+                if (tmp->open()) {
+                    tmp->write(content);
+                    tmp->close();
+
+                    d->m_fonts.insert(path, tmp);
+
+                    d->m_doc->GetFonts().GetOrCreateFont(tmp->fileName().toLocal8Bit().constData());
+                } else {
+                    throw std::runtime_error("Unable to load font from file: \":/" +
+                                             tex::FontInfo::__get(id)->getPath() +
+                                             "\". Failed to create temporary file.");
+                }
+            } else {
+                throw std::runtime_error("Unable to load font from file: \":/" +
+                                         tex::FontInfo::__get(id)->getPath() + "\".");
+            }
         }
+
+        const auto fileName  = d->m_fonts[path]->fileName();
+
+        auto &font = d->m_doc->GetFonts().GetOrCreateFont(fileName.toLocal8Bit().constData());
+
+        return {&font, size};
     } else {
         PoDoFo::PdfFontSearchParams params;
         params.Style = PoDoFo::PdfFontStyle::Regular;
@@ -445,11 +459,11 @@ void PoDoFoPaintEngine::updateState(const QPaintEngineState &state)
         d->m_painter->GraphicsState.SetNonStrokingColor(color(state.brush().color()));
     }
 
-    if (st & QPaintEngine::DirtyFont) {
-        const auto f = qFontToPoDoFo(state.font());
+    // if (st & QPaintEngine::DirtyFont) {
+    //     const auto f = qFontToPoDoFo(state.font());
 
-        d->m_painter->TextState.SetFont(*f.first, f.second);
-    }
+    //     d->m_painter->TextState.SetFont(*f.first, f.second);
+    // }
 
     if (st && QPaintEngine::DirtyTransform) {
         d->m_transform = state.transform();

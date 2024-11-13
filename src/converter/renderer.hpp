@@ -21,6 +21,8 @@
 #include <QNetworkReply>
 #include <QObject>
 #include <QStack>
+#include <QSharedPointer>
+#include <QTemporaryFile>
 
 #ifdef MD_PDF_TESTING
 #include <QFile>
@@ -331,6 +333,8 @@ struct PdfAuxData {
     QSharedPointer<ResvgOptions> m_resvgOpts;
     //! Special blockquotes that should be highlighted.
     QMap<MD::Blockquote<MD::QStringTrait> *, QColor> m_highlightedBlockquotes;
+    //! Cache of fonts.
+    QMap<QString, QSharedPointer<QTemporaryFile>> m_fontsCache;
 
 #ifdef MD_PDF_TESTING
     QMap<QString, QString> m_fonts;

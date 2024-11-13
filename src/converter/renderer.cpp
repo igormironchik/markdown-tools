@@ -2506,7 +2506,7 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
     float fontSize = (float) renderOpts.m_textFontSize;
 
     {
-        PoDoFoPaintDevice pd;
+        PoDoFoPaintDevice pd(pdfData.m_fontsCache);
         fontSize = fontSize / 72.f * (float) pd.physicalDpiY();
     }
 
@@ -2523,7 +2523,7 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
     auto *font = createFont(renderOpts.m_textFont, false, false, renderOpts.m_textFontSize, pdfData.m_doc, scale, pdfData);
 
     {
-        PoDoFoPaintDevice pd;
+        PoDoFoPaintDevice pd(pdfData.m_fontsCache);
         QPainter p(&pd);
         tex::Graphics2D_qt g2(&p);
         latexRender->draw(g2, 0, 0);
@@ -2604,7 +2604,7 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
                 x = (availableWidth - size.width() * imgScale) / 2.0;
             }
 
-            PoDoFoPaintDevice pd;
+            PoDoFoPaintDevice pd(pdfData.m_fontsCache);
             pd.setPdfPainter(*(*pdfData.m_painters)[pdfData.m_currentPainterIdx].get(), *pdfData.m_doc);
             QPainter p(&pd);
 
@@ -2702,7 +2702,7 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
         if (draw) {
             pdfData.m_firstOnPage = false;
 
-            PoDoFoPaintDevice pd;
+            PoDoFoPaintDevice pd(pdfData.m_fontsCache);
             pd.setPdfPainter(*(*pdfData.m_painters)[pdfData.m_currentPainterIdx].get(), *pdfData.m_doc);
             QPainter p(&pd);
 
