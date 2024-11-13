@@ -2519,6 +2519,8 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
     QSizeF pxSize = {}, size = {};
     double descent = 0.0;
 
+    auto *font = createFont(renderOpts.m_textFont, false, false, renderOpts.m_textFontSize, pdfData.m_doc, scale, pdfData);
+
     {
         PoDoFoPaintDevice pd;
         QPainter p(&pd);
@@ -2526,10 +2528,9 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
         latexRender->draw(g2, 0, 0);
         pxSize = {(qreal)latexRender->getWidth(), (qreal)latexRender->getHeight()};
         size = {pxSize.width() / (qreal) pd.physicalDpiX() * 72.0, pxSize.height() / (qreal) pd.physicalDpiY() * 72.0};
-        descent = latexRender->getBaseline() / (qreal) pd.physicalDpiY() * 72.0;
+        // size = {5000.0, pxSize.height() / (qreal) pd.physicalDpiY() * 72.0};
+        descent -= pdfData.fontDescent(font, renderOpts.m_textFontSize, scale);
     }
-
-    auto *font = createFont(renderOpts.m_textFont, false, false, renderOpts.m_textFontSize, pdfData.m_doc, scale, pdfData);
 
     const auto lineHeight = pdfData.lineSpacing(font, renderOpts.m_textFontSize, scale);
 
@@ -2549,41 +2550,49 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
     const auto autoOffset = pdfData.m_layout.addOffset(offset, !pdfData.m_layout.isRightToLeft());
 
     double h = (cw.isDrawing() ? cw.height() : 0.0);
+    double calculatedHeight = 0.0;
 
-    if (draw) {
-        if (!item->isInline()) {
-            newLine = true;
+    if (!item->isInline()) {
+        newLine = true;
 
-            double x = 0.0;
-            double imgScale = 1.0;
-            const double availableWidth = pdfData.m_layout.pageWidth() - pdfData.m_layout.margins().m_left -
-                    pdfData.m_layout.margins().m_right - offset;
-            double availableHeight = pdfData.m_layout.y() - pdfData.currentPageAllowedY();
+        if (!firstInParagraph)
+            calculatedHeight += lineHeight;
 
-            if (size.width() - availableWidth > 0.01) {
-                imgScale = (availableWidth / size.width()) * scale;
+        double x = 0.0;
+        double imgScale = 1.0;
+        const double availableWidth = pdfData.m_layout.pageWidth() - pdfData.m_layout.margins().m_left -
+                pdfData.m_layout.margins().m_right - offset;
+        double availableHeight = pdfData.m_layout.y() - pdfData.currentPageAllowedY();
+
+        if (size.width() - availableWidth > 0.01) {
+            imgScale = (availableWidth / size.width()) * scale;
+        }
+
+        const double pageHeight = pdfData.topY(pdfData.currentPageIndex()) - pdfData.m_layout.margins().m_bottom;
+
+        if (size.height() * imgScale - pageHeight > 0.01) {
+            imgScale = (pageHeight / (size.height() * imgScale)) * scale;
+
+            if (!pdfData.m_firstOnPage && draw) {
+                createPage(pdfData);
+
+                pdfData.m_layout.addX(offset);
             }
 
-            const double pageHeight = pdfData.topY(pdfData.currentPageIndex()) - pdfData.m_layout.margins().m_bottom;
-
-            if (size.height() * imgScale - pageHeight > 0.01) {
-                imgScale = (pageHeight / (size.height() * imgScale)) * scale;
-
-                if (!pdfData.m_firstOnPage) {
-                    createPage(pdfData);
-
-                    pdfData.m_layout.addX(offset);
-                }
-
+            if (draw) {
                 pdfData.freeSpaceOn(pdfData.currentPageIndex());
-            } else if (size.height() * imgScale - availableHeight > 0.01) {
+            }
+        } else if (size.height() * imgScale - availableHeight > 0.01) {
+            if (draw) {
                 createPage(pdfData);
 
                 pdfData.freeSpaceOn(pdfData.currentPageIndex());
 
                 pdfData.m_layout.addX(offset);
             }
+        }
 
+        if (draw) {
             if (availableWidth - size.width() * imgScale > 0.01) {
                 x = (availableWidth - size.width() * imgScale) / 2.0;
             }
@@ -2596,11 +2605,12 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
 
             tex::Graphics2D_qt g2(&p);
             latexRender->draw(g2, pdfData.m_layout.startX(size.width() * imgScale) / 72.0 * pd.physicalDpiX(),
-                    (pdfData.m_layout.pageHeight() - pdfData.m_layout.y() + (h - size.height() * imgScale) / 2.0 + descent * imgScale) / 72.0
-                        * pd.physicalDpiY());
+                    (pdfData.m_layout.pageHeight() - pdfData.m_layout.y()
+                     + (h - descent * imgScale - size.height() * imgScale) / 2.0) / 72.0
+                              * pd.physicalDpiY());
 
             const QRectF r = {pdfData.m_layout.startX(size.width() * imgScale),
-                              pdfData.m_layout.y() - (h - size.height() * imgScale) / 2.0 - descent * imgScale,
+                              pdfData.m_layout.y() - (h - descent * imgScale - size.height() * imgScale) / 2.0,
                               size.width() * imgScale,
                               size.height() * imgScale};
             const auto idx = pdfData.currentPageIndex();
@@ -2614,50 +2624,72 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
 
             return {r, idx};
         } else {
-            auto sscale = 100.0;
+            calculatedHeight += size.height() * imgScale + descent * imgScale;
 
+            pdfData.m_layout.moveXToBegin();
+
+            cw.append({0.0, 0.0, false, true, false, ""});
+            cw.append({0.0, calculatedHeight, false, true, false, ""});
+        }
+    } else {
+        auto sscale = 100.0;
+
+        if (draw) {
             sscale = cw.scale();
+        }
 
-            const auto spaceWidth = pdfData.stringWidth(font, renderOpts.m_textFontSize, scale, " ");
+        const auto spaceWidth = pdfData.stringWidth(font, renderOpts.m_textFontSize, scale, " ");
 
-            pdfData.m_layout.addX(spaceWidth * sscale / 100.0);
+        pdfData.m_layout.addX(spaceWidth * sscale / 100.0);
 
-            const double availableTotalWidth = pdfData.m_layout.pageWidth() - pdfData.m_layout.margins().m_left -
-                    pdfData.m_layout.margins().m_right - offset;
+        const double availableTotalWidth = pdfData.m_layout.pageWidth() - pdfData.m_layout.margins().m_left -
+                pdfData.m_layout.margins().m_right - offset;
 
-            if (size.width() - pdfData.m_layout.availableWidth() > 0.01) {
+        if (size.width() - pdfData.m_layout.availableWidth() > 0.01) {
+            if (draw) {
                 cw.moveToNextLine();
                 h = cw.height();
 
                 moveToNewLine(pdfData, offset, h, 1.0, h);
+            } else {
+                cw.append({0.0, lineHeight, false, true, true, ""});
+                pdfData.m_layout.moveXToBegin();
             }
+        } else if (!draw) {
+            cw.append({spaceWidth, lineHeight, true, false, true, " "});
+        }
 
-            double imgScale = 1.0;
+        double imgScale = 1.0;
 
-            if (size.width() - availableTotalWidth > 0.01) {
-                imgScale = (pdfData.m_layout.availableWidth() / size.width()) * scale;
-            }
+        if (size.width() - availableTotalWidth > 0.01) {
+            imgScale = (pdfData.m_layout.availableWidth() / size.width()) * scale;
+        }
 
-            double availableHeight = pdfData.m_layout.y() - pdfData.currentPageAllowedY();
+        double availableHeight = pdfData.m_layout.y() - pdfData.currentPageAllowedY();
 
-            const double pageHeight = pdfData.topY(pdfData.currentPageIndex()) - pdfData.m_layout.margins().m_bottom;
+        const double pageHeight = pdfData.topY(pdfData.currentPageIndex()) - pdfData.m_layout.margins().m_bottom;
 
-            if (size.height() * imgScale - pageHeight > 0.01) {
-                imgScale = (pageHeight / (size.height() * imgScale)) * scale;
+        if (size.height() * imgScale - pageHeight > 0.01) {
+            imgScale = (pageHeight / (size.height() * imgScale)) * scale;
 
+            if (draw) {
                 createPage(pdfData);
 
                 pdfData.freeSpaceOn(pdfData.currentPageIndex());
 
                 pdfData.m_layout.addX(offset);
-            } else if (size.height() * imgScale - availableHeight > 0.01) {
+            }
+        } else if (size.height() * imgScale - availableHeight > 0.01) {
+            if (draw) {
                 createPage(pdfData);
 
                 pdfData.freeSpaceOn(pdfData.currentPageIndex());
 
                 pdfData.m_layout.addX(offset);
             }
+        }
 
+        if (draw) {
             PoDoFoPaintDevice pd;
             pd.setPdfPainter(*(*pdfData.m_painters)[pdfData.m_currentPainterIdx].get(), *pdfData.m_doc);
             QPainter p(&pd);
@@ -2666,82 +2698,21 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
             latexRender->draw(g2,
                     pdfData.m_layout.startX(size.width() * imgScale) / 72.0 * pd.physicalDpiX(),
                                    (pdfData.m_layout.pageHeight() - pdfData.m_layout.y() - h +
-                                    (h - size.height() * imgScale) / 2.0 + descent * imgScale) / 72.0
+                                    (h - descent * imgScale - size.height() * imgScale) / 2.0) / 72.0
                                        * pd.physicalDpiY());
 
             const QRectF r = {pdfData.m_layout.startX(size.width() * imgScale),
-                              pdfData.m_layout.y() + h - (h - size.height() * imgScale) / 2.0 - descent * imgScale,
+                              pdfData.m_layout.y() + h - (h - descent * imgScale - size.height() * imgScale) / 2.0,
                               size.width() * imgScale,
                               size.height() * imgScale};
             pdfData.m_layout.addX(size.width() * imgScale);
             const auto idx = pdfData.currentPageIndex();
 
             return {r, idx};
-        }
-    } else {
-        if (!item->isInline()) {
-            double height = 0.0;
-
-            if (!firstInParagraph)
-                height += lineHeight;
-
-            newLine = true;
-
-            double imgScale = 1.0;
-            const double availableWidth = pdfData.m_layout.pageWidth() - pdfData.m_layout.margins().m_left -
-                    pdfData.m_layout.margins().m_right - offset;
-
-            if (size.width() - availableWidth > 0.01) {
-                imgScale = (availableWidth / size.width()) * scale;
-            }
-
-            const double pageHeight = pdfData.topY(pdfData.currentPageIndex()) - pdfData.m_layout.margins().m_bottom;
-
-            if (size.height() * imgScale - pageHeight > 0.01) {
-                imgScale = (pageHeight / (size.height() * imgScale)) * scale;
-            }
-
-            height += size.height() * imgScale - pdfData.fontDescent(font, renderOpts.m_textFontSize, scale);
-
-            pdfData.m_layout.moveXToBegin();
-
-            cw.append({0.0, 0.0, false, true, false, ""});
-            cw.append({0.0, height, false, true, false, ""});
         } else {
-            const auto spaceWidth = pdfData.stringWidth(font, renderOpts.m_textFontSize, scale, " ");
-
-            const double availableWidth = pdfData.m_layout.pageWidth() - pdfData.m_layout.x() -
-                    pdfData.m_layout.margins().m_right - spaceWidth;
-
-            const double availableTotalWidth = pdfData.m_layout.pageWidth() - pdfData.m_layout.margins().m_left -
-                    pdfData.m_layout.margins().m_right - offset;
-
-            pdfData.m_layout.addX(spaceWidth);
-
-            if (size.width() - availableWidth > 0.01) {
-                cw.append({0.0, lineHeight, false, true, true, ""});
-                pdfData.m_layout.moveXToBegin();
-            } else {
-                cw.append({spaceWidth, lineHeight, true, false, true, " "});
-            }
-
-            double imgScale = 1.0;
-
-            if (size.width() - availableTotalWidth > 0.01) {
-                imgScale = (availableWidth / size.width()) * scale;
-            }
-
-            const double pageHeight = pdfData.topY(pdfData.currentPageIndex()) - pdfData.m_layout.margins().m_bottom;
-
-            if (size.height() * imgScale - pageHeight > 0.01) {
-                imgScale = (pageHeight / (size.height() * imgScale)) * scale;
-            }
-
             pdfData.m_layout.addX(size.width() * imgScale);
 
-            cw.append(
-                {size.width() * imgScale, size.height() * imgScale -
-                 pdfData.fontDescent(font, renderOpts.m_textFontSize, scale), false, false, hasNext, ""});
+            cw.append({size.width() * imgScale, size.height() * imgScale + descent * imgScale, false, false, hasNext, ""});
         }
     }
 
