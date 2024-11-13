@@ -372,14 +372,20 @@ inline PoDoFo::PdfColor color(const QColor &c)
     return PoDoFo::PdfColor(c.redF(), c.greenF(), c.blueF());
 }
 
+inline double scaleOfTransform(const QTransform &t)
+{
+    const auto bv = t.m21();
+    const auto dv = t.m22();
+
+    return std::sqrt(bv * bv + dv * dv);
+}
+
 QPair<PoDoFo::PdfFont *, double> PoDoFoPaintEngine::qFontToPoDoFo(const QFont &f)
 {
     //const double size = (f.pointSizeF() > 0.0 ? f.pointSizeF() : f.pixelSize() / paintDevice()->physicalDpiY() * 72.0);
 
     // This code is for MicroTeX, the author do things not right with font sizes.
-    const auto bv = d->m_transform.m21();
-    const auto dv = d->m_transform.m22();
-    const auto scale = std::sqrt(bv * bv + dv * dv);
+    const auto scale = scaleOfTransform(d->m_transform);
 
     const double size = f.pointSize() * scale / paintDevice()->physicalDpiY() * 72.0;
 
@@ -447,7 +453,10 @@ void PoDoFoPaintEngine::updateState(const QPaintEngineState &state)
     if (st & QPaintEngine::DirtyPen) {
         const auto p = state.pen();
 
-        d->m_painter->GraphicsState.SetLineWidth(p.widthF() / paintDevice()->physicalDpiX() * 72.0);
+        // This code is for MicroTeX, the author do things not right with pen width.
+        const auto scale = scaleOfTransform(d->m_transform);
+
+        d->m_painter->GraphicsState.SetLineWidth(p.widthF() * scale / paintDevice()->physicalDpiX() * 72.0);
         d->m_painter->GraphicsState.SetLineCapStyle(capStyle(p.capStyle()));
         d->m_painter->GraphicsState.SetLineJoinStyle(joinStyle(p.joinStyle()));
         d->m_painter->GraphicsState.SetNonStrokingColor(color(p.brush().color()));
