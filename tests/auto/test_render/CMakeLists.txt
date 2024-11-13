@@ -23,8 +23,6 @@ set( SRC main.cpp
 	../../../src/converter/podofo_paintdevice.cpp
 	../../../src/converter/podofo_paintdevice.hpp )
 
-qt6_add_resources( SRC ../../../src/converter/resources.qrc )
-
 add_definitions(-DMD_PDF_TESTING -DBUILD_QT)
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}
@@ -56,7 +54,7 @@ configure_file( test_const.hpp.in test_const.hpp @ONLY )
 
 link_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../../../lib )
 
-qt6_add_resources( SRC ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/converter/resources.qrc )
+qt6_add_resources(SRC ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/converter/resources.qrc)
 qt6_add_resources(SRC ../../../3rdparty/MicroTeX/latex.qrc)
 
 add_executable( test.render ${SRC} )

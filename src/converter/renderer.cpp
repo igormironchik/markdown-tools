@@ -2560,9 +2560,6 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
     if (!item->isInline()) {
         newLine = true;
 
-        if (!firstInParagraph)
-            calculatedHeight += lineHeight;
-
         double x = 0.0;
         double imgScale = 1.0;
         const double availableWidth = pdfData.m_layout.pageWidth() - pdfData.m_layout.margins().m_left -
@@ -2612,12 +2609,11 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
 
             tex::Graphics2D_qt g2(&p);
             latexRender->draw(g2, pdfData.m_layout.startX(size.width() * imgScale) / 72.0 * pd.physicalDpiX(),
-                    (pdfData.m_layout.pageHeight() - pdfData.m_layout.y()
-                     + (h - descent * imgScale - size.height() * imgScale) / 2.0) / 72.0
+                    (pdfData.m_layout.pageHeight() - pdfData.m_layout.y() + descent * imgScale) / 72.0
                               * pd.physicalDpiY());
 
             const QRectF r = {pdfData.m_layout.startX(size.width() * imgScale),
-                              pdfData.m_layout.y() - (h - descent * imgScale - size.height() * imgScale) / 2.0,
+                              pdfData.m_layout.y() - descent * imgScale,
                               size.width() * imgScale,
                               size.height() * imgScale};
             const auto idx = pdfData.currentPageIndex();
@@ -2710,11 +2706,10 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
             latexRender->draw(g2,
                     pdfData.m_layout.startX(size.width() * imgScale) / 72.0 * pd.physicalDpiX(),
                                    (pdfData.m_layout.pageHeight() - pdfData.m_layout.y() - h +
-                                    (h - descent * imgScale - size.height() * imgScale) / 2.0) / 72.0
-                                       * pd.physicalDpiY());
+                                    (h - size.height() * imgScale)) / 72.0 * pd.physicalDpiY());
 
             const QRectF r = {pdfData.m_layout.startX(size.width() * imgScale),
-                              pdfData.m_layout.y() + h - (h - descent * imgScale - size.height() * imgScale) / 2.0,
+                              pdfData.m_layout.y() + h - (h - size.height() * imgScale),
                               size.width() * imgScale,
                               size.height() * imgScale};
             pdfData.m_layout.addX(size.width() * imgScale);
