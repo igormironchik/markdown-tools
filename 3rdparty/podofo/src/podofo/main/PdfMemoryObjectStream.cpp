@@ -7,11 +7,8 @@
 #include <podofo/private/PdfDeclarationsPrivate.h>
 #include "PdfMemoryObjectStream.h"
 
-#include "PdfArray.h"
-#include "PdfEncrypt.h"
-#include "PdfFilter.h"
-#include "PdfObject.h"
 #include <podofo/auxiliary/StreamDevice.h>
+#include "PdfStatefulEncrypt.h"
 
 using namespace std;
 using namespace PoDoFo;
@@ -63,13 +60,13 @@ unique_ptr<OutputStream> PdfMemoryObjectStream::GetOutputStream(PdfObject& obj)
     return unique_ptr<OutputStream>(new StringStreamDevice(m_buffer));
 }
 
-void PdfMemoryObjectStream::Write(OutputStream& stream, const PdfStatefulEncrypt& encrypt)
+void PdfMemoryObjectStream::Write(OutputStream& stream, const PdfStatefulEncrypt* encrypt)
 {
     stream.Write("stream\n");
-    if (encrypt.HasEncrypt())
+    if (encrypt != nullptr)
     {
         charbuff encrypted;
-        encrypt.EncryptTo(encrypted, { m_buffer.data(), m_buffer.size() });
+        encrypt->EncryptTo(encrypted, { m_buffer.data(), m_buffer.size() });
         stream.Write(encrypted);
     }
     else

@@ -18,9 +18,7 @@
 #include "PdfEncodingFactory.h"
 #include <podofo/auxiliary/InputStream.h>
 #include "PdfObjectStream.h"
-#include "PdfWriter.h"
 #include "PdfCharCodeMap.h"
-#include "PdfEncodingShim.h"
 #include "PdfFontMetrics.h"
 #include "PdfPage.h"
 #include "PdfFontMetricsStandard14.h"
@@ -38,8 +36,9 @@ static string_view toString(PdfFontStretch stretch);
 
 PdfFont::PdfFont(PdfDocument& doc, const PdfFontMetricsConstPtr& metrics,
         const PdfEncoding& encoding) :
-    PdfDictionaryElement(doc, "Font"),
+    PdfDictionaryElement(doc, "Font"_n),
     m_WordSpacingLengthRaw(-1),
+    m_SpaceCharLengthRaw(-1),
     m_Metrics(metrics)
 {
     if (metrics == nullptr)
@@ -52,18 +51,13 @@ PdfFont::PdfFont(PdfObject& obj, const PdfFontMetricsConstPtr& metrics,
         const PdfEncoding& encoding) :
     PdfDictionaryElement(obj),
     m_WordSpacingLengthRaw(-1),
+    m_SpaceCharLengthRaw(-1),
     m_Metrics(metrics)
 {
     if (metrics == nullptr)
         PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidHandle, "Metrics must me not null");
 
     this->initBase(encoding);
-
-    // Implementation note: the identifier is always
-    // Prefix+ObjectNo. Prefix is /Ft for fonts.
-    PdfStringStream out;
-    out << "PoDoFoFt" << this->GetObject().GetIndirectReference().ObjectNumber();
-    m_Identifier = PdfName(out.GetString());
 }
 
 PdfFont::~PdfFont() { }
@@ -80,7 +74,7 @@ bool PdfFont::TryGetSubstituteFont(PdfFontCreateFlags initFlags, PdfFont*& subst
     PdfFontMetricsConstPtr newMetrics;
     if (metrics.HasFontFileData())
     {
-        newMetrics = PdfFontMetricsFreetype::FromMetrics(metrics);
+        newMetrics = PdfFontMetricsFreetype::CreateSubstituteMetrics(metrics);
     }
     else
     {
@@ -138,19 +132,12 @@ void PdfFont::initBase(const PdfEncoding& encoding)
     {
         m_DynamicCIDMap = std::make_shared<PdfCharCodeMap>();
         m_DynamicToUnicodeMap = std::make_shared<PdfCharCodeMap>();
-        m_Encoding.reset(new PdfDynamicEncoding(m_DynamicCIDMap, m_DynamicToUnicodeMap, *this));
+        m_Encoding = PdfEncoding::CreateDynamicEncoding(m_DynamicCIDMap, m_DynamicToUnicodeMap, *this);
     }
     else
     {
-        m_Encoding.reset(new PdfEncodingShim(encoding, *this));
+        m_Encoding = PdfEncoding::CreateSchim(encoding, *this);
     }
-
-    PdfStringStream out;
-
-    // Implementation note: the identifier is always
-    // Prefix+ObjectNo. Prefix is /Ft for fonts.
-    out << "Ft" << this->GetObject().GetIndirectReference().ObjectNumber();
-    m_Identifier = PdfName(out.GetString());
 
     // By default ensure the font has the /BaseFont name or /FontName
     // or, the name inferred from a font file
@@ -176,12 +163,13 @@ void PdfFont::InitImported(bool wantEmbed, bool wantSubset)
     m_SubsettingEnabled = wantEmbed && wantSubset && SupportsSubsetting();
     if (m_SubsettingEnabled)
     {
+        // If it exist a glyph for the space character,
+        // add it for subsetting. NOTE: Search the GID
+        // in the font program
         unsigned gid;
         char32_t spaceCp = U' ';
-        if (TryGetGID(spaceCp, PdfGlyphAccess::Width, gid))
+        if (TryGetGID(spaceCp, PdfGlyphAccess::FontProgram, gid))
         {
-            // If it exist a glyph for space character
-            // always add it for subsetting
             unicodeview codepoints(&spaceCp, 1);
             PdfCID cid;
             (void)tryAddSubsetGID(gid, codepoints, cid);
@@ -330,7 +318,7 @@ bool PdfFont::TryScanEncodedString(const PdfString& encodedStr, const PdfTextSta
         return true;
 
     auto context = m_Encoding->StartStringScan(encodedStr);
-    vector<codepoint> codepoints;
+    CodePointSpan codepoints;
     PdfCID cid;
     bool success = true;
     unsigned prevOffset = 0;
@@ -351,8 +339,14 @@ bool PdfFont::TryScanEncodedString(const PdfString& encodedStr, const PdfTextSta
 
 double PdfFont::GetWordSpacingLength(const PdfTextState& state) const
 {
-    const_cast<PdfFont&>(*this).initWordSpacingLength();
+    const_cast<PdfFont&>(*this).initSpaceDescriptors();
     return getGlyphLength(m_WordSpacingLengthRaw, state, false);
+}
+
+double PdfFont::GetSpaceCharLength(const PdfTextState& state) const
+{
+    const_cast<PdfFont&>(*this).initSpaceDescriptors();
+    return getGlyphLength(m_SpaceCharLengthRaw, state, false);
 }
 
 double PdfFont::GetCharLength(char32_t codePoint, const PdfTextState& state, bool ignoreCharSpacing) const
@@ -444,43 +438,43 @@ void PdfFont::FillDescriptor(PdfDictionary& dict) const
     double defaultWidth;
     PdfFontStretch stretch;
 
-    dict.AddKey("FontName", PdfName(this->GetName()));
+    dict.AddKey("FontName"_n, PdfName(this->GetName()));
     if ((familyName = m_Metrics->GetFontFamilyName()).length() != 0)
-        dict.AddKey("FontFamily", PdfString(familyName));
+        dict.AddKey("FontFamily"_n, PdfString(familyName));
     if ((stretch = m_Metrics->GetFontStretch()) != PdfFontStretch::Unknown)
-        dict.AddKey("FontStretch", PdfName(toString(stretch)));
-    dict.AddKey(PdfName::KeyFlags, static_cast<int64_t>(m_Metrics->GetFlags()));
-    dict.AddKey("ItalicAngle", static_cast<int64_t>(std::round(m_Metrics->GetItalicAngle())));
-
-    PdfArray bbox;
-    GetBoundingBox(bbox);
+        dict.AddKey("FontStretch"_n, PdfName(toString(stretch)));
+    dict.AddKey("Flags"_n, static_cast<int64_t>(m_Metrics->GetFlags()));
+    dict.AddKey("ItalicAngle"_n, static_cast<int64_t>(std::round(m_Metrics->GetItalicAngle())));
 
     auto& matrix = m_Metrics->GetMatrix();
     if (GetType() == PdfFontType::Type3)
     {
         // ISO 32000-1:2008 "should be used for Type 3 fonts in Tagged PDF documents"
-        dict.AddKey("FontWeight", static_cast<int64_t>(m_Metrics->GetWeight()));
+        dict.AddKey("FontWeight"_n, static_cast<int64_t>(m_Metrics->GetWeight()));
     }
     else
     {
         if ((weight = m_Metrics->GetWeightRaw()) > 0)
-            dict.AddKey("FontWeight", static_cast<int64_t>(weight));
+            dict.AddKey("FontWeight"_n, static_cast<int64_t>(weight));
+
+        PdfArray bbox;
+        GetBoundingBox(bbox);
 
         // The following entries are all optional in /Type3 fonts
-        dict.AddKey("FontBBox", bbox);
-        dict.AddKey("Ascent", static_cast<int64_t>(std::round(m_Metrics->GetAscent() / matrix[3])));
-        dict.AddKey("Descent", static_cast<int64_t>(std::round(m_Metrics->GetDescent() / matrix[3])));
-        dict.AddKey("CapHeight", static_cast<int64_t>(std::round(m_Metrics->GetCapHeight() / matrix[3])));
+        dict.AddKey("FontBBox"_n, std::move(bbox));
+        dict.AddKey("Ascent"_n, static_cast<int64_t>(std::round(m_Metrics->GetAscent() / matrix[3])));
+        dict.AddKey("Descent"_n, static_cast<int64_t>(std::round(m_Metrics->GetDescent() / matrix[3])));
+        dict.AddKey("CapHeight"_n, static_cast<int64_t>(std::round(m_Metrics->GetCapHeight() / matrix[3])));
         // NOTE: StemV is measured horizontally
-        dict.AddKey("StemV", static_cast<int64_t>(std::round(m_Metrics->GetStemV() / matrix[0])));
+        dict.AddKey("StemV"_n, static_cast<int64_t>(std::round(m_Metrics->GetStemV() / matrix[0])));
 
         if ((xHeight = m_Metrics->GetXHeightRaw()) > 0)
-            dict.AddKey("XHeight", static_cast<int64_t>(std::round(xHeight / matrix[3])));
+            dict.AddKey("XHeight"_n, static_cast<int64_t>(std::round(xHeight / matrix[3])));
 
         if ((stemH = m_Metrics->GetStemHRaw()) > 0)
         {
             // NOTE: StemH is measured vertically
-            dict.AddKey("StemH", static_cast<int64_t>(std::round(stemH / matrix[3])));
+            dict.AddKey("StemH"_n, static_cast<int64_t>(std::round(stemH / matrix[3])));
         }
 
         if (!IsCIDKeyed())
@@ -490,16 +484,16 @@ void PdfFont::FillDescriptor(PdfDictionary& dict) const
             // in the CIDFont dictionary instead. See 9.7.4.3 Glyph
             // Metrics in CIDFonts in ISO 32000-1:2008
             if ((defaultWidth = m_Metrics->GetDefaultWidthRaw()) > 0)
-                dict.AddKey("MissingWidth", static_cast<int64_t>(std::round(defaultWidth / matrix[0])));
+                dict.AddKey("MissingWidth"_n, static_cast<int64_t>(std::round(defaultWidth / matrix[0])));
         }
     }
 
     if ((leading = m_Metrics->GetLeadingRaw()) > 0)
-        dict.AddKey("Leading", static_cast<int64_t>(std::round(leading / matrix[3])));
+        dict.AddKey("Leading"_n, static_cast<int64_t>(std::round(leading / matrix[3])));
     if ((avgWidth = m_Metrics->GetAvgWidthRaw()) > 0)
-        dict.AddKey("AvgWidth", static_cast<int64_t>(std::round(avgWidth / matrix[0])));
+        dict.AddKey("AvgWidth"_n, static_cast<int64_t>(std::round(avgWidth / matrix[0])));
     if ((maxWidth = m_Metrics->GetMaxWidthRaw()) > 0)
-        dict.AddKey("MaxWidth", static_cast<int64_t>(std::round(maxWidth / matrix[0])));
+        dict.AddKey("MaxWidth"_n, static_cast<int64_t>(std::round(maxWidth / matrix[0])));
 }
 
 void PdfFont::EmbedFontFile(PdfObject& descriptor)
@@ -514,8 +508,8 @@ void PdfFont::EmbedFontFile(PdfObject& descriptor)
         case PdfFontFileType::CIDType1:
             EmbedFontFileType1(descriptor, fontdata, m_Metrics->GetFontFileLength1(), m_Metrics->GetFontFileLength2(), m_Metrics->GetFontFileLength3());
             break;
-        case PdfFontFileType::Type1CCF:
-            EmbedFontFileType1CCF(descriptor, fontdata);
+        case PdfFontFileType::Type1CFF:
+            EmbedFontFileType1CFF(descriptor, fontdata);
             break;
         case PdfFontFileType::TrueType:
             EmbedFontFileTrueType(descriptor, fontdata);
@@ -530,45 +524,57 @@ void PdfFont::EmbedFontFile(PdfObject& descriptor)
 
 void PdfFont::EmbedFontFileType1(PdfObject& descriptor, const bufferview& data, unsigned length1, unsigned length2, unsigned length3)
 {
-    auto& contents = embedFontFileData(descriptor, "FontFile", data);
-    contents.GetDictionary().AddKey("Length1", static_cast<int64_t>(length1));
-    contents.GetDictionary().AddKey("Length2", static_cast<int64_t>(length2));
-    contents.GetDictionary().AddKey("Length3", static_cast<int64_t>(length3));
+    embedFontFileData(descriptor, "FontFile"_n, [length1, length2, length3](PdfDictionary& dict)
+    {
+        dict.AddKey("Length1"_n, static_cast<int64_t>(length1));
+        dict.AddKey("Length2"_n, static_cast<int64_t>(length2));
+        dict.AddKey("Length3"_n, static_cast<int64_t>(length3));
+    }, data);
 }
 
-void PdfFont::EmbedFontFileType1CCF(PdfObject& descriptor, const bufferview& data)
+void PdfFont::EmbedFontFileType1CFF(PdfObject& descriptor, const bufferview& data)
 {
-    auto& contents = embedFontFileData(descriptor, "FontFile3", data);
-    PdfName subtype;
-    if (IsCIDKeyed())
-        subtype = PdfName("CIDFontType0C");
-    else
-        subtype = PdfName("Type1C");
+    embedFontFileData(descriptor, "FontFile3"_n, [&](PdfDictionary& dict)
+    {
+        PdfName subtype;
+        if (IsCIDKeyed())
+            subtype = "CIDFontType0C"_n;
+        else
+            subtype = "Type1C"_n;
 
-    contents.GetDictionary().AddKey(PdfName::KeySubtype, subtype);
+        dict.AddKey("Subtype"_n, subtype);
+    }, data);
 }
 
 void PdfFont::EmbedFontFileTrueType(PdfObject& descriptor, const bufferview& data)
 {
-    auto& contents = embedFontFileData(descriptor, "FontFile2", data);
-    contents.GetDictionary().AddKey("Length1", static_cast<int64_t>(data.size()));
+    embedFontFileData(descriptor, "FontFile2"_n, [&data](PdfDictionary& dict)
+    {
+        dict.AddKey("Length1"_n, static_cast<int64_t>(data.size()));
+    }, data);
+
 }
 
 void PdfFont::EmbedFontFileOpenType(PdfObject& descriptor, const bufferview& data)
 {
-    auto contents = embedFontFileData(descriptor, "FontFile3", data);
-    contents.GetDictionary().AddKey(PdfName::KeySubtype, PdfName("OpenType"));
+    embedFontFileData(descriptor, "FontFile3"_n, [](PdfDictionary& dict)
+    {
+        dict.AddKey("Subtype"_n, "OpenType"_n);
+    }, data);
 }
 
-PdfObject& PdfFont::embedFontFileData(PdfObject& descriptor, const PdfName& fontFileName, const bufferview& data)
+void PdfFont::embedFontFileData(PdfObject& descriptor, const PdfName& fontFileName,
+    const std::function<void(PdfDictionary& dict)>& dictWriter, const bufferview& data)
 {
     auto& contents = GetDocument().GetObjects().CreateDictionaryObject();
     descriptor.GetDictionary().AddKeyIndirect(fontFileName, contents);
+    // NOTE: Access to directory is mediated by functor to not crash
+    // operations when using PdfStreamedDocument. Do not remove it
+    dictWriter(contents.GetDictionary());
     contents.GetOrCreateStream().SetData(data);
-    return contents;
 }
 
-void PdfFont::initWordSpacingLength()
+void PdfFont::initSpaceDescriptors()
 {
     if (m_WordSpacingLengthRaw >= 0)
         return;
@@ -577,10 +583,9 @@ void PdfFont::initWordSpacingLength()
     // https://docs.microsoft.com/it-it/dotnet/api/system.char.iswhitespace
     unsigned gid;
     if (!TryGetGID(U' ', PdfGlyphAccess::Width, gid)
-        || !m_Metrics->TryGetGlyphWidth(gid, m_WordSpacingLengthRaw))
+        || !m_Metrics->TryGetGlyphWidth(gid, m_SpaceCharLengthRaw)
+        || m_SpaceCharLengthRaw <= 0)
     {
-#if USE_EXPERIMENTAL_SPACING_LENGTH_INFERENCE
-        // See https://stackoverflow.com/a/73420359/213871
         double lengthsum = 0;
         unsigned nonZeroCount = 0;
         for (unsigned i = 0, count = m_Metrics->GetGlyphCount(); i < count; i++)
@@ -594,14 +599,14 @@ void PdfFont::initWordSpacingLength()
             }
         }
 
-        m_WordSpacingLengthRaw = lengthsum / nonZeroCount / 7;
-#else
-        // pdf.js seems to just ship with an hardcoded word spacing
-        // https://github.com/mozilla/pdf.js/blob/ab1297f0538c51e8e7ece037768e38a9991dcc37/src/core/evaluator.js#L2348
-        constexpr double MISSING_WORD_SPACING_LENGTH = 0.1;
-        m_WordSpacingLengthRaw = MISSING_WORD_SPACING_LENGTH;
-#endif
+        m_SpaceCharLengthRaw = lengthsum / nonZeroCount;
     }
+
+    // We arbitrarily take a fraction of the read or inferred
+    // char space to determine the word spacing length. The
+    // factor proved to work well with a consistent tests corpus
+    constexpr int WORD_SPACING_FRACTIONAL_FACTOR = 6;
+    m_WordSpacingLengthRaw = m_SpaceCharLengthRaw / WORD_SPACING_FRACTIONAL_FACTOR;
 }
 
 void PdfFont::initImported()
@@ -687,7 +692,9 @@ PdfCharCode PdfFont::AddCharCodeSafe(unsigned gid, const unicodeview& codePoints
     if (m_DynamicToUnicodeMap->TryGetCharCode(codePoints, code))
         return code;
 
-    code = PdfCharCode(m_DynamicToUnicodeMap->GetSize());
+    // Encode the code point with FSS-UTF encoding so
+    // it will be variable code size safe
+    code = PdfCharCode(utls::FSSUTFEncode((unsigned)m_DynamicToUnicodeMap->GetMappings().size()));
     // NOTE: We assume in this context cid == gid identity
     m_DynamicCIDMap->PushMapping(code, gid);
     m_DynamicToUnicodeMap->PushMapping(code, codePoints);
@@ -773,8 +780,9 @@ bool PdfFont::tryAddSubsetGID(unsigned gid, const unicodeview& codePoints, PdfCI
     if (m_Encoding->IsDynamicEncoding())
     {
         // We start numberings CIDs from 1 since CID 0
-        // is reserved for fallbacks
-        auto inserted = m_SubsetGIDs.try_emplace(gid, PdfCID((unsigned)m_SubsetGIDs.size() + 1));
+        // is reserved for fallbacks. Encode it with FSS-UTF
+        // encoding so it will be variable code size safe
+        auto inserted = m_SubsetGIDs.try_emplace(gid, PdfCID((unsigned)m_SubsetGIDs.size() + 1, PdfCharCode(utls::FSSUTFEncode((unsigned)m_SubsetGIDs.size() + 1))));
         cid = inserted.first->second;
         if (!inserted.second)
             return false;

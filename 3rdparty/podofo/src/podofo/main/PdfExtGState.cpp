@@ -8,7 +8,6 @@
 #include "PdfExtGState.h"
 
 #include "PdfDictionary.h"
-#include "PdfWriter.h"
 #include "PdfStringStream.h"
 #include "PdfPage.h"
 
@@ -16,69 +15,85 @@ using namespace std;
 using namespace PoDoFo;
 
 PdfExtGState::PdfExtGState(PdfDocument& doc)
-    : PdfDictionaryElement(doc, "ExtGState")
+    : PdfDictionaryElement(doc, "ExtGState"_n) { }
+
+void PdfExtGState::SetFillOpacity(nullable<double> opacity)
 {
-    PdfStringStream out;
-
-    // Implementation note: the identifier is always
-    // Prefix+ObjectNo. Prefix is /Ft for fonts.
-    out << "ExtGS" << this->GetObject().GetIndirectReference().ObjectNumber();
-    m_Identifier = PdfName(out.GetString());
-
-    this->Init();
+    if (opacity == nullptr)
+        GetDictionary().RemoveKey("ca");
+    else
+        GetDictionary().AddKey("ca"_n, PdfVariant(*opacity));
 }
 
-void PdfExtGState::Init()
+void PdfExtGState::SetStrokeOpacity(nullable<double> opacity)
 {
+    if (opacity == nullptr)
+        GetDictionary().RemoveKey("CA");
+    else
+        GetDictionary().AddKey("CA"_n, PdfVariant(*opacity));
 }
 
-void PdfExtGState::SetFillOpacity(double opac)
+void PdfExtGState::SetBlendMode(nullable<PdfBlendMode> blendMode)
 {
-    this->GetObject().GetDictionary().AddKey("ca", PdfVariant(opac));
+    if (blendMode == nullptr)
+        GetDictionary().RemoveKey("BM");
+    else
+        GetDictionary().AddKey("BM"_n, PdfName(PoDoFo::ToString(*blendMode)));
 }
 
-void PdfExtGState::SetStrokeOpacity(double opac)
+void PdfExtGState::SetOverprintEnabled(nullable<bool> enabled)
 {
-    this->GetObject().GetDictionary().AddKey("CA", PdfVariant(opac));
+    if (enabled == nullptr)
+    {
+        GetDictionary().RemoveKey("OP");
+        GetDictionary().RemoveKey("op");
+    }
+    else
+    {
+        GetDictionary().AddKey("OP"_n, PdfVariant(*enabled));
+        GetDictionary().RemoveKey("op");
+    }
 }
 
-void PdfExtGState::SetBlendMode(const string_view& blendMode)
+void PdfExtGState::SetFillOverprintEnabled(nullable<bool> enabled)
 {
-    this->GetObject().GetDictionary().AddKey("BM", PdfName(blendMode));
+    if (enabled == nullptr)
+        GetDictionary().RemoveKey("op");
+    else
+        GetDictionary().AddKey("op"_n, PdfVariant(*enabled));
 }
 
-void PdfExtGState::SetOverprint(bool enable)
+void PdfExtGState::SetStrokeOverprintEnabled(nullable<bool> enabled)
 {
-    this->GetObject().GetDictionary().AddKey("OP", PdfVariant(enable));
+    if (enabled == nullptr)
+        GetDictionary().RemoveKey("OP");
+    else
+        GetDictionary().AddKey("OP"_n, PdfVariant(*enabled));
 }
 
-void PdfExtGState::SetFillOverprint(bool enable)
+void PdfExtGState::SetNonZeroOverprintEnabled(nullable<bool> enabled)
 {
-    this->GetObject().GetDictionary().AddKey("op", PdfVariant(enable));
+    if (enabled == nullptr)
+        GetDictionary().RemoveKey("OPM");
+    else
+        GetDictionary().AddKey("OPM"_n, PdfVariant(static_cast<int64_t>(*enabled ? 1 : 0)));
 }
 
-void PdfExtGState::SetStrokeOverprint(bool enable)
+void PdfExtGState::SetRenderingIntent(nullable<PdfRenderingIntent> intent)
 {
-    this->GetObject().GetDictionary().AddKey("OP", PdfVariant(enable));
-}
-
-void PdfExtGState::SetNonZeroOverprint(bool enable)
-{
-    this->GetObject().GetDictionary().AddKey("OPM", PdfVariant(static_cast<int64_t>(enable ? 1 : 0)));
-}
-
-void PdfExtGState::SetRenderingIntent(const string_view& intent)
-{
-    this->GetObject().GetDictionary().AddKey("RI", PdfName(intent));
+    if (intent == nullptr)
+        GetDictionary().RemoveKey("RI");
+    else
+        GetDictionary().AddKey("RI"_n, PdfName(PoDoFo::ToString(*intent)));
 }
 
 void PdfExtGState::SetFrequency(double frequency)
 {
     PdfDictionary halftoneDict;
-    halftoneDict.AddKey("HalftoneType", PdfVariant(static_cast<int64_t>(1)));
-    halftoneDict.AddKey("Frequency", PdfVariant(frequency));
-    halftoneDict.AddKey("Angle", PdfVariant(45.0));
-    halftoneDict.AddKey("SpotFunction", PdfName("SimpleDot"));
+    halftoneDict.AddKey("HalftoneType"_n, PdfVariant(static_cast<int64_t>(1)));
+    halftoneDict.AddKey("Frequency"_n, PdfVariant(frequency));
+    halftoneDict.AddKey("Angle"_n, PdfVariant(45.0));
+    halftoneDict.AddKey("SpotFunction"_n, "SimpleDot"_n);
 
-    this->GetObject().GetDictionary().AddKey("HT", halftoneDict);
+    GetDictionary().AddKey("HT"_n, halftoneDict);
 }

@@ -1,7 +1,33 @@
-# Version 0.10.4
-- Fixed seek() in case of iostream/fstream used with StandardStreamDevice
+## Version 1.0.0-dev
+- Fixed `PdfStreamedDocument`, see #88
+- Added high-level signing API, see `PdfSignerCMS` and "TestSignature1" test case
+- Set `PdfSignature` to have correct `/ByteRange` and `/Contents` after signing with `PoDoFo::SignDocument`
+- Reviewed `PdfFileSpec`, `PdfAction`, `PdfDestination` API and their usage in
+`PdfOutlineItem`, `PdfOutlines`, `PdfAnnotationActionBase`, `PdfAnnotationLink`, `PdfAnnotationFileAttachment`
+- Reviewed `PdfNameTree`, renamed to `PdfNameTrees` and added `PdfNameTree` to pick specific trees with typed element
+- Reviewed `PdfExtGState`
+- `PdfDocument`: Added `GetFieldsIterator()`
+- `PdfPage`: Added `GetFieldsIterator()`
+- `PdfSignature`: Added `TryGetPreviousRevision()`
+- `PdfCanvas`: Added `CopyContentsTo()`
+- `PdfEncrypt` is now stateless: added `PdfEncryptContext` as a
+   separate state context and used as argument in `PdfEncrypt` methods
+- Added `PdfNames` and moved all known names there from `PdfName`
+- `PdfPageCollection`: Methods creating pages now takes PdfPageSize or default inferred from doc
+- `PdfName`: Added `PdfName operator""_nm(const char*, size_t)`
+- `PdfString`: Added `std::string&&` constructor
+- `FileStreamDevice` now uses again C stdio for better performance
 
-# Version 0.10.3
+## Version 0.10.4
+- Fixes #161, #162, #167, #183, merges #157
+- `StandardStreamDevice`: Fixed `seek()` in case of `iostream`/`fstream`
+- `PdfWriter`: Fixed computing the doc identifier with a wrong buffer
+- `PdfPainter`: Fix `SetCurrentMatrix()` to really update CTM
+- Fixed compilation in mingw < 12
+- `PdfCIDToGIDMap`: Fixed map reading
+- `PdfPainter`: Fixed offset on multiline text if text is not left aligned
+
+## Version 0.10.3
 - Fixed big performance regression introduced in 0.10, see #108
 - Fixed data loss with encrypted documents, see #99
 - Fixed compilation with VS2022 >= 17.8
@@ -13,55 +39,53 @@
 
 ## Version 0.10.1
 - Security bugfixes, #66, #67, #69, #70, #71, #72
-- Rewritten PdfPageCollection for performance
-- PdfCMapEncoding: Fix parsing some invalid CMap(s) supported by Acrobat
-- PdfXRefStreamParserObject: Fixed handling of invalid XRef stream entries
+- Rewritten `PdfPageCollection` for performance
+- `PdfCMapEncoding`: Fix parsing some invalid CMap(s) supported by Acrobat
+- `PdfXRefStreamParserObject`: Fixed handling of invalid XRef stream entries
 - Support compilation of the library header (not the library itself) with C++20
 
 ## Version 0.10.0
-- PdfPage/PdfAnnotationCollection/PdfAnnotation: Now functions with
+- `PdfPage`/`PdfAnnotationCollection`/`PdfAnnotation`: Now functions with
   rect input assume it to be using the canonical coordinate system
   with no rotation
-- PdfImage: Added support for CYMK jpeg
-- PdfParser: Cleaned FindToken2 -> FindTokenBackward
+- `PdfImage`: Added support for CYMK jpeg
+- `PdfParser`: Cleaned `FindToken2` -> `FindTokenBackward`
 - Renamed base source folder -> main
-- PdfPainter: Revamped API, added full state inspection with current point,
-  added added PdfPainterTextContext to handle text object operations
-  Use it with PdfPainter::Text instance member.
-  Added PdfContentStreamOperators low level interface for PdfPainter
-  moved SmoothCurveTo, QuadCurveTo SmoothQuadCurveTo, ArcTo, Arc,
-  to an helper structure until cleaned
-- PdfFontMetrics: Added FilePath/FaceIndex for debugging, when available
-- PdfFont: Renamed GetStringLength() overloads with
-  PdfString to GetEncodedStringLength()
-- PdfFontManager: Renamed GetFont() -> SearchFont()
-  Re-Added better GetOrCreateFont() from file/buffer
-- PdfEncrypt: Cleaned factory methods
-- Added PdfArray::FindAtAs(), PdfArray::FindAtAsSafe(), PdfArray::TryFindAtAs(),
-  PdfArray::GetAtAs(), PdfArray::GetAtAsSafe(), PdfArray::TryGetAtAs()
-- Added PdfDictionary::FindKeyAsSafe() and PdfDictionary::TryFindKeyAs()
-- PdfDictionary::AddKeyIndirect/PdfArray::AddKeyIndirect accepts a reference
-- PdfAnnotation/PdfField API review
-- PdfDate: Introduced PdfDate::LocalNow() and PdfDate::UtcNow()
+- `PdfPainter`: Revamped API, added full state inspection with current point,
+  added added `PdfPainterTextContext` to handle text object operations
+  Use it with `PdfPainter::Text` instance member.
+  Added `PdfContentStreamOperators` low level interface for PdfPainter
+- `PdfFontMetrics`: Added `FilePath`/`FaceIndex` for debugging, when available
+- `PdfFont`: Renamed `GetStringLength()` overloads with
+  `PdfString` to `GetEncodedStringLength()`
+- `PdfFontManager`: Renamed `GetFont()` -> `SearchFont()`
+  Re-Added better `GetOrCreateFont()` from file/buffer
+- `PdfEncrypt`: Cleaned factory methods
+- Added `PdfArray::FindAtAs()`, `PdfArray::FindAtAsSafe()`, `PdfArray::TryFindAtAs()`,
+  `PdfArray::GetAtAs()`, `PdfArray::GetAtAsSafe()`, `PdfArray::TryGetAtAs()`
+- Added `PdfDictionary::FindKeyAsSafe()` and `PdfDictionary::TryFindKeyAs()`
+- `PdfDictionary::AddKeyIndirect`/`PdfArray::AddKeyIndirect` accepts a reference
+- `PdfAnnotation`/`PdfField` API review
+- `PdfDate`: Introduced `PdfDate::LocalNow()` and `PdfDate::UtcNow()`
   and default constructor is epoch time instead
-- Renamed PdfDocument::GetNameTree() -> GetNames()
-- PdfObject: Flate compress on write objects that have no filters
-- PdfMemDocument does collect garbage by default when saving
-- PdfField/PdfAnntation: Fully reworked the hierarchy
+- Renamed `PdfDocument::GetNameTree()` -> `GetNames()`
+- `PdfObject`: Flate compress on write objects that have no filters
+- `PdfMemDocument` does collect garbage by default when saving
+- `PdfField`/`PdfAnntation`: Fully reworked the hierarchy
   and added proper fields ownership
-- Added PdfField::GetParent(), PdfField::GetChildren()
-- PdfImage: Cleaned/reviewed/fixed SetData()/SetDataRaw()
-- Renamed PdfPageTree -> PdfPageCollection
-- Added XMP metadata reading/saving. Added PdfMetadata class
+- Added `PdfField::GetParent()`, `PdfField::GetChildren()`
+- `PdfImage`: Cleaned/reviewed/fixed `SetData()`/`SetDataRaw()`
+- Renamed `PdfPageTree` -> `PdfPageCollection`
+- Added XMP metadata reading/saving. Added `PdfMetadata` class
 - Added text extraction API
-- Review I/O API: Merged InputDevice/OutputDevice into StreamDevice.
-  New hierarchy deriving StreamDevice
-- Reviewed PdfObjectStream API: added streaming operations,
-  GetInputStream(), GetOutputStream(). Renamed
-  GetFilteredCopy() -> GetUnwrappedCopy()/UnwrapTo().
-  They only unwrap non media filters (see PdfImage::DecodeTo
+- Review I/O API: Merged `InputDevice`/`OutputDevice` into `StreamDevice`.
+  New hierarchy deriving `StreamDevice`
+- Reviewed `PdfObjectStream` API: added streaming operations,
+  `GetInputStream()`, `GetOutputStream()`. Renamed
+  `GetFilteredCopy()` -> `GetUnwrappedCopy()`/`UnwrapTo()`.
+  They only unwrap non media filters (see `PdfImage::DecodeTo`
   for media ones). Added proper copy and move assignment operators
-- PdfImage: Added DecodeTo(pixelFormat)
+- `PdfImage`: Added `DecodeTo(pixelFormat)`
 
 ## Version 0.9.22 (pdfmm)
 - Fixed serialization of strings with non ASCII PdfDocEncoding

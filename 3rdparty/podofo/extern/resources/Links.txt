@@ -1,0 +1,1 @@
+MultipleFormats.tif: https://www.leadtools.com/support/forum/posts/m41249-Sample-File--LZW-compressed-multi-page-TIFF#post41249

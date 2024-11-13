@@ -75,9 +75,9 @@ void WriteOperator_ri(PdfStringStream& stream, const std::string_view& intent);
 void WriteOperator_i(PdfStringStream& stream, double flatness);
 void WriteOperator_gs(PdfStringStream& stream, const std::string_view& dictName);
 void WriteOperator_Do(PdfStringStream& stream, const std::string_view& xobjname);
-void WriteOperator_cs(PdfStringStream& stream, PdfColorSpace colorSpace);
+void WriteOperator_cs(PdfStringStream& stream, PdfColorSpaceType colorSpace);
 void WriteOperator_cs(PdfStringStream& stream, const std::string_view& name);
-void WriteOperator_CS(PdfStringStream& stream, PdfColorSpace colorSpace);
+void WriteOperator_CS(PdfStringStream& stream, PdfColorSpaceType colorSpace);
 void WriteOperator_CS(PdfStringStream& stream, const std::string_view& name);
 void WriteOperator_sc(PdfStringStream& stream, const cspan<double>& components);
 void WriteOperator_SC(PdfStringStream& stream, const cspan<double>& components);
@@ -95,7 +95,7 @@ void WriteOperator_K(PdfStringStream& stream, double cyan, double magenta, doubl
 void WriteOperator_k(PdfStringStream& stream, double cyan, double magenta, double yellow, double black);
 void WriteOperator_BX(PdfStringStream& stream);
 void WriteOperator_EX(PdfStringStream& stream);
-void WriteOperator_Extension(PdfStringStream& stream, const std::string_view& opName, const cspan<PdfObject>& operands);
+void WriteOperator_Extension(PdfStringStream& stream, const std::string_view& opName, const cspan<PdfVariant>& operands);
 
 }
 

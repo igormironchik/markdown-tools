@@ -15,9 +15,9 @@
 #include "PdfIdentityEncoding.h"
 #include "PdfDifferenceEncoding.h"
 #include "PdfCMapEncoding.h"
-#include "PdfEncodingShim.h"
 #include "PdfFontMetrics.h"
 #include "PdfEncodingMapFactory.h"
+#include "PdfPredefinedToUnicodeCMap.h"
 
 using namespace std;
 using namespace PoDoFo;
@@ -59,50 +59,90 @@ PdfEncoding PdfEncodingFactory::CreateEncoding(const PdfObject& fontObj, const P
             encoding = std::make_shared<PdfIdentityEncoding>(toUnicode->GetLimits().MaxCodeSize);
         }
     }
+    else
+    {
+        if (toUnicode == nullptr && encoding->GetPredefinedEncodingType() == PdfPredefinedEncodingType::PredefinedCMap)
+        {
+            auto predefinedCIDMap = std::dynamic_pointer_cast<const PdfCMapEncoding>(encoding);
+            // ISO 32000-2:2020 "9.10.2 Mapping character codes to Unicode values"
+            // "c. Construct a second CMap name by concatenating the registry and ordering obtained in step (b)
+            // in the format registry–ordering–UCS2(for example, Adobe–Japan1–UCS2)"
+            string toUnicodeMapName = (string)predefinedCIDMap->GetCIDSystemInfo().Registry.GetString();
+            toUnicodeMapName.push_back('-');
+            toUnicodeMapName.append(predefinedCIDMap->GetCIDSystemInfo().Ordering.GetString());
+            toUnicodeMapName.append("-UCS2");
+            auto toUnicodeMap = PdfEncodingMapFactory::GetPredefinedCMap(toUnicodeMapName);
+            if (toUnicodeMap == nullptr)
+                PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidHandle, "A ToUnicode map with name {} was not found", toUnicodeMapName);
 
-    return PdfEncoding(fontObj, encoding, toUnicode);
+            toUnicode = shared_ptr<PdfPredefinedToUnicodeCMap>(new PdfPredefinedToUnicodeCMap(
+                std::move(toUnicodeMap), std::move(predefinedCIDMap)));
+        }
+    }
+
+    PdfEncodingLimits parsedLimits;
+    auto firstCharObj = fontObj.GetDictionary().FindKey("FirstChar");
+    if (firstCharObj != nullptr)
+        parsedLimits.FirstChar = PdfCharCode(static_cast<unsigned>(firstCharObj->GetNumber()));
+
+    auto lastCharObj = fontObj.GetDictionary().FindKey("LastChar");
+    if (lastCharObj != nullptr)
+        parsedLimits.LastChar = PdfCharCode(static_cast<unsigned>(lastCharObj->GetNumber()));
+
+    if (parsedLimits.LastChar.Code > parsedLimits.FirstChar.Code)
+    {
+        // If found valid /FirstChar and /LastChar, valorize
+        //  also the code size limits
+        parsedLimits.MinCodeSize = utls::GetCharCodeSize(parsedLimits.FirstChar.Code);
+        parsedLimits.MaxCodeSize = utls::GetCharCodeSize(parsedLimits.LastChar.Code);
+    }
+
+    return PdfEncoding::Create(parsedLimits, encoding, toUnicode);
 }
 
-PdfEncodingMapConstPtr PdfEncodingFactory::createEncodingMap(
-    const PdfObject& obj, const PdfFontMetrics& metrics)
+PdfEncodingMapConstPtr PdfEncodingFactory::createEncodingMap(const PdfObject& obj,
+    const PdfFontMetrics& metrics)
 {
-    if (obj.IsName())
+    const PdfName* name;
+    const PdfDictionary* dict;
+    if (obj.TryGetName(name))
     {
-        auto& name = obj.GetName();
-        if (name == "WinAnsiEncoding")
+        if (*name == "WinAnsiEncoding")
             return PdfEncodingMapFactory::WinAnsiEncodingInstance();
-        else if (name == "MacRomanEncoding")
+        else if (*name == "MacRomanEncoding")
             return PdfEncodingMapFactory::MacRomanEncodingInstance();
-        else if (name == "MacExpertEncoding")
+        else if (*name == "MacExpertEncoding")
             return PdfEncodingMapFactory::MacExpertEncodingInstance();
 
         // TABLE 5.15 Predefined CJK CMap names: the generip H-V identifies
         // are mappings for 2-byte CID. "It maps 2-byte character codes ranging
         // from 0 to 65,535 to the same 2 - byte CID value, interpreted high
         // order byte first"
-        else if (name == "Identity-H")
+        else if (*name == "Identity-H")
             return PdfEncodingMapFactory::TwoBytesHorizontalIdentityEncodingInstance();
-        else if (name == "Identity-V")
+        else if (*name == "Identity-V")
             return PdfEncodingMapFactory::TwoBytesVerticalIdentityEncodingInstance();
+        else
+            return PdfEncodingMapFactory::GetPredefinedCMap(*name);
     }
-    else if (obj.IsDictionary())
+    else if (obj.TryGetDictionary(dict))
     {
-        auto& dict = obj.GetDictionary();
-        auto* cmapName = dict.FindKey("CMapName");
-        if (cmapName != nullptr)
+        if (dict->TryFindKeyAs("CMapName", name))
         {
-            if (cmapName->GetName() == "Identity-H")
+            if (*name == "Identity-H")
                 return PdfEncodingMapFactory::TwoBytesHorizontalIdentityEncodingInstance();
 
-            if (cmapName->GetName() == "Identity-V")
+            if (*name == "Identity-V")
                 return PdfEncodingMapFactory::TwoBytesVerticalIdentityEncodingInstance();
         }
 
-        if (obj.HasStream())
-            return PdfCMapEncoding::CreateFromObject(obj);
+        unique_ptr<PdfEncodingMap> cmapEnc;
+        if (PdfEncodingMapFactory::TryParseCMapEncoding(obj, cmapEnc))
+            return cmapEnc;
 
-        // CHECK-ME: should we verify if it's a reference by searching /Differences?
-        return PdfDifferenceEncoding::Create(obj, metrics);
+        unique_ptr<PdfDifferenceEncoding> diffEnc;
+        if (PdfDifferenceEncoding::TryCreateFromObject(obj, metrics, diffEnc))
+            return diffEnc;
     }
 
     return nullptr;

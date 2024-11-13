@@ -300,8 +300,8 @@ void PdfAuxData::setColor(const QColor &c)
 {
     m_colorsStack.push(c);
 
-    (*m_painters)[m_currentPainterIdx]->GraphicsState.SetFillColor(Color(c.redF(), c.greenF(), c.blueF()));
-    (*m_painters)[m_currentPainterIdx]->GraphicsState.SetStrokeColor(Color(c.redF(), c.greenF(), c.blueF()));
+    (*m_painters)[m_currentPainterIdx]->GraphicsState.SetNonStrokingColor(Color(c.redF(), c.greenF(), c.blueF()));
+    (*m_painters)[m_currentPainterIdx]->GraphicsState.SetStrokingColor(Color(c.redF(), c.greenF(), c.blueF()));
 }
 
 void PdfAuxData::restoreColor()
@@ -317,8 +317,8 @@ void PdfAuxData::repeatColor()
 {
     const auto &c = m_colorsStack.top();
 
-    (*m_painters)[m_currentPainterIdx]->GraphicsState.SetFillColor(Color(c.redF(), c.greenF(), c.blueF()));
-    (*m_painters)[m_currentPainterIdx]->GraphicsState.SetStrokeColor(Color(c.redF(), c.greenF(), c.blueF()));
+    (*m_painters)[m_currentPainterIdx]->GraphicsState.SetNonStrokingColor(Color(c.redF(), c.greenF(), c.blueF()));
+    (*m_painters)[m_currentPainterIdx]->GraphicsState.SetStrokingColor(Color(c.redF(), c.greenF(), c.blueF()));
 }
 
 double PdfAuxData::imageWidth(const QByteArray &image)
@@ -815,10 +815,10 @@ void PdfRenderer::renderImpl()
 
             case MD::ItemType::Anchor: {
                 auto *a = static_cast<MD::Anchor<MD::QStringTrait> *>(it->get());
-                m_dests.insert(
-                    a->label(),
-                    std::make_shared<Destination>(*pdfData.m_page, pdfData.m_layout.margins().m_left,
-                                                  pdfData.m_layout.topY(), 0.0));
+                auto dest = pdfData.m_doc->CreateDestination();
+                dest->SetDestination(*pdfData.m_page, pdfData.m_layout.margins().m_left,
+                                     pdfData.m_layout.topY(), 0.0);
+                m_dests.insert(a->label(), std::move(dest));
                 pdfData.m_currentFile = a->label();
             } break;
 
@@ -961,7 +961,7 @@ void PdfRenderer::resolveLinks(PdfAuxData &pdfData)
                 auto &annot = page.GetAnnotations().CreateAnnot<PoDoFo::PdfAnnotationLink>(
                             Rect(r.first.x(), r.first.y(), r.first.width(), r.first.height()));
                 annot.SetBorderStyle(0.0, 0.0, 0.0);
-                annot.SetDestination(m_dests.value(it.key()));
+                annot.SetDestination(*m_dests.value(it.key()).get());
             }
         }
 #ifdef MD_PDF_TESTING
@@ -979,7 +979,7 @@ void PdfRenderer::resolveLinks(PdfAuxData &pdfData)
             auto &annot = page.GetAnnotations().CreateAnnot<PoDoFo::PdfAnnotationLink>(
                 Rect(it.value().first.x(), it.value().first.y(), it.value().first.width(), it.value().first.height()));
             annot.SetBorderStyle(0.0, 0.0, 0.0);
-            annot.SetDestination(m_dests.value(it.key()));
+            annot.SetDestination(*m_dests.value(it.key()).get());
         }
 #ifdef MD_PDF_TESTING
         else {
@@ -1188,11 +1188,12 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawHeading(PdfAuxData &pdfD
                           heightCalcOpt, scale * (1.0 + (7 - item->level()) * 0.25), Qt::black, false, rtl);
 
         if (heightCalcOpt == CalcHeightOpt::Unknown && !item->label().isEmpty() && !where.first.isEmpty()) {
-            m_dests.insert(item->label(),
-                           std::make_shared<Destination>(pdfData.m_doc->GetPages().GetPageAt(static_cast<unsigned int>(where.first.front().m_pageIdx)),
-                                                         pdfData.m_layout.borderStartX() + pdfData.m_layout.xIncrementDirection() * offset,
-                                                         where.first.front().m_y + where.first.front().m_height,
-                                                         0.0));
+            auto dest = pdfData.m_doc->CreateDestination();
+            dest->SetDestination(pdfData.m_doc->GetPages().GetPageAt(static_cast<unsigned int>(where.first.front().m_pageIdx)),
+                                 pdfData.m_layout.borderStartX() + pdfData.m_layout.xIncrementDirection() * offset,
+                                 where.first.front().m_y + where.first.front().m_height,
+                                 0.0);
+            m_dests.insert(item->label(), std::move(dest));
         }
 
         return where;
@@ -1476,10 +1477,10 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
                                   .CreateAnnot<PoDoFo::PdfAnnotationLink>(Rect(r.first.x(), r.first.y(), r.first.width(), r.first.height()));
                 annot.SetBorderStyle(0.0, 0.0, 0.0);
 
-                auto action = std::make_shared<PoDoFo::PdfAction>(*pdfData.m_doc, PoDoFo::PdfActionType::URI);
-                action->SetURI(url.toLatin1().data());
+                auto action = pdfData.m_doc->CreateAction<PoDoFo::PdfActionURI>();
+                action->SetURI(PoDoFo::PdfString(std::string(url.toLatin1().data())));
 
-                annot.SetAction(action);
+                annot.SetAction(*action.get());
             }
         }
         // Otherwise internal link.
@@ -2528,7 +2529,6 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
         latexRender->draw(g2, 0, 0);
         pxSize = {(qreal)latexRender->getWidth(), (qreal)latexRender->getHeight()};
         size = {pxSize.width() / (qreal) pd.physicalDpiX() * 72.0, pxSize.height() / (qreal) pd.physicalDpiY() * 72.0};
-        // size = {5000.0, pxSize.height() / (qreal) pd.physicalDpiY() * 72.0};
         descent -= pdfData.fontDescent(font, renderOpts.m_textFontSize, scale);
     }
 
@@ -2543,8 +2543,13 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
     }
 
     if (cw.isDrawing() && !item->isInline()) {
-        cw.moveToNextLine();
-        moveToNewLine(pdfData, offset, 0.0, 1.0, 0.0);
+        if (!firstInParagraph) {
+            cw.moveToNextLine();
+        } else {
+            pdfData.m_layout.addY(cw.height(), -1.0);
+        }
+
+        pdfData.m_layout.moveXToBegin();
     }
 
     const auto autoOffset = pdfData.m_layout.addOffset(offset, !pdfData.m_layout.isRightToLeft());
@@ -2593,6 +2598,8 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
         }
 
         if (draw) {
+            pdfData.m_firstOnPage = false;
+
             if (availableWidth - size.width() * imgScale > 0.01) {
                 x = (availableWidth - size.width() * imgScale) / 2.0;
             }
@@ -2628,7 +2635,10 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
 
             pdfData.m_layout.moveXToBegin();
 
-            cw.append({0.0, 0.0, false, true, false, ""});
+            if (!firstInParagraph) {
+                cw.append({0.0, 0.0, false, true, false, ""});
+            }
+
             cw.append({0.0, calculatedHeight, false, true, false, ""});
         }
     } else {
@@ -2690,6 +2700,8 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
         }
 
         if (draw) {
+            pdfData.m_firstOnPage = false;
+
             PoDoFoPaintDevice pd;
             pd.setPdfPainter(*(*pdfData.m_painters)[pdfData.m_currentPainterIdx].get(), *pdfData.m_doc);
             QPainter p(&pd);
@@ -2967,12 +2979,13 @@ QVector<WhereDrawn> PdfRenderer::drawFootnote(PdfAuxData &pdfData,
                     (footnoteOffset - c_offset - (pdfData.m_layout.isRightToLeft() ? 0.0 : w));
             const auto p = ret.constFirst().m_pageIdx;
 
-            m_dests.insert(footnoteRefId,
-                           std::make_shared<Destination>(pdfData.m_doc->GetPages().GetPageAt(p),
-                                                         x,
-                                                         y + pdfData.lineSpacing(font, renderOpts.m_textFontSize, s_footnoteScale)
-                                                             + pdfData.fontDescent(font, renderOpts.m_textFontSize, s_footnoteScale),
-                                                         0.0));
+            auto dest = pdfData.m_doc->CreateDestination();
+            dest->SetDestination(pdfData.m_doc->GetPages().GetPageAt(p),
+                                 x,
+                                 y + pdfData.lineSpacing(font, renderOpts.m_textFontSize, s_footnoteScale)
+                                     + pdfData.fontDescent(font, renderOpts.m_textFontSize, s_footnoteScale),
+                                 0.0);
+            m_dests.insert(footnoteRefId, std::move(dest));
 
             pdfData.m_currentPainterIdx = p;
 
@@ -5070,10 +5083,10 @@ void PdfRenderer::processLinksInTable(PdfAuxData &pdfData,
                                       .CreateAnnot<PoDoFo::PdfAnnotationLink>(Rect(r.first.x(), r.first.y(), r.first.width(), r.first.height()));
                     annot.SetBorderStyle(0.0, 0.0, 0.0);
 
-                    auto action = std::make_shared<PoDoFo::PdfAction>(*pdfData.m_doc, PoDoFo::PdfActionType::URI);
-                    action->SetURI(url.toLatin1().data());
+                    auto action = pdfData.m_doc->CreateAction<PoDoFo::PdfActionURI>();
+                    action->SetURI(PoDoFo::PdfString(std::string(url.toLatin1().data())));
 
-                    annot.SetAction(action);
+                    annot.SetAction(*action.get());
                 }
             } else {
                 m_unresolvedLinks.insert(url, rects);

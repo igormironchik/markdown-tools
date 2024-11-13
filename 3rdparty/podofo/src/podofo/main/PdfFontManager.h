@@ -23,10 +23,9 @@ typedef struct HFONT__* HFONT;
 
 namespace PoDoFo {
 
-class PdfIndirectObjectList;
 class PdfResources;
 
-struct PdfFontSearchParams
+struct PODOFO_API PdfFontSearchParams final
 {
     nullable<PdfFontStyle> Style;
     PdfFontAutoSelectBehavior AutoSelect = PdfFontAutoSelectBehavior::None;
@@ -45,7 +44,7 @@ struct PdfFontSearchParams
  *
  * PdfFont is an actual font that can be used in
  * a PDF file (i.e. it does also font embedding)
- * and PdfFontMetrics provides only metrics informations.
+ * and PdfFontMetrics provides only metrics information.
  *
  * \see PdfDocument
  */
@@ -88,15 +87,13 @@ public:
     PdfFont& GetOrCreateFontFromBuffer(const bufferview& buffer,
         const PdfFontCreateParams& params = { });
 
-    /**
-     * \param face a valid freetype font face. The face is
-     *        referenced and the font data is copied
-     * \param params font creation params
-     *
-     * \returns a PdfFont object or nullptr if the font could
-     *          not be created or found.
+    PdfFont& GetOrCreateFont(const PdfFontMetricsConstPtr& metrics,
+        const PdfFontCreateParams& params = { });
+
+    /** Try getting the font from the cached font map
+     * Can return nullptr
      */
-    PdfFont& GetOrCreateFont(FT_Face face, const PdfFontCreateParams& params = { });
+    PdfFont* GetCachedFont(const PdfReference& ref);
 
     /** Try to search for fontmetrics from the given fontname and parameters
      *
@@ -135,8 +132,8 @@ private:
 
     /**
      * Empty the internal font cache.
-     * This should be done when ever a new document
-     * is created or openened.
+     * This should be done whenever a new document
+     * is created or opened.
      */
     void Clear();
 
@@ -157,25 +154,38 @@ private:
             const PdfEncoding& encoding, bool hasFontStyle, PdfFontStyle style);
 
         Descriptor(const Descriptor& rhs) = default;
-        Descriptor& operator=(const Descriptor& rhs) = default;
 
-        std::string Name;               ///< Name of the font or pattern
-        PdfStandard14FontType StdType;
-        size_t EncodingId;
-        bool HasFontStyle;
-        PdfFontStyle Style;
+        const std::string Name;               ///< Name of the font or pattern
+        const PdfStandard14FontType StdType;
+        const unsigned EncodingId;
+        const bool HasFontStyle;
+        const PdfFontStyle Style;
+    };
+
+    struct PathDescriptor
+    {
+        PathDescriptor(const std::string_view& filepath, unsigned faceIndex, const PdfEncoding& encoding);
+
+        PathDescriptor(const PathDescriptor& rhs) = default;
+
+        const std::string FilePath;
+        const unsigned FaceIndex;
+        const unsigned EncodingId;
     };
 
     struct HashElement
     {
         size_t operator()(const Descriptor& elem) const;
+        size_t operator()(const PathDescriptor& elem) const;
     };
 
     struct EqualElement
     {
         bool operator()(const Descriptor& lhs, const Descriptor& rhs) const;
+        bool operator()(const PathDescriptor& lhs, const PathDescriptor& rhs) const;
     };
 
+    using CachedPaths = std::unordered_map<PathDescriptor, PdfFont*, HashElement, EqualElement>;
     using CachedQueries = std::unordered_map<Descriptor, std::vector<PdfFont*>, HashElement, EqualElement>;
 
     struct Storage
@@ -186,22 +196,19 @@ private:
 
     using FontMap = std::unordered_map<PdfReference, Storage>;
 
-    using CachedPaths = std::unordered_map<std::string, PdfFont*>;
-
 private:
 #ifdef PODOFO_HAVE_FONTCONFIG
     static std::shared_ptr<PdfFontConfigWrapper> ensureInitializedFontConfig();
 #endif // PODOFO_HAVE_FONTCONFIG
 
-    static FT_Face getFontFace(const std::string_view& fontName,
-        const PdfFontSearchParams& params, std::unique_ptr<charbuff>& data,
-        std::string& fontpath, unsigned& faceIndex);
+    static std::unique_ptr<const PdfFontMetrics> getFontMetrics(const std::string_view& fontName,
+        const PdfFontSearchParams& params);
     PdfFont* getImportedFont(const std::string_view& patternName,
         const PdfFontSearchParams& searchParams, const PdfFontCreateParams& createParams);
     static void adaptSearchParams(std::string& patternName,
         PdfFontSearchParams& searchParams);
     PdfFont* addImported(std::vector<PdfFont*>& fonts, std::unique_ptr<PdfFont>&& font);
-    PdfFont& getOrCreateFontHashed(const std::shared_ptr<PdfFontMetrics>& metrics, const PdfFontCreateParams& params);
+    PdfFont& getOrCreateFontHashed(const PdfFontMetricsConstPtr& metrics, const PdfFontCreateParams& params);
 
 #if defined(_WIN32) && defined(PODOFO_HAVE_WIN32GDI)
     static std::unique_ptr<charbuff> getWin32FontData(const std::string_view& fontName,

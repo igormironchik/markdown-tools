@@ -5,6 +5,7 @@
  */
 
 #include <podofo/private/PdfDeclarationsPrivate.h>
+#include "podofo/private/OpenSSLInternal.h"
 #include "PdfCommon.h"
 #include "PdfFontManager.h"
 
@@ -34,6 +35,22 @@ PODOFO_EXPORT PdfLogSeverity s_MaxLogSeverity = PdfLogSeverity::Information;
 
 PODOFO_EXPORT LogMessageCallback s_LogMessageCallback;
 
+PODOFO_EXPORT ssl::OpenSSLMain s_SSL;
+
+static unsigned s_MaxObjectCount = (1U << 23) - 1;
+
+void ssl::Init()
+{
+    // Initialize the OpenSSL singleton
+    static struct InitOpenSSL
+    {
+        InitOpenSSL()
+        {
+            s_SSL.Init();
+        }
+    } s_init;
+}
+
 void PdfCommon::AddFontDirectory(const string_view& path)
 {
     PdfFontManager::AddFontDirectory(path);
@@ -57,6 +74,16 @@ PdfLogSeverity PdfCommon::GetMaxLoggingSeverity()
 bool PdfCommon::IsLoggingSeverityEnabled(PdfLogSeverity logSeverity)
 {
     return logSeverity <= s_MaxLogSeverity;
+}
+
+unsigned PdfCommon::GetMaxObjectCount()
+{
+    return s_MaxObjectCount;
+}
+
+void PdfCommon::SetMaxObjectCount(unsigned maxObjectCount)
+{
+    s_MaxObjectCount = maxObjectCount;
 }
 
 void PdfCommon::SetMaxRecursionDepth(unsigned maxRecursionDepth)

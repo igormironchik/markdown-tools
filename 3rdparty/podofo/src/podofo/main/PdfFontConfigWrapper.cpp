@@ -13,7 +13,7 @@ using namespace std;
 using namespace PoDoFo;
 
 #if defined(_WIN32) || defined(__ANDROID__) || defined(__APPLE__)
-// Windows, Android and Apple architectures don't primarly
+// Windows, Android and Apple architectures don't primarily
 // use fontconfig. We can supply a fallback configuration,
 // if a system configuration is not found
 #define HAS_FALLBACK_CONFIGURATION
@@ -48,11 +48,13 @@ string PdfFontConfigWrapper::SearchFontPath(const string_view fontPattern,
     if (pattern == nullptr)
         PODOFO_RAISE_ERROR_INFO(PdfErrorCode::OutOfMemory, "FcPatternCreate returned NULL");
 
-    // Build a pattern to search using postscript name, bold and italic
+    // Build a pattern to search using family, postscript name,
+    // bold and italic. NOTE: Family name is only used if
+    // MatchPostScriptName flag is not set
     if ((params.Flags & PdfFontConfigSearchFlags::MatchPostScriptName) == PdfFontConfigSearchFlags::None)
         FcPatternAddString(pattern, FC_FAMILY, (const FcChar8*)fontPattern.data());
-    else
-        FcPatternAddString(pattern, FC_POSTSCRIPT_NAME, (const FcChar8*)fontPattern.data());
+
+    FcPatternAddString(pattern, FC_POSTSCRIPT_NAME, (const FcChar8*)fontPattern.data());
 
     if (params.Style.has_value())
     {
@@ -102,7 +104,7 @@ string PdfFontConfigWrapper::SearchFontPath(const string_view fontPattern,
 void PdfFontConfigWrapper::AddFontDirectory(const string_view& path)
 {
     if (!FcConfigAppFontAddDir(m_FcConfig, (const FcChar8*)path.data()))
-        throw runtime_error("Unable to add font directory");
+        PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidHandle, "Unable to add font directory");
 }
 
 FcConfig* PdfFontConfigWrapper::GetFcConfig()
@@ -131,6 +133,8 @@ void PdfFontConfigWrapper::createDefaultConfig()
 <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
 <fontconfig>
     <dir>/system/fonts</dir>
+    <dir prefix="xdg">fonts</dir>
+    <cachedir prefix="xdg">fontconfig</cachedir>
 </fontconfig>
 )";
 #elif __APPLE__
@@ -140,6 +144,8 @@ void PdfFontConfigWrapper::createDefaultConfig()
 <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
 <fontconfig>
     <dir>/System/Library/Fonts</dir>
+    <dir prefix="xdg">fonts</dir>
+    <cachedir prefix="xdg">fontconfig</cachedir>
 </fontconfig>
 )";
 #endif
@@ -150,7 +156,7 @@ void PdfFontConfigWrapper::createDefaultConfig()
 
     auto config = FcConfigCreate();
     if (config == nullptr)
-        throw runtime_error("Could not allocate font config");
+        PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidHandle, "Could not allocate font config");
 
     // Manually try to load the config to determine
     // if a system configuration exists. Tell FontConfig
@@ -164,14 +170,14 @@ void PdfFontConfigWrapper::createDefaultConfig()
         if (!FcConfigParseAndLoadFromMemory(config, (const FcChar8*)fontconf, true))
         {
             FcConfigDestroy(config);
-            throw runtime_error("Could not parse font config");
+            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidFontData, "Could not parse font config");
         }
 
         // Load fonts for the config
         if (!FcConfigBuildFonts(config))
         {
             FcConfigDestroy(config);
-            throw runtime_error("Could not load fonts in fontconfig");
+            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidFontData, "Could not parse font config");
         }
 
         m_FcConfig = config;

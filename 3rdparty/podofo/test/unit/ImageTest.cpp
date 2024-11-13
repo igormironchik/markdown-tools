@@ -17,7 +17,7 @@ TEST_CASE("TestImage1")
     doc.Load(TestUtils::GetTestInputFilePath("TestImage1.pdf"));
     auto& page = doc.GetPages().GetPageAt(0);
     auto& resources = page.MustGetResources();
-    auto imageObj = resources.GetResource("XObject", "XOb5");
+    auto imageObj = resources.GetResource(PdfResourceType::XObject, "XOb5");
     unique_ptr<PdfImage> image;
     REQUIRE(PdfXObject::TryCreateFromObject<PdfImage>(*imageObj, image));
 
@@ -38,17 +38,17 @@ TEST_CASE("TestImage2")
     PdfMemDocument doc;
     doc.Load(TestUtils::GetTestInputFilePath("Hierarchies1.pdf"));
     // Try to extract jpeg image
-    auto imageObj = doc.GetObjects().GetObject(PdfReference(156, 0));
+    auto& imageObj = doc.GetObjects().MustGetObject(PdfReference(156, 0));
     charbuff buffer;
 
     // Unpacking directly the stream shall throw since it has jpeg content
-    ASSERT_THROW_WITH_ERROR_CODE(imageObj->GetStream()->CopyTo(buffer), PdfErrorCode::UnsupportedFilter);
+    ASSERT_THROW_WITH_ERROR_CODE(imageObj.MustGetStream().CopyTo(buffer), PdfErrorCode::UnsupportedFilter);
 
     // Unpacking using UnpackToSafe() should succeed
-    imageObj->GetStream()->CopyToSafe(buffer);
+    imageObj.MustGetStream().CopyToSafe(buffer);
 
     unique_ptr<PdfImage> image;
-    REQUIRE(PdfXObject::TryCreateFromObject<PdfImage>(*imageObj, image));
+    REQUIRE(PdfXObject::TryCreateFromObject<PdfImage>(imageObj, image));
 
     image->DecodeTo(buffer, PdfPixelFormat::BGRA);
     charbuff ppmbuffer;
@@ -68,7 +68,7 @@ TEST_CASE("TestImage2")
 static void testReferenceImage(const PdfDocument& doc)
 {
     auto& page = doc.GetPages().GetPageAt(0);
-    auto resources = page.MustGetResources().GetResourceIterator("XObject");
+    auto resources = page.MustGetResources().GetResourceIterator(PdfResourceType::XObject);
     for (auto& res : resources)
     {
         unique_ptr<const PdfImage> image;
@@ -95,7 +95,7 @@ TEST_CASE("TestImage3")
     {
         PdfMemDocument doc;
         PdfPainter painter;
-        auto& page = doc.GetPages().CreatePage(PdfPage::CreateStandardPageSize(PdfPageSize::A4));
+        auto& page = doc.GetPages().CreatePage(PdfPageSize::A4);
         painter.SetCanvas(page);
         auto img = doc.CreateImage();
         img->Load(TestUtils::GetTestInputFilePath("ReferenceImage.png"));
@@ -117,7 +117,7 @@ TEST_CASE("TestImage4")
     {
         PdfMemDocument doc;
         PdfPainter painter;
-        auto& page = doc.GetPages().CreatePage(PdfPage::CreateStandardPageSize(PdfPageSize::A4));
+        auto& page = doc.GetPages().CreatePage(PdfPageSize::A4);
         painter.SetCanvas(page);
         auto img = doc.CreateImage();
         img->Load(TestUtils::GetTestInputFilePath("ReferenceImage.jpg"));
@@ -126,7 +126,7 @@ TEST_CASE("TestImage4")
         PdfImageInfo info;
         info.Width = 128;
         info.Height = 128;
-        info.ColorSpace = PdfColorSpace::DeviceGray;
+        info.ColorSpace = PdfColorSpaceType::DeviceGray;
         info.BitsPerComponent = 8;
         alpha->SetDataRaw(alphaInput, info);
         img->SetSoftMask(*alpha);
@@ -136,7 +136,7 @@ TEST_CASE("TestImage4")
     }
 
 #ifdef PODOFO_PLAYGROUND
-    // NOTE: The following check may file using different,
+    // NOTE: The following check may fail using different,
     // jpeg libraries such as libjpeg-turbo
     {
         PdfMemDocument doc;
@@ -186,13 +186,32 @@ TEST_CASE("TestImage5")
     }
 }
 
+TEST_CASE("TestImage6")
+{
+    PdfMemDocument doc;
+    doc.Load(TestUtils::GetTestInputFilePath("TestImage2.pdf"));
+    auto& page = doc.GetPages().GetPageAt(0);
+    auto& resources = page.MustGetResources();
+    auto imageObj = resources.GetResource(PdfResourceType::XObject, "X0");
+    unique_ptr<PdfImage> image;
+    REQUIRE(PdfXObject::TryCreateFromObject<PdfImage>(*imageObj, image));
+
+    charbuff buffer;
+    image->DecodeTo(buffer, PdfPixelFormat::BGRA);
+    charbuff ppmbuffer;
+    TestUtils::SaveFramePPM(ppmbuffer, buffer.data(),
+        PdfPixelFormat::BGRA, image->GetWidth(), image->GetHeight());
+
+    TestUtils::WriteTestOutputFile(TestUtils::GetTestOutputFilePath("TestImage2.ppm"), ppmbuffer);
+}
+
 TEST_CASE("TestImage7")
 {
     auto outputFile = TestUtils::GetTestOutputFilePath("TestImage7.pdf");
     {
         PdfMemDocument doc;
         PdfPainter painter;
-        auto& page = doc.GetPages().CreatePage(PdfPage::CreateStandardPageSize(PdfPageSize::A4));
+        auto& page = doc.GetPages().CreatePage(PdfPageSize::A4);
         painter.SetCanvas(page);
 
         auto img1 = doc.CreateImage();

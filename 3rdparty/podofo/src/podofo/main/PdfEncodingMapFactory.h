@@ -8,6 +8,7 @@
 #define PDF_ENCODING_MAP_FACTORY_H
 
 #include "PdfEncodingMap.h"
+#include "PdfCMapEncoding.h"
 
 namespace PoDoFo {
 
@@ -18,8 +19,20 @@ class PODOFO_API PdfEncodingMapFactory final
     friend class PdfEncoding;
     friend class PdfEncodingFactory;
     friend class PdfDifferenceEncoding;
+    friend class PdfFontMetricsFreetype;
 
 public:
+    /** Try to parse a CMap encoding from an object
+     * \remarks The results may be a PdfCMapEncoding or PdfIdentityEncoding
+     */
+    static bool TryParseCMapEncoding(const PdfObject& cmapObj, std::unique_ptr<PdfEncodingMap>& encoding);
+
+    /** Parse a CMap encoding from an object
+     * \remarks Throws if parse failed
+     * \returns The results may be a non null PdfCMapEncoding or PdfIdentityEncoding on succces
+     */
+    static std::unique_ptr<PdfEncodingMap> ParseCMapEncoding(const PdfObject& cmapObj);
+
     /** Singleton method which returns a global instance
      *  of WinAnsiEncoding.
      *
@@ -27,21 +40,21 @@ public:
      *
      *  \see Win1250EncodingInstance
      */
-    static PdfEncodingMapConstPtr WinAnsiEncodingInstance();
+    static PdfBuiltInEncodingConstPtr WinAnsiEncodingInstance();
 
     /** Singleton method which returns a global instance
      *  of MacRomanEncoding.
      *
      *  \returns global instance of MacRomanEncoding
      */
-    static PdfEncodingMapConstPtr MacRomanEncodingInstance();
+    static PdfBuiltInEncodingConstPtr MacRomanEncodingInstance();
 
     /** Singleton method which returns a global instance
      *  of MacExpertEncoding.
      *
      *  \returns global instance of MacExpertEncoding
      */
-    static PdfEncodingMapConstPtr MacExpertEncodingInstance();
+    static PdfBuiltInEncodingConstPtr MacExpertEncodingInstance();
 
     /** Singleton method which returns a global instance
      *  of Horizontal IndentityEncoding
@@ -61,31 +74,23 @@ public:
      */
     static PdfEncodingMapConstPtr GetStandard14FontEncodingMap(PdfStandard14FontType stdFont);
 
+    /** Get a predefined CMap
+     * \returns The found map or nullptr if absent 
+     */
+    static PdfCMapEncodingConstPtr GetPredefinedCMap(const std::string_view& cmapName);
+
 private:
     PdfEncodingMapFactory() = delete;
 
     // The following encodings are for internal use only
 
-    /** Singleton method which returns a global instance
-     *  of StandardEncoding.
-     *
-     *  \returns global instance of StandardEncoding
-     */
-    static PdfEncodingMapConstPtr StandardEncodingInstance();
+    static PdfBuiltInEncodingConstPtr StandardEncodingInstance();
 
-    /** Singleton method which returns a global instance
-     *  of SymbolEncoding.
-     *
-     *  \returns global instance of SymbolEncoding
-     */
-    static PdfEncodingMapConstPtr SymbolEncodingInstance();
+    static PdfBuiltInEncodingConstPtr SymbolEncodingInstance();
 
-    /** Singleton method which returns a global instance
-     *  of ZapfDingbatsEncoding.
-     *
-     *  \returns global instance of ZapfDingbatsEncoding
-     */
-    static PdfEncodingMapConstPtr ZapfDingbatsEncodingInstance();
+    static PdfBuiltInEncodingConstPtr ZapfDingbatsEncodingInstance();
+
+    static PdfBuiltInEncodingConstPtr AppleLatin1EncodingInstance();
 
     static PdfEncodingMapConstPtr GetNullEncodingMap();
 };

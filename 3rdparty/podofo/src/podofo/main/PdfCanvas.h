@@ -10,13 +10,9 @@
 #include "PdfDeclarations.h"
 #include "PdfResources.h"
 #include "PdfArray.h"
+#include <podofo/auxiliary/Rect.h>
 
 namespace PoDoFo {
-
-class PdfDictionary;
-class PdfObject;
-class Rect;
-class PdfColor;
 
 enum class PdfStreamAppendFlags
 {
@@ -44,12 +40,22 @@ public:
     const PdfObject* GetContentsObject() const;
     PdfObject* GetContentsObject();
 
-    /** Get access an object that you can use to ADD drawing to.
-     *  If you want to draw onto the page, you have to add
-     *  drawing commands to the stream of the Contents object.
-     *  \returns a contents object
+    /** Get access an object that you can use to ADD drawing to
+     *  \returns a contents stream object
      */
-    virtual PdfObjectStream& GetStreamForAppending(PdfStreamAppendFlags flags) = 0;
+    virtual PdfObjectStream& GetOrCreateContentsStream(PdfStreamAppendFlags flags) = 0;
+
+    /** Reset the contents object and create a new stream for appending
+     */ 
+    virtual PdfObjectStream& ResetContentsStream() = 0;
+
+    charbuff GetContentsCopy() const;
+
+    /**
+     * \remarks It clears the buffer before copying
+     */
+    void CopyContentsTo(charbuff& buffer) const;
+    virtual void CopyContentsTo(OutputStream& stream) const = 0;
 
     /** Get an element from the pages resources dictionary,
      *  using a type (category) and a key.
@@ -59,8 +65,8 @@ public:
      *
      *  \returns the object of the resource or nullptr if it was not found
      */
-    PdfObject* GetFromResources(const std::string_view& type, const std::string_view& key);
-    const PdfObject* GetFromResources(const std::string_view& type, const std::string_view& key) const;
+    PdfObject* GetFromResources(PdfResourceType type, const std::string_view& key);
+    const PdfObject* GetFromResources(PdfResourceType type, const std::string_view& key) const;
 
     /** Get the resource object of this page.
      * \returns a resources object
@@ -68,8 +74,8 @@ public:
     PdfResources* GetResources();
     const PdfResources* GetResources() const;
 
-    PdfElement& GetElement();
-    const PdfElement& GetElement() const;
+    PdfDictionaryElement& GetElement();
+    const PdfDictionaryElement& GetElement() const;
 
     /** Get or create the resource object of this page.
      * \returns a resources object
@@ -94,10 +100,10 @@ public:
 protected:
     virtual PdfObject* getContentsObject() = 0;
     virtual PdfResources* getResources() = 0;
-    virtual PdfElement& getElement() = 0;
+    virtual PdfDictionaryElement& getElement() = 0;
 
 private:
-    PdfObject* getFromResources(const std::string_view& type, const std::string_view& key);
+    PdfObject* getFromResources(PdfResourceType type, const std::string_view& key);
 };
 
 };

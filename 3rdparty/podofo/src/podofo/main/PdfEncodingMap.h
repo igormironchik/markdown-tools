@@ -9,14 +9,11 @@
 
 #include "PdfDeclarations.h"
 #include "PdfObject.h"
-#include "PdfName.h"
 #include "PdfCharCodeMap.h"
 
 namespace PoDoFo {
 
 class PdfIndirectObjectList;
-class PdfDynamicEncoding;
-class PdfDynamicCIDEncoding;
 class PdfFont;
 
 /** 
@@ -30,8 +27,14 @@ class PdfFont;
 class PODOFO_API PdfEncodingMap
 {
     friend class PdfEncoding;
+    friend class PdfEncodingMapBase;
+    friend class PdfEncodingMapOneByte;
+    friend class PdfNullEncodingMap;
+    friend class PdfIdentityEncoding;
+    friend class PdfPredefinedToUnicodeCMap;
+    friend class PdfStringScanContext;
 
-protected:
+private:
     PdfEncodingMap(PdfEncodingMapType type);
 
 public:
@@ -65,13 +68,13 @@ public:
     /** Try decode next code points from encoded string range
      */
     bool TryGetNextCodePoints(std::string_view::iterator& it,
-        const std::string_view::iterator& end, std::vector<char32_t>& codePoints) const;
+        const std::string_view::iterator& end, CodePointSpan& codePoints) const;
 
     /** Try get code points from char code unit
      *
      * \remarks it will iterate available code sizes
      */
-    bool TryGetCodePoints(const PdfCharCode& codeUnit, std::vector<char32_t>& codePoints) const;
+    bool TryGetCodePoints(const PdfCharCode& codeUnit, CodePointSpan& codePoints) const;
 
     virtual const PdfEncodingLimits& GetLimits() const = 0;
 
@@ -83,14 +86,14 @@ public:
      * predefined CMap names as well (ISO 32000-1:2008 Table 118
      * Predefined CJK CMap names, currently not implemented)
      * \remarks This is a low level information. Use PdfEncoding::IsSimpleEncoding()
-     * to dermine if the encoding is really a simple one
+     * to determine if the encoding is really a simple one
      */
     PdfEncodingMapType GetType() const { return m_Type; }
 
     /**
      * True if the encoding is builtin in a font program
      */
-    virtual bool IsBuiltinEncoding() const;
+    virtual PdfPredefinedEncodingType GetPredefinedEncodingType() const;
 
     /**
      * True if the encoding has ligatures support
@@ -131,15 +134,21 @@ protected:
     /**
      * Get code points from a code unit
      *
-     * \param wantCID true requires mapping to CID identifier, false for Unicode code points
+     * \param cidId CID identifier that if available some encodings can benefit to fetch code points faster
      */
-    virtual bool tryGetCodePoints(const PdfCharCode& codeUnit, std::vector<char32_t>& codePoints) const = 0;
+    virtual bool tryGetCodePoints(const PdfCharCode& codeUnit, const unsigned* cidId, CodePointSpan& codePoints) const = 0;
 
     /** Get an export object that will be used during font init
      *
      * \remarks Default implementation just throws
      */
     virtual void getExportObject(PdfIndirectObjectList& objects, PdfName& name, PdfObject*& obj) const;
+
+    /** A code that specifies the writing mode for any CIDFont with
+     * which this map is combined (make sense when this is a CMap)
+     * \returns the raw value, -1 if meaningless for this map
+     */
+    virtual int GetWModeRaw() const;
 
     static void AppendUTF16CodeTo(OutputStream& stream, char32_t codePoint, std::u16string& u16tmp);
 
@@ -163,6 +172,12 @@ protected:
     virtual void AppendCIDMappingEntries(OutputStream& stream, const PdfFont& font, charbuff& temp) const = 0;
 
 private:
+    /* Overload of TryGetCodePoints that allows for a fast path to fetch code points from a full CID, if available
+     *
+     * To be called by PdfStringScanContext
+     */
+    bool TryGetCodePoints(const PdfCID& cid, CodePointSpan& codePoints) const;
+
     /** Try get CID identifier code from code unit
      * \param id the identifier of the CID. The identifier is
      * actually the PdfCID::Id part in the full CID representation
@@ -172,7 +187,14 @@ private:
     bool TryGetCIDId(const PdfCharCode& codeUnit, unsigned& id) const;
 
     bool tryGetNextCodePoints(std::string_view::iterator& it, const std::string_view::iterator& end,
-        PdfCharCode& codeUnit, std::vector<char32_t>& codePoints) const;
+        PdfCharCode& codeUnit, CodePointSpan& codePoints) const;
+
+    /** A code that specifies the writing mode for any CIDFont with
+     * which this map is combined (make sense when this is a CMap)
+     * \remarks To be called by PdfEncoding
+     * \returns a safe value which is either Horizontal or Vertical
+     */
+    PdfWModeKind GetWModeSafe() const;
 
 private:
     PdfEncodingMapType m_Type;
@@ -196,7 +218,7 @@ protected:
 
     bool tryGetCharCode(char32_t codePoint, PdfCharCode& codeUnit) const override;
 
-    bool tryGetCodePoints(const PdfCharCode& codeUnit, std::vector<char32_t>& codePoints) const override;
+    bool tryGetCodePoints(const PdfCharCode& codeUnit, const unsigned* cidId, CodePointSpan& codePoints) const override;
 
     void AppendCodeSpaceRange(OutputStream& stream, charbuff& temp) const override;
 
@@ -218,14 +240,18 @@ private:
 
 /**
  * PdfEncodingMap used by encodings like PdfBuiltInEncoding
- * or PdfDifferenceEncoding thats can define all their charset
+ * or PdfDifferenceEncoding that can define all their charset
  * with a single one byte range
  */
 class PODOFO_API PdfEncodingMapOneByte : public PdfEncodingMap
 {
-protected:
+    friend class PdfBuiltInEncoding;
+    friend class PdfDifferenceEncoding;
+
+private:
     PdfEncodingMapOneByte(const PdfEncodingLimits& limits);
 
+protected:
     void AppendToUnicodeEntries(OutputStream& stream, charbuff& temp) const override;
 
     void AppendCIDMappingEntries(OutputStream& stream, const PdfFont& font, charbuff& temp) const override;
@@ -242,7 +268,14 @@ private:
  */
 class PODOFO_API PdfBuiltInEncoding : public PdfEncodingMapOneByte
 {
-protected:
+    friend class PdfFontMetricsFreetype;
+    friend class PdfPredefinedEncoding;
+    friend class PdfStandardEncoding;
+    friend class PdfSymbolEncoding;
+    friend class PdfZapfDingbatsEncoding;
+    friend class AppleLatin1Encoding;
+
+private:
     PdfBuiltInEncoding(const PdfName& name);
 
 public:
@@ -254,7 +287,7 @@ public:
 
 protected:
     bool tryGetCharCode(char32_t codePoint, PdfCharCode& codeUnit) const override;
-    bool tryGetCodePoints(const PdfCharCode& codeUnit, std::vector<char32_t>& codePoints) const override;
+    bool tryGetCodePoints(const PdfCharCode& codeUnit, const unsigned* cidId, CodePointSpan& codePoints) const override;
 
     /** Gets a table of 256 short values which are the
      *  big endian Unicode code points that are assigned
@@ -268,10 +301,15 @@ protected:
     virtual const char32_t* GetToUnicodeTable() const = 0;
 
 private:
+    // To be called by PdfFontMetricsFreetype
+    void CreateUnicodeToGIDMap(const std::unordered_map<unsigned, unsigned>& codeToGidMap,
+        std::unordered_map<uint32_t, unsigned>& unicodeMap) const;
+
+private:
     /** Initialize the internal table of mappings from Unicode code points
      *  to encoded byte values.
      */
-    void InitEncodingTable();
+    void initEncodingTable();
 
 private:
     PdfName m_Name;         // The name of the encoding
@@ -293,7 +331,7 @@ public:
 protected:
     bool tryGetCharCode(char32_t codePoint, PdfCharCode& codeUnit) const override;
 
-    bool tryGetCodePoints(const PdfCharCode& codeUnit, std::vector<char32_t>& codePoints) const override;
+    bool tryGetCodePoints(const PdfCharCode& codeUnit, const unsigned* cidId, CodePointSpan& codePoints) const override;
 
     void AppendToUnicodeEntries(OutputStream& stream, charbuff& temp) const override;
 
@@ -304,7 +342,9 @@ protected:
  */
 using PdfEncodingMapConstPtr = std::shared_ptr<const PdfEncodingMap>;
 
-class PdfCMapEncoding;
+/** Convenience typedef for a const /Encoding map entry shared ptr
+ */
+using PdfBuiltInEncodingConstPtr = std::shared_ptr<const PdfBuiltInEncoding>;
 
 /** Convenience alias for a const /ToUnicode CMap entry shared ptr
  */

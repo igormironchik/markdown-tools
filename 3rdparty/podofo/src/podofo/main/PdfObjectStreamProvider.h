@@ -7,8 +7,6 @@
 #ifndef PDF_OBJECT_STREAM_PROVIDER_H
 #define PDF_OBJECT_STREAM_PROVIDER_H
 
-#include "PdfDeclarations.h"
-
 #include "PdfEncrypt.h"
 #include <podofo/auxiliary/InputStream.h>
 #include <podofo/auxiliary/OutputStream.h>
@@ -34,11 +32,9 @@ public:
 
     virtual std::unique_ptr<OutputStream> GetOutputStream(PdfObject& obj) = 0;
 
-    virtual void Write(OutputStream& stream, const PdfStatefulEncrypt& encrypt) = 0;
+    virtual void Write(OutputStream& stream, const PdfStatefulEncrypt* encrypt) = 0;
 
     virtual size_t GetLength() const = 0;
-
-    virtual bool IsLengthHandled() const;
 };
 
 };

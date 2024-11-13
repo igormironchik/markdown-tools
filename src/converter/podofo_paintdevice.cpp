@@ -313,6 +313,8 @@ void PoDoFoPaintEngine::drawTextItem(const QPointF &p, const QTextItem &textItem
         const auto f = qFontToPoDoFo(textItem.font());
         const auto pp = d->m_transform.map(p);
 
+        qDebug() << textItem.font().family() << textItem.text();
+
         d->m_painter->TextObject.Begin();
         d->m_painter->TextObject.MoveTo(qXtoPoDoFo(pp.x()), qYtoPoDoFo(pp.y()));
         d->m_painter->TextState.SetFont(*f.first, f.second);
@@ -376,7 +378,7 @@ QPair<PoDoFo::PdfFont *, double> PoDoFoPaintEngine::qFontToPoDoFo(const QFont &f
 {
     //const double size = (f.pointSizeF() > 0.0 ? f.pointSizeF() : f.pixelSize() / paintDevice()->physicalDpiY() * 72.0);
 
-    // This code is for MicroTeX, the author do thing not right with font sizes.
+    // This code is for MicroTeX, the author do things not right with font sizes.
     const auto bv = d->m_transform.m21();
     const auto dv = d->m_transform.m22();
     const auto scale = std::sqrt(bv * bv + dv * dv);
@@ -393,8 +395,11 @@ QPair<PoDoFo::PdfFont *, double> PoDoFoPaintEngine::qFontToPoDoFo(const QFont &f
             auto content = fontFile.readAll();
             fontFile.close();
 
+            PoDoFo::PdfFontCreateParams params;
+            params.Flags = PoDoFo::PdfFontCreateFlags::DontSubset;
+
             auto &font = d->m_doc->GetFonts().GetOrCreateFontFromBuffer(
-                        PoDoFo::bufferview(content.data(), content.size()));
+                        PoDoFo::bufferview(content.data(), content.size()), params);
 
             return {&font, size};
         } else {
@@ -431,13 +436,13 @@ void PoDoFoPaintEngine::updateState(const QPaintEngineState &state)
         d->m_painter->GraphicsState.SetLineWidth(p.widthF() / paintDevice()->physicalDpiX() * 72.0);
         d->m_painter->GraphicsState.SetLineCapStyle(capStyle(p.capStyle()));
         d->m_painter->GraphicsState.SetLineJoinStyle(joinStyle(p.joinStyle()));
-        d->m_painter->GraphicsState.SetFillColor(color(p.brush().color()));
-        d->m_painter->GraphicsState.SetStrokeColor(color(p.color()));
+        d->m_painter->GraphicsState.SetNonStrokingColor(color(p.brush().color()));
+        d->m_painter->GraphicsState.SetStrokingColor(color(p.color()));
         d->m_painter->GraphicsState.SetMiterLevel(p.miterLimit());
     }
 
     if (st & QPaintEngine::DirtyBrush) {
-        d->m_painter->GraphicsState.SetFillColor(color(state.brush().color()));
+        d->m_painter->GraphicsState.SetNonStrokingColor(color(state.brush().color()));
     }
 
     if (st & QPaintEngine::DirtyFont) {

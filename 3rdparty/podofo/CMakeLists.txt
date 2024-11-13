@@ -18,11 +18,32 @@ else()
     message(WARNING "You are using an unsupported compiler!")
 endif()
 
-set(PODOFO_VERSION_MAJOR "0" CACHE STRING "Major part of podofo version number")
-set(PODOFO_VERSION_MINOR "10" CACHE STRING "Minor part of podofo version number")
-set(PODOFO_VERSION_PATCH "4" CACHE STRING "Patchlevel part of podofo version number")
+set(PODOFO_VERSION_MAJOR "1" CACHE STRING "Major part of podofo version number")
+set(PODOFO_VERSION_MINOR "0" CACHE STRING "Minor part of podofo version number")
+set(PODOFO_VERSION_PATCH "0" CACHE STRING "Patchlevel part of podofo version number")
 set(PODOFO_VERSION "${PODOFO_VERSION_MAJOR}.${PODOFO_VERSION_MINOR}.${PODOFO_VERSION_PATCH}")
-set(PODOFO_SOVERSION "2")
+set(PODOFO_SOVERSION "3")
+
+set(DOXYGEN_PROJECT_NUMBER "${PODOFO_VERSION}")
+if(NOT "${CMAKE_BUILD_TYPE}" STREQUAL "Release")
+    # Enforce a version suffix if not doing a Release build
+    set(DOXYGEN_PROJECT_NUMBER "${DOXYGEN_PROJECT_NUMBER}-dev")
+endif()
+
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in
+    ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+    @ONLY
+)
+
+find_package(Doxygen)
+if (DOXYGEN_FOUND)
+    # TODO: Add doxygen target
+endif()
+
+if(PODOFO_BUILD_DOC_ONLY)
+    return()
+endif()
 
 #
 # Main includes
@@ -46,7 +67,7 @@ set(PODOFO_MAIN_CMAKELISTS_READ TRUE)
 if(PODOFO_BUILD_LIB_ONLY)
     set(PODOFO_BUILD_TEST FALSE)
     set(PODOFO_BUILD_EXAMPLES FALSE)
-    set(PODOFO_BUILD_TOOLS FALSE)
+    set(PODOFO_BUILD_UNSUPPORTED_TOOLS FALSE)
 else()
     if (NOT DEFINED PODOFO_BUILD_TEST)
         set(PODOFO_BUILD_TEST TRUE)
@@ -56,8 +77,8 @@ else()
         set(PODOFO_BUILD_EXAMPLES TRUE)
     endif()
 
-    if (NOT DEFINED PODOFO_BUILD_TOOLS)
-        set(PODOFO_BUILD_TOOLS FALSE)
+    if (NOT DEFINED PODOFO_BUILD_UNSUPPORTED_TOOLS)
+        set(PODOFO_BUILD_UNSUPPORTED_TOOLS FALSE)
     endif()
 
     # We assume a standalone build so we set output
@@ -106,7 +127,7 @@ if (MSVC)
     # /w34389: 'operator': signed/unsigned mismatch
     # /we4287: unsigned/negative constant mismatch
     # /w34100: unreferenced formal parameter
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /permissive- /we4287 /W4 /Zc:__cplusplus")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /permissive- /utf-8 /we4287 /W4 /Zc:__cplusplus")
 
     # Microsoft deprecate certain POSIX functions that we use.
     # for now, turn off these warnings.
@@ -131,6 +152,12 @@ else()
     if(NOT WIN32)
         add_definitions(-W)
     endif()
+
+    if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+        # Silence warnings on use of typeid(*ptr)
+        # See https://stackoverflow.com/questions/46494928/clang-warning-on-expression-side-effects
+        add_compile_options(-Wno-potentially-evaluated-expression)
+    endif()
 endif()
 
 find_package(ZLIB REQUIRED)
@@ -147,6 +174,17 @@ if(LIBIDN_FOUND)
     message("Libidn found. AES-256 Encryption support will be enabled")
 else()
     message("Libidn not found. AES-256 Encryption support will be disabled")
+endif()
+
+if (PODOFO_WANT_LCMS2)
+find_package(LCMS2)
+if(LCMS2_FOUND)
+    message("Found little-cms2 headers in ${LCMS2_INCLUDE_DIR}, library at ${LCMS2_LIBRARIES}")
+    set(PODOFO_HAVE_LCMS2 TRUE)
+    message("little-cms2 found. ICC profile reading support will be enabled")
+else()
+    message("little-cms2 not found. ICC profile reading support will be disabled")
+endif()
 endif()
 
 find_package(JPEG)
@@ -224,6 +262,12 @@ if(LIBIDN_FOUND)
     list(APPEND PODOFO_HEADERS_DEPENDS ${LIBIDN_INCLUDE_DIR})
 endif()
 
+if(LCMS2_FOUND)
+    # little-cms2 doesn't provide targets.
+    list(APPEND PODOFO_LIB_DEPENDS ${LCMS2_LIBRARIES})
+    list(APPEND PODOFO_HEADERS_DEPENDS ${LCMS2_INCLUDE_DIR})
+endif()
+
 # Create the config file. It'll be appended to as the subdirs run though
 # then dependency information will be written to it at the end of the
 # build.
@@ -248,7 +292,7 @@ if(PODOFO_BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
 
-if(PODOFO_BUILD_TOOLS)
+if(PODOFO_BUILD_UNSUPPORTED_TOOLS)
     add_subdirectory(tools)
 endif()
 

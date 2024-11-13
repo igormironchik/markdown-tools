@@ -1,4 +1,4 @@
-file(GLOB SOURCE_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "*.h" "*.cpp")
+file(GLOB SOURCE_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "[^.]*.h" "[^.]*.cpp")
 source_group("" FILES ${SOURCE_FILES})
 
 include_directories(
