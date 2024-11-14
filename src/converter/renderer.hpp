@@ -21,6 +21,8 @@
 #include <QNetworkReply>
 #include <QObject>
 #include <QStack>
+#include <QSharedPointer>
+#include <QTemporaryFile>
 
 #ifdef MD_PDF_TESTING
 #include <QFile>
@@ -119,10 +121,6 @@ struct RenderOpts {
     QString m_codeFont;
     //! Code font size.
     int m_codeFontSize;
-    //! Math font.
-    QString m_mathFont;
-    //! Math font size.
-    int m_mathFontSize;
     //! Links color.
     QColor m_linkColor;
     //! Borders color.
@@ -331,6 +329,8 @@ struct PdfAuxData {
     QSharedPointer<ResvgOptions> m_resvgOpts;
     //! Special blockquotes that should be highlighted.
     QMap<MD::Blockquote<MD::QStringTrait> *, QColor> m_highlightedBlockquotes;
+    //! Cache of fonts.
+    QMap<QString, QSharedPointer<QTemporaryFile>> m_fontsCache;
 
 #ifdef MD_PDF_TESTING
     QMap<QString, QString> m_fonts;

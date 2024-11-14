@@ -195,14 +195,14 @@ void PdfPainter::EMC_Operator()
 void PdfPainter::q_Operator()
 {
     checkStream();
-    checkStatus(StatusDefault | StatusTextObject);
+    checkStatus(StatusDefault);
     PoDoFo::WriteOperator_q(m_stream);
 }
 
 void PdfPainter::Q_Operator()
 {
     checkStream();
-    checkStatus(StatusDefault | StatusTextObject);
+    checkStatus(StatusDefault);
     PoDoFo::WriteOperator_Q(m_stream);
 }
 
@@ -393,7 +393,7 @@ void PdfPainter::Do_Operator(const string_view& xobjname)
     PoDoFo::WriteOperator_Do(m_stream, xobjname);
 }
 
-void PdfPainter::cs_Operator(PdfColorSpace colorSpace)
+void PdfPainter::cs_Operator(PdfColorSpaceType colorSpace)
 {
     checkStream();
     checkStatus(StatusDefault | StatusTextObject);
@@ -407,7 +407,7 @@ void PdfPainter::cs_Operator(const string_view& name)
     PoDoFo::WriteOperator_cs(m_stream, name);
 }
 
-void PdfPainter::CS_Operator(PdfColorSpace colorSpace)
+void PdfPainter::CS_Operator(PdfColorSpaceType colorSpace)
 {
     checkStream();
     checkStatus(StatusDefault | StatusTextObject);
@@ -535,7 +535,7 @@ void PdfPainter::EX_Operator()
     m_painterStatus = StatusDefault;
 }
 
-void PdfPainter::Extension_Operator(const string_view& opName, const cspan<PdfObject>& operands)
+void PdfPainter::Extension_Operator(const string_view& opName, const cspan<PdfVariant>& operands)
 {
     checkStream();
     checkStatus(StatusExtension);

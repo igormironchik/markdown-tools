@@ -10,7 +10,6 @@
 #include <algorithm>
 
 #include <utf8cpp/utf8.h>
-#include <podofo/private/charconv_compat.h>
 
 #include "PdfArray.h"
 #include "PdfDictionary.h"
@@ -2482,27 +2481,43 @@ size_t PdfDifferenceList::GetCount() const
     return m_differences.size();
 }
 
-PdfDifferenceEncoding::PdfDifferenceEncoding(const PdfDifferenceList& difference,
-    const PdfEncodingMapConstPtr& baseEncoding) :
+PdfDifferenceEncoding::PdfDifferenceEncoding(const PdfEncodingMapConstPtr& baseEncoding,
+        const PdfDifferenceList& differences) :
     PdfEncodingMapOneByte({ 1, 1, PdfCharCode(0), PdfCharCode(0xFF) }),
-    m_differences(difference),
     m_baseEncoding(baseEncoding),
+    m_differences(differences),
     m_reverseMapBuilt(false)
 {
     if (baseEncoding == nullptr)
         PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidHandle, "Base encoding must be non null");
 }
 
-unique_ptr<PdfDifferenceEncoding> PdfDifferenceEncoding::Create(
-    const PdfObject& obj, const PdfFontMetrics& metrics)
+unique_ptr<PdfDifferenceEncoding> PdfDifferenceEncoding::CreateFromObject(const PdfObject& obj, const PdfFontMetrics& metrics)
 {
+    unique_ptr<PdfDifferenceEncoding> ret;
+    if (!TryCreateFromObject(obj, metrics, ret))
+        PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidFontData, "Unable to parse a valid difference encoding");
+
+    return ret;
+}
+
+bool PdfDifferenceEncoding::TryCreateFromObject(const PdfObject& obj,
+    const PdfFontMetrics& metrics, std::unique_ptr<PdfDifferenceEncoding>& encoding)
+{
+    const PdfDictionary* dict;
+    if (!obj.TryGetDictionary(dict))
+    {
+        encoding.reset();
+        return false;
+    }
+
     bool explicitNames = false;
     if (metrics.GetFontFileType() == PdfFontFileType::Type3)
         explicitNames = true;
 
     // See Table 5.11 PdfRefence 1.7.
     PdfEncodingMapConstPtr baseEncoding;
-    auto baseEncodingObj = obj.GetDictionary().FindKey("BaseEncoding");
+    auto baseEncodingObj = dict->FindKey("BaseEncoding");
     if (baseEncodingObj != nullptr)
     {
         const PdfName& baseEncodingName = baseEncodingObj->GetName();
@@ -2515,7 +2530,11 @@ unique_ptr<PdfDifferenceEncoding> PdfDifferenceEncoding::Create(
         else if (baseEncodingName == "StandardEncoding")
             baseEncoding = PdfEncodingMapFactory::StandardEncodingInstance();
         else
-            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidFontData, "Invalid /BaseEncoding {}", baseEncodingName.GetString());;
+        {
+            PoDoFo::LogMessage(PdfLogSeverity::Warning, "Invalid /BaseEncoding {}", baseEncodingName.GetString());
+            encoding.reset();
+            return false;
+        }
     }
 
     PdfEncodingMapConstPtr implicitEncoding;
@@ -2529,9 +2548,10 @@ unique_ptr<PdfDifferenceEncoding> PdfDifferenceEncoding::Create(
 
     // Read the differences key
     PdfDifferenceList difference;
-    if (obj.GetDictionary().HasKey("Differences"))
+    auto differencesObj = dict->FindKey("Differences");
+    if (differencesObj != nullptr)
     {
-        auto& differences = obj.GetDictionary().MustFindKey("Differences").GetArray();
+        auto& differences = differencesObj->GetArray();
         int64_t curCode = -1;
         for (auto& diff : differences)
         {
@@ -2547,7 +2567,10 @@ unique_ptr<PdfDifferenceEncoding> PdfDifferenceEncoding::Create(
         }
     }
 
-    return unique_ptr<PdfDifferenceEncoding>(new PdfDifferenceEncoding(difference, baseEncoding));
+    // CHECK-ME: should we verify it actually have a /Differences?
+
+    encoding.reset(new PdfDifferenceEncoding(baseEncoding, difference));
+    return true;
 }
 
 void PdfDifferenceEncoding::getExportObject(PdfIndirectObjectList& objects, PdfName& name, PdfObject*& obj) const
@@ -2566,14 +2589,14 @@ void PdfDifferenceEncoding::getExportObject(PdfIndirectObjectList& objects, PdfN
                 "Unexpected non null base export object at this stage");
         }
 
-        dict.AddKey("BaseEncoding", baseExportName);
+        dict.AddKey("BaseEncoding"_n, baseExportName);
     }
 
     if (m_differences.GetCount() != 0)
     {
         PdfArray differences;
         m_differences.ToArray(differences);
-        dict.AddKey("Differences", differences);
+        dict.AddKey("Differences"_n, differences);
     }
 }
 
@@ -2591,8 +2614,9 @@ bool PdfDifferenceEncoding::tryGetCharCode(char32_t codePoint, PdfCharCode& code
     return true;
 }
 
-bool PdfDifferenceEncoding::tryGetCodePoints(const PdfCharCode& codeUnit, vector<char32_t>& codePoints) const
+bool PdfDifferenceEncoding::tryGetCodePoints(const PdfCharCode& codeUnit, const unsigned* cidId, CodePointSpan& codePoints) const
 {
+    (void)cidId;
     if (codeUnit.Code >= 256)
         return false;
 
@@ -2600,7 +2624,7 @@ bool PdfDifferenceEncoding::tryGetCodePoints(const PdfCharCode& codeUnit, vector
     char32_t codePoint;
     if (m_differences.TryGetMappedName((unsigned char)codeUnit.Code, name, codePoint))
     {
-        codePoints.push_back(codePoint);
+        codePoints = CodePointSpan(codePoint);
         return true;
     }
     else
@@ -2615,18 +2639,17 @@ void PdfDifferenceEncoding::buildReverseMap()
         return;
 
     auto& limits = m_baseEncoding->GetLimits();
-    vector<char32_t> codePoints;
     const PdfName* name;
-
+    CodePointSpan codePoints;
+    char32_t copdePoint;
     for (unsigned code = limits.FirstChar.Code, last = limits.LastChar.Code; code <= last; code++)
     {
         // Iterate all the codes of the encoding. NOTE: It's safe to assume
         // the base encoding is a one byte encoding
-        codePoints.resize(1);
-        if (m_differences.TryGetMappedName((unsigned char)code, name, codePoints[0]))
+        if (m_differences.TryGetMappedName((unsigned char)code, name, copdePoint))
         {
             // If there's a difference, use that instead
-            m_reverseMap[codePoints[0]] = (unsigned char)code;
+            m_reverseMap[copdePoint] = (unsigned char)code;
             continue;
         }
 
@@ -2638,15 +2661,10 @@ void PdfDifferenceEncoding::buildReverseMap()
         }
 
         // NOTE: It's safe to assume the base encoding maps to single code point
-        m_reverseMap[codePoints[0]] = (unsigned char)code;
+        m_reverseMap[*codePoints] = (unsigned char)code;
     }
 
     m_reverseMapBuilt = true;
-}
-
-char32_t PdfDifferenceEncoding::NameToCodePoint(const PdfName& name)
-{
-    return NameToCodePoint((string_view)name.GetString());
 }
 
 char32_t PdfDifferenceEncoding::NameToCodePoint(const string_view& name)
@@ -2664,8 +2682,8 @@ char32_t PdfDifferenceEncoding::NameToCodePoint(const string_view& name)
         auto code = name.substr(3);
         // force base16 IF it's 4 characters line
         unsigned val;
-        if (std::from_chars(code.data(), name.data() + name.length(), val, code.length() == 4 ? 16 : 10).ec != std::errc())
-            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::NoNumber, "Could not read number");
+        if (!utls::TryParse(code, val, code.length() == 4 ? 16 : 10))
+            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidNumber, "Could not read number");
 
         return (char32_t)val;
     }

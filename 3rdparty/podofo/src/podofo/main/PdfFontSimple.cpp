@@ -8,11 +8,6 @@
 #include "PdfFontSimple.h"
 
 #include "PdfDocument.h"
-#include "PdfArray.h"
-#include "PdfDictionary.h"
-#include "PdfFilter.h"
-#include "PdfName.h"
-#include "PdfObjectStream.h"
 
 using namespace std;
 using namespace PoDoFo;
@@ -53,26 +48,26 @@ void PdfFontSimple::getFontMatrixArray(PdfArray& fontMatrix) const
         fontMatrix.Add(PdfObject(matrix[i]));
 }
 
-void PdfFontSimple::Init()
+void PdfFontSimple::initImported()
 {
     PdfName subType;
     switch (GetType())
     {
         case PdfFontType::Type1:
-            subType = PdfName("Type1");
+            subType = "Type1"_n;
             break;
         case PdfFontType::TrueType:
-            subType = PdfName("TrueType");
+            subType = "TrueType"_n;
             break;
         case PdfFontType::Type3:
-            subType = PdfName("Type3");
+            subType = "Type3"_n;
             break;
         default:
             PODOFO_RAISE_ERROR(PdfErrorCode::InvalidEnumValue);
     }
 
-    this->GetObject().GetDictionary().AddKey(PdfName::KeySubtype, PdfName(subType));
-    this->GetObject().GetDictionary().AddKey("BaseFont", PdfName(GetName()));
+    this->GetDictionary().AddKey("Subtype"_n, subType);
+    this->GetDictionary().AddKey("BaseFont"_n, PdfName(GetName()));
     m_Encoding->ExportToFont(*this);
 
     if (!GetMetrics().IsStandard14FontMetrics() || IsEmbeddingEnabled())
@@ -80,8 +75,8 @@ void PdfFontSimple::Init()
         // NOTE: Non Standard14 fonts need at least the metrics
         // descriptor. Instead Standard14 fonts don't need any
         // metrics descriptor if the font is not embedded
-        auto& descriptorObj = GetDocument().GetObjects().CreateDictionaryObject("FontDescriptor");
-        this->GetObject().GetDictionary().AddKeyIndirect("FontDescriptor", descriptorObj);
+        auto& descriptorObj = GetDocument().GetObjects().CreateDictionaryObject("FontDescriptor"_n);
+        this->GetDictionary().AddKeyIndirect("FontDescriptor"_n, descriptorObj);
         FillDescriptor(descriptorObj.GetDictionary());
         m_Descriptor = &descriptorObj;
     }
@@ -90,28 +85,23 @@ void PdfFontSimple::Init()
 void PdfFontSimple::embedFont()
 {
     PODOFO_ASSERT(m_Descriptor != nullptr);
-    this->GetObject().GetDictionary().AddKey("FirstChar", PdfVariant(static_cast<int64_t>(m_Encoding->GetFirstChar().Code)));
-    this->GetObject().GetDictionary().AddKey("LastChar", PdfVariant(static_cast<int64_t>(m_Encoding->GetLastChar().Code)));
+    this->GetDictionary().AddKey("FirstChar"_n, PdfVariant(static_cast<int64_t>(m_Encoding->GetFirstChar().Code)));
+    this->GetDictionary().AddKey("LastChar"_n, PdfVariant(static_cast<int64_t>(m_Encoding->GetLastChar().Code)));
 
     PdfArray arr;
     this->getWidthsArray(arr);
 
     auto& widthsObj = GetDocument().GetObjects().CreateObject(std::move(arr));
-    this->GetObject().GetDictionary().AddKeyIndirect("Widths", widthsObj);
+    this->GetDictionary().AddKeyIndirect("Widths"_n, widthsObj);
 
     if (GetType() == PdfFontType::Type3)
     {
         getFontMatrixArray(arr);
-        GetObject().GetDictionary().AddKey("FontMatrix", std::move(arr));
+        GetDictionary().AddKey("FontMatrix"_n, std::move(arr));
 
         GetBoundingBox(arr);
-        GetObject().GetDictionary().AddKey("FontBBox", std::move(arr));
+        GetDictionary().AddKey("FontBBox"_n, std::move(arr));
     }
 
     EmbedFontFile(*m_Descriptor);
-}
-
-void PdfFontSimple::initImported()
-{
-    this->Init();
 }

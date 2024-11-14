@@ -15,10 +15,12 @@
 #include "PdfFont.h"
 #include "PdfFontMetrics.h"
 #include "PdfImage.h"
+#include "PdfDocument.h"
 
 using namespace std;
 using namespace PoDoFo;
 
+static PdfColorSpaceFilterPtr getSimpleColorSpaceFilter(PdfColorSpaceType type);
 static string expandTabs(const string_view& str, unsigned tabWidth, unsigned tabCount);
 
 PdfPainter::PdfPainter(PdfPainterFlags flags) :
@@ -42,7 +44,7 @@ PdfPainter::~PdfPainter() noexcept(false)
     }
     catch (...)
     {
-        if (!std::uncaught_exceptions())
+        if (std::uncaught_exceptions() == 0)
             throw;
     }
 }
@@ -128,42 +130,6 @@ void PdfPainter::reset()
     m_stream.Clear();
     m_objStream = nullptr;
     m_canvas = nullptr;
-}
-
-void PdfPainter::SetStrokingShadingPattern(const PdfShadingPattern& pattern)
-{
-    checkStream();
-    checkStatus(StatusDefault);
-    this->addToPageResources("Pattern", pattern.GetIdentifier(), pattern.GetObject());
-    PoDoFo::WriteOperator_CS(m_stream, PdfColorSpace::Pattern);
-    PoDoFo::WriteOperator_SCN(m_stream, pattern.GetIdentifier().GetString());
-}
-
-void PdfPainter::SetShadingPattern(const PdfShadingPattern& pattern)
-{
-    checkStream();
-    checkStatus(StatusDefault);
-    this->addToPageResources("Pattern", pattern.GetIdentifier(), pattern.GetObject());
-    PoDoFo::WriteOperator_cs(m_stream, PdfColorSpace::Pattern);
-    PoDoFo::WriteOperator_scn(m_stream, pattern.GetIdentifier().GetString());
-}
-
-void PdfPainter::SetStrokingTilingPattern(const PdfTilingPattern& pattern)
-{
-    checkStream();
-    checkStatus(StatusDefault);
-    this->addToPageResources("Pattern", pattern.GetIdentifier(), pattern.GetObject());
-    PoDoFo::WriteOperator_CS(m_stream, PdfColorSpace::Pattern);
-    PoDoFo::WriteOperator_SCN(m_stream, pattern.GetIdentifier().GetString());
-}
-
-void PdfPainter::SetTilingPattern(const PdfTilingPattern& pattern)
-{
-    checkStream();
-    checkStatus(StatusDefault);
-    this->addToPageResources("Pattern", pattern.GetIdentifier(), pattern.GetObject());
-    PoDoFo::WriteOperator_cs(m_stream, PdfColorSpace::Pattern);
-    PoDoFo::WriteOperator_scn(m_stream, pattern.GetIdentifier().GetString());
 }
 
 void PdfPainter::SetStrokeStyle(PdfStrokeStyle strokeStyle, bool inverted, double scale, bool subtractJoinCap)
@@ -356,48 +322,50 @@ void PdfPainter::DrawText(const string_view& str, double x, double y,
     checkStatus(StatusDefault);
     checkFont();
 
+    vector<array<double, 4>> linesToDraw;
+    save();
     PoDoFo::WriteOperator_BT(m_stream);
     writeTextState();
     drawText(str, x, y,
         (style & PdfDrawTextStyle::Underline) != PdfDrawTextStyle::Regular,
-        (style & PdfDrawTextStyle::StrikeThrough) != PdfDrawTextStyle::Regular);
+        (style & PdfDrawTextStyle::StrikeThrough) != PdfDrawTextStyle::Regular, linesToDraw);
     PoDoFo::WriteOperator_ET(m_stream);
+    drawLines(linesToDraw);
+    restore();
 }
 
-void PdfPainter::drawText(const string_view& str, double x, double y, bool isUnderline, bool isStrikeThrough)
+void PdfPainter::drawText(const string_view& str, double x, double y,
+    bool isUnderline, bool isStrikeThrough, vector<array<double, 4>>& linesToDraw)
 {
-    PoDoFo::WriteOperator_Td(m_stream, x, y);
-
     auto& textState = m_StateStack.Current->TextState;
     auto& font = *textState.Font;
     auto expStr = this->expandTabs(str);
 
     if (isUnderline || isStrikeThrough)
     {
-        this->save();
-
         // Draw underline
         this->setLineWidth(font.GetUnderlineThickness(textState));
         if (isUnderline)
         {
-            this->DrawLine(x,
+            linesToDraw.push_back({ x,
                 y + font.GetUnderlinePosition(textState),
                 x + font.GetStringLength(expStr, textState),
-                y + font.GetUnderlinePosition(textState));
+                y + font.GetUnderlinePosition(textState)
+            });
         }
 
         // Draw strikethrough
-        this->setLineWidth(font.GetStrikeThroughThickness(textState));
         if (isStrikeThrough)
         {
-            this->DrawLine(x,
+            linesToDraw.push_back({ x,
                 y + font.GetStrikeThroughPosition(textState),
                 x + font.GetStringLength(expStr, textState),
-                y + font.GetStrikeThroughPosition(textState));
+                y + font.GetStrikeThroughPosition(textState)
+            });
         }
-
-        this->restore();
     }
+
+    PoDoFo::WriteOperator_Td(m_stream, x, y);
 
     PoDoFo::WriteOperator_Tj(m_stream, font.GetEncoding().ConvertToEncoded(str),
         !font.GetEncoding().IsSimpleEncoding());
@@ -421,7 +389,7 @@ void PdfPainter::DrawTextMultiLine(const string_view& str, double x, double y, d
 
     drawMultiLineText(str, x, y, width, height,
         params.HorizontalAlignment, params.VerticalAlignment,
-        params.Clip, params.SkipSpaces, params.Style);
+        params.SkipClip, params.PreserveTrailingSpaces, params.Style);
 }
 
 void PdfPainter::DrawTextAligned(const string_view& str, double x, double y, double width,
@@ -434,28 +402,32 @@ void PdfPainter::DrawTextAligned(const string_view& str, double x, double y, dou
     checkStatus(StatusDefault | StatusTextObject);
     checkFont();
 
+    save();
     PoDoFo::WriteOperator_BT(m_stream);
     writeTextState();
-    drawTextAligned(str, x, y, width, hAlignment, style);
+    vector<array<double, 4>> linesToDraw;
+    drawTextAligned(str, x, y, width, hAlignment, style, linesToDraw);
     PoDoFo::WriteOperator_ET(m_stream);
+    drawLines(linesToDraw);
+    restore();
 }
 
 void PdfPainter::drawMultiLineText(const string_view& str, double x, double y, double width, double height,
-    PdfHorizontalAlignment hAlignment, PdfVerticalAlignment vAlignment, bool clip, bool skipSpaces,
+    PdfHorizontalAlignment hAlignment, PdfVerticalAlignment vAlignment, bool skipClip, bool preserveTrailingSpaces,
     PdfDrawTextStyle style)
 {
     auto& textState = m_StateStack.Current->TextState;
     auto& font = *textState.Font;
 
     this->save();
-    if (clip)
+    if (!skipClip)
         this->SetClipRect(x, y, width, height);
 
     auto expanded = this->expandTabs(str);
 
     PoDoFo::WriteOperator_BT(m_stream);
     writeTextState();
-    vector<string> lines = getMultiLineTextAsLines(expanded, width, skipSpaces);
+    vector<string> lines = m_StateStack.Current->TextState.SplitTextAsLines(str, width, preserveTrailingSpaces);
     double lineGap = font.GetLineSpacing(textState) - font.GetAscent(textState) + font.GetDescent(textState);
     // Do vertical alignment
     switch (vAlignment)
@@ -473,10 +445,11 @@ void PdfPainter::drawMultiLineText(const string_view& str, double x, double y, d
     }
 
     y -= font.GetAscent(textState) + lineGap / 2;
+    vector<array<double, 4>> linesToDraw;
     for (auto& line : lines)
     {
         if (line.length() != 0)
-            this->drawTextAligned(line, x, y, width, hAlignment, style);
+            this->drawTextAligned(line, x, y, width, hAlignment, style, linesToDraw);
 
         x = 0;
         switch (hAlignment)
@@ -494,186 +467,12 @@ void PdfPainter::drawMultiLineText(const string_view& str, double x, double y, d
         y = -font.GetLineSpacing(textState);
     }
     PoDoFo::WriteOperator_ET(m_stream);
+    drawLines(linesToDraw);
     this->restore();
 }
 
-vector<string> PdfPainter::getMultiLineTextAsLines(const string_view& str, double width, bool skipSpaces)
-{
-    if (width <= 0) // nonsense arguments
-        return vector<string>();
-
-    if (str.length() == 0) // empty string
-        return vector<string>(1, (string)str);
-
-    auto& textState = m_StateStack.Current->TextState;
-    auto& font = *textState.Font;
-
-    bool startOfWord = true;
-    double curWidthOfLine = 0;
-    vector<string> lines;
-
-    // do simple word wrapping
-    auto it = str.begin();
-    auto end = str.end();
-    auto lineBegin = it;
-    auto prevIt = it;
-    auto startOfCurrentWord = it;
-    while (it != end)
-    {
-        char32_t ch = (char32_t)utf8::next(it, end);
-        if (utls::IsNewLineLikeChar(ch)) // hard-break!
-        {
-            lines.push_back((string)str.substr(lineBegin - str.begin(), prevIt - lineBegin));
-
-            lineBegin = it; // skip the line feed
-            startOfWord = true;
-            curWidthOfLine = 0;
-        }
-        else if (utls::IsSpaceLikeChar(ch))
-        {
-            if (curWidthOfLine > width)
-            {
-                // The previous word does not fit in the current line.
-                // -> Move it to the next one.
-                if (startOfCurrentWord > lineBegin)
-                {
-                    lines.push_back((string)str.substr(lineBegin - str.begin(), startOfCurrentWord - lineBegin));
-                }
-                else
-                {
-                    lines.push_back((string)str.substr(lineBegin - str.begin(), prevIt - lineBegin));
-                    if (skipSpaces)
-                    {
-                        // Skip all spaces at the end of the line
-                        while (it != end)
-                        {
-                            ch = (char32_t)utf8::next(it, end);
-                            if (!utls::IsSpaceLikeChar(ch))
-                                break;
-                        }
-
-                        startOfCurrentWord = it;
-                    }
-                    else
-                    {
-                        startOfCurrentWord = prevIt;
-                    }
-                    startOfWord = true;
-                }
-                lineBegin = startOfCurrentWord;
-
-                if (!startOfWord)
-                {
-                    curWidthOfLine = font.GetStringLength(
-                        str.substr(startOfCurrentWord - str.begin(), prevIt - startOfCurrentWord),
-                        textState);
-                }
-                else
-                {
-                    curWidthOfLine = 0;
-                }
-            }
-            else if ((curWidthOfLine + font.GetCharLength(ch, textState)) > width)
-            {
-                lines.push_back((string)str.substr(lineBegin - str.begin(), prevIt - lineBegin));
-                if (skipSpaces)
-                {
-                    // Skip all spaces at the end of the line
-                    while (it != end)
-                    {
-                        ch = (char32_t)utf8::next(it, end);
-                        if (!utls::IsSpaceLikeChar(ch))
-                            break;
-                    }
-
-                    startOfCurrentWord = it;
-                }
-                else
-                {
-                    startOfCurrentWord = prevIt;
-                }
-                lineBegin = startOfCurrentWord;
-                startOfWord = true;
-                curWidthOfLine = 0;
-            }
-            else
-            {
-                curWidthOfLine += font.GetCharLength(ch, textState);
-            }
-
-            startOfWord = true;
-        }
-        else
-        {
-            if (startOfWord)
-            {
-                startOfCurrentWord = prevIt;
-                startOfWord = false;
-            }
-            //else do nothing
-
-            if ((curWidthOfLine + font.GetCharLength(ch, textState)) > width)
-            {
-                if (lineBegin == startOfCurrentWord)
-                {
-                    // This word takes up the whole line.
-                    // Put as much as possible on this line.
-                    if (lineBegin == prevIt)
-                    {
-                        lines.push_back((string)str.substr(prevIt - str.begin(), it - prevIt));
-                        lineBegin = it;
-                        startOfCurrentWord = it;
-                        curWidthOfLine = 0;
-                    }
-                    else
-                    {
-                        lines.push_back((string)str.substr(lineBegin - str.begin(), prevIt - lineBegin));
-                        lineBegin = prevIt;
-                        startOfCurrentWord = prevIt;
-                        curWidthOfLine = font.GetCharLength(ch, textState);
-                    }
-                }
-                else
-                {
-                    // The current word does not fit in the current line.
-                    // -> Move it to the next one.
-                    lines.push_back((string)str.substr(lineBegin - str.begin(), startOfCurrentWord - lineBegin));
-                    lineBegin = startOfCurrentWord;
-                    curWidthOfLine = font.GetStringLength((string)str.substr(startOfCurrentWord - str.begin(), it - startOfCurrentWord), textState);
-                }
-            }
-            else
-            {
-                curWidthOfLine += font.GetCharLength(ch, textState);
-            }
-        }
-
-        prevIt = it;
-    }
-
-    if ((prevIt - lineBegin) > 0)
-    {
-        if (curWidthOfLine > width && startOfCurrentWord > lineBegin)
-        {
-            // The previous word does not fit in the current line.
-            // -> Move it to the next one.
-            lines.push_back((string)str.substr(lineBegin - str.begin(), startOfCurrentWord - lineBegin));
-            lineBegin = startOfCurrentWord;
-        }
-        //else do nothing
-
-        if (prevIt - lineBegin > 0)
-        {
-            lines.push_back((string)str.substr(lineBegin - str.begin(), prevIt - lineBegin));
-        }
-        //else do nothing
-    }
-
-    return lines;
-}
-
 void PdfPainter::drawTextAligned(const string_view& str, double x, double y, double width,
-    PdfHorizontalAlignment hAlignment, PdfDrawTextStyle style)
+    PdfHorizontalAlignment hAlignment, PdfDrawTextStyle style, vector<array<double, 4>>& linesToDraw)
 {
     auto& textState = m_StateStack.Current->TextState;
     switch (hAlignment)
@@ -691,7 +490,8 @@ void PdfPainter::drawTextAligned(const string_view& str, double x, double y, dou
 
     this->drawText(str, x, y,
         (style & PdfDrawTextStyle::Underline) != PdfDrawTextStyle::Regular,
-        (style & PdfDrawTextStyle::StrikeThrough) != PdfDrawTextStyle::Regular);
+        (style & PdfDrawTextStyle::StrikeThrough) != PdfDrawTextStyle::Regular,
+        linesToDraw);
 }
 
 void PdfPainter::DrawImage(const PdfImage& obj, double x, double y, double scaleX, double scaleY)
@@ -704,14 +504,9 @@ void PdfPainter::DrawImage(const PdfImage& obj, double x, double y, double scale
 void PdfPainter::DrawXObject(const PdfXObject& obj, double x, double y, double scaleX, double scaleY)
 {
     checkStream();
-
-    // use OriginalReference() as the XObject might have been written to disk
-    // already and is not in memory anymore in this case.
-    this->addToPageResources("XObject", obj.GetIdentifier(), obj.GetObject());
-
     PoDoFo::WriteOperator_q(m_stream);
     PoDoFo::WriteOperator_cm(m_stream, scaleX, 0, 0, scaleY, x, y);
-    PoDoFo::WriteOperator_Do(m_stream, obj.GetIdentifier().GetString());
+    PoDoFo::WriteOperator_Do(m_stream, tryAddResource(obj.GetObject(), PdfResourceType::XObject));
     PoDoFo::WriteOperator_Q(m_stream);
 }
 
@@ -782,12 +577,10 @@ void PdfPainter::restore()
     TextState.SetState(current.TextState);
 }
 
-void PdfPainter::SetExtGState(const PdfExtGState& inGState)
+void PdfPainter::SetExtGState(const PdfExtGState& extGState)
 {
     checkStream();
-    checkStatus(StatusDefault);
-    this->addToPageResources("ExtGState", inGState.GetIdentifier(), inGState.GetObject());
-    PoDoFo::WriteOperator_gs(m_stream, inGState.GetIdentifier().GetString());
+    PoDoFo::WriteOperator_gs(m_stream, tryAddResource(extGState.GetObject(), PdfResourceType::ExtGState));
 }
 
 // TODO: Validate when marked content can be put
@@ -895,118 +688,161 @@ void PdfPainter::SetRenderingIntent(const string_view& intent)
     PoDoFo::WriteOperator_ri(m_stream, intent);
 }
 
-void PdfPainter::SetFillColor(const PdfColor& color)
+void PdfPainter::SetNonStrokingColor(const PdfColor& color)
 {
     checkStream();
     switch (color.GetColorSpace())
     {
-        default:
-        case PdfColorSpace::DeviceRGB:
+        case PdfColorSpaceType::DeviceRGB:
         {
             PoDoFo::WriteOperator_rg(m_stream, color.GetRed(), color.GetGreen(), color.GetBlue());
             break;
         }
-        case PdfColorSpace::DeviceCMYK:
+        case PdfColorSpaceType::DeviceCMYK:
         {
             PoDoFo::WriteOperator_k(m_stream, color.GetCyan(), color.GetMagenta(), color.GetYellow(), color.GetBlack());
             break;
         }
-        case PdfColorSpace::DeviceGray:
+        case PdfColorSpaceType::DeviceGray:
         {
             PoDoFo::WriteOperator_g(m_stream, color.GetGrayScale());
             break;
         }
-        case PdfColorSpace::Separation:
+        default:
         {
-            m_canvas->GetOrCreateResources().AddColorResource(color);
-            vector<double> components = { color.GetDensity() };
-            PoDoFo::WriteOperator_cs(m_stream, PdfName(color.GetName()).GetEscapedName());
-            PoDoFo::WriteOperator_scn(m_stream, components);
-            break;
-        }
-        case PdfColorSpace::Lab:
-        {
-            m_canvas->GetOrCreateResources().AddColorResource(color);
-            vector<double> components = { color.GetCieL(),color.GetCieA(), color.GetCieB() };
-            PoDoFo::WriteOperator_cs(m_stream, "ColorSpaceCieLab");
-            PoDoFo::WriteOperator_scn(m_stream, components);
-            break;
-        }
-        case PdfColorSpace::Unknown:
-        case PdfColorSpace::Indexed:
-        {
-            PODOFO_RAISE_ERROR(PdfErrorCode::CannotConvertColor);
+            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::CannotConvertColor, "Unsupported color space");
         }
     }
 }
 
-void PdfPainter::SetStrokeColor(const PdfColor& color)
+void PdfPainter::SetStrokingColor(const PdfColor& color)
 {
     checkStream();
     switch (color.GetColorSpace())
     {
-        default:
-        case PdfColorSpace::DeviceRGB:
+        case PdfColorSpaceType::DeviceRGB:
         {
             PoDoFo::WriteOperator_RG(m_stream, color.GetRed(), color.GetGreen(), color.GetBlue());
             break;
         }
-        case PdfColorSpace::DeviceCMYK:
+        case PdfColorSpaceType::DeviceCMYK:
         {
             PoDoFo::WriteOperator_K(m_stream, color.GetCyan(), color.GetMagenta(), color.GetYellow(), color.GetBlack());
             break;
         }
-        case PdfColorSpace::DeviceGray:
+        case PdfColorSpaceType::DeviceGray:
         {
             PoDoFo::WriteOperator_G(m_stream, color.GetGrayScale());
             break;
         }
-        case PdfColorSpace::Separation:
+        default:
         {
-            m_canvas->GetOrCreateResources().AddColorResource(color);
-            vector<double> components = { color.GetDensity() };
-            PoDoFo::WriteOperator_CS(m_stream, PdfName(color.GetName()).GetEscapedName());
-            PoDoFo::WriteOperator_SCN(m_stream, components);
-            break;
-        }
-        case PdfColorSpace::Lab:
-        {
-            m_canvas->GetOrCreateResources().AddColorResource(color);
-            vector<double> components = { color.GetCieL(),color.GetCieA(), color.GetCieB() };
-            PoDoFo::WriteOperator_CS(m_stream, "ColorSpaceCieLab");
-            PoDoFo::WriteOperator_SCN(m_stream, components);
-            break;
-        }
-        case PdfColorSpace::Unknown:
-        case PdfColorSpace::Indexed:
-        {
-            PODOFO_RAISE_ERROR(PdfErrorCode::CannotConvertColor);
+            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::CannotConvertColor, "Unsupported color space");
         }
     }
 }
 
-void PdfPainter::SetFont(const PdfFont* font, double fontSize)
+void PdfPainter::SetNonStrokingColor(const PdfColorRaw& color, const PdfColorSpaceFilter& colorSpace)
 {
-    if (font == nullptr)
-        return;
-
     checkStream();
-    this->addToPageResources("Font", font->GetIdentifier(), font->GetObject());
+    PoDoFo::WriteOperator_scn(m_stream, cspan<double>(color.data(), colorSpace.GetColorComponentCount()));
+}
+
+void PdfPainter::SetStrokingColor(const PdfColorRaw& color, const PdfColorSpaceFilter& colorSpace)
+{
+    checkStream();
+    PoDoFo::WriteOperator_SCN(m_stream, cspan<double>(color.data(), colorSpace.GetColorComponentCount()));
+}
+
+void PdfPainter::SetNonStrokingColorSpace(const PdfColorSpaceFilter& filter, const PdfColorSpace* colorSpace)
+{
+    checkStream();
+    if (colorSpace == nullptr)
+    {
+        if (filter.IsTrivial())
+        {
+            PoDoFo::WriteOperator_cs(m_stream, PoDoFo::ToString(filter.GetType()));
+        }
+        else
+        {
+            auto& objects = m_canvas->GetElement().GetDocument().GetObjects();
+            setNonStrokingColorSpace(objects.CreateDictionaryObject() = filter.GetExportObject(objects));
+        }
+    }
+    else
+    {
+        setNonStrokingColorSpace(colorSpace->GetObject());
+    }
+}
+
+void PdfPainter::setNonStrokingColorSpace(const PdfObject& csObj)
+{
+    PoDoFo::WriteOperator_cs(m_stream, tryAddResource(csObj, PdfResourceType::ColorSpace));
+}
+
+void PdfPainter::SetStrokingColorSpace(const PdfColorSpaceFilter& filter, const PdfColorSpace* colorSpace)
+{
+    checkStream();
+    if (colorSpace == nullptr)
+    {
+        if (filter.IsTrivial())
+        {
+            PoDoFo::WriteOperator_CS(m_stream, PoDoFo::ToString(filter.GetType()));
+        }
+        else
+        {
+            auto& objects = m_canvas->GetElement().GetDocument().GetObjects();
+            setStrokingColorSpace(objects.CreateDictionaryObject() = filter.GetExportObject(objects));
+        }
+    }
+    else
+    {
+        setStrokingColorSpace(colorSpace->GetObject());
+    }
+}
+
+void PdfPainter::setStrokingColorSpace(const PdfObject& csObj)
+{
+    PoDoFo::WriteOperator_CS(m_stream, tryAddResource(csObj, PdfResourceType::ColorSpace));
+}
+
+PdfName PdfPainter::tryAddResource(const PdfObject& obj, PdfResourceType type)
+{
+    auto found = m_resNameCache.find(obj.GetIndirectReference());
+    if (found == m_resNameCache.end())
+    {
+        auto name = m_canvas->GetOrCreateResources().AddResource(type, obj);
+        m_resNameCache[obj.GetIndirectReference()] = name;
+        return name;
+    }
+
+    return found->second;
+}
+
+void PdfPainter::drawLines(const vector<array<double, 4>>& lines)
+{
+    for (auto& line : lines)
+        this->DrawLine(line[0], line[1], line[2], line[3]);
+}
+
+void PdfPainter::SetFont(const PdfFont& font, double fontSize)
+{
+    checkStream();
     if (m_painterStatus == StatusTextObject)
         setFont(font, fontSize);
 }
 
-void PdfPainter::setFont(const PdfFont* font, double fontSize)
+void PdfPainter::setFont(const PdfFont& font, double fontSize)
 {
     auto& textState = m_StateStack.Current->EmittedTextState;
-    if (textState.Font == font
+    if (textState.Font == &font
         && textState.FontSize == fontSize)
     {
         return;
     }
 
-    PoDoFo::WriteOperator_Tf(m_stream, font->GetIdentifier().GetString(), fontSize);
-    textState.Font = font;
+    PoDoFo::WriteOperator_Tf(m_stream, tryAddResource(font.GetObject(), PdfResourceType::Font), fontSize);
+    textState.Font = &font;
     textState.FontSize = fontSize;
 }
 
@@ -1082,7 +918,7 @@ void PdfPainter::writeTextState()
 {
     auto& textState = m_StateStack.Current->TextState;
     if (textState.Font != nullptr)
-        setFont(textState.Font, textState.FontSize);
+        setFont(*textState.Font, textState.FontSize);
 
     if (textState.FontScale != 1)
         setFontScale(textState.FontScale);
@@ -1095,14 +931,6 @@ void PdfPainter::writeTextState()
 
     if (textState.RenderingMode != PdfTextRenderingMode::Fill)
         setTextRenderingMode(textState.RenderingMode);
-}
-
-void PdfPainter::addToPageResources(const PdfName& type, const PdfName& identifier, const PdfObject& obj)
-{
-    if (m_canvas == nullptr)
-        PODOFO_RAISE_ERROR(PdfErrorCode::InvalidHandle);
-
-    m_canvas->GetOrCreateResources().AddResource(type, identifier, obj);
 }
 
 string PdfPainter::expandTabs(const string_view& str) const
@@ -1136,7 +964,7 @@ void PdfPainter::checkStream()
         return;
 
     PODOFO_RAISE_LOGIC_IF(m_canvas == nullptr, "Call SetCanvas() first before doing drawing operations");
-    m_objStream = &m_canvas->GetStreamForAppending((PdfStreamAppendFlags)(m_flags & (~PdfPainterFlags::NoSaveRestore)));
+    m_objStream = &m_canvas->GetOrCreateContentsStream((PdfStreamAppendFlags)(m_flags & (~PdfPainterFlags::NoSaveRestore)));
 }
 
 void PdfPainter::openPath(double x, double y)
@@ -1210,7 +1038,7 @@ void PdfPainterTextObject::End()
 PdfGraphicsStateWrapper::PdfGraphicsStateWrapper(PdfPainter& painter, PdfGraphicsState& state)
     : m_painter(&painter), m_state(&state) { }
 
-void PdfGraphicsStateWrapper::SetCurrentMatrix(const Matrix& matrix)
+void PdfGraphicsStateWrapper::ConcatenateTransformationMatrix(const Matrix& matrix)
 {
     m_state->CTM = matrix * m_state->CTM;
     m_painter->SetTransformationMatrix(matrix);
@@ -1261,71 +1089,129 @@ void PdfGraphicsStateWrapper::SetRenderingIntent(const string_view& intent)
     m_painter->SetRenderingIntent(m_state->RenderingIntent);
 }
 
-void PdfGraphicsStateWrapper::SetFillColor(const PdfColor& color)
+void PdfGraphicsStateWrapper::SetNonStrokingColorSpace(PdfColorSpaceInitializer&& colorSpace)
 {
-    if (m_state->FillColor == color)
+    if (m_state->NonStrokingColorSpaceFilter.get() == &colorSpace.GetFilter())
         return;
 
-    m_state->FillColor = color;
-    m_painter->SetFillColor(m_state->FillColor);
+    const PdfColorSpace* element;
+    m_state->NonStrokingColorSpaceFilter = colorSpace.Take(element);
+    m_painter->SetNonStrokingColorSpace(*m_state->NonStrokingColorSpaceFilter, element);
 }
 
-void PdfGraphicsStateWrapper::SetStrokeColor(const PdfColor& color)
+void PdfGraphicsStateWrapper::SetStrokingColorSpace(PdfColorSpaceInitializer&& colorSpace)
 {
-    if (m_state->StrokeColor == color)
+    if (m_state->StrokingColorSpaceFilter.get() == &colorSpace.GetFilter())
         return;
 
-    m_state->StrokeColor = color;
-    m_painter->SetStrokeColor(m_state->StrokeColor);
+    const PdfColorSpace* element;
+    m_state->StrokingColorSpaceFilter = colorSpace.Take(element);
+    m_painter->SetStrokingColorSpace(*m_state->StrokingColorSpaceFilter, element);
+}
+
+void PdfGraphicsStateWrapper::SetNonStrokingColor(const PdfColor& color)
+{
+    if (m_state->NonStrokingColorSpaceFilter->GetType() == color.GetColorSpace()
+        && m_state->NonStrokingColor == color.GetRawColor())
+    {
+        return;
+    }
+
+    m_state->NonStrokingColorSpaceFilter = getSimpleColorSpaceFilter(color.GetColorSpace());
+    m_state->NonStrokingColor = color.GetRawColor();
+    m_painter->SetNonStrokingColor(color);
+}
+
+void PdfGraphicsStateWrapper::SetStrokingColor(const PdfColor& color)
+{
+    if (m_state->StrokingColorSpaceFilter->GetType() == color.GetColorSpace()
+        && m_state->StrokingColor == color.GetRawColor())
+    {
+        return;
+    }
+
+    m_state->StrokingColorSpaceFilter = getSimpleColorSpaceFilter(color.GetColorSpace());
+    m_state->StrokingColor = color.GetRawColor();
+    m_painter->SetStrokingColor(color);
+}
+
+void PdfGraphicsStateWrapper::SetNonStrokingColor(const PdfColorRaw& color)
+{
+    if (m_state->NonStrokingColor == color)
+        return;
+
+    m_state->NonStrokingColor = color;
+    m_painter->SetNonStrokingColor(color, *m_state->NonStrokingColorSpaceFilter);
+}
+
+void PdfGraphicsStateWrapper::SetStrokingColor(const PdfColorRaw& color)
+{
+    if (m_state->StrokingColor == color)
+        return;
+
+    m_state->StrokingColor = color;
+    m_painter->SetStrokingColor(color, *m_state->StrokingColorSpaceFilter);
+}
+
+void PdfGraphicsStateWrapper::SetExtGState(const PdfExtGState& extGState)
+{
+    if (m_state->ExtGState != nullptr
+        && m_state->ExtGState->GetObject().GetIndirectReference() == extGState.GetObject().GetIndirectReference())
+    {
+        return;
+    }
+
+    m_state->ExtGState.reset(new PdfExtGState(extGState));
+    m_painter->SetExtGState(extGState);
 }
 
 PdfTextStateWrapper::PdfTextStateWrapper(PdfPainter& painter, PdfTextState& state)
-    : m_painter(&painter), m_state(&state) { }
+    : m_painter(&painter), m_State(&state) { }
 
 void PdfTextStateWrapper::SetFont(const PdfFont& font, double fontSize)
 {
-    if (m_state->Font == &font && m_state->FontSize == fontSize)
+    if (m_State->Font == &font && m_State->FontSize == fontSize)
         return;
 
-    m_state->Font = &font;
-    m_state->FontSize = fontSize;
-    m_painter->SetFont(m_state->Font, m_state->FontSize);
+    m_State->Font = &font;
+    m_State->FontSize = fontSize;
+    m_painter->SetFont(*m_State->Font, m_State->FontSize);
 }
 
 void PdfTextStateWrapper::SetFontScale(double scale)
 {
-    if (m_state->FontScale == scale)
+    if (m_State->FontScale == scale)
         return;
 
-    m_state->FontScale = scale;
-    m_painter->SetFontScale(m_state->FontScale);
+    m_State->FontScale = scale;
+    m_painter->SetFontScale(m_State->FontScale);
 }
 
 void PdfTextStateWrapper::SetCharSpacing(double charSpacing)
 {
-    if (m_state->CharSpacing == charSpacing)
+    if (m_State->CharSpacing == charSpacing)
         return;
 
-    m_state->CharSpacing = charSpacing;
-    m_painter->SetCharSpacing(m_state->CharSpacing);
+    m_State->CharSpacing = charSpacing;
+    m_painter->SetCharSpacing(m_State->CharSpacing);
 }
 
 void PdfTextStateWrapper::SetWordSpacing(double wordSpacing)
 {
-    if (m_state->WordSpacing == wordSpacing)
+    if (m_State->WordSpacing == wordSpacing)
         return;
 
-    m_state->WordSpacing = wordSpacing;
-    m_painter->SetWordSpacing(m_state->WordSpacing);
+    m_State->WordSpacing = wordSpacing;
+    m_painter->SetWordSpacing(m_State->WordSpacing);
 }
 
 void PdfTextStateWrapper::SetRenderingMode(PdfTextRenderingMode mode)
 {
-    if (m_state->RenderingMode == mode)
+    if (m_State->RenderingMode == mode)
         return;
 
-    m_state->RenderingMode = mode;
-    m_painter->SetTextRenderingMode(m_state->RenderingMode);
+    m_State->RenderingMode = mode;
+    m_painter->SetTextRenderingMode(m_State->RenderingMode);
 }
 
 void PdfPainter::drawRectangle(double x, double y, double width, double height, PdfPathDrawMode mode, double roundX, double roundY)
@@ -1384,6 +1270,21 @@ void PdfPainter::strokeAndFill(bool useEvenOddRule)
 }
 
 PdfContentStreamOperators::PdfContentStreamOperators() { }
+
+PdfColorSpaceFilterPtr getSimpleColorSpaceFilter(PdfColorSpaceType type)
+{
+    switch (type)
+    {
+        case PdfColorSpaceType::DeviceGray:
+            return PdfColorSpaceFilterFactory::GetDeviceGrayInstace();
+        case PdfColorSpaceType::DeviceRGB:
+            return PdfColorSpaceFilterFactory::GetDeviceRGBInstace();
+        case PdfColorSpaceType::DeviceCMYK:
+            return PdfColorSpaceFilterFactory::GetDeviceCMYKInstace();
+        default:
+            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::CannotConvertColor, "Unsupported color space");
+    }
+}
 
 string expandTabs(const string_view& str, unsigned tabWidth, unsigned tabCount)
 {

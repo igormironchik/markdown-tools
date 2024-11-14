@@ -38,18 +38,32 @@ class PODOFO_API PdfObject
     friend class PdfDictionary;
     friend class PdfDocument;
     friend class PdfObjectStream;
+    friend class PdfObjectOutputStream;
     friend class PdfDataContainer;
-    friend class PdfObjectStreamParser;
-    friend class PdfParser;
+    friend class PdfDictionaryElement;
+    friend class PdfArrayElement;
+    friend class PdfTokenizer;
+    PODOFO_PRIVATE_FRIEND(class PdfStreamedObjectStream);
+    PODOFO_PRIVATE_FRIEND(class PdfObjectStreamParser);
+    PODOFO_PRIVATE_FRIEND(class PdfParser);
+    PODOFO_PRIVATE_FRIEND(class PdfParserObject);
+    PODOFO_PRIVATE_FRIEND(class PdfWriter);
+    PODOFO_PRIVATE_FRIEND(class PdfImmediateWriter);
+    PODOFO_PRIVATE_FRIEND(class PdfXRef);
+    PODOFO_PRIVATE_FRIEND(class PdfXRefStream);
 
 public:
-    static PdfObject Null;
+    static const PdfObject Null;
 
 public:
 
     /** Create a PDF object with an empty PdfDictionary.
      */
     PdfObject();
+
+    /** Create a "null" PDF object
+     */
+    PdfObject(std::nullptr_t);
 
     virtual ~PdfObject();
 
@@ -126,7 +140,7 @@ public:
     /** \returns a human readable string representation of GetDataType()
      *  The returned string must not be free'd.
      */
-    const char* GetDataTypeString() const;
+    std::string_view GetDataTypeString() const;
 
     /** \returns true if this variant is a bool
      */
@@ -178,8 +192,8 @@ public:
      *  which can be written directly to a PDF file on disc.
      *  \param str the object string is returned in this object.
      */
-    std::string ToString() const;
-    void ToString(std::string& str) const;
+    std::string ToString(PdfWriteFlags writeFlags = PdfWriteFlags::None) const;
+    void ToString(std::string& str, PdfWriteFlags writeFlags = PdfWriteFlags::None) const;
 
     /** Get the value if this object is a bool.
      *  \returns the bool value.
@@ -197,7 +211,7 @@ public:
 
     /** Get the value of the object as int64_t
      *
-     *  This method throws if the numer is a floating point number
+     *  This method throws if the number is a floating point number
      *  \return the value of the number
      */
     int64_t GetNumber() const;
@@ -213,7 +227,7 @@ public:
 
     /** Get the value of the object as floating point number
      *
-     *  This method throws if the numer is integer
+     *  This method throws if the number is integer
      *  \return the value of the number
      */
     double GetRealStrict() const;
@@ -306,7 +320,7 @@ public:
      *                 writing will stop right before this key!
      */
     void Write(OutputStream& stream, PdfWriteFlags writeMode,
-        const PdfEncrypt* encrypt, charbuff& buffer) const;
+        const PdfStatefulEncrypt* encrypt, charbuff& buffer) const;
 
     /** Get a handle to a PDF stream object.
      *  If the PDF object does not have a stream,
@@ -314,6 +328,10 @@ public:
      *  \returns a PdfObjectStream object
      */
     PdfObjectStream& GetOrCreateStream();
+
+    /* Remove the object stream, if it has one
+     */
+    void RemoveStream();
 
     /** Get a handle to a const PDF stream object.
      * Throws if there's no stream
@@ -324,6 +342,15 @@ public:
      * Throws if there's no stream
      */
     PdfObjectStream& MustGetStream();
+
+    /** Tries to free all memory allocated by the given
+     * PdfObject (variables and streams) and reads
+     * it from disk again if it is requested another time.
+     *
+     * This will only work if the object is lazily loaded,
+     * Otherwise any call to this method will be ignored
+     */
+    virtual bool TryUnload();
 
     /** Check if this object has a PdfObjectStream object
      *  appended.
@@ -410,15 +437,18 @@ public:
      */
     inline bool IsDelayedLoadDone() const { return m_IsDelayedLoadDone; }
 
+    inline bool IsDelayedLoadStreamDone() const { return m_IsDelayedLoadStreamDone; }
+
     const PdfObjectStream* GetStream() const;
     PdfObjectStream* GetStream();
 
-protected:
+private:
     PdfObject(PdfVariant&& var, const PdfReference& indirectReference, bool isDirty);
 
+protected:
     /**
      * Dynamically load the contents of this object from a PDF file by calling
-     * the virtual method DelayedLoadImpl() if the object is not already loaded.
+     * the virtual method delayedLoad() if the object is not already loaded.
      *
      * For objects complete created in memory and those that do not support
      * deferred loading this function does nothing, since deferred loading
@@ -440,9 +470,16 @@ protected:
      * While this method is not `const' it may be called from a const context,
      * so be careful what you mess with.
      */
-    virtual void DelayedLoadImpl();
+    virtual void delayedLoad();
 
-    virtual void DelayedLoadStreamImpl();
+    virtual void delayedLoadStream();
+
+    /**
+     * \returns true if the stream was removed
+     */
+    virtual bool removeStream();
+
+    virtual bool HasStreamToParse() const;
 
     /** Sets the dirty flag of this PdfVariant
      *
@@ -483,27 +520,52 @@ protected:
      *
      *  All constructors initialize a PdfVariant with delayed loading disabled .
      *  If you want delayed loading you must ask for it. If you do so, call
-     *  this method early in your ctor and be sure to override DelayedLoadImpl().
+     *  this method early in your ctor and be sure to override delayedLoad().
      */
     void EnableDelayedLoading();
 
+    /** Set the object as irreversibly revised. This is mostly used
+     * in PdfParserObject to stop it from trying to reclaim memory
+     */
+    virtual void SetRevised();
+
 private:
     // To be called privately by various classes
+    PdfVariant& GetVariantUnsafe() { return m_Variant; }
     PdfReference GetReferenceUnsafe() const { return m_Variant.GetReferenceUnsafe(); }
     const PdfDictionary& GetDictionaryUnsafe() const { return m_Variant.GetDictionaryUnsafe(); }
     const PdfArray& GetArrayUnsafe() const { return m_Variant.GetArrayUnsafe(); }
     PdfDictionary& GetDictionaryUnsafe() { return m_Variant.GetDictionaryUnsafe(); }
     PdfArray& GetArrayUnsafe() { return m_Variant.GetArrayUnsafe(); }
+    void WriteFinal(OutputStream& stream, PdfWriteFlags writeMode,
+        const PdfStatefulEncrypt* encrypt, charbuff& buffer);
 
-    // Assign function that doesn't set dirty
-    void Assign(const PdfObject& rhs);
+    // To be called by PdfStreamedObjectStream
+    void SetNumberNoDirtySet(int64_t l);
+
+    // To be called by PdfImmediateWriter
+    void SetImmutable();
+    void WriteHeader(OutputStream& stream, PdfWriteFlags writeMode, charbuff& buffer) const;
+
+    // To be called by PdfDataContainer
+    bool IsImmutable() const { return m_IsImmutable; }
+
+    // NOTE: It also doesn't dirty set the moved "obj"
+    void AssignNoDirtySet(PdfObject&& rhs);
+    void AssignNoDirtySet(PdfVariant&& rhs);
+    void AssignNoDirtySet(const PdfObject& rhs);
 
     void SetParent(PdfDataContainer& parent);
 
 private:
+    void write(OutputStream& stream, bool skipLengthFix,
+        PdfWriteFlags writeMode, const PdfStatefulEncrypt* encrypt, charbuff& buffer) const;
+
+    void assertMutable() const;
+
     void assign(const PdfObject& rhs);
 
-    void moveFrom(PdfObject& rhs);
+    void moveFrom(PdfObject&& rhs);
 
     void ResetDirty();
 
@@ -529,11 +591,11 @@ private:
     PdfReference m_IndirectReference;
     PdfDocument* m_Document;
     PdfDataContainer* m_Parent;
+    std::unique_ptr<PdfObjectStream> m_Stream;
     bool m_IsDirty; // Indicates if this object was modified after construction
-
+    bool m_IsImmutable;
     mutable bool m_IsDelayedLoadDone;
     mutable bool m_IsDelayedLoadStreamDone;
-    std::unique_ptr<PdfObjectStream> m_Stream;
     // Tracks whether deferred loading is still pending (in which case it'll be
     // false). If true, deferred loading is not required or has been completed.
 };
@@ -726,6 +788,39 @@ private:
             return obj.TryGetArray(value);
         }
     };
-};
+
+    // Comparator to enable heterogeneous lookup with
+    // both objects and references
+    // See https://stackoverflow.com/a/31924435/213871
+    struct PODOFO_API PdfObjectInequality final
+    {
+        using is_transparent = std::true_type;
+
+        bool operator()(const PdfObject* lhs, const PdfObject* rhs) const
+        {
+            return lhs->GetIndirectReference() < rhs->GetIndirectReference();
+        }
+        bool operator()(const PdfObject* lhs, const PdfReference& rhs) const
+        {
+            return lhs->GetIndirectReference() < rhs;
+        }
+        bool operator()(const PdfReference& lhs, const PdfObject* rhs) const
+        {
+            return lhs < rhs->GetIndirectReference();
+        }
+        bool operator()(const PdfObject& lhs, const PdfObject& rhs) const
+        {
+            return lhs.GetIndirectReference() < rhs.GetIndirectReference();
+        }
+        bool operator()(const PdfObject& lhs, const PdfReference& rhs) const
+        {
+            return lhs.GetIndirectReference() < rhs;
+        }
+        bool operator()(const PdfReference& lhs, const PdfObject& rhs) const
+        {
+            return lhs < rhs.GetIndirectReference();
+        }
+    };
+}
 
 #endif // PDF_OBJECT_H

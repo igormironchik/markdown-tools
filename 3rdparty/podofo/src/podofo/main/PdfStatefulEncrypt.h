@@ -7,19 +7,16 @@
 #ifndef PDF_STATEFUL_ENCRYPT_H
 #define PDF_STATEFUL_ENCRYPT_H
 
-#include "PdfDeclarations.h"
 #include "PdfReference.h"
+#include "PdfEncrypt.h"
 
 namespace PoDoFo
 {
-    class PdfEncrypt;
-
     class PODOFO_API PdfStatefulEncrypt final
     {
     public:
-        PdfStatefulEncrypt();
-        PdfStatefulEncrypt(const PdfEncrypt& encrypt, const PdfReference& objref);
-        PdfStatefulEncrypt(const PdfStatefulEncrypt&) = default;
+        PdfStatefulEncrypt(const PdfEncrypt& encrypt, PdfEncryptContext& context, const PdfReference& objref);
+
     public:
         /** Encrypt a character span
          */
@@ -31,13 +28,13 @@ namespace PoDoFo
 
         size_t CalculateStreamLength(size_t length) const;
 
-        bool HasEncrypt() const { return m_encrypt != nullptr; }
-
-    public:
-        PdfStatefulEncrypt& operator=(const PdfStatefulEncrypt&) = default;
+    private:
+        PdfStatefulEncrypt(const PdfStatefulEncrypt&) = delete;
+        PdfStatefulEncrypt& operator=(const PdfStatefulEncrypt&) = delete;
 
     private:
         const PdfEncrypt* m_encrypt;
+        PdfEncryptContext* m_context;
         PdfReference m_currReference;       // Reference of the current PdfObject
     };
 }

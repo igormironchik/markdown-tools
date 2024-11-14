@@ -28,7 +28,7 @@ public:
         const PdfFontMetrics& metrics);
 private:
     void update(unsigned cid, unsigned width);
-    PdfArray finish();
+    void finish();
     void reset(unsigned cid, unsigned width);
     void emitSameWidth();
     void emitArrayWidths();
@@ -61,15 +61,15 @@ void PdfFontCID::initImported()
     PdfArray arr;
 
     // Now setting each of the entries of the font
-    this->GetObject().GetDictionary().AddKey(PdfName::KeySubtype, PdfName("Type0"));
-    this->GetObject().GetDictionary().AddKey("BaseFont", PdfName(this->GetName()));
+    this->GetDictionary().AddKey("Subtype"_n, "Type0"_n);
+    this->GetDictionary().AddKey("BaseFont"_n, PdfName(this->GetName()));
 
     // The descendant font is a CIDFont:
-    m_descendantFont = &this->GetObject().GetDocument()->GetObjects().CreateDictionaryObject("Font");
+    m_descendantFont = &this->GetObject().GetDocument()->GetObjects().CreateDictionaryObject("Font"_n);
 
     // The DecendantFonts, should be an indirect object:
     arr.Add(m_descendantFont->GetIndirectReference());
-    this->GetObject().GetDictionary().AddKey("DescendantFonts", arr);
+    this->GetDictionary().AddKey("DescendantFonts"_n, std::move(arr));
 
     // Setting the /DescendantFonts
     PdfFontType fontType = GetType();
@@ -77,23 +77,23 @@ void PdfFontCID::initImported()
     switch (fontType)
     {
         case PdfFontType::CIDType1:
-            subtype = "CIDFontType0";
+            subtype = "CIDFontType0"_n;
             break;
         case PdfFontType::CIDTrueType:
-            subtype = "CIDFontType2";
+            subtype = "CIDFontType2"_n;
             break;
         default:
             PODOFO_RAISE_ERROR(PdfErrorCode::InternalLogic);
     }
-    m_descendantFont->GetDictionary().AddKey(PdfName::KeySubtype, subtype);
+    m_descendantFont->GetDictionary().AddKey("Subtype"_n, subtype);
 
     // Same base font as the owner font:
-    m_descendantFont->GetDictionary().AddKey("BaseFont", PdfName(this->GetName()));
-    m_descendantFont->GetDictionary().AddKey("CIDToGIDMap", PdfName("Identity"));
+    m_descendantFont->GetDictionary().AddKey("BaseFont"_n, PdfName(this->GetName()));
+    m_descendantFont->GetDictionary().AddKey("CIDToGIDMap"_n, "Identity"_n);
 
     // The FontDescriptor, should be an indirect object:
-    auto& descriptorObj = this->GetObject().GetDocument()->GetObjects().CreateDictionaryObject("FontDescriptor");
-    m_descendantFont->GetDictionary().AddKeyIndirect("FontDescriptor", descriptorObj);
+    auto& descriptorObj = this->GetObject().GetDocument()->GetObjects().CreateDictionaryObject("FontDescriptor"_n);
+    m_descendantFont->GetDictionary().AddKeyIndirect("FontDescriptor"_n, descriptorObj);
     FillDescriptor(descriptorObj.GetDictionary());
     m_descriptor = &descriptorObj;
 }
@@ -118,12 +118,12 @@ void PdfFontCID::createWidths(PdfDictionary& fontDict, const CIDToGIDMap& cidToG
     if (arr.size() == 0)
         return;
 
-    fontDict.AddKey("W", arr);
+    fontDict.AddKey("W"_n, std::move(arr));
     double defaultWidth;
     if ((defaultWidth = GetMetrics().GetDefaultWidthRaw()) >= 0)
     {
         // Default of /DW is 1000
-        fontDict.AddKey("DW", static_cast<int64_t>(
+        fontDict.AddKey("DW"_n, static_cast<int64_t>(
             std::round(defaultWidth / metrics.GetMatrix()[0])));
     }
 }
@@ -161,7 +161,7 @@ void WidthExporter::update(unsigned cid, unsigned width)
 {
     if (cid == (m_start + m_rangeCount))
     {
-        // continous gid
+        // continuous gid
         if (width - m_width != 0)
         {
             // different width, so emit if previous range was with same width
@@ -194,18 +194,17 @@ void WidthExporter::update(unsigned cid, unsigned width)
     reset(cid, width);
 }
 
-PdfArray WidthExporter::finish()
+void WidthExporter::finish()
 {
     // if there is a single glyph remaining, emit it as array
     if (!m_widths.IsEmpty() || m_rangeCount == 1)
     {
         m_widths.Add(PdfObject(static_cast<int64_t>(m_width)));
         emitArrayWidths();
-        return m_output;
+        return;
     }
-    emitSameWidth();
 
-    return m_output;
+    emitSameWidth();
 }
 
 PdfArray WidthExporter::GetPdfWidths(const CIDToGIDMap& cidToGidMap,
@@ -219,7 +218,8 @@ PdfArray WidthExporter::GetPdfWidths(const CIDToGIDMap& cidToGidMap,
     for (auto& pair : cidToGidMap)
         exporter.update(pair.first, getPdfWidth(pair.second, metrics, matrix));
 
-    return exporter.finish();
+    exporter.finish();
+    return std::move(exporter.m_output);
 }
 
 void WidthExporter::reset(unsigned cid, unsigned width)
@@ -239,8 +239,7 @@ void WidthExporter::emitSameWidth()
 void WidthExporter::emitArrayWidths()
 {
     m_output.Add(static_cast<int64_t>(m_start));
-    m_output.Add(m_widths);
-    m_widths.Clear();
+    m_output.Add(std::move(m_widths));
 }
 
 // Return thousands of PDF units

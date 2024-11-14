@@ -9,28 +9,30 @@
 
 #include "PdfXObject.h"
 
+#include "PdfColorSpace.h"
+
 #ifdef PODOFO_HAVE_JPEG_LIB
 struct jpeg_decompress_struct;
 #endif // PODOFO_HAVE_JPEG_LIB
 
 namespace PoDoFo {
 
-class PdfArray;
 class PdfDocument;
 class InputStream;
 
-struct PdfImageInfo
+struct PODOFO_API PdfImageInfo final
 {
+    PODOFO_STACK_ONLY
+
     unsigned Width = 0;
     unsigned Height = 0;
-    PdfFilterList Filters;
-    PdfColorSpace ColorSpace = PdfColorSpace::Unknown;
-    PdfArray ColorSpaceArray;       ///< Additional /ColorSpace array entries. The first entry is always the one in ColorSpace
+    nullable<PdfFilterList> Filters;
     unsigned char BitsPerComponent = 0;
-    PdfArray Decode;
+    PdfColorSpaceInitializer ColorSpace;
+    std::vector<double> DecodeArray;
 };
 
-/** A PdfImage object is needed when ever you want to embedd an image
+/** A PdfImage object is needed when ever you want to embed an image
  *  file into a PDF document.
  *  The PdfImage object is embedded once and can be drawn as often
  *  as you want on any page in the document using PdfPainter
@@ -44,55 +46,25 @@ class PODOFO_API PdfImage final : public PdfXObject
     friend class PdfDocument;
 
 private:
-    /** Constuct a new PdfImage object
+    /** Construct a new PdfImage object
      *  This is an overloaded constructor.
      *
      *  \param parent parent document
-     *  \param prefix optional prefix for XObject-name
      */
-    PdfImage(PdfDocument& doc, const std::string_view& prefix);
+    PdfImage(PdfDocument& doc);
 
 public:
-    void DecodeTo(charbuff& buff, PdfPixelFormat format, int rowSize = -1) const;
-    void DecodeTo(const bufferspan& buff, PdfPixelFormat format, int rowSize = -1) const;
-    void DecodeTo(OutputStream& stream, PdfPixelFormat format, int rowSize = -1) const;
+    void DecodeTo(charbuff& buff, PdfPixelFormat format, int scanLineSize = -1) const;
+    void DecodeTo(const bufferspan& buff, PdfPixelFormat format, int scanLineSize = -1) const;
+    void DecodeTo(OutputStream& stream, PdfPixelFormat format, int scanLineSize = -1) const;
 
     charbuff GetDecodedCopy(PdfPixelFormat format);
-
-    /** Get the color space of the image
-    *
-    *  \returns the color space of the image
-    */
-    PdfColorSpace GetColorSpace() const;
-
-    /** Set an ICC profile for this image.
-     *
-     *  \param stream an input stream from which the ICC profiles data can be read
-     *  \param colorComponents the number of colorcomponents of the ICC profile
-     *  \param alternateColorSpace an alternate colorspace to use if the ICC profile cannot be used
-     *
-     *  \see SetImageColorSpace to set an colorspace instead of an ICC profile for this image
-     */
-    void SetICCProfile(InputStream& stream, unsigned colorComponents,
-        PdfColorSpace alternateColorSpace = PdfColorSpace::DeviceRGB);
-
-    //PdfColorSpace GetImageColorSpace() const;
 
     /** Set a softmask for this image.
      *  \param pSoftmask a PdfImage pointer to the image, which is to be set as softmask, must be 8-Bit-Grayscale
      *
      */
     void SetSoftMask(const PdfImage& softmask);
-
-    /** Get the width of the image when drawn in PDF units
-     *  \returns the width in PDF units
-     */
-    unsigned GetWidth() const;
-
-    /** Get the height of the image when drawn in PDF units
-     *  \returns the height in PDF units
-     */
-    unsigned GetHeight() const;
 
     /** Set the actual image data from a buffer
      *
@@ -165,14 +137,27 @@ public:
 
     Rect GetRect() const override;
 
+    /** Get the color space of the image
+     * \returns the color space of the image
+     */
+    const PdfColorSpaceFilter& GetColorSpace() const { return *m_ColorSpace; }
+
+    /** Get the width of the image when drawn in PDF units
+     *  \returns the width in PDF units
+     */
+    unsigned GetWidth() const { return m_Width; }
+
+    /** Get the height of the image when drawn in PDF units
+     *  \returns the height in PDF units
+     */
+    unsigned GetHeight() const { return m_Height; }
+
 private:
     /** Construct an image from an existing PdfObject
      *
      *  \param obj a PdfObject that has to be an image
      */
     PdfImage(PdfObject& obj);
-
-    charbuff initScanLine(PdfPixelFormat format, int rowSize, charbuff& smask) const;
 
     unsigned getBufferSize(PdfPixelFormat format) const;
 
@@ -220,8 +205,10 @@ private:
 #endif // PODOFO_HAVE_PNG_LIB
 
 private:
+    PdfColorSpaceFilterPtr m_ColorSpace;
     unsigned m_Width;
     unsigned m_Height;
+    unsigned m_BitsPerComponent;
 };
 
 };

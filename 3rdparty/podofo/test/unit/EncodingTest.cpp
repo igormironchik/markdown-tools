@@ -16,14 +16,18 @@ using namespace PoDoFo;
 
 static void outofRangeHelper(PdfEncoding& encoding);
 
-inline ostream& operator<<(ostream& o, const PdfVariant& s)
+namespace PoDoFo
 {
-    string str;
-    s.ToString(str);
-    return o << str;
+    class PdfEncodingTest
+    {
+    public:
+        static void TestToUnicodeParse();
+    };
 }
 
-TEST_CASE("testDifferences")
+METHOD_AS_TEST_CASE(PdfEncodingTest::TestToUnicodeParse, "TestToUnicodeParse")
+
+TEST_CASE("TestDifferences")
 {
     PdfDifferenceList difference;
 
@@ -113,7 +117,7 @@ TEST_CASE("testDifferences")
     REQUIRE(!difference.TryGetMappedName(100, name, value));
 }
 
-TEST_CASE("testDifferencesObject")
+TEST_CASE("TestDifferencesObject")
 {
     PdfDifferenceList difference;
     difference.AddDifference(1, "B");
@@ -122,7 +126,7 @@ TEST_CASE("testDifferencesObject")
     difference.AddDifference(5, "E");
     difference.AddDifference(9, "F");
 
-    PdfDifferenceEncoding encoding(difference, PdfEncodingMapFactory::MacRomanEncodingInstance());
+    PdfDifferenceEncoding encoding(PdfEncodingMapFactory::MacRomanEncodingInstance(), difference);
 
     // Check for encoding key
     PdfMemDocument doc;
@@ -154,7 +158,7 @@ TEST_CASE("testDifferencesObject")
         REQUIRE(expected[i] == data[i]);
 }
 
-TEST_CASE("testDifferencesEncoding")
+TEST_CASE("TestDifferencesEncoding")
 {
     // Create a differences encoding where A and B are exchanged
     PdfDifferenceList difference;
@@ -165,7 +169,7 @@ TEST_CASE("testDifferencesEncoding")
     PdfMemDocument doc;
 
     PdfFontCreateParams params;
-    params.Encoding = PdfEncoding(std::make_shared<PdfDifferenceEncoding>(difference, PdfEncodingMapFactory::WinAnsiEncodingInstance()));
+    params.Encoding = PdfEncoding(std::make_shared<PdfDifferenceEncoding>(PdfEncodingMapFactory::WinAnsiEncodingInstance(), difference));
     auto& font = doc.GetFonts().GetStandard14Font(PdfStandard14FontType::Helvetica, params);
 
     charbuff encoded;
@@ -180,7 +184,7 @@ TEST_CASE("testDifferencesEncoding")
 // FIX-ME: This test passes but it's garbage and very slow
 // Fix it the whole thing by handling properly the Adobe Glyph List
 // in PdfDifferenceEncoding (or better a new separate function)
-TEST_CASE("testUnicodeNames", "[.]")
+TEST_CASE("TestUnicodeNames", "[.]")
 {
     // List of items which are defined twice and cause
     // other ids to be returned than those which where send in
@@ -253,7 +257,7 @@ TEST_CASE("testUnicodeNames", "[.]")
     REQUIRE(codeCount == 65421);
 }
 
-TEST_CASE("testGetCharCode")
+TEST_CASE("TestGetCharCode")
 {
     auto winAnsiEncoding = PdfEncodingFactory::CreateWinAnsiEncoding();
     INFO("WinAnsiEncoding");
@@ -266,11 +270,45 @@ TEST_CASE("testGetCharCode")
     PdfDifferenceList difference;
     difference.AddDifference((unsigned char)'A', "B");
     difference.AddDifference((unsigned char)'B', "A");
-    PdfEncoding differenceEncoding(std::make_shared<PdfDifferenceEncoding>(difference, PdfEncodingMapFactory::WinAnsiEncodingInstance()));
+    PdfEncoding differenceEncoding(std::make_shared<PdfDifferenceEncoding>(PdfEncodingMapFactory::WinAnsiEncodingInstance(), difference));
     outofRangeHelper(differenceEncoding);
 }
 
-TEST_CASE("testToUnicodeParse")
+TEST_CASE("CMapIdentityTest")
+{
+    constexpr string_view OneByteIdentity = R"(
+/CIDInit /ProcSet findresource begin
+12 dict begin
+begincmap
+/CIDSystemInfo 3 dict dup begin
+/Registry (Adobe) def
+/Ordering (Identity) def
+/Supplement 0 def
+end def
+/CMapName /OneByteIdentityH def
+/CMapVersion 1.000 def
+/CMapType 1 def
+/UIDOffset 0 def
+/XUID [1 10 25404 9999] def
+/WMode 0 def
+1 begincodespacerange
+<00> <FF>
+endcodespacerange
+1 begincidrange
+<00> <FF> 0
+endcidrange
+endcmap
+CMapName currentdict /CMap defineresource pop
+end
+end
+)";
+
+    SpanStreamDevice device(OneByteIdentity);
+    auto map = PdfCMapEncoding::Parse(device);
+    REQUIRE(map.GetCharMap().IsTrivialIdentity());
+}
+
+void PdfEncodingTest::TestToUnicodeParse()
 {
     string_view toUnicode =
         "3 beginbfrange\n"
@@ -285,7 +323,7 @@ TEST_CASE("testToUnicodeParse")
     auto& toUnicodeObj = doc.GetObjects().CreateDictionaryObject();
     toUnicodeObj.GetOrCreateStream().SetData(toUnicode);
 
-    PdfEncoding encoding(std::make_shared<PdfIdentityEncoding>(2), PdfCMapEncoding::CreateFromObject(toUnicodeObj));
+    PdfEncoding encoding(std::make_shared<PdfIdentityEncoding>(2), PdfEncodingMapFactory::ParseCMapEncoding(toUnicodeObj));
 
     auto utf8str = encoding.ConvertToUtf8(PdfString::FromRaw(encodedStr));
     REQUIRE(utf8str == expected);
@@ -318,7 +356,7 @@ TEST_CASE("testToUnicodeParse")
             auto& invalidObject = invalidList.CreateDictionaryObject();
             invalidObject.GetOrCreateStream().SetData(bufferview(toUnicodeInvalidTests[i], char_traits<char>::length(toUnicodeInvalidTests[i])));
 
-            PdfEncoding encodingTestInvalid(std::make_shared<PdfIdentityEncoding>(2), PdfCMapEncoding::CreateFromObject(invalidObject));
+            PdfEncoding encodingTestInvalid(std::make_shared<PdfIdentityEncoding>(2), PdfEncodingMapFactory::ParseCMapEncoding(invalidObject));
 
             auto unicodeStringTestInvalid = encodingTestInvalid.ConvertToUtf8(PdfString::FromRaw(encodedStr));
 

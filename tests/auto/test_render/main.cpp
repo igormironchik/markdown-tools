@@ -12,6 +12,9 @@
 
 #include "test_const.hpp"
 
+// MicroTex include.
+#include <latex.h>
+
 #include <QFontDatabase>
 #include <QObject>
 #include <QSignalSpy>
@@ -129,8 +132,6 @@ struct TestRendering {
         opts.m_right = 50.0;
         opts.m_textFont = QStringLiteral("Droid Serif");
         opts.m_textFontSize = textFontSize;
-        opts.m_mathFont = QStringLiteral("Droid Serif");
-        opts.m_mathFontSize = textFontSize;
         opts.m_top = 50.0;
         opts.m_dpi = 150;
         opts.m_imageAlignment = ImageAlignment::Center;
@@ -263,6 +264,8 @@ void TestRender::initTestCase()
     QFontDatabase::addApplicationFont(s_monoItalicFont);
     QFontDatabase::addApplicationFont(s_monoBoldFont);
     QFontDatabase::addApplicationFont(s_monoBoldItalicFont);
+
+    tex::LaTeX::init(":/res");
 }
 
 void TestRender::testFootnotes()
@@ -387,12 +390,12 @@ void TestRender::testTaskListBigFont()
 
 void TestRender::testMath()
 {
-    //	doTest( QStringLiteral( "math.md" ), QString(), 8.0, 8.0 );
+    doTest( QStringLiteral( "math.md" ), QString(), 8.0, 8.0 );
 }
 
 void TestRender::testMathBigFont()
 {
-    //	doTest( QStringLiteral( "math.md" ), QStringLiteral( "_big" ), 16.0, 14.0 );
+    doTest( QStringLiteral( "math.md" ), QStringLiteral( "_big" ), 16.0, 14.0 );
 }
 
 void TestRender::testVeryLongFootnote()

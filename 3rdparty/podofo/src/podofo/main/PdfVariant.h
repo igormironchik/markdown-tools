@@ -7,7 +7,6 @@
 #ifndef PDF_VARIANT_H
 #define PDF_VARIANT_H
 
-#include "PdfDeclarations.h"
 #include "PdfReference.h"
 #include "PdfName.h"
 #include "PdfString.h"
@@ -16,9 +15,9 @@ namespace PoDoFo {
 
 class PdfArray;
 class PdfData;
-class PdfDataProvider;
 class PdfDictionary;
 class PdfString;
+class PdfDataContainer;
 
 /**
  * A variant data type which supports all data types supported by the PDF standard.
@@ -35,13 +34,12 @@ class PODOFO_API PdfVariant final
     friend class PdfObject;
     friend class PdfArray;
     friend class PdfDictionary;
-
-private:
-    PdfVariant(PdfDataType type);
+    friend class PdfTokenizer;
+    PODOFO_PRIVATE_FRIEND(class PdfParserObject);
 
 public:
 
-    static PdfVariant Null;
+    static const PdfVariant Null;
 
     /** Construct an empty variant type
      *  IsNull() will return true.
@@ -98,7 +96,7 @@ public:
     PdfVariant(PdfDictionary&& dict) noexcept;
 
     /** Construct a PdfVariant that contains raw PDF data.
-     *  \param rData raw and valid PDF data.
+     *  \param data raw and valid PDF data.
      */
     PdfVariant(const PdfData& data);
     PdfVariant(PdfData&& data) noexcept;
@@ -115,7 +113,7 @@ public:
     /** \returns a human readable string representation of GetDataType()
      *  The returned string must not be free'd.
      */
-    const char* GetDataTypeString() const;
+    std::string_view GetDataTypeString() const;
 
     /** \returns true if this variant is a bool
      */
@@ -167,8 +165,8 @@ public:
      *  which can be written directly to a PDF file on disc.
      *  \param str the object string is returned in this object.
      */
-    std::string ToString() const;
-    void ToString(std::string& str) const;
+    std::string ToString(PdfWriteFlags writeFlags = PdfWriteFlags::None) const;
+    void ToString(std::string& str, PdfWriteFlags writeFlags = PdfWriteFlags::None) const;
 
     /** Get the value if this object is a bool.
      *  \returns the bool value.
@@ -186,7 +184,7 @@ public:
 
     /** Get the value of the object as int64_t
      *
-     *  This method throws if the numer is a floating point number
+     *  This method throws if the number is a floating point number
      *  \return the value of the number
      */
     int64_t GetNumber() const;
@@ -202,7 +200,7 @@ public:
 
     /** Get the value of the object as floating point number
      *
-     *  This method throws if the numer is integer
+     *  This method throws if the number is integer
      *  \return the value of the number
      */
     double GetRealStrict() const;
@@ -291,7 +289,7 @@ public:
      *                  or nullptr to not encrypt this object
      */
     void Write(OutputStream& stream, PdfWriteFlags writeMode,
-        const PdfStatefulEncrypt& encrypt, charbuff& buffer) const;
+        const PdfStatefulEncrypt* encrypt, charbuff& buffer) const;
 
     /** Assign the values of another PdfVariant to this one.
      *  \param rhs an existing variant which is copied.
@@ -313,10 +311,12 @@ public:
      */
     bool operator!=(const PdfVariant& rhs) const;
 
-public:
-    inline PdfDataType GetDataType() const { return m_DataType; }
+    PdfDataType GetDataType() const;
 
 private:
+    // Delete constructor with nullptr
+    PdfVariant(std::nullptr_t) = delete;
+
     PdfReference GetReferenceUnsafe() const;
     const PdfDictionary& GetDictionaryUnsafe() const;
     const PdfArray& GetArrayUnsafe() const;
@@ -324,14 +324,17 @@ private:
     PdfArray& GetArrayUnsafe();
 
 private:
-    void clear();
     void assign(const PdfVariant& rhs);
     bool tryGetDictionary(PdfDictionary*& dict) const;
     bool tryGetArray(PdfArray*& arr) const;
     bool tryGetName(const PdfName*& name) const;
     bool tryGetString(const PdfString*& str) const;
+    void moveFrom(PdfVariant&& rhs);
 
 private:
+    // Reset the variant to "null" type. To be called by PdfTokenizer
+    void Reset();
+
     /**
      * It's an easy mistake to pass a pointer to a PdfVariant when trying to
      * copy a PdfVariant, especially with heap allocators like `new'. This can
@@ -356,26 +359,64 @@ private:
      * and replacing it with a couple of overloads specific to PdfObject*, PdfVariant*,
      * and char* (at least).
      */
-    template<typename T> PdfVariant(T*);
+    template<typename T>
+    PdfVariant(T*) = delete;
+
+    template <typename T>
+    class PrimitiveMember : PdfDataMember
+    {
+    public:
+        PrimitiveMember(T value)
+            : PdfDataMember(getDataType()), Value(value) { }
+
+        constexpr PdfDataType getDataType()
+        {
+            if (std::is_same_v<T, int64_t>)
+                return PdfDataType::Number;
+            else if (std::is_same_v<T, double>)
+                return PdfDataType::Real;
+            else if (std::is_same_v<T, bool>)
+                return PdfDataType::Bool;
+            else if (std::is_same_v<T, PdfDictionary*>)
+                return PdfDataType::Dictionary;
+            else if (std::is_same_v<T, PdfArray*>)
+                return PdfDataType::Array;
+            else if (std::is_same_v<T, PdfData*>)
+                return PdfDataType::RawData;
+            else
+                return PdfDataType::Unknown;
+        }
+
+    public:
+        T Value;
+    };
+
+    class NullMember : PdfDataMember
+    {
+    public:
+        NullMember();
+    };
 
     /** To reduce memory usage of this very often used class,
      *  we use a union here, as there is always only
      *  one of those members used.
      */
-    union Variant
+    union
     {
         /** Holds references, strings,
          *  names, dictionaries and arrays
          */
-        int64_t Number;
-        double Real;
-        PdfDataProvider* Data;
-        PdfReference Reference;
-        bool Bool;
+        PdfString m_String;
+        PdfName m_Name;
+        PdfReference m_Reference;
+        PrimitiveMember<int64_t> m_Number;
+        PrimitiveMember<double> m_Real;
+        PrimitiveMember<bool> m_Bool;
+        PrimitiveMember<PdfDictionary*> m_Dictionary;
+        PrimitiveMember<PdfArray*> m_Array;
+        PrimitiveMember<PdfData*> m_Data;
+        NullMember m_Null;
     };
-
-    Variant m_Data;
-    PdfDataType m_DataType;
 };
 
 };

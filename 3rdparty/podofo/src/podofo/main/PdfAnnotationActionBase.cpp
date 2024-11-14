@@ -22,29 +22,64 @@ PdfAnnotationActionBase::PdfAnnotationActionBase(PdfObject& obj, PdfAnnotationTy
 {
 }
 
-void PdfAnnotationActionBase::SetAction(const shared_ptr<PdfAction>& action)
+void PdfAnnotationActionBase::SetAction(nullable<const PdfAction&> action)
 {
-    GetDictionary().AddKey("A", action->GetObject().GetIndirectReference());
-    m_Action = action;
+    auto& dict = GetDictionary();
+    if (action == nullptr)
+    {
+        dict.RemoveKey("A");
+        m_Action = { };
+    }
+    else
+    {
+        m_Action = PdfAction::Create(*action);
+        onActionSet();
+        dict.AddKeyIndirect("A"_n, action->GetObject());
+    }
 }
 
-shared_ptr<PdfAction> PdfAnnotationActionBase::GetAction() const
+nullable<PdfAction&> PdfAnnotationActionBase::GetAction()
+{
+    return getAction();
+}
+
+nullable<const PdfAction&> PdfAnnotationActionBase::GetAction() const
 {
     return const_cast<PdfAnnotationActionBase&>(*this).getAction();
 }
 
-shared_ptr<PdfAction> PdfAnnotationActionBase::getAction()
+void PdfAnnotationActionBase::onActionSet()
 {
-    if (m_Action == nullptr)
+    // Do nothing
+}
+
+void PdfAnnotationActionBase::ResetAction()
+{
+    m_Action = { };
+    GetDictionary().RemoveKey("A");
+}
+
+nullable<PdfAction&> PdfAnnotationActionBase::getAction()
+{
+    if (!m_Action.has_value())
     {
         auto obj = GetDictionary().FindKey("A");
         if (obj == nullptr)
-            return nullptr;
-
-        m_Action.reset(new PdfAction(*obj));
+        {
+            m_Action = { };
+        }
+        else
+        {
+            unique_ptr<PdfAction> action;
+            if (PdfAction::TryCreateFromObject(*obj, action))
+                m_Action = std::move(action);
+        }
     }
 
-    return m_Action;
+    if (*m_Action == nullptr)
+        return nullptr;
+    else
+        return **m_Action;
 }
 
 PdfAppearanceCharacteristics::PdfAppearanceCharacteristics(PdfDocument& parent)
@@ -60,7 +95,7 @@ PdfAppearanceCharacteristics::PdfAppearanceCharacteristics(PdfObject& obj)
 void PdfAppearanceCharacteristics::SetBorderColor(nullable<const PdfColor&> color)
 {
     if (color.has_value())
-        GetDictionary().AddKey("BC", color->ToArray());
+        GetDictionary().AddKey("BC"_n, color->ToArray());
     else
         GetDictionary().RemoveKey("BC");
 }
@@ -81,7 +116,7 @@ PdfColor PdfAppearanceCharacteristics::GetBorderColor() const
 void PdfAppearanceCharacteristics::SetBackgroundColor(nullable<const PdfColor&> color)
 {
     if (color.has_value())
-        GetDictionary().AddKey("BG", color->ToArray());
+        GetDictionary().AddKey("BG"_n, color->ToArray());
     else
         GetDictionary().RemoveKey("BG");
 }
@@ -102,7 +137,7 @@ PdfColor PdfAppearanceCharacteristics::GetBackgroundColor() const
 void PdfAppearanceCharacteristics::SetRolloverCaption(nullable<const PdfString&> text)
 {
     if (text.has_value())
-        GetDictionary().AddKey("RC", *text);
+        GetDictionary().AddKey("RC"_n, *text);
     else
         GetDictionary().RemoveKey("RC");
 }
@@ -120,7 +155,7 @@ nullable<const PdfString&> PdfAppearanceCharacteristics::GetRolloverCaption() co
 void PdfAppearanceCharacteristics::SetAlternateCaption(nullable<const PdfString&> text)
 {
     if (text.has_value())
-        GetDictionary().AddKey("AC", *text);
+        GetDictionary().AddKey("AC"_n, *text);
     else
         GetDictionary().RemoveKey("AC");
 }
@@ -138,7 +173,7 @@ nullable<const PdfString&> PdfAppearanceCharacteristics::GetAlternateCaption() c
 void PdfAppearanceCharacteristics::SetCaption(nullable<const PdfString&> text)
 {
     if (text.has_value())
-        GetDictionary().AddKey("CA", *text);
+        GetDictionary().AddKey("CA"_n, *text);
     else
         GetDictionary().RemoveKey("CA");
 }

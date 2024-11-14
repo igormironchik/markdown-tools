@@ -8,7 +8,7 @@
 
 #include <PdfTest.h>
 
-constexpr const char* TEST_PAGE_KEY = "TestPageNumber";
+#define TEST_PAGE_KEY "TestPageNumber"_n
 constexpr unsigned TEST_NUM_PAGES = 100;
 
 namespace PoDoFo
@@ -37,7 +37,7 @@ static void testInsert(PdfMemDocument& doc);
 static void testDeleteAll(PdfMemDocument& doc);
 static void testGetPagesReverse(PdfMemDocument& doc);
 
-TEST_CASE("testEmptyDoc")
+TEST_CASE("TestEmptyDoc")
 {
     PdfMemDocument doc;
 
@@ -45,10 +45,10 @@ TEST_CASE("testEmptyDoc")
     REQUIRE(doc.GetPages().GetCount() == 0);
 
     // Retrieving any page from an empty document must be NULL
-    ASSERT_THROW_WITH_ERROR_CODE(doc.GetPages().GetPageAt(0), PdfErrorCode::PageNotFound);
+    ASSERT_THROW_WITH_ERROR_CODE(doc.GetPages().GetPageAt(0), PdfErrorCode::ValueOutOfRange);
 }
 
-TEST_CASE("testCyclicTree")
+TEST_CASE("TestCyclicTree")
 {
     {
         PdfMemDocument doc;
@@ -67,11 +67,11 @@ TEST_CASE("testCyclicTree")
         createCyclicTree(doc, true);
         // pass 1:
         // cyclic tree must throw exception to prevent infinite recursion
-        ASSERT_THROW_WITH_ERROR_CODE(doc.GetPages().GetPageAt(0), PdfErrorCode::PageNotFound);
+        ASSERT_THROW_WITH_ERROR_CODE(doc.GetPages().GetPageAt(0), PdfErrorCode::ValueOutOfRange);
     }
 }
 
-TEST_CASE("testEmptyKidsTree")
+TEST_CASE("TestEmptyKidsTree")
 {
     PdfMemDocument doc;
     createEmptyKidsTree(doc);
@@ -83,15 +83,15 @@ TEST_CASE("testEmptyKidsTree")
     }
 }
 
-TEST_CASE("testNestedArrayTree")
+TEST_CASE("TestNestedArrayTree")
 {
     PdfMemDocument doc;
     createNestedArrayTree(doc);
     for (unsigned i = 0, count = doc.GetPages().GetCount(); i < count; i++)
-        ASSERT_THROW_WITH_ERROR_CODE(doc.GetPages().GetPageAt(i), PdfErrorCode::PageNotFound);
+        ASSERT_THROW_WITH_ERROR_CODE(doc.GetPages().GetPageAt(i), PdfErrorCode::ValueOutOfRange);
 }
 
-TEST_CASE("testCreateDelete")
+TEST_CASE("TestCreateDelete")
 {
     PdfMemDocument doc;
     PdfPainter painter;
@@ -99,11 +99,11 @@ TEST_CASE("testCreateDelete")
     // create font
     auto font = doc.GetFonts().SearchFont("LiberationSans");
     if (font == nullptr)
-        FAIL("Coult not find Arial font");
+        FAIL("Could not find Arial font");
 
     {
         // write 1. page
-        auto& page = doc.GetPages().CreatePage(PdfPage::CreateStandardPageSize(PdfPageSize::A4));
+        auto& page = doc.GetPages().CreatePage(PdfPageSize::A4);
         painter.SetCanvas(page);
         painter.TextState.SetFont(*font, 16.0);
         painter.DrawText("Page 1", 200, 200);
@@ -113,7 +113,7 @@ TEST_CASE("testCreateDelete")
 
     {
         // write 2. page
-        auto& page = doc.GetPages().CreatePage(PdfPage::CreateStandardPageSize(PdfPageSize::A4));
+        auto& page = doc.GetPages().CreatePage(PdfPageSize::A4);
         painter.SetCanvas(page);
         painter.TextState.SetFont(*font, 16.0);
         painter.DrawText("Page 2", 200, 200);
@@ -127,7 +127,7 @@ TEST_CASE("testCreateDelete")
 
     {
         // write 3. page
-        auto& page = doc.GetPages().CreatePage(PdfPage::CreateStandardPageSize(PdfPageSize::A4));
+        auto& page = doc.GetPages().CreatePage(PdfPageSize::A4);
         painter.SetCanvas(page);
         painter.TextState.SetFont(*font, 16.0);
         painter.DrawText("Page 3", 200, 200);
@@ -136,56 +136,150 @@ TEST_CASE("testCreateDelete")
     }
 }
 
-TEST_CASE("testGetPagesCustom")
+TEST_CASE("TestGetPagesCustom")
 {
     auto doc = PdfPageTest::CreateTestTreeCustom();
     testGetPages(doc);
 }
 
-TEST_CASE("testGetPages")
+TEST_CASE("TestGetPages")
 {
     PdfMemDocument doc;
     createTestTree(doc);
     testGetPages(doc);
 }
 
-TEST_CASE("testGetPagesReverseCustom")
+TEST_CASE("TestGetPagesReverseCustom")
 {
     auto doc = PdfPageTest::CreateTestTreeCustom();
     testGetPagesReverse(doc);
 }
 
-TEST_CASE("testGetPagesReverse")
+TEST_CASE("TestGetPagesReverse")
 {
     PdfMemDocument doc;
     createTestTree(doc);
     testGetPagesReverse(doc);
 }
 
-TEST_CASE("testInsertCustom")
+TEST_CASE("TestInsertCustom")
 {
     auto doc = PdfPageTest::CreateTestTreeCustom();
     testInsert(doc);
 }
 
-TEST_CASE("testInsert")
+TEST_CASE("TestInsert")
 {
     PdfMemDocument doc;
     createTestTree(doc);
     testInsert(doc);
 }
 
-TEST_CASE("testDeleteAllCustom")
+TEST_CASE("TestDeleteAllCustom")
 {
     auto doc = PdfPageTest::CreateTestTreeCustom();
     testDeleteAll(doc);
 }
 
-TEST_CASE("testDeleteAll")
+TEST_CASE("TestDeleteAll")
 {
     PdfMemDocument doc;
     createTestTree(doc);
     testDeleteAll(doc);
+}
+
+TEST_CASE("TestMovePage1")
+{
+    PdfMemDocument doc;
+    doc.Load(TestUtils::GetTestInputFilePath("TechDocs", "pdf_implementation.pdf"));
+
+    vector<PdfReference> refs = {
+        PdfReference(15, 0),
+        PdfReference(82, 0),
+        PdfReference(88, 0),
+        PdfReference(83, 0),
+        PdfReference(84, 0),
+        PdfReference(85, 0),
+        PdfReference(86, 0),
+        PdfReference(87, 0),
+        PdfReference(89, 0),
+        PdfReference(90, 0),
+        PdfReference(91, 0),
+    };
+
+    {
+        auto& pages = doc.GetPages();
+
+        {
+            auto& page = pages.GetPageAt(7);
+            REQUIRE(page.GetIndex() == 7);
+            REQUIRE(!page.MoveTo(11));
+            REQUIRE(page.MoveTo(2));
+        }
+
+        for (unsigned i = 0; i < pages.GetCount(); i++)
+        {
+            auto& page = pages.GetPageAt(i);
+            REQUIRE(page.GetIndex() == i);
+            REQUIRE(page.GetObject().GetIndirectReference() == refs[i]);
+        }
+    }
+
+    string filename = TestUtils::GetTestOutputFilePath("TestMovePage1.pdf");
+    doc.Save(filename);
+
+    // Re-load the file to check again the references
+    doc.Load(filename);
+    auto& pages = doc.GetPages();
+    for (unsigned i = 0; i < pages.GetCount(); i++)
+        REQUIRE(pages.GetPageAt(i).GetObject().GetIndirectReference() == refs[i]);
+}
+
+TEST_CASE("TestMovePage2")
+{
+    PdfMemDocument doc;
+    doc.Load(TestUtils::GetTestInputFilePath("TechDocs", "pdf_implementation.pdf"));
+
+    vector<PdfReference> refs = {
+        PdfReference(82, 0),
+        PdfReference(83, 0),
+        PdfReference(84, 0),
+        PdfReference(15, 0),
+        PdfReference(85, 0),
+        PdfReference(86, 0),
+        PdfReference(87, 0),
+        PdfReference(88, 0),
+        PdfReference(89, 0),
+        PdfReference(90, 0),
+        PdfReference(91, 0),
+    };
+
+    {
+        auto& pages = doc.GetPages();
+
+        {
+            auto& page = pages.GetPageAt(0);
+            REQUIRE(page.GetIndex() == 0);
+            REQUIRE(!page.MoveTo(0));
+            REQUIRE(page.MoveTo(3));
+        }
+
+        for (unsigned i = 0; i < pages.GetCount(); i++)
+        {
+            auto& page = pages.GetPageAt(i);
+            REQUIRE(page.GetIndex() == i);
+            REQUIRE(page.GetObject().GetIndirectReference() == refs[i]);
+        }
+    }
+
+    string filename = TestUtils::GetTestOutputFilePath("TestMovePage2.pdf");
+    doc.Save(filename);
+
+    // Re-load the file to check again the references
+    doc.Load(filename);
+    auto& pages = doc.GetPages();
+    for (unsigned i = 0; i < pages.GetCount(); i++)
+        REQUIRE(pages.GetPageAt(i).GetObject().GetIndirectReference() == refs[i]);
 }
 
 void testGetPages(PdfMemDocument& doc)
@@ -246,8 +340,8 @@ void testInsert(PdfMemDocument& doc)
     const unsigned INSERTED_PAGE_FLAG2 = 1234 + 2;
 
     {
-        auto& page = doc.GetPages().CreatePageAt(0, PdfPage::CreateStandardPageSize(PdfPageSize::A4));
-        page.GetObject().GetDictionary().AddKey(TEST_PAGE_KEY,
+        auto& page = doc.GetPages().CreatePageAt(0, PdfPageSize::A4);
+        page.GetDictionary().AddKey(TEST_PAGE_KEY,
             static_cast<int64_t>(INSERTED_PAGE_FLAG));
     }
 
@@ -259,8 +353,8 @@ void testInsert(PdfMemDocument& doc)
 
     {
         // Insert at end 
-        auto& page = doc.GetPages().CreatePage(PdfPage::CreateStandardPageSize(PdfPageSize::A4));
-        page.GetObject().GetDictionary().AddKey(TEST_PAGE_KEY,
+        auto& page = doc.GetPages().CreatePage(PdfPageSize::A4);
+        page.GetDictionary().AddKey(TEST_PAGE_KEY,
             static_cast<int64_t>(INSERTED_PAGE_FLAG1));
     }
 
@@ -270,8 +364,8 @@ void testInsert(PdfMemDocument& doc)
     // Insert in middle
     const unsigned INSERT_POINT = 50;
     {
-        auto& page = doc.GetPages().CreatePageAt(INSERT_POINT, PdfPage::CreateStandardPageSize(PdfPageSize::A4));
-        page.GetObject().GetDictionary().AddKey(TEST_PAGE_KEY,
+        auto& page = doc.GetPages().CreatePageAt(INSERT_POINT, PdfPageSize::A4);
+        page.GetDictionary().AddKey(TEST_PAGE_KEY,
             static_cast<int64_t>(INSERTED_PAGE_FLAG2));
     }
 
@@ -292,8 +386,8 @@ void createTestTree(PdfMemDocument& doc)
 {
     for (unsigned i = 0; i < TEST_NUM_PAGES; i++)
     {
-        auto& page = doc.GetPages().CreatePage(PdfPage::CreateStandardPageSize(PdfPageSize::A4));
-        page.GetObject().GetDictionary().AddKey(TEST_PAGE_KEY, static_cast<int64_t>(i));
+        auto& page = doc.GetPages().CreatePage(PdfPageSize::A4);
+        page.GetDictionary().AddKey(TEST_PAGE_KEY, static_cast<int64_t>(i));
         REQUIRE(doc.GetPages().GetCount() == i + 1);
     }
 }
@@ -303,32 +397,32 @@ PdfMemDocument PdfPageTest::CreateTestTreeCustom()
     PdfMemDocument doc;
 
     constexpr unsigned COUNT = TEST_NUM_PAGES / 10;
-    auto& root = doc.GetObjects().CreateDictionaryObject("Pages");
-    doc.GetCatalog().GetDictionary().AddKeyIndirect("Pages", root);
+    auto& root = doc.GetObjects().CreateDictionaryObject("Pages"_n);
+    doc.GetCatalog().GetDictionary().AddKeyIndirect("Pages"_n, root);
     PdfArray rootKids;
 
     for (unsigned i = 0; i < COUNT; i++)
     {
-        auto& node = doc.GetObjects().CreateDictionaryObject("Pages");
+        auto& node = doc.GetObjects().CreateDictionaryObject("Pages"_n);
         PdfArray nodeKids;
 
         for (unsigned j = 0; j < COUNT; j++)
         {
             unique_ptr<PdfPage> page(new PdfPage(doc, PdfPage::CreateStandardPageSize(PdfPageSize::A4)));
             page->SetIndex(j);
-            page->GetObject().GetDictionary().AddKey(TEST_PAGE_KEY,
+            page->GetDictionary().AddKey(TEST_PAGE_KEY,
                 static_cast<int64_t>(i) * COUNT + j);
 
             nodeKids.Add(page->GetObject().GetIndirectReference());
         }
 
-        node.GetDictionary().AddKey("Kids", nodeKids);
-        node.GetDictionary().AddKey("Count", static_cast<int64_t>(COUNT));
+        node.GetDictionary().AddKey("Kids"_n, nodeKids);
+        node.GetDictionary().AddKey("Count"_n, static_cast<int64_t>(COUNT));
         rootKids.Add(node.GetIndirectReference());
     }
 
-    root.GetDictionary().AddKey("Kids", rootKids);
-    root.GetDictionary().AddKey("Count", static_cast<int64_t>(TEST_NUM_PAGES));
+    root.GetDictionary().AddKey("Kids"_n, rootKids);
+    root.GetDictionary().AddKey("Count"_n, static_cast<int64_t>(TEST_NUM_PAGES));
 
     // NOTE: We must copy the document as the PdfPageCollection
     // in the source document is already initialized
@@ -340,14 +434,14 @@ vector<unique_ptr<PdfPage>> PdfPageTest::CreateSamplePages(PdfMemDocument& doc, 
     // create font
     auto font = doc.GetFonts().SearchFont("LiberationSans");
     if (font == nullptr)
-        FAIL("Coult not find Arial font");
+        FAIL("Could not find Arial font");
 
     vector<unique_ptr<PdfPage>> pages(pageCount);
     for (unsigned i = 0; i < pageCount; ++i)
     {
         pages[i].reset(new PdfPage(doc, PdfPage::CreateStandardPageSize(PdfPageSize::A4)));
         pages[i]->SetIndex(i);
-        pages[i]->GetObject().GetDictionary().AddKey(TEST_PAGE_KEY, static_cast<int64_t>(i));
+        pages[i]->GetDictionary().AddKey(TEST_PAGE_KEY, static_cast<int64_t>(i));
 
         PdfPainter painter;
         painter.SetCanvas(*pages[i]);
@@ -367,10 +461,10 @@ vector<PdfObject*> createNodes(PdfMemDocument& doc, unsigned nodeCount)
 
     for (unsigned i = 0; i < nodeCount; ++i)
     {
-        nodes[i] = &doc.GetObjects().CreateDictionaryObject("Pages");
+        nodes[i] = &doc.GetObjects().CreateDictionaryObject("Pages"_n);
         // init required keys
-        nodes[i]->GetDictionary().AddKey("Kids", PdfArray());
-        nodes[i]->GetDictionary().AddKey("Count", PdfVariant(static_cast<int64_t>(0L)));
+        nodes[i]->GetDictionary().AddKey("Kids"_n, PdfArray());
+        nodes[i]->GetDictionary().AddKey("Count"_n, PdfVariant(static_cast<int64_t>(0L)));
     }
 
     return nodes;
@@ -461,7 +555,7 @@ void createNestedArrayTree(PdfMemDocument& doc)
     for (unsigned i = 0; i < COUNT; i++)
     {
         kids.Add(pages[i]->GetObject().GetIndirectReference());
-        pages[i]->GetObject().GetDictionary().AddKey("Parent", root.GetIndirectReference());
+        pages[i]->GetDictionary().AddKey("Parent"_n, root.GetIndirectReference());
     }
 
     // create nested kids array
@@ -469,13 +563,13 @@ void createNestedArrayTree(PdfMemDocument& doc)
     nested.Add(kids);
 
     // manually insert pages into pagetree
-    root.GetDictionary().AddKey("Count", static_cast<int64_t>(COUNT));
-    root.GetDictionary().AddKey("Kids", nested);
+    root.GetDictionary().AddKey("Count"_n, static_cast<int64_t>(COUNT));
+    root.GetDictionary().AddKey("Kids"_n, nested);
 }
 
 bool isPageNumber(PdfPage& page, unsigned number)
 {
-    int64_t pageNumber = page.GetObject().GetDictionary().GetKeyAs<int64_t>(TEST_PAGE_KEY, -1);
+    int64_t pageNumber = page.GetDictionary().GetKeyAs<int64_t>(TEST_PAGE_KEY, -1);
 
     if (pageNumber != static_cast<int64_t>(number))
     {
@@ -493,7 +587,7 @@ void appendChildNode(PdfObject& parent, PdfObject& child)
     PdfObject* oldKids = parent.GetDictionary().FindKey("Kids");
     if (oldKids != nullptr && oldKids->IsArray()) kids = oldKids->GetArray();
     kids.Add(child.GetIndirectReference());
-    parent.GetDictionary().AddKey("Kids", kids);
+    parent.GetDictionary().AddKey("Kids"_n, kids);
 
     // 2. If the child is a page (leaf node), increase count of every parent
     //    (which also includes pParent)
@@ -505,11 +599,11 @@ void appendChildNode(PdfObject& parent, PdfObject& child)
             int64_t count = 0;
             if (node->GetDictionary().FindKey("Count")) count = node->GetDictionary().FindKey("Count")->GetNumber();
             count++;
-            node->GetDictionary().AddKey("Count", count);
+            node->GetDictionary().AddKey("Count"_n, count);
             node = node->GetDictionary().FindKey("Parent");
         }
     }
 
     // 3. Add Parent key to the child
-    child.GetDictionary().AddKey("Parent", parent.GetIndirectReference());
+    child.GetDictionary().AddKey("Parent"_n, parent.GetIndirectReference());
 }

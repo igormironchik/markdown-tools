@@ -1,5 +1,0 @@
-include (langsys.fea)
-include (locl.fea)
-include (xits.fea)
-include (frac.fea)
-include (altonum.fea)

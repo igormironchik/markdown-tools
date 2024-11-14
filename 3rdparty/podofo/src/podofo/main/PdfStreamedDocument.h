@@ -1,5 +1,6 @@
 /**
  * SPDX-FileCopyrightText: (C) 2007 Dominik Seichter <domseichter@web.de>
+ * SPDX-FileCopyrightText: (C) 2023 Francesco Pretto <ceztko@gmail.com>
  * SPDX-License-Identifier: LGPL-2.0-or-later
  */
 
@@ -9,9 +10,11 @@
 #include "PdfDeclarations.h"
 
 #include "PdfDocument.h"
-#include "PdfImmediateWriter.h"
+#include <podofo/auxiliary/OutputDevice.h>
 
 namespace PoDoFo {
+
+class PdfImmediateWriter;
 
 /** PdfStreamedDocument is the preferred class for
  *  creating new PDF documents.
@@ -33,10 +36,9 @@ namespace PoDoFo {
  *
  *  Example of using PdfStreamedDocument:
  *
- *  PdfStreamedDocument document;
- *  document.Load("outputfile.pdf");
- *  PdfPage& page = document.GetPages().CreatePage(PdfPage::CreateStandardPageSize(PdfPageSize::A4));
- *  PdfFont* font = document.GetFonts().SearchFont("Arial");
+ *  PdfStreamedDocument document("outputfile.pdf");
+ *  auto& page = document.GetPages().CreatePage(PdfPage::CreateStandardPageSize(PdfPageSize::A4));
+ *  auto* font = document.GetFonts().SearchFont("Arial");
  *
  *  PdfPainter painter;
  *  painter.SetCanvas(page);
@@ -63,7 +65,7 @@ public:
      *  \param opts additional save options for writing the pdf
      */
     PdfStreamedDocument(const std::shared_ptr<OutputStreamDevice>& device, PdfVersion version = PdfVersionDefault,
-        PdfEncrypt* encrypt = nullptr, PdfSaveOptions opts = PdfSaveOptions::None);
+        const std::shared_ptr<PdfEncrypt>& encrypt = nullptr, PdfSaveOptions opts = PdfSaveOptions::None);
 
     /** Create a new PdfStreamedDocument.
      *  All data is written to a file immediately.
@@ -78,13 +80,9 @@ public:
      *  \param opts additional options for writing the pdf
      */
     PdfStreamedDocument(const std::string_view& filename, PdfVersion version = PdfVersionDefault,
-        PdfEncrypt* encrypt = nullptr, PdfSaveOptions opts = PdfSaveOptions::None);
+        const std::shared_ptr<PdfEncrypt>& encrypt = nullptr, PdfSaveOptions opts = PdfSaveOptions::None);
 
-    /** Close the document. The PDF file on disk is finished.
-     *  No other member function of this class may be called
-     *  after calling this function.
-     */
-    void Close();
+    ~PdfStreamedDocument();
 
 public:
     const PdfEncrypt* GetEncrypt() const override;
@@ -108,9 +106,9 @@ private:
     void init(PdfVersion version, PdfSaveOptions opts);
 
 private:
-    std::unique_ptr<PdfImmediateWriter> m_Writer;
     std::shared_ptr<OutputStreamDevice> m_Device;
-    PdfEncrypt* m_Encrypt;
+    std::unique_ptr<PdfImmediateWriter> m_Writer;
+    std::shared_ptr<PdfEncrypt> m_Encrypt;
 };
 
 };

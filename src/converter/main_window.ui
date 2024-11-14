@@ -11,7 +11,7 @@
     <x>0</x>
     <y>0</y>
     <width>597</width>
-    <height>834</height>
+    <height>758</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,8 +26,8 @@
      <layout class="QVBoxLayout" name="verticalLayout_5">
       <item>
        <layout class="QGridLayout" name="gridLayout">
-        <item row="0" column="0">
-         <widget class="QLabel" name="label">
+        <item row="5" column="0">
+         <widget class="QLabel" name="label_4">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
             <horstretch>0</horstretch>
@@ -35,46 +35,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>Text font</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QFontComboBox" name="m_textFont">
-          <property name="fontFilters">
-           <set>QFontComboBox::FontFilter::ScalableFonts</set>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="label_6">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>Text font size</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QSpinBox" name="m_textFontSize">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimum">
-           <number>6</number>
-          </property>
-          <property name="maximum">
-           <number>16</number>
-          </property>
-          <property name="value">
-           <number>8</number>
+           <string>Border color</string>
           </property>
          </widget>
         </item>
@@ -91,15 +52,57 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="1">
-         <widget class="QFontComboBox" name="m_codeFont">
-          <property name="fontFilters">
-           <set>QFontComboBox::FontFilter::MonospacedFonts</set>
+        <item row="5" column="1">
+         <widget class="MdShared::ColorWidget" name="m_borderColor">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::Shape::Panel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Shadow::Sunken</enum>
           </property>
          </widget>
         </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="label_7">
+        <item row="7" column="1">
+         <widget class="QSpinBox" name="m_dpi">
+          <property name="minimum">
+           <number>50</number>
+          </property>
+          <property name="maximum">
+           <number>2400</number>
+          </property>
+          <property name="singleStep">
+           <number>10</number>
+          </property>
+          <property name="value">
+           <number>172</number>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="0">
+         <widget class="QLabel" name="label_9">
+          <property name="text">
+           <string>Images alignment</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QFontComboBox" name="m_textFont">
+          <property name="fontFilters">
+           <set>QFontComboBox::FontFilter::ScalableFonts</set>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="1">
+         <widget class="QComboBox" name="m_codeTheme"/>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_6">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
             <horstretch>0</horstretch>
@@ -107,7 +110,49 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>Code font size</string>
+           <string>Text font size</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Text font</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="MdShared::ColorWidget" name="m_linkColor">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::Shape::Panel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Shadow::Sunken</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_3">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Link color</string>
           </property>
          </widget>
         </item>
@@ -130,141 +175,14 @@
           </property>
          </widget>
         </item>
-        <item row="4" column="0">
-         <widget class="QLabel" name="label_8">
-          <property name="text">
-           <string>Math font</string>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="1">
-         <widget class="QFontComboBox" name="m_mathFont"/>
-        </item>
-        <item row="5" column="0">
-         <widget class="QLabel" name="label_13">
-          <property name="text">
-           <string>Math font size</string>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="1">
-         <widget class="QSpinBox" name="m_mathFontSize">
-          <property name="minimum">
-           <number>5</number>
-          </property>
-          <property name="maximum">
-           <number>14</number>
-          </property>
-          <property name="value">
-           <number>8</number>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="0">
-         <widget class="QLabel" name="label_3">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>Link color</string>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="1">
-         <widget class="MdShared::ColorWidget" name="m_linkColor">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="frameShape">
-           <enum>QFrame::Shape::Panel</enum>
-          </property>
-          <property name="frameShadow">
-           <enum>QFrame::Shadow::Sunken</enum>
-          </property>
-         </widget>
-        </item>
-        <item row="7" column="0">
-         <widget class="QLabel" name="label_4">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>Border color</string>
-          </property>
-         </widget>
-        </item>
-        <item row="7" column="1">
-         <widget class="MdShared::ColorWidget" name="m_borderColor">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="frameShape">
-           <enum>QFrame::Shape::Panel</enum>
-          </property>
-          <property name="frameShadow">
-           <enum>QFrame::Shadow::Sunken</enum>
-          </property>
-         </widget>
-        </item>
-        <item row="8" column="0">
-         <widget class="QLabel" name="label_5">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>Code theme</string>
+        <item row="2" column="1">
+         <widget class="QFontComboBox" name="m_codeFont">
+          <property name="fontFilters">
+           <set>QFontComboBox::FontFilter::MonospacedFonts</set>
           </property>
          </widget>
         </item>
         <item row="8" column="1">
-         <widget class="QComboBox" name="m_codeTheme"/>
-        </item>
-        <item row="9" column="0">
-         <widget class="QLabel" name="label_12">
-          <property name="text">
-           <string>DPI for images</string>
-          </property>
-         </widget>
-        </item>
-        <item row="9" column="1">
-         <widget class="QSpinBox" name="m_dpi">
-          <property name="minimum">
-           <number>50</number>
-          </property>
-          <property name="maximum">
-           <number>2400</number>
-          </property>
-          <property name="singleStep">
-           <number>10</number>
-          </property>
-          <property name="value">
-           <number>172</number>
-          </property>
-         </widget>
-        </item>
-        <item row="10" column="0">
-         <widget class="QLabel" name="label_9">
-          <property name="text">
-           <string>Images alignment</string>
-          </property>
-         </widget>
-        </item>
-        <item row="10" column="1">
          <widget class="QComboBox" name="m_imageAlignment">
           <property name="currentIndex">
            <number>1</number>
@@ -284,6 +202,58 @@
             <string>Right</string>
            </property>
           </item>
+         </widget>
+        </item>
+        <item row="7" column="0">
+         <widget class="QLabel" name="label_12">
+          <property name="text">
+           <string>DPI for images</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_7">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Code font size</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0">
+         <widget class="QLabel" name="label_5">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Code theme</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QSpinBox" name="m_textFontSize">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimum">
+           <number>6</number>
+          </property>
+          <property name="maximum">
+           <number>16</number>
+          </property>
+          <property name="value">
+           <number>8</number>
+          </property>
          </widget>
         </item>
        </layout>
@@ -642,8 +612,6 @@
   <tabstop>m_textFontSize</tabstop>
   <tabstop>m_codeFont</tabstop>
   <tabstop>m_codeFontSize</tabstop>
-  <tabstop>m_mathFont</tabstop>
-  <tabstop>m_mathFontSize</tabstop>
   <tabstop>m_codeTheme</tabstop>
   <tabstop>m_dpi</tabstop>
   <tabstop>m_fileName</tabstop>

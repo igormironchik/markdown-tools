@@ -28,13 +28,13 @@ jobs:
 
     - run: sudo apt upgrade
 
-    - run: sudo apt install libfreetype6-dev libjpeg-dev libpng-dev zlib1g zlib1g-dev libfontconfig1-dev fontconfig libxml2-dev libtiff-dev freeglut3-dev libxcb-icccm4  libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-shape0 libxcb-xinerama0 libxcb-xkb1 libxkbcommon-x11-0 patchelf libcups2-dev lcov
+    - run: sudo apt install libfreetype6-dev libjpeg-dev libpng-dev zlib1g zlib1g-dev libfontconfig1-dev fontconfig libxml2-dev libtiff-dev freeglut3-dev libxcb-icccm4  libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-shape0 libxcb-xinerama0 libxcb-xkb1 libxkbcommon-x11-0 patchelf libcups2-dev lcov libtinyxml2-dev
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
       with:
         version: '6.7.3'
-        modules: 'qtimageformats qtwebchannel qtwebengine qtwebview qtpositioning'
+        modules: 'qtimageformats qtwebchannel qtwebview qtpositioning qtwebengine'
         set-env: 'true'
 
     - run: chmod a+x ./script/linux/install-kde.sh

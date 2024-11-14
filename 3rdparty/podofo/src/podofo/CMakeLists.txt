@@ -40,7 +40,7 @@ endif()
 source_group("" FILES ${PODOFO_SOURCES})
 
 macro(add_source subdir subdir_path)
-    file(GLOB_RECURSE SOURCE_FILES "${subdir_path}/*")
+    file(GLOB_RECURSE SOURCE_FILES "${subdir_path}/[^.]*")
     # Set visual studio source group
     source_group(${subdir} FILES ${SOURCE_FILES})
     # Add subdir to source files
@@ -50,7 +50,7 @@ macro(add_source subdir subdir_path)
     list(FILTER HEADER_FILES EXCLUDE REGEX "\.cpp$")
 endmacro()
 
-foreach(subdir main auxiliary staging)
+foreach(subdir main auxiliary optional staging)
     add_source(${subdir} "${CMAKE_CURRENT_SOURCE_DIR}/${subdir}")
     install(FILES ${HEADER_FILES} DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/podofo/${subdir}")
 endforeach()

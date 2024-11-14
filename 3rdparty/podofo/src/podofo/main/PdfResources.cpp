@@ -15,29 +15,83 @@ using namespace std;
 using namespace PoDoFo;
 
 static PdfArray getProcSet();
+static PdfName getResourceTypeName(PdfResourceType type);
+PdfResourceType getResourceType(const string_view name);
+static string_view getResourceTypePrefix(PdfResourceType type);
 
-PdfResources::PdfResources(PdfObject& obj)
-    : PdfDictionaryElement(obj) { }
+PdfResources::PdfResources(PdfDocument& doc) :
+    PdfDictionaryElement(doc, "Resources"_n),
+    m_currResourceIds{ } { }
 
-PdfResources::PdfResources(PdfDictionary& dict)
-    : PdfDictionaryElement(dict.AddKey("Resources", PdfDictionary()))
+PdfResources::PdfResources(PdfObject& obj) :
+    PdfDictionaryElement(obj),
+    m_currResourceIds{ } { }
+
+PdfResources::PdfResources(PdfCanvas& canvas) :
+    PdfDictionaryElement(canvas.GetElement().GetDictionary().AddKey("Resources"_n, PdfDictionary())),
+    m_currResourceIds{ }
 {
-    GetDictionary().AddKey("ProcSet", getProcSet());
+    GetDictionary().AddKey("ProcSet"_n, getProcSet());
+}
+
+bool PdfResources::TryCreateFromObject(PdfObject& obj, unique_ptr<PdfResources>& resources)
+{
+    if (!obj.IsDictionary())
+        return false;
+
+    resources.reset(new PdfResources(obj));
+    return true;
+}
+
+PdfName PdfResources::AddResource(PdfResourceType type, const PdfObject& obj)
+{
+    return addResource(type, getResourceTypeName(type), obj);
+}
+
+void PdfResources::AddResource(PdfResourceType type, const PdfName& key, const PdfObject& obj)
+{
+    AddResource(getResourceTypeName(type), key, obj);
+}
+
+PdfObject* PdfResources::GetResource(PdfResourceType type, const std::string_view& key)
+{
+    return GetResource(getResourceTypeName(type), key);
+}
+
+const PdfObject* PdfResources::GetResource(PdfResourceType type, const std::string_view& key) const
+{
+    return GetResource(getResourceTypeName(type), key);
+}
+
+PdfDictionaryIndirectIterable PdfResources::GetResourceIterator(PdfResourceType type)
+{
+    return GetResourceIterator(getResourceTypeName(type));
+}
+
+PdfDictionaryConstIndirectIterable PdfResources::GetResourceIterator(PdfResourceType type) const
+{
+    return GetResourceIterator(getResourceTypeName(type));
+}
+
+void PdfResources::RemoveResource(PdfResourceType type, const std::string_view& key)
+{
+    RemoveResource(getResourceTypeName(type), key);
+}
+
+void PdfResources::RemoveResources(PdfResourceType type)
+{
+    RemoveResources(getResourceTypeName(type));
+}
+
+PdfName PdfResources::AddResource(const PdfName& typeName, const PdfObject& obj)
+{
+    return addResource(getResourceType(typeName), typeName, obj);
 }
 
 void PdfResources::AddResource(const PdfName& type, const PdfName& key, const PdfObject& obj)
 {
     auto& dict = getOrCreateDictionary(type);
     dict.AddKeyIndirectSafe(key, obj);
-}
-
-void PdfResources::AddResource(const PdfName& type, const PdfName& key, const PdfObject* obj)
-{
-    auto& dict = getOrCreateDictionary(type);
-    if (obj == nullptr)
-        dict.RemoveKey(key);
-    else
-        dict.AddKeyIndirect(key, *obj);
 }
 
 PdfDictionaryIndirectIterable PdfResources::GetResourceIterator(const string_view& type)
@@ -87,47 +141,26 @@ const PdfFont* PdfResources::GetFont(const string_view& name) const
     return GetDocument().GetFonts().GetLoadedFont(*this, name);
 }
 
-void PdfResources::AddColorResource(const PdfColor& color)
+PdfName PdfResources::addResource(PdfResourceType type, const PdfName& typeName, const PdfObject& obj)
 {
-    switch (color.GetColorSpace())
+    auto& dict = getOrCreateDictionary(typeName);
+    auto prefix = getResourceTypePrefix(type);
+    unsigned currId = m_currResourceIds[(unsigned)type];
+    string currName;
+    while (true)
     {
-        case PdfColorSpace::Separation:
-        {
-            string csPrefix("ColorSpace");
-            string csName = color.GetName();
-            string temp(csPrefix + csName);
-
-            if (!GetDictionary().HasKey("ColorSpace")
-                || !GetDictionary().MustFindKey("ColorSpace").GetDictionary().HasKey(csPrefix + csName))
-            {
-                // Build color-spaces for separation
-                auto csp = color.BuildColorSpace(GetDocument());
-                AddResource("ColorSpace", csPrefix + csName, csp);
-            }
-        }
-        break;
-
-        case PdfColorSpace::Lab:
-        {
-            if (!GetDictionary().HasKey("ColorSpace")
-                || !GetDictionary().MustFindKey("ColorSpace").GetDictionary().HasKey("ColorSpaceLab"))
-            {
-                // Build color-spaces for CIE-lab
-                auto csp = color.BuildColorSpace(GetDocument());
-                AddResource("ColorSpace", "ColorSpaceCieLab", csp);
-            }
-        }
-        break;
-
-        case PdfColorSpace::DeviceGray:
-        case PdfColorSpace::DeviceRGB:
-        case PdfColorSpace::DeviceCMYK:
-        case PdfColorSpace::Indexed:
-            // No colorspace needed
-        case PdfColorSpace::Unknown:
-        default:
+        currName.clear();
+        currName.append(prefix);
+        currName.append(std::to_string(currId));
+        if (!dict.HasKey(currName))
             break;
+
+        currId = ++m_currResourceIds[(unsigned)type];
     }
+
+    PdfName ret(currName);
+    dict.AddKeyIndirectSafe(ret, obj);
+    return ret;
 }
 
 PdfObject* PdfResources::getResource(const string_view& type, const string_view& key) const
@@ -152,7 +185,7 @@ bool PdfResources::tryGetDictionary(const string_view& type, PdfDictionary*& dic
     return typeObj->TryGetDictionary(dict);
 }
 
-PdfDictionary& PdfResources::getOrCreateDictionary(const string_view& type)
+PdfDictionary& PdfResources::getOrCreateDictionary(const PdfName& type)
 {
     PdfDictionary* dict;
     if (!tryGetDictionary(type, dict))
@@ -161,13 +194,82 @@ PdfDictionary& PdfResources::getOrCreateDictionary(const string_view& type)
     return *dict;
 }
 
+PdfResourceOperations::PdfResourceOperations() { }
+
 PdfArray getProcSet()
 {
     PdfArray procset;
-    procset.Add(PdfName("PDF"));
-    procset.Add(PdfName("Text"));
-    procset.Add(PdfName("ImageB"));
-    procset.Add(PdfName("ImageC"));
-    procset.Add(PdfName("ImageI"));
+    procset.Add("PDF"_n);
+    procset.Add("Text"_n);
+    procset.Add("ImageB"_n);
+    procset.Add("ImageC"_n);
+    procset.Add("ImageI"_n);
     return procset;
 }
+
+PdfName getResourceTypeName(PdfResourceType type)
+{
+    switch (type)
+    {
+        case PdfResourceType::ExtGState:
+            return "ExtGState"_n;
+        case PdfResourceType::ColorSpace:
+            return "ColorSpace"_n;
+        case PdfResourceType::Pattern:
+            return "Pattern"_n;
+        case PdfResourceType::Shading:
+            return "Shading"_n;
+        case PdfResourceType::XObject:
+            return "XObject"_n;
+        case PdfResourceType::Font:
+            return "Font"_n;
+        case PdfResourceType::Properties:
+            return "Properties"_n;
+        default:
+            PODOFO_RAISE_ERROR(PdfErrorCode::InvalidEnumValue);
+    }
+}
+
+PdfResourceType getResourceType(const string_view name)
+{
+    if (name == "ExtGState")
+        return PdfResourceType::ExtGState;
+    else if (name == "ColorSpace")
+        return PdfResourceType::ColorSpace;
+    else if (name == "Pattern")
+        return PdfResourceType::Pattern;
+    else if (name == "Shading")
+        return PdfResourceType::Shading;
+    else if (name == "XObject")
+        return PdfResourceType::XObject;
+    else if (name == "Font")
+        return PdfResourceType::Font;
+    else if (name == "Properties")
+        return PdfResourceType::Properties;
+    else
+        return PdfResourceType::Unknown;
+}
+
+string_view getResourceTypePrefix(PdfResourceType type)
+{
+    switch (type)
+    {
+        case PdfResourceType::ExtGState:
+            return "ExtG"sv;
+        case PdfResourceType::ColorSpace:
+            return "CS"sv;
+        case PdfResourceType::Pattern:
+            return "Ptrn"sv;
+        case PdfResourceType::Shading:
+            return "Shd"sv;
+        case PdfResourceType::XObject:
+            return "XOb"sv;
+        case PdfResourceType::Font:
+            return "Ft"sv;
+        case PdfResourceType::Properties:
+            return "Prop"sv;
+        default:
+            return "Res"sv;
+    }
+}
+

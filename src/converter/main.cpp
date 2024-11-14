@@ -14,6 +14,9 @@
 // shared include.
 #include "utils.hpp"
 
+// MicroTeX include.
+#include <latex.h>
+
 using namespace MdPdf;
 
 int main(int argc, char **argv)
@@ -39,6 +42,8 @@ int main(int argc, char **argv)
     appIcon.addFile(QStringLiteral(":/icon/icon_24x24.png"));
     appIcon.addFile(QStringLiteral(":/icon/icon_16x16.png"));
     app.setWindowIcon(appIcon);
+
+    tex::LaTeX::init(":/res");
 
     initSharedResources();
 

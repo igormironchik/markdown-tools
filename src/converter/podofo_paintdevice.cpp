@@ -5,11 +5,20 @@
 
 // md-pdf include.
 #include "podofo_paintdevice.hpp"
+#include "renderer.hpp"
 
 // Qt include.
+#include <QMap>
 #include <QPainterPath>
 #include <QTextItem>
 #include <QTransform>
+#include <QFile>
+
+// MicroTeX include.
+#include <fonts/font_info.h>
+
+// C++ include.
+#include <stdexcept>
 
 namespace MdPdf
 {
@@ -19,8 +28,9 @@ namespace MdPdf
 //
 
 struct PoDoFoPaintDevicePrivate {
-    PoDoFoPaintDevicePrivate(PoDoFoPaintDevice *parent)
+    PoDoFoPaintDevicePrivate(PoDoFoPaintDevice *parent, Render::PdfAuxData &pdfData)
         : m_q(parent)
+        , m_engine(pdfData)
     {
     }
 
@@ -34,8 +44,8 @@ struct PoDoFoPaintDevicePrivate {
 // PoDoFoPaintDevice
 //
 
-PoDoFoPaintDevice::PoDoFoPaintDevice()
-    : d(new PoDoFoPaintDevicePrivate(this))
+PoDoFoPaintDevice::PoDoFoPaintDevice(Render::PdfAuxData &pdfData)
+    : d(new PoDoFoPaintDevicePrivate(this, pdfData))
 {
 }
 
@@ -43,9 +53,9 @@ PoDoFoPaintDevice::~PoDoFoPaintDevice()
 {
 }
 
-void PoDoFoPaintDevice::setPdfPainter(PoDoFo::PdfPainter &p, PoDoFo::PdfDocument &doc)
+void PoDoFoPaintDevice::enableDrawing(bool on)
 {
-    d->m_engine.setPdfPainter(p, doc);
+    d->m_engine.enableDrawing(on);
 }
 
 QPaintEngine *PoDoFoPaintDevice::paintEngine() const
@@ -99,27 +109,29 @@ int PoDoFoPaintDevice::metric(QPaintDevice::PaintDeviceMetric metric) const
 //
 
 struct PoDoFoPaintEnginePrivate {
-    PoDoFoPaintEnginePrivate(PoDoFoPaintEngine *parent)
+    PoDoFoPaintEnginePrivate(PoDoFoPaintEngine *parent, Render::PdfAuxData &pdfData)
         : m_q(parent)
+        , m_pdfData(pdfData)
     {
     }
 
     //! Parent.
     PoDoFoPaintEngine *m_q = nullptr;
-    //! Pdf m_painter.
-    PoDoFo::PdfPainter *m_painter = nullptr;
-    //! Pdf document.
-    PoDoFo::PdfDocument *m_doc = nullptr;
+    //! Is drawing enabled?
+    bool m_isDrawing = false;
     //! Transformation.
     QTransform m_transform;
+    //! PDF auxiliary data.
+    Render::PdfAuxData & m_pdfData;
 }; // struct PoDoFoPaintEnginePrivate
 
 //
 // PoDoFoPaintEngine
 //
 
-PoDoFoPaintEngine::PoDoFoPaintEngine()
-    : d(new PoDoFoPaintEnginePrivate(this))
+PoDoFoPaintEngine::PoDoFoPaintEngine(Render::PdfAuxData &pdfData)
+    : QPaintEngine(QPaintEngine::AllFeatures)
+    , d(new PoDoFoPaintEnginePrivate(this, pdfData))
 {
 }
 
@@ -127,15 +139,16 @@ PoDoFoPaintEngine::~PoDoFoPaintEngine()
 {
 }
 
-void PoDoFoPaintEngine::setPdfPainter(PoDoFo::PdfPainter &p, PoDoFo::PdfDocument &doc)
+void
+PoDoFoPaintEngine::enableDrawing(bool on)
 {
-    d->m_painter = &p;
-    d->m_doc = &doc;
+    d->m_isDrawing = on;
 }
 
-PoDoFo::PdfPainter *PoDoFoPaintEngine::pdfPainter() const
+PoDoFo::PdfPainter *
+PoDoFoPaintEngine::pdfPainter() const
 {
-    return d->m_painter;
+    return (*d->m_pdfData.m_painters)[d->m_pdfData.m_currentPainterIdx].get();
 }
 
 bool PoDoFoPaintEngine::begin(QPaintDevice *)
@@ -167,29 +180,29 @@ double PoDoFoPaintEngine::qYtoPoDoFo(double y)
 
 void PoDoFoPaintEngine::drawLines(const QLineF *lines, int lineCount)
 {
-    if (d->m_painter) {
+    if (d->m_isDrawing) {
         for (int i = 0; i < lineCount; ++i) {
             const auto l = d->m_transform.map(lines[i]);
 
-            d->m_painter->DrawLine(qXtoPoDoFo(l.x1()), qYtoPoDoFo(l.y1()), qXtoPoDoFo(l.x2()), qYtoPoDoFo(l.y2()));
+            d->m_pdfData.drawLine(qXtoPoDoFo(l.x1()), qYtoPoDoFo(l.y1()), qXtoPoDoFo(l.x2()), qYtoPoDoFo(l.y2()));
         }
     }
 }
 
 void PoDoFoPaintEngine::drawLines(const QLine *lines, int lineCount)
 {
-    if (d->m_painter) {
+    if (d->m_isDrawing) {
         for (int i = 0; i < lineCount; ++i) {
             const auto l = d->m_transform.map(lines[i]);
 
-            d->m_painter->DrawLine(qXtoPoDoFo(l.x1()), qYtoPoDoFo(l.y1()), qXtoPoDoFo(l.x2()), qYtoPoDoFo(l.y2()));
+            d->m_pdfData.drawLine(qXtoPoDoFo(l.x1()), qYtoPoDoFo(l.y1()), qXtoPoDoFo(l.x2()), qYtoPoDoFo(l.y2()));
         }
     }
 }
 
 void PoDoFoPaintEngine::drawPath(const QPainterPath &path)
 {
-    if (d->m_painter) {
+    if (d->m_isDrawing) {
         PoDoFo::PdfPainterPath p;
         QPointF start, end;
         bool initialized = false;
@@ -237,7 +250,7 @@ void PoDoFoPaintEngine::drawPath(const QPainterPath &path)
             }
         }
 
-        d->m_painter->DrawPath(p, start == end ? PoDoFo::PdfPathDrawMode::StrokeFill : PoDoFo::PdfPathDrawMode::Stroke);
+        pdfPainter()->DrawPath(p, start == end ? PoDoFo::PdfPathDrawMode::StrokeFill : PoDoFo::PdfPathDrawMode::Stroke);
     }
 }
 
@@ -278,35 +291,30 @@ PoDoFo::Rect PoDoFoPaintEngine::qRectFtoPoDoFo(const QRectF &r)
 
 void PoDoFoPaintEngine::drawRects(const QRectF *rects, int rectCount)
 {
-    if (d->m_painter) {
+    if (d->m_isDrawing) {
         for (int i = 0; i < rectCount; ++i) {
-            d->m_painter->DrawRectangle(qRectFtoPoDoFo(d->m_transform.mapRect(rects[i])));
+            pdfPainter()->DrawRectangle(qRectFtoPoDoFo(d->m_transform.mapRect(rects[i])));
         }
     }
 }
 
 void PoDoFoPaintEngine::drawRects(const QRect *rects, int rectCount)
 {
-    if (d->m_painter) {
+    if (d->m_isDrawing) {
         for (int i = 0; i < rectCount; ++i) {
-            d->m_painter->DrawRectangle(qRectFtoPoDoFo(d->m_transform.mapRect(rects[i].toRectF())));
+            pdfPainter()->DrawRectangle(qRectFtoPoDoFo(d->m_transform.mapRect(rects[i].toRectF())));
         }
     }
 }
 
 void PoDoFoPaintEngine::drawTextItem(const QPointF &p, const QTextItem &textItem)
 {
-    if (d->m_painter) {
+    if (d->m_isDrawing) {
         const auto f = qFontToPoDoFo(textItem.font());
         const auto pp = d->m_transform.map(p);
-
-        d->m_painter->TextObject.Begin();
-        d->m_painter->TextObject.MoveTo(qXtoPoDoFo(pp.x()), qYtoPoDoFo(pp.y()));
-        d->m_painter->TextState.SetFont(*f.first, f.second);
-        d->m_painter->TextState.SetFontScale(1.0);
         const auto utf8 = textItem.text().toUtf8();
-        d->m_painter->TextObject.AddText(utf8.data());
-        d->m_painter->TextObject.End();
+
+        d->m_pdfData.drawText(qXtoPoDoFo(pp.x()), qYtoPoDoFo(pp.y()), utf8.constData(), f.first, f.second, 1.0, false);
     }
 }
 
@@ -359,52 +367,109 @@ inline PoDoFo::PdfColor color(const QColor &c)
     return PoDoFo::PdfColor(c.redF(), c.greenF(), c.blueF());
 }
 
+inline double scaleOfTransform(const QTransform &t)
+{
+    const auto bv = t.m21();
+    const auto dv = t.m22();
+
+    return std::sqrt(bv * bv + dv * dv);
+}
+
 QPair<PoDoFo::PdfFont *, double> PoDoFoPaintEngine::qFontToPoDoFo(const QFont &f)
 {
-    PoDoFo::PdfFontSearchParams params;
-    params.Style = PoDoFo::PdfFontStyle::Regular;
-    if (f.bold()) {
-        params.Style.value() |= PoDoFo::PdfFontStyle::Bold;
+    //const double size = (f.pointSizeF() > 0.0 ? f.pointSizeF() : f.pixelSize() / paintDevice()->physicalDpiY() * 72.0);
+
+    // This code is for MicroTeX, the author do things not right with font sizes.
+    const auto scale = scaleOfTransform(d->m_transform);
+
+    const double size = f.pointSize() * scale / paintDevice()->physicalDpiY() * 72.0;
+
+    auto id = tex::FontInfo::__id(f.family().toStdString());
+
+    if (id != -1) {
+        const auto path = QStringLiteral(":/") + QString(tex::FontInfo::__get(id)->getPath().c_str());
+
+        if (!d->m_pdfData.m_fontsCache.contains(path)) {
+            QFile fontFile(path);
+
+            if (fontFile.open(QIODevice::ReadOnly)) {
+                const auto content = fontFile.readAll();
+                fontFile.close();
+
+                auto tmp = QSharedPointer<QTemporaryFile>(new QTemporaryFile);
+
+                if (tmp->open()) {
+                    tmp->write(content);
+                    tmp->close();
+
+                    d->m_pdfData.m_fontsCache.insert(path, tmp);
+
+                    d->m_pdfData.m_doc->GetFonts().GetOrCreateFont(tmp->fileName().toLocal8Bit().constData());
+                } else {
+                    throw std::runtime_error("Unable to load font from file: \":/" +
+                                             tex::FontInfo::__get(id)->getPath() +
+                                             "\". Failed to create temporary file.");
+                }
+            } else {
+                throw std::runtime_error("Unable to load font from file: \":/" +
+                                         tex::FontInfo::__get(id)->getPath() + "\".");
+            }
+        }
+
+        const auto fileName  = d->m_pdfData.m_fontsCache[path]->fileName();
+
+        auto &font = d->m_pdfData.m_doc->GetFonts().GetOrCreateFont(fileName.toLocal8Bit().constData());
+
+        return {&font, size};
+    } else {
+        PoDoFo::PdfFontSearchParams params;
+        params.Style = PoDoFo::PdfFontStyle::Regular;
+        if (f.bold()) {
+            params.Style.value() |= PoDoFo::PdfFontStyle::Bold;
+        }
+        if (f.italic()) {
+            params.Style.value() |= PoDoFo::PdfFontStyle::Italic;
+        }
+
+        auto *font = d->m_pdfData.m_doc->GetFonts().SearchFont(f.family().toLocal8Bit().data(), params);
+
+        return {font, size};
     }
-    if (f.italic()) {
-        params.Style.value() |= PoDoFo::PdfFontStyle::Italic;
-    }
-
-    auto *font = d->m_doc->GetFonts().SearchFont(f.family().toLocal8Bit().data(), params);
-
-    const double size = f.pointSizeF() > 0.0 ? f.pointSizeF() : f.pixelSize() / paintDevice()->physicalDpiY() * 72.0;
-
-    return {font, size};
 }
 
 void PoDoFoPaintEngine::updateState(const QPaintEngineState &state)
 {
-    if (!d->m_painter) {
+    if (!d->m_isDrawing) {
         return;
     }
 
     const auto st = state.state();
 
+    auto painter = pdfPainter();
+
     if (st & QPaintEngine::DirtyPen) {
         const auto p = state.pen();
 
-        d->m_painter->GraphicsState.SetLineWidth(p.widthF() / paintDevice()->physicalDpiX() * 72.0);
-        d->m_painter->GraphicsState.SetLineCapStyle(capStyle(p.capStyle()));
-        d->m_painter->GraphicsState.SetLineJoinStyle(joinStyle(p.joinStyle()));
-        d->m_painter->GraphicsState.SetFillColor(color(p.brush().color()));
-        d->m_painter->GraphicsState.SetStrokeColor(color(p.color()));
-        d->m_painter->GraphicsState.SetMiterLevel(p.miterLimit());
+        // This code is for MicroTeX, the author do things not right with pen width.
+        const auto scale = scaleOfTransform(d->m_transform);
+
+        painter->GraphicsState.SetLineWidth(p.widthF() * scale / paintDevice()->physicalDpiX() * 72.0);
+        painter->GraphicsState.SetLineCapStyle(capStyle(p.capStyle()));
+        painter->GraphicsState.SetLineJoinStyle(joinStyle(p.joinStyle()));
+        painter->GraphicsState.SetNonStrokingColor(color(p.brush().color()));
+        painter->GraphicsState.SetStrokingColor(color(p.color()));
+        painter->GraphicsState.SetMiterLevel(p.miterLimit());
     }
 
     if (st & QPaintEngine::DirtyBrush) {
-        d->m_painter->GraphicsState.SetFillColor(color(state.brush().color()));
+        painter->GraphicsState.SetNonStrokingColor(color(state.brush().color()));
     }
 
-    if (st & QPaintEngine::DirtyFont) {
-        const auto f = qFontToPoDoFo(state.font());
+    // if (st & QPaintEngine::DirtyFont) {
+    //     const auto f = qFontToPoDoFo(state.font());
 
-        d->m_painter->TextState.SetFont(*f.first, f.second);
-    }
+    //     d->m_painter->TextState.SetFont(*f.first, f.second);
+    // }
 
     if (st && QPaintEngine::DirtyTransform) {
         d->m_transform = state.transform();

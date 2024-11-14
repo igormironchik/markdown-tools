@@ -14,7 +14,6 @@
 
 namespace PoDoFo {
 
-class PdfObject;
 class PdfImage;
 class PdfXObjectForm;
 class PdfXObjectPostScript;
@@ -34,7 +33,7 @@ class PODOFO_API PdfXObject : public PdfDictionaryElement
     friend class PdfXObjectPostScript;
 
 private:
-    PdfXObject(PdfDocument& doc, PdfXObjectType subType, const std::string_view& prefix);
+    PdfXObject(PdfDocument& doc, PdfXObjectType subType);
     PdfXObject(PdfObject& obj, PdfXObjectType subType);
 
 public:
@@ -52,31 +51,23 @@ public:
 
     Matrix GetMatrix() const;
 
-    void SetMatrix(const Matrix& m);
-
-    /** Get the identifier used for drawig this object
-     *  \returns identifier
-     */
-    inline const PdfName& GetIdentifier() const { return m_Identifier; }
-
     inline PdfXObjectType GetType() const { return m_Type; }
 
 private:
     static bool tryCreateFromObject(const PdfObject& obj, PdfXObjectType xobjType, PdfXObject*& xobj);
-    static bool tryCreateFromObject(const PdfObject& obj, const std::type_info& typeInfo, PdfXObject*& xobj);
-    void initIdentifiers(const std::string_view& prefix);
     static PdfXObjectType getPdfXObjectType(const PdfObject& obj);
+    template <typename TXObject>
+    static constexpr PdfXObjectType GetXObjectType();
 
 private:
     PdfXObjectType m_Type;
-    PdfName m_Identifier;
 };
 
 template<typename XObjectT>
 inline bool PdfXObject::TryCreateFromObject(PdfObject& obj, std::unique_ptr<XObjectT>& xobj)
 {
     PdfXObject* xobj_;
-    if (!tryCreateFromObject(obj, typeid(XObjectT), xobj_))
+    if (!tryCreateFromObject(obj, GetXObjectType<XObjectT>(), xobj_))
         return false;
 
     xobj.reset((XObjectT*)xobj_);
@@ -87,11 +78,24 @@ template<typename XObjectT>
 inline bool PdfXObject::TryCreateFromObject(const PdfObject& obj, std::unique_ptr<const XObjectT>& xobj)
 {
     PdfXObject* xobj_;
-    if (!tryCreateFromObject(obj, typeid(XObjectT), xobj_))
+    if (!tryCreateFromObject(obj, GetXObjectType<XObjectT>(), xobj_))
         return false;
 
     xobj.reset((const XObjectT*)xobj_);
     return true;
+}
+
+template<typename TXObject>
+constexpr PdfXObjectType PdfXObject::GetXObjectType()
+{
+    if (std::is_same_v<TXObject, PdfXObjectForm>)
+        return PdfXObjectType::Form;
+    else if (std::is_same_v<TXObject, PdfImage>)
+        return PdfXObjectType::Image;
+    else if (std::is_same_v<TXObject, PdfXObjectPostScript>)
+        return PdfXObjectType::PostScript;
+    else
+        return PdfXObjectType::Unknown;
 }
 
 };

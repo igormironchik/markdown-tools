@@ -13,6 +13,7 @@
 namespace PoDoFo
 {
     PdfXMPMetadata GetXMPMetadata(const std::string_view& xmpview, std::unique_ptr<PdfXMPPacket>& packet);
+    void CreateXMPMetadata(std::unique_ptr<PdfXMPPacket>& packet);
     void UpdateOrCreateXMPMetadata(std::unique_ptr<PdfXMPPacket>& packet, const PdfXMPMetadata& metatata);
 }
 
@@ -27,7 +28,10 @@ namespace utls
     };
 
     void SetListNodeContent(xmlDocPtr doc, xmlNodePtr node, XMPListType seqType,
-        const PoDoFo::cspan<std::string>& value, xmlNodePtr& newNode);
+        const std::string_view& value, xmlNodePtr& newNode);
+
+    void SetListNodeContent(xmlDocPtr doc, xmlNodePtr node, XMPListType seqType,
+        const PoDoFo::cspan<std::string_view>& value, xmlNodePtr& newNode);
 }
 
 #endif // PODOFO_PDFA_FUNCTIONS_H

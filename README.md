@@ -53,6 +53,7 @@ To build these applications first of all install dependencies:
  * `extra-cmake-modules`
  * `kf6-syntax-highlighting`
  * `Qt >= 6.7`
+ * `tinyxml2`
 
 With these dependencies installed just open `CMakeLists.txt` in `QtCreator`
 (or use `CMake` from command line) and run build.
@@ -87,13 +88,5 @@ fonts to monospaced due to [QTBUG-112145](https://bugreports.qt.io/browse/QTBUG-
 
 * I do not render HTML tags in PDF.
 
-* Some LaTeX Math expressions can be possibly wrongly rendered in PDF. I use very good
-library `JKQtPlotter` to render LaTeX Math, and not everything is
-implemented there (possibly). But most common math things are done.
-
 * I don't support languages that don't separate words
 with spaces in converter to `PDF`.
-
-* `LaTeX` math expressions can be rendered a little differently in PDF on different platforms
-due to [QTBUG-104790](https://bugreports.qt.io/browse/QTBUG-104790), that is why I don't
-have auto tests for them.
