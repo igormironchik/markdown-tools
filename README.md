@@ -90,3 +90,5 @@ fonts to monospaced due to [QTBUG-112145](https://bugreports.qt.io/browse/QTBUG-
 
 * I don't support languages that don't separate words
 with spaces in converter to `PDF`.
+
+* SVG in PDF renders as raster image with support of Rust `resvg` library.
