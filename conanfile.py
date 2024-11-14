@@ -7,6 +7,7 @@ class DependenciesRecipe(ConanFile):
     def requirements(self):
         self.requires("freetype/2.13.2")
         self.requires("libjpeg/9e")
+        self.requires("tinyxml2/10.0.0")
         self.requires("libpng/1.6.42")
         self.requires("zlib/1.2.13")
         self.requires("libtiff/4.4.0")
@@ -24,6 +25,7 @@ class DependenciesRecipe(ConanFile):
         self.options["libxml2"].shared = False
         self.options["libiconv"].shared = False
         self.options["fontconfig"].shared = False
+        self.options["tinyxml2"].shared = False
 
     def imports(self):
         self.copy("*.dll", "bin", "bin")
