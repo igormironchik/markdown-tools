@@ -8,4 +8,4 @@ qt_version=$(cat $PWD/script/qt.version)
 
 echo "Installing Qt..."
 
-./python/bin/aqt install-qt --outputdir ./Qt mac desktop $qt_version -m qtimageformats qtwebchannel qtwebengine qtwebview qtpositioning || exit 1
+./python/bin/aqt install-qt --outputdir ./Qt mac desktop $qt_version -m qtimageformats qtwebchannel qtwebview qtpositioning || exit 1
