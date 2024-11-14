@@ -18,6 +18,13 @@
 namespace MdPdf
 {
 
+namespace Render
+{
+
+struct PdfAuxData;
+
+}
+
 //
 // PoDoFoPaintDevice
 //
@@ -28,10 +35,10 @@ struct PoDoFoPaintDevicePrivate;
 class PoDoFoPaintDevice final : public QPaintDevice
 {
 public:
-    explicit PoDoFoPaintDevice(QMap<QString, QSharedPointer<QTemporaryFile>> & fontsCache);
+    PoDoFoPaintDevice(Render::PdfAuxData &pdfData);
     ~PoDoFoPaintDevice() override;
 
-    void setPdfPainter(PoDoFo::PdfPainter &p, PoDoFo::PdfDocument &doc);
+    void enableDrawing(bool on = true);
 
     QPaintEngine *paintEngine() const override;
 
@@ -54,10 +61,11 @@ struct PoDoFoPaintEnginePrivate;
 class PoDoFoPaintEngine final : public QPaintEngine
 {
 public:
-    explicit PoDoFoPaintEngine(QMap<QString, QSharedPointer<QTemporaryFile>> & fontsCache);
+    PoDoFoPaintEngine(Render::PdfAuxData &pdfData);
     ~PoDoFoPaintEngine() override;
 
-    void setPdfPainter(PoDoFo::PdfPainter &p, PoDoFo::PdfDocument &doc);
+    void enableDrawing(bool on = true);
+
     PoDoFo::PdfPainter *pdfPainter() const;
 
     bool begin(QPaintDevice *pdev) override;
