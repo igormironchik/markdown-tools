@@ -34,7 +34,7 @@ jobs:
       uses: jurplel/install-qt-action@v4
       with:
         version: '6.8.0'
-        modules: 'qtimageformats qtwebchannel qtwebengine qtwebview qtpositioning'
+        modules: 'qtimageformats qtwebchannel qtwebview qtpositioning'
         set-env: 'true'
 
     - run: chmod a+x ./script/linux/install-kde.sh
