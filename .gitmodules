@@ -1,6 +1,3 @@
-[submodule "3rdparty/cfgfile"]
-	path = 3rdparty/cfgfile
-	url = https://github.com/igormironchik/cfgfile.git
 [submodule "3rdparty/md4qt"]
 	path = 3rdparty/md4qt
 	url = https://invent.kde.org/libraries/md4qt.git

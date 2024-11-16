@@ -64,9 +64,7 @@
        <property name="currentIndex">
         <number>0</number>
        </property>
-       <widget class="MdEditor::ColorsPage" name="m_colorsPage">
-        <layout class="QVBoxLayout" name="verticalLayout_3"/>
-       </widget>
+       <widget class="MdEditor::ColorsPage" name="m_colorsPage"/>
        <widget class="MdEditor::FontPage" name="m_fontPage"/>
        <widget class="QWidget" name="m_editorPage">
         <layout class="QVBoxLayout" name="verticalLayout_2">

@@ -24,6 +24,9 @@ int main(int argc, char **argv)
     QWebEngineUrlScheme::registerScheme(qrc);
 
     QApplication app(argc, argv);
+    app.setOrganizationName(QStringLiteral("Igor Mironchik"));
+    app.setOrganizationDomain(QStringLiteral("github.com/igormironchik"));
+    app.setApplicationName(QStringLiteral("Markdown Editor"));
 
     QCommandLineParser parser;
     parser.setApplicationDescription(QStringLiteral("Markdown editor and viewer."));

@@ -8,7 +8,6 @@
 #include <md4qt/parser.h>
 
 // md-pdf include.
-#include "cfg.hpp"
 #include "const.hpp"
 #include "main_window.hpp"
 #include "progress.hpp"
@@ -38,9 +37,6 @@
 // shared include.
 #include "license_dialog.hpp"
 
-// cfgfile include.
-#include <cfgfile/all.hpp>
-
 namespace MdPdf
 {
 
@@ -57,9 +53,6 @@ MainWidget::MainWidget(QWidget *parent)
     , m_syntax(new Syntax)
 {
     m_ui->setupUi(this);
-
-    m_ui->m_linkColor->setColor(QColor(33, 122, 255));
-    m_ui->m_borderColor->setColor(QColor(81, 81, 81));
 
     connect(m_ui->m_linkColor, &MdShared::ColorWidget::clicked, this, &MainWidget::changeLinkColor);
     connect(m_ui->m_borderColor, &MdShared::ColorWidget::clicked, this, &MainWidget::changeBorderColor);
@@ -204,111 +197,153 @@ inline int imageAlignmentToInt(Render::ImageAlignment a)
     }
 }
 
-void MainWidget::initCfg(Cfg &cfg) const
+void MainWidget::saveCfg(QSettings &cfg) const
 {
-    {
-        MdPdf::Font f;
-        f.set_name(m_ui->m_textFont->currentFont().family());
-        f.set_size(m_ui->m_textFontSize->value());
-        cfg.set_textFont(f);
-    }
+    cfg.beginGroup(QStringLiteral("ui"));
 
-    {
-        MdPdf::Font f;
-        f.set_name(m_ui->m_codeFont->currentFont().family());
-        f.set_size(m_ui->m_codeFontSize->value());
-        cfg.set_codeFont(f);
-    }
+    cfg.beginGroup(QStringLiteral("textFont"));
+    cfg.setValue(QStringLiteral("family"), m_ui->m_textFont->currentFont().family());
+    cfg.setValue(QStringLiteral("size"), m_ui->m_textFontSize->value());
+    cfg.endGroup();
 
-    cfg.set_linkColor(m_ui->m_linkColor->color().name(QColor::HexRgb));
-    cfg.set_borderColor(m_ui->m_borderColor->color().name(QColor::HexRgb));
-    cfg.set_codeTheme(m_ui->m_codeTheme->currentText());
-    cfg.set_dpiForImages(m_ui->m_dpi->value());
+    cfg.beginGroup(QStringLiteral("codeFont"));
+    cfg.setValue(QStringLiteral("family"), m_ui->m_codeFont->currentFont().family());
+    cfg.setValue(QStringLiteral("size"), m_ui->m_codeFontSize->value());
+    cfg.endGroup();
 
-    Margins m;
+    cfg.setValue(QStringLiteral("linkColor"), m_ui->m_linkColor->color());
+    cfg.setValue(QStringLiteral("borderColor"), m_ui->m_borderColor->color());
+    cfg.setValue(QStringLiteral("codeTheme"), m_ui->m_codeTheme->currentText());
+    cfg.setValue(QStringLiteral("dpi"), m_ui->m_dpi->value());
+    cfg.setValue(QStringLiteral("imageAlignment"), imageAlignmentToString(imageAlignmentFromInt(
+        m_ui->m_imageAlignment->currentIndex())));
+
+    cfg.beginGroup(QStringLiteral("margins"));
 
     if (m_ui->m_mm->isChecked()) {
-        m.set_units(QStringLiteral("mm"));
+        cfg.setValue(QStringLiteral("units"), QStringLiteral("mm"));
     } else {
-        m.set_units(QStringLiteral("pt"));
+        cfg.setValue(QStringLiteral("units"), QStringLiteral("pt"));
     }
 
-    m.set_left(m_ui->m_left->value());
-    m.set_right(m_ui->m_right->value());
-    m.set_top(m_ui->m_top->value());
-    m.set_bottom(m_ui->m_bottom->value());
+    cfg.setValue(QStringLiteral("left"), m_ui->m_left->value());
+    cfg.setValue(QStringLiteral("right"), m_ui->m_right->value());
+    cfg.setValue(QStringLiteral("top"), m_ui->m_top->value());
+    cfg.setValue(QStringLiteral("bottom"), m_ui->m_bottom->value());
 
-    cfg.set_margins(m);
-    cfg.set_imageAlignment(imageAlignmentToString(imageAlignmentFromInt(m_ui->m_imageAlignment->currentIndex())));
+    cfg.endGroup();
+    cfg.endGroup();
 }
 
-void MainWidget::applyCfg(const Cfg &cfg)
+inline int limitFontSize(int s)
 {
-    const auto &tFont = cfg.textFont();
+    if (s < 6) {
+        s = 6;
+    }
 
-    if (!tFont.name().isEmpty()) {
-        auto fs = tFont.size();
+    if (s > 16) {
+        s = 16;
+    }
 
-        if (fs < 6) {
-            fs = 6;
+    return s;
+}
+
+void MainWidget::applyCfg(QSettings &cfg)
+{
+    cfg.beginGroup(QStringLiteral("ui"));
+
+    cfg.beginGroup(QStringLiteral("textFont"));
+
+    {
+        const auto fontName = cfg.value(QStringLiteral("family")).toString();
+
+        if (!fontName.isEmpty()) {
+            auto fs = limitFontSize(cfg.value(QStringLiteral("size")).toInt());
+
+            const QFont f(fontName, fs);
+
+            m_ui->m_textFont->setCurrentFont(f);
+            m_ui->m_textFontSize->setValue(fs);
         }
+    }
 
-        if (fs > 16) {
-            fs = 16;
+    cfg.endGroup();
+
+    cfg.beginGroup(QStringLiteral("codeFont"));
+
+    {
+        const auto fontName = cfg.value(QStringLiteral("family")).toString();
+
+        if (!fontName.isEmpty()) {
+            auto fs = limitFontSize(cfg.value(QStringLiteral("size")).toInt());
+
+            const QFont f(fontName, fs);
+
+            m_ui->m_codeFont->setCurrentFont(f);
+            m_ui->m_codeFontSize->setValue(fs);
         }
-
-        const QFont f(tFont.name(), fs);
-
-        m_ui->m_textFont->setCurrentFont(f);
-        m_ui->m_textFontSize->setValue(fs);
     }
 
-    const auto &cFont = cfg.codeFont();
+    cfg.endGroup();
 
-    if (!cFont.name().isEmpty()) {
-        auto fs = cFont.size();
+    const auto linkColor = cfg.value(QStringLiteral("linkColor"), QColor(33, 122, 255)).value<QColor>();
+    if (linkColor.isValid()) {
+        m_ui->m_linkColor->setColor(linkColor);
+    }
 
-        if (fs < 5) {
-            fs = 5;
+    const auto borderColor = cfg.value(QStringLiteral("borderColor"), QColor(81, 81, 81)).value<QColor>();
+    if (borderColor.isValid()) {
+        m_ui->m_borderColor->setColor(borderColor);
+    }
+
+    const auto codeTheme = cfg.value(QStringLiteral("codeTheme")).toString();
+    if (!codeTheme.isEmpty()) {
+        m_ui->m_codeTheme->setCurrentText(codeTheme);
+    }
+
+    const auto dpi = cfg.value(QStringLiteral("dpi")).toInt();
+    if (dpi > 0) {
+        m_ui->m_dpi->setValue(dpi);
+    }
+
+    const auto imageAlignment = cfg.value(QStringLiteral("imageAlignment")).toString();
+    if (!imageAlignment.isEmpty()) {
+        m_ui->m_imageAlignment->setCurrentIndex(imageAlignmentToInt(stringToImageAlignment(imageAlignment)));
+    }
+
+    cfg.beginGroup(QStringLiteral("margins"));
+
+    const auto units = cfg.value(QStringLiteral("units")).toString();
+    if (!units.isEmpty()) {
+        if (units == QStringLiteral("mm")) {
+            m_ui->m_mm->setChecked(true);
+        } else {
+            m_ui->m_pt->setChecked(true);
         }
-
-        if (fs > 14) {
-            fs = 14;
-        }
-
-        const QFont f(cFont.name(), fs);
-
-        m_ui->m_codeFont->setCurrentFont(f);
-        m_ui->m_codeFontSize->setValue(fs);
     }
 
-    if (!cfg.linkColor().isEmpty()) {
-        m_ui->m_linkColor->setColor(QColor(cfg.linkColor()));
+    const auto left = cfg.value(QStringLiteral("left")).toInt();
+    if (left >= 0) {
+        m_ui->m_left->setValue(left);
     }
 
-    if (!cfg.borderColor().isEmpty()) {
-        m_ui->m_borderColor->setColor(QColor(cfg.borderColor()));
+    const auto right = cfg.value(QStringLiteral("right")).toInt();
+    if (right >= 0) {
+        m_ui->m_right->setValue(right);
     }
 
-    if (!cfg.codeTheme().isEmpty()) {
-        m_ui->m_codeTheme->setCurrentText(cfg.codeTheme());
+    const auto bottom = cfg.value(QStringLiteral("bottom")).toInt();
+    if (bottom >= 0) {
+        m_ui->m_bottom->setValue(bottom);
     }
 
-    m_ui->m_dpi->setValue(cfg.dpiForImages());
-
-    const auto &m = cfg.margins();
-
-    if (m.units() == QStringLiteral("mm")) {
-        m_ui->m_mm->setChecked(true);
-    } else {
-        m_ui->m_pt->setChecked(true);
+    const auto top = cfg.value(QStringLiteral("top")).toInt();
+    if (top >= 0) {
+        m_ui->m_top->setValue(top);
     }
 
-    m_ui->m_left->setValue(m.left());
-    m_ui->m_right->setValue(m.right());
-    m_ui->m_top->setValue(m.top());
-    m_ui->m_bottom->setValue(m.bottom());
-    m_ui->m_imageAlignment->setCurrentIndex(imageAlignmentToInt(stringToImageAlignment(cfg.imageAlignment())));
+    cfg.endGroup();
+    cfg.endGroup();
 }
 
 void MainWidget::setMarkdownFile(const QString &fileName)
@@ -526,97 +561,50 @@ MainWindow::MainWindow()
     setCentralWidget(ui);
 }
 
-static const QString s_appCfgFileName = QStringLiteral("md-pdf-gui.cfg");
-static const QString s_appCfgFolderName = QStringLiteral("Markdown");
-
-QString MainWindow::configFileName(bool inPlace) const
-{
-    const auto folders = QStandardPaths::standardLocations(QStandardPaths::ConfigLocation);
-
-    if (!folders.isEmpty() && !inPlace) {
-        return folders.front() + QDir::separator() + s_appCfgFolderName + QDir::separator() + s_appCfgFileName;
-    } else {
-        return QApplication::applicationDirPath() + QDir::separator() + s_appCfgFileName;
-    }
-}
-
 void MainWindow::readCfg()
 {
-    auto fileName = configFileName(false);
+    QSettings s;
 
-    if (!QFileInfo::exists(fileName)) {
-        fileName = configFileName(true);
-    }
+    ui->applyCfg(s);
 
-    QFile file(fileName);
+    s.beginGroup(QStringLiteral("window"));
 
-    if (file.open(QIODevice::ReadOnly)) {
-        try {
-            tag_Cfg<cfgfile::qstring_trait_t> tag;
+    const auto width = s.value(QStringLiteral("width")).toInt();
+    const auto height = s.value(QStringLiteral("height")).toInt();
 
-            QTextStream stream(&file);
+    if (width > 0 && height > 0) {
+        resize(width, height);
 
-            cfgfile::read_cfgfile(tag, stream, s_appCfgFileName);
+        const auto x = s.value(QStringLiteral("x")).toInt();
+        const auto y = s.value(QStringLiteral("y")).toInt();
 
-            file.close();
+        windowHandle()->setX(x);
+        windowHandle()->setY(y);
 
-            const auto cfg = tag.get_cfg();
-
-            ui->applyCfg(cfg);
-
-            if (cfg.windowRect().width() != 0 && cfg.windowRect().height() != 0) {
-                resize(cfg.windowRect().width(), cfg.windowRect().height());
-                windowHandle()->setX(cfg.windowRect().x());
-                windowHandle()->setY(cfg.windowRect().y());
-
-                if (cfg.windowRect().isMaximized()) {
-                    showMaximized();
-                }
-            }
-        } catch (const cfgfile::exception_t<cfgfile::qstring_trait_t> &) {
-            file.close();
+        const auto maximized = s.value(QStringLiteral("maximized")).toBool();
+        if (maximized) {
+            showMaximized();
         }
     }
+
+    s.endGroup();
 }
 
 void MainWindow::saveCfg()
 {
-    auto fileName = configFileName(false);
+    QSettings s;
 
-    const QDir dir("./");
+    ui->saveCfg(s);
 
-    if (!dir.mkpath(QFileInfo(fileName).absolutePath())) {
-        fileName = configFileName(true);
-    }
+    s.beginGroup(QStringLiteral("window"));
 
-    QFile file(fileName);
+    s.setValue(QStringLiteral("width"), width());
+    s.setValue(QStringLiteral("height"), height());
+    s.setValue(QStringLiteral("x"), windowHandle()->x());
+    s.setValue(QStringLiteral("y"), windowHandle()->y());
+    s.setValue(QStringLiteral("maximized"), isMaximized());
 
-    if (file.open(QIODevice::WriteOnly)) {
-        try {
-            Cfg cfg;
-
-            ui->initCfg(cfg);
-
-            Rect r;
-            r.set_x(windowHandle()->x());
-            r.set_y(windowHandle()->y());
-            r.set_width(width());
-            r.set_height(height());
-            r.set_isMaximized(isMaximized());
-
-            cfg.set_windowRect(r);
-
-            tag_Cfg<cfgfile::qstring_trait_t> tag(cfg);
-
-            QTextStream stream(&file);
-
-            cfgfile::write_cfgfile(tag, stream);
-
-            file.close();
-        } catch (const cfgfile::exception_t<cfgfile::qstring_trait_t> &) {
-            file.close();
-        }
-    }
+    s.endGroup();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

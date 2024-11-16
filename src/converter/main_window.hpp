@@ -12,6 +12,7 @@
 #include <QScopedPointer>
 #include <QThread>
 #include <QWidget>
+#include <QSettings>
 
 // C++ include.
 #include <memory>
@@ -35,8 +36,8 @@ public:
     ~MainWidget() override;
 
     void setMarkdownFile(const QString &fileName);
-    void initCfg(Cfg &cfg) const;
-    void applyCfg(const Cfg &cfg);
+    void saveCfg(QSettings &cfg) const;
+    void applyCfg(QSettings &cfg);
 
 private slots:
     void changeLinkColor();

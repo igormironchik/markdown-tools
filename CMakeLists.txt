@@ -77,11 +77,8 @@ add_subdirectory( 3rdparty/MicroTeX )
 set( BUILD_MD4QT_QT_TESTS OFF CACHE INTERNAL "" FORCE )
 add_subdirectory( 3rdparty/md4qt )
 
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/args-parser
-	${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/cfgfile
-	${md4qt_INCLUDE_DIRECTORIES} )
+include_directories( ${md4qt_INCLUDE_DIRECTORIES} )
 
-add_subdirectory( 3rdparty/cfgfile/generator )
 set( _DISABLE_INSTALLATION FALSE )
 
 install( TARGETS podofo_shared )

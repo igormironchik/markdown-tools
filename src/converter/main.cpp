@@ -22,6 +22,9 @@ using namespace MdPdf;
 int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
+    app.setOrganizationName(QStringLiteral("Igor Mironchik"));
+    app.setOrganizationDomain(QStringLiteral("github.com/igormironchik"));
+    app.setApplicationName(QStringLiteral("Markdown Converter"));
 
     QCommandLineParser parser;
     parser.setApplicationDescription(QStringLiteral("Markdown converter to PDF."));

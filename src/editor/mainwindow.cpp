@@ -5,7 +5,6 @@
 
 // md-editor include.
 #include "mainwindow.hpp"
-#include "cfg.hpp"
 #include "colorsdlg.hpp"
 #include "editor.hpp"
 #include "find.hpp"
@@ -54,15 +53,13 @@
 #include <QWebChannel>
 #include <QWidget>
 #include <QWindow>
+#include <QSettings>
 
 // md4qt include.
 #define MD4QT_QT_SUPPORT
 #include <md4qt/algo.h>
 #include <md4qt/html.h>
 #include <md4qt/parser.h>
-
-// cfgfile include.
-#include <cfgfile/all.hpp>
 
 // shared include.
 #include "license_dialog.hpp"
@@ -1165,161 +1162,149 @@ void MainWindow::onChooseFont()
     }
 }
 
-static const QString s_appCfgFileName = QStringLiteral("md-editor.cfg");
-static const QString s_appCfgFolderName = QStringLiteral("Markdown");
-
-QString MainWindow::configFileName(bool inPlace) const
-{
-    const auto folders = QStandardPaths::standardLocations(QStandardPaths::ConfigLocation);
-
-    if (!folders.isEmpty() && !inPlace) {
-        return folders.front() + QDir::separator() + s_appCfgFolderName + QDir::separator() + s_appCfgFileName;
-    } else {
-        return QApplication::applicationDirPath() + QDir::separator() + s_appCfgFileName;
-    }
-}
-
 void MainWindow::saveCfg() const
 {
-    auto fileName = configFileName(false);
+    const auto f = m_d->m_editor->font();
 
-    const QDir dir("./");
+    QSettings s;
 
-    if (!dir.mkpath(QFileInfo(fileName).absolutePath())) {
-        fileName = configFileName(true);
-    }
+    s.beginGroup(QStringLiteral("ui"));
 
-    QFile file(fileName);
+    s.beginGroup(QStringLiteral("font"));
+    s.setValue(QStringLiteral("family"), f.family());
+    s.setValue(QStringLiteral("size"), f.pointSize());
+    s.endGroup();
 
-    if (file.open(QIODevice::WriteOnly)) {
-        try {
-            const auto f = m_d->m_editor->font();
+    s.setValue(QStringLiteral("linkColor"), m_d->m_mdColors.m_linkColor);
+    s.setValue(QStringLiteral("textColor"), m_d->m_mdColors.m_textColor);
+    s.setValue(QStringLiteral("inlineColor"), m_d->m_mdColors.m_inlineColor);
+    s.setValue(QStringLiteral("htmlColor"), m_d->m_mdColors.m_htmlColor);
+    s.setValue(QStringLiteral("tableColor"), m_d->m_mdColors.m_tableColor);
+    s.setValue(QStringLiteral("codeColor"), m_d->m_mdColors.m_codeColor);
+    s.setValue(QStringLiteral("mathColor"), m_d->m_mdColors.m_mathColor);
+    s.setValue(QStringLiteral("referenceColor"), m_d->m_mdColors.m_referenceColor);
+    s.setValue(QStringLiteral("specialColor"), m_d->m_mdColors.m_specialColor);
+    s.setValue(QStringLiteral("enableMargin"), m_d->m_editor->margins().m_enable);
+    s.setValue(QStringLiteral("margin"), m_d->m_editor->margins().m_length);
+    s.setValue(QStringLiteral("enableColors"), m_d->m_mdColors.m_enabled);
+    s.setValue(QStringLiteral("sidebarWidth"), m_d->m_tabWidth);
+    s.endGroup();
 
-            Cfg cfg;
-            cfg.set_font(f.family());
-            cfg.set_fontSize(f.pointSize());
-            cfg.set_useColors(m_d->m_mdColors.m_enabled);
-            cfg.set_linkColor(m_d->m_mdColors.m_linkColor.name(QColor::HexRgb));
-            cfg.set_textColor(m_d->m_mdColors.m_textColor.name(QColor::HexRgb));
-            cfg.set_inlineColor(m_d->m_mdColors.m_inlineColor.name(QColor::HexRgb));
-            cfg.set_htmlColor(m_d->m_mdColors.m_htmlColor.name(QColor::HexRgb));
-            cfg.set_tableColor(m_d->m_mdColors.m_tableColor.name(QColor::HexRgb));
-            cfg.set_codeColor(m_d->m_mdColors.m_codeColor.name(QColor::HexRgb));
-            cfg.set_mathColor(m_d->m_mdColors.m_mathColor.name(QColor::HexRgb));
-            cfg.set_referenceColor(m_d->m_mdColors.m_referenceColor.name(QColor::HexRgb));
-            cfg.set_specialColor(m_d->m_mdColors.m_specialColor.name(QColor::HexRgb));
-            cfg.set_enableRightMargin(m_d->m_editor->margins().m_enable);
-            cfg.set_rightMargin(m_d->m_editor->margins().m_length);
+    s.beginGroup(QStringLiteral("window"));
 
-            Rect r;
-            r.set_x(windowHandle()->x());
-            r.set_y(windowHandle()->y());
-            r.set_width(width());
-            r.set_height(height());
-            r.set_isMaximized(isMaximized());
+    s.setValue(QStringLiteral("width"), width());
+    s.setValue(QStringLiteral("height"), height());
+    s.setValue(QStringLiteral("x"), windowHandle()->x());
+    s.setValue(QStringLiteral("y"), windowHandle()->y());
+    s.setValue(QStringLiteral("maximized"), isMaximized());
 
-            cfg.set_windowRect(r);
-            cfg.set_sidebarWidth(m_d->m_tabWidth);
-
-            tag_Cfg<cfgfile::qstring_trait_t> tag(cfg);
-
-            QTextStream stream(&file);
-
-            cfgfile::write_cfgfile(tag, stream);
-
-            file.close();
-        } catch (const cfgfile::exception_t<cfgfile::qstring_trait_t> &) {
-            file.close();
-        }
-    }
+    s.endGroup();
 }
 
 void MainWindow::readCfg()
 {
-    auto fileName = configFileName(false);
+    QSettings s;
 
-    if (!QFileInfo::exists(fileName)) {
-        fileName = configFileName(true);
-    }
+    s.beginGroup(QStringLiteral("ui"));
 
-    QFile file(fileName);
+    s.beginGroup(QStringLiteral("font"));
 
-    if (file.open(QIODevice::ReadOnly)) {
-        try {
-            tag_Cfg<cfgfile::qstring_trait_t> tag;
+    {
+        const auto fontName = s.value(QStringLiteral("family")).toString();
 
-            QTextStream stream(&file);
+        if (!fontName.isEmpty()) {
+            auto fs = s.value(QStringLiteral("size")).toInt();
 
-            cfgfile::read_cfgfile(tag, stream, s_appCfgFileName);
+            const QFont f(fontName, fs);
 
-            file.close();
-
-            const auto cfg = tag.get_cfg();
-
-            if (!cfg.font().isEmpty() && cfg.fontSize() != -1) {
-                const QFont f(cfg.font(), cfg.fontSize());
-
-                m_d->m_editor->applyFont(f);
-            }
-
-            if (!cfg.linkColor().isEmpty()) {
-                m_d->m_mdColors.m_linkColor = QColor(cfg.linkColor());
-            }
-
-            if (!cfg.textColor().isEmpty()) {
-                m_d->m_mdColors.m_textColor = QColor(cfg.textColor());
-            }
-
-            if (!cfg.inlineColor().isEmpty()) {
-                m_d->m_mdColors.m_inlineColor = QColor(cfg.inlineColor());
-            }
-
-            if (!cfg.htmlColor().isEmpty()) {
-                m_d->m_mdColors.m_htmlColor = QColor(cfg.htmlColor());
-            }
-
-            if (!cfg.tableColor().isEmpty()) {
-                m_d->m_mdColors.m_tableColor = QColor(cfg.tableColor());
-            }
-
-            if (!cfg.codeColor().isEmpty()) {
-                m_d->m_mdColors.m_codeColor = QColor(cfg.codeColor());
-            }
-
-            if (!cfg.mathColor().isEmpty()) {
-                m_d->m_mdColors.m_mathColor = QColor(cfg.mathColor());
-            }
-
-            if (!cfg.referenceColor().isEmpty()) {
-                m_d->m_mdColors.m_referenceColor = QColor(cfg.referenceColor());
-            }
-
-            if (!cfg.specialColor().isEmpty()) {
-                m_d->m_mdColors.m_specialColor = QColor(cfg.specialColor());
-            }
-
-            m_d->m_editor->margins().m_enable = cfg.enableRightMargin();
-            m_d->m_editor->margins().m_length = cfg.rightMargin();
-
-            m_d->m_mdColors.m_enabled = cfg.useColors();
-
-            if (cfg.windowRect().width() != 0 && cfg.windowRect().height() != 0) {
-                resize(cfg.windowRect().width(), cfg.windowRect().height());
-                windowHandle()->setX(cfg.windowRect().x());
-                windowHandle()->setY(cfg.windowRect().y());
-
-                if (cfg.windowRect().isMaximized()) {
-                    showMaximized();
-                }
-            }
-
-            if (cfg.sidebarWidth() != -1) {
-                m_d->m_tabWidth = cfg.sidebarWidth();
-            }
-        } catch (const cfgfile::exception_t<cfgfile::qstring_trait_t> &) {
-            file.close();
+            m_d->m_editor->applyFont(f);
         }
     }
+
+    s.endGroup();
+
+    const auto linkColor = s.value(QStringLiteral("linkColor"), m_d->m_mdColors.m_linkColor).value<QColor>();
+    if (linkColor.isValid()) {
+        m_d->m_mdColors.m_linkColor = linkColor;
+    }
+
+    const auto textColor = s.value(QStringLiteral("textColor"), m_d->m_mdColors.m_textColor).value<QColor>();
+    if (textColor.isValid()) {
+        m_d->m_mdColors.m_textColor = textColor;
+    }
+
+    const auto inlineColor = s.value(QStringLiteral("inlineColor"), m_d->m_mdColors.m_inlineColor).value<QColor>();
+    if (inlineColor.isValid()) {
+        m_d->m_mdColors.m_inlineColor = inlineColor;
+    }
+
+    const auto htmlColor = s.value(QStringLiteral("htmlColor"), m_d->m_mdColors.m_htmlColor).value<QColor>();
+    if (htmlColor.isValid()) {
+        m_d->m_mdColors.m_htmlColor = htmlColor;
+    }
+
+    const auto tableColor = s.value(QStringLiteral("tableColor"), m_d->m_mdColors.m_tableColor).value<QColor>();
+    if (tableColor.isValid()) {
+        m_d->m_mdColors.m_tableColor = tableColor;
+    }
+
+    const auto codeColor = s.value(QStringLiteral("codeColor"), m_d->m_mdColors.m_codeColor).value<QColor>();
+    if (codeColor.isValid()) {
+        m_d->m_mdColors.m_codeColor = codeColor;
+    }
+
+    const auto mathColor = s.value(QStringLiteral("mathColor"), m_d->m_mdColors.m_mathColor).value<QColor>();
+    if (mathColor.isValid()) {
+        m_d->m_mdColors.m_mathColor = mathColor;
+    }
+
+    const auto refColor = s.value(QStringLiteral("referenceColor"), m_d->m_mdColors.m_referenceColor).value<QColor>();
+    if (refColor.isValid()) {
+        m_d->m_mdColors.m_referenceColor = refColor;
+    }
+
+    const auto specialColor = s.value(QStringLiteral("specialColor"), m_d->m_mdColors.m_specialColor).value<QColor>();
+    if (specialColor.isValid()) {
+        m_d->m_mdColors.m_specialColor = specialColor;
+    }
+
+    const auto enableMargin = s.value(QStringLiteral("enableMargin")).toBool();
+    m_d->m_editor->margins().m_enable = enableMargin;
+
+    const auto margin = s.value(QStringLiteral("margin")).toInt();
+    m_d->m_editor->margins().m_length = margin;
+
+    const auto enableColors = s.value(QStringLiteral("enableColors")).toBool();
+    m_d->m_mdColors.m_enabled = enableColors;
+
+    const auto sidebarWidth = s.value(QStringLiteral("sidebarWidth")).toInt();
+    if (sidebarWidth > 0) {
+        m_d->m_tabWidth = sidebarWidth;
+    }
+
+    s.endGroup();
+
+    s.beginGroup(QStringLiteral("window"));
+
+    const auto width = s.value(QStringLiteral("width")).toInt();
+    const auto height = s.value(QStringLiteral("height")).toInt();
+
+    if (width > 0 && height > 0) {
+        resize(width, height);
+
+        const auto x = s.value(QStringLiteral("x")).toInt();
+        const auto y = s.value(QStringLiteral("y")).toInt();
+
+        windowHandle()->setX(x);
+        windowHandle()->setY(y);
+
+        const auto maximized = s.value(QStringLiteral("maximized")).toBool();
+        if (maximized) {
+            showMaximized();
+        }
+    }
+
+    s.endGroup();
 }
 
 void MainWindow::onLessFontSize()

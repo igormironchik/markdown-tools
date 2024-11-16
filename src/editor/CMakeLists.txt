@@ -37,8 +37,6 @@ set( LIB_SRC
 	colorsdlg.ui
 	syntaxvisitor.cpp
 	syntaxvisitor.hpp
-	cfg.cfgconf
-	${CMAKE_CURRENT_BINARY_DIR}/cfg.hpp
 	closebutton.hpp
 	closebutton.cpp
 	toc.hpp
@@ -63,21 +61,10 @@ if( WIN32 )
 	list( APPEND SRC md-editor.rc )
 endif()
 
-add_custom_command( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/cfg.hpp
-	PRE_BUILD
-	COMMAND ${CFGFILE_GENERATOR} -i cfg.cfgconf -o ${CMAKE_CURRENT_BINARY_DIR}/cfg.hpp
-	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-)
-
 configure_file( version.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/version.hpp )
-
-set_property( SOURCE ${CMAKE_CURRENT_BINARY_DIR}/cfg.hpp PROPERTY SKIP_AUTOGEN ON )
-
-add_definitions( -DCFGFILE_QT_SUPPORT )
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}
 	${md4qt_INCLUDE_DIRECTORIES}
-	${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/cfgfile
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/widgets/include
 	${CMAKE_CURRENT_SOURCE_DIR}/../shared )
@@ -89,7 +76,5 @@ target_link_libraries( md-editor-lib markdown-widgets Qt6::WebEngineWidgets Qt6:
 add_executable( md-editor WIN32 ${SRC} )
 
 install( TARGETS md-editor )
-
-add_dependencies( md-editor-lib cfgfile.generator )
 
 target_link_libraries( md-editor md-editor-lib markdown-widgets Qt6::WebEngineWidgets Qt6::Widgets Qt6::Core )

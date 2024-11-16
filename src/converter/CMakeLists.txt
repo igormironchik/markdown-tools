@@ -34,9 +34,7 @@ set( GUI_SRC main.cpp
 	progress.hpp
 	progress.cpp
 	progress.ui
-	const.hpp
-	cfg.cfgconf
-	${CMAKE_CURRENT_BINARY_DIR}/cfg.hpp )
+	const.hpp )
 	
 qt6_add_resources( GUI_SRC resources.qrc )
 qt6_add_resources(GUI_SRC ../../3rdparty/MicroTeX/latex.qrc)
@@ -58,15 +56,9 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR}
 link_directories( ${CMAKE_CURRENT_BINARY_DIR}/../../3rdparty/podofo/src/podofo
 	${CMAKE_CURRENT_BINARY_DIR}/../../3rdparty/podofo/src )
 
-add_custom_command( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/cfg.hpp
-	PRE_BUILD
-	COMMAND ${CFGFILE_GENERATOR} -i cfg.cfgconf -o ${CMAKE_CURRENT_BINARY_DIR}/cfg.hpp
-	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-)
-
 configure_file( version.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/version.hpp )
 
-add_definitions( -DCFGFILE_QT_SUPPORT -DBUILD_QT)
+add_definitions(-DBUILD_QT)
 
 add_library( syntax STATIC ${LIB_SYNTAX_SRC} )
 
@@ -77,8 +69,6 @@ add_executable( md-pdf-gui WIN32 ${GUI_SRC} )
 add_executable( md-launcher launcher.cpp )
 
 target_link_libraries( md-launcher Qt6::Core OpenSSL::SSL )
-
-add_dependencies( md-pdf-gui cfgfile.generator )
 
 install( TARGETS md-pdf-gui )
 install( TARGETS md-launcher )
