@@ -17,11 +17,15 @@ FORWARD_DECLARE_FREETYPE();
 
 namespace PoDoFo {
 
-class PdfFontMetrics;
-
-/** Convenience typedef for a const PdfEncoding shared ptr
- */
-using PdfFontMetricsConstPtr = std::shared_ptr<const PdfFontMetrics>;
+class PODOFO_API FreeTypeFacePtr final : public std::shared_ptr<FT_FaceRec_>
+{
+public:
+    FreeTypeFacePtr();
+    FreeTypeFacePtr(FT_Face face);
+    FreeTypeFacePtr(const FreeTypeFacePtr&) = default;
+    FreeTypeFacePtr& operator=(const FreeTypeFacePtr&) = default;
+    void reset(FT_Face face = nullptr);
+};
 
 /**
  * This abstract class provides access to font metrics information.
@@ -33,18 +37,13 @@ class PODOFO_API PdfFontMetrics
 {
     friend class PdfFont;
     friend class PdfFontManager;
-    friend class PdfFontMetricsBase;
     friend class PdfFontMetricsFreetype;
 
-private:
+protected:
     PdfFontMetrics();
 
 public:
     virtual ~PdfFontMetrics();
-
-    static std::unique_ptr<const PdfFontMetrics> Create(const std::string_view& filepath, unsigned faceIndex = 0);
-
-    static std::unique_ptr<const PdfFontMetrics> CreateFromBuffer(const bufferview& buffer, unsigned faceIndex = 0);
 
     virtual unsigned GetGlyphCount() const = 0;
 
@@ -57,10 +56,10 @@ public:
     virtual bool TryGetGlyphWidth(unsigned gid, double& width) const = 0;
 
     /**
-     * Some fonts provides a glyph substitution list, eg. for ligatures.
+     * Some fonts provides a glyph subsitution list, eg. for ligatures.
      * OpenType fonts for example provides GSUB "Glyph Substitution Table"
-     * \param gids gids to be substituted
-     * \param backwardMap list of gid counts to remap back substituted gids
+     * \param gids gids to be substituded
+     * \param backwardMap list of gid counts to remap back substituded gids
      *     eg. { 32, 102, 105 } gets substituted in { 32, 174 }
      *     the backward map is { 1, 2 }
      */
@@ -73,7 +72,7 @@ public:
     virtual bool HasUnicodeMapping() const = 0;
 
     /** Try to retrieve the mapped gid from Unicode code point
-     * \remarks don't use this method directly unless you know
+     * \remarks dont' use this method directly unless you know
      * what you're doing: use PdfFont::TryGetGID instead
      */
     virtual bool TryGetGID(char32_t codePoint, unsigned& gid) const = 0;
@@ -118,6 +117,13 @@ public:
      * \returns a binary buffer of data containing the font data
      */
     bufferview GetOrLoadFontFileData() const;
+
+    /** Get direct access to the internal FreeType handle
+     *
+     *  \returns the internal freetype handle
+     */
+    bool TryGetOrLoadFace(FT_Face& face) const;
+    FT_Face GetOrLoadFace() const;
 
     /** Get the actual font file object from a /FontFile like key, if available
      *
@@ -193,7 +199,7 @@ public:
     virtual void GetBoundingBox(std::vector<double>& bbox) const = 0;
 
     /** Get the italic angle of this font.
-     *  Used to build the font dictionary
+     *  Used to build the font dictionay
      *  \returns the italic angle of this font.
      */
     virtual double GetItalicAngle() const = 0;
@@ -265,8 +271,6 @@ public:
      */
     PdfFontStyle GetStyle() const;
 
-    virtual bool IsObjectLoaded() const;
-
     bool IsStandard14FontMetrics() const;
 
     virtual bool IsStandard14FontMetrics(PdfStandard14FontType& std14Font) const;
@@ -298,9 +302,9 @@ public:
     /** Create a best effort /ToUnicode map based on the
      * character unicode maps of the font
      *
-     * This is implemented just for PdfFontMetricsFreetype
+     * Thi is implemented just for PdfFontMetricsFreetype
      * This map may be unreliable because of ligatures,
-     * other kind of character substitutions, or glyphs
+     * other kind of character subsitutions, or glyphs
      * mapping to multiple unicode codepoints.
      */
     virtual std::unique_ptr<PdfCMapEncoding> CreateToUnicodeMap(const PdfEncodingLimits& limitHints) const;
@@ -321,11 +325,14 @@ protected:
     virtual bool getIsBoldHint() const = 0;
     virtual bool getIsItalicHint() const = 0;
     virtual const datahandle& GetFontFileDataHandle() const = 0;
-    virtual FT_Face GetFaceHandle() const = 0;
+    virtual const FreeTypeFacePtr& GetFaceHandle() const = 0;
+
+private:
+    void SetFilePath(std::string&& filepath, unsigned faceIndex);
 
 private:
     void initBaseFontNameSafe();
-    static PdfEncodingMapConstPtr getFontType1ImplicitEncoding(FT_Face face);
+    static PdfEncodingMapConstPtr getFontType1Encoding(FT_Face face);
 
 private:
     PdfFontMetrics(const PdfFontMetrics& rhs) = delete;
@@ -340,28 +347,24 @@ private:
 
 class PODOFO_API PdfFontMetricsBase : public PdfFontMetrics
 {
-    friend class PdfFontMetricsStandard14;
-    friend class PdfFontMetricsObject;
-
-private:
+protected:
     PdfFontMetricsBase();
-
-public:
-    ~PdfFontMetricsBase();
 
 protected:
     const datahandle& GetFontFileDataHandle() const override final;
-    FT_Face GetFaceHandle() const override final;
+    const FreeTypeFacePtr& GetFaceHandle() const override final;
     virtual datahandle getFontFileDataHandle() const = 0;
 
 private:
     bool m_dataInit;
     datahandle m_Data;
     bool m_faceInit;
-    FT_Face m_Face;
+    FreeTypeFacePtr m_Face;
 };
 
-
+/** Convenience typedef for a const PdfEncoding shared ptr
+ */
+using PdfFontMetricsConstPtr = std::shared_ptr<const PdfFontMetrics> ;
 
 };
 

@@ -442,48 +442,48 @@ void PoDoFo::WriteOperator_Do(PdfStringStream& stream, const string_view& xobjna
     stream << '/' << xobjname << " Do\n";
 }
 
-void PoDoFo::WriteOperator_cs(PdfStringStream& stream, PdfColorSpaceType colorSpace)
+void PoDoFo::WriteOperator_cs(PdfStringStream& stream, PdfColorSpace colorSpace)
 {
-    stream << '/' << PoDoFo::ToString(colorSpace) << " cs\n";
+    stream << PoDoFo::ColorSpaceToNameRaw(colorSpace) << " cs\n";
 }
 
 void PoDoFo::WriteOperator_cs(PdfStringStream& stream, const string_view& name)
 {
-    stream << '/' << name << " cs\n";
+    stream << name << " cs\n";
 }
 
-void PoDoFo::WriteOperator_CS(PdfStringStream& stream, PdfColorSpaceType colorSpace)
+void PoDoFo::WriteOperator_CS(PdfStringStream& stream, PdfColorSpace colorSpace)
 {
-    stream << '/' << PoDoFo::ToString(colorSpace) << " CS\n";
+    stream << PoDoFo::ColorSpaceToNameRaw(colorSpace) << " CS\n";
 }
 
 void PoDoFo::WriteOperator_CS(PdfStringStream& stream, const string_view& name)
 {
-    stream << '/' << name << " CS\n";
+    stream << name << " CS\n";
 }
 
 void PoDoFo::WriteOperator_sc(PdfStringStream& stream, const cspan<double>& components)
 {
     writeColorComponents(stream, components);
-    stream << "sc\n";
+    stream << " sc\n";
 }
 
 void PoDoFo::WriteOperator_SC(PdfStringStream& stream, const cspan<double>& components)
 {
     writeColorComponents(stream, components);
-    stream << "SC\n";
+    stream << " SC\n";
 }
 
 void PoDoFo::WriteOperator_scn(PdfStringStream& stream, const cspan<double>& components)
 {
     writeColorComponents(stream, components);
-    stream << "scn\n";
+    stream << " scn\n";
 }
 
 void PoDoFo::WriteOperator_SCN(PdfStringStream& stream, const cspan<double>& components)
 {
     writeColorComponents(stream, components);
-    stream << "SCN\n";
+    stream << " SCN\n";
 }
 
 void PoDoFo::WriteOperator_scn(PdfStringStream& stream, const cspan<double>& components, const string_view& patternName)
@@ -548,7 +548,7 @@ void PoDoFo::WriteOperator_EX(PdfStringStream& stream)
     stream << "EX\n";
 }
 
-void PoDoFo::WriteOperator_Extension(PdfStringStream& stream, const string_view& opName, const cspan<PdfVariant>& operands)
+void PoDoFo::WriteOperator_Extension(PdfStringStream& stream, const string_view& opName, const cspan<PdfObject>& operands)
 {
     charbuff buffer;
     for (unsigned i = 0; i < operands.size(); i++)
@@ -561,7 +561,7 @@ void PoDoFo::WriteOperator_Extension(PdfStringStream& stream, const string_view&
 }
 
 /*
- * Converts a rectangle to an array of points which can be used
+ * Coverts a rectangle to an array of points which can be used
  * to draw an ellipse using 4 bezier curves.
  *
  * The arrays plPointX and plPointY need space for at least 12 longs

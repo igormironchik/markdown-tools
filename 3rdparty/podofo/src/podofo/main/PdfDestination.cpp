@@ -9,6 +9,9 @@
 #include "PdfDictionary.h"
 #include "PdfAction.h"
 #include "PdfMemDocument.h"
+#include "PdfNameTree.h"
+#include "PdfPage.h"
+#include "PdfPageCollection.h"
 
 using namespace std;
 using namespace PoDoFo;
@@ -23,51 +26,55 @@ PdfDestination::PdfDestination(PdfObject& obj) :
 {
 }
 
-void PdfDestination::SetDestination(const PdfPage& page, PdfDestinationFit fit)
+PdfDestination::PdfDestination(const PdfPage& page, PdfDestinationFit fit)
+    : PdfDestination(page.GetDocument())
 {
     PdfName type;
     if (fit == PdfDestinationFit::Fit)
-        type = "Fit"_n;
+        type = PdfName("Fit");
     else if (fit == PdfDestinationFit::FitB)
-        type = "FitB"_n;
+        type = PdfName("FitB");
 
     auto& arr = GetArray();
     arr.Add(page.GetObject().GetIndirectReference());
     arr.Add(type);
 }
 
-void PdfDestination::SetDestination(const PdfPage& page, const Rect& rect)
+PdfDestination::PdfDestination(const PdfPage& page, const Rect& rect)
+    : PdfDestination(page.GetDocument())
 {
     PdfArray rectArr;
     rect.ToArray(rectArr);
 
     auto& arr = GetArray();
     arr.Add(page.GetObject().GetIndirectReference());
-    arr.Add("FitR"_n);
+    arr.Add(PdfName("FitR"));
     arr.insert(arr.end(), rectArr.begin(), rectArr.end());
 }
 
-void PdfDestination::SetDestination(const PdfPage& page, double left, double top, double zoom)
+PdfDestination::PdfDestination(const PdfPage& page, double left, double top, double zoom)
+    : PdfDestination(page.GetDocument())
 {
     auto& arr = GetArray();
     arr.Add(page.GetObject().GetIndirectReference());
-    arr.Add("XYZ"_n);
+    arr.Add(PdfName("XYZ"));
     arr.Add(left);
     arr.Add(top);
     arr.Add(zoom);
 }
 
-void PdfDestination::SetDestination(const PdfPage& page, PdfDestinationFit fit, double value)
+PdfDestination::PdfDestination(const PdfPage& page, PdfDestinationFit fit, double value)
+    : PdfDestination(page.GetDocument())
 {
     PdfName type;
     if (fit == PdfDestinationFit::FitH)
-        type = "FitH"_n;
+        type = PdfName("FitH");
     else if (fit == PdfDestinationFit::FitV)
-        type = "FitV"_n;
+        type = PdfName("FitV");
     else if (fit == PdfDestinationFit::FitBH)
-        type = "FitBH"_n;
+        type = PdfName("FitBH");
     else if (fit == PdfDestinationFit::FitBV)
-        type = "FitBV"_n;
+        type = PdfName("FitBV");
     else
         PODOFO_RAISE_ERROR(PdfErrorCode::InvalidKey);
 
@@ -77,23 +84,22 @@ void PdfDestination::SetDestination(const PdfPage& page, PdfDestinationFit fit, 
     arr.Add(value);
 }
 
-bool PdfDestination::TryCreateFromObject(PdfObject& obj, unique_ptr<PdfDestination>& dest)
+unique_ptr<PdfDestination> PdfDestination::Create(PdfObject& obj)
 {
     auto& doc = obj.MustGetDocument();
+    PdfObject* value = nullptr;
+
     if (obj.GetDataType() == PdfDataType::Array)
     {
-        dest.reset(new PdfDestination(obj));
-        return true;
+        return std::make_unique<PdfDestination>(obj);
     }
-
-    PdfObject* value = nullptr;
-    if (obj.GetDataType() == PdfDataType::String)
+    else if (obj.GetDataType() == PdfDataType::String)
     {
         auto names = doc.GetNames();
         if (names == nullptr)
-            PODOFO_RAISE_ERROR(PdfErrorCode::InvalidHandle);
+            PODOFO_RAISE_ERROR(PdfErrorCode::NoObject);
 
-        value = names->GetValue(PdfKnownNameTree::Dests, obj.GetString());
+        value = names->GetValue("Dests", obj.GetString());
     }
     else if (obj.GetDataType() == PdfDataType::Name)
     {
@@ -113,33 +119,42 @@ bool PdfDestination::TryCreateFromObject(PdfObject& obj, unique_ptr<PdfDestinati
         }
         value = dests->GetDictionary().FindKey(obj.GetName());
     }
+    else
+    {
+        PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidDataType, "Unsupported object given to "
+            "PdfDestination::Init of type {}", obj.GetDataTypeString());
+    }
 
     if (value == nullptr)
-        goto Exit;
+        PODOFO_RAISE_ERROR(PdfErrorCode::InvalidName);
 
     if (value->IsArray())
     {
-        dest.reset(new PdfDestination(*value));
-        return true;
+        return std::make_unique<PdfDestination>(*value);
     }
     else if (value->IsDictionary())
     {
-        dest.reset(new PdfDestination(value->GetDictionary().MustFindKey("D")));
-        return true;
+        return std::make_unique<PdfDestination>(value->GetDictionary().MustFindKey("D"));
     }
-
-Exit:
-    dest.reset();
-    return false;
+    else
+    {
+        PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidDataType, "Unsupported object given to "
+            "PdfDestination::Init of type {}", value->GetDataTypeString());
+    }
 }
 
 void PdfDestination::AddToDictionary(PdfDictionary& dictionary) const
 {
+    // Do not add empty destinations
     if (GetArray().size() == 0)
-        // Do not add empty destinations
-        dictionary.RemoveKey("Dest");
-    else
-        dictionary.AddKey("Dest"_n, GetObject());
+        return;
+
+    // since we can only have EITHER a Dest OR an Action
+    // we check for an Action, and if already present, we throw
+    if (dictionary.HasKey("A"))
+        PODOFO_RAISE_ERROR(PdfErrorCode::ActionAlreadyPresent);
+
+    dictionary.AddKey("Dest", GetObject());
 }
 
 PdfPage* PdfDestination::GetPage()
@@ -149,7 +164,7 @@ PdfPage* PdfDestination::GetPage()
         return nullptr;
 
     // first entry in the array is the page - so just make a new page from it!
-    return &GetDocument().GetPages().GetPage(arr[0].GetReference());
+    return &GetObject().GetDocument()->GetPages().GetPage(arr[0].GetReference());
 }
 
 PdfDestinationType PdfDestination::GetType() const

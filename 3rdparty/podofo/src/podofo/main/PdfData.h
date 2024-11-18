@@ -9,7 +9,7 @@
 
 #include "PdfDeclarations.h"
 
-#include "PdfBaseDataTypes.h"
+#include "PdfDataProvider.h"
 
 namespace PoDoFo {
 
@@ -19,7 +19,7 @@ namespace PoDoFo {
  *  written to the PDF file using this class is valid data
  *  for a PDF file!
  */
-class PODOFO_API PdfData final : public PdfDataProvider<PdfData>
+class PODOFO_API PdfData final : public PdfDataProvider
 {
 public:
     PdfData();
@@ -51,7 +51,7 @@ public:
     explicit PdfData(const bufferview& data, const std::shared_ptr<size_t>& writeBeacon = { });
 
     void Write(OutputStream& stream, PdfWriteFlags writeMode,
-        const PdfStatefulEncrypt* encrypt, charbuff& buffer) const;
+        const PdfStatefulEncrypt& encrypt, charbuff& buffer) const override;
 
     PdfData& operator=(const PdfData& rhs) = default;
     PdfData& operator=(PdfData&& rhs) = default;

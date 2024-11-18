@@ -13,23 +13,35 @@ using namespace std;
 using namespace PoDoFo;
 
 PdfReference::PdfReference()
-    : PdfDataMember(PdfDataType::Reference), m_GenerationNo(0), m_ObjectNo(0)
+    : m_ObjectNo(0), m_GenerationNo(0)
 {
 }
 
 PdfReference::PdfReference(const uint32_t objectNo, const uint16_t generationNo)
-    : PdfDataMember(PdfDataType::Reference), m_GenerationNo(generationNo), m_ObjectNo(objectNo)
+    : m_ObjectNo(objectNo), m_GenerationNo(generationNo)
 {
 }
 
-void PdfReference::Write(OutputStream& device, PdfWriteFlags flags, const PdfStatefulEncrypt* encrypt, charbuff& buffer) const
+void PdfReference::Write(OutputStream& device, PdfWriteFlags writeMode, charbuff& buffer) const
 {
-    (void)encrypt;
-    if ((flags & PdfWriteFlags::NoInlineLiteral) == PdfWriteFlags::None)
+    if ((writeMode & PdfWriteFlags::NoInlineLiteral) == PdfWriteFlags::None)
         device.Write(' '); // Write space before the reference
 
     utls::FormatTo(buffer, "{} {} R", m_ObjectNo, m_GenerationNo);
     device.Write(buffer);
+}
+
+string PdfReference::ToString() const
+{
+    string ret;
+    ToString(ret);
+    return ret;
+}
+
+void PdfReference::ToString(string& str) const
+{
+    str.clear();
+    utls::FormatTo(str, "{} {} R", m_ObjectNo, m_GenerationNo);
 }
 
 bool PdfReference::operator<(const PdfReference& rhs) const

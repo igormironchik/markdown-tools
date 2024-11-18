@@ -6,6 +6,7 @@
 #include "PdfDeclarationsPrivate.h"
 
 #include <regex>
+#include <podofo/private/charconv_compat.h>
 #include <podofo/private/utfcpp_extensions.h>
 
 #include <podofo/auxiliary/InputStream.h>
@@ -22,8 +23,6 @@
 #include <strings.h>
 #endif
 
-#include <podofo/main/PdfCommon.h>
-
 using namespace std;
 using namespace PoDoFo;
 
@@ -38,32 +37,28 @@ extern PODOFO_IMPORT unsigned s_MaxRecursionDepth;
 extern PODOFO_IMPORT LogMessageCallback s_LogMessageCallback;
 
 static char getEscapedCharacter(char ch);
-static void removeTrailingZeroes(string& str, size_t len);
+static void removeTrailingZeroes(string& str);
 static bool isStringDelimter(char32_t ch);
 static string extractFontHints(const std::string_view& fontName,
     bool trimSubsetPrefix, bool& isItalic, bool& isBold);
 static bool trimSuffix(string& name, const string_view& suffix);
-static double modulo(double a, double b);
-
-// Picked as the minimum size for small string optimizations withing GCC, MSVC, Clang
-constexpr unsigned FloatFormatDefaultSize = 15;
 
 struct VersionIdentity
 {
-    PdfName Name;
+    string_view Name;
     PdfVersion Version;
 };
 
 static VersionIdentity s_PdfVersions[] = {
-    { "1.0"_n, PdfVersion::V1_0 },
-    { "1.1"_n, PdfVersion::V1_1 },
-    { "1.2"_n, PdfVersion::V1_2 },
-    { "1.3"_n, PdfVersion::V1_3 },
-    { "1.4"_n, PdfVersion::V1_4 },
-    { "1.5"_n, PdfVersion::V1_5 },
-    { "1.6"_n, PdfVersion::V1_6 },
-    { "1.7"_n, PdfVersion::V1_7 },
-    { "2.0"_n, PdfVersion::V2_0 },
+    { "1.0", PdfVersion::V1_0 },
+    { "1.1", PdfVersion::V1_1 },
+    { "1.2", PdfVersion::V1_2 },
+    { "1.3", PdfVersion::V1_3 },
+    { "1.4", PdfVersion::V1_4 },
+    { "1.5", PdfVersion::V1_5 },
+    { "1.6", PdfVersion::V1_6 },
+    { "1.7", PdfVersion::V1_7 },
+    { "2.0", PdfVersion::V2_0 },
 };
 
 template<typename TInt, class = typename std::enable_if_t<std::is_integral_v<TInt>>>
@@ -74,6 +69,7 @@ void formatTo(string& str, TInt value)
     auto res = std::to_chars(arr.data(), arr.data() + arr.size(), value);
     str.append(arr.data(), res.ptr - arr.data());
 }
+
 
 void PoDoFo::LogMessage(PdfLogSeverity logSeverity, const string_view& msg)
 {
@@ -132,7 +128,7 @@ PdfVersion PoDoFo::GetPdfVersion(const string_view& str)
     return PdfVersion::Unknown;
 }
 
-const PdfName& PoDoFo::GetPdfVersionName(PdfVersion version)
+string_view PoDoFo::GetPdfVersionName(PdfVersion version)
 {
     switch (version)
     {
@@ -154,6 +150,194 @@ const PdfName& PoDoFo::GetPdfVersionName(PdfVersion version)
             return s_PdfVersions[7].Name;
         case PdfVersion::V2_0:
             return s_PdfVersions[8].Name;
+        default:
+            PODOFO_RAISE_ERROR(PdfErrorCode::InvalidEnumValue);
+    }
+}
+
+
+string_view PoDoFo::AnnotationTypeToName(PdfAnnotationType type)
+{
+    switch (type)
+    {
+        case PdfAnnotationType::Text:
+            return "Text"sv;
+        case PdfAnnotationType::Link:
+            return "Link"sv;
+        case PdfAnnotationType::FreeText:
+            return "FreeText"sv;
+        case PdfAnnotationType::Line:
+            return "Line"sv;
+        case PdfAnnotationType::Square:
+            return "Square"sv;
+        case PdfAnnotationType::Circle:
+            return "Circle"sv;
+        case PdfAnnotationType::Polygon:
+            return "Polygon"sv;
+        case PdfAnnotationType::PolyLine:
+            return "PolyLine"sv;
+        case PdfAnnotationType::Highlight:
+            return "Highlight"sv;
+        case PdfAnnotationType::Underline:
+            return "Underline"sv;
+        case PdfAnnotationType::Squiggly:
+            return "Squiggly"sv;
+        case PdfAnnotationType::StrikeOut:
+            return "StrikeOut"sv;
+        case PdfAnnotationType::Stamp:
+            return "Stamp"sv;
+        case PdfAnnotationType::Caret:
+            return "Caret"sv;
+        case PdfAnnotationType::Ink:
+            return "Ink"sv;
+        case PdfAnnotationType::Popup:
+            return "Popup"sv;
+        case PdfAnnotationType::FileAttachement:
+            return "FileAttachment"sv;
+        case PdfAnnotationType::Sound:
+            return "Sound"sv;
+        case PdfAnnotationType::Movie:
+            return "Movie"sv;
+        case PdfAnnotationType::Widget:
+            return "Widget"sv;
+        case PdfAnnotationType::Screen:
+            return "Screen"sv;
+        case PdfAnnotationType::PrinterMark:
+            return "PrinterMark"sv;
+        case PdfAnnotationType::TrapNet:
+            return "TrapNet"sv;
+        case PdfAnnotationType::Watermark:
+            return "Watermark"sv;
+        case PdfAnnotationType::Model3D:
+            return "3D"sv;
+        case PdfAnnotationType::RichMedia:
+            return "RichMedia"sv;
+        case PdfAnnotationType::WebMedia:
+            return "WebMedia"sv;
+        case PdfAnnotationType::Redact:
+            return "Redact"sv;
+        case PdfAnnotationType::Projection:
+            return "Projection"sv;
+        default:
+            PODOFO_RAISE_ERROR(PdfErrorCode::InvalidEnumValue);
+    }
+}
+
+PdfAnnotationType PoDoFo::NameToAnnotationType(const string_view& str)
+{
+    if (str == "Text"sv)
+        return PdfAnnotationType::Text;
+    else if (str == "Link"sv)
+        return PdfAnnotationType::Link;
+    else if (str == "FreeText"sv)
+        return PdfAnnotationType::FreeText;
+    else if (str == "Line"sv)
+        return PdfAnnotationType::Line;
+    else if (str == "Square"sv)
+        return PdfAnnotationType::Square;
+    else if (str == "Circle"sv)
+        return PdfAnnotationType::Circle;
+    else if (str == "Polygon"sv)
+        return PdfAnnotationType::Polygon;
+    else if (str == "PolyLine"sv)
+        return PdfAnnotationType::PolyLine;
+    else if (str == "Highlight"sv)
+        return PdfAnnotationType::Highlight;
+    else if (str == "Underline"sv)
+        return PdfAnnotationType::Underline;
+    else if (str == "Squiggly"sv)
+        return PdfAnnotationType::Squiggly;
+    else if (str == "StrikeOut"sv)
+        return PdfAnnotationType::StrikeOut;
+    else if (str == "Stamp"sv)
+        return PdfAnnotationType::Stamp;
+    else if (str == "Caret"sv)
+        return PdfAnnotationType::Caret;
+    else if (str == "Ink"sv)
+        return PdfAnnotationType::Ink;
+    else if (str == "Popup"sv)
+        return PdfAnnotationType::Popup;
+    else if (str == "FileAttachment"sv)
+        return PdfAnnotationType::FileAttachement;
+    else if (str == "Sound"sv)
+        return PdfAnnotationType::Sound;
+    else if (str == "Movie"sv)
+        return PdfAnnotationType::Movie;
+    else if (str == "Widget"sv)
+        return PdfAnnotationType::Widget;
+    else if (str == "Screen"sv)
+        return PdfAnnotationType::Screen;
+    else if (str == "PrinterMark"sv)
+        return PdfAnnotationType::PrinterMark;
+    else if (str == "TrapNet"sv)
+        return PdfAnnotationType::TrapNet;
+    else if (str == "Watermark"sv)
+        return PdfAnnotationType::Watermark;
+    else if (str == "3D"sv)
+        return PdfAnnotationType::Model3D;
+    else if (str == "RichMedia"sv)
+        return PdfAnnotationType::RichMedia;
+    else if (str == "WebMedia"sv)
+        return PdfAnnotationType::WebMedia;
+    else if (str == "Redact"sv)
+        return PdfAnnotationType::Redact;
+    else if (str == "Projection"sv)
+        return PdfAnnotationType::Projection;
+    else
+        PODOFO_RAISE_ERROR(PdfErrorCode::InternalLogic);
+}
+
+PdfColorSpace PoDoFo::NameToColorSpaceRaw(const string_view& name)
+{
+    if (name == "DeviceGray")
+        return PdfColorSpace::DeviceGray;
+    else if (name == "DeviceRGB")
+        return PdfColorSpace::DeviceRGB;
+    else if (name == "DeviceCMYK")
+        return PdfColorSpace::DeviceCMYK;
+    else if (name == "CalGray")
+        return PdfColorSpace::CalGray;
+    else if (name == "Lab")
+        return PdfColorSpace::Lab;
+    else if (name == "ICCBased")
+        return PdfColorSpace::ICCBased;
+    else if (name == "Indexed")
+        return PdfColorSpace::Indexed;
+    else if (name == "Pattern")
+        return PdfColorSpace::Pattern;
+    else if (name == "Separation")
+        return PdfColorSpace::Separation;
+    else if (name == "DeviceN")
+        return PdfColorSpace::DeviceN;
+    else
+        PODOFO_RAISE_ERROR_INFO(PdfErrorCode::CannotConvertColor, "Unsupported colorspace name: {}", name);
+}
+
+string_view PoDoFo::ColorSpaceToNameRaw(PdfColorSpace colorSpace)
+{
+    switch (colorSpace)
+    {
+        case PdfColorSpace::DeviceGray:
+            return "DeviceGray"sv;
+        case PdfColorSpace::DeviceRGB:
+            return "DeviceRGB"sv;
+        case PdfColorSpace::DeviceCMYK:
+            return "DeviceCMYK"sv;
+        case PdfColorSpace::CalGray:
+            return "CalGray"sv;
+        case PdfColorSpace::Lab:
+            return "Lab"sv;
+        case PdfColorSpace::ICCBased:
+            return "ICCBased"sv;
+        case PdfColorSpace::Indexed:
+            return "Indexed"sv;
+        case PdfColorSpace::Pattern:
+            return "Pattern"sv;
+        case PdfColorSpace::Separation:
+            return "Separation"sv;
+        case PdfColorSpace::DeviceN:
+            return "DeviceN"sv;
+        case PdfColorSpace::Unknown:
         default:
             PODOFO_RAISE_ERROR(PdfErrorCode::InvalidEnumValue);
     }
@@ -307,39 +491,6 @@ string PoDoFo::ExtractFontHints(const string_view& fontName, bool& isItalic, boo
     return extractFontHints(fontName, true, isItalic, isBold);
 }
 
-char PoDoFo::XRefEntryTypeToChar(PdfXRefEntryType type)
-{
-    switch (type)
-    {
-        case PdfXRefEntryType::Free:
-            return 'f';
-        case PdfXRefEntryType::InUse:
-            return 'n';
-        case PdfXRefEntryType::Unknown:
-        case PdfXRefEntryType::Compressed:
-        default:
-            PODOFO_RAISE_ERROR(PdfErrorCode::InvalidEnumValue);
-    }
-}
-
-PdfXRefEntryType PoDoFo::XRefEntryTypeFromChar(char c)
-{
-    switch (c)
-    {
-        case 'f':
-            return PdfXRefEntryType::Free;
-        case 'n':
-            return PdfXRefEntryType::InUse;
-        default:
-            PODOFO_RAISE_ERROR(PdfErrorCode::InvalidXRef);
-    }
-}
-
-void PoDoFo::AddToCallStack(PdfError& err, string filepath, unsigned line, string information)
-{
-    err.AddToCallStack(std::move(filepath), line, std::move(information));
-}
-
 // NOTE: This function is condsidered to be slow. Avoid calling it frequently
 // https://github.com/podofo/podofo/issues/30
 string extractFontHints(const string_view& fontName, bool trimSubsetPrefix, bool& isItalic, bool& isBold)
@@ -418,15 +569,6 @@ string PoDoFo::ToPdfKeywordsString(const cspan<string>& keywords)
 const locale& utls::GetInvariantLocale()
 {
     return s_cachedLocale;
-}
-
-string_view utls::GetEnvironmentVariable(const string_view& name)
-{
-    auto env = std::getenv(name.data());
-    if (env == nullptr)
-        return string_view();
-    else
-        return { env };
 }
 
 bool utls::IsValidUtf8String(const string_view& str)
@@ -736,7 +878,7 @@ size_t utls::FileSize(const string_view& filename)
 
     return (size_t)(streamoff)(stream.tellg() - fbegin);
 Error:
-    PODOFO_RAISE_ERROR_INFO(PdfErrorCode::IOError, "Failed to read file size");
+    PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidDeviceOperation, "Failed to read file size");
 }
 
 void utls::CopyTo(ostream& dst, istream& src)
@@ -753,24 +895,24 @@ void utls::CopyTo(ostream& dst, istream& src)
     } while (!eof);
 }
 
-void utls::ReadTo(charbuff& str, const string_view& filepath, size_t maxReadSize)
+void utls::ReadTo(charbuff& str, const string_view& filepath)
 {
     ifstream istream = utls::open_ifstream(filepath, ios_base::binary);
-    ReadTo(str, istream, maxReadSize);
+    ReadTo(str, istream);
 }
 
-void utls::ReadTo(charbuff& str, istream& stream, size_t maxReadSize)
+void utls::ReadTo(charbuff& str, istream& stream)
 {
     stream.seekg(0, ios::end);
     auto tellg = stream.tellg();
     if (tellg == -1)
-        PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidStream, "Error reading from stream");
+        throw runtime_error("Error reading from stream");
 
-    str.resize(std::min((size_t)tellg, maxReadSize));
+    str.resize((size_t)tellg);
     stream.seekg(0, ios::beg);
     stream.read(str.data(), str.size());
     if (stream.fail())
-        PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidStream, "Error reading from stream");
+        throw runtime_error("Error reading from stream");
 }
 
 void utls::WriteTo(const string_view& filepath, const bufferview& view)
@@ -811,7 +953,7 @@ size_t utls::ReadBuffer(istream& stream, char* buffer, size_t size, bool& eof)
         (void)stream.peek();
 
         if (stream.fail())
-            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::IOError, "Stream I/O error while reading");
+            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidDeviceOperation, "Stream I/O error while reading");
 
         eof = stream.eof();
 
@@ -835,7 +977,7 @@ bool utls::ReadChar(istream& stream, char& ch)
         (void)stream.rdstate();
         (void)stream.peek();
         if (stream.fail())
-            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::IOError, "Stream I/O error while reading");
+            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidDeviceOperation, "Stream I/O error while reading");
 
         if (read == 1)
             return true;
@@ -853,24 +995,6 @@ FILE* utls::fopen(const string_view& filename, const string_view& mode)
     return _wfopen((wchar_t*)filename16.c_str(), (wchar_t*)mode16.c_str());
 #else
     return std::fopen(filename.data(), mode.data());
-#endif
-}
-
-ssize_t utls::ftell(FILE* file)
-{
-#if defined(_WIN64)
-    return _ftelli64(file);
-#else
-    return std::ftell(file);
-#endif
-}
-
-ssize_t utls::fseek(FILE* file, ssize_t offset, int origin)
-{
-#if defined(_WIN64)
-    return _fseeki64(file, offset, origin);
-#else
-    return std::fseek(file, offset, origin);
 #endif
 }
 
@@ -911,15 +1035,6 @@ void utls::WriteCharHexTo(char buf[2], char ch)
 
     buf[1] = (ch & 0x0F);
     buf[1] += (buf[1] > 9 ? 'A' - 10 : '0');
-}
-
-string utls::GetCharHexString(const bufferview& buff)
-{
-    string ret(buff.size() * 2, '\0');
-    for (unsigned i = 0; i < buff.size(); i++)
-        utls::WriteCharHexTo(ret.data() + i * 2, buff[i]);
-
-    return ret;
 }
 
 void utls::WriteUtf16BETo(u16string& str, char32_t codePoint)
@@ -995,26 +1110,14 @@ void utls::FormatTo(string& str, unsigned long long value)
 
 void utls::FormatTo(string& str, float value, unsigned short precision)
 {
-    // The default size should be large enough to format all
-    // numbers with fixed notation. See https://stackoverflow.com/a/52045523/213871
-    str.resize(FloatFormatDefaultSize);
-    auto result = std::to_chars(str.data(), str.data() + FloatFormatDefaultSize, value, chars_format::fixed, precision);
-    removeTrailingZeroes(str, result.ptr - str.data());
+    utls::FormatTo(str, "{:.{}f}", value, precision);
+    removeTrailingZeroes(str);
 }
 
 void utls::FormatTo(string& str, double value, unsigned short precision)
 {
-    str.resize(FloatFormatDefaultSize);
-    auto result = std::to_chars(str.data(), str.data() + FloatFormatDefaultSize, value, chars_format::fixed, precision);
-    if (result.ec == errc::value_too_large)
-    {
-        // See https://stackoverflow.com/a/52045523/213871
-        // 24 recommended - 5 (unnecessary) exponent = 19
-        constexpr unsigned DoubleFormatDefaultSize = 19;
-        str.resize(DoubleFormatDefaultSize);
-        result = std::to_chars(str.data(), str.data() + DoubleFormatDefaultSize, value, chars_format::fixed, precision);
-    }
-    removeTrailingZeroes(str, result.ptr - str.data());
+    utls::FormatTo(str, "{:.{}f}", value, precision);
+    removeTrailingZeroes(str);
 }
 
 // NOTE: This is clearly limited, since it's supporting only ASCII
@@ -1039,73 +1142,9 @@ void utls::ByteSwap(u16string& str)
         str[i] = (char16_t)utls::ByteSwap((uint16_t)str[i]);
 }
 
-int utls::NormalizePageRotation(double angle)
+void utls::SerializeEncodedString(OutputStream& stream, const string_view& encoded, bool wantHex)
 {
-    constexpr double ADOBE_EPSILON = 0.5;
-
-    // Normalize the rotation between [0,360)
-    double normalized = utls::NormalizeCircularRange(angle, 0, 360);
-
-    // NOTE: Adobe Reader seems to go nuts here, looking in the
-    // neighbourhood of orthogonal rotations. It's unclear if
-    // the following computation can be made more efficient,
-    // but the page rotation is cached anyway. See
-    // BasicTest::TestNormalizeRangeRotations() for the complete
-    // lists with tests of expected values verified in Adobe
-    // products
-
-    // Round the angle with [0, 90, 180, 270, 360] as possible values
-    int rounded = (int)std::round(normalized / 90) * 90;
-    switch (rounded)
-    {
-        case 0:
-            if (normalized < ADOBE_EPSILON)
-                return 0;
-            else
-                return 90;
-        case 180:
-            if (normalized < 180 - ADOBE_EPSILON)
-                return 90;
-
-            if (normalized < 180 + ADOBE_EPSILON)
-                return 180;
-            else
-                return 270;
-        case 90:
-        case 270:
-            return rounded;
-        case 360:
-            if (normalized >= 360 - ADOBE_EPSILON)
-                return 0;
-            else
-                return 270;
-        default:
-            PODOFO_RAISE_ERROR(PdfErrorCode::InternalLogic);
-    }
-}
-
-double utls::NormalizeCircularRange(double value, double start, double end)
-{
-    PODOFO_ASSERT(start < end);
-
-    // Slightly shorten the range
-    double range = end - start - numeric_limits<double>::epsilon();
-    return start + modulo(value - start, range);
-}
-
-// Returns the remainder of the division a / b, so that the result of the
-// subtraction of the *remainder* from the *divisor* can be subtracted from
-// the *dividend* so it will be *floor* of the actual division
-double modulo(double a, double b)
-{
-    return std::fmod((std::fmod(a, b)) + b, b);
-}
-
-void utls::SerializeEncodedString(OutputStream& stream, const string_view& encoded, bool wantHex, bool skipDelimiters)
-{
-    if (!skipDelimiters)
-        stream.Write(wantHex ? '<' : '(');
-
+    stream.Write(wantHex ? '<' : '(');
     if (encoded.size() > 0)
     {
         const char* cursor = encoded.data();
@@ -1145,8 +1184,7 @@ void utls::SerializeEncodedString(OutputStream& stream, const string_view& encod
         }
     }
 
-    if (!skipDelimiters)
-        stream.Write(wantHex ? '>' : ')');
+    stream.Write(wantHex ? '>' : ')');
 }
 
 // TODO: Substitute this function using Chromium numerics,
@@ -1207,61 +1245,12 @@ string utls::GetWin32ErrorMessage(unsigned rc)
 
 unsigned char utls::GetCharCodeSize(unsigned code)
 {
-    if (code==0) {
-        return 1;
-    }
     return (unsigned char)(std::log(code) / std::log(256)) + 1;
 }
 
 unsigned utls::GetCharCodeMaxValue(unsigned char codeSize)
 {
     return (unsigned)(std::pow(2, codeSize * CHAR_BIT)) - 1;
-}
-
-unsigned utls::FSSUTFEncode(unsigned codePoint)
-{
-    if (codePoint <= 0x7F)
-    {
-        return codePoint & 0xFF;
-    }
-    if (codePoint <= 0x7FF)
-    {
-        return ((0xC0 | (codePoint >> 6)) << 8)
-              | (0x80 | (codePoint & 0x3F));
-    }
-    if (codePoint <= 0xFFFF)
-    {
-        return ((0xE0 | (codePoint >> 12)) << 16)
-             | ((0x80 | ((codePoint >> 6) & 0x3F)) << 8)
-             |  (0x80 | (codePoint & 0x3F));
-    }
-    if (codePoint <= 0x10FFFF)
-    {
-        return ((0xF0 | (codePoint >> 18)) << 24)
-             | ((0x80 | ((codePoint >> 12) & 0x3F)) << 16)
-             | ((0x80 | ((codePoint >> 6) & 0x3F)) << 8)
-             |  (0x80 | (codePoint & 0x3F));
-    }
-
-
-    PODOFO_RAISE_ERROR_INFO(PdfErrorCode::ValueOutOfRange, "Code larger than maximum encodable 0x10FFFF");
-}
-
-vector<utls::FSSUTFRange> utls::GetFSSUTFRanges(unsigned char codeSize)
-{
-    // According to https://www.unicode.org/versions/corrigendum1.html
-    // Table 3.1B. Legal UTF-8 Byte Sequences
-
-    if (codeSize == 1)
-        return vector<FSSUTFRange> { FSSUTFRange{ 0x00, 0x7F } };
-    else if (codeSize == 2)
-        return vector<FSSUTFRange> { FSSUTFRange{ 0xC280, 0xDFBF } };
-    else if (codeSize == 3)
-        return vector<FSSUTFRange> { FSSUTFRange{ 0xE0A080, 0xE0BFBF }, FSSUTFRange{ 0xE18080, 0xEFBFBF } };
-    else if (codeSize == 4)
-        return vector<FSSUTFRange> { FSSUTFRange{ 0xF0908080, 0xF0BFBFBF }, FSSUTFRange{ 0xF1808080, 0xF3BFBFBF }, FSSUTFRange{ 0xF4808080, 0xF48FBFBF } };
-
-    PODOFO_RAISE_ERROR_INFO(PdfErrorCode::ValueOutOfRange, "Code size larger than maximum supported 4");
 }
 
 void utls::WriteUInt32BE(OutputStream& output, uint32_t value)
@@ -1276,13 +1265,6 @@ void utls::WriteInt32BE(OutputStream& output, int32_t value)
     char buf[4];
     WriteInt32BE(buf, value);
     output.Write(buf, 4);
-}
-
-void utls::WriteUInt24BE(OutputStream& output, PoDoFo::uint24_t value)
-{
-    char buf[3];
-    WriteUInt24BE(buf, value);
-    output.Write(buf, 3);
 }
 
 void utls::WriteUInt16BE(OutputStream& output, uint16_t value)
@@ -1302,31 +1284,33 @@ void utls::WriteInt16BE(OutputStream& output, int16_t value)
 void utls::WriteUInt32BE(char* buf, uint32_t value)
 {
     value = AS_BIG_ENDIAN(value);
-    std::memcpy(buf, &value, sizeof(value));
+    buf[0] = static_cast<char>((value >> 0 ) & 0xFF);
+    buf[1] = static_cast<char>((value >> 8 ) & 0xFF);
+    buf[2] = static_cast<char>((value >> 16) & 0xFF);
+    buf[3] = static_cast<char>((value >> 24) & 0xFF);
 }
 
 void utls::WriteInt32BE(char* buf, int32_t value)
 {
     value = AS_BIG_ENDIAN(value);
-    std::memcpy(buf, &value, sizeof(value));
-}
-
-void utls::WriteUInt24BE(char* buf, uint24_t value)
-{
-    value = AS_BIG_ENDIAN(value);
-    std::memcpy(buf, &value, sizeof(value));
+    buf[0] = static_cast<char>((value >> 0 ) & 0xFF);
+    buf[1] = static_cast<char>((value >> 8 ) & 0xFF);
+    buf[2] = static_cast<char>((value >> 16) & 0xFF);
+    buf[3] = static_cast<char>((value >> 24) & 0xFF);
 }
 
 void utls::WriteUInt16BE(char* buf, uint16_t value)
 {
     value = AS_BIG_ENDIAN(value);
-    std::memcpy(buf, &value, sizeof(value));
+    buf[0] = static_cast<char>((value >> 0) & 0xFF);
+    buf[1] = static_cast<char>((value >> 8) & 0xFF);
 }
 
 void utls::WriteInt16BE(char* buf, int16_t value)
 {
     value = AS_BIG_ENDIAN(value);
-    std::memcpy(buf, &value, sizeof(value));
+    buf[0] = static_cast<char>((value >> 0) & 0xFF);
+    buf[1] = static_cast<char>((value >> 8) & 0xFF);
 }
 
 void utls::ReadUInt32BE(InputStream& input, uint32_t& value)
@@ -1341,13 +1325,6 @@ void utls::ReadInt32BE(InputStream& input, int32_t& value)
     char buf[4];
     input.Read(buf, 4);
     ReadInt32BE(buf, value);
-}
-
-void utls::ReadUInt24BE(InputStream& input, uint24_t& value)
-{
-    char buf[3];
-    input.Read(buf, 3);
-    ReadUInt24BE(buf, value);
 }
 
 void utls::ReadUInt16BE(InputStream& input, uint16_t& value)
@@ -1367,42 +1344,37 @@ void utls::ReadInt16BE(InputStream& input, int16_t& value)
 void utls::ReadUInt32BE(const char* buf, uint32_t& value)
 {
     value =
-          (uint32_t)((uint8_t)buf[3] << 0)
-        | (uint32_t)((uint8_t)buf[2] << 8)
-        | (uint32_t)((uint8_t)buf[1] << 16)
-        | (uint32_t)((uint8_t)buf[0] << 24);
+          (uint32_t)(buf[0] & 0xFF) << 0
+        | (uint32_t)(buf[1] & 0xFF) << 8
+        | (uint32_t)(buf[2] & 0xFF) << 16
+        | (uint32_t)(buf[3] & 0xFF) << 24;
+    value = AS_BIG_ENDIAN(value);
 }
 
 void utls::ReadInt32BE(const char* buf, int32_t& value)
 {
     value =
-          (int32_t)((uint8_t)buf[3] << 0)
-        | (int32_t)((uint8_t)buf[2] << 8)
-        | (int32_t)((uint8_t)buf[1] << 16)
-        | (int32_t)((int8_t)buf[0]  << 24);
-}
-
-void utls::ReadUInt24BE(const char* buf, uint24_t& value)
-{
-    uint32_t intValue =
-          (int32_t)((uint8_t)buf[2] << 0)
-        | (int32_t)((uint8_t)buf[1] << 8)
-        | (int32_t)((uint8_t)buf[0] << 16);
-    value = AS_BIG_ENDIAN((uint24_t)intValue);
+          (int32_t)(buf[0] & 0xFF) << 0
+        | (int32_t)(buf[1] & 0xFF) << 8
+        | (int32_t)(buf[2] & 0xFF) << 16
+        | (int32_t)(buf[3] & 0xFF) << 24;
+    value = AS_BIG_ENDIAN(value);
 }
 
 void utls::ReadUInt16BE(const char* buf, uint16_t& value)
 {
     value =
-          (uint16_t)((uint8_t)buf[1] << 0)
-        | (uint16_t)((uint8_t)buf[0] << 8);
+          (uint16_t)(buf[0] & 0xFF) << 0
+        | (uint16_t)(buf[1] & 0xFF) << 8;
+    value = AS_BIG_ENDIAN(value);
 }
 
 void utls::ReadInt16BE(const char* buf, int16_t& value)
 {
     value =
-          (int16_t)((uint8_t)buf[1] << 0)
-        | (int16_t)((int8_t)buf[0]  << 8);
+          (int16_t)(buf[0] & 0xFF) << 0
+        | (int16_t)(buf[1] & 0xFF) << 8;
+    value = AS_BIG_ENDIAN(value);
 }
 
 void utls::RecursionGuard::Enter()
@@ -1416,7 +1388,7 @@ void utls::RecursionGuard::Enter()
         // /Kids entries that loop back to self or parent
         // deeply nested Dictionary or Array objects (possible with lots of [[[[[[[[]]]]]]]] brackets)
         // mutually recursive loops involving several objects are possible
-        PODOFO_RAISE_ERROR_INFO(PdfErrorCode::MaxRecursionReached, "Stack overflow");
+        PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidXRef, "Stack overflow");
     }
 }
 
@@ -1435,10 +1407,11 @@ utls::RecursionGuard::~RecursionGuard()
     Exit();
 }
 
-void removeTrailingZeroes(string& str, size_t len)
+void removeTrailingZeroes(string& str)
 {
     // Remove trailing zeroes
     const char* cursor = str.data();
+    size_t len = str.size();
     while (cursor[len - 1] == '0')
         len--;
 
@@ -1479,29 +1452,4 @@ char getEscapedCharacter(char ch)
         default:
             return '\0';
     }
-}
-
-uint24_t::uint24_t()
-    : value{ } { }
-
-uint24_t::uint24_t(unsigned value)
-{
-#ifdef PODOFO_IS_LITTLE_ENDIAN
-    this->value[0] = (value >> 0 ) & 0xFF;
-    this->value[1] = (value >> 8 ) & 0xFF;
-    this->value[2] = (value >> 16) & 0xFF;
-#else // PODOFO_IS_LITTLE_ENDIAN
-    this->value[0] = (value >> 16) & 0xFF;
-    this->value[1] = (value >> 8 ) & 0xFF;
-    this->value[2] = (value >> 0 ) & 0xFF;
-#endif // PODOFO_IS_LITTLE_ENDIAN
-}
-
-uint24_t::operator unsigned() const
-{
-#ifdef PODOFO_IS_LITTLE_ENDIAN
-    return (unsigned)(this->value[0] | this->value[1] << 8 | this->value[2] << 16);
-#else // PODOFO_IS_LITTLE_ENDIAN
-    return (unsigned)(this->value[2] | this->value[1] << 8 | this->value[0] << 16);
-#endif // PODOFO_IS_LITTLE_ENDIAN
 }

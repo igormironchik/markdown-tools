@@ -53,7 +53,7 @@ unique_ptr<PdfFont> PdfFont::createFontForType(PdfDocument& doc, const PdfFontMe
                 font = new PdfFontCIDTrueType(doc, metrics, encoding);
             break;
         case PdfFontFileType::Type1:
-        case PdfFontFileType::Type1CFF:
+        case PdfFontFileType::Type1CCF:
             if (preferNonCID && !encoding.HasCIDMapping())
                 font = new PdfFontType1(doc, metrics, encoding);
             else
@@ -72,28 +72,17 @@ unique_ptr<PdfFont> PdfFont::createFontForType(PdfDocument& doc, const PdfFontMe
     return unique_ptr<PdfFont>(font);
 }
 
-bool PdfFont::TryCreateFromObject(const PdfObject& obj, unique_ptr<const PdfFont>& font)
-{
-    return TryCreateFromObject(const_cast<PdfObject&>(obj), reinterpret_cast<unique_ptr<PdfFont>&>(font));
-}
-
 bool PdfFont::TryCreateFromObject(PdfObject& obj, unique_ptr<PdfFont>& font)
 {
-    PdfDictionary* dict;
-    if (!obj.TryGetDictionary(dict))
-    {
-        font.reset();
-        return false;
-    }
-
-    PdfObject* objTypeKey = dict->FindKey("Type");
+    auto& dict = obj.GetDictionary();
+    PdfObject* objTypeKey = dict.FindKey(PdfName::KeyType);
     if (objTypeKey == nullptr)
         PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidDataType, "Font: No Type");
 
     if (objTypeKey->GetName() != "Font")
         PODOFO_RAISE_ERROR(PdfErrorCode::InvalidDataType);
 
-    auto subTypeKey = dict->FindKey("Subtype");
+    auto subTypeKey = dict.FindKey(PdfName::KeySubtype);
     if (subTypeKey == nullptr)
         PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidDataType, "Font: No SubType");
 
@@ -104,7 +93,7 @@ bool PdfFont::TryCreateFromObject(PdfObject& obj, unique_ptr<PdfFont>& font)
 
         // The PDF reference states that DescendantFonts must be an array,
         // some applications (e.g. MS Word) put the array into an indirect object though.
-        auto descendantObj = dict->FindKey("DescendantFonts");
+        auto descendantObj = dict.FindKey("DescendantFonts");
         if (descendantObj == nullptr)
             PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidDataType, "Type0 Font: No DescendantFonts");
 
@@ -130,18 +119,18 @@ bool PdfFont::TryCreateFromObject(PdfObject& obj, unique_ptr<PdfFont>& font)
     }
     else if (subType == "Type1")
     {
-        auto objDescriptor = dict->FindKey("FontDescriptor");
+        auto objDescriptor = dict.FindKey("FontDescriptor");
 
         // Handle missing FontDescriptor for the 14 standard fonts
         if (objDescriptor == nullptr)
         {
             // Check if it's a PdfFontStandard14
-            auto baseFont = dict->FindKey("BaseFont");
+            auto baseFont = dict.FindKey("BaseFont");
             PdfStandard14FontType stdFontType;
             if (baseFont == nullptr
                 || !PdfFont::IsStandard14Font(baseFont->GetName().GetString(), stdFontType))
             {
-                PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidFontData, "No known /BaseFont found");
+                PODOFO_RAISE_ERROR_INFO(PdfErrorCode::NoObject, "No known /BaseFont found");
             }
 
             PdfFontMetricsConstPtr metrics = PdfFontMetricsStandard14::Create(stdFontType, obj);
@@ -163,7 +152,7 @@ bool PdfFont::TryCreateFromObject(PdfObject& obj, unique_ptr<PdfFont>& font)
     }
     else if (subType == "Type3")
     {
-        auto objDescriptor = dict->FindKey("FontDescriptor");
+        auto objDescriptor = dict.FindKey("FontDescriptor");
         PdfFontMetricsConstPtr metrics = PdfFontMetricsObject::Create(obj, objDescriptor);
         auto encoding = PdfEncodingFactory::CreateEncoding(obj, *metrics);
         if (encoding.IsNull())
@@ -174,7 +163,7 @@ bool PdfFont::TryCreateFromObject(PdfObject& obj, unique_ptr<PdfFont>& font)
     }
     else if (subType == "TrueType")
     {
-        auto objDescriptor = dict->FindKey("FontDescriptor");
+        auto objDescriptor = dict.FindKey("FontDescriptor");
         PdfFontMetricsConstPtr metrics = PdfFontMetricsObject::Create(obj, objDescriptor);
         auto encoding = PdfEncodingFactory::CreateEncoding(obj, *metrics);
         if (encoding.IsNull())

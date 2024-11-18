@@ -14,11 +14,11 @@ namespace PoDoFo {
 
 /** Orientation for predefined CID identity encodings
  */
-enum class PdfIdentityOrientation : uint8_t
+enum class PdfIdentityOrientation
 {
     Unkwnown = 0,
-    Horizontal, // Corresponds to /Identity-H
-    Vertical,   // Corresponds to /Identity-V
+    Horizontal, // Corresponts to /Identity-H
+    Vertical,   // Corresponts to /Identity-V
 };
 
 /** PdfIdentityEncoding is a two-byte encoding which can be
@@ -29,7 +29,7 @@ enum class PdfIdentityOrientation : uint8_t
  */
 class PODOFO_API PdfIdentityEncoding final : public PdfEncodingMap
 {
-    friend class PdfEncodingMapFactory;
+    friend class PdfCMapEncoding;
 
 public:
     /**
@@ -46,15 +46,13 @@ public:
 
 protected:
     bool tryGetCharCode(char32_t codePoint, PdfCharCode& codeUnit) const override;
-    bool tryGetCodePoints(const PdfCharCode& codeUnit, const unsigned* cidId, CodePointSpan& codePoints) const override;
+    bool tryGetCodePoints(const PdfCharCode& codeUnit, std::vector<char32_t>& codePoints) const override;
     void getExportObject(PdfIndirectObjectList& objects, PdfName& name, PdfObject*& obj) const override;
     void AppendToUnicodeEntries(OutputStream& stream, charbuff& temp) const override;
     void AppendCIDMappingEntries(OutputStream& stream, const PdfFont& font, charbuff& temp) const override;
 
 public:
     const PdfEncodingLimits& GetLimits() const override;
-
-    PdfPredefinedEncodingType GetPredefinedEncodingType() const override;
 
 private:
     PdfIdentityEncoding(PdfEncodingMapType type, const PdfEncodingLimits& limits,

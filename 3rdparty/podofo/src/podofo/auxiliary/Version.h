@@ -1,7 +1,7 @@
 #ifndef PODOFO_VERSION_H
 #define PODOFO_VERSION_H
 
-// NOTE: Keep the relative import to accommodate
+// NOTE: Keep the relative import to accomodate
 // the installation layout
 #include "podofo_config.h"
 

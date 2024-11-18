@@ -16,13 +16,11 @@ namespace PoDoFo {
 /** This is a common base class for simple, non CID-keyed fonts
  * like Type1, TrueType and Type3
  */
-class PODOFO_API PdfFontSimple : public PdfFont
+class PdfFontSimple : public PdfFont
 {
-    friend class PdfFontTrueType;
-    friend class PdfFontType1;
-    friend class PdfFontType3;
+    friend class PdfFontStandard14;
 
-private:
+protected:
     /** Create a new PdfFont object which will introduce itself
      *  automatically to every page object it is used on.
      *
@@ -38,6 +36,8 @@ private:
         const PdfEncoding& encoding);
 
 protected:
+    void Init();
+
     void embedFont() override final;
 
     void initImported() override;

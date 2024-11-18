@@ -456,13 +456,13 @@ void PoDoFoPaintEngine::updateState(const QPaintEngineState &state)
         painter->GraphicsState.SetLineWidth(p.widthF() * scale / paintDevice()->physicalDpiX() * 72.0);
         painter->GraphicsState.SetLineCapStyle(capStyle(p.capStyle()));
         painter->GraphicsState.SetLineJoinStyle(joinStyle(p.joinStyle()));
-        painter->GraphicsState.SetNonStrokingColor(color(p.brush().color()));
-        painter->GraphicsState.SetStrokingColor(color(p.color()));
+        painter->GraphicsState.SetFillColor(color(p.brush().color()));
+        painter->GraphicsState.SetStrokeColor(color(p.color()));
         painter->GraphicsState.SetMiterLevel(p.miterLimit());
     }
 
     if (st & QPaintEngine::DirtyBrush) {
-        painter->GraphicsState.SetNonStrokingColor(color(state.brush().color()));
+        painter->GraphicsState.SetFillColor(color(state.brush().color()));
     }
 
     // if (st & QPaintEngine::DirtyFont) {

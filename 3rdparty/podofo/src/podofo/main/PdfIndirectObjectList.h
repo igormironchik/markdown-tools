@@ -7,12 +7,14 @@
 #ifndef PDF_INDIRECT_OBJECT_LIST_H
 #define PDF_INDIRECT_OBJECT_LIST_H
 
+#include <list>
+
 #include "PdfObject.h"
 
 namespace PoDoFo {
 
 class PdfObjectStreamProvider;
-using PdfFreeObjectList = std::deque<PdfReference>;
+using ReferenceList = std::deque<PdfReference>;
 
 /** A list of PdfObjects that constitutes the indirect object list
  *  of the document
@@ -28,94 +30,42 @@ using PdfFreeObjectList = std::deque<PdfReference>;
  */
 class PODOFO_API PdfIndirectObjectList final
 {
+    friend class PdfWriter;
     friend class PdfDocument;
-    friend class PdfObject;
-    friend class PdfObjectOutputStream;
-    PODOFO_PRIVATE_FRIEND(class PdfObjectStreamParser);
-    PODOFO_PRIVATE_FRIEND(class PdfImmediateWriter);
-    PODOFO_PRIVATE_FRIEND(class PdfParser);
-    PODOFO_PRIVATE_FRIEND(class PdfWriter);
-    PODOFO_PRIVATE_FRIEND(class PdfParserTest);
-    PODOFO_PRIVATE_FRIEND(class PdfEncodingTest);
-    PODOFO_PRIVATE_FRIEND(class PdfEncryptTest);
+    friend class PdfParser;
+    friend class PdfObjectStreamParser;
+    friend class PdfImmediateWriter;
 
 private:
-    // NOTE: For testing only
-    PdfIndirectObjectList();
+    // Comparator to enable heterogeneous lookup with
+    // both objects and references
+    // See https://stackoverflow.com/a/31924435/213871
+    struct ObjectListComparator final
+    {
+        using is_transparent = std::true_type;
+        bool operator()(const PdfObject* lhs, const PdfObject* rhs) const
+        {
+            return lhs->GetIndirectReference() < rhs->GetIndirectReference();
+        }
+        bool operator()(const PdfObject* lhs, const PdfReference& rhs) const
+        {
+            return lhs->GetIndirectReference() < rhs;
+        }
+        bool operator()(const PdfReference& lhs, const PdfObject* rhs) const
+        {
+            return lhs < rhs->GetIndirectReference();
+        }
+    };
+
+    using ObjectList = std::set<PdfObject*, ObjectListComparator>;
 
 public:
-    ~PdfIndirectObjectList();
+    // An incomplete set of container typedefs, just enough to handle
+    // the begin() and end() methods we wrap from the internal vector.
+    // TODO: proper wrapper iterator class.
+    using iterator = ObjectList::const_iterator;
+    using reverse_iterator = ObjectList::const_reverse_iterator;
 
-public:
-    /** Finds the object with the given reference
-     *  and returns a pointer to it if it is found. Throws a PdfError
-     *  exception with error code PdfErrorCode::NoObject if no object was found
-     *  \param ref the object to be found
-     *  \returns the found object
-     *  \throws PdfError(PdfErrorCode::NoObject)
-     */
-    PdfObject& MustGetObject(const PdfReference& ref) const;
-
-    /** Finds the object with the given reference
-     *  and returns a pointer to it if it is found.
-     *  \param ref the object to be found
-     *  \returns the found object or nullptr if no object was found.
-     */
-    PdfObject* GetObject(const PdfReference& ref) const;
-
-    /** Creates a new object and inserts it into the vector.
-     *  This function assigns the next free object number to the PdfObject.
-     *
-     *  \param type optional value of the /Type key of the object
-     *  \param subtype optional value of the /SubType key of the object
-     *  \returns PdfObject pointer to the new PdfObject
-     */
-    PdfObject& CreateDictionaryObject(const PdfName& type = PdfName::Null,
-        const PdfName& subtype = PdfName::Null);
-
-    PdfObject& CreateArrayObject();
-
-    /** Creates a new object and inserts it into the vector.
-     *  This function assigns the next free object number to the PdfObject.
-     *
-     *  \param obj value of the PdfObject
-     *  \returns PdfObject pointer to the new PdfObject
-     */
-    PdfObject& CreateObject(const PdfObject& obj);
-    PdfObject& CreateObject(PdfObject&& obj);
-
-    /**
-     * Deletes all objects that are not references by other objects
-     * besides the trailer (which references the root dictionary, which in
-     * turn should reference all other objects).
-     */
-    void CollectGarbage();
-
-public:
-    /**
-     * \returns the size of the internal object list
-     * \remarks It may differ from GetObjectCount()
-     */
-    unsigned GetSize() const;
-
-    /**
-     * \returns the logical object count in the document.
-     * \remarks It corresponds to the highest object number
-     *   ever used and it never decreases. This value is used
-     *   to determine the next available object number, when
-     *   the free object list is empty
-     */
-    inline unsigned GetObjectCount() const { return m_ObjectCount; }
-
-    /** \returns a list of free references in this vector
-     */
-    inline const PdfFreeObjectList& GetFreeObjects() const { return m_FreeObjects; }
-
-    /** \returns a reference to the owner document
-     */
-    inline PdfDocument& GetDocument() const { return *m_Document; }
-
-private:
     /** Every observer of PdfIndirectObjectList has to implement this interface.
      */
     class PODOFO_API Observer
@@ -123,6 +73,8 @@ private:
         friend class PdfIndirectObjectList;
     public:
         virtual ~Observer() { }
+
+        virtual void WriteObject(const PdfObject& obj) = 0;
 
         /** Called whenever appending to a stream is started.
          *  \param stream the stream object the user currently writes to.
@@ -133,6 +85,8 @@ private:
          *  \param stream the stream object the user currently writes to.
          */
         virtual void EndAppendStream(PdfObjectStream& stream) = 0;
+
+        virtual void Finish() = 0;
     };
 
     /** This class is used to implement stream factories in PoDoFo.
@@ -151,51 +105,56 @@ private:
         virtual std::unique_ptr<PdfObjectStreamProvider> CreateStream() = 0;
     };
 
-    using ObjectNumSet = std::set<uint32_t>;
-    using ReferenceSet = std::set<PdfReference>;
-    using ObserverList = std::vector<Observer*>;
-    using ObjectList = std::set<PdfObject*, PdfObjectInequality>;
-
 public:
+    PdfIndirectObjectList();
 
-    // An incomplete set of container typedefs, just enough to handle
-    // the begin() and end() methods we wrap from the internal vector.
-    // TODO: proper wrapper iterator class.
-    using iterator = ObjectList::const_iterator;
-    using reverse_iterator = ObjectList::const_reverse_iterator;
+    ~PdfIndirectObjectList();
 
-    /** Iterator pointing at the beginning of the vector
-     *  \returns beginning iterator
-     */
-    iterator begin() const;
-
-    /** Iterator pointing at the end of the vector
-     *  \returns ending iterator
-     */
-    iterator end() const;
-
-    reverse_iterator rbegin() const;
-
-    reverse_iterator rend() const;
-
-    size_t size() const;
-
-private:
-    PdfIndirectObjectList(PdfDocument& document);
-    PdfIndirectObjectList(PdfDocument& document, const PdfIndirectObjectList& rhs);
-
-    PdfIndirectObjectList(const PdfIndirectObjectList&) = delete;
-    PdfIndirectObjectList& operator=(const PdfIndirectObjectList&) = delete;
-
-private:
-    /** Creates a stream object
-     *  This method is a factory for PdfObjectStream objects.
+    /** Enable/disable object numbers re-use.
+     *  By default object numbers re-use is enabled.
      *
-     *  \param parent parent object
+     *  \param canReuseObjectNumbers if true, free object numbers can be re-used when creating new objects.
      *
-     *  \returns a new stream object
+     *  If set to false, the list of free object numbers is automatically cleared.
      */
-    std::unique_ptr<PdfObjectStreamProvider> CreateStream();
+    void SetCanReuseObjectNumbers(bool canReuseObjectNumbers);
+
+    /** Removes all objects from the vector
+     *  and resets it to the default state.
+     *
+     *  If SetAutoDelete is true all objects are deleted.
+     *  All observers are removed from the vector.
+     *
+     *  \see SetAutoDelete
+     *  \see IsAutoDelete
+     */
+    void Clear();
+
+    /**
+     *  \returns the size of the internal vector
+     */
+    unsigned GetSize() const;
+
+    /**
+     *  \returns the highest object number in the vector
+     */
+    unsigned GetObjectCount() const { return m_ObjectCount; }
+
+    /** Finds the object with the given reference
+     *  and returns a pointer to it if it is found. Throws a PdfError
+     *  exception with error code ePdfError_NoObject if no object was found
+     *  \param ref the object to be found
+     *  \returns the found object
+     *  \throws PdfError(ePdfError_NoObject)
+     */
+    PdfObject& MustGetObject(const PdfReference& ref) const;
+
+    /** Finds the object with the given reference
+     *  and returns a pointer to it if it is found.
+     *  \param ref the object to be found
+     *  \returns the found object or nullptr if no object was found.
+     */
+    PdfObject* GetObject(const PdfReference& ref) const;
 
     /** Remove the object with the given object and generation number from the list
      *  of objects.
@@ -216,27 +175,70 @@ private:
      */
     std::unique_ptr<PdfObject> RemoveObject(const iterator& it);
 
-    /** Removes all objects from the vector
-     *  and resets it to the default state.
-     *
-     *  If SetAutoDelete is true all objects are deleted.
-     *  All observers are removed from the vector.
-     *
-     *  \see SetAutoDelete
-     *  \see IsAutoDelete
+    /** Replace the object at the given reference
+     *  \param ref the reference of the object to replace
+     *  \param obj the object that will be inserted instead, must be non null
+     *  \returns the replaced object
      */
-    void Clear();
+    std::unique_ptr<PdfObject> ReplaceObject(const PdfReference& ref, PdfObject* obj);
+
+    /** Creates a new object and inserts it into the vector.
+     *  This function assigns the next free object number to the PdfObject.
+     *
+     *  \param type optional value of the /Type key of the object
+     *  \param subtype optional value of the /SubType key of the object
+     *  \returns PdfObject pointer to the new PdfObject
+     */
+    PdfObject& CreateDictionaryObject(const std::string_view& type = { },
+        const std::string_view& subtype = { });
+
+    PdfObject& CreateArrayObject();
+
+    /** Creates a new object and inserts it into the vector.
+     *  This function assigns the next free object number to the PdfObject.
+     *
+     *  \param obj value of the PdfObject
+     *  \returns PdfObject pointer to the new PdfObject
+     */
+    PdfObject& CreateObject(const PdfObject& obj);
+    PdfObject& CreateObject(PdfObject&& obj);
+
 
     /** Attach a new observer
      *  \param observer to attach
      */
-    void AttachObserver(Observer& observer);
+    void Attach(Observer& observer);
 
     /** Detach an observer.
      *
      *  \param observer observer to detach
      */
-    void DetachObserver(Observer& observer);
+    void Detach(Observer& observer);
+
+    /** Sets a StreamFactory which is used whenever CreateStream is called.
+     *
+     *  \param factory a stream factory or nullptr to reset to the default factory
+     */
+    void SetStreamFactory(StreamFactory* factory);
+
+    /** Creates a stream object
+     *  This method is a factory for PdfObjectStream objects.
+     *
+     *  \param parent parent object
+     *
+     *  \returns a new stream object
+     */
+    std::unique_ptr<PdfObjectStreamProvider> CreateStream();
+
+    /** Can be called to force objects to be written to disk.
+     *
+     *  \param obj a PdfObject that should be written to disk.
+     */
+    void WriteObject(PdfObject& obj);
+
+    /** Call whenever a document is finished
+     */
+    void Finish();
 
     /** Every stream implementation has to call this in BeginAppend
      *  \param stream the stream object that is calling
@@ -247,6 +249,31 @@ private:
      *  \param stream the stream object that is calling
      */
     void EndAppendStream(PdfObjectStream& stream);
+
+    /**
+     * Set the object count so that the object described this reference
+     * is contained in the object count.
+     *
+     * \param ref reference of newly added object
+     */
+    void TryIncrementObjectCount(const PdfReference& ref);
+
+private:
+    // Use deque as many insertions are here way faster than with using std::list
+    // This is especially useful for PDFs like PDFReference17.pdf with
+    // lots of free objects.
+    using ObjectNumSet = std::set<uint32_t>;
+    using ReferenceSet = std::set<PdfReference>;
+    using ReferencePointers = std::list<PdfReference*>;
+    using ReferencePointersList = std::vector<ReferencePointers>;
+    using ObserverList = std::vector<Observer*>;
+
+private:
+    PdfIndirectObjectList(PdfDocument& document);
+    PdfIndirectObjectList(PdfDocument& document, const PdfIndirectObjectList& rhs);
+
+    PdfIndirectObjectList(const PdfIndirectObjectList&) = delete;
+    PdfIndirectObjectList& operator=(const PdfIndirectObjectList&) = delete;
 
     /** Insert an object into this vector so that
      *  the vector remains sorted w.r.t.
@@ -262,7 +289,7 @@ private:
      *  Add the object only if the generation is the allowed range
      *
      *  \param rReference the reference to reuse
-     *  \returns true if the object was successfully added
+     *  \returns true if the object was succesfully added
      *
      *  \see AddFreeObject
      */
@@ -295,11 +322,12 @@ private:
 
     std::unique_ptr<PdfObject> RemoveObject(const PdfReference& ref, bool markAsFree);
 
-    /** Sets a StreamFactory which is used whenever CreateStream is called.
-     *
-     *  \param factory a stream factory or nullptr to reset to the default factory
+    /**
+     * Deletes all objects that are not references by other objects
+     * besides the trailer (which references the root dictionary, which in
+     * turn should reference all other objects).
      */
-    void SetStreamFactory(StreamFactory* factory);
+    void CollectGarbage();
 
 private:
     void pushObject(const ObjectList::const_iterator& hintpos, ObjectList::node_type& node, PdfObject* obj);
@@ -317,19 +345,45 @@ private:
 
     void visitObject(const PdfObject& obj, std::unordered_set<PdfReference>& referencedObj);
 
-    /**
-     * Set the object count so that the object described this reference
-     * is contained in the object count.
-     *
-     * \param ref reference of newly added object
+public:
+    /** Iterator pointing at the beginning of the vector
+     *  \returns beginning iterator
      */
-    void tryIncrementObjectCount(const PdfReference& ref);
+    iterator begin() const;
+
+    /** Iterator pointing at the end of the vector
+     *  \returns ending iterator
+     */
+    iterator end() const;
+
+    reverse_iterator rbegin() const;
+
+    reverse_iterator rend() const;
+
+    size_t size() const;
+
+public:
+    /** \returns a pointer to a PdfDocument that is the
+     *           parent of this vector.
+     *           Might be nullptr if the vector has no parent.
+     */
+    inline PdfDocument& GetDocument() const { return *m_Document; }
+
+    /**
+     *  \returns whether can re-use free object numbers when creating new objects.
+     */
+    inline bool GetCanReuseObjectNumbers() const { return m_CanReuseObjectNumbers; }
+
+    /** \returns a list of free references in this vector
+     */
+    inline const ReferenceList& GetFreeObjects() const { return m_FreeObjects; }
 
 private:
     PdfDocument* m_Document;
+    bool m_CanReuseObjectNumbers;
     ObjectList m_Objects;
     unsigned m_ObjectCount;
-    PdfFreeObjectList m_FreeObjects;
+    ReferenceList m_FreeObjects;
     ObjectNumSet m_unavailableObjects;
     ObjectNumSet m_objectStreams;
 

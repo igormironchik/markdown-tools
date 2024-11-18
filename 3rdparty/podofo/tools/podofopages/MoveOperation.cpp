@@ -19,7 +19,7 @@ void MoveOperation::Perform(PdfDocument& doc)
 {
     auto& pages = doc.GetPages();
     auto& page = pages.GetPageAt(m_fromIndex);
-    page.MoveTo(m_toIndex);
+    page.MoveAt(m_toIndex);
 }
 
 string MoveOperation::ToString() const

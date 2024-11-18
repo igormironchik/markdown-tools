@@ -13,100 +13,60 @@
 using namespace std;
 using namespace PoDoFo;
 
-void PdfAnnotationLink::SetDestination(nullable<const PdfDestination&> destination)
+void PdfAnnotationLink::SetDestination(const shared_ptr<PdfDestination>& destination)
 {
-    if (destination == nullptr)
-    {
-        GetDictionary().RemoveKey("Dest");
-        m_Destination = { };
-    }
-    else
-    {
-        m_Destination = unique_ptr<PdfDestination>(new PdfDestination(*destination));
-        ResetAction();
-        destination->AddToDictionary(GetDictionary());
-    }
+    destination->AddToDictionary(GetDictionary());
+    m_Destination = destination;
 }
 
-nullable<PdfDestination&> PdfAnnotationLink::GetDestination()
-{
-    return getDestination();
-}
-
-nullable<const PdfDestination&> PdfAnnotationLink::GetDestination() const
+shared_ptr<PdfDestination> PdfAnnotationLink::GetDestination() const
 {
     return const_cast<PdfAnnotationLink&>(*this).getDestination();
 }
 
-nullable<PdfDestination&> PdfAnnotationLink::getDestination()
+shared_ptr<PdfDestination> PdfAnnotationLink::getDestination()
 {
     if (m_Destination == nullptr)
     {
         auto obj = GetDictionary().FindKey("Dest");
         if (obj == nullptr)
-            m_Destination = { };
-        else
-            m_Destination = unique_ptr<PdfDestination>(new PdfDestination(*obj));
+            return nullptr;
+
+        m_Destination.reset(new PdfDestination(*obj));
     }
 
-    if (*m_Destination == nullptr)
-        return { };
-    else
-        return **m_Destination;
+    return m_Destination;
 }
 
-void PdfAnnotationLink::onActionSet()
+void PdfAnnotationFileAttachement::SetFileAttachement(const shared_ptr<PdfFileSpec>& fileSpec)
 {
-    m_Destination = { };
-    GetDictionary().RemoveKey("Dest");
+    GetDictionary().AddKey("FS", fileSpec->GetObject().GetIndirectReference());
+    m_FileSpec = fileSpec;
 }
 
-void PdfAnnotationFileAttachment::SetFileAttachment(const nullable<PdfFileSpec&>& fileSpec)
+shared_ptr<PdfFileSpec> PdfAnnotationFileAttachement::GetFileAttachement() const
 {
-    if (fileSpec == nullptr)
-    {
-        m_FileSpec = { };
-        GetDictionary().RemoveKey("FS");
-    }
-    else
-    {
-        GetDictionary().AddKeyIndirect("FS"_n, fileSpec->GetObject());
-        m_FileSpec = unique_ptr<PdfFileSpec>(new PdfFileSpec(*fileSpec));
-    }
+    return const_cast<PdfAnnotationFileAttachement&>(*this).getFileAttachment();
 }
 
-nullable<PdfFileSpec&> PdfAnnotationFileAttachment::GetFileAttachment()
-{
-    return getFileAttachment();
-}
-
-nullable<const PdfFileSpec&> PdfAnnotationFileAttachment::GetFileAttachment() const
-{
-    return const_cast<PdfAnnotationFileAttachment&>(*this).getFileAttachment();
-}
-
-
-nullable<PdfFileSpec&> PdfAnnotationFileAttachment::getFileAttachment()
+shared_ptr<PdfFileSpec> PdfAnnotationFileAttachement::getFileAttachment()
 {
     if (m_FileSpec == nullptr)
     {
         auto obj = GetDictionary().FindKey("FS");
         if (obj == nullptr)
-            m_FileSpec = { };
-        else
-            m_FileSpec = unique_ptr<PdfFileSpec>(new PdfFileSpec(*obj));
+            return nullptr;
+
+        m_FileSpec.reset(new PdfFileSpec(*obj));
     }
 
-    if (*m_FileSpec == nullptr)
-        return { };
-    else
-        return **m_FileSpec;
+    return m_FileSpec;
 }
 
 void PdfAnnotationPopup::SetOpen(const nullable<bool>& value)
 {
     if (value.has_value())
-        GetDictionary().AddKey("Open"_n, *value);
+        GetDictionary().AddKey("Open", *value);
     else
         GetDictionary().RemoveKey("Open");
 }
@@ -119,7 +79,7 @@ bool PdfAnnotationPopup::GetOpen() const
 void PdfAnnotationText::SetOpen(const nullable<bool>& value)
 {
     if (value.has_value())
-        GetDictionary().AddKey("Open"_n, *value);
+        GetDictionary().AddKey("Open", *value);
     else
         GetDictionary().RemoveKey("Open");
 }
@@ -179,12 +139,12 @@ PdfAnnotationCaret::PdfAnnotationCaret(PdfObject& obj)
 {
 }
 
-PdfAnnotationFileAttachment::PdfAnnotationFileAttachment(PdfPage& page, const Rect& rect)
+PdfAnnotationFileAttachement::PdfAnnotationFileAttachement(PdfPage& page, const Rect& rect)
     : PdfAnnotation(page, PdfAnnotationType::FileAttachement, rect)
 {
 }
 
-PdfAnnotationFileAttachment::PdfAnnotationFileAttachment(PdfObject& obj)
+PdfAnnotationFileAttachement::PdfAnnotationFileAttachement(PdfObject& obj)
     : PdfAnnotation(obj, PdfAnnotationType::FileAttachement)
 {
 }

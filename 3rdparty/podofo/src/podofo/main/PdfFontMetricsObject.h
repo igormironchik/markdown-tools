@@ -19,6 +19,10 @@
 
 namespace PoDoFo {
 
+class PdfArray;
+class PdfObject;
+class PdfVariant;
+
 class PODOFO_API PdfFontMetricsObject final : public PdfFontMetricsBase
 {
 private:
@@ -30,7 +34,7 @@ private:
     PdfFontMetricsObject(const PdfObject& font, const PdfObject* descriptor);
 
 public:
-    static std::unique_ptr<const PdfFontMetricsObject> Create(const PdfObject& font, const PdfObject* descriptor = nullptr);
+    static std::unique_ptr<PdfFontMetricsObject> Create(const PdfObject& font, const PdfObject* descriptor = nullptr);
 
     unsigned GetGlyphCount() const override;
 
@@ -99,8 +103,6 @@ public:
     unsigned GetFontFileLength3() const override;
 
     const Matrix2D& GetMatrix() const override;
-
-    bool IsObjectLoaded() const override;
 
 protected:
     bool getIsBoldHint() const override;

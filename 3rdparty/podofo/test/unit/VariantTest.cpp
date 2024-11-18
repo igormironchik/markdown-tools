@@ -7,7 +7,6 @@
  */
 
 #include <PdfTest.h>
-#include <podofo/private/PdfParserObject.h>
 
 using namespace std;
 using namespace PoDoFo;
@@ -24,14 +23,14 @@ static void TestObjectsDirty(
     const PdfObject& objVariant,
     bool testValue);
 
-TEST_CASE("TestEmptyObject")
+TEST_CASE("testEmptyObject")
 {
     auto device = std::make_shared<SpanStreamDevice>("10 0 obj\nendobj\n"sv);
     PdfParserObject parserObj(*device);
     REQUIRE(parserObj.IsNull());
 }
 
-TEST_CASE("TestEmptyStream")
+TEST_CASE("testEmptyStream")
 {
     auto device = std::make_shared<SpanStreamDevice>("10 0 obj<</Length 0>>stream\nendstream\nendobj\n"sv);
     PdfParserObject parserObj(*device);
@@ -40,7 +39,7 @@ TEST_CASE("TestEmptyStream")
     REQUIRE(parserObj.GetStream()->GetLength() == 0);
 }
 
-TEST_CASE("TestNameObject")
+TEST_CASE("testNameObject")
 {
     auto device = std::make_shared<SpanStreamDevice>("10 0 obj / endobj\n"sv);
     PdfParserObject parserObj(*device);
@@ -48,7 +47,7 @@ TEST_CASE("TestNameObject")
     REQUIRE(parserObj.GetName().GetString() == "");
 }
 
-TEST_CASE("TestIsDirtyTrue")
+TEST_CASE("testIsDirtyTrue")
 {
     PdfMemDocument doc;
 
@@ -121,7 +120,7 @@ TEST_CASE("TestIsDirtyTrue")
     TestObjectsDirty(objBool, objNum, objReal, objStr, objRef, objArray, objDict, objStream, objVariant, false);
 }
 
-TEST_CASE("TestIsDirtyFalse")
+TEST_CASE("testIsDirtyFalse")
 {
     PdfObject objBool(true);
     PdfObject objNum(static_cast<int64_t>(1));

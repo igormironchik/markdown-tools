@@ -35,11 +35,6 @@ bool PdfCharCode::operator==(const PdfCharCode& rhs) const
     return CodeSpaceSize == rhs.CodeSpaceSize && Code == rhs.Code;
 }
 
-bool PdfCharCode::operator!=(const PdfCharCode& rhs) const
-{
-    return CodeSpaceSize != rhs.CodeSpaceSize || Code != rhs.Code;
-}
-
 void PdfCharCode::AppendTo(string& str) const
 {
     for (unsigned i = CodeSpaceSize; i >= 1; i--)
@@ -116,10 +111,10 @@ PdfCID::PdfCID(const PdfCharCode& unit)
 
 PdfEncodingLimits::PdfEncodingLimits(unsigned char minCodeSize, unsigned char maxCodeSize,
     const PdfCharCode& firstChar, const PdfCharCode& lastChar) :
-    FirstChar(firstChar),
-    LastChar(lastChar),
     MinCodeSize(minCodeSize),
-    MaxCodeSize(maxCodeSize)
+    MaxCodeSize(maxCodeSize),
+    FirstChar(firstChar),
+    LastChar(lastChar)
 {
 }
 

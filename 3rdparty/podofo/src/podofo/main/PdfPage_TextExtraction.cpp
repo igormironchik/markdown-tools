@@ -8,7 +8,8 @@
 #include "PdfPage.h"
 
 #include <regex>
-#include <list>
+#include <deque>
+#include <stack>
 
 #include <utf8cpp/utf8.h>
 
@@ -46,14 +47,11 @@ struct TextState
     double T_l = 0;             // Leading text Tl
     PdfTextState PdfState;
     Vector2 WordSpacingVectorRaw;
-    Vector2 SpaceCharVectorRaw;
     double WordSpacingLength = 0;
-    double CharSpaceLength = 0;
     void ComputeDependentState();
-    void ComputeSpaceDescriptors();
+    void ComputeSpaceLength();
     void ComputeT_rm();
     double GetWordSpacingLength() const;
-    double GetSpaceCharLength() const;
     void ScanString(const PdfString& encodedStr, string& decoded, vector<double>& lengths, vector<unsigned>& positions);
 };
 
@@ -249,7 +247,7 @@ void PdfPage::ExtractTextTo(vector<PdfTextEntry>& entries, const string_view& pa
                         }
                         else
                         {
-                            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InternalLogic, "Invalid flow");
+                            throw runtime_error("Invalid flow");
                         }
 
                         break;
@@ -419,7 +417,7 @@ void PdfPage::ExtractTextTo(vector<PdfTextEntry>& entries, const string_view& pa
             }
             default:
             {
-                PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidDataType, "Unsupported PdfContentType");
+                throw runtime_error("Unsupported PdfContentType");
             }
         }
     }
@@ -598,7 +596,7 @@ void addEntryChunk(vector<PdfTextEntry> &textEntries, StringChunkList &chunks, c
                     if (lowerIndex != 0)
                     {
                         // Compute substring translation and apply it
-                        // TODO: Handle vertical scripts
+                        // TODO: Handle vertical scritps
                         double substringTx = computeLength(strings, glyphAddresses, 0, lowerIndex - 1);
                         textState.T_rm.Apply<Tx>(substringTx);
                     }
@@ -880,33 +878,19 @@ void ExtractionContext::Tf_Operator(const PdfName &fontname, double fontsize)
 {
     auto resources = getActualCanvas().GetResources();
     double spacingLengthRaw = 0;
-    double spaceCharLengthRaw = 0;
     States.Current->PdfState.FontSize = fontsize;
     if (resources == nullptr || (States.Current->PdfState.Font = resources->GetFont(fontname)) == nullptr)
-    {
         PoDoFo::LogMessage(PdfLogSeverity::Warning, "Unable to find font object {}", fontname.GetString());
-    }
     else
-    {
         spacingLengthRaw = States.Current->GetWordSpacingLength();
-        spaceCharLengthRaw = States.Current->GetSpaceCharLength();
-    }
 
     States.Current->WordSpacingVectorRaw = Vector2(spacingLengthRaw, 0);
     if (spacingLengthRaw == 0)
     {
-        PoDoFo::LogMessage(PdfLogSeverity::Warning, "Unable to provide a word spacing length, setting default font size");
+        PoDoFo::LogMessage(PdfLogSeverity::Warning, "Unable to provide a space size, setting default font size");
         States.Current->WordSpacingVectorRaw = Vector2(fontsize, 0);
     }
-
-    States.Current->SpaceCharVectorRaw = Vector2(spaceCharLengthRaw, 0);
-    if (spaceCharLengthRaw == 0)
-    {
-        PoDoFo::LogMessage(PdfLogSeverity::Warning, "Unable to provide a space char length, setting default font size");
-        States.Current->SpaceCharVectorRaw = Vector2(fontsize, 0);
-    }
-
-    States.Current->ComputeSpaceDescriptors();
+    States.Current->ComputeSpaceLength();
 }
 
 void ExtractionContext::cm_Operator(double a, double b, double c, double d, double e, double f)
@@ -951,7 +935,7 @@ void ExtractionContext::PushString(const StatefulString &str, bool pushchunk)
     PODOFO_ASSERT(str.String.length() != 0);
     if (std::isnan(CurrentEntryT_rm_y))
     {
-        // Initialize tracking for line
+        // Initalize tracking for line
         CurrentEntryT_rm_y = States.Current->T_rm.Get<Ty>();
     }
 
@@ -1029,7 +1013,7 @@ void ExtractionContext::tryAddEntry(const StatefulString& currStr)
             {
                 if (Options.TokenizeWords
                     || distance + SEPARATION_EPSILON >
-                        States.Current->CharSpaceLength * HARD_SEPARATION_SPACING_MULTIPLIER)
+                        States.Current->WordSpacingLength * HARD_SEPARATION_SPACING_MULTIPLIER)
                 {
                     // Current entry is space separated and either we
                     //  tokenize words, or it's an hard entry separation
@@ -1227,14 +1211,13 @@ bool areEqual(double lhs, double rhs)
 
 void TextState::ComputeDependentState()
 {
-    ComputeSpaceDescriptors();
+    ComputeSpaceLength();
     ComputeT_rm();
 }
 
-void TextState::ComputeSpaceDescriptors()
+void TextState::ComputeSpaceLength()
 {
     WordSpacingLength = (WordSpacingVectorRaw * T_m.GetScalingRotation()).GetLength();
-    CharSpaceLength = (SpaceCharVectorRaw * T_m.GetScalingRotation()).GetLength();
 }
 
 void TextState::ComputeT_rm()
@@ -1245,11 +1228,6 @@ void TextState::ComputeT_rm()
 double TextState::GetWordSpacingLength() const
 {
     return PdfState.Font->GetWordSpacingLength(PdfState);
-}
-
-double TextState::GetSpaceCharLength() const
-{
-    return PdfState.Font->GetSpaceCharLength(PdfState);
 }
 
 void TextState::ScanString(const PdfString& encodedStr, string& decoded, vector<double>& lengths, vector<unsigned>& positions)
@@ -1282,7 +1260,7 @@ void processChunks(const StringChunkList& chunks, string& destString,
     }
 }
 
-// TODO: Handle vertical scripts
+// TODO: Handle vertical scritps
 double computeLength(const vector<const StatefulString*>& strings, const vector<GlyphAddress>& glyphAddresses,
     unsigned lowerIndex, unsigned upperIndex)
 {
@@ -1365,7 +1343,7 @@ Rect computeBoundingBox(const TextState& textState, double boxWidth)
     // NOTE: This is very inaccurate
     // TODO1: Handle multiple text/pdf states
     // TODO2: Handle actual font glyphs (HARD)
-    // TODO3: Handle vertical scripts
+    // TODO3: Handle vertical scritps
     double descend = 0;
     double ascent = 0;
     auto& pdfState = textState.PdfState;

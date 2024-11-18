@@ -40,7 +40,7 @@ void HelloWorld(const string_view& filename)
     PdfPainter painter;
 
     // A PdfFont object is required to draw text on a PdfPage using a PdfPainter.
-    // PoDoFo will find the font using fontconfig on your system and embed truetype
+    // PoDoFo will find the font using fontconfig on your system and embedd truetype
     // fonts automatically in the PDF file.
     PdfFont* font;
 
@@ -52,7 +52,7 @@ void HelloWorld(const string_view& filename)
         // 
         // You have to pass only one argument, i.e. the page size of the page to create.
         // There are predefined enums for some common page sizes.
-        auto& page = document.GetPages().CreatePage(PdfPageSize::A4);
+        auto& page = document.GetPages().CreatePage(PdfPage::CreateStandardPageSize(PdfPageSize::A4));
 
         // Set the page as drawing target for the PdfPainter.
         // Before the painter can draw, a page has to be set first.
@@ -122,7 +122,7 @@ void HelloWorld(const string_view& filename)
         // The last step is to close the document.
         document.Save(filename);
     }
-    catch (PdfError&)
+    catch (PdfError& e)
     {
         // All PoDoFo methods may throw exceptions
         // make sure that painter.FinishPage() is called
@@ -136,7 +136,7 @@ void HelloWorld(const string_view& filename)
             // Ignore errors this time
         }
 
-        throw;
+        throw e;
     }
 }
 
@@ -158,7 +158,7 @@ int main(int argc, char* argv[])
     // back to the user.
     // 
     // All exceptions PoDoFo throws are objects of the class PdfError.
-    // That's why we simply catch PdfError objects.
+    // Thats why we simply catch PdfError objects.
     try
     {
         // Call the drawing routing which will create a PDF file
@@ -174,7 +174,7 @@ int main(int argc, char* argv[])
         return (int)err.GetCode();
     }
 
-    // The PDF was created successfully.
+    // The PDF was created sucessfully.
     cout << endl
         << "Created a PDF file containing the line \"Hello World!\": " << argv[1] << endl << endl;
 

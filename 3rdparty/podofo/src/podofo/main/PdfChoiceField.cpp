@@ -45,9 +45,9 @@ void PdChoiceField::InsertItem(const PdfString& value, nullable<const PdfString&
         objToAdd = value;
     }
 
-    auto optObj = GetDictionary().FindKey("Opt");
+    auto optObj = GetObject().GetDictionary().FindKey("Opt");
     if (optObj == nullptr)
-        optObj = &GetDictionary().AddKey("Opt"_n, PdfArray());
+        optObj = &GetObject().GetDictionary().AddKey("Opt", PdfArray());
 
     // TODO: Sorting
     optObj->GetArray().Add(objToAdd);
@@ -57,7 +57,7 @@ void PdChoiceField::InsertItem(const PdfString& value, nullable<const PdfString&
 
 void PdChoiceField::RemoveItem(unsigned index)
 {
-    auto optObj = GetDictionary().FindKey("Opt");
+    auto optObj = GetObject().GetDictionary().FindKey("Opt");
     if (optObj == nullptr)
         return;
 
@@ -70,9 +70,9 @@ void PdChoiceField::RemoveItem(unsigned index)
 
 PdfString PdChoiceField::GetItem(unsigned index) const
 {
-    auto opt = GetDictionary().FindKey("Opt");
+    auto opt = GetObject().GetDictionary().FindKey("Opt");
     if (opt == nullptr)
-        PODOFO_RAISE_ERROR(PdfErrorCode::ObjectNotFound);
+        PODOFO_RAISE_ERROR(PdfErrorCode::InvalidHandle);
 
     auto& optArray = opt->GetArray();
     if (index >= optArray.GetSize())
@@ -95,7 +95,7 @@ PdfString PdChoiceField::GetItem(unsigned index) const
 
 nullable<const PdfString&> PdChoiceField::GetItemDisplayText(int index) const
 {
-    auto* opt = GetDictionary().FindKey("Opt");
+    auto* opt = GetObject().GetDictionary().FindKey("Opt");
     if (opt == nullptr)
         return { };
 
@@ -122,7 +122,7 @@ nullable<const PdfString&> PdChoiceField::GetItemDisplayText(int index) const
 
 unsigned PdChoiceField::GetItemCount() const
 {
-    auto* opt = GetDictionary().FindKey("Opt");
+    auto* opt = GetObject().GetDictionary().FindKey("Opt");
     if (opt == nullptr)
         return 0;
 
@@ -133,18 +133,18 @@ void PdChoiceField::SetSelectedIndex(int index)
 {
     AssertTerminalField();
     PdfString selected = this->GetItem(index);
-    GetDictionary().AddKey("V"_n, selected);
+    GetObject().GetDictionary().AddKey("V", selected);
 }
 
 int PdChoiceField::GetSelectedIndex() const
 {
     AssertTerminalField();
-    auto* valueObj = GetDictionary().FindKey("V");
+    auto* valueObj = GetObject().GetDictionary().FindKey("V");
     if (valueObj == nullptr || !valueObj->IsString())
         return -1;
 
     auto& value = valueObj->GetString();
-    auto* opt = GetDictionary().FindKey("Opt");
+    auto* opt = GetObject().GetDictionary().FindKey("Opt");
     if (opt == nullptr)
         return -1;
 
@@ -165,7 +165,7 @@ int PdChoiceField::GetSelectedIndex() const
         }
         else
         {
-            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidDataType, "Choice field item has invalid data type");
+            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidDataType, "Choice field item has invaid data type");
         }
     }
 
@@ -174,45 +174,45 @@ int PdChoiceField::GetSelectedIndex() const
 
 bool PdChoiceField::IsComboBox() const
 {
-    return this->GetFieldFlag(static_cast<int>(PdfListField_Combo), false);
+    return this->GetFieldFlag(static_cast<int>(ePdfListField_Combo), false);
 }
 
-void PdChoiceField::SetSpellCheckingEnabled(bool spellCheck)
+void PdChoiceField::SetSpellcheckingEnabled(bool spellCheck)
 {
-    this->SetFieldFlag(static_cast<int>(PdfListField_NoSpellcheck), !spellCheck);
+    this->SetFieldFlag(static_cast<int>(ePdfListField_NoSpellcheck), !spellCheck);
 }
 
-bool PdChoiceField::IsSpellCheckingEnabled() const
+bool PdChoiceField::IsSpellcheckingEnabled() const
 {
-    return this->GetFieldFlag(static_cast<int>(PdfListField_NoSpellcheck), true);
+    return this->GetFieldFlag(static_cast<int>(ePdfListField_NoSpellcheck), true);
 }
 
 void PdChoiceField::SetSorted(bool sorted)
 {
-    this->SetFieldFlag(static_cast<int>(PdfListField_Sort), sorted);
+    this->SetFieldFlag(static_cast<int>(ePdfListField_Sort), sorted);
 }
 
 bool PdChoiceField::IsSorted() const
 {
-    return this->GetFieldFlag(static_cast<int>(PdfListField_Sort), false);
+    return this->GetFieldFlag(static_cast<int>(ePdfListField_Sort), false);
 }
 
 void PdChoiceField::SetMultiSelect(bool multi)
 {
-    this->SetFieldFlag(static_cast<int>(PdfListField_MultiSelect), multi);
+    this->SetFieldFlag(static_cast<int>(ePdfListField_MultiSelect), multi);
 }
 
 bool PdChoiceField::IsMultiSelect() const
 {
-    return this->GetFieldFlag(static_cast<int>(PdfListField_MultiSelect), false);
+    return this->GetFieldFlag(static_cast<int>(ePdfListField_MultiSelect), false);
 }
 
 void PdChoiceField::SetCommitOnSelectionChange(bool commit)
 {
-    this->SetFieldFlag(static_cast<int>(PdfListField_CommitOnSelChange), commit);
+    this->SetFieldFlag(static_cast<int>(ePdfListField_CommitOnSelChange), commit);
 }
 
 bool PdChoiceField::IsCommitOnSelectionChange() const
 {
-    return this->GetFieldFlag(static_cast<int>(PdfListField_CommitOnSelChange), false);
+    return this->GetFieldFlag(static_cast<int>(ePdfListField_CommitOnSelChange), false);
 }

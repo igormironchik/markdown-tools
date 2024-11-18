@@ -50,12 +50,7 @@ enum class PdfDestinationType
  */
 class PODOFO_API PdfDestination final : public PdfArrayElement
 {
-    friend class PdfDocument;
-    friend class PdfAnnotationLink;
-    friend class PdfOutlineItem;
-    friend class PdfNameTreeBase;
-
-private:
+public:
     /** Create a new PdfDestination from an existing PdfObject (such as loaded from a doc)
      *  \param obj the object to construct from
      */
@@ -65,22 +60,17 @@ private:
      */
     PdfDestination(PdfDocument& doc);
 
-    PdfDestination(const PdfDestination&) = default;
-
-public:
-    static bool TryCreateFromObject(PdfObject& obj, std::unique_ptr<PdfDestination>& dest);
-
     /** Create a new PdfDestination with a page as destination
      *  \param page a page which is the destination
      *  \param fit fit mode for the page. Must be PdfDestinationFit::Fit or PdfDestinationFit::FitB
      */
-    void SetDestination(const PdfPage& page, PdfDestinationFit fit = PdfDestinationFit::Fit);
+    PdfDestination(const PdfPage& page, PdfDestinationFit fit = PdfDestinationFit::Fit);
 
     /** Create a destination to a page with its contents magnified to fit into the given rectangle
      *  \param page a page which is the destination
      *  \param rect magnify the page so that the contents of the rectangle are visible
      */
-    void SetDestination(const PdfPage& page, const Rect& rect);
+    PdfDestination(const PdfPage& page, const Rect& rect);
 
     /** Create a new destination to a page with specified left
      *  and top coordinates and a zoom factor.
@@ -89,7 +79,7 @@ public:
      *  \param top top coordinate
      *  \param zoom zoom factor in the viewer
      */
-    void SetDestination(const PdfPage& page, double left, double top, double zoom);
+    PdfDestination(const PdfPage& page, double left, double top, double zoom);
 
     /** Create a new destination to a page.
      *  \param page a page which is the destination
@@ -97,8 +87,11 @@ public:
      *              PdfDestinationFit::FitV, PdfDestinationFit::FitBH, PdfDestinationFit::FitBV
      *  \param value value which is a required argument for the selected fit mode
      */
-    void SetDestination(const PdfPage& page, PdfDestinationFit fit, double value);
+    PdfDestination(const PdfPage& page, PdfDestinationFit fit, double value);
 
+    static std::unique_ptr<PdfDestination> Create(PdfObject& obj);
+
+public:
     /** Get the page that this destination points to
      *  Requires that this PdfDestination was somehow
      *  created by or from a PdfDocument. Won't work otherwise.
@@ -153,7 +146,6 @@ public:
      */
     double GetDValue() const;
 
-private:
     /** Adds this destination to an dictionary.
      *  This method handles the all the complexities of making sure it's added correctly
      *

@@ -9,6 +9,7 @@
 
 #include "PdfDeclarations.h"
 
+#include "PdfFilter.h"
 #include "PdfEncrypt.h"
 #include <podofo/auxiliary/OutputStream.h>
 #include <podofo/auxiliary/InputStream.h>
@@ -19,7 +20,7 @@ namespace PoDoFo {
 class PdfObject;
 class PdfObjectStream;
 
-class PODOFO_API PdfObjectInputStream final : public InputStream
+class PODOFO_API PdfObjectInputStream : public InputStream
 {
     friend class PdfObjectStream;
 public:
@@ -43,7 +44,7 @@ private:
     std::vector<const PdfDictionary*> m_MediaDecodeParms;
 };
 
-class PODOFO_API PdfObjectOutputStream final : public OutputStream
+class PODOFO_API PdfObjectOutputStream : public OutputStream
 {
     friend class PdfObjectStream;
 public:
@@ -51,16 +52,12 @@ public:
     ~PdfObjectOutputStream();
     PdfObjectOutputStream(PdfObjectOutputStream&& rhs) noexcept;
 private:
-    /**
-     * \param raw when true, ignore filters on the creation of the stream,
-     *      while still setting them on the object 
-     */
     PdfObjectOutputStream(PdfObjectStream& stream, PdfFilterList&& filters,
         bool raw, bool append);
     PdfObjectOutputStream(PdfObjectStream& stream);
 private:
     PdfObjectOutputStream(PdfObjectStream& stream, nullable<PdfFilterList> filters,
-        bool raw, bool append, bool skipSetDirty);
+        bool raw, bool append);
 protected:
     void writeBuffer(const char* buffer, size_t size) override;
     void flush() override;
@@ -68,6 +65,8 @@ public:
     PdfObjectOutputStream& operator=(PdfObjectOutputStream&& rhs) noexcept;
 private:
     PdfObjectStream* m_stream;
+    nullable<PdfFilterList> m_filters;
+    bool m_raw;
     std::unique_ptr<OutputStream> m_output;
 };
 
@@ -86,10 +85,10 @@ private:
 class PODOFO_API PdfObjectStream final
 {
     friend class PdfObject;
+    friend class PdfParserObject;
     friend class PdfObjectInputStream;
     friend class PdfObjectOutputStream;
-    PODOFO_PRIVATE_FRIEND(class PdfParserObject);
-    PODOFO_PRIVATE_FRIEND(class PdfImmediateWriter);
+    friend class PdfImmediateWriter;
 
 private:
     /** Create a new PdfObjectStream object which has a parent PdfObject.
@@ -116,8 +115,6 @@ public:
      *  All data will be Flate-encoded.
      *
      *  \param buffer buffer containing the stream data
-     *  \param raw if true the data will be set without applying any filter,
-     *      clearing the filters list unconditionally
      */
     void SetData(const bufferview& buffer, bool raw = false);
 
@@ -128,8 +125,6 @@ public:
      *
      *  \param buffer buffer containing the stream data
      *  \param filters a list of filters to use when appending data
-     *  \param raw if true the data will be set without applying any filter, setting the
-     *      supplied filters list unconditionally
      */
     void SetData(const bufferview& buffer, const PdfFilterList& filters, bool raw = false);
 
@@ -137,8 +132,6 @@ public:
      *  All data will be Flate-encoded.
      *
      *  \param stream read stream contents from this InputStream
-     *  \param raw if true the data will be set without applying any filter,
-     *      clearing the filters list unconditionally
      */
     void SetData(InputStream& stream, bool raw = false);
 
@@ -149,8 +142,6 @@ public:
      *
      *  \param stream read stream contents from this InputStream
      *  \param filters a list of filters to use when appending data
-     *  \param raw if true the data will be set without applying any filter, setting the
-     *      supplied filters list unconditionally
      */
     void SetData(InputStream& stream, const PdfFilterList& filters, bool raw = false);
 
@@ -164,8 +155,7 @@ public:
     charbuff GetCopySafe() const;
 
     /** Unwrap the stream to the given buffer, unpacking non media filters
-     * \remarks throws if the stream contains media filters, like DCTDecode.
-     * It clears the buffer before copying
+     * \remarks throws if the stream contains media filters, like DCTDecode
      */
     void CopyTo(charbuff& buffer, bool raw = false) const;
 
@@ -174,8 +164,7 @@ public:
     void CopyToSafe(charbuff& buffer) const;
 
     /** Unwrap the stream and write it to the given stream, unpacking non media filters
-     * \remarks throws if the stream contains media filters, like DCTDecode.
-     * It clears the buffer before copying
+     * \remarks throws if the stream contains media filters, like DCTDecode
      */
     void CopyTo(OutputStream& stream, bool raw = false) const;
 
@@ -186,10 +175,6 @@ public:
     /** Unpack non media filters
      */
     void Unwrap();
-
-    /** Clear the stream and reset filters
-     */
-    void Clear();
 
     /** Get the stream's length with all filters applied (e.g. if the stream is
      * Flate-compressed, the length of the compressed data stream).
@@ -210,18 +195,14 @@ public:
 
     const PdfObjectStreamProvider& GetProvider() const { return *m_Provider; }
 
-    const PdfObject& GetParent() const { return *m_Parent; }
-
-    PdfObject& GetParent() { return *m_Parent; }
-
 private:
     /** Write the stream to an output device
      *  \param device write to this outputdevice.
      *  \param encrypt encrypt stream data using this object
      */
-    void Write(OutputStream& stream, const PdfStatefulEncrypt* encrypt);
+    void Write(OutputStream& stream, const PdfStatefulEncrypt& encrypt);
 
-    void SetParent(PdfObject& parent) { m_Parent = &parent; }
+    PdfObject& GetParent() { return *m_Parent; }
 
     void InitData(InputStream& stream, size_t len, PdfFilterList&& filterList);
 

@@ -2,6 +2,7 @@
 #define JPEG_COMMON_H
 
 #include <podofo/main/PdfDeclarations.h>
+#include <csetjmp>
 
 extern "C" {
 #include <jpeglib.h>
@@ -13,7 +14,7 @@ namespace PoDoFo
 
     struct JpegBufferDestination
     {
-        jpeg_destination_mgr pub = { };
+        jpeg_destination_mgr pub;
         PoDoFo::charbuff* buff = nullptr;
     };
 

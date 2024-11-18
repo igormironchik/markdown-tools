@@ -57,7 +57,7 @@ bool PdfPostScriptTokenizer::TryReadNext(InputStreamDevice& device, PdfPostScrip
 
     PdfLiteralDataType dataType = DetermineDataType(device, token, tokenType, variant);
 
-    // assume we read a variant unless we discover otherwise later.
+    // asume we read a variant unless we discover otherwise later.
     psTokenType = PdfPostScriptTokenType::Variant;
     switch (dataType)
     {

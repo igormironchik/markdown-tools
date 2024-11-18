@@ -144,7 +144,7 @@ void Main(const cspan<string_view>& args)
 
     work(inputPath, outputPath, operations);
 
-    // Delete operations vector
+    // Delete operations vectore
     vector<Operation*>::iterator it = operations.begin();
     while (it != operations.end())
     {

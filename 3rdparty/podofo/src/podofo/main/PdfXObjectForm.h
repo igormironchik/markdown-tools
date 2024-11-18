@@ -26,8 +26,10 @@ private:
      *
      *  \param doc the parent document of the XObject
      *  \param rect the size of the XObject
+     *  \param prefix optional prefix for XObject-name
      */
-    PdfXObjectForm(PdfDocument& doc, const Rect& rect);
+    PdfXObjectForm(PdfDocument& doc, const Rect& rect,
+        const std::string_view& prefix);
 
 public:
     /** Create a new XObject from a page of another document
@@ -54,8 +56,6 @@ public:
      */
     void SetRect(const Rect& rect);
 
-    void SetMatrix(const Matrix& m);
-
 public:
     inline PdfResources* GetResources() { return m_Resources.get(); }
     inline const PdfResources* GetResources() const { return m_Resources.get(); }
@@ -67,10 +67,8 @@ private:
     Rect GetRectRaw() const override;
     PdfObject* getContentsObject() override;
     PdfResources* getResources() override;
-    PdfDictionaryElement& getElement() override;
-    PdfObjectStream& GetOrCreateContentsStream(PdfStreamAppendFlags flags) override;
-    PdfObjectStream& ResetContentsStream() override;
-    void CopyContentsTo(OutputStream& stream) const override;
+    PdfElement& getElement() override;
+    PdfObjectStream& GetStreamForAppending(PdfStreamAppendFlags flags) override;
     void initXObject(const Rect& rect);
     void initAfterPageInsertion(const PdfPage& page);
 

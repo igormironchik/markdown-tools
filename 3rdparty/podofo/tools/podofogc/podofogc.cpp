@@ -52,7 +52,7 @@ void Main(const cspan<string_view>& args)
             }
             else
             {
-                throw;
+                throw e;
             }
         }
     } while (incorrectPw);

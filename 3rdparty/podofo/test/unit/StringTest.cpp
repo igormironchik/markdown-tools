@@ -13,7 +13,7 @@ using namespace PoDoFo;
 
 static void TestWriteEscapeSequences(const string_view& str, const string_view& expected);
 
-TEST_CASE("TestStringUtf8")
+TEST_CASE("testStringUtf8")
 {
     string_view str = "Hallo PoDoFo!";
     REQUIRE(PdfString(str) == str);
@@ -22,26 +22,25 @@ TEST_CASE("TestStringUtf8")
     REQUIRE(PdfString(stringJapUtf8) == stringJapUtf8);
 }
 
-TEST_CASE("TestPdfDocEncoding")
+TEST_CASE("testPdfDocEncoding")
 {
     const string src = "This string contains PdfDocEncoding Characters: ÄÖÜ";
-    string_view ref = "(This string contains PdfDocEncoding Characters: \304\326\334)"sv;
+
     // Normal ascii string should be converted to UTF8
     PdfString str(src);
     REQUIRE(str == src);
-    REQUIRE(str.GetCharset() == PdfStringCharset::PdfDocEncoding);
+    REQUIRE(str.GetState() == PdfStringState::PdfDocEncoding);
 
     // Serialize the string
-    string serialized;
-    str.ToString(serialized);
-    REQUIRE(serialized == ref);
+    string strPdfDocEncoding;
+    str.ToString(strPdfDocEncoding);
 
     // Deserialize the string (remove the surrounding parenthesis '(' ')' )
-    str = PdfString::FromRaw(serialized.substr(1, serialized.length() - 2));
+    str = PdfString::FromRaw(strPdfDocEncoding.substr(1, strPdfDocEncoding.length() - 2));
     REQUIRE(str.GetString() == src);
 }
 
-TEST_CASE("TestEscapeBrackets")
+TEST_CASE("testEscapeBrackets")
 {
     // Test balanced brackets ansi
     string_view balanced = "Hello (balanced) World";
@@ -52,7 +51,7 @@ TEST_CASE("TestEscapeBrackets")
     string strAscii;
     varAscii.ToString(strAscii);
 
-    REQUIRE(pdfStrAscii.GetCharset() == PdfStringCharset::Ascii);
+    REQUIRE(pdfStrAscii.GetState() == PdfStringState::Ascii);
     REQUIRE(strAscii == balancedExpect);
 
     // Test un-balanced brackets ansi
@@ -76,10 +75,11 @@ TEST_CASE("TestEscapeBrackets")
     SpanStreamDevice input(utf16HexStr);
     (void)tokenizer.ReadNextVariant(input, varRead);
     REQUIRE(varRead.GetDataType() == PdfDataType::String);
+    auto str = varRead.GetString().GetString();
     REQUIRE(varRead.GetString() == utf16Expected);
 }
 
-TEST_CASE("TestWriteEscapeSequences")
+TEST_CASE("testWriteEscapeSequences")
 {
     TestWriteEscapeSequences("(1Hello\\nWorld)", "(1Hello\\nWorld)");
     TestWriteEscapeSequences("(Hello\nWorld)", "(Hello\\nWorld)");
@@ -117,7 +117,7 @@ TEST_CASE("TestWriteEscapeSequences")
     TestWriteEscapeSequences("(9Hello\003World)", "(9Hello\003World)");
 }
 
-TEST_CASE("TestEmptyString")
+TEST_CASE("testEmptyString")
 {
     const char* empty = "";
     string strEmpty;
@@ -145,17 +145,12 @@ TEST_CASE("TestEmptyString")
     REQUIRE(str4.GetString() == strEmpty2);
 }
 
-TEST_CASE("TestInitFromUtf8")
+TEST_CASE("testInitFromUtf8")
 {
     string_view utf8 = "This string contains non PdfDocEncoding Characters: ЙКЛМ";
-    string_view ref = "(\376\377\0\124\0\150\0\151\0\163\0\40\0\163\0\164\0\162\0\151\0\156\0\147\0\40\0\143\0\157\0\156\0\164\0\141\0\151\0\156\0\163\0\40\0\156\0\157\0\156\0\40\0\120\0\144\0\146\0\104\0\157\0\143\0\105\0\156\0\143\0\157\0\144\0\151\0\156\0\147\0\40\0\103\0\150\0\141\0\162\0\141\0\143\0\164\0\145\0\162\0\163\0\72\0\40\4\31\4\32\4\33\4\34)"sv;
-
     const PdfString str(utf8);
 
-    REQUIRE(str.GetCharset() == PdfStringCharset::Unicode);
-    string serialized;
-    str.ToString(serialized);
-    REQUIRE(serialized == ref);
+    REQUIRE(str.GetState() == PdfStringState::Unicode);
     REQUIRE(str.GetString().length() == utf8.length());
     REQUIRE(str.GetString() == string(utf8));
 }

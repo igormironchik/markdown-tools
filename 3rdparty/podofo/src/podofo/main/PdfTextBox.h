@@ -18,7 +18,7 @@ namespace PoDoFo
      *  as well as richtext. The text can be interpreted
      *  as path to a file which is going to be submitted.
      */
-    class PODOFO_API PdfTextBox final : public PdfField
+    class PODOFO_API PdfTextBox : public PdfField
     {
         friend class PdfField;
     private:
@@ -115,12 +115,12 @@ namespace PoDoFo
          *
          *  Text fields are spellchecked by default
          */
-        void SetSpellCheckingEnabled(bool spellcheck);
+        void SetSpellcheckingEnabled(bool spellcheck);
 
         /**
          *  \returns true if spellchecking is enabled for this text field
          */
-        bool IsSpellCheckingEnabled() const;
+        bool IsSpellcheckingEnabled() const;
 
         /**
          *  Enable/disable scrollbars for this text field

@@ -33,8 +33,8 @@ PdfObject& PdfCatalog::GetOrCreateMetadataObject()
     if (metadata != nullptr)
         return *metadata;
 
-    metadata = &GetDocument().GetObjects().CreateDictionaryObject("Metadata"_n, "XML"_n);
-    dict.AddKeyIndirect("Metadata"_n, *metadata);
+    metadata = &GetDocument().GetObjects().CreateDictionaryObject("Metadata", "XML");
+    dict.AddKeyIndirect("Metadata", *metadata);
     return *metadata;
 }
 
@@ -54,11 +54,17 @@ string PdfCatalog::GetMetadataStreamValue() const
     return ret;
 }
 
+
 void PdfCatalog::SetMetadataStreamValue(const string_view& value)
 {
     auto& obj = GetOrCreateMetadataObject();
     auto& stream = obj.GetOrCreateStream();
     stream.SetData(value, true);
+
+    // We are writing raw clear text, which is required in most
+    // relevant scenarions (eg. PDF/A). Remove any possibly
+    // existing filter
+    obj.GetDictionary().RemoveKey(PdfName::KeyFilter);
 
     // Invalidate current metadata
     GetDocument().GetMetadata().Invalidate();
@@ -131,27 +137,27 @@ void PdfCatalog::SetPageMode(PdfPageMode inMode)
             break;
 
         case PdfPageMode::UseNone:
-            GetDictionary().AddKey("PageMode"_n, "UseNone"_n);
+            GetDictionary().AddKey("PageMode", PdfName("UseNone"));
             break;
 
         case PdfPageMode::UseThumbs:
-            GetDictionary().AddKey("PageMode"_n, "UseThumbs"_n);
+            GetDictionary().AddKey("PageMode", PdfName("UseThumbs"));
             break;
 
         case PdfPageMode::UseBookmarks:
-            GetDictionary().AddKey("PageMode"_n, "UseOutlines"_n);
+            GetDictionary().AddKey("PageMode", PdfName("UseOutlines"));
             break;
 
         case PdfPageMode::FullScreen:
-            GetDictionary().AddKey("PageMode"_n, "FullScreen"_n);
+            GetDictionary().AddKey("PageMode", PdfName("FullScreen"));
             break;
 
         case PdfPageMode::UseOC:
-            GetDictionary().AddKey("PageMode"_n, "UseOC"_n);
+            GetDictionary().AddKey("PageMode", PdfName("UseOC"));
             break;
 
         case PdfPageMode::UseAttachments:
-            GetDictionary().AddKey("PageMode"_n, "UseAttachments"_n);
+            GetDictionary().AddKey("PageMode", PdfName("UseAttachments"));
             break;
     }
 }
@@ -163,7 +169,7 @@ void PdfCatalog::SetUseFullScreen()
 
     // if current mode is anything but "don't care", we need to move that to non-full-screen
     if (curMode != PdfPageMode::DontCare)
-        setViewerPreference("NonFullScreenPageMode"_n, PdfObject(GetDictionary().MustFindKey("PageMode")));
+        setViewerPreference("NonFullScreenPageMode", PdfObject(GetDictionary().MustFindKey("PageMode")));
 
     SetPageMode(PdfPageMode::FullScreen);
 }
@@ -176,7 +182,7 @@ void PdfCatalog::setViewerPreference(const PdfName& whichPref, const PdfObject& 
         // make me a new one and add it
         PdfDictionary vpDict;
         vpDict.AddKey(whichPref, valueObj);
-        GetDictionary().AddKey("ViewerPreferences"_n, std::move(vpDict));
+        GetDictionary().AddKey("ViewerPreferences", std::move(vpDict));
     }
     else
     {
@@ -192,54 +198,54 @@ void PdfCatalog::setViewerPreference(const PdfName& whichPref, bool inValue)
 
 void PdfCatalog::SetHideToolbar()
 {
-    setViewerPreference("HideToolbar"_n, true);
+    setViewerPreference("HideToolbar", true);
 }
 
 void PdfCatalog::SetHideMenubar()
 {
-    setViewerPreference("HideMenubar"_n, true);
+    setViewerPreference("HideMenubar", true);
 }
 
 void PdfCatalog::SetHideWindowUI()
 {
-    setViewerPreference("HideWindowUI"_n, true);
+    setViewerPreference("HideWindowUI", true);
 }
 
 void PdfCatalog::SetFitWindow()
 {
-    setViewerPreference("FitWindow"_n, true);
+    setViewerPreference("FitWindow", true);
 }
 
 void PdfCatalog::SetCenterWindow()
 {
-    setViewerPreference("CenterWindow"_n, true);
+    setViewerPreference("CenterWindow", true);
 }
 
 void PdfCatalog::SetDisplayDocTitle()
 {
-    setViewerPreference("DisplayDocTitle"_n, true);
+    setViewerPreference("DisplayDocTitle", true);
 }
 
 void PdfCatalog::SetPrintScaling(const PdfName& scalingType)
 {
-    setViewerPreference("PrintScaling"_n, scalingType);
+    setViewerPreference("PrintScaling", scalingType);
 }
 
 void PdfCatalog::SetBaseURI(const string_view& inBaseURI)
 {
     PdfDictionary uriDict;
-    uriDict.AddKey("Base"_n, PdfString(inBaseURI));
-    GetDictionary().AddKey("URI"_n, PdfDictionary(uriDict));
+    uriDict.AddKey("Base", PdfString(inBaseURI));
+    GetDictionary().AddKey("URI", PdfDictionary(uriDict));
 }
 
 void PdfCatalog::SetLanguage(const string_view& language)
 {
-    GetDictionary().AddKey("Lang"_n, PdfString(language));
+    GetDictionary().AddKey("Lang", PdfString(language));
 }
 
 void PdfCatalog::SetBindingDirection(const PdfName& direction)
 {
-    setViewerPreference("Direction"_n, direction);
+    setViewerPreference("Direction", direction);
 }
 
 void PdfCatalog::SetPageLayout(PdfPageLayout layout)
@@ -253,22 +259,22 @@ void PdfCatalog::SetPageLayout(PdfPageLayout layout)
             GetDictionary().RemoveKey("PageLayout");
             break;
         case PdfPageLayout::SinglePage:
-            GetDictionary().AddKey("PageLayout"_n, "SinglePage"_n);
+            GetDictionary().AddKey("PageLayout", PdfName("SinglePage"));
             break;
         case PdfPageLayout::OneColumn:
-            GetDictionary().AddKey("PageLayout"_n, "OneColumn"_n);
+            GetDictionary().AddKey("PageLayout", PdfName("OneColumn"));
             break;
         case PdfPageLayout::TwoColumnLeft:
-            GetDictionary().AddKey("PageLayout"_n, "TwoColumnLeft"_n);
+            GetDictionary().AddKey("PageLayout", PdfName("TwoColumnLeft"));
             break;
         case PdfPageLayout::TwoColumnRight:
-            GetDictionary().AddKey("PageLayout"_n, "TwoColumnRight"_n);
+            GetDictionary().AddKey("PageLayout", PdfName("TwoColumnRight"));
             break;
         case PdfPageLayout::TwoPageLeft:
-            GetDictionary().AddKey("PageLayout"_n, "TwoPageLeft"_n);
+            GetDictionary().AddKey("PageLayout", PdfName("TwoPageLeft"));
             break;
         case PdfPageLayout::TwoPageRight:
-            GetDictionary().AddKey("PageLayout"_n, "TwoPageRight"_n);
+            GetDictionary().AddKey("PageLayout", PdfName("TwoPageRight"));
             break;
     }
 }

@@ -75,19 +75,13 @@ namespace PoDoFo
                 m_iterator++;
                 return *this;
             }
-            Iterator operator++(int)
-            {
-                auto copy = *this;
-                m_iterator++;
-                return copy;
-            }
             value_type operator*()
             {
-                return m_iterator->get();
+                return m_iterator.get();
             }
             value_type operator->()
             {
-                return m_iterator->get();
+                return m_iterator.get();
             }
         private:
             TListIterator m_iterator;
@@ -103,6 +97,7 @@ namespace PoDoFo
         const_iterator end() const;
 
     private:
+        PdfAnnotation& createAnnotation(const std::type_info& typeInfo, const Rect& rect, bool rawRect);
         PdfAnnotation& addAnnotation(std::unique_ptr<PdfAnnotation>&& annot);
         PdfArray* getAnnotationsArray() const;
         void initAnnotations();
@@ -123,7 +118,7 @@ namespace PoDoFo
     template<typename TAnnotation>
     TAnnotation& PdfAnnotationCollection::CreateAnnot(const Rect& rect, bool rawRect)
     {
-        return static_cast<TAnnotation&>(CreateAnnot(PdfAnnotation::GetAnnotationType<TAnnotation>(), rect, rawRect));
+        return static_cast<TAnnotation&>(createAnnotation(typeid(TAnnotation), rect, rawRect));
     }
 }
 

@@ -10,8 +10,6 @@
 
 namespace PoDoFo {
 
-using LogMessageCallback = std::function<void(PdfLogSeverity logSeverity, const std::string_view& msg)>;
-
 class PODOFO_API PdfCommon final
 {
     PdfCommon() = delete;
@@ -43,9 +41,6 @@ public:
     /** The if the given logging severity enabled or not
      */
     static bool IsLoggingSeverityEnabled(PdfLogSeverity logSeverity);
-
-    static unsigned GetMaxObjectCount();
-    static void SetMaxObjectCount(unsigned maxObjectCount);
 };
 
 }

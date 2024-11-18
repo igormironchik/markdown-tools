@@ -28,9 +28,21 @@ PdfContents::PdfContents(PdfPage &parent)
     reset();
 }
 
-void PdfContents::Reset()
+void PdfContents::Reset(PdfObject* obj)
 {
-    m_object = &m_parent->GetDocument().GetObjects().CreateArrayObject();
+    if (obj == nullptr)
+    {
+        m_object = &m_parent->GetDocument().GetObjects().CreateArrayObject();
+    }
+    else
+    {
+        PdfDataType type = obj->GetDataType();
+        if (!(type == PdfDataType::Array || type == PdfDataType::Dictionary))
+            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidHandle, "The object is neither a Dictionary or an Array");
+
+        m_object = obj;
+    }
+
     reset();
 }
 
@@ -43,7 +55,6 @@ charbuff PdfContents::GetCopy() const
 
 void PdfContents::CopyTo(charbuff& buffer) const
 {
-    buffer.clear();
     BufferStreamDevice stream(buffer);
     CopyTo(stream);
 }
@@ -67,7 +78,7 @@ void PdfContents::CopyTo(OutputStream& stream) const
     }
 }
 
-PdfObjectStream & PdfContents::CreateStreamForAppending(PdfStreamAppendFlags flags)
+PdfObjectStream & PdfContents::GetStreamForAppending(PdfStreamAppendFlags flags)
 {
     PdfArray *arr;
     if (m_object->IsArray())
@@ -78,7 +89,7 @@ PdfObjectStream & PdfContents::CreateStreamForAppending(PdfStreamAppendFlags fla
     {
         // Create a /Contents array and put the current stream into it
         auto& newObjArray = m_parent->GetDocument().GetObjects().CreateArrayObject();
-        m_parent->GetDictionary().AddKeyIndirect("Contents"_n, newObjArray);
+        m_parent->GetObject().GetDictionary().AddKeyIndirect("Contents", newObjArray);
         arr = &newObjArray.GetArray();
         arr->AddIndirect(*m_object);
         m_object = &newObjArray;
@@ -88,10 +99,10 @@ PdfObjectStream & PdfContents::CreateStreamForAppending(PdfStreamAppendFlags fla
         PODOFO_RAISE_ERROR(PdfErrorCode::InvalidDataType);
     }
 
-    if (arr->GetSize() != 0 && (flags & PdfStreamAppendFlags::NoSaveRestorePrior) == PdfStreamAppendFlags::None)
+    if ((flags & PdfStreamAppendFlags::NoSaveRestorePrior) == PdfStreamAppendFlags::None)
     {
         // Record all content and readd into a new stream that
-        // substitute all the previous streams
+        // substitue all the previous streams
         charbuff buffer;
         BufferStreamDevice device(buffer);
         copyTo(device, *arr);
@@ -105,7 +116,7 @@ PdfObjectStream & PdfContents::CreateStreamForAppending(PdfStreamAppendFlags fla
             auto output = stream.GetOutputStream();
             output.Write("q\n");
             output.Write(buffer);
-            // TODO: Avoid adding useless \n prior Q
+            // TODO: Avoid adding unuseful \n prior Q
             output.Write("\nQ");
         }
     }
@@ -132,5 +143,5 @@ void PdfContents::copyTo(OutputStream& stream, const PdfArray& arr) const
 
 void PdfContents::reset()
 {
-    m_parent->GetDictionary().AddKeyIndirect("Contents"_n, *m_object);
+    m_parent->GetObject().GetDictionary().AddKeyIndirect("Contents", *m_object);
 }

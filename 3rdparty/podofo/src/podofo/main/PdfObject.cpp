@@ -10,29 +10,18 @@
 #include "PdfDocument.h"
 #include "PdfArray.h"
 #include "PdfDictionary.h"
-#include "PdfStatefulEncrypt.h"
+#include "PdfEncrypt.h"
+#include "PdfStreamedObjectStream.h"
 #include "PdfMemoryObjectStream.h"
-
 #include <podofo/auxiliary/StreamDevice.h>
-#include <podofo/private/PdfStreamedObjectStream.h>
 
 using namespace std;
 using namespace PoDoFo;
 
-const PdfObject PdfObject::Null = PdfObject(nullptr);
+PdfObject PdfObject::Null = PdfVariant::Null;
 
 PdfObject::PdfObject()
-    : m_Variant(PdfDictionary()), m_IsDirty(false), m_IsImmutable(false)
-{
-    initObject();
-    m_Variant.GetDictionaryUnsafe().SetOwner(*this);
-}
-
-PdfObject::PdfObject(nullptr_t)
-    : m_IsDirty(false), m_IsImmutable(false)
-{
-    initObject();
-}
+    : PdfObject(PdfDictionary(), PdfReference(), false) { }
 
 PdfObject::~PdfObject() { }
 
@@ -40,76 +29,76 @@ PdfObject::PdfObject(const PdfVariant& var)
     : PdfObject(PdfVariant(var), PdfReference(), false) { }
 
 PdfObject::PdfObject(PdfVariant&& var) noexcept
-    : m_Variant(std::move(var)), m_IsDirty(false), m_IsImmutable(false)
+    : m_Variant(std::move(var)), m_IsDirty(false)
 {
     initObject();
     SetVariantOwner();
 }
 
 PdfObject::PdfObject(bool b)
-    : m_Variant(b), m_IsDirty(false), m_IsImmutable(false)
+    : m_Variant(b), m_IsDirty(false)
 {
     initObject();
 }
 
 PdfObject::PdfObject(int64_t l)
-    : m_Variant(l), m_IsDirty(false), m_IsImmutable(false)
+    : m_Variant(l), m_IsDirty(false)
 {
     initObject();
 }
 
 PdfObject::PdfObject(double d)
-    : m_Variant(d), m_IsDirty(false), m_IsImmutable(false)
+    : m_Variant(d), m_IsDirty(false)
 {
     initObject();
 }
 
 PdfObject::PdfObject(const PdfString& str)
-    : m_Variant(str), m_IsDirty(false), m_IsImmutable(false)
+    : m_Variant(str), m_IsDirty(false)
 {
     initObject();
 }
 PdfObject::PdfObject(const PdfName& name)
-    : m_Variant(name), m_IsDirty(false), m_IsImmutable(false)
+    : m_Variant(name), m_IsDirty(false)
 {
     initObject();
 }
 
 PdfObject::PdfObject(const PdfReference& ref)
-    : m_Variant(ref), m_IsDirty(false), m_IsImmutable(false)
+    : m_Variant(ref), m_IsDirty(false)
 {
     initObject();
 }
 
 PdfObject::PdfObject(const PdfArray& arr)
-    : m_Variant(arr), m_IsDirty(false), m_IsImmutable(false)
+    : m_Variant(arr), m_IsDirty(false)
 {
     initObject();
     m_Variant.GetArray().SetOwner(*this);
 }
 
 PdfObject::PdfObject(PdfArray&& arr) noexcept
-    : m_Variant(std::move(arr)), m_IsDirty(false), m_IsImmutable(false)
+    : m_Variant(std::move(arr)), m_IsDirty(false)
 {
     initObject();
     m_Variant.GetArray().SetOwner(*this);
 }
 
 PdfObject::PdfObject(const PdfDictionary& dict)
-    : m_Variant(dict), m_IsDirty(false), m_IsImmutable(false)
+    : m_Variant(dict), m_IsDirty(false)
 {
     initObject();
-    m_Variant.GetDictionaryUnsafe().SetOwner(*this);
+    m_Variant.GetDictionary().SetOwner(*this);
 }
 
 PdfObject::PdfObject(PdfDictionary&& dict) noexcept
-    : m_Variant(std::move(dict)), m_IsDirty(false), m_IsImmutable(false)
+    : m_Variant(std::move(dict)), m_IsDirty(false)
 {
     initObject();
-    m_Variant.GetDictionaryUnsafe().SetOwner(*this);
+    m_Variant.GetDictionary().SetOwner(*this);
 }
 
-// NOTE: Don't copy parent document/container/indirect reference.
+// NOTE: Don't copy parent document/container/indirect refernce.
 // Copied objects must be always detached. Ownership will be set
 // automatically elsewhere
 PdfObject::PdfObject(const PdfObject& rhs)
@@ -121,20 +110,13 @@ PdfObject::PdfObject(const PdfObject& rhs)
 // NOTE: Don't move parent document/container. Copied objects must be
 // always detached. Ownership will be set automatically elsewhere.
 // Also don't move reference
-PdfObject::PdfObject(PdfObject&& rhs) noexcept
-    : m_Document(nullptr), m_Parent(nullptr), m_IsDirty(false), m_IsImmutable(false)
-{
-    moveFrom(std::move(rhs));
-    rhs.SetDirty();
-}
-
-// NOTE: Dirty objects are those who are supposed to be serialized
-// or deserialized.
-PdfObject::PdfObject(PdfVariant&& var, const PdfReference& indirectReference, bool isDirty)
-    : m_Variant(std::move(var)), m_IndirectReference(indirectReference), m_IsDirty(isDirty), m_IsImmutable(false)
+PdfObject::PdfObject(PdfObject&& rhs) noexcept :
+    m_Variant(std::move(rhs.m_Variant)),
+    m_IsDirty(false)
 {
     initObject();
     SetVariantOwner();
+    moveStreamFrom(rhs);
 }
 
 const PdfObjectStream* PdfObject::GetStream() const
@@ -147,6 +129,15 @@ PdfObjectStream* PdfObject::GetStream()
 {
     DelayedLoadStream();
     return m_Stream.get();
+}
+
+// NOTE: Dirty objects are those who are supposed to be serialized
+// or deserialized.
+PdfObject::PdfObject(PdfVariant&& var, const PdfReference& indirectReference, bool isDirty)
+    : m_Variant(std::move(var)), m_IndirectReference(indirectReference), m_IsDirty(isDirty)
+{
+    initObject();
+    SetVariantOwner();
 }
 
 void PdfObject::ForceCreateStream()
@@ -172,14 +163,14 @@ void PdfObject::DelayedLoad() const
     if (m_IsDelayedLoadDone)
         return;
 
-    const_cast<PdfObject&>(*this).delayedLoad();
+    const_cast<PdfObject&>(*this).DelayedLoadImpl();
     m_IsDelayedLoadDone = true;
     const_cast<PdfObject&>(*this).SetVariantOwner();
 }
 
-void PdfObject::delayedLoad()
+void PdfObject::DelayedLoadImpl()
 {
-    // Default implementation of virtual void delayedLoad() throws, since delayed
+    // Default implementation of virtual void DelayedLoadImpl() throws, since delayed
     // loading should not be enabled except by types that support it.
     PODOFO_RAISE_ERROR(PdfErrorCode::InternalLogic);
 }
@@ -190,10 +181,10 @@ void PdfObject::SetVariantOwner()
     switch (dataType)
     {
         case PdfDataType::Dictionary:
-            m_Variant.GetDictionaryUnsafe().SetOwner(*this);
+            m_Variant.GetDictionary().SetOwner(*this);
             break;
         case PdfDataType::Array:
-            m_Variant.GetArrayUnsafe().SetOwner(*this);
+            m_Variant.GetArray().SetOwner(*this);
             break;
         default:
             break;
@@ -214,27 +205,31 @@ void PdfObject::initObject()
     m_IsDelayedLoadStreamDone = true;
 }
 
-void PdfObject::Write(OutputStream& stream, PdfWriteFlags writeMode,
-    const PdfStatefulEncrypt* encrypt, charbuff& buffer) const
+void PdfObject::Write(OutputStream& device, PdfWriteFlags writeMode,
+    const PdfEncrypt* encrypt_, charbuff& buffer) const
 {
+    DelayedLoad();
     DelayedLoadStream();
-    write(stream, true, writeMode, encrypt, buffer);
-}
 
-void PdfObject::WriteFinal(OutputStream& stream, PdfWriteFlags writeMode, const PdfStatefulEncrypt* encrypt, charbuff& buffer)
-{
-    DelayedLoadStream();
-    write(stream, false, writeMode, encrypt, buffer);
+    PdfStatefulEncrypt encrypt;
+    if (encrypt_ != nullptr)
+        encrypt = PdfStatefulEncrypt(*encrypt_, m_IndirectReference);
 
-    // After writing we can reset the dirty flag
-    ResetDirty();
-}
-
-void PdfObject::write(OutputStream& stream, bool skipLengthFix,
-    PdfWriteFlags writeMode, const PdfStatefulEncrypt* encrypt, charbuff& buffer) const
-{
     if (m_IndirectReference.IsIndirect())
-        WriteHeader(stream, writeMode, buffer);
+    {
+        if ((writeMode & PdfWriteFlags::Clean) == PdfWriteFlags::None
+            && (writeMode & PdfWriteFlags::NoPDFAPreserve) != PdfWriteFlags::None)
+        {
+            utls::FormatTo(buffer, "{} {} obj", m_IndirectReference.ObjectNumber(), m_IndirectReference.GenerationNumber());
+            device.Write(buffer);
+        }
+        else
+        {
+            // PDF/A compliance requires all objects to be written in a clean way
+            utls::FormatTo(buffer, "{} {} obj\n", m_IndirectReference.ObjectNumber(), m_IndirectReference.GenerationNumber());
+            device.Write(buffer);
+        }
+    }
 
     if (m_Stream != nullptr)
     {
@@ -249,71 +244,46 @@ void PdfObject::write(OutputStream& stream, bool skipLengthFix,
                 || m_IndirectReference != metadataObj->GetIndirectReference()))
         {
             PdfObject object;
-            auto& objStream = object.GetOrCreateStream();
+            auto& stream = object.GetOrCreateStream();
             {
-                auto output = objStream.GetOutputStream({ PdfFilterType::FlateDecode });
+                auto output = stream.GetOutputStream({ PdfFilterType::FlateDecode });
                 auto input = m_Stream->GetInputStream();
                 input.CopyTo(output);
             }
 
-            m_Stream->MoveFrom(objStream);
+            m_Stream->MoveFrom(stream);
         }
 
         // Set length if it's not handled by the underlying provider
-        if (!skipLengthFix)
+        if (!m_Stream->GetProvider().IsLengthHandled())
         {
             size_t length = m_Stream->GetLength();
-            if (encrypt != nullptr)
-                length = encrypt->CalculateStreamLength(length);
+            if (encrypt.HasEncrypt())
+                length = encrypt.CalculateStreamLength(length);
 
             // Add the key without triggering SetDirty
-            const_cast<PdfObject&>(*this).m_Variant.GetDictionaryUnsafe()
-                .AddKeyNoDirtySet("Length"_n, PdfVariant(static_cast<int64_t>(length)));
+            const_cast<PdfObject&>(*this).m_Variant.GetDictionary()
+                .AddKey(PdfName::KeyLength, static_cast<int64_t>(length), true);
         }
     }
 
-    m_Variant.Write(stream, writeMode, encrypt, buffer);
-    stream.Write('\n');
+    m_Variant.Write(device, writeMode, encrypt, buffer);
+    device.Write('\n');
 
     if (m_Stream != nullptr)
-        m_Stream->Write(stream, encrypt);
+        m_Stream->Write(device, encrypt);
 
     if (m_IndirectReference.IsIndirect())
-        stream.Write("endobj\n");
-}
+        device.Write("endobj\n");
 
-void PdfObject::WriteHeader(OutputStream& stream, PdfWriteFlags writeMode, charbuff& buffer) const
-{
-    if ((writeMode & PdfWriteFlags::Clean) != PdfWriteFlags::None
-        || (writeMode & PdfWriteFlags::PdfAPreserve) != PdfWriteFlags::None)
-    {
-        // PDF/A compliance requires all objects to be written in a clean way
-        utls::FormatTo(buffer, "{} {} obj\n", m_IndirectReference.ObjectNumber(), m_IndirectReference.GenerationNumber());
-        stream.Write(buffer);
-    }
-    else
-    {
-        utls::FormatTo(buffer, "{} {} obj", m_IndirectReference.ObjectNumber(), m_IndirectReference.GenerationNumber());
-        stream.Write(buffer);
-    }
+    // After write we ca reset the dirty flag
+    const_cast<PdfObject&>(*this).ResetDirty();
 }
 
 PdfObjectStream& PdfObject::GetOrCreateStream()
 {
     DelayedLoadStream();
     return getOrCreateStream();
-}
-
-void PdfObject::RemoveStream()
-{
-    DelayedLoad();
-    // Unconditionally set the stream as already loaded,
-    // then just remove it
-    m_IsDelayedLoadStreamDone = true;
-    bool hasStream = m_Stream != nullptr || removeStream();
-    m_Stream = nullptr;
-    if (hasStream)
-        SetDirty();
 }
 
 const PdfObjectStream& PdfObject::MustGetStream() const
@@ -339,16 +309,10 @@ bool PdfObject::IsIndirect() const
     return m_IndirectReference.IsIndirect();
 }
 
-bool PdfObject::TryUnload()
-{
-    // Do nothing on base PdfObject class
-    return false;
-}
-
 bool PdfObject::HasStream() const
 {
-    DelayedLoad();
-    return m_Stream != nullptr || HasStreamToParse();
+    DelayedLoadStream();
+    return m_Stream != nullptr;
 }
 
 PdfObjectStream& PdfObject::getOrCreateStream()
@@ -392,7 +356,7 @@ void PdfObject::delayedLoadStream() const
     if (m_IsDelayedLoadStreamDone)
         return;
 
-    const_cast<PdfObject&>(*this).delayedLoadStream();
+    const_cast<PdfObject&>(*this).DelayedLoadStreamImpl();
     m_IsDelayedLoadStreamDone = true;
 }
 
@@ -408,9 +372,8 @@ PdfObject& PdfObject::operator=(const PdfObject& rhs)
 
 PdfObject& PdfObject::operator=(PdfObject&& rhs) noexcept
 {
-    moveFrom(std::move(rhs));
+    moveFrom(rhs);
     SetDirty();
-    rhs.SetDirty();
     return *this;
 }
 
@@ -422,7 +385,7 @@ void PdfObject::copyStreamFrom(const PdfObject& obj)
     if (obj.m_Stream != nullptr)
     {
         auto& stream = getOrCreateStream();
-        stream.CopyFrom(*obj.m_Stream);
+        stream = *obj.m_Stream;
     }
 }
 
@@ -430,8 +393,6 @@ void PdfObject::moveStreamFrom(PdfObject& obj)
 {
     obj.DelayedLoadStream();
     m_Stream = std::move(obj.m_Stream);
-    if (m_Stream != nullptr)
-        m_Stream->SetParent(*this);
 }
 
 void PdfObject::EnableDelayedLoading()
@@ -444,48 +405,19 @@ void PdfObject::EnableDelayedLoadingStream()
     m_IsDelayedLoadStreamDone = false;
 }
 
-void PdfObject::SetRevised()
-{
-    // Do nothing on base PdfObject class
-}
-
-void PdfObject::delayedLoadStream()
+void PdfObject::DelayedLoadStreamImpl()
 {
     // Default implementation throws, since delayed loading of
-    // streams should not be enabled except by types that support it.
+    // steams should not be enabled except by types that support it.
     PODOFO_RAISE_ERROR(PdfErrorCode::InternalLogic);
 }
 
-bool PdfObject::removeStream()
+void PdfObject::Assign(const PdfObject& rhs)
 {
-    // Do nothing for regular object
-    return false;
-}
+    if (&rhs == this)
+        return;
 
-bool PdfObject::HasStreamToParse() const
-{
-    return false;
-}
-
-void PdfObject::AssignNoDirtySet(const PdfObject& rhs)
-{
-    PODOFO_ASSERT(&rhs != this);
     assign(rhs);
-}
-
-void PdfObject::AssignNoDirtySet(PdfObject&& rhs)
-{
-    PODOFO_ASSERT(&rhs != this);
-    moveFrom(std::move(rhs));
-}
-
-void PdfObject::AssignNoDirtySet(PdfVariant&& rhs)
-{
-    m_Variant = std::move(rhs);
-    m_IsDelayedLoadDone = true;
-    SetVariantOwner();
-    m_Stream = nullptr;
-    m_IsDelayedLoadStreamDone = true;
 }
 
 void PdfObject::SetParent(PdfDataContainer& parent)
@@ -493,12 +425,6 @@ void PdfObject::SetParent(PdfDataContainer& parent)
     m_Parent = &parent;
     auto document = parent.GetObjectDocument();
     SetDocument(document);
-}
-
-void PdfObject::assertMutable() const
-{
-    if (m_IsImmutable)
-        PODOFO_RAISE_ERROR(PdfErrorCode::ChangeOnImmutable);
 }
 
 // NOTE: Don't copy parent document/container and indirect reference.
@@ -515,7 +441,7 @@ void PdfObject::assign(const PdfObject& rhs)
 
 // NOTE: Don't move parent document/container and indirect reference.
 // Objects being assigned always keep current ownership
-void PdfObject::moveFrom(PdfObject&& rhs)
+void PdfObject::moveFrom(PdfObject& rhs)
 {
     rhs.DelayedLoad();
     m_Variant = std::move(rhs.m_Variant);
@@ -534,10 +460,10 @@ void PdfObject::ResetDirty()
         // Arrays and Dictionaries
         // handle dirty status by themselves
         case PdfDataType::Array:
-            m_Variant.GetArrayUnsafe().ResetDirty();
+            static_cast<PdfDataContainer&>(m_Variant.GetArray()).ResetDirty();
             break;
         case PdfDataType::Dictionary:
-            m_Variant.GetDictionaryUnsafe().ResetDirty();
+            static_cast<PdfDataContainer&>(m_Variant.GetDictionary()).ResetDirty();
             break;
         case PdfDataType::Bool:
         case PdfDataType::Number:
@@ -565,7 +491,7 @@ void PdfObject::SetDirty()
     else if (m_Parent != nullptr)
     {
         // Reset parent if not indirect. Resetting will stop at
-        // first indirect ancestor
+        // first indirect anchestor
         m_Parent->SetDirty();
     }
 }
@@ -573,7 +499,6 @@ void PdfObject::SetDirty()
 void PdfObject::setDirty()
 {
     m_IsDirty = true;
-    SetRevised();
 }
 
 void PdfObject::resetDirty()
@@ -607,35 +532,19 @@ PdfDataType PdfObject::GetDataType() const
     return m_Variant.GetDataType();
 }
 
-string PdfObject::ToString(PdfWriteFlags writeFlags) const
+string PdfObject::ToString() const
 {
     string ret;
-    ToString(ret, writeFlags);
+    ToString(ret);
     return ret;
 }
 
-void PdfObject::ToString(string& ret, PdfWriteFlags writeFlags) const
+void PdfObject::ToString(string& ret) const
 {
-    DelayedLoadStream();
     ret.clear();
-    switch (m_Variant.GetDataType())
-    {
-        case PdfDataType::Null:
-        case PdfDataType::Bool:
-        case PdfDataType::Number:
-        case PdfDataType::Real:
-        case PdfDataType::Reference:
-            // We enforce the literals to not be spaced
-            writeFlags |= PdfWriteFlags::NoInlineLiteral;
-            break;
-        default:
-            // Do nothing
-            break;
-    }
-
     StringStreamDevice device(ret);
     charbuff buffer;
-    write(device, true, writeFlags, nullptr, buffer);
+    Write(device, PdfWriteFlags::None, nullptr, buffer);
 }
 
 bool PdfObject::GetBool() const
@@ -796,7 +705,6 @@ bool PdfObject::TryGetReference(PdfReference& ref) const
 
 void PdfObject::SetBool(bool b)
 {
-    assertMutable();
     DelayedLoad();
     m_Variant.SetBool(b);
     SetDirty();
@@ -804,7 +712,6 @@ void PdfObject::SetBool(bool b)
 
 void PdfObject::SetNumber(int64_t l)
 {
-    assertMutable();
     DelayedLoad();
     m_Variant.SetNumber(l);
     SetDirty();
@@ -812,7 +719,6 @@ void PdfObject::SetNumber(int64_t l)
 
 void PdfObject::SetReal(double d)
 {
-    assertMutable();
     DelayedLoad();
     m_Variant.SetReal(d);
     SetDirty();
@@ -820,7 +726,6 @@ void PdfObject::SetReal(double d)
 
 void PdfObject::SetName(const PdfName& name)
 {
-    assertMutable();
     DelayedLoad();
     m_Variant.SetName(name);
     SetDirty();
@@ -828,7 +733,6 @@ void PdfObject::SetName(const PdfName& name)
 
 void PdfObject::SetString(const PdfString& str)
 {
-    assertMutable();
     DelayedLoad();
     m_Variant.SetString(str);
     SetDirty();
@@ -836,25 +740,12 @@ void PdfObject::SetString(const PdfString& str)
 
 void PdfObject::SetReference(const PdfReference& ref)
 {
-    assertMutable();
     DelayedLoad();
     m_Variant.SetReference(ref);
     SetDirty();
 }
 
-void PdfObject::SetNumberNoDirtySet(int64_t l)
-{
-    PODOFO_ASSERT(m_IsDelayedLoadDone);
-    m_Variant.SetNumber(l);
-}
-
-void PdfObject::SetImmutable()
-{
-    PODOFO_ASSERT(m_IsDelayedLoadDone);
-    m_IsImmutable = true;
-}
-
-string_view PdfObject::GetDataTypeString() const
+const char* PdfObject::GetDataTypeString() const
 {
     DelayedLoad();
     return m_Variant.GetDataTypeString();

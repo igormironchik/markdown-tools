@@ -14,12 +14,12 @@
 namespace PoDoFo {
 
 /** A PdfFont implementation that can be used
- *  to embed truetype fonts into a PDF file
+ *  to embedd truetype fonts into a PDF file
  *  or to draw with truetype fonts.
  *
  *  TrueType fonts are always embedded as suggested in the PDF reference.
  */
-class PODOFO_API PdfFontTrueType final : public PdfFontSimple
+class PdfFontTrueType final : public PdfFontSimple
 {
     friend class PdfFont;
 

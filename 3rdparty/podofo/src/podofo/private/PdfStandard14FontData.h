@@ -7,11 +7,12 @@
 #ifndef PDF_FONT_STANDARD14_DATA_H
 #define PDF_FONT_STANDARD14_DATA_H
 
+#include "PdfDeclarationsPrivate.h"
 #include <podofo/main/PdfFontMetricsStandard14.h>
 
 namespace PoDoFo {
 
-struct Standard14FontData final
+struct Standard14FontData
 {
     const unsigned short* Widths;
     unsigned WidthsSize;

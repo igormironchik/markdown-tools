@@ -15,29 +15,27 @@ class PdfDocument;
 
 enum class PdfAcroFormDefaulAppearance
 {
-    None = 0, ///< Do not add a default appearrance
-    ArialBlack ///< Add a default appearance with Arial embedded and black text if no other DA key is present
+    None, ///< Do not add a default appearrance
+    BlackText12pt ///< Add a default appearance with Arial embedded and black text 12pt if no other DA key is present
 };
 
 class PODOFO_API PdfAcroForm final : public PdfDictionaryElement
 {
     friend class PdfField;
-    friend class PdfDocument;
 
-private:
+public:
     /** Create a new PdfAcroForm dictionary object
      *  \param doc parent of this action
      *  \param defaultAppearance specifies if a default appearance should be added
      */
     PdfAcroForm(PdfDocument & doc,
-                 PdfAcroFormDefaulAppearance defaultAppearance = PdfAcroFormDefaulAppearance::ArialBlack);
+                 PdfAcroFormDefaulAppearance defaultAppearance = PdfAcroFormDefaulAppearance::BlackText12pt);
 
     /** Create a PdfAcroForm dictionary object from an existing PdfObject
      *	\param obj the object to create from
      */
     PdfAcroForm(PdfObject& obj);
 
-public:
     /** Set the value of the NeedAppearances key in the interactive forms
      *  dictionary.
      *
@@ -81,7 +79,7 @@ public:
      */
     void RemoveFieldAt(unsigned index);
 
-    /** Delete the field with the given object reference
+    /** Delete the field with the given object referece
      *  \param ref the object reference
      */
     void RemoveField(const PdfReference& ref);
@@ -121,12 +119,6 @@ public:
             m_iterator++;
             return *this;
         }
-        Iterator operator++(int)
-        {
-            auto copy = *this;
-            m_iterator++;
-            return copy;
-        }
         value_type operator*()
         {
             return (*m_iterator).get();
@@ -161,6 +153,8 @@ private:
      */
     void init(PdfAcroFormDefaulAppearance defaultAppearance);
 
+    PdfField& createField(const std::string_view& name, const std::type_info& typeInfo);
+
     PdfArray* getFieldArray() const;
 
     void initFields();
@@ -182,7 +176,7 @@ private:
 template<typename TField>
 TField& PdfAcroForm::CreateField(const std::string_view& name)
 {
-    return static_cast<TField&>(CreateField(name, PdfField::GetFieldType<TField>()));
+    return static_cast<TField&>(createField(name, typeid(TField)));
 }
 
 };

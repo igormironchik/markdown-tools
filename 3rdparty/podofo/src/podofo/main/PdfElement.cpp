@@ -40,8 +40,8 @@ PdfDocument& PdfElement::GetDocument() const
     return *m_Object->GetDocument();
 }
 
-PdfDictionaryElement::PdfDictionaryElement(PdfDocument& parent, const PdfName& type,
-    const PdfName& subtype)
+PdfDictionaryElement::PdfDictionaryElement(PdfDocument& parent, const string_view& type,
+    const string_view& subtype)
     : PdfElement(parent.GetObjects().CreateDictionaryObject(type, subtype),
         PdfDataType::Dictionary)
 {
@@ -54,12 +54,12 @@ PdfDictionaryElement::PdfDictionaryElement(PdfObject& obj)
 
 PdfDictionary& PdfDictionaryElement::GetDictionary()
 {
-    return GetObject().GetDictionaryUnsafe();
+    return GetObject().GetDictionary();
 }
 
 const PdfDictionary& PdfDictionaryElement::GetDictionary() const
 {
-    return GetObject().GetDictionaryUnsafe();
+    return GetObject().GetDictionary();
 }
 
 PdfArrayElement::PdfArrayElement(PdfDocument& parent)
@@ -75,10 +75,10 @@ PdfArrayElement::PdfArrayElement(PdfObject& obj)
 
 PdfArray& PdfArrayElement::GetArray()
 {
-    return GetObject().GetArrayUnsafe();
+    return GetObject().GetArray();
 }
 
 const PdfArray& PdfArrayElement::GetArray() const
 {
-    return GetObject().GetArrayUnsafe();
+    return GetObject().GetArray();
 }

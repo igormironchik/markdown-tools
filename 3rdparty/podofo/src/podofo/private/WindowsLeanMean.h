@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 // Include clean windows headers and undef most offending macros
 
@@ -9,4 +9,3 @@
 #undef DrawText
 #undef GetObject
 #undef CreateFont
-#undef GetEnvironmentVariable

@@ -14,12 +14,12 @@
 namespace PoDoFo {
 
 /** A PdfFont implementation that can be used
- *  to embed type3 fonts into a PDF file
+ *  to embedd type3 fonts into a PDF file
  *  or to draw with type3 fonts.
  *
  *  Type3 fonts are always embedded.
  */
-class PODOFO_API PdfFontType3 final : public PdfFontSimple
+class PdfFontType3 final : public PdfFontSimple
 {
     friend class PdfFont;
 private:

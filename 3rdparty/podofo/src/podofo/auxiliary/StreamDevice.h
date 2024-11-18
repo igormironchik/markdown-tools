@@ -10,7 +10,6 @@
 #include <cstring>
 #include <ostream>
 #include <fstream>
-#include <cstdio>
 #include <vector>
 
 #include "basetypes.h"
@@ -97,7 +96,7 @@ enum class FileMode
     Append,            ///< Open an existing file and seek to the end for writing
 };
 
-class PODOFO_API FileStreamDevice : public StreamDevice
+class PODOFO_API FileStreamDevice final : public StandardStreamDevice
 {
 public:
     /** Open for reading the supplied filepath
@@ -113,35 +112,21 @@ public:
     FileStreamDevice(const std::string_view& filepath, FileMode mode,
         DeviceAccess access);
 
-    ~FileStreamDevice();
-
 public:
     const std::string& GetFilepath() const { return m_Filepath; }
 
-    size_t GetLength() const override;
-
-    size_t GetPosition() const override;
-
-    bool CanSeek() const override;
-
-    bool Eof() const override;
-
 protected:
-    void writeBuffer(const char* buffer, size_t size) override;
-    void flush() override;
-    size_t readBuffer(char* buffer, size_t size, bool& eof) override;
-    bool readChar(char& ch) override;
-    bool peek(char& ch) const override;
-    void seek(ssize_t offset, SeekDirection direction) override;
     void close() override;
 
 private:
-    FILE* m_file;
+    std::fstream* getFileStream(const std::string_view& filename, FileMode mode, DeviceAccess access);
+
+private:
     std::string m_Filepath;
 };
 
 template <typename TContainer>
-class ContainerStreamDevice : public StreamDevice
+class ContainerStreamDevice final : public StreamDevice
 {
 public:
     ContainerStreamDevice(TContainer& container,
@@ -225,7 +210,7 @@ private:
     size_t m_Position;
 };
 
-class PODOFO_API SpanStreamDevice : public StreamDevice
+class PODOFO_API SpanStreamDevice final : public StreamDevice
 {
 public:
     /** Construct a new StreamDevice that reads all data from a memory buffer.

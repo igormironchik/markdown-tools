@@ -84,7 +84,7 @@ void PdfTranslator::setSource(const string& source)
             if (!in.getline(filenameBuffer, 1000))
                 throw runtime_error("failed reading line from input file");
 
-            string ts(filenameBuffer, (size_t)in.gcount());
+            string ts(filenameBuffer, in.gcount());
             if (ts.size() > 4) // at least ".pdf" because just test if ts is empty doesn't work.
             {
                 multiSource.push_back(ts);
@@ -315,12 +315,12 @@ void PdfTranslator::setTarget(const string& target)
         for (itKey = pageKeys.begin(); itKey != pageKeys.end(); itKey++)
         {
             PdfName keyname(*itKey);
-            if (page.GetDictionary().HasKey(keyname))
+            if (page.GetObject().GetDictionary().HasKey(keyname))
             {
-                PdfObject* migObj = migrateResource(page.GetDictionary().GetKey(keyname));
+                PdfObject* migObj = migrateResource(page.GetObject().GetDictionary().GetKey(keyname));
                 if (nullptr == migObj)
                     continue;
-                xobj->GetDictionary().AddKey(keyname, *migObj);
+                xobj->GetObject().GetDictionary().AddKey(keyname, *migObj);
             }
         }
 
@@ -531,7 +531,7 @@ void PdfTranslator::impose()
                     // mabri: ML post archive URL is https://sourceforge.net/p/podofo/mailman/message/24609746/
                     // bbIndex->at(resourceIndex).ToVariant( bb );							
                     ((*bbIndex)[resourceIndex]).ToArray(bb);
-                    xo->GetDictionary().AddKey("BBox", bb);
+                    xo->GetObject().GetDictionary().AddKey("BBox", bb);
                 }
                 ostringstream op;
                 op << "OriginalPage" << resourceIndex;
@@ -548,7 +548,7 @@ void PdfTranslator::impose()
                     }
                     else if (resources[resourceIndex]->IsReference())
                     {
-                        xo->GetDictionary().AddKey("Resources", *resources[resourceIndex]);
+                        xo->GetObject().GetDictionary().AddKey("Resources", *resources[resourceIndex]);
                     }
                     else
                     {
@@ -577,7 +577,7 @@ void PdfTranslator::impose()
             PODOFO_RAISE_ERROR(PdfErrorCode::ValueOutOfRange);
 
         string bufStr = buffer.str();
-        newpage->GetOrCreateContents().CreateStreamForAppending().SetData(bufStr);
+        newpage->GetOrCreateContents().GetStreamForAppending().SetData(bufStr);
         newpage->GetResources()->GetDictionary().AddKey(PdfName("XObject"), xdict);
         git++;
     }

@@ -30,7 +30,7 @@ private:
     PdfArrayIndirectIterableBase(PdfArray& arr);
 
 public:
-    class Iterator final
+    class iterator final
     {
         friend class PdfArrayIndirectIterableBase;
     public:
@@ -40,16 +40,15 @@ public:
         using reference = void;
         using iterator_category = std::forward_iterator_tag;
     public:
-        Iterator();
+        iterator();
     private:
-        Iterator(TListIterator&& iterator, PdfIndirectObjectList* objects);
+        iterator(TListIterator&& iterator, PdfIndirectObjectList* objects);
     public:
-        Iterator(const Iterator&) = default;
-        Iterator& operator=(const Iterator&) = default;
-        bool operator==(const Iterator& rhs) const;
-        bool operator!=(const Iterator& rhs) const;
-        Iterator& operator++();
-        Iterator operator++(int);
+        iterator(const iterator&) = default;
+        iterator& operator=(const iterator&) = default;
+        bool operator==(const iterator& rhs) const;
+        bool operator!=(const iterator& rhs) const;
+        iterator& operator++();
         value_type operator*();
         value_type operator->();
     private:
@@ -60,8 +59,8 @@ public:
     };
 
 public:
-    Iterator begin() const;
-    Iterator end() const;
+    iterator begin() const;
+    iterator end() const;
 
 private:
     PdfArray* m_arr;
@@ -80,8 +79,6 @@ using PdfArrayConstIndirectIterable = PdfArrayIndirectIterableBase<const PdfObje
 class PODOFO_API PdfArray final : public PdfDataContainer
 {
     friend class PdfObject;
-    friend class PdfTokenizer;
-
 public:
     using size_type = size_t;
     using value_type = PdfObject;
@@ -125,7 +122,7 @@ public:
     void Clear();
 
     void Write(OutputStream& stream, PdfWriteFlags writeMode,
-        const PdfStatefulEncrypt* encrypt, charbuff& buffer) const override;
+        const PdfStatefulEncrypt& encrypt, charbuff& buffer) const override;
 
     template <typename T>
     T GetAtAs(unsigned idx) const;
@@ -185,15 +182,11 @@ public:
     /**
      * Resize the internal vector.
      * \param count new size
-     * \param value reference value
+     * \param value refernce value
      */
     void Resize(unsigned count, const PdfObject& val = PdfObject());
 
     void Reserve(unsigned n);
-
-    void SwapAt(unsigned atIndex, unsigned toIndex);
-
-    void MoveTo(unsigned atIndex, unsigned toIndex);
 
 public:
     /**
@@ -302,20 +295,14 @@ public:
     bool operator!=(const PdfArray& rhs) const;
 
 protected:
-    void resetDirty() override;
+    void ResetDirtyInternal() override;
     void setChildrenParent() override;
-
-private:
-    // Append a new "null" object to the back
-    PdfObject& EmplaceBackNoDirtySet();
 
 private:
     PdfObject& add(PdfObject&& obj);
     iterator insertAt(const iterator& pos, PdfObject&& obj);
     PdfObject& getAt(unsigned idx) const;
     PdfObject* findAt(unsigned idx) const;
-    void write(OutputStream& stream, PdfWriteFlags writeMode, bool addDelimiters,
-        const PdfStatefulEncrypt* encrypt, charbuff& buffer) const;
 
 private:
     PdfArrayList m_Objects;
@@ -392,7 +379,6 @@ void PdfArray::insert(const PdfArray::iterator& pos,
     const InputIterator& first,
     const InputIterator& last)
 {
-    AssertMutable();
     auto document = GetObjectDocument();
     InputIterator it1 = first;
     iterator it2 = pos;
@@ -414,71 +400,63 @@ PdfArrayIndirectIterableBase<TObject, TListIterator>::PdfArrayIndirectIterableBa
     : PdfIndirectIterableBase(arr), m_arr(&arr) { }
 
 template<typename TObject, typename TListIterator>
-typename PdfArrayIndirectIterableBase<TObject, TListIterator>::Iterator PdfArrayIndirectIterableBase<TObject, TListIterator>::begin() const
+typename PdfArrayIndirectIterableBase<TObject, TListIterator>::iterator PdfArrayIndirectIterableBase<TObject, TListIterator>::begin() const
 {
     if (m_arr == nullptr)
-        return Iterator();
+        return iterator();
     else
-        return Iterator(m_arr->begin(), GetObjects());
+        return iterator(m_arr->begin(), GetObjects());
 }
 
 template<typename TObject, typename TListIterator>
-typename PdfArrayIndirectIterableBase<TObject, TListIterator>::Iterator PdfArrayIndirectIterableBase<TObject, TListIterator>::end() const
+typename PdfArrayIndirectIterableBase<TObject, TListIterator>::iterator PdfArrayIndirectIterableBase<TObject, TListIterator>::end() const
 {
     if (m_arr == nullptr)
-        return Iterator();
+        return iterator();
     else
-        return Iterator(m_arr->end(), GetObjects());
+        return iterator(m_arr->end(), GetObjects());
 }
 
 template<typename TObject, typename TListIterator>
-PdfArrayIndirectIterableBase<TObject, TListIterator>::Iterator::Iterator() : m_objects(nullptr) { }
+PdfArrayIndirectIterableBase<TObject, TListIterator>::iterator::iterator() : m_objects(nullptr) { }
 
 template<typename TObject, typename TListIterator>
-PdfArrayIndirectIterableBase<TObject, TListIterator>::Iterator::Iterator(TListIterator&& iterator, PdfIndirectObjectList* objects)
+PdfArrayIndirectIterableBase<TObject, TListIterator>::iterator::iterator(TListIterator&& iterator, PdfIndirectObjectList* objects)
     : m_iterator(std::move(iterator)), m_objects(objects) { }
 
 template<typename TObject, typename TListIterator>
-bool PdfArrayIndirectIterableBase<TObject, TListIterator>::Iterator::operator==(const Iterator& rhs) const
+bool PdfArrayIndirectIterableBase<TObject, TListIterator>::iterator::operator==(const iterator& rhs) const
 {
     return m_iterator == rhs.m_iterator;
 }
 
 template<typename TObject, typename TListIterator>
-bool PdfArrayIndirectIterableBase<TObject, TListIterator>::Iterator::operator!=(const Iterator& rhs) const
+bool PdfArrayIndirectIterableBase<TObject, TListIterator>::iterator::operator!=(const iterator& rhs) const
 {
     return m_iterator != rhs.m_iterator;
 }
 
 template<typename TObject, typename TListIterator>
-typename PdfArrayIndirectIterableBase<TObject, TListIterator>::Iterator& PdfArrayIndirectIterableBase<TObject, TListIterator>::Iterator::operator++()
+typename PdfArrayIndirectIterableBase<TObject, TListIterator>::iterator& PdfArrayIndirectIterableBase<TObject, TListIterator>::iterator::operator++()
 {
     m_iterator++;
     return *this;
 }
 
 template<typename TObject, typename TListIterator>
-typename PdfArrayIndirectIterableBase<TObject, TListIterator>::Iterator PdfArrayIndirectIterableBase<TObject, TListIterator>::Iterator::operator++(int)
-{
-    auto copy = *this;
-    m_iterator++;
-    return copy;
-}
-
-template<typename TObject, typename TListIterator>
-typename PdfArrayIndirectIterableBase<TObject, TListIterator>::Iterator::value_type PdfArrayIndirectIterableBase<TObject, TListIterator>::Iterator::operator*()
+typename PdfArrayIndirectIterableBase<TObject, TListIterator>::iterator::value_type PdfArrayIndirectIterableBase<TObject, TListIterator>::iterator::operator*()
 {
     return resolve();
 }
 
 template<typename TObject, typename TListIterator>
-typename PdfArrayIndirectIterableBase<TObject, TListIterator>::Iterator::value_type PdfArrayIndirectIterableBase<TObject, TListIterator>::Iterator::operator->()
+typename PdfArrayIndirectIterableBase<TObject, TListIterator>::iterator::value_type PdfArrayIndirectIterableBase<TObject, TListIterator>::iterator::operator->()
 {
     return resolve();
 }
 
 template<typename TObject, typename TListIterator>
-typename PdfArrayIndirectIterableBase<TObject, TListIterator>::Iterator::value_type PdfArrayIndirectIterableBase<TObject, TListIterator>::Iterator::resolve()
+typename PdfArrayIndirectIterableBase<TObject, TListIterator>::iterator::value_type PdfArrayIndirectIterableBase<TObject, TListIterator>::iterator::resolve()
 {
     TObject& robj = *m_iterator;
     TObject* indirectobj;

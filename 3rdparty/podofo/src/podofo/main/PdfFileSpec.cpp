@@ -18,9 +18,16 @@ using namespace std;
 using namespace cmn;
 using namespace PoDoFo;
 
-PdfFileSpec::PdfFileSpec(PdfDocument& doc)
-    : PdfDictionaryElement(doc, "Filespec"_n)
+PdfFileSpec::PdfFileSpec(PdfDocument& doc, const string_view& filename, bool embed, bool striPath)
+    : PdfDictionaryElement(doc, "Filespec")
 {
+    Init(filename, embed, striPath);
+}
+
+PdfFileSpec::PdfFileSpec(PdfDocument& doc, const string_view& filename, const char* data, size_t size, bool striPath)
+    : PdfDictionaryElement(doc, "Filespec")
+{
+    Init(filename, data, size, striPath);
 }
 
 PdfFileSpec::PdfFileSpec(PdfObject& obj)
@@ -28,99 +35,130 @@ PdfFileSpec::PdfFileSpec(PdfObject& obj)
 {
 }
 
-bool PdfFileSpec::TryCreateFromObject(PdfObject& obj, unique_ptr<PdfFileSpec>& filespec)
+void PdfFileSpec::Init(const string_view& filename, bool embed, bool striPath)
 {
-    PdfDictionary* dict;
-    const PdfObject* typeObj;
-    const PdfString* typeStr;
-    if (!obj.TryGetDictionary(dict)
-        || (typeObj = dict->FindKey("Type")) == nullptr
-        || typeObj->TryGetString(typeStr)
-        || typeStr->GetString() != "Filespec")
+    this->GetObject().GetDictionary().AddKey("F", this->CreateFileSpecification(MaybeStripPath(filename, striPath)));
+    this->GetObject().GetDictionary().AddKey("UF", PdfString(MaybeStripPath(filename, true)));
+
+    if (embed)
     {
-        filespec.reset();
-        return false;
-    }
+        PdfDictionary ef;
 
-    filespec.reset(new PdfFileSpec(obj));
-    return true;
-}
+        auto& embeddedStream = this->GetDocument().GetObjects().CreateDictionaryObject("EmbeddedFile");
+        this->EmbeddFile(embeddedStream, filename);
 
-nullable<const PdfString&> PdfFileSpec::GetFilename() const
-{
-    auto filenameObj = GetDictionary().FindKey("UF");
-    if (filenameObj == nullptr)
-    {
-        // As a fallback try to access the non unicode one
-        filenameObj = GetDictionary().FindKey("F");
-        if (filenameObj == nullptr)
-            return nullptr;
-    }
+        ef.AddKey("F", embeddedStream.GetIndirectReference());
 
-    return filenameObj->GetString();
-}
-
-void PdfFileSpec::SetFilename(nullable<const PdfString&> filename)
-{
-    auto& dict = GetDictionary();
-    if (filename == nullptr)
-        dict.RemoveKey("UF");
-    else
-        dict.AddKey("UF"_n, *filename);
-    dict.RemoveKey("F");
-}
-
-void PdfFileSpec::SetEmbeddedData(nullable<const charbuff&> data)
-{
-    if (data == nullptr)
-    {
-        auto& dict = GetDictionary();
-        dict.RemoveKey("EF");
-        dict.RemoveKey("F");
-    }
-    else
-    {
-        BufferStreamDevice input(*data);
-        setData(input, data->size());
+        this->GetObject().GetDictionary().AddKey("EF", ef);
     }
 }
 
-void PdfFileSpec::SetEmbeddedDataFromFile(const string_view& filepath)
+void PdfFileSpec::Init(const string_view& filename, const char* data, size_t size, bool striPath)
 {
-    size_t size = utls::FileSize(filepath);
-    FileStreamDevice input(filepath);
-    setData(input, size);
+    this->GetObject().GetDictionary().AddKey("F", this->CreateFileSpecification(MaybeStripPath(filename, striPath)));
+    this->GetObject().GetDictionary().AddKey("UF", PdfString(MaybeStripPath(filename, true)));
+
+    PdfDictionary ef;
+
+    auto& embeddedStream = this->GetDocument().GetObjects().CreateDictionaryObject("EmbeddedFile");
+    this->EmbeddFileFromMem(embeddedStream, data, size);
+
+    ef.AddKey("F", embeddedStream.GetIndirectReference());
+
+    this->GetObject().GetDictionary().AddKey("EF", ef);
 }
 
-nullable<charbuff> PdfFileSpec::GetEmbeddedData() const
+PdfString PdfFileSpec::CreateFileSpecification(const string_view& filename) const
 {
-    auto efObj = GetDictionary().FindKey("EF");
-    const PdfDictionary* efDict;
-    const PdfObject* fObj;
-    const PdfObjectStream* stream;
-    if (efObj == nullptr
-        || !efObj->TryGetDictionary(efDict)
-        || ((fObj = efDict->FindKey("UF")) == nullptr && (fObj = efDict->FindKey("F")) == nullptr)
-        || (stream = fObj->GetStream()) == nullptr)
+    // FIX-ME: The following is not Unicode compliant
+
+    outstringstream str;
+    char buff[5];
+
+    // Construct a platform independent file specifier
+
+    for (size_t i = 0; i < filename.size(); i++)
     {
-        return nullptr;
+        char ch = filename[i];
+        if (ch == ':' || ch == '\\')
+            ch = '/';
+        if ((ch >= 'a' && ch <= 'z') ||
+            (ch >= 'A' && ch <= 'Z') ||
+            (ch >= '0' && ch <= '9') ||
+            ch == '_')
+        {
+            str.put(ch & 0xFF);
+        }
+        else if (ch == '/')
+        {
+            str.put('\\');
+            str.put('\\');
+            str.put('/');
+        }
+        else
+        {
+            utls::FormatTo(buff, 5, "{:02X}", ch & 0xFF);
+            str << buff;
+        }
     }
 
-    charbuff ret;
-    stream->CopyTo(ret);
-    return ret;
+    return PdfString(str.str());
 }
 
-void PdfFileSpec::setData(InputStream& input, size_t size)
+void PdfFileSpec::EmbeddFile(PdfObject& obj, const string_view& filename) const
 {
-    auto& fObj = this->GetDocument().GetObjects().CreateDictionaryObject("EmbeddedFile"_n);
-    fObj.GetOrCreateStream().SetData(input);
+    size_t size = utls::FileSize(filename);
+
+    FileStreamDevice input(filename);
+    obj.GetOrCreateStream().SetData(input);
 
     // Add additional information about the embedded file to the stream
     PdfDictionary params;
-    params.AddKey("Size"_n, static_cast<int64_t>(size));
+    params.AddKey("Size", static_cast<int64_t>(size));
     // TODO: CreationDate and ModDate
-    fObj.GetDictionary().AddKey("Params"_n, params);
-    auto& efObj = GetDictionary().AddKey("EF"_n, PdfDictionary());
-    efObj.GetDictionary().AddKeyIndirect("F"_n, fObj);
+    obj.GetDictionary().AddKey("Params", params);
+}
+
+string PdfFileSpec::MaybeStripPath(const string_view& filename, bool stripPath) const
+{
+    // FIX-ME: The following is not Unicode compliant
+    if (!stripPath)
+        return (string)filename;
+
+    string_view lastFrom = filename;
+    for (size_t i = 0; i < filename.size(); i++)
+    {
+        char ch = filename[i];
+        if (
+#ifdef _WIN32
+            ch == ':' || ch == '\\' ||
+#endif // _WIN32
+            ch == '/')
+        {
+            lastFrom = ((string_view)filename).substr(i + 1);
+        }
+    }
+
+    return (string)lastFrom;
+}
+
+void PdfFileSpec::EmbeddFileFromMem(PdfObject& obj, const char* data, size_t size) const
+{
+    obj.GetOrCreateStream().SetData(bufferview(data, size));
+
+    // Add additional information about the embedded file to the stream
+    PdfDictionary params;
+    params.AddKey("Size", static_cast<int64_t>(size));
+    obj.GetDictionary().AddKey("Params", params);
+}
+
+const PdfString& PdfFileSpec::GetFilename(bool canUnicode) const
+{
+    if (canUnicode && this->GetObject().GetDictionary().HasKey("UF"))
+        return this->GetObject().GetDictionary().MustFindKey("UF").GetString();
+
+    if (this->GetObject().GetDictionary().HasKey("F"))
+        return this->GetObject().GetDictionary().MustFindKey("F").GetString();
+
+    PODOFO_RAISE_ERROR(PdfErrorCode::InvalidDataType);
 }

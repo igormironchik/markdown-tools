@@ -13,7 +13,7 @@
 
 namespace PoDoFo {
 
-    class PODOFO_API PdfAppearanceCharacteristics final : public PdfDictionaryElement
+    class PODOFO_API PdfAppearanceCharacteristics : public PdfDictionaryElement
     {
         template<typename T>
         friend class PdfAppearanceCharacteristicsProvider;
@@ -66,7 +66,7 @@ namespace PoDoFo {
             {
                 auto& ref = static_cast<T&>(*this);
                 m_AppearanceCharacteristics.reset(new PdfAppearanceCharacteristics(ref.GetDocument()));
-                ref.GetDictionary().AddKeyIndirect("MK"_n, m_AppearanceCharacteristics->GetObject());
+                ref.GetDictionary().AddKeyIndirect("MK", m_AppearanceCharacteristics->GetObject());
             }
 
             return *m_AppearanceCharacteristics;
@@ -102,7 +102,7 @@ namespace PoDoFo {
          *
          *  \see GetAction
          */
-        void SetAction(nullable<const PdfAction&> action);
+        void SetAction(const std::shared_ptr<PdfAction>& action);
 
         /** Get the action that is executed for this annotation
          *  \returns an action object. The action object is owned
@@ -110,18 +110,13 @@ namespace PoDoFo {
          *
          *  \see SetAction
          */
-        nullable<PdfAction&> GetAction();
-        nullable<const PdfAction&> GetAction() const;
-
-    protected:
-        virtual void onActionSet();
-        void ResetAction();
+        std::shared_ptr<PdfAction> GetAction() const;
 
     private:
-        nullable<PdfAction&> getAction();
+        std::shared_ptr<PdfAction> getAction();
 
     private:
-        nullable<std::unique_ptr<PdfAction>> m_Action;
+        std::shared_ptr<PdfAction> m_Action;
     };
 }
 

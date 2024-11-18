@@ -118,7 +118,7 @@ size_t PdfCanvasInputDevice::readBuffer(char* buffer, size_t size, bool& eof)
                 return count;
         }
 
-        // Span reads into multiple input devices
+        // Span reads into multple input devices
         // NOTE: we ignore if the device reached EOF, and
         // we try pop another device at the next iteration
         read = device->Read(buffer + count, size, eof);
@@ -196,7 +196,7 @@ bool PdfCanvasInputDevice::tryGetNextDevice(InputStreamDevice*& device)
     return true;
 }
 
-// Returns true if one device was successfully
+// Returns true if one device was succesfully
 // popped out of the queue and is not EOF
 bool PdfCanvasInputDevice::tryPopNextDevice()
 {

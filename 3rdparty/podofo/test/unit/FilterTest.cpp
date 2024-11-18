@@ -7,7 +7,6 @@
  */
 
 #include <PdfTest.h>
-#include <podofo/private/PdfFilterFactory.h>
 
 using namespace std;
 using namespace PoDoFo;
@@ -25,7 +24,7 @@ const char s_testBuffer2[] = {
     0x00, 0x00, 0x00, 0x00, 0x6B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 };
 
-TEST_CASE("TestFilters")
+TEST_CASE("testFilters")
 {
     for (unsigned i = 0; i <= (unsigned)PdfFilterType::Crypt; i++)
     {
@@ -59,8 +58,11 @@ void testFilter(PdfFilterType filterType, const bufferview& view)
             INFO(utls::Format("\t-> Encoding not supported for filter {}.", (unsigned)filterType));
             return;
         }
-
-        throw;
+        else
+        {
+            e.AddToCallStack(__FILE__, __LINE__);
+            throw e;
+        }
     }
 
     INFO("\t-> Testing Decoding");
@@ -75,8 +77,11 @@ void testFilter(PdfFilterType filterType, const bufferview& view)
             INFO(utls::Format("\t-> Decoding not supported for filter {}", (int)filterType));
             return;
         }
-
-        throw;
+        else
+        {
+            e.AddToCallStack(__FILE__, __LINE__);
+            throw e;
+        }
     }
 
     INFO(utls::Format("\t-> Original Data Length: {}", view.size()));

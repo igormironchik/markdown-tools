@@ -33,10 +33,10 @@ static PdfPageTreeNodeType getPageTreeNodeType(const PdfObject& nodeObj);
 static unsigned getChildCount(const PdfObject& nodeObj);
 
 PdfPageCollection::PdfPageCollection(PdfDocument& doc)
-    : PdfDictionaryElement(doc, "Pages"_n), m_initialized(true)
+    : PdfDictionaryElement(doc, "Pages"), m_initialized(true)
 {
-    m_kidsArray = &GetDictionary().AddKey("Kids"_n, PdfArray()).GetArray();
-    GetDictionary().AddKey("Count"_n, static_cast<int64_t>(0));
+    m_kidsArray = &GetDictionary().AddKey(PdfName::KeyKids, PdfArray()).GetArray();
+    GetDictionary().AddKey(PdfName::KeyCount, static_cast<int64_t>(0));
 }
 
 PdfPageCollection::PdfPageCollection(PdfObject& pagesRoot)
@@ -60,7 +60,7 @@ PdfPage& PdfPageCollection::GetPageAt(unsigned index)
 {
     const_cast<PdfPageCollection&>(*this).initPages();
     if (index >= m_Pages.size())
-        PODOFO_RAISE_ERROR_INFO(PdfErrorCode::ValueOutOfRange, "Page with index {} not found", index);
+        PODOFO_RAISE_ERROR_INFO(PdfErrorCode::PageNotFound, "Page with index {} not found", index);
 
     return *m_Pages[index];
 }
@@ -69,7 +69,7 @@ const PdfPage& PdfPageCollection::GetPageAt(unsigned index) const
 {
     const_cast<PdfPageCollection&>(*this).initPages();
     if (index >= m_Pages.size())
-        PODOFO_RAISE_ERROR_INFO(PdfErrorCode::ValueOutOfRange, "Page with index {} not found", index);
+        PODOFO_RAISE_ERROR_INFO(PdfErrorCode::PageNotFound, "Page with index {} not found", index);
 
     return *m_Pages[index];
 }
@@ -86,21 +86,6 @@ const PdfPage& PdfPageCollection::GetPage(const PdfReference& ref) const
     return getPage(ref);
 }
 
-Rect PdfPageCollection::getActualRect(const nullable<Rect>& size)
-{
-    if (size == nullptr)
-    {
-        if (m_Pages.size() == 0)
-            return PdfPage::CreateStandardPageSize(PdfPageSize::A4);
-        else
-            return m_Pages[m_Pages.size() - 1]->GetRect();
-    }
-    else
-    {
-        return *size;
-    }
-}
-
 PdfPage& PdfPageCollection::getPage(const PdfReference& ref) const
 {
     // We have to search through all pages,
@@ -113,84 +98,19 @@ PdfPage& PdfPageCollection::getPage(const PdfReference& ref) const
             return page;
     }
 
-    PODOFO_RAISE_ERROR(PdfErrorCode::ValueOutOfRange);
-}
-
-PdfPageCollection::iterator PdfPageCollection::begin()
-{
-    return m_Pages.begin();
-}
-
-PdfPageCollection::iterator PdfPageCollection::end()
-{
-    return m_Pages.end();
-}
-
-PdfPageCollection::const_iterator PdfPageCollection::begin() const
-{
-    return m_Pages.begin();
-}
-
-PdfPageCollection::const_iterator PdfPageCollection::end() const
-{
-    return m_Pages.end();
+    PODOFO_RAISE_ERROR(PdfErrorCode::PageNotFound);
 }
 
 void PdfPageCollection::InsertPageAt(unsigned atIndex, PdfPage& pageObj)
 {
-    FlattenStructure();
     vector<PdfPage*> objs = { &pageObj };
-    insertPagesAt(atIndex, objs);
-}
-
-void PdfPageCollection::insertPageAt(unsigned atIndex, PdfPage& pageObj)
-{
-    vector<PdfPage*> objs = { &pageObj };
-    insertPagesAt(atIndex, objs);
+    InsertPagesAt(atIndex, objs);
 }
 
 void PdfPageCollection::InsertPagesAt(unsigned atIndex, cspan<PdfPage*> pages)
 {
     FlattenStructure();
-    insertPagesAt(atIndex, pages);
-}
 
-bool PdfPageCollection::TryMovePageTo(unsigned atIndex, unsigned toIndex)
-{
-    PODOFO_ASSERT(atIndex < m_Pages.size() && atIndex != toIndex);
-    if (toIndex >= m_Pages.size())
-        return false;
-    
-    FlattenStructure();
-
-    m_kidsArray->MoveTo(atIndex, toIndex);
-
-    auto temp = m_Pages[atIndex];
-    if (atIndex > toIndex)
-    {
-        for (unsigned i = atIndex; i > toIndex; i--)
-        {
-            m_Pages[i] = m_Pages[i - 1];
-            m_Pages[i]->SetIndex(i);
-        }
-    }
-    else
-    {
-        for (unsigned i = atIndex; i < toIndex; i++)
-        {
-            m_Pages[i] = m_Pages[i + 1];
-            m_Pages[i]->SetIndex(i);
-        }
-    }
-
-    m_Pages[toIndex] = temp;
-    m_Pages[toIndex]->SetIndex(toIndex);
-
-    return true;
-}
-
-void PdfPageCollection::insertPagesAt(unsigned atIndex, cspan<PdfPage*> pages)
-{
     // Insert the pages and fix the indices
     m_Pages.insert(m_Pages.begin() + atIndex, pages.begin(), pages.end());
     for (unsigned i = atIndex; i < m_Pages.size(); i++)
@@ -202,51 +122,33 @@ void PdfPageCollection::insertPagesAt(unsigned atIndex, cspan<PdfPage*> pages)
     for (unsigned i = 0; i < pages.size(); i++)
     {
         pageObjects.push_back(pages[i]->GetObject().GetIndirectReference());
-        pages[i]->GetDictionary().AddKey("Parent"_n, GetObject().GetIndirectReference());
+        pages[i]->GetDictionary().AddKey(PdfName::KeyParent, GetObject().GetIndirectReference());
     }
 
     m_kidsArray->insert(m_kidsArray->begin() + atIndex, pageObjects.begin(), pageObjects.end());
-    GetDictionary().AddKey("Count"_n, static_cast<int64_t>(m_Pages.size()));
+    GetDictionary().AddKey(PdfName::KeyCount, static_cast<int64_t>(m_Pages.size()));
 }
 
-PdfPage& PdfPageCollection::CreatePage(const nullable<Rect>& size_)
+PdfPage& PdfPageCollection::CreatePage(const Rect& size)
 {
-    FlattenStructure();
-    auto size = getActualRect(size_);
     auto page = new PdfPage(GetDocument(), size);
-    insertPageAt((unsigned)m_Pages.size(), *page);
+    InsertPageAt((unsigned)m_Pages.size(), *page);
     return *page;
 }
 
-PdfPage& PdfPageCollection::CreatePage(PdfPageSize pageSize)
+PdfPage& PdfPageCollection::CreatePageAt(unsigned atIndex, const Rect& size)
 {
-    return CreatePage(PdfPage::CreateStandardPageSize(pageSize));
-}
-
-PdfPage& PdfPageCollection::CreatePageAt(unsigned atIndex, const nullable<Rect>& size_)
-{
-    FlattenStructure();
-    auto size = getActualRect(size_);
-
     unsigned pageCount = this->GetCount();
     if (atIndex > pageCount)
         atIndex = pageCount;
 
     auto page = new PdfPage(GetDocument(), size);
-    insertPageAt(atIndex, *page);
+    InsertPageAt(atIndex, *page);
     return *page;
 }
 
-PdfPage& PdfPageCollection::CreatePageAt(unsigned atIndex, PdfPageSize pageSize)
+void PdfPageCollection::CreatePagesAt(unsigned atIndex, unsigned count, const Rect& size)
 {
-    return CreatePageAt(atIndex, PdfPage::CreateStandardPageSize(pageSize));
-}
-
-void PdfPageCollection::CreatePagesAt(unsigned atIndex, unsigned count, const nullable<Rect>& size_)
-{
-    FlattenStructure();
-    auto size = getActualRect(size_);
-
     unsigned pageCount = this->GetCount();
     if (atIndex > pageCount)
         atIndex = pageCount;
@@ -255,12 +157,7 @@ void PdfPageCollection::CreatePagesAt(unsigned atIndex, unsigned count, const nu
     for (unsigned i = 0; i < count; i++)
         pages[i] = new PdfPage(GetDocument(), size);
 
-    insertPagesAt(atIndex, pages);
-}
-
-void PdfPageCollection::CreatePagesAt(unsigned atIndex, unsigned count, PdfPageSize pageSize)
-{
-    CreatePagesAt(atIndex, count, PdfPage::CreateStandardPageSize(pageSize));
+    InsertPagesAt(atIndex, pages);
 }
 
 void PdfPageCollection::AppendDocumentPages(const PdfDocument& doc)
@@ -291,7 +188,7 @@ void PdfPageCollection::RemovePageAt(unsigned atIndex)
     for (unsigned i = atIndex; i < m_Pages.size(); i++)
         m_Pages[i]->SetIndex(i);
 
-    GetDictionary().AddKey("Count"_n, static_cast<int64_t>(m_Pages.size()));
+    GetDictionary().AddKey(PdfName::KeyCount, static_cast<int64_t>(m_Pages.size()));
 
     // After removing the page the /OpenAction entry may be invalidated,
     // prompting an error using Acrobat. Remove it for safer behavior
@@ -386,7 +283,7 @@ void PdfPageCollection::FlattenStructure()
     // "PDF processors shall not be required to preserve the existing
     // structure of the page tree"
     auto& kidsObj = GetDocument().GetObjects().CreateArrayObject();
-    GetDictionary().AddKeyIndirect("Kids"_n, kidsObj);
+    GetDictionary().AddKeyIndirect(PdfName::KeyKids, kidsObj);
     m_kidsArray = &kidsObj.GetArray();
     m_kidsArray->reserve(m_Pages.size());
     for (unsigned i = 0; i < m_Pages.size(); i++)
@@ -395,7 +292,7 @@ void PdfPageCollection::FlattenStructure()
         page->FlattenStructure();
 
         // Fix pages parent and add them to /Kids
-        page->GetDictionary().AddKey("Parent"_n, GetObject().GetIndirectReference());
+        page->GetDictionary().AddKey(PdfName::KeyParent, GetObject().GetIndirectReference());
         (*m_kidsArray).AddIndirect(page->GetObject());
     }
 }

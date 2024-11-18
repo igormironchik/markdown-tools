@@ -22,15 +22,17 @@ using namespace PoDoFo;
 static string_view toString(PdfXObjectType type);
 static PdfXObjectType fromString(const string_view& str);
 
-PdfXObject::PdfXObject(PdfDocument& doc, PdfXObjectType subType)
-    : PdfDictionaryElement(doc, "XObject"_n), m_Type(subType)
+PdfXObject::PdfXObject(PdfDocument& doc, PdfXObjectType subType, const string_view& prefix)
+    : PdfDictionaryElement(doc, "XObject"), m_Type(subType)
 {
-    this->GetDictionary().AddKey("Subtype"_n, PdfName(toString(subType)));
+    initIdentifiers(prefix);
+    this->GetObject().GetDictionary().AddKey(PdfName::KeySubtype, PdfName(toString(subType)));
 }
 
 PdfXObject::PdfXObject(PdfObject& obj, PdfXObjectType subType)
     : PdfDictionaryElement(obj), m_Type(subType)
 {
+    initIdentifiers({ });
 }
 
 bool PdfXObject::TryCreateFromObject(PdfObject& obj, unique_ptr<PdfXObject>& xobj)
@@ -61,6 +63,18 @@ bool PdfXObject::TryCreateFromObject(const PdfObject& obj, unique_ptr<const PdfX
 
 bool PdfXObject::tryCreateFromObject(const PdfObject& obj, PdfXObjectType xobjType, PdfXObject*& xobj)
 {
+    const PdfDictionary* dict;
+    const PdfObject* typeObj;
+    const PdfName* name;
+    if (!obj.TryGetDictionary(dict)
+        || (typeObj = dict->GetKey(PdfName::KeyType)) == nullptr
+        || !typeObj->TryGetName(name)
+        || name->GetString() != "XObject")
+    {
+        xobj = nullptr;
+        return false;
+    }
+
     auto type = getPdfXObjectType(obj);
     if (xobjType != PdfXObjectType::Unknown && type != xobjType)
     {
@@ -95,23 +109,13 @@ bool PdfXObject::tryCreateFromObject(const PdfObject& obj, PdfXObjectType xobjTy
 
 PdfXObjectType PdfXObject::getPdfXObjectType(const PdfObject& obj)
 {
-    // Table 93 of ISO 32000-2:2020(E), the /Type key is optional,
-    // so we don't check for it. If present it should be "XObject"
-    auto& dict = obj.GetDictionary();
     const PdfName* name;
-    auto subTypeObj = dict.FindKey("Subtype");
+    auto subTypeObj = obj.GetDictionary().FindKey(PdfName::KeySubtype);
     if (subTypeObj == nullptr || !subTypeObj->TryGetName(name))
-    {
-        // NOTE: There are some forms missing both /Type and /Subtype
-        // We are a bit lenient here and consider it to be form if
-        // it has a "/BBox" and it's not a tiling pattern stream
-        if (obj.HasStream() && dict.HasKey("BBox") && !dict.HasKey("PatternType"))
-            return PdfXObjectType::Form;
-
         return PdfXObjectType::Unknown;
-    }
 
-    return fromString(name->GetString());
+    auto subtype = name->GetString();
+    return fromString(subtype);
 }
 
 Matrix PdfXObject::GetMatrix() const
@@ -122,6 +126,48 @@ Matrix PdfXObject::GetMatrix() const
 
     auto& arr = matrixObj->GetArray();
     return Matrix::FromArray(arr);
+}
+
+void PdfXObject::SetMatrix(const Matrix& m)
+{
+    PdfArray arr;
+    arr.Add(m[0]);
+    arr.Add(m[1]);
+    arr.Add(m[2]);
+    arr.Add(m[3]);
+    arr.Add(m[4]);
+    arr.Add(m[5]);
+
+    GetDictionary().AddKey("Matrix", std::move(arr));
+}
+
+bool PdfXObject::tryCreateFromObject(const PdfObject& obj, const type_info& typeInfo, PdfXObject*& xobj)
+{
+    PdfXObjectType xobjType;
+    if (typeInfo == typeid(PdfXObjectForm))
+        xobjType = PdfXObjectType::Form;
+    else if (typeInfo == typeid(PdfImage))
+        xobjType = PdfXObjectType::Image;
+    else if (typeInfo == typeid(PdfXObjectPostScript))
+        xobjType = PdfXObjectType::PostScript;
+    else
+        PODOFO_RAISE_ERROR(PdfErrorCode::InternalLogic);
+
+    return tryCreateFromObject(obj, xobjType, xobj);
+}
+
+void PdfXObject::initIdentifiers(const string_view& prefix)
+{
+    PdfStringStream out;
+
+    // Implementation note: the identifier is always
+    // Prefix+ObjectNo. Prefix is /XOb for XObject.
+    if (prefix.length() == 0)
+        out << "XOb" << this->GetObject().GetIndirectReference().ObjectNumber();
+    else
+        out << prefix << this->GetObject().GetIndirectReference().ObjectNumber();
+
+    m_Identifier = PdfName(out.GetString());
 }
 
 string_view toString(PdfXObjectType type)

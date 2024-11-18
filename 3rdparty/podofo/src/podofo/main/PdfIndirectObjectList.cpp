@@ -16,57 +16,55 @@
 #include "PdfReference.h"
 #include "PdfObjectStream.h"
 #include "PdfDocument.h"
-#include "PdfCommon.h"
 
 using namespace std;
 using namespace PoDoFo;
 
+static constexpr size_t MaxReserveSize = 8388607; // cf. Table C.1 in section C.2 of PDF32000_2008.pdf
 static constexpr unsigned MaxXRefGenerationNum = 65535;
 
-namespace
+struct ObjectComparatorPredicate
 {
-    struct ObjectComparatorPredicate
+public:
+    inline bool operator()(const PdfObject* obj1, const PdfObject* obj2) const
     {
-    public:
-        inline bool operator()(const PdfObject* obj1, const PdfObject* obj2) const
-        {
-            return obj1->GetIndirectReference() < obj2->GetIndirectReference();
-        }
-    };
+        return obj1->GetIndirectReference() < obj2->GetIndirectReference();
+    }
+};
 
-    struct ReferenceComparatorPredicate
+struct ReferenceComparatorPredicate
+{
+public:
+    inline bool operator()(const PdfReference& obj1, const PdfReference& obj2) const
     {
-    public:
-        inline bool operator()(const PdfReference& obj1, const PdfReference& obj2) const
-        {
-            return obj1 < obj2;
-        }
-    };
+        return obj1 < obj2;
+    }
+};
 
-    //RG: 1) Should this class not be moved to the header file
-    class ObjectsComparator
+//RG: 1) Should this class not be moved to the header file
+class ObjectsComparator
+{
+public:
+    ObjectsComparator(const PdfReference& ref)
+        : m_ref(ref) { }
+
+    bool operator()(const PdfObject* p1) const
     {
-    public:
-        ObjectsComparator(const PdfReference& ref)
-            : m_ref(ref) { }
+        return p1 ? (p1->GetIndirectReference() == m_ref) : false;
+    }
 
-        bool operator()(const PdfObject* p1) const
-        {
-            return p1 ? (p1->GetIndirectReference() == m_ref) : false;
-        }
+private:
+    ObjectsComparator() = delete;
+    ObjectsComparator(const ObjectsComparator& rhs) = delete;
+    ObjectsComparator& operator=(const ObjectsComparator& rhs) = delete;
 
-    private:
-        ObjectsComparator() = delete;
-        ObjectsComparator(const ObjectsComparator& rhs) = delete;
-        ObjectsComparator& operator=(const ObjectsComparator& rhs) = delete;
-
-    private:
-        const PdfReference m_ref;
-    };
-}
+private:
+    const PdfReference m_ref;
+};
 
 PdfIndirectObjectList::PdfIndirectObjectList() :
     m_Document(nullptr),
+    m_CanReuseObjectNumbers(true),
     m_ObjectCount(0),
     m_StreamFactory(nullptr)
 {
@@ -74,13 +72,15 @@ PdfIndirectObjectList::PdfIndirectObjectList() :
 
 PdfIndirectObjectList::PdfIndirectObjectList(PdfDocument& document) :
     m_Document(&document),
-    m_ObjectCount(0),
+    m_CanReuseObjectNumbers(true),
+    m_ObjectCount(1),
     m_StreamFactory(nullptr)
 {
 }
 
 PdfIndirectObjectList::PdfIndirectObjectList(PdfDocument& document, const PdfIndirectObjectList& rhs)  :
     m_Document(&document),
+    m_CanReuseObjectNumbers(rhs.m_CanReuseObjectNumbers),
     m_ObjectCount(rhs.m_ObjectCount),
     m_FreeObjects(rhs.m_FreeObjects),
     m_unavailableObjects(rhs.m_unavailableObjects),
@@ -107,17 +107,15 @@ void PdfIndirectObjectList::Clear()
         delete obj;
 
     m_Objects.clear();
-    m_ObjectCount = 0;
-    m_FreeObjects.clear();
-    m_unavailableObjects.clear();
-    m_objectStreams.clear();
+    m_ObjectCount = 1;
+    m_StreamFactory = nullptr;
 }
 
 PdfObject& PdfIndirectObjectList::MustGetObject(const PdfReference& ref) const
 {
     auto obj = GetObject(ref);
     if (obj == nullptr)
-        PODOFO_RAISE_ERROR(PdfErrorCode::ObjectNotFound);
+        PODOFO_RAISE_ERROR(PdfErrorCode::NoObject);
 
     return *obj;
 }
@@ -150,6 +148,25 @@ unique_ptr<PdfObject> PdfIndirectObjectList::RemoveObject(const iterator& it)
     return removeObject(it, true);
 }
 
+unique_ptr<PdfObject> PdfIndirectObjectList::ReplaceObject(const PdfReference& ref, PdfObject* obj)
+{
+    if (obj == nullptr)
+        PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidHandle, "Object must be non null");
+
+    auto it = m_Objects.lower_bound(ref);
+    if (it == m_Objects.end())
+        PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidHandle, "Unable to find object with reference {}", ref.ToString());
+
+    auto hintpos = it;
+    hintpos++;
+    auto node = m_Objects.extract(it);
+    unique_ptr<PdfObject> ret(node.value());
+    node.value() = obj;
+    obj->SetIndirectReference(ref);
+    pushObject(hintpos, node, obj);
+    return ret;
+}
+
 unique_ptr<PdfObject> PdfIndirectObjectList::removeObject(const iterator& it, bool markAsFree)
 {
     auto obj = *it;
@@ -166,18 +183,18 @@ unique_ptr<PdfObject> PdfIndirectObjectList::removeObject(const iterator& it, bo
 PdfReference PdfIndirectObjectList::getNextFreeObject()
 {
     // Try to first use list of free objects
-    if (!m_FreeObjects.empty())
+    if (m_CanReuseObjectNumbers && !m_FreeObjects.empty())
     {
         PdfReference freeObjectRef = m_FreeObjects.front();
         m_FreeObjects.pop_front();
         return freeObjectRef;
     }
 
-    // If no free objects are available, create a new object number with generation 0
-    uint32_t nextObjectNum = static_cast<uint32_t>(m_ObjectCount + 1);
+    // If no free objects are available, create a new object with generation 0
+    uint32_t nextObjectNum = static_cast<uint32_t>(m_ObjectCount);
     while (true)
     {
-        if (nextObjectNum > PdfCommon::GetMaxObjectCount())
+        if ((size_t)(nextObjectNum + 1) == MaxReserveSize)
             PODOFO_RAISE_ERROR_INFO(PdfErrorCode::ValueOutOfRange, "Reached the maximum number of indirect objects");
 
         // Check also if the object number it not available,
@@ -191,15 +208,15 @@ PdfReference PdfIndirectObjectList::getNextFreeObject()
     return PdfReference(nextObjectNum, 0);
 }
 
-PdfObject& PdfIndirectObjectList::CreateDictionaryObject(const PdfName& type,
-    const PdfName& subtype)
+PdfObject& PdfIndirectObjectList::CreateDictionaryObject(const string_view& type,
+    const string_view& subtype)
 {
     auto dict = PdfDictionary();
-    if (!type.IsNull())
-        dict.AddKey("Type"_n, type);
+    if (!type.empty())
+        dict.AddKey(PdfName::KeyType, PdfName(type));
 
-    if (!subtype.IsNull())
-        dict.AddKey("Subtype"_n, subtype);
+    if (!subtype.empty())
+        dict.AddKey(PdfName::KeySubtype, PdfName(subtype));
 
     auto ret = new PdfObject(std::move(dict));
     ret->setDirty();
@@ -253,7 +270,7 @@ int32_t PdfIndirectObjectList::tryAddFreeObject(uint32_t objnum, uint32_t gennum
     // Documentation 3.4.3 Cross-Reference Table states: "The maximum
     // generation number is 65535; when a cross reference entry reaches
     // this value, it is never reused."
-    // NOTE: gennum is uint32 to accommodate overflows from callers
+    // NOTE: gennum is uint32 to accomodate overflows from callers
     if (gennum >= MaxXRefGenerationNum)
     {
         m_unavailableObjects.insert(gennum);
@@ -273,13 +290,14 @@ void PdfIndirectObjectList::AddFreeObject(const PdfReference& reference)
         PoDoFo::LogMessage(PdfLogSeverity::Debug, "Adding {} to free list, is already contained in it!", reference.ObjectNumber());
         return;
     }
+    else
+    {
+        // Insert so that list stays sorted
+        m_FreeObjects.insert(it.first, reference);
 
-    // Insert so that list stays sorted
-    m_FreeObjects.insert(it.first, reference);
-
-    // When manually appending free objects we also
-    // need to update the object count
-    tryIncrementObjectCount(reference);
+        // When append free objects from external doc we need plus one number objects
+        TryIncrementObjectCount(reference);
+    }
 }
 
 void PdfIndirectObjectList::AddObjectStream(uint32_t objectNum)
@@ -320,7 +338,7 @@ void PdfIndirectObjectList::pushObject(const ObjectList::const_iterator& hintpos
         m_Objects.insert(hintpos, obj);
     else
         m_Objects.insert(hintpos, std::move(node));
-    tryIncrementObjectCount(obj->GetIndirectReference());
+    TryIncrementObjectCount(obj->GetIndirectReference());
 }
 
 void PdfIndirectObjectList::CollectGarbage()
@@ -396,7 +414,7 @@ void PdfIndirectObjectList::visitObject(const PdfObject& obj, unordered_set<PdfR
     }
 }
 
-void PdfIndirectObjectList::DetachObserver(Observer& observer)
+void PdfIndirectObjectList::Detach(Observer& observer)
 {
     auto it = m_observers.begin();
     while (it != m_observers.end())
@@ -426,6 +444,23 @@ unique_ptr<PdfObjectStreamProvider> PdfIndirectObjectList::CreateStream()
     }
 }
 
+void PdfIndirectObjectList::WriteObject(PdfObject& obj)
+{
+    // Tell any observers that there are new objects to write
+    for (auto& observer : m_observers)
+        observer->WriteObject(obj);
+}
+
+void PdfIndirectObjectList::Finish()
+{
+    // always work on a copy of the vector
+    // in case a child invalidates our iterators
+    // with a call to attach or detach.
+    ObserverList copy(m_observers);
+    for (auto& observer : copy)
+        observer->Finish();
+}
+
 void PdfIndirectObjectList::BeginAppendStream(PdfObjectStream& stream)
 {
     for (auto& observer : m_observers)
@@ -438,12 +473,20 @@ void PdfIndirectObjectList::EndAppendStream(PdfObjectStream& stream)
         observer->EndAppendStream(stream);
 }
 
+void PdfIndirectObjectList::SetCanReuseObjectNumbers(bool canReuseObjectNumbers)
+{
+    m_CanReuseObjectNumbers = canReuseObjectNumbers;
+
+    if (!m_CanReuseObjectNumbers)
+        m_FreeObjects.clear();
+}
+
 unsigned PdfIndirectObjectList::GetSize() const
 {
     return (unsigned)m_Objects.size();
 }
 
-void PdfIndirectObjectList::AttachObserver(Observer& observer)
+void PdfIndirectObjectList::Attach(Observer& observer)
 {
     m_observers.push_back(&observer);
 }
@@ -453,13 +496,14 @@ void PdfIndirectObjectList::SetStreamFactory(StreamFactory* factory)
     m_StreamFactory = factory;
 }
 
-void PdfIndirectObjectList::tryIncrementObjectCount(const PdfReference& ref)
+void PdfIndirectObjectList::TryIncrementObjectCount(const PdfReference& ref)
 {
-    if (ref.ObjectNumber() > m_ObjectCount)
+    if (ref.ObjectNumber() >= m_ObjectCount)
     {
-        // "m_ObjectCount" is used to determine the next available object number.
-        // It shall be the highest object number otherwise overlaps may occur
-        m_ObjectCount = ref.ObjectNumber();
+        // "m_ObjectCount" is used for the next free object number.
+        // We need to use the greatest object number + 1 for the next free object number.
+        // Otherwise, object number overlap would have occurred.
+        m_ObjectCount = ref.ObjectNumber() + 1;
     }
 }
 

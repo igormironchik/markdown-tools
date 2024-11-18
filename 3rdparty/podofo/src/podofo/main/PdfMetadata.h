@@ -27,8 +27,9 @@ namespace PoDoFo
     public:
         /** Set the title of the document.
          * \param title title
+         * \param trySyncXMP if a XMP packet was found, immediately synchronize it to "/Metadata"
          */
-        void SetTitle(nullable<const PdfString&> title);
+        void SetTitle(nullable<const PdfString&> title, bool trySyncXMP = false);
 
         /** Get the title of the document
          *  \returns the title
@@ -37,8 +38,9 @@ namespace PoDoFo
 
         /** Set the author of the document.
          * \param author author
+         * \param trySyncXMP if a XMP packet was found, immediately synchronize it to "/Metadata"
          */
-        void SetAuthor(nullable<const PdfString&> author);
+        void SetAuthor(nullable<const PdfString&> author, bool trySyncXMP = false);
 
         /** Get the author of the document
          *  \returns the author
@@ -47,8 +49,9 @@ namespace PoDoFo
 
         /** Set the subject of the document.
          * \param subject subject
+         * \param trySyncXMP if a XMP packet was found, immediately synchronize it to "/Metadata"
          */
-        void SetSubject(nullable<const PdfString&> subject);
+        void SetSubject(nullable<const PdfString&> subject, bool trySyncXMP = false);
 
         /** Get the subject of the document
          *  \returns the subject
@@ -62,8 +65,9 @@ namespace PoDoFo
 
         /** Set keywords for this document
          * \param keywords a list of keywords
+         * \param trySyncXMP if a XMP packet was found, immediately synchronize it to "/Metadata"
          */
-        void SetKeywords(std::vector<std::string> keywords);
+        void SetKeywords(std::vector<std::string> keywords, bool trySyncXMP = false);
 
         /** Get the keywords of the document
          *  \returns the keywords
@@ -73,8 +77,9 @@ namespace PoDoFo
         /** Set the creator of the document.
          * Typically the name of the application using the library.
          * \param creator creator
+         * \param trySyncXMP if a XMP packet was found, immediately synchronize it to "/Metadata"
          */
-        void SetCreator(nullable<const PdfString&> creator);
+        void SetCreator(nullable<const PdfString&> creator, bool trySyncXMP = false);
 
         /** Get the creator of the document
          *  \returns the creator
@@ -83,8 +88,9 @@ namespace PoDoFo
 
         /** Set the producer of the document.
          * \param producer producer
+         * \param trySyncXMP if a XMP packet was found, immediately synchronize it to "/Metadata"
          */
-        void SetProducer(nullable<const PdfString&> producer);
+        void SetProducer(nullable<const PdfString&> producer, bool trySyncXMP = false);
 
         /** Get the producer of the document
          *  \returns the producer
@@ -93,8 +99,9 @@ namespace PoDoFo
 
         /** Set the document creation date
          * \param date the creation date
+         * \param trySyncXMP if a XMP packet was found, immediately synchronize it to "/Metadata"
          */
-        void SetCreationDate(nullable<PdfDate> date);
+        void SetCreationDate(nullable<PdfDate> date, bool trySyncXMP = false);
 
         /** Get creation date of document
          *  \return creation date
@@ -103,8 +110,9 @@ namespace PoDoFo
 
         /** Set the document modification date
          * \param date the modification date
+         * \param trySyncXMP if a XMP packet was found, immediately synchronize it to "/Metadata"
          */
-        void SetModifyDate(nullable<PdfDate> date);
+        void SetModifyDate(nullable<PdfDate> date, bool trySyncXMP = false);
 
         /** Get modification date of document
          *  \return modification date
@@ -113,6 +121,7 @@ namespace PoDoFo
 
         /** Set the trapping state of the document.
          * \param trapped trapped
+         * \param trySyncXMP if a XMP packet was found, immediately synchronize it to "/Metadata"
          */
         void SetTrapped(nullable<const PdfName&> trapped);
 
@@ -135,21 +144,17 @@ namespace PoDoFo
 
         /** Set the document PDF/A level
          * \param level the PDF/A level
+         * \param trySyncXMP if a XMP packet was found, immediately synchronize it to "/Metadata"
          */
-        void SetPdfALevel(PdfALevel level);
+        void SetPdfALevel(PdfALevel level, bool trySyncXMP = false);
 
         /** Ensure the XMP metadata is created
          * Also, ensure some /Info metadata is normalized
-         * so it will be compatible with the correspondent XMP
-         * \param resetXMPPacket true if the XMP packet should be reset unconditionally.
-         *      This will loose custom entities
+         * so it will be compatible with the corrispondent XMP
          */
-        void SyncXMPMetadata(bool resetXMPPacket = false);
+        void EnsureXMPMetadata();
 
-        /** Try to sync an XMP packet, if present
-         * \returns true if the XMP packet was present and synced
-         */
-        bool TrySyncXMPMetadata();
+        void SyncXMPMetadata(bool forceCreationXMP);
 
         /** Take the XMP packet, if available, and invalidate the data
          */
@@ -161,9 +166,9 @@ namespace PoDoFo
     private:
         PdfMetadata& operator=(PdfMetadata&) = delete;
 
-        void setKeywords(nullable<const PdfString&> keywords);
+        void setKeywords(nullable<const PdfString&> keywords, bool trySyncXMP = false);
         void ensureInitialized();
-        void syncXMPMetadata(bool resetXMPPacket);
+        void trySyncXMPMetadata(bool forceCreationXMP);
         void invalidate();
 
     private:

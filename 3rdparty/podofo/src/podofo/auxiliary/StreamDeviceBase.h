@@ -8,19 +8,18 @@
 #define AUX_STREAM_DEVICE_BASE_H
 
 #include "basedefs.h"
-#include <cstdint>
 #include "EnumFlags.h"
 
 namespace PoDoFo {
 
-enum class DeviceAccess : uint8_t
+enum class DeviceAccess
 {
     Read = 1,
     Write = 2,
     ReadWrite = Read | Write
 };
 
-enum class SeekDirection : uint8_t
+enum class SeekDirection
 {
     Begin = 0,
     Current,

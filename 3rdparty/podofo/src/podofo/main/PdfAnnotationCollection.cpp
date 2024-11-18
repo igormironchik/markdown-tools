@@ -91,33 +91,38 @@ unsigned PdfAnnotationCollection::GetCount() const
 
 PdfAnnotationCollection::iterator PdfAnnotationCollection::begin()
 {
-    initAnnotations();
     return m_Annots.begin();
 }
 
 PdfAnnotationCollection::iterator PdfAnnotationCollection::end()
 {
-    initAnnotations();
     return m_Annots.end();
 }
 
 PdfAnnotationCollection::const_iterator PdfAnnotationCollection::begin() const
 {
-    const_cast<PdfAnnotationCollection&>(*this).initAnnotations();
     return m_Annots.begin();
 }
 
 PdfAnnotationCollection::const_iterator PdfAnnotationCollection::end() const
 {
-    const_cast<PdfAnnotationCollection&>(*this).initAnnotations();
     return m_Annots.end();
+}
+
+PdfAnnotation& PdfAnnotationCollection::createAnnotation(const type_info& typeInfo, const Rect& rect, bool rawRect)
+{
+    Rect actualRect = rect;
+    if (!rawRect)
+        actualRect = PoDoFo::TransformRectPage(actualRect, *m_Page, false);
+
+    return addAnnotation(PdfAnnotation::Create(*m_Page, typeInfo, actualRect));
 }
 
 PdfAnnotation& PdfAnnotationCollection::addAnnotation(unique_ptr<PdfAnnotation>&& annot)
 {
     initAnnotations();
     if (m_annotArray == nullptr)
-        m_annotArray = &m_Page->GetDictionary().AddKey("Annots"_n, PdfArray()).GetArray();
+        m_annotArray = &m_Page->GetDictionary().AddKey("Annots", PdfArray()).GetArray();
 
     (*m_annotMap)[annot->GetObject().GetIndirectReference()] = m_annotArray->GetSize();
     m_annotArray->AddIndirectSafe(annot->GetObject());

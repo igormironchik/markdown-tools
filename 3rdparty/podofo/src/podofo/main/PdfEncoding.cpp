@@ -19,15 +19,6 @@
 using namespace std;
 using namespace PoDoFo;
 
-namespace PoDoFo
-{
-    class PdfDynamicEncodingMap : public PdfEncodingMapBase
-    {
-    public:
-        PdfDynamicEncodingMap(const shared_ptr<PdfCharCodeMap>& map);
-    };
-}
-
 static PdfCharCode fetchFallbackCharCode(string_view::iterator& it, const string_view::iterator& end, const PdfEncodingLimits& limits);
 
 PdfEncoding::PdfEncoding()
@@ -42,40 +33,34 @@ PdfEncoding::PdfEncoding(const PdfEncodingMapConstPtr& encoding, const PdfToUnic
         PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InternalLogic, "The encoding map must be CMap type");
 }
 
-PdfEncoding::PdfEncoding(unsigned id, const PdfEncodingMapConstPtr& encoding, const PdfEncodingMapConstPtr& toUnicode)
-    : m_Id(id), m_Font(nullptr), m_Encoding(encoding), m_ToUnicode(toUnicode)
+PdfEncoding::PdfEncoding(size_t id, const PdfEncodingMapConstPtr& encoding, const PdfEncodingMapConstPtr& toUnicode)
+    : m_Id(id), m_Encoding(encoding), m_ToUnicode(toUnicode)
 {
     if (encoding == nullptr)
         PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidHandle, "Main encoding must be not null");
 }
 
-PdfEncoding::PdfEncoding(unsigned id, const PdfEncodingLimits& limits, PdfFont* font,
-        const PdfEncodingMapConstPtr& encoding, const PdfEncodingMapConstPtr& toUnicode)
-    : m_Id(id), m_ParsedLimits(limits), m_Font(font), m_Encoding(encoding), m_ToUnicode(toUnicode)
+PdfEncoding::PdfEncoding(const PdfObject& fontObj, const PdfEncodingMapConstPtr& encoding, const PdfEncodingMapConstPtr& toUnicode)
+    : PdfEncoding(GetNextId(), encoding, toUnicode)
 {
+    auto firstCharObj = fontObj.GetDictionary().FindKey("FirstChar");
+    if (firstCharObj != nullptr)
+        m_ParsedLimits.FirstChar = PdfCharCode(static_cast<unsigned>(firstCharObj->GetNumber()));
+
+    auto lastCharObj = fontObj.GetDictionary().FindKey("LastChar");
+    if (lastCharObj != nullptr)
+        m_ParsedLimits.LastChar = PdfCharCode(static_cast<unsigned>(lastCharObj->GetNumber()));
+
+    if (m_ParsedLimits.LastChar.Code > m_ParsedLimits.FirstChar.Code)
+    {
+        // If found valid /FirstChar and /LastChar, valorize
+        //  also the code size limits
+        m_ParsedLimits.MinCodeSize = utls::GetCharCodeSize(m_ParsedLimits.FirstChar.Code);
+        m_ParsedLimits.MaxCodeSize = utls::GetCharCodeSize(m_ParsedLimits.LastChar.Code);
+    }
 }
 
-PdfEncoding PdfEncoding::Create(const PdfEncodingLimits& parsedLimits, const PdfEncodingMapConstPtr& encoding,
-    const PdfEncodingMapConstPtr& toUnicode)
-{
-    return PdfEncoding(GetNextId(), parsedLimits, nullptr, encoding, toUnicode);
-}
-
-unique_ptr<PdfEncoding> PdfEncoding::CreateSchim(const PdfEncoding& encoding, PdfFont& font)
-{
-    unique_ptr<PdfEncoding> ret(new PdfEncoding(encoding));
-    ret->m_Font = &font;
-    return ret;
-}
-
-unique_ptr<PdfEncoding> PdfEncoding::CreateDynamicEncoding(const shared_ptr<PdfCharCodeMap>& cidMap,
-    const shared_ptr<PdfCharCodeMap>& toUnicodeMap, PdfFont& font)
-{
-    unique_ptr<PdfEncoding> ret(new PdfEncoding(GetNextId(), PdfEncodingMapConstPtr(new PdfDynamicEncodingMap(cidMap)),
-        PdfEncodingMapConstPtr(new PdfDynamicEncodingMap(toUnicodeMap))));
-    ret->m_Font = &font;
-    return ret;
-}
+PdfEncoding::~PdfEncoding() { }
 
 string PdfEncoding::ConvertToUtf8(const PdfString& encodedStr) const
 {
@@ -105,8 +90,8 @@ bool PdfEncoding::TryConvertToEncoded(const string_view& str, charbuff& encoded)
     if (str.empty())
         return true;
 
-    PODOFO_ASSERT(m_Font != nullptr);
-    if (m_Font->IsObjectLoaded() || !m_Font->GetMetrics().HasUnicodeMapping())
+    auto& font = GetFont();
+    if (font.IsObjectLoaded() || !font.GetMetrics().HasUnicodeMapping())
     {
         // The font is loaded from object. We will attempt to use
         // just the loaded map to perform the conversion
@@ -132,7 +117,7 @@ bool PdfEncoding::TryConvertToEncoded(const string_view& str, charbuff& encoded)
         // If the font is not loaded from object but created
         // from scratch, we will attempt first to infer GIDs
         // from Unicode code points using the font metrics
-        auto& metrics = m_Font->GetMetrics();
+        auto& metrics = font.GetMetrics();
         auto it = str.begin();
         auto end = str.end();
         vector<unsigned> gids;
@@ -161,7 +146,7 @@ bool PdfEncoding::TryConvertToEncoded(const string_view& str, charbuff& encoded)
         {
             unsigned char cpsSpanSize = backwardMap[i];
             unicodeview span(cps.data() + cpOffset, cpsSpanSize);
-            if (!tryGetCharCode(*m_Font, gids[i], span, codeUnit))
+            if (!tryGetCharCode(font, gids[i], span, codeUnit))
                 return false;
 
             codeUnit.AppendTo(encoded);
@@ -207,23 +192,23 @@ bool PdfEncoding::tryConvertEncodedToUtf8(const string_view& encoded, string& st
     bool success = true;
     auto it = encoded.begin();
     auto end = encoded.end();
-    CodePointSpan codePoints;
+    vector<char32_t> codePoints;
     while (it != end)
     {
         if (!map.TryGetNextCodePoints(it, end, codePoints))
         {
             success = false;
-            codePoints = CodePointSpan((char32_t)fetchFallbackCharCode(it, end, limits).Code);
+            codePoints.clear();
+            codePoints.push_back((char32_t)fetchFallbackCharCode(it, end, limits).Code);
         }
 
-        auto view = codePoints.view();
-        for (size_t i = 0; i < view.size(); i++)
+        for (size_t i = 0; i < codePoints.size(); i++)
         {
-            char32_t codePoint = view[i];
+            char32_t codePoint = codePoints[i];
             if (codePoint != U'\0' && utf8::internal::is_code_point_valid(codePoint))
             {
                 // Validate codepoints to insert
-                utf8::unchecked::append((uint32_t)view[i], std::back_inserter(str));
+                utf8::unchecked::append((uint32_t)codePoints[i], std::back_inserter(str));
             }
         }
     }
@@ -248,8 +233,8 @@ bool PdfEncoding::TryGetCIDId(const PdfCharCode& codeUnit, unsigned& cid) const
     else
     {
         PODOFO_INVARIANT(m_Encoding->IsSimpleEncoding());
-        PODOFO_ASSERT(m_Font != nullptr);
-        if (m_Font->IsObjectLoaded() || !m_Font->GetMetrics().HasUnicodeMapping())
+        auto& font = GetFont();
+        if (font.IsObjectLoaded() || !font.GetMetrics().HasUnicodeMapping())
         {
             // Assume cid == charcode
             cid = codeUnit.Code;
@@ -261,7 +246,7 @@ bool PdfEncoding::TryGetCIDId(const PdfCharCode& codeUnit, unsigned& cid) const
             // a GID from the metrics
             char32_t cp = GetCodePoint(codeUnit);
             unsigned gid;
-            if (cp == U'\0' || !m_Font->GetMetrics().TryGetGID(cp, gid))
+            if (cp == U'\0' || !font.GetMetrics().TryGetGID(cp, gid))
             {
                 cid = 0;
                 return false;
@@ -323,46 +308,49 @@ const PdfCharCode& PdfEncoding::GetLastChar() const
     return limits.LastChar;
 }
 
-void PdfEncoding::ExportToFont(PdfFont& font) const
+void PdfEncoding::ExportToFont(PdfFont& font, PdfEncodingExportFlags flags) const
 {
-    auto& fontDict = font.GetDictionary();
+    auto& fontDict = font.GetObject().GetDictionary();
     if (font.IsCIDKeyed())
     {
         auto fontName = font.GetName();
 
         // The CIDSystemInfo, should be an indirect object
         auto& cidSystemInfo = font.GetDocument().GetObjects().CreateDictionaryObject();
-        cidSystemInfo.GetDictionary().AddKey("Registry"_n, PdfString(CMAP_REGISTRY_NAME));
-        cidSystemInfo.GetDictionary().AddKey("Ordering"_n, PdfString(fontName));
-        cidSystemInfo.GetDictionary().AddKey("Supplement"_n, static_cast<int64_t>(0));
+        cidSystemInfo.GetDictionary().AddKey("Registry", PdfString(CMAP_REGISTRY_NAME));
+        cidSystemInfo.GetDictionary().AddKey("Ordering", PdfString(fontName));
+        cidSystemInfo.GetDictionary().AddKey("Supplement", static_cast<int64_t>(0));
 
         // NOTE: Setting the CIDSystemInfo params in the descendant font object is required
-        font.GetDescendantFontObject().GetDictionary().AddKeyIndirect("CIDSystemInfo"_n, cidSystemInfo);
+        font.GetDescendantFontObject().GetDictionary().AddKeyIndirect("CIDSystemInfo", cidSystemInfo);
 
         // Some CMap encodings has a name representation, such as
         // Identity-H/Identity-V. NOTE: Use a fixed representation only
         // if we are not subsetting. In that case we want a CID mapping
-        if (font.IsSubsettingEnabled() || !tryExportEncodingTo(fontDict, true))
+        if (font.IsSubsettingEnabled() || !tryExportObjectTo(fontDict, true))
         {
-            // If it doesn't have a name representation, try to export a CID CMap
+            // If it doesn't have a name represenation, try to export a CID CMap
             auto& cmapObj = fontDict.GetOwner()->GetDocument()->GetObjects().CreateDictionaryObject();
 
             // NOTE: Setting the CIDSystemInfo params in the CMap stream object is required
-            cmapObj.GetDictionary().AddKeyIndirect("CIDSystemInfo"_n, cidSystemInfo);
+            cmapObj.GetDictionary().AddKeyIndirect("CIDSystemInfo", cidSystemInfo);
 
-            writeCIDMapping(cmapObj, font, fontName);
-            fontDict.AddKeyIndirect("Encoding"_n, cmapObj);
+            writeCIDMapping(cmapObj, GetFont(), fontName);
+            fontDict.AddKeyIndirect("Encoding", cmapObj);
         }
     }
     else
     {
-        if (!tryExportEncodingTo(fontDict, false))
+        if (!tryExportObjectTo(fontDict, false))
             PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InternalLogic, "The encoding should supply an export object");
     }
 
-    auto& cmapObj = fontDict.GetOwner()->GetDocument()->GetObjects().CreateDictionaryObject();
-    writeToUnicodeCMap(cmapObj);
-    fontDict.AddKeyIndirect("ToUnicode"_n, cmapObj);
+    if ((flags & PdfEncodingExportFlags::SkipToUnicode) == PdfEncodingExportFlags::None)
+    {
+        auto& cmapObj = fontDict.GetOwner()->GetDocument()->GetObjects().CreateDictionaryObject();
+        writeToUnicodeCMap(cmapObj);
+        fontDict.AddKeyIndirect("ToUnicode", cmapObj);
+    }
 }
 
 PdfStringScanContext PdfEncoding::StartStringScan(const PdfString& encodedStr)
@@ -370,7 +358,7 @@ PdfStringScanContext PdfEncoding::StartStringScan(const PdfString& encodedStr)
     return PdfStringScanContext(encodedStr.GetRawData(), *this);
 }
 
-bool PdfEncoding::tryExportEncodingTo(PdfDictionary& dictionary, bool wantCIDMapping) const
+bool PdfEncoding::tryExportObjectTo(PdfDictionary& dictionary, bool wantCIDMapping) const
 {
     if (wantCIDMapping && !HasCIDMapping())
     {
@@ -387,9 +375,9 @@ bool PdfEncoding::tryExportEncodingTo(PdfDictionary& dictionary, bool wantCIDMap
         return false;
 
     if (obj == nullptr)
-        dictionary.AddKey("Encoding"_n, name);
+        dictionary.AddKey("Encoding", name);
     else
-        dictionary.AddKeyIndirect("Encoding"_n, *obj);
+        dictionary.AddKeyIndirect("Encoding", *obj);
 
     return true;
 }
@@ -433,33 +421,38 @@ bool PdfEncoding::HasParsedLimits() const
 
 bool PdfEncoding::IsDynamicEncoding() const
 {
-    return m_Encoding != nullptr && typeid(*m_Encoding) == typeid(PdfDynamicEncodingMap);
+    return false;
+}
+
+PdfFont& PdfEncoding::GetFont() const
+{
+    PODOFO_RAISE_ERROR_INFO(PdfErrorCode::NotImplemented, "The encoding has not been binded to a font");
 }
 
 char32_t PdfEncoding::GetCodePoint(const PdfCharCode& codeUnit) const
 {
     auto& map = GetToUnicodeMapSafe();
-    CodePointSpan codePoints;
+    vector<char32_t> codePoints;
     if (!map.TryGetCodePoints(codeUnit, codePoints)
-        || codePoints.GetSize() != 1)
+        || codePoints.size() != 1)
     {
         return U'\0';
     }
 
-    return *codePoints;
+    return codePoints[0];
 }
 
 char32_t PdfEncoding::GetCodePoint(unsigned charCode) const
 {
     auto& map = GetToUnicodeMapSafe();
     auto& limits = map.GetLimits();
-    CodePointSpan codePoints;
+    vector<char32_t> codePoints;
     for (unsigned char i = limits.MinCodeSize; i <= limits.MaxCodeSize; i++)
     {
         if (map.TryGetCodePoints({ charCode, i }, codePoints)
-            && codePoints.GetSize() == 1)
+            && codePoints.size() == 1)
         {
-            return *codePoints;
+            return codePoints[0];
         }
     }
 
@@ -556,8 +549,8 @@ void PdfEncoding::writeCIDMapping(PdfObject& cmapObj, const PdfFont& font, const
         cmapName.append("-subset");
 
     // Table 120: Additional entries in a CMap stream dictionary
-    cmapDict.AddKey("Type"_n, "CMap"_n);
-    cmapDict.AddKey("CMapName"_n, PdfName(cmapName));
+    cmapDict.AddKey(PdfName::KeyType, PdfName("CMap"));
+    cmapDict.AddKey("CMapName", PdfName(cmapName));
 
     charbuff temp;
     auto& stream = cmapObj.GetOrCreateStream();
@@ -573,64 +566,59 @@ void PdfEncoding::writeCIDMapping(PdfObject& cmapObj, const PdfFont& font, const
         ">> def\n"
         "/CMapName /{} def\n"
         "/CMapType 1 def\n"     // As defined in Adobe Technical Notes #5099
-        , fontName, cmapName);
-    auto wmode = m_Encoding->GetWModeSafe();
-    if (wmode != PdfWModeKind::Horizontal)
-    {
-        utls::FormatTo(temp, "/WMode {} def\n", (unsigned)wmode);
-        output.Write(temp);
-    }
+        "1 begincodespacerange\n", fontName, cmapName);
     output.Write(temp);
 
     if (font.IsSubsettingEnabled())
     {
+        struct Limit
+        {
+            PdfCharCode FirstCode;
+            PdfCharCode LastCode;
+        };
+
+        unordered_map<unsigned char, Limit> ranges;
         auto& usedGids = font.GetUsedGIDs();
-        unordered_set<unsigned char> usedCodeSpaceSizes;
         for (auto& pair : usedGids)
         {
             auto& codeUnit = pair.second.Unit;
-            auto codeSpaceSize = codeUnit.CodeSpaceSize;
-            usedCodeSpaceSizes.insert(codeSpaceSize);
-        }
-
-        unsigned size = 0;
-        for (auto& usedCodeSpaceSize : usedCodeSpaceSizes)
-        {
-            std::vector<utls::FSSUTFRange> ranges = utls::GetFSSUTFRanges(usedCodeSpaceSize);
-            size += (unsigned)ranges.size();
-        }
-
-        output.Write(std::to_string(size));
-        output.Write(" begincodespacerange\n");
-
-        bool first = true;
-        for (auto& usedCodeSpaceSize : usedCodeSpaceSizes)
-        {
-            std::vector<utls::FSSUTFRange> ranges = utls::GetFSSUTFRanges(usedCodeSpaceSize);
-
-            for (auto& range : ranges)
+            auto found = ranges.find(codeUnit.CodeSpaceSize);
+            if (found == ranges.end())
             {
-                if (first)
-                    first = false;
-                else
-                    output.Write("\n");
+                ranges[codeUnit.CodeSpaceSize] = Limit{ codeUnit, codeUnit };
+            }
+            else
+            {
+                auto& limit = found->second;
+                if (codeUnit.Code < limit.FirstCode.Code)
+                    limit.FirstCode = codeUnit;
 
-                PdfCharCode firstCode(range.FirstCode);
-                PdfCharCode lastCode(range.LastCode);
-
-                firstCode.WriteHexTo(temp);
-                output.Write(temp);
-                lastCode.WriteHexTo(temp);
-                output.Write(temp);
+                if (codeUnit.Code > limit.LastCode.Code)
+                    limit.LastCode = codeUnit;
             }
         }
 
-        output.Write("\nendcodespacerange\n");
+        bool first = true;
+        for (auto& pair : ranges)
+        {
+            if (first)
+                first = false;
+            else
+                output.Write("\n");
+
+            auto& range = pair.second;
+            range.FirstCode.WriteHexTo(temp);
+            output.Write(temp);
+            range.LastCode.WriteHexTo(temp);
+            output.Write(temp);
+        }
     }
     else
     {
         m_Encoding->AppendCodeSpaceRange(output, temp);
     }
+
+    output.Write("\nendcodespacerange\n");
 
     if (font.IsSubsettingEnabled())
     {
@@ -663,7 +651,7 @@ void PdfEncoding::writeCIDMapping(PdfObject& cmapObj, const PdfFont& font, const
 
 void PdfEncoding::writeToUnicodeCMap(PdfObject& cmapObj) const
 {
-    // NOTE: We definitely want a valid Unicode map at this point
+    // NOTE: We definetely want a valid Unicode map at this point
     charbuff temp;
     auto& toUnicode = GetToUnicodeMap();
     auto& stream = cmapObj.GetOrCreateStream();
@@ -681,20 +669,22 @@ void PdfEncoding::writeToUnicodeCMap(PdfObject& cmapObj) const
         "   /Supplement 0\n"
         ">> def\n"
         "/CMapName /Adobe-Identity-UCS def\n"
-        "/CMapType 2 def\n");     // As defined in Adobe Technical Notes #5099
+        "/CMapType 2 def\n"     // As defined in Adobe Technical Notes #5099
+        "1 begincodespacerange\n");
     toUnicode.AppendCodeSpaceRange(output, temp);
+    output.Write("\nendcodespacerange\n");
 
     toUnicode.AppendToUnicodeEntries(output, temp);
     output.Write(
-        "endcmap\n"
+        "\nendcmap\n"
         "CMapName currentdict / CMap defineresource pop\n"
         "end\n"
         "end");
 }
 
-unsigned PdfEncoding::GetNextId()
+size_t PdfEncoding::GetNextId()
 {
-    static atomic<unsigned> s_nextid = CustomEncodingStartId;
+    static atomic<size_t> s_nextid = CustomEncodingStartId;
     return s_nextid++;
 }
 
@@ -712,7 +702,7 @@ bool PdfStringScanContext::IsEndOfString() const
     return m_it == m_end;
 }
 
-bool PdfStringScanContext::TryScan(PdfCID& cid, string& utf8str, CodePointSpan& codepoints)
+bool PdfStringScanContext::TryScan(PdfCID& cid, string& utf8str, vector<codepoint>& codepoints)
 {
     bool success = true;
     if (!m_encoding->TryGetNextCID(m_it, m_end, cid))
@@ -722,16 +712,15 @@ bool PdfStringScanContext::TryScan(PdfCID& cid, string& utf8str, CodePointSpan& 
         success = false;
     }
 
-    if (m_toUnicode->TryGetCodePoints(cid, codepoints))
+    if (m_toUnicode->TryGetCodePoints(cid.Unit, codepoints))
     {
-        auto view = codepoints.view();
-        for (size_t i = 0; i < view.size(); i++)
+        for (size_t i = 0; i < codepoints.size(); i++)
         {
-            char32_t codePoint = view[i];
+            char32_t codePoint = codepoints[i];
             if (codePoint != U'\0' && utf8::internal::is_code_point_valid(codePoint))
             {
                 // Validate codepoints to insert
-                utf8::unchecked::append((uint32_t)view[i], std::back_inserter(utf8str));
+                utf8::unchecked::append((uint32_t)codepoints[i], std::back_inserter(utf8str));
             }
         }
     }
@@ -742,6 +731,3 @@ bool PdfStringScanContext::TryScan(PdfCID& cid, string& utf8str, CodePointSpan& 
 
     return success;
 }
-
-PdfDynamicEncodingMap::PdfDynamicEncodingMap(const shared_ptr<PdfCharCodeMap>& map)
-    : PdfEncodingMapBase(map, PdfEncodingMapType::CMap) { }

@@ -6,24 +6,29 @@
 #ifndef PDF_OUTLINE_H
 #define PDF_OUTLINE_H
 
+#include "PdfDeclarations.h"
+
 #include "PdfElement.h"
-#include "PdfColor.h"
 
 namespace PoDoFo {
 
 class PdfDestination;
 class PdfAction;
+class PdfObject;
+class PdfOutlineItem;
+class PdfString;
+class PdfIndirectObjectList;
 
 /**
  * The title of an outline item can be displayed
- * in different formatting styles since PDF 1.4.
+ * in different formating styles since PDF 1.4.
  */
 enum class PdfOutlineFormat
 {
-    Default = 0,      ///< Default format
-    Italic = 1,       ///< Italic
-    Bold = 2,         ///< Bold
-    BoldItalic = 3,   ///< Bold Italic
+    Default = 0x00,      ///< Default format
+    Italic = 0x01,       ///< Italic
+    Bold = 0x02,         ///< Bold
+    BoldItalic = 0x03,   ///< Bold Italic
 };
 
 /**
@@ -37,37 +42,39 @@ enum class PdfOutlineFormat
  */
 class PODOFO_API PdfOutlineItem : public PdfDictionaryElement
 {
-    friend class PdfOutlines;
-    friend class PdfDocument;
-
-private:
-    /** Create a new PdfOutlineItem dictionary
-     * \param doc parent document
-     * \param parentOutline parent of this outline item
-     *      in the outline item hierarchy
-     */
-    PdfOutlineItem(PdfDocument& doc, PdfOutlineItem* parentOutline = nullptr);
-
-    /** Create a PdfOutlineItem from an existing PdfObject
-     *  \param obj an existing outline item
-     *  \param parentOutline parent of this outline item
-     *                        in the outline item hierarchy
-     *  \param previous previous item of this item
-     */
-    PdfOutlineItem(PdfObject& obj, PdfOutlineItem* parentOutline, PdfOutlineItem* previous);
-
 public:
     virtual ~PdfOutlineItem();
 
-    /** Create a PdfOutlineItem that is on the same level and follows the current item.
+    /** Create a PdfOutlineItem that is a child of this item
      *  \param title title of this item
+     *  \param dest destination of this item
      */
-    PdfOutlineItem& CreateChild(const PdfString& title);
+    PdfOutlineItem* CreateChild(const PdfString& title, const std::shared_ptr<PdfDestination>& dest);
 
     /** Create a PdfOutlineItem that is on the same level and follows the current item.
      *  \param title title of this item
+     *  \param dest destination of this item
      */
-    PdfOutlineItem& CreateNext(const PdfString& title);
+    PdfOutlineItem* CreateNext(const PdfString& title, const std::shared_ptr<PdfDestination>& dest);
+
+    /** Create a PdfOutlineItem that is on the same level and follows the current item.
+     *  \param title title of this item
+     *  \param action action of this item
+     */
+    PdfOutlineItem* CreateNext(const PdfString& title, const std::shared_ptr<PdfAction>& action);
+
+    /** Inserts a new PdfOutlineItem as a child of this outline item.
+     *  The former can't be in the same tree as this one, as the tree property
+     *  would be broken. If this prerequisite is violated, a PdfError
+     *  exception (code PdfErrorCode::OutlineItemAlreadyPresent) is thrown and
+     *  nothing is changed.
+     *  The item inserted is not copied, i.e. Erase() calls affect the original!
+     *  Therefore also shared ownership is in effect, i.e. deletion by where it
+     *  comes from damages the data structure it's inserted into.
+     *
+     *  \param item an existing outline item
+     */
+    void InsertChild(PdfOutlineItem* item);
 
     /**
      * \returns the previous item or nullptr if this is the first on the current level
@@ -106,24 +113,22 @@ public:
     /** Set the destination of this outline.
      *  \param dest the destination
      */
-    void SetDestination(nullable<const PdfDestination&> dest);
+    void SetDestination(const std::shared_ptr<PdfDestination>& dest);
 
     /** Get the destination of this outline.
      *  \returns the destination, if there is one, or nullptr
      */
-    nullable<const PdfDestination&> GetDestination() const;
-    nullable<PdfDestination&> GetDestination();
+    std::shared_ptr<PdfDestination> GetDestination() const;
 
     /** Set the action of this outline.
      *  \param action the action
      */
-    void SetAction(nullable<const PdfAction&> action);
+    void SetAction(const std::shared_ptr<PdfAction>& action);
 
     /** Get the action of this outline.
      *  \returns the action, if there is one, or nullptr
      */
-    nullable<const PdfAction&> GetAction() const;
-    nullable<PdfAction&> GetAction();
+    std::shared_ptr<PdfAction> GetAction() const;
 
     /** Set the title of this outline item
      *  \param title the title to use
@@ -150,38 +155,81 @@ public:
 
     /** Set the color of the title of this item.
      *  This property is supported since PDF 1.4.
-     *  \param color the RGB color that should be set
+     *  \param r red color component
+     *  \param g green color component
+     *  \param b blue color component
      */
-    void SetTextColor(const PdfColor& color);
+    void SetTextColor(double r, double g, double b);
 
     /** Get the color of the title of this item.
      *  Supported since PDF 1.4.
+     *  \returns the red color component
      *
      *  \see SetTextColor
      */
-    PdfColor GetTextColor() const;
+    double GetTextColorRed() const;
+
+    /** Get the color of the title of this item.
+     *  Supported since PDF 1.4.
+     *  \returns the red color component
+     *
+     *  \see SetTextColor
+     */
+    double GetTextColorBlue() const;
+
+    /** Get the color of the title of this item.
+     *  Supported since PDF 1.4.
+     *  \returns the red color component
+     *
+     *  \see SetTextColor
+     */
+    double GetTextColorGreen() const;
 
 private:
-    /** Inserts a new PdfOutlineItem as a child of this outline item.
-     *  The former can't be in the same tree as this one, as the tree property
-     *  would be broken. If this prerequisite is violated, a PdfError
-     *  exception (code PdfErrorCode::OutlineItemAlreadyPresent) is thrown and
-     *  nothing is changed.
-     *  The item inserted is not copied, i.e. Erase() calls affect the original!
-     *  Therefore also shared ownership is in effect, i.e. deletion by where it
-     *  comes from damages the data structure it's inserted into.
-     *
-     *  \param item an existing outline item
-     */
-    void InsertChild(std::unique_ptr<PdfOutlineItem> item);
+    std::shared_ptr<PdfAction> getAction();
+    std::shared_ptr<PdfDestination> getDestination();
+    void SetPrevious(PdfOutlineItem* item);
+    void SetNext(PdfOutlineItem* item);
+    void SetLast(PdfOutlineItem* item);
+    void SetFirst(PdfOutlineItem* item);
 
-    nullable<PdfAction&> getAction();
-    nullable<PdfDestination&> getDestination();
-    void setPrevious(PdfOutlineItem* item);
-    void setNext(PdfOutlineItem* item);
-    void setLast(PdfOutlineItem* item);
-    void setFirst(PdfOutlineItem* item);
-    void insertChildInternal(PdfOutlineItem* item, bool checkParent);
+    void InsertChildInternal(PdfOutlineItem* item, bool checkParent);
+
+protected:
+    /** Create a new PdfOutlineItem dictionary
+     *  \param parent parent vector of objects
+     */
+    PdfOutlineItem(PdfDocument& doc);
+
+    /** Create a new PdfOutlineItem from scratch
+     *  \param title title of this item
+     *  \param dest destination of this item
+     *  \param parentOutline parent of this outline item
+     *                        in the outline item hierarchie
+     *  \param parent parent vector of objects which is required
+     *                 to create new objects
+     */
+    PdfOutlineItem(PdfDocument& doc, const PdfString& title, const std::shared_ptr<PdfDestination>& dest,
+        PdfOutlineItem* parentOutline);
+
+    /** Create a new PdfOutlineItem from scratch
+     *  \param title title of this item
+     *  \param action action of this item
+     *  \param parentOutline parent of this outline item
+     *                        in the outline item hierarchie
+     *  \param parent parent vector of objects which is required
+     *                 to create new objects
+     */
+    PdfOutlineItem(PdfDocument& doc, const PdfString& title, const std::shared_ptr<PdfAction>& action,
+        PdfOutlineItem* parentOutline);
+
+    /** Create a PdfOutlineItem from an existing PdfObject
+     *  \param obj an existing outline item
+     *  \param parentOutline parent of this outline item
+     *                        in the outline item hierarchie
+     *  \param previous previous item of this item
+     */
+    PdfOutlineItem(PdfObject& obj, PdfOutlineItem* parentOutline, PdfOutlineItem* previous);
 
 private:
     PdfOutlineItem* m_ParentOutline;
@@ -192,22 +240,22 @@ private:
     PdfOutlineItem* m_First;
     PdfOutlineItem* m_Last;
 
-    nullable<std::unique_ptr<PdfDestination>> m_Destination;
-    nullable<std::unique_ptr<PdfAction>> m_Action;
+    std::shared_ptr<PdfDestination> m_destination;
+    std::shared_ptr<PdfAction> m_action;
 };
 
 /** The main PDF outlines dictionary.
  *
- *  Normally accessible through PdfDocument::GetOutlines()
+ *  Do not create it by yourself but
+ *  use PdfDocument::GetOutlines() instead.
  *
  *  \see PdfDocument
  */
-class PODOFO_API PdfOutlines final : public PdfOutlineItem
+class PODOFO_API PdfOutlines : public PdfOutlineItem
 {
-    friend class PdfDocument;
-
-private:
+public:
     /** Create a new PDF outlines dictionary
+     *  \param parent parent vector of objects
      */
     PdfOutlines(PdfDocument& doc);
 
@@ -216,13 +264,12 @@ private:
      */
     PdfOutlines(PdfObject& obj);
 
-public:
     /** Create the root node of the
      *  outline item tree.
      *
      *  \param title the title of the root node
      */
-    PdfOutlineItem& CreateRoot(const PdfString& title);
+    PdfOutlineItem* CreateRoot(const PdfString& title);
 };
 
 };

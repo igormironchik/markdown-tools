@@ -18,8 +18,6 @@ PdfDataContainer::PdfDataContainer()
 {
 }
 
-PdfDataContainer::~PdfDataContainer() { }
-
 void PdfDataContainer::SetOwner(PdfObject& owner)
 {
     m_Owner = &owner;
@@ -28,7 +26,7 @@ void PdfDataContainer::SetOwner(PdfObject& owner)
 
 void PdfDataContainer::ResetDirty()
 {
-    resetDirty();
+    ResetDirtyInternal();
 }
 
 PdfObject* PdfDataContainer::GetIndirectObject(const PdfReference& ref) const
@@ -61,12 +59,6 @@ bool PdfDataContainer::IsIndirectReferenceAllowed(const PdfObject& obj)
     }
 
     return false;
-}
-
-void PdfDataContainer::AssertMutable() const
-{
-    if (m_Owner != nullptr && m_Owner->IsImmutable())
-        PODOFO_RAISE_ERROR(PdfErrorCode::ChangeOnImmutable);
 }
 
 PdfDocument* PdfDataContainer::GetObjectDocument()

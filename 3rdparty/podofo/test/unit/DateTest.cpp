@@ -34,7 +34,7 @@ static void checkExpected(const string_view& datestr, bool expectedValid)
     REQUIRE(valid == expectedValid);
 }
 
-TEST_CASE("TestCreateDateFromString")
+TEST_CASE("testCreateDateFromString")
 {
     checkExpected({ }, false);
     checkExpected("D:2012", true);
@@ -66,12 +66,13 @@ TEST_CASE("TestCreateDateFromString")
     checkExpected("INVALID", false);
 }
 
-TEST_CASE("TestRoundTrip")
+TEST_CASE("testRoundTrip")
 {
-    auto testRoundTrip = [](const string_view& dateStr1)
+    auto testRoundTrip = [](const string_view& datestr)
     {
+        string dateStr1 = (string)datestr;
         auto date1 = PdfDate::Parse(dateStr1);
-        string dateStr2 = (string)date1.ToString().GetString();
+        string dateStr2 = date1.ToString().GetString();
         auto date2 = PdfDate::Parse(dateStr2);
         REQUIRE(dateStr1 == dateStr2);
         REQUIRE(date1 == date2);
@@ -81,7 +82,7 @@ TEST_CASE("TestRoundTrip")
     testRoundTrip("D:20221217220858");
 }
 
-TEST_CASE("TestNoZoneShift")
+TEST_CASE("testNoZoneShift")
 {
     auto date1 = PdfDate::Parse("D:20221217220858+00'00'");
     auto date2 = PdfDate::Parse("D:20221217220858");
@@ -89,7 +90,7 @@ TEST_CASE("TestNoZoneShift")
     REQUIRE(date1.GetSecondsFromEpoch() == date2.GetSecondsFromEpoch());
 }
 
-TEST_CASE("TestAdditional")
+TEST_CASE("testAdditional")
 {
     struct name_date
     {
@@ -115,7 +116,7 @@ TEST_CASE("TestAdditional")
     }
 }
 
-TEST_CASE("TestParseDateValid")
+TEST_CASE("testParseDateValid")
 {
     // (Sun Feb 05 2012 13:24:56 GMT+0000)
     auto date = PdfDate::Parse("D:20120205132456");

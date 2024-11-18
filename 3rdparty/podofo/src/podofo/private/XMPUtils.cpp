@@ -37,7 +37,9 @@ enum class PdfANamespaceKind
 
 static void setXMPMetadata(xmlDocPtr doc, xmlNodePtr xmpmeta, const PdfXMPMetadata& metatata);
 static void addXMPProperty(xmlDocPtr doc, xmlNodePtr description,
-    XMPMetadataKind property, const string_view& value);
+    XMPMetadataKind property, const string& value);
+static void addXMPProperty(xmlDocPtr doc, xmlNodePtr description,
+    XMPMetadataKind property, const cspan<string>& values);
 static void removeXMPProperty(xmlNodePtr description, XMPMetadataKind property);
 static xmlNsPtr findOrCreateNamespace(xmlDocPtr doc, xmlNodePtr description, PdfANamespaceKind nsKind);
 static PdfALevel getPDFALevelFromString(const string_view& level);
@@ -119,13 +121,6 @@ PdfXMPMetadata PoDoFo::GetXMPMetadata(const string_view& xmpview, unique_ptr<Pdf
     return metadata;
 }
 
-void PoDoFo::CreateXMPMetadata(unique_ptr<PdfXMPPacket>& packet)
-{
-    utls::InitXml();
-    if (packet == nullptr)
-        packet.reset(new PdfXMPPacket());
-}
-
 void PoDoFo::UpdateOrCreateXMPMetadata(unique_ptr<PdfXMPPacket>& packet, const PdfXMPMetadata& metatata)
 {
     utls::InitXml();
@@ -202,7 +197,7 @@ xmlNsPtr findOrCreateNamespace(xmlDocPtr doc, xmlNodePtr description, PdfANamesp
             href = "http://www.aiim.org/pdfa/ns/id/";
             break;
         default:
-            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InternalLogic, "Unsupported");
+            throw runtime_error("Unsupported");
     }
     auto xmlNs = xmlSearchNs(doc, description, XMLCHAR prefix);
     if (xmlNs == nullptr)
@@ -214,7 +209,13 @@ xmlNsPtr findOrCreateNamespace(xmlDocPtr doc, xmlNodePtr description, PdfANamesp
     return xmlNs;
 }
 
-void addXMPProperty(xmlDocPtr doc, xmlNodePtr description, XMPMetadataKind property, const string_view& value)
+void addXMPProperty(xmlDocPtr doc, xmlNodePtr description, XMPMetadataKind prop, const string& value)
+{
+    addXMPProperty(doc, description, prop, cspan<string>(&value, 1));
+}
+
+void addXMPProperty(xmlDocPtr doc, xmlNodePtr description,
+    XMPMetadataKind property, const cspan<string>& values)
 {
     xmlNsPtr xmlNs;
     const char* propName;
@@ -265,7 +266,7 @@ void addXMPProperty(xmlDocPtr doc, xmlNodePtr description, XMPMetadataKind prope
             propName = "rev";
             break;
         default:
-            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InternalLogic, "Unsupported");
+            throw runtime_error("Unsupported");
     }
 
     auto element = xmlNewChild(description, xmlNs, XMLCHAR propName, nullptr);
@@ -278,31 +279,25 @@ void addXMPProperty(xmlDocPtr doc, xmlNodePtr description, XMPMetadataKind prope
         case XMPMetadataKind::Subject:
         {
             xmlNodePtr newNode;
-            utls::SetListNodeContent(doc, element, XMPListType::LangAlt, value, newNode);
+            utls::SetListNodeContent(doc, element, XMPListType::LangAlt, values, newNode);
             break;
         }
         case XMPMetadataKind::Author:
         {
             xmlNodePtr newNode;
-            utls::SetListNodeContent(doc, element, XMPListType::Seq, value, newNode);
+            utls::SetListNodeContent(doc, element, XMPListType::Seq, values, newNode);
             break;
         }
         default:
         {
-            xmlNodeAddContent(element, XMLCHAR value.data());
+            xmlNodeSetContent(element, XMLCHAR values[0].data());
             break;
         }
     }
 }
 
 void utls::SetListNodeContent(xmlDocPtr doc, xmlNodePtr node, XMPListType seqType,
-    const string_view& value, xmlNodePtr& newNode)
-{
-    SetListNodeContent(doc, node, seqType, cspan<string_view>(&value, 1), newNode);
-}
-
-void utls::SetListNodeContent(xmlDocPtr doc, xmlNodePtr node, XMPListType seqType,
-    const cspan<string_view>& values, xmlNodePtr& newNode)
+    const cspan<string>& values, xmlNodePtr& newNode)
 {
     const char* elemName;
     switch (seqType)
@@ -342,7 +337,7 @@ void utls::SetListNodeContent(xmlDocPtr doc, xmlNodePtr node, XMPListType seqTyp
                 THROW_LIBXML_EXCEPTION(utls::Format("Can't set xml:lang attribute on rdf:li node"));
         }
 
-        xmlNodeAddContent(liElem, XMLCHAR view.data());
+        xmlNodeSetContent(liElem, XMLCHAR view.data());
     }
 
     newNode = innerElem->children;
@@ -399,7 +394,7 @@ void removeXMPProperty(xmlNodePtr description, XMPMetadataKind property)
             propname = "rev";
             break;
         default:
-            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InternalLogic, "Unsupported");
+            throw runtime_error("Unsupported");
     }
 
     xmlNodePtr elemModDate = nullptr;
@@ -501,7 +496,7 @@ void getPdfALevelComponents(PdfALevel level, string& levelStr, string& conforman
             revision = "2020";
             return;
         default:
-            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InternalLogic, "Unsupported");
+            throw runtime_error("Unsupported");
     }
 }
 

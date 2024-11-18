@@ -7,9 +7,13 @@
 #ifndef PDF_ELEMENT_H
 #define PDF_ELEMENT_H
 
+#include "PdfDeclarations.h"
 #include "PdfObject.h"
 
 namespace PoDoFo {
+
+class PdfStreamedDocument;
+class PdfIndirectObjectList;
 
 /** PdfElement is a common base class for all elements
  *  in a PDF file. For example pages, action and annotations.
@@ -22,7 +26,7 @@ namespace PoDoFo {
  *  a PdfObject and adds it to a vector of objects.
  *
  *  A PdfElement cannot be created directly. Use one
- *  of the subclasses which implement real functionality.
+ *  of the subclasses which implement real functionallity.
  *
  *  \see PdfPage \see PdfAction \see PdfAnnotation
  */
@@ -61,9 +65,8 @@ protected:
      */
     PdfElement(PdfObject& obj, PdfDataType expectedDataType);
 
-    PdfElement(const PdfElement& element) = default;
-
 private:
+    PdfElement(const PdfElement& element) = delete;
     PdfElement& operator=(const PdfElement& element) = delete;
 
 private:
@@ -79,8 +82,8 @@ protected:
      *  \param subtype optional value of the /SubType key of the object
      */
     PdfDictionaryElement(PdfDocument& parent,
-        const PdfName& type = PdfName::Null,
-        const PdfName& subtype = PdfName::Null);
+        const std::string_view& type = { },
+        const std::string_view& subtype = { });
 
     /** Create a PdfDictionaryElement from an existing PdfObject
      *  The object must be a dictionary.
@@ -89,8 +92,6 @@ protected:
      *                 by this PdfElement
      */
     PdfDictionaryElement(PdfObject& obj);
-
-    PdfDictionaryElement(const PdfDictionaryElement& element) = default;
 
 public:
     PdfDictionary& GetDictionary();
@@ -112,8 +113,6 @@ protected:
      *      by this PdfArrayElement
      */
     PdfArrayElement(PdfObject& obj);
-
-    PdfArrayElement(const PdfArrayElement& element) = default;
 
 public:
     PdfArray& GetArray();

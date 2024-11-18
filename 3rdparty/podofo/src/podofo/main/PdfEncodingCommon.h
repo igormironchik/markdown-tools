@@ -35,8 +35,6 @@ namespace PoDoFo
 
         bool operator==(const PdfCharCode& rhs) const;
 
-        bool operator!=(const PdfCharCode& rhs) const;
-
     public:
         void AppendTo(std::string& str) const;
         void WriteHexTo(std::string& str, bool wrap = true) const;
@@ -44,7 +42,7 @@ namespace PoDoFo
 
     /** Represent a CID (Character ID) with full code unit information
      */
-    struct PODOFO_API PdfCID final
+    struct PdfCID final
     {
         unsigned Id;
         PdfCharCode Unit;
@@ -69,9 +67,6 @@ namespace PoDoFo
     public:
         PdfEncodingLimits(unsigned char minCodeSize, unsigned char maxCodeSize,
             const PdfCharCode& firstCharCode, const PdfCharCode& lastCharCode);
-
-        /** Create invalid limits
-         */
         PdfEncodingLimits();
 
         /** Determines if the limits are valid
@@ -84,10 +79,10 @@ namespace PoDoFo
          */
         bool HaveValidCodeSizeRange() const;
 
-        PdfCharCode FirstChar;     // The first defined character code
-        PdfCharCode LastChar;      // The last defined character code
         unsigned char MinCodeSize;
         unsigned char MaxCodeSize;
+        PdfCharCode FirstChar;     // The first defined character code
+        PdfCharCode LastChar;      // The last defined character code
     };
 }
 

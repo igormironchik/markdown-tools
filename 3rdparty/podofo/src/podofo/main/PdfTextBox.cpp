@@ -32,13 +32,13 @@ PdfTextBox::PdfTextBox(PdfObject& obj, PdfAcroForm* acroform)
 void PdfTextBox::init()
 {
     if (!GetDictionary().HasKey("DS"))
-        GetDictionary().AddKey("DS"_n, PdfString("font: 12pt Helvetica"));
+        GetDictionary().AddKey("DS", PdfString("font: 12pt Helvetica"));
 }
 
 void PdfTextBox::SetText(nullable<const PdfString&> text)
 {
     AssertTerminalField();
-    auto key = this->IsRichText() ? "RV"_n : "V"_n;
+    string_view key = this->IsRichText() ? "RV" : "V";
     if (text.has_value())
     {
 
@@ -58,7 +58,7 @@ void PdfTextBox::SetText(nullable<const PdfString&> text)
 nullable<const PdfString&> PdfTextBox::GetText() const
 {
     AssertTerminalField();
-    auto key = this->IsRichText() ? "RV"_n : "V"_n;
+    string_view key = this->IsRichText() ? "RV" : "V";
     auto obj = GetDictionary().FindKeyParent(key);
     const PdfString* str;
     if (obj == nullptr || !obj->TryGetString(str))
@@ -69,7 +69,7 @@ nullable<const PdfString&> PdfTextBox::GetText() const
 
 void PdfTextBox::SetMaxLen(int64_t maxLen)
 {
-    GetDictionary().AddKey("MaxLen"_n, maxLen);
+    GetDictionary().AddKey("MaxLen", maxLen);
 }
 
 int64_t PdfTextBox::GetMaxLen() const
@@ -112,12 +112,12 @@ bool PdfTextBox::IsFileField() const
     return this->GetFieldFlag(static_cast<int>(PdfTextBox_FileSelect), false);
 }
 
-void PdfTextBox::SetSpellCheckingEnabled(bool spellcheck)
+void PdfTextBox::SetSpellcheckingEnabled(bool spellcheck)
 {
     this->SetFieldFlag(static_cast<int>(PdfTextBox_NoSpellcheck), !spellcheck);
 }
 
-bool PdfTextBox::IsSpellCheckingEnabled() const
+bool PdfTextBox::IsSpellcheckingEnabled() const
 {
     return this->GetFieldFlag(static_cast<int>(PdfTextBox_NoSpellcheck), true);
 }

@@ -12,10 +12,12 @@
 #include "PdfGraphicsState.h"
 #include "PdfPainterPath.h"
 #include "PdfPainterTextObject.h"
-#include "PdfColorSpace.h"
 #include "PdfContentStreamOperators.h"
 
 #include <podofo/auxiliary/StateStack.h>
+
+#include <podofo/staging/PdfShadingPattern.h>
+#include <podofo/staging/PdfTilingPattern.h>
 
 namespace PoDoFo {
 
@@ -59,14 +61,14 @@ struct PODOFO_API PdfDrawTextMultiLineParams final
     PdfDrawTextStyle Style = PdfDrawTextStyle::Regular;                         ///< style of the draw text operation
     PdfHorizontalAlignment HorizontalAlignment = PdfHorizontalAlignment::Left;  ///< alignment of the individual text lines in the given bounding box
     PdfVerticalAlignment VerticalAlignment = PdfVerticalAlignment::Top;         ///< vertical alignment of the text in the given bounding box
-    bool SkipClip = false;                                                      ///< Where a clipping rectangle, skip clipping text 
-    bool PreserveTrailingSpaces = false;                                        ///< Whether to the preserve trailing whitespaces
+    bool Clip = true;                                                           ///< set the clipping rectangle to the given rect, otherwise no clipping is performed
+    bool SkipSpaces = true;                                                     ///< whether the trailing whitespaces should be skipped, so that next line doesn't start with whitespace
 };
 
 struct PODOFO_API PdfPainterState final
 {
     PdfGraphicsState GraphicsState;
-    PdfTextState TextState;         ///< The current semantical text state
+    PdfTextState TextState;         ///< The current sematical text state
     nullable<Vector2> FirstPoint;
     nullable<Vector2> CurrentPoint;
 private:
@@ -85,48 +87,24 @@ private:
     PdfGraphicsStateWrapper(PdfPainter& painter, PdfGraphicsState& state);
 
 public:
-    /** Apply the given matrix to the current transformation matrix (CTM)
-     * \remarks Corresponds to the PDF 'cm' operator 
-     */
-    void ConcatenateTransformationMatrix(const Matrix& matrix);
+    void SetCurrentMatrix(const Matrix& matrix);
     void SetLineWidth(double lineWidth);
     void SetMiterLevel(double value);
     void SetLineCapStyle(PdfLineCapStyle capStyle);
     void SetLineJoinStyle(PdfLineJoinStyle joinStyle);
     void SetRenderingIntent(const std::string_view& intent);
-    /** Set the color for PDF "nonstroking" operations (including "fill")
-     */
-    void SetNonStrokingColorSpace(PdfColorSpaceInitializer&& colorSpace);
-    /** Set the color for PDF "stroking" operations
-     */
-    void SetStrokingColorSpace(PdfColorSpaceInitializer&& color);
-    /** Set the color for PDF "nonstroking" operations (including "fill")
-     */
-    void SetNonStrokingColor(const PdfColor& color);
-    /** Set the color for PDF "stroking" operations
-     */
-    void SetStrokingColor(const PdfColor& color);
-    /** Set the color for PDF "nonstroking" operations (including "fill")
-     */
-    void SetNonStrokingColor(const PdfColorRaw& color);
-    /** Set the color for PDF "stroking" operations
-     */
-    void SetStrokingColor(const PdfColorRaw& color);
-    void SetExtGState(const PdfExtGState& extGState);
+    void SetFillColor(const PdfColor& color);
+    void SetStrokeColor(const PdfColor& color);
 
 public:
-    /** Get the current transformation matrix (CTM)
-     */
     const Matrix& GetCurrentMatrix() { return m_state->CTM; }
     double GetLineWidth() const { return m_state->LineWidth; }
     double GetMiterLevel() const { return m_state->MiterLimit; }
     PdfLineCapStyle GetLineCapStyle() const { return m_state->LineCapStyle; }
     PdfLineJoinStyle GetLineJoinStyle() const { return m_state->LineJoinStyle; }
     const std::string& GetRenderingIntent() const { return m_state->RenderingIntent; }
-    const PdfColorRaw& GetNonStrokingColor() const { return m_state->NonStrokingColor; }
-    const PdfColorRaw& GetStrokingColor() const { return m_state->StrokingColor; }
-    PdfColorSpaceFilterPtr GetNonStrokingColorSpace() const { return m_state->NonStrokingColorSpaceFilter; }
-    PdfColorSpaceFilterPtr GetStrokingColorSpace() const { return m_state->StrokingColorSpaceFilter; }
+    const PdfColor& GetFillColor() const { return m_state->FillColor; }
+    const PdfColor& GetStrokeColor() const { return m_state->StrokeColor; }
 
 public:
     operator const PdfGraphicsState&() const { return *m_state; }
@@ -168,40 +146,39 @@ public:
     void SetRenderingMode(PdfTextRenderingMode mode);
 
 public:
-    inline const PdfFont* GetFont() const { return m_State->Font; }
+    inline const PdfFont* GetFont() const { return m_state->Font; }
 
     /** Retrieve the current font size (operator Tf, controlling Tfs)
      *  \returns the current font size
      */
-    inline double GetFontSize() const { return m_State->FontSize; }
+    inline double GetFontSize() const { return m_state->FontSize; }
 
     /** Retrieve the current horizontal scaling (operator Tz)
      *  \returns the current font scaling in [0,1]
      */
-    inline double GetFontScale() const { return m_State->FontScale; }
+    inline double GetFontScale() const { return m_state->FontScale; }
 
     /** Retrieve the character spacing (operator Tc)
      *  \returns the current font character spacing
      */
-    inline double GetCharSpacing() const { return m_State->CharSpacing; }
+    inline double GetCharSpacing() const { return m_state->CharSpacing; }
 
     /** Retrieve the current word spacing (operator Tw)
      *  \returns the current font word spacing in PDF units
      */
-    inline double GetWordSpacing() const { return m_State->WordSpacing; }
+    inline double GetWordSpacing() const { return m_state->WordSpacing; }
 
-    inline PdfTextRenderingMode GetRenderingMode() const { return m_State->RenderingMode; }
+    inline PdfTextRenderingMode GetRenderingMode() const { return m_state->RenderingMode; }
 
 public:
-    const PdfTextState& GetState() const { return *m_State; }
-    operator const PdfTextState&() const { return *m_State; }
+    operator const PdfTextState&() const { return *m_state; }
 
 private:
-    void SetState(PdfTextState& state) { m_State = &state; }
+    void SetState(PdfTextState& state) { m_state = &state; }
 
 private:
     PdfPainter* m_painter;
-    PdfTextState* m_State;
+    PdfTextState* m_state;
 };
 
 /**
@@ -213,8 +190,6 @@ private:
  *
  * All functions that take coordinates expect these to be in PDF User Units. Keep in mind that PDF has
  * its coordinate system origin at the bottom left corner.
- * \remarks It should not be generally needede but you can cast the instance to
- * PdfContentStreamOperators to access low level PDF operators
  */
 class PODOFO_API PdfPainter final : public PdfContentStreamOperators
 {
@@ -250,6 +225,34 @@ public:
      *  This has to be called whenever a page has been drawn complete.
      */
     void FinishDrawing();
+
+    /** Set the shading pattern for all following stroking operations.
+     *  This operation uses the 'SCN' PDF operator.
+     *
+     *  \param pattern a shading pattern
+     */
+    void SetStrokingShadingPattern(const PdfShadingPattern& pattern);
+
+    /** Set the shading pattern for all following non-stroking operations.
+     *  This operation uses the 'scn' PDF operator.
+     *
+     *  \param pattern a shading pattern
+     */
+    void SetShadingPattern(const PdfShadingPattern& pattern);
+
+    /** Set the tiling pattern for all following stroking operations.
+     *  This operation uses the 'SCN' PDF operator.
+     *
+     *  \param pattern a tiling pattern
+     */
+    void SetStrokingTilingPattern(const PdfTilingPattern& pattern);
+
+    /** Set the tiling pattern for all following non-stroking operations.
+     *  This operation uses the 'scn' PDF operator.
+     *
+     *  \param pattern a tiling pattern
+     */
+    void SetTilingPattern(const PdfTilingPattern& pattern);
 
     /** Set the stoke style for all stroking operations.
      *  \param strokeStyle style of the stroking operations
@@ -462,6 +465,11 @@ public:
      */
     void Restore();
 
+    /** Sets a specific PdfExtGState as being active
+     *	\param inGState the specific ExtGState to set
+     */
+    void SetExtGState(const PdfExtGState& inGState);
+
     /** Set the floating point precision.
      *
      *  \param precision write this many decimal places
@@ -525,24 +533,19 @@ private:
     void SetMiterLimit(double miterLimit);
     void SetLineCapStyle(PdfLineCapStyle style);
     void SetLineJoinStyle(PdfLineJoinStyle style);
-    void SetNonStrokingColor(const PdfColor& color);
-    void SetStrokingColor(const PdfColor& color);
-    void SetNonStrokingColor(const PdfColorRaw& color, const PdfColorSpaceFilter& colorSpace);
-    void SetStrokingColor(const PdfColorRaw& color, const PdfColorSpaceFilter& colorSpace);
-    void SetNonStrokingColorSpace(const PdfColorSpaceFilter&filter, const PdfColorSpace* colorSpace);
-    void SetStrokingColorSpace(const PdfColorSpaceFilter& filter, const PdfColorSpace* colorSpace);
+    void SetFillColor(const PdfColor& color);
+    void SetStrokeColor(const PdfColor& color);
     void SetRenderingIntent(const std::string_view& intent);
     void SetTransformationMatrix(const Matrix& matrix);
-    void SetFont(const PdfFont& font, double fontSize);
+    void SetFont(const PdfFont* font, double fontSize);
     void SetFontScale(double value);
     void SetCharSpacing(double value);
     void SetWordSpacing(double value);
     void SetTextRenderingMode(PdfTextRenderingMode value);
-    void SetExtGState(const PdfExtGState& extGState);
 
 private:
     void writeTextState();
-    void setFont(const PdfFont& font, double fontSize);
+    void setFont(const PdfFont* font, double fontSize);
     void setFontScale(double value);
     void setCharSpacing(double value);
     void setWordSpacing(double value);
@@ -555,10 +558,6 @@ private:
     void stroke();
     void fill(bool useEvenOddRule);
     void strokeAndFill(bool useEvenOddRule);
-    void setNonStrokingColorSpace(const PdfObject& csObj);
-    void setStrokingColorSpace(const PdfObject& csObj);
-    PdfName tryAddResource(const PdfObject& obj, PdfResourceType type);
-    void drawLines(const std::vector<std::array<double, 4>>& lines);
 
 private:
     // PdfContentStreamOperators implementation
@@ -613,9 +612,9 @@ private:
     void i_Operator(double flatness) override;
     void gs_Operator(const std::string_view& dictName) override;
     void Do_Operator(const std::string_view& xobjname) override;
-    void cs_Operator(PdfColorSpaceType colorSpace) override;
+    void cs_Operator(PdfColorSpace colorSpace) override;
     void cs_Operator(const std::string_view& name) override;
-    void CS_Operator(PdfColorSpaceType colorSpace) override;
+    void CS_Operator(PdfColorSpace colorSpace) override;
     void CS_Operator(const std::string_view& name) override;
     void sc_Operator(const cspan<double>& components) override;
     void SC_Operator(const cspan<double>& components) override;
@@ -633,7 +632,7 @@ private:
     void k_Operator(double cyan, double magenta, double yellow, double black) override;
     void BX_Operator() override;
     void EX_Operator() override;
-    void Extension_Operator(const std::string_view& opName, const cspan<PdfVariant>& operands) override;
+    void Extension_Operator(const std::string_view& opName, const cspan<PdfObject>& operands) override;
 
 private:
     enum PainterStatus
@@ -645,14 +644,30 @@ private:
     };
 
 private:
-    void drawTextAligned(const std::string_view& str, double x, double y, double width,
-        PdfHorizontalAlignment hAlignment, PdfDrawTextStyle style, std::vector<std::array<double, 4>>& linesToDraw);
+    /** Gets the text divided into individual lines, using the current font and clipping rectangle.
+     *
+     *  \param str the text which should be drawn
+     *  \param width width of the text area
+     *  \param skipSpaces whether the trailing whitespaces should be skipped, so that next line doesn't start with whitespace
+     */
+    std::vector<std::string> getMultiLineTextAsLines(const std::string_view& str, double width, bool skipSpaces);
 
-    void drawText(const std::string_view& str, double x, double y,
-        bool isUnderline, bool isStrikeThrough, std::vector<std::array<double, 4>>& linesToDraw);
+    /** Register an object in the resource dictionary of this page
+     *  so that it can be used for any following drawing operations.
+     *
+     *  \param type register under this key in the resource dictionary
+     *  \param name identifier of this object, e.g. /Ft0
+     *  \param obj the object you want to register
+     */
+    void addToPageResources(const PdfName& type, const PdfName& identifier, const PdfObject& obj);
+
+    void drawTextAligned(const std::string_view& str, double x, double y, double width,
+        PdfHorizontalAlignment hAlignment, PdfDrawTextStyle style);
+
+    void drawText(const std::string_view& str, double x, double y, bool isUnderline, bool isStrikeThrough);
 
     void drawMultiLineText(const std::string_view& str, double x, double y, double width, double height,
-        PdfHorizontalAlignment hAlignment, PdfVerticalAlignment vAlignment, bool skipClip, bool preserveTrailingSpaces,
+        PdfHorizontalAlignment hAlignment, PdfVerticalAlignment vAlignment, bool clip, bool skipSpaces,
         PdfDrawTextStyle style);
 
     void setLineWidth(double width);
@@ -676,10 +691,6 @@ private:
     void checkStatus(int expectedStatus);
     void enterTextObject();
     void exitTextObject();
-
-private:
-    PdfPainter(const PdfPainter&) = delete;
-    PdfPainter& operator=(const PdfPainter&) = delete;
 
 private:
     PdfPainterFlags m_flags;
@@ -712,8 +723,6 @@ private:
     /** temporary stream buffer
      */
     PdfStringStream m_stream;
-
-    std::unordered_map<PdfReference, PdfName> m_resNameCache;
 };
 
 }
