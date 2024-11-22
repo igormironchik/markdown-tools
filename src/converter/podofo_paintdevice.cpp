@@ -133,10 +133,12 @@ PoDoFoPaintEngine::PoDoFoPaintEngine(Render::PdfAuxData &pdfData)
     : QPaintEngine(QPaintEngine::AllFeatures)
     , d(new PoDoFoPaintEnginePrivate(this, pdfData))
 {
+    pdfPainter()->Save();
 }
 
 PoDoFoPaintEngine::~PoDoFoPaintEngine()
 {
+    pdfPainter()->Restore();
 }
 
 void

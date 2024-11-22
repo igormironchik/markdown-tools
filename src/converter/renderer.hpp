@@ -575,8 +575,7 @@ private:
                                                      std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
                                                      double offset,
                                                      CalcHeightOpt heightCalcOpt,
-                                                     double scale,
-                                                     RTLFlag *rtl = nullptr);
+                                                     double scale);
 
     //! \return Minimum necessary height to draw item, meant at least one line.
     double minNecessaryHeight(PdfAuxData &pdfData,
@@ -814,6 +813,7 @@ private:
                                           double scale,
                                           ImageAlignment alignment,
                                           bool scaleImagesToLineHeight = false);
+
     //! Draw math expression.
     QPair<QRectF, unsigned int> drawMathExpr(PdfAuxData &pdfData,
                                              const RenderOpts &renderOpts,
@@ -826,128 +826,42 @@ private:
                                              CustomWidth &cw,
                                              double scale);
 
-    //! Font in table.
-    struct FontAttribs {
-        QString m_family;
-        bool m_bold;
-        bool m_italic;
-        bool m_strikethrough;
-        int m_size;
-    }; // struct FontAttribs
+    //! \return Height of the table's row.
+    double rowHeight(PdfAuxData &pdfData,
+                     std::shared_ptr<MD::TableRow<MD::QStringTrait>> row,
+                     double width,
+                     const RenderOpts &renderOpts,
+                     std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                     double scale);
 
-    friend bool operator!=(const PdfRenderer::FontAttribs &f1, const PdfRenderer::FontAttribs &f2);
-    friend bool operator==(const PdfRenderer::FontAttribs &f1, const PdfRenderer::FontAttribs &f2);
-
-    //! Item in the table's cell.
-    struct CellItem {
-        QString m_word;
-        QByteArray m_image;
-        QString m_url;
-        QString m_footnote;
-        QString m_footnoteRef;
-        QColor m_color;
-        QColor m_background;
-        std::shared_ptr<MD::Footnote<MD::QStringTrait>> m_footnoteObj;
-        FontAttribs m_font;
-        bool m_isRightToLeft = false;
-        bool m_code = false;
-
-        //! \return Width of the item.
-        double width(PdfAuxData &pdfData, PdfRenderer *render, double scale) const;
-    }; // struct CellItem
-
-    //! Cell in the table.
-    struct CellData {
-        double m_width = 0.0;
-        double m_height = 0.0;
-        MD::Table<MD::QStringTrait>::Alignment m_alignment;
-        QVector<CellItem> m_items;
-        bool m_isRightToLeft = false;
-
-        void setWidth(double w)
-        {
-            m_width = w;
-        }
-        //! Calculate height for the given width.
-        void heightToWidth(double lineHeight, double spaceWidth, double scale,
-                           PdfAuxData &pdfData, PdfRenderer *render);
-    }; //  struct CellData
-
-    //! \return Height of the row.
-    double rowHeight(const QVector<QVector<CellData>> &table, int row);
-    //! Create auxiliary cell.
-    void createAuxCell(const RenderOpts &renderOpts,
-                       PdfAuxData &pdfData,
-                       CellData &data,
-                       MD::Item<MD::QStringTrait> *item,
-                       std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
-                       const QString &url = {},
-                       const QColor &color = {});
-    //! Create auxiliary table for drawing.
-    QVector<QVector<CellData>> createAuxTable(PdfAuxData &pdfData,
-                                              const RenderOpts &renderOpts,
-                                              MD::Table<MD::QStringTrait> *item,
-                                              std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
-                                              double scale);
-    //! Calculate size of the cells in the table.
-    void calculateCellsSize(PdfAuxData &pdfData, QVector<QVector<CellData>> &auxTable,
-                            double spaceWidth, double offset, double lineHeight, double scale);
     //! Draw table's row.
-    QPair<QVector<WhereDrawn>, WhereDrawn> drawTableRow(QVector<QVector<CellData>> &table,
-                                                        int row,
+    QPair<QVector<WhereDrawn>, WhereDrawn> drawTableRow(std::shared_ptr<MD::TableRow<MD::QStringTrait>> row,
                                                         PdfAuxData &pdfData,
-                                                        double offset,
-                                                        double lineHeight,
                                                         const RenderOpts &renderOpts,
                                                         std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
-                                                        QVector<QPair<QString, std::shared_ptr<MD::Footnote<MD::QStringTrait>>>> &footnotes,
-                                                        double scale);
+                                                        double offset,
+                                                        double scale,
+                                                        double columnWidth,
+                                                        bool rightToLeftTable,
+                                                        int columnsCount);
+
+    //! Draw table's cell.
+    QPair<QVector<WhereDrawn>, WhereDrawn> drawTableCell(std::shared_ptr<MD::TableCell<MD::QStringTrait>> cell,
+                                                         PdfAuxData &pdfData,
+                                                         const RenderOpts &renderOpts,
+                                                         std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                                                         double scale);
+
     //! Draw table border.
     void drawRowBorder(PdfAuxData &pdfData,
                        int startPage,
                        QVector<WhereDrawn> &ret,
                        const RenderOpts &renderOpts,
                        double offset,
-                       const QVector<QVector<CellData>> &table,
                        double startY,
-                       double endY);
-
-    // Holder of single line in table.
-    struct TextToDraw {
-        double m_width = 0.0;
-        double m_availableWidth = 0.0;
-        double m_lineHeight = 0.0;
-        MD::Table<MD::QStringTrait>::Alignment m_alignment;
-        QVector<CellItem> m_text;
-        bool m_isRightToLeft = false;
-
-        void clear()
-        {
-            m_width = 0.0;
-            m_text.clear();
-        }
-    }; // struct TextToDraw
-
-    //! Draw text line in the cell.
-    void drawTextLineInTable(const RenderOpts &renderOpts,
-                             double x,
-                             double &y,
-                             TextToDraw &text,
-                             double lineHeight,
-                             PdfAuxData &pdfData,
-                             QMap<QString, QVector<QPair<QRectF, unsigned int>>> &links,
-                             Font *font,
-                             int &currentPage,
-                             int &endPage,
-                             double &endY,
-                             QVector<QPair<QString, std::shared_ptr<MD::Footnote<MD::QStringTrait>>>> &footnotes,
-                             double scale);
-    //! Create new page in table.
-    void newPageInTable(PdfAuxData &pdfData, int &currentPage, int &endPage, double &endY);
-    //! Make links in table clickable.
-    void processLinksInTable(PdfAuxData &pdfData,
-                             const QMap<QString, QVector<QPair<QRectF, unsigned int>>> &links,
-                             std::shared_ptr<MD::Document<MD::QStringTrait>> doc);
+                       double endY,
+                       double columnWidth,
+                       int columnsCount);
 
     //! Draw horizontal line.
     void drawHorizontalLine(PdfAuxData &pdfData, const RenderOpts &renderOpts);
