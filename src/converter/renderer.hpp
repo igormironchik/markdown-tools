@@ -107,6 +107,18 @@ struct DrawPrimitive {
 //! Image alignment.
 enum class ImageAlignment { Left, Center, Right }; // enum ImageAlignment
 
+//! Paragraph alignment.
+enum class ParagraphAlignment {
+    //! Left.
+    Left,
+    //! Center.
+    Center,
+    //! Right.
+    Right,
+    //! FillWidth
+    FillWidth
+}; // enum ParagraphAlignment
+
 //
 // RenderOpts
 //
@@ -526,7 +538,8 @@ private:
                                                          double scale,
                                                          const QColor &color = Qt::black,
                                                          bool scaleImagesToLineHeight = false,
-                                                         RTLFlag *rtl = nullptr);
+                                                         RTLFlag *rtl = nullptr,
+                                                         ParagraphAlignment align = ParagraphAlignment::FillWidth);
     //! Draw block of code.
     QPair<QVector<WhereDrawn>, WhereDrawn> drawCode(PdfAuxData &pdfData,
                                                     const RenderOpts &renderOpts,
@@ -646,14 +659,19 @@ private:
             m_width.append(w);
         }
         //! \return Scale of space at line.
-        double scale()
+        double scale() const
         {
             return m_scale.at(m_pos);
         }
         //! \return Height of the line.
-        double height()
+        double height() const
         {
             return m_height.at(m_pos);
+        }
+        //! \return Width of the line.
+        double width() const
+        {
+            return m_lineWidth.at(m_pos);
         }
         //! Move to next line.
         void moveToNextLine()
@@ -701,6 +719,8 @@ private:
         QVector<double> m_scale;
         //! Heights of lines.
         QVector<double> m_height;
+        //! Widthes of lines.
+        QVector<double> m_lineWidth;
         //! Position of current line.
         int m_pos = 0;
     }; // struct CustomWidth

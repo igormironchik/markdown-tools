@@ -419,7 +419,18 @@ void PdfRenderer::CustomWidth::calcScale(double lineWidth)
                 m_scale.append(100.0);
             }
 
+            double widthWithoutLastSpaces = w;
+
+            for (int j = i; j >= 0; --j) {
+                if (m_width.at(j).m_isSpace) {
+                    widthWithoutLastSpaces -= m_width.at(j).m_width;
+                } else {
+                    break;
+                }
+            }
+
             m_height.append(h);
+            m_lineWidth.append(widthWithoutLastSpaces);
 
             w = 0.0;
             sw = 0.0;
@@ -1984,7 +1995,8 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                                                                   double scale,
                                                                   const QColor &color,
                                                                   bool scaleImagesToLineHeight,
-                                                                  RTLFlag *rtl)
+                                                                  RTLFlag *rtl,
+                                                                  ParagraphAlignment align)
 {
     pdfData.m_startLine = item->startLine();
     pdfData.m_startPos = item->startColumn();
@@ -2403,6 +2415,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
         case MD::ItemType::LineBreak: {
             lineBreak = true;
             moveToNewLine(pdfData, offset, lineHeight, 1.0, lineHeight);
+            cw.moveToNextLine();
         } break;
 
         case MD::ItemType::FootnoteRef: {
