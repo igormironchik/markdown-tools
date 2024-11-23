@@ -4166,6 +4166,8 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTableRow(std::shared_ptr
 
     drawRowBorder(pdfData, startPage, ret, renderOpts, offset, y, endY, columnWidth, columnsCount);
 
+    pdfData.m_firstOnPage = false;
+
     return {ret, firstLine};
 }
 
@@ -4209,6 +4211,8 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTableCell(std::shared_pt
                                    Qt::black, false, nullptr, columnAlignmentToParagraphAlignment(align));
 
     pdfData.m_layout.setRightToLeft(wasRightToLeft);
+
+    pdfData.m_firstOnPage = false;
 
     return ret;
 }
