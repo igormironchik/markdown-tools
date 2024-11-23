@@ -343,6 +343,10 @@ struct PdfAuxData {
     QMap<MD::Blockquote<MD::QStringTrait> *, QColor> m_highlightedBlockquotes;
     //! Cache of fonts.
     QMap<QString, QSharedPointer<QTemporaryFile>> m_fontsCache;
+    //! Stack of painters used on table drawing.
+    QMap<int, char> m_cachedPainters;
+    //! Flag when drawing table.
+    bool m_tableDrawing = false;
 
 #ifdef MD_PDF_TESTING
     QMap<QString, QString> m_fonts;
@@ -653,61 +657,33 @@ private:
         }; // struct Width
 
         //! Append new item.
-        void append(const Width &w)
-        {
-            m_width.append(w);
-        }
+        void append(const Width &w) { m_width.append(w); }
         //! \return Scale of space at line.
-        double scale() const
-        {
-            return m_scale.at(m_pos);
-        }
+        double scale() const { return m_scale.at(m_pos); }
         //! \return Height of the line.
-        double height() const
-        {
-            return m_height.at(m_pos);
-        }
+        double height() const { return m_height.at(m_pos); }
         //! \return Width of the line.
-        double width() const
-        {
-            return m_lineWidth.at(m_pos);
-        }
+        double width() const { return m_lineWidth.at(m_pos); }
         //! Move to next line.
-        void moveToNextLine()
-        {
-            ++m_pos;
-        }
+        void moveToNextLine() { ++m_pos; }
         //! Is drawing? This struct can be used to precalculate widthes and for actual drawing.
-        bool isDrawing() const
-        {
-            return m_drawing;
-        }
+        bool isDrawing() const { return m_drawing; }
         //! Set drawing.
-        void setDrawing(bool on = true)
-        {
-            m_drawing = on;
-        }
+        void setDrawing(bool on = true) { m_drawing = on; }
         //! \return Is last element is new line?
-        bool isNewLineAtEnd() const
-        {
-            return (m_width.isEmpty() ? false : m_width.back().m_isNewLine);
-        }
-
+        bool isNewLineAtEnd() const { return (m_width.isEmpty() ? false : m_width.back().m_isNewLine); }
         //! \return Begin iterator.
-        QVector<Width>::ConstIterator cbegin() const
-        {
-            return m_width.cbegin();
-        }
+        QVector<Width>::ConstIterator cbegin() const { return m_width.cbegin(); }
         //! \return End iterator.
-        QVector<Width>::ConstIterator cend() const
-        {
-            return m_width.cend();
-        }
-
+        QVector<Width>::ConstIterator cend() const { return m_width.cend(); }
         //! \return Height of first item.
         double firstItemHeight() const;
         //! Calculate scales.
         void calcScale(double lineWidth);
+        //! \return Paragraph alignment.
+        ParagraphAlignment alignment() const { return m_alignment; }
+        //! Set paragraph alignment.
+        void setAlignment(ParagraphAlignment a) { m_alignment = a; }
 
     private:
         //! Is drawing?
@@ -722,7 +698,12 @@ private:
         QVector<double> m_lineWidth;
         //! Position of current line.
         int m_pos = 0;
+        //! Paragraph alignment.
+        ParagraphAlignment m_alignment;
     }; // struct CustomWidth
+
+    //! Align line.
+    void alignLine(PdfAuxData &pdfData, const CustomWidth &cw);
 
     //! Draw text.
     QVector<QPair<QRectF, unsigned int>> drawText(PdfAuxData &pdfData,

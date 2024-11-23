@@ -996,40 +996,68 @@ void PdfRenderer::createPage(PdfAuxData &pdfData)
 
         if (pdfData.m_layout.topY() - topY - pdfData.m_extraInFootnote < pdfData.m_lineHeight) {
             create(pdfData);
+        } else if (pdfData.m_tableDrawing) {
+            pdfData.m_cachedPainters.insert(pdfData.m_currentPainterIdx, 0);
         }
     };
 
-    if (!pdfData.m_drawFootnotes) {
-        create(pdfData);
-    } else {
-        auto it = pdfData.m_reserved.find(++pdfData.m_footnotePageIdx);
-
-        if (it == pdfData.m_reserved.cend()) {
-            it = pdfData.m_reserved.upperBound(pdfData.m_footnotePageIdx);
-        }
-
-        if (it != pdfData.m_reserved.cend()) {
-            pdfData.m_footnotePageIdx = it.key();
-        } else {
-            pdfData.m_footnotePageIdx = pdfData.m_currentPageIdx + 1;
-        }
-
-        if (pdfData.m_footnotePageIdx <= pdfData.m_currentPageIdx) {
-            pdfData.m_currentPainterIdx = pdfData.m_footnotePageIdx;
-            pdfData.m_layout.moveXToBegin();
-            pdfData.m_layout.setY(pdfData.topFootnoteY(pdfData.m_footnotePageIdx));
-        } else {
+    auto createOrUseExisting = [&]() {
+        if (!pdfData.m_drawFootnotes) {
             create(pdfData);
+        } else {
+            auto it = pdfData.m_reserved.find(++pdfData.m_footnotePageIdx);
 
-            pdfData.m_layout.setY(pdfData.topFootnoteY(pdfData.m_footnotePageIdx));
+            if (it == pdfData.m_reserved.cend()) {
+                it = pdfData.m_reserved.upperBound(pdfData.m_footnotePageIdx);
+            }
+
+            if (it != pdfData.m_reserved.cend()) {
+                pdfData.m_footnotePageIdx = it.key();
+            } else {
+                pdfData.m_footnotePageIdx = pdfData.m_currentPageIdx + 1;
+            }
+
+            if (pdfData.m_footnotePageIdx <= pdfData.m_currentPageIdx) {
+                pdfData.m_currentPainterIdx = pdfData.m_footnotePageIdx;
+                pdfData.m_layout.moveXToBegin();
+                pdfData.m_layout.setY(pdfData.topFootnoteY(pdfData.m_footnotePageIdx));
+
+                if (pdfData.m_tableDrawing) {
+                    pdfData.m_cachedPainters.insert(pdfData.m_currentPainterIdx, 0);
+                }
+            } else {
+                create(pdfData);
+
+                pdfData.m_layout.setY(pdfData.topFootnoteY(pdfData.m_footnotePageIdx));
+            }
+
+            pdfData.m_layout.addY(pdfData.m_extraInFootnote);
+
+            drawHorizontalLine(pdfData, m_opts);
+
+            if (pdfData.m_continueParagraph) {
+                pdfData.m_layout.addY(pdfData.m_lineHeight);
+            }
         }
+    };
 
-        pdfData.m_layout.addY(pdfData.m_extraInFootnote);
+    if (!pdfData.m_tableDrawing) {
+        createOrUseExisting();
+    } else {
+        auto it = pdfData.m_cachedPainters.find(pdfData.m_currentPainterIdx);
 
-        drawHorizontalLine(pdfData, m_opts);
+        if (it != pdfData.m_cachedPainters.end()) {
+            it = std::next(it);
 
-        if (pdfData.m_continueParagraph) {
-            pdfData.m_layout.addY(pdfData.m_lineHeight);
+            if (it != pdfData.m_cachedPainters.end()) {
+                pdfData.m_currentPainterIdx = it.key();
+                pdfData.m_layout.setY(pdfData.m_layout.topY());
+                pdfData.m_layout.moveXToBegin();
+            } else {
+                createOrUseExisting();
+            }
+        } else {
+            createOrUseExisting();
         }
     }
 
@@ -1397,7 +1425,32 @@ inline bool isRightToLeft(const QVector<QPair<QString, bool>> &words)
     return false;
 }
 
+inline bool isTheSameAlignment(ParagraphAlignment align, bool rightToLeft)
+{
+    switch (align) {
+    case ParagraphAlignment::Left:
+        return !rightToLeft;
+
+    case ParagraphAlignment::Right:
+        return rightToLeft;
+
+    default:
+        return false;
+    }
+}
+
 } /* namespace anonymous */
+
+void PdfRenderer::alignLine(PdfAuxData &pdfData, const CustomWidth &cw)
+{
+    if (cw.alignment() != ParagraphAlignment::FillWidth) {
+        const double delta = (isTheSameAlignment(cw.alignment(), pdfData.m_layout.isRightToLeft()) ? 0.0 :
+                            (cw.alignment() == ParagraphAlignment::Center ?
+                                 (pdfData.m_layout.availableWidth() - cw.width()) / 2.0 :
+                                 (pdfData.m_layout.availableWidth() - cw.width())));
+        pdfData.m_layout.addX(delta);
+    }
+}
 
 QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawString(PdfAuxData &pdfData,
                                                              const RenderOpts &renderOpts,
@@ -1476,6 +1529,8 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawString(PdfAuxData &pdfData
 
             moveToNewLine(pdfData, offset, cw.height(), 1.0, cw.height());
 
+            alignLine(pdfData, cw);
+
             h = cw.height();
         } else {
             cw.append({0.0, lineHeight, false, true, true, ""});
@@ -1519,7 +1574,7 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawString(PdfAuxData &pdfData
         firstSpaceDrawn = true;
         auto scale = 100.0;
 
-        if (draw) {
+        if (draw && cw.alignment() == ParagraphAlignment::FillWidth) {
             scale = cw.scale();
         }
 
@@ -1534,7 +1589,7 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawString(PdfAuxData &pdfData
 
             if (draw) {
                 ret.append(qMakePair(pdfData.m_layout.currentRect(width, lineHeight),
-                                     pdfData.currentPageIndex()));
+                                     pdfData.m_currentPainterIdx));
 
                 if (background.isValid() &&!useRegularSpace) {
                     pdfData.setColor(background);
@@ -1632,7 +1687,7 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawString(PdfAuxData &pdfData
                                      font, fontSize * fontScale, 1.0, strikeout);
                     pdfData.restoreColor();
 
-                    ret.append(qMakePair(pdfData.m_layout.currentRect(length, lineHeight), pdfData.currentPageIndex()));
+                    ret.append(qMakePair(pdfData.m_layout.currentRect(length, lineHeight), pdfData.m_currentPainterIdx));
                 } else {
                     cw.append({length + (it + 1 == last && footnoteAtEnd ? footnoteWidth : 0.0), lineHeight, false, false, true, it->first});
                 }
@@ -1662,7 +1717,7 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawString(PdfAuxData &pdfData
                                              font, fontSize * fontScale, 1.0, strikeout);
                             pdfData.restoreColor();
 
-                            ret.append(qMakePair(pdfData.m_layout.currentRect(w, lineHeight), pdfData.currentPageIndex()));
+                            ret.append(qMakePair(pdfData.m_layout.currentRect(w, lineHeight), pdfData.m_currentPainterIdx));
                         } else {
                             cw.append({w, lineHeight, false, false, true, tmp});
                         }
@@ -2096,6 +2151,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                  pdfData.m_layout.margins().m_right - offset);
 
     cw.setDrawing();
+    cw.setAlignment(align);
 
     switch (heightCalcOpt) {
     case CalcHeightOpt::Minimum: {
@@ -2149,13 +2205,13 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
         moveToNewLine(pdfData, offset, cw.height(), 1.0, cw.height());
     }
 
-    pdfData.m_layout.moveXToBegin();
+    alignLine(pdfData, cw);
 
     bool extraOnFirstLine = true;
     newLine = false;
 
     const auto firstLineY = pdfData.m_layout.y();
-    const auto firstLinePageIdx = pdfData.currentPageIndex();
+    const auto firstLinePageIdx = pdfData.m_currentPainterIdx;
     const auto firstLineHeight = cw.height();
 
     pdfData.m_continueParagraph = true;
@@ -2319,10 +2375,10 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
 
                 const auto w = pdfData.stringWidth(footnoteFont, renderOpts.m_textFontSize * s_footnoteScale, scale, str);
 
-                rects.append(qMakePair(pdfData.m_layout.currentRect(w, lineHeight), pdfData.currentPageIndex()));
+                rects.append(qMakePair(pdfData.m_layout.currentRect(w, lineHeight), pdfData.m_currentPainterIdx));
 
                 m_unresolvedFootnotesLinks.insert(ref->id(), qMakePair(pdfData.m_layout.currentRect(w, lineHeight),
-                                                                       pdfData.currentPageIndex()));
+                                                                       pdfData.m_currentPainterIdx));
 
                 pdfData.setColor(renderOpts.m_linkColor);
 
@@ -2463,7 +2519,7 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
             imgScale = (availableWidth / size.width()) * scale;
         }
 
-        const double pageHeight = pdfData.topY(pdfData.currentPageIndex()) - pdfData.m_layout.margins().m_bottom;
+        const double pageHeight = pdfData.topY(pdfData.m_currentPainterIdx) - pdfData.m_layout.margins().m_bottom;
 
         if (size.height() * imgScale - pageHeight > 0.01) {
             imgScale = (pageHeight / (size.height() * imgScale)) * scale;
@@ -2475,13 +2531,13 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
             }
 
             if (draw) {
-                pdfData.freeSpaceOn(pdfData.currentPageIndex());
+                pdfData.freeSpaceOn(pdfData.m_currentPainterIdx);
             }
         } else if (size.height() * imgScale - availableHeight > 0.01) {
             if (draw) {
                 createPage(pdfData);
 
-                pdfData.freeSpaceOn(pdfData.currentPageIndex());
+                pdfData.freeSpaceOn(pdfData.m_currentPainterIdx);
 
                 pdfData.m_layout.addX(offset);
             }
@@ -2509,7 +2565,7 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
                               pdfData.m_layout.y() - descent * imgScale,
                               size.width() * imgScale,
                               size.height() * imgScale};
-            const auto idx = pdfData.currentPageIndex();
+            const auto idx = pdfData.m_currentPainterIdx;
 
             pdfData.m_layout.addY(h);
 
@@ -2533,7 +2589,7 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
     } else {
         auto sscale = 100.0;
 
-        if (draw) {
+        if (draw && cw.alignment() == ParagraphAlignment::FillWidth) {
             sscale = cw.scale();
         }
 
@@ -2568,7 +2624,7 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
 
         double availableHeight = pdfData.m_layout.y() - pdfData.currentPageAllowedY();
 
-        const double pageHeight = pdfData.topY(pdfData.currentPageIndex()) - pdfData.m_layout.margins().m_bottom;
+        const double pageHeight = pdfData.topY(pdfData.m_currentPainterIdx) - pdfData.m_layout.margins().m_bottom;
 
         if (size.height() * imgScale - pageHeight > 0.01) {
             imgScale = (pageHeight / (size.height() * imgScale)) * scale;
@@ -2576,7 +2632,7 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
             if (draw) {
                 createPage(pdfData);
 
-                pdfData.freeSpaceOn(pdfData.currentPageIndex());
+                pdfData.freeSpaceOn(pdfData.m_currentPainterIdx);
 
                 pdfData.m_layout.addX(offset);
             }
@@ -2584,7 +2640,7 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
             if (draw) {
                 createPage(pdfData);
 
-                pdfData.freeSpaceOn(pdfData.currentPageIndex());
+                pdfData.freeSpaceOn(pdfData.m_currentPainterIdx);
 
                 pdfData.m_layout.addX(offset);
             }
@@ -2609,7 +2665,7 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
                               size.height() * imgScale};
 
             pdfData.m_layout.addX(size.width() * imgScale);
-            const auto idx = pdfData.currentPageIndex();
+            const auto idx = pdfData.m_currentPainterIdx;
 
             return {r, idx};
         } else {
@@ -2949,7 +3005,7 @@ QPair<QRectF, unsigned int> PdfRenderer::drawImage(PdfAuxData &pdfData,
         const double totalAvailableWidth = pdfData.m_layout.pageWidth()
                 - pdfData.m_layout.margins().m_left - pdfData.m_layout.margins().m_right - offset;
         double availableHeight = pdfData.m_layout.y() - pdfData.currentPageAllowedY();
-        const double pageHeight = pdfData.topY(pdfData.currentPageIndex()) - pdfData.m_layout.margins().m_bottom;
+        const double pageHeight = pdfData.topY(pdfData.m_currentPainterIdx) - pdfData.m_layout.margins().m_bottom;
         const bool onLine = (totalAvailableWidth / 5.0 > iWidth && iHeight < lineHeight * 2.0);
         const auto spaceWidth = pdfData.stringWidth(font, renderOpts.m_textFontSize, scale, " ");
         bool addSpace = onLine && !firstInParagraph;
@@ -2994,12 +3050,12 @@ QPair<QRectF, unsigned int> PdfRenderer::drawImage(PdfAuxData &pdfData,
                     pdfData.m_layout.addX(offset);
                 }
 
-                pdfData.freeSpaceOn(pdfData.currentPageIndex());
+                pdfData.freeSpaceOn(pdfData.m_currentPainterIdx);
             } else if (iHeight * imgScale > availableHeight) {
                 if (draw) {
                     createPage(pdfData);
 
-                    pdfData.freeSpaceOn(pdfData.currentPageIndex());
+                    pdfData.freeSpaceOn(pdfData.m_currentPainterIdx);
 
                     pdfData.m_layout.addX(offset);
                 }
@@ -3079,7 +3135,7 @@ QPair<QRectF, unsigned int> PdfRenderer::drawImage(PdfAuxData &pdfData,
             cw.append({iWidth * imgScale, height, false, !onLine, false, ""});
         }
 
-        return qMakePair(r, pdfData.currentPageIndex());
+        return qMakePair(r, pdfData.m_currentPainterIdx);
     } else {
         throw PdfRendererError(tr("Unable to load image: %1.\n\n"
                                   "If this image is in Web, please be sure you are connected to the Internet. I'm "
@@ -3322,7 +3378,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawCode(PdfAuxData &pdfData
     int currentWord = 0;
     const auto spaceWidth = pdfData.stringWidth(font, renderOpts.m_codeFontSize, scale, " ");
 
-    const auto firstLinePageIdx = pdfData.currentPageIndex();
+    const auto firstLinePageIdx = pdfData.m_currentPainterIdx;
     const auto firstLineY = pdfData.m_layout.y();
     const auto firstLineHeight = lineHeight;
 
@@ -3347,7 +3403,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawCode(PdfAuxData &pdfData
                                   PoDoFo::PdfPathDrawMode::Fill);
             pdfData.restoreColor();
 
-            ret.append({pdfData.currentPageIndex(), y + pdfData.fontDescent(font, renderOpts.m_codeFontSize, scale),
+            ret.append({pdfData.m_currentPainterIdx, y + pdfData.fontDescent(font, renderOpts.m_codeFontSize, scale),
                         h + lineHeight});
         }
 
@@ -3587,6 +3643,8 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawBlockquote(PdfAuxData &p
         }
     }
 
+    const auto painterIdx = pdfData.m_currentPainterIdx;
+
     // Draw blockquote left vertival bar.
     for (auto it = map.cbegin(), last = map.cend(); it != last; ++it) {
         pdfData.m_currentPainterIdx = it.key();
@@ -3597,7 +3655,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawBlockquote(PdfAuxData &p
         pdfData.restoreColor();
     }
 
-    pdfData.m_currentPainterIdx = pdfData.currentPageIndex();
+    pdfData.m_currentPainterIdx = painterIdx;
 
     return {ret, firstLine};
 }
@@ -3835,7 +3893,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawListItem(PdfAuxData &pdf
     }
 
     if (addExtraSpace) {
-        ret.append({pdfData.currentPageIndex(), pdfData.m_layout.y(), lineHeight});
+        ret.append({pdfData.m_currentPainterIdx, pdfData.m_layout.y(), lineHeight});
 
         if (heightCalcOpt != CalcHeightOpt::Full) {
             moveToNewLine(pdfData, offset, lineHeight, 1.0, lineHeight);
@@ -3850,6 +3908,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawListItem(PdfAuxData &pdf
 
     if (heightCalcOpt == CalcHeightOpt::Unknown) {
         if (firstLine.m_pageIdx >= 0) {
+            const auto painterIdx = pdfData.m_currentPainterIdx;
             pdfData.m_currentPainterIdx = firstLine.m_pageIdx;
 
             if (item->isTaskList()) {
@@ -3907,7 +3966,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawListItem(PdfAuxData &pdf
                 pdfData.restoreColor();
             }
 
-            pdfData.m_currentPainterIdx = pdfData.currentPageIndex();
+            pdfData.m_currentPainterIdx = painterIdx;
         }
     }
 
@@ -4053,7 +4112,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTable(PdfAuxData &pdfDat
         && qAbs(pdfData.m_layout.y() - nonSplittableHeight - pdfData.currentPageAllowedY()) > 0.1) {
         createPage(pdfData);
 
-        pdfData.freeSpaceOn(pdfData.currentPageIndex());
+        pdfData.freeSpaceOn(pdfData.m_currentPainterIdx);
     }
 
     if (!pdfData.m_firstOnPage) {
@@ -4067,6 +4126,8 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTable(PdfAuxData &pdfDat
 
     const auto columnsCount = item->rows().at(0)->cells().size();
 
+    pdfData.m_tableDrawing = true;
+
     for (const auto &row : std::as_const(item->rows())) {
         const auto where = drawTableRow(row, pdfData, renderOpts, doc, item, offset, scale, columnWidth, rightToLeft,
                                         columnsCount);
@@ -4079,7 +4140,9 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTable(PdfAuxData &pdfDat
         }
     }
 
+    pdfData.m_tableDrawing = false;
     pdfData.m_firstOnPage = false;
+    pdfData.m_cachedPainters.clear();
 
     return {ret, firstLine};
 }
@@ -4098,11 +4161,9 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTableRow(std::shared_ptr
     QVector<WhereDrawn> ret;
     auto y = pdfData.m_layout.y();
 
-    if (pdfData.m_drawFootnotes) {
-        y -= pdfData.m_extraInFootnote;
-    }
-
-    const auto startPage = pdfData.currentPageIndex();
+    const auto startPage = pdfData.m_currentPainterIdx;
+    int endPage = startPage;
+    int currentPage = startPage;
 
     auto endY = pdfData.m_layout.pageHeight();
 
@@ -4118,7 +4179,11 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTableRow(std::shared_ptr
 
     WhereDrawn firstLine;
 
+    pdfData.m_cachedPainters.clear();
+    pdfData.m_cachedPainters.insert(startPage, 0);
+
     for (const auto &c : std::as_const(row->cells())) {
+        pdfData.m_currentPainterIdx = startPage;
         pdfData.m_layout.setY(y);
         pdfData.m_layout.addY(s_tableMargin);
 
@@ -4135,6 +4200,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTableRow(std::shared_ptr
 
         if (!w.first.isEmpty()) {
             tmpY = w.first.last().m_y - s_tableMargin;
+            endPage = w.first.last().m_pageIdx;
 
             if (i == 0) {
                 firstLine = w.second;
@@ -4145,12 +4211,24 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTableRow(std::shared_ptr
             if (i == 0) {
                 firstLine.m_pageIdx = startPage;
                 firstLine.m_y = y - s_tableMargin * 2.0;
+
+                if (firstLine.m_y < pdfData.m_layout.margins().m_bottom) {
+                    createPage(pdfData);
+                    firstLine.m_y = pdfData.m_layout.margins().m_bottom;
+
+                    tmpY = pdfData.m_layout.margins().m_top -
+                            (s_tableMargin * 2.0 - (y - pdfData.m_layout.margins().m_bottom)) -
+                            (pdfData.m_drawFootnotes ? pdfData.m_extraInFootnote : 0.0);
+                }
+
+                endPage = pdfData.m_currentPainterIdx;
                 firstLine.m_height = s_tableMargin * 2.0;
             }
         }
 
-        if (tmpY < endY) {
+        if (tmpY < endY && endPage >= currentPage) {
             endY = tmpY;
+            currentPage = endPage;
         }
 
         ++i;
