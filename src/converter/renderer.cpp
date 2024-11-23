@@ -4066,7 +4066,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTable(PdfAuxData &pdfDat
     const auto columnsCount = item->rows().at(0)->cells().size();
 
     for (const auto &row : std::as_const(item->rows())) {
-        const auto where = drawTableRow(row, pdfData, renderOpts, doc, offset, scale, columnWidth, rightToLeft,
+        const auto where = drawTableRow(row, pdfData, renderOpts, doc, item, offset, scale, columnWidth, rightToLeft,
                                         columnsCount);
 
         ret.append(where.first);
@@ -4084,6 +4084,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTableRow(std::shared_ptr
                                                     PdfAuxData &pdfData,
                                                     const RenderOpts &renderOpts,
                                                     std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                                                    MD::Table<MD::QStringTrait> *table,
                                                     double offset,
                                                     double scale,
                                                     double columnWidth,
@@ -4114,9 +4115,6 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTableRow(std::shared_ptr
     WhereDrawn firstLine;
 
     for (const auto &c : std::as_const(row->cells())) {
-
-        auto &st = pdfData.m_painters->front()->GraphicsState;
-
         pdfData.m_layout.setY(y);
         pdfData.m_layout.addY(s_tableMargin);
 
@@ -4127,7 +4125,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTableRow(std::shared_ptr
         pdfData.m_layout.margins().m_right = pdfData.m_layout.pageWidth() - pdfData.m_layout.margins().m_left -
                 columnWidth + 2.0 * s_tableMargin;
 
-        const auto w = drawTableCell(c, pdfData, renderOpts, doc, scale);
+        const auto w = drawTableCell(c, pdfData, renderOpts, doc, table->columnAlignment(i), scale);
 
         double tmpY = 0.0;
 
@@ -4167,10 +4165,28 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTableRow(std::shared_ptr
     return {ret, firstLine};
 }
 
+inline ParagraphAlignment columnAlignmentToParagraphAlignment(MD::Table<MD::QStringTrait>::Alignment align)
+{
+    switch (align) {
+    case MD::Table<MD::QStringTrait>::AlignLeft:
+        return ParagraphAlignment::Left;
+
+    case MD::Table<MD::QStringTrait>::AlignRight:
+        return ParagraphAlignment::Right;
+
+    case MD::Table<MD::QStringTrait>::AlignCenter:
+        return ParagraphAlignment::Center;
+
+    default:
+        return ParagraphAlignment::FillWidth;
+    }
+}
+
 QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTableCell(std::shared_ptr<MD::TableCell<MD::QStringTrait>> cell,
                                                     PdfAuxData &pdfData,
                                                     const RenderOpts &renderOpts,
                                                     std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                                                    MD::Table<MD::QStringTrait>::Alignment align,
                                                     double scale)
 {
 
@@ -4181,7 +4197,8 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTableCell(std::shared_pt
     auto p = std::make_shared<MD::Paragraph<MD::QStringTrait>>();
     p->applyBlock(*cell.get());
 
-    const auto ret = drawParagraph(pdfData, renderOpts, p.get(), doc, 0.0, false, CalcHeightOpt::Unknown, scale);
+    const auto ret = drawParagraph(pdfData, renderOpts, p.get(), doc, 0.0, false, CalcHeightOpt::Unknown, scale,
+                                   Qt::black, false, nullptr, columnAlignmentToParagraphAlignment(align));
 
     pdfData.m_layout.setRightToLeft(wasRightToLeft);
 

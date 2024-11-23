@@ -839,6 +839,7 @@ private:
                                                         PdfAuxData &pdfData,
                                                         const RenderOpts &renderOpts,
                                                         std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                                                        MD::Table<MD::QStringTrait> *table,
                                                         double offset,
                                                         double scale,
                                                         double columnWidth,
@@ -850,6 +851,7 @@ private:
                                                          PdfAuxData &pdfData,
                                                          const RenderOpts &renderOpts,
                                                          std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                                                         MD::Table<MD::QStringTrait>::Alignment align,
                                                          double scale);
 
     //! Draw table border.
