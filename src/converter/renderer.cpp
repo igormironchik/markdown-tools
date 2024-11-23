@@ -4189,6 +4189,10 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTableCell(std::shared_pt
                                                     MD::Table<MD::QStringTrait>::Alignment align,
                                                     double scale)
 {
+    pdfData.m_startLine = cell->startLine();
+    pdfData.m_startPos = cell->startColumn();
+    pdfData.m_endLine = cell->endLine();
+    pdfData.m_endPos = cell->endColumn();
 
     const auto wasRightToLeft = pdfData.m_layout.isRightToLeft();
 
