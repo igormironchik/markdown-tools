@@ -4056,7 +4056,9 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTable(PdfAuxData &pdfDat
         pdfData.freeSpaceOn(pdfData.currentPageIndex());
     }
 
-    moveToNewLine(pdfData, offset, lineHeight, 1.0, lineHeight);
+    if (!pdfData.m_firstOnPage) {
+        moveToNewLine(pdfData, offset, lineHeight, 1.0, lineHeight);
+    }
 
     const auto rightToLeft = isRightToLeft(item->rows().at(0)->cells().at(0).get());
 
@@ -4076,6 +4078,8 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTable(PdfAuxData &pdfDat
             first = false;
         }
     }
+
+    pdfData.m_firstOnPage = false;
 
     return {ret, firstLine};
 }
