@@ -343,6 +343,10 @@ struct PdfAuxData {
     QMap<MD::Blockquote<MD::QStringTrait> *, QColor> m_highlightedBlockquotes;
     //! Cache of fonts.
     QMap<QString, QSharedPointer<QTemporaryFile>> m_fontsCache;
+    //! Stack of painters used on table drawing.
+    QMap<int, char> m_cachedPainters;
+    //! Flag when drawing table.
+    bool m_tableDrawing = false;
 
 #ifdef MD_PDF_TESTING
     QMap<QString, QString> m_fonts;
@@ -575,8 +579,7 @@ private:
                                                      std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
                                                      double offset,
                                                      CalcHeightOpt heightCalcOpt,
-                                                     double scale,
-                                                     RTLFlag *rtl = nullptr);
+                                                     double scale);
 
     //! \return Minimum necessary height to draw item, meant at least one line.
     double minNecessaryHeight(PdfAuxData &pdfData,
@@ -654,61 +657,33 @@ private:
         }; // struct Width
 
         //! Append new item.
-        void append(const Width &w)
-        {
-            m_width.append(w);
-        }
+        void append(const Width &w) { m_width.append(w); }
         //! \return Scale of space at line.
-        double scale() const
-        {
-            return m_scale.at(m_pos);
-        }
+        double scale() const { return m_scale.at(m_pos); }
         //! \return Height of the line.
-        double height() const
-        {
-            return m_height.at(m_pos);
-        }
+        double height() const { return m_height.at(m_pos); }
         //! \return Width of the line.
-        double width() const
-        {
-            return m_lineWidth.at(m_pos);
-        }
+        double width() const { return m_lineWidth.at(m_pos); }
         //! Move to next line.
-        void moveToNextLine()
-        {
-            ++m_pos;
-        }
+        void moveToNextLine() { ++m_pos; }
         //! Is drawing? This struct can be used to precalculate widthes and for actual drawing.
-        bool isDrawing() const
-        {
-            return m_drawing;
-        }
+        bool isDrawing() const { return m_drawing; }
         //! Set drawing.
-        void setDrawing(bool on = true)
-        {
-            m_drawing = on;
-        }
+        void setDrawing(bool on = true) { m_drawing = on; }
         //! \return Is last element is new line?
-        bool isNewLineAtEnd() const
-        {
-            return (m_width.isEmpty() ? false : m_width.back().m_isNewLine);
-        }
-
+        bool isNewLineAtEnd() const { return (m_width.isEmpty() ? false : m_width.back().m_isNewLine); }
         //! \return Begin iterator.
-        QVector<Width>::ConstIterator cbegin() const
-        {
-            return m_width.cbegin();
-        }
+        QVector<Width>::ConstIterator cbegin() const { return m_width.cbegin(); }
         //! \return End iterator.
-        QVector<Width>::ConstIterator cend() const
-        {
-            return m_width.cend();
-        }
-
+        QVector<Width>::ConstIterator cend() const { return m_width.cend(); }
         //! \return Height of first item.
         double firstItemHeight() const;
         //! Calculate scales.
         void calcScale(double lineWidth);
+        //! \return Paragraph alignment.
+        ParagraphAlignment alignment() const { return m_alignment; }
+        //! Set paragraph alignment.
+        void setAlignment(ParagraphAlignment a) { m_alignment = a; }
 
     private:
         //! Is drawing?
@@ -723,7 +698,12 @@ private:
         QVector<double> m_lineWidth;
         //! Position of current line.
         int m_pos = 0;
+        //! Paragraph alignment.
+        ParagraphAlignment m_alignment;
     }; // struct CustomWidth
+
+    //! Align line.
+    void alignLine(PdfAuxData &pdfData, const CustomWidth &cw);
 
     //! Draw text.
     QVector<QPair<QRectF, unsigned int>> drawText(PdfAuxData &pdfData,
@@ -814,6 +794,7 @@ private:
                                           double scale,
                                           ImageAlignment alignment,
                                           bool scaleImagesToLineHeight = false);
+
     //! Draw math expression.
     QPair<QRectF, unsigned int> drawMathExpr(PdfAuxData &pdfData,
                                              const RenderOpts &renderOpts,
@@ -826,128 +807,44 @@ private:
                                              CustomWidth &cw,
                                              double scale);
 
-    //! Font in table.
-    struct FontAttribs {
-        QString m_family;
-        bool m_bold;
-        bool m_italic;
-        bool m_strikethrough;
-        int m_size;
-    }; // struct FontAttribs
+    //! \return Height of the table's row.
+    double rowHeight(PdfAuxData &pdfData,
+                     std::shared_ptr<MD::TableRow<MD::QStringTrait>> row,
+                     double width,
+                     const RenderOpts &renderOpts,
+                     std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                     double scale);
 
-    friend bool operator!=(const PdfRenderer::FontAttribs &f1, const PdfRenderer::FontAttribs &f2);
-    friend bool operator==(const PdfRenderer::FontAttribs &f1, const PdfRenderer::FontAttribs &f2);
-
-    //! Item in the table's cell.
-    struct CellItem {
-        QString m_word;
-        QByteArray m_image;
-        QString m_url;
-        QString m_footnote;
-        QString m_footnoteRef;
-        QColor m_color;
-        QColor m_background;
-        std::shared_ptr<MD::Footnote<MD::QStringTrait>> m_footnoteObj;
-        FontAttribs m_font;
-        bool m_isRightToLeft = false;
-        bool m_code = false;
-
-        //! \return Width of the item.
-        double width(PdfAuxData &pdfData, PdfRenderer *render, double scale) const;
-    }; // struct CellItem
-
-    //! Cell in the table.
-    struct CellData {
-        double m_width = 0.0;
-        double m_height = 0.0;
-        MD::Table<MD::QStringTrait>::Alignment m_alignment;
-        QVector<CellItem> m_items;
-        bool m_isRightToLeft = false;
-
-        void setWidth(double w)
-        {
-            m_width = w;
-        }
-        //! Calculate height for the given width.
-        void heightToWidth(double lineHeight, double spaceWidth, double scale,
-                           PdfAuxData &pdfData, PdfRenderer *render);
-    }; //  struct CellData
-
-    //! \return Height of the row.
-    double rowHeight(const QVector<QVector<CellData>> &table, int row);
-    //! Create auxiliary cell.
-    void createAuxCell(const RenderOpts &renderOpts,
-                       PdfAuxData &pdfData,
-                       CellData &data,
-                       MD::Item<MD::QStringTrait> *item,
-                       std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
-                       const QString &url = {},
-                       const QColor &color = {});
-    //! Create auxiliary table for drawing.
-    QVector<QVector<CellData>> createAuxTable(PdfAuxData &pdfData,
-                                              const RenderOpts &renderOpts,
-                                              MD::Table<MD::QStringTrait> *item,
-                                              std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
-                                              double scale);
-    //! Calculate size of the cells in the table.
-    void calculateCellsSize(PdfAuxData &pdfData, QVector<QVector<CellData>> &auxTable,
-                            double spaceWidth, double offset, double lineHeight, double scale);
     //! Draw table's row.
-    QPair<QVector<WhereDrawn>, WhereDrawn> drawTableRow(QVector<QVector<CellData>> &table,
-                                                        int row,
+    QPair<QVector<WhereDrawn>, WhereDrawn> drawTableRow(std::shared_ptr<MD::TableRow<MD::QStringTrait>> row,
                                                         PdfAuxData &pdfData,
-                                                        double offset,
-                                                        double lineHeight,
                                                         const RenderOpts &renderOpts,
                                                         std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
-                                                        QVector<QPair<QString, std::shared_ptr<MD::Footnote<MD::QStringTrait>>>> &footnotes,
-                                                        double scale);
+                                                        MD::Table<MD::QStringTrait> *table,
+                                                        double offset,
+                                                        double scale,
+                                                        double columnWidth,
+                                                        bool rightToLeftTable,
+                                                        int columnsCount);
+
+    //! Draw table's cell.
+    QPair<QVector<WhereDrawn>, WhereDrawn> drawTableCell(std::shared_ptr<MD::TableCell<MD::QStringTrait>> cell,
+                                                         PdfAuxData &pdfData,
+                                                         const RenderOpts &renderOpts,
+                                                         std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                                                         MD::Table<MD::QStringTrait>::Alignment align,
+                                                         double scale);
+
     //! Draw table border.
     void drawRowBorder(PdfAuxData &pdfData,
                        int startPage,
                        QVector<WhereDrawn> &ret,
                        const RenderOpts &renderOpts,
                        double offset,
-                       const QVector<QVector<CellData>> &table,
                        double startY,
-                       double endY);
-
-    // Holder of single line in table.
-    struct TextToDraw {
-        double m_width = 0.0;
-        double m_availableWidth = 0.0;
-        double m_lineHeight = 0.0;
-        MD::Table<MD::QStringTrait>::Alignment m_alignment;
-        QVector<CellItem> m_text;
-        bool m_isRightToLeft = false;
-
-        void clear()
-        {
-            m_width = 0.0;
-            m_text.clear();
-        }
-    }; // struct TextToDraw
-
-    //! Draw text line in the cell.
-    void drawTextLineInTable(const RenderOpts &renderOpts,
-                             double x,
-                             double &y,
-                             TextToDraw &text,
-                             double lineHeight,
-                             PdfAuxData &pdfData,
-                             QMap<QString, QVector<QPair<QRectF, unsigned int>>> &links,
-                             Font *font,
-                             int &currentPage,
-                             int &endPage,
-                             double &endY,
-                             QVector<QPair<QString, std::shared_ptr<MD::Footnote<MD::QStringTrait>>>> &footnotes,
-                             double scale);
-    //! Create new page in table.
-    void newPageInTable(PdfAuxData &pdfData, int &currentPage, int &endPage, double &endY);
-    //! Make links in table clickable.
-    void processLinksInTable(PdfAuxData &pdfData,
-                             const QMap<QString, QVector<QPair<QRectF, unsigned int>>> &links,
-                             std::shared_ptr<MD::Document<MD::QStringTrait>> doc);
+                       double endY,
+                       double columnWidth,
+                       int columnsCount);
 
     //! Draw horizontal line.
     void drawHorizontalLine(PdfAuxData &pdfData, const RenderOpts &renderOpts);
