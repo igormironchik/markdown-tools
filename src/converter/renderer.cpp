@@ -4095,8 +4095,10 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTable(PdfAuxData &pdfDat
     }
 
     case CalcHeightOpt::Full: {
-        for (const auto &r : std::as_const(item->rows())) {
-            ret.append({-1, 0.0, rowHeight(pdfData, r, columnWidth, renderOpts, doc, scale)});
+        ret.append({-1, 0.0, r0h + r1h});
+
+        for(long long int i = 2; i < item->rows().size(); ++i) {
+            ret.append({-1, 0.0, rowHeight(pdfData, item->rows().at(i), columnWidth, renderOpts, doc, scale)});
         }
 
         return {ret, {}};
