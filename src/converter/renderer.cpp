@@ -4032,7 +4032,7 @@ double PdfRenderer::rowHeight(PdfAuxData &pdfData,
         auto tmp = 0.0;
 
         for (const auto &w : r.first) {
-            tmp += w.m_height;
+            tmp += w.m_height + 2.0 * s_tableMargin;
         }
 
         if (tmp > height) {
