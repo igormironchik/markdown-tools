@@ -1212,16 +1212,41 @@ QVector<QPair<QRectF, unsigned int>> normalizeRects(const QVector<QPair<QRectF, 
     return ret;
 }
 
+template<class Iterator>
+inline bool isSpace(Iterator it)
+{
+    if ((*it)->type() == MD::ItemType::Text) {
+        auto t = static_cast<MD::Text<MD::QStringTrait>*>(it->get());
+
+        if (t->text().simplified().isEmpty()) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+template<class Iterator>
+inline bool isNotHtmlNorSpace(Iterator it)
+{
+    if ((*it)->type() != MD::ItemType::RawHtml) {
+        if (isSpace(it)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 inline bool isLastImageInLink(MD::Block<MD::QStringTrait>::Items::const_iterator it,
                         MD::Block<MD::QStringTrait>::Items::const_iterator last)
 {
     it = std::next(it);
 
     for (; it != last; ++it) {
-        switch ((*it)->type()) {
-        case MD::ItemType::Text:
-        case MD::ItemType::Code:
-        case MD::ItemType::Image:
+        if (isNotHtmlNorSpace(it)) {
             return false;
         }
     }
@@ -1236,31 +1261,19 @@ skipRawHtmlAndSpacesBackward(MD::Block<MD::QStringTrait>::Items::const_iterator 
 {
     if (it != begin) {
         for (; it != begin; --it) {
-            if ((*it)->type() != MD::ItemType::RawHtml) {
-                if ((*it)->type() == MD::ItemType::Text) {
-                    auto t = static_cast<MD::Text<MD::QStringTrait>*>(it->get());
-
-                    if (!t->text().simplified().isEmpty()) {
-                        break;
-                    }
-                } else {
-                    break;
-                }
+            if (isNotHtmlNorSpace(it)) {
+                break;
             }
         }
 
         if ((*it)->type() == MD::ItemType::RawHtml) {
             return last;
         } else {
-            if ((*it)->type() == MD::ItemType::Text) {
-                auto t = static_cast<MD::Text<MD::QStringTrait>*>(it->get());
-
-                if (t->text().simplified().isEmpty()) {
-                    return last;
-                }
+            if (isSpace(it)) {
+                return last;
+            } else {
+                return it;
             }
-
-            return it;
         }
     }
 
@@ -1272,16 +1285,8 @@ inline Iterator
 skipRawHtmlAndSpaces(Iterator it, Iterator last)
 {
     for (; it != last; ++it) {
-        if ((*it)->type() != MD::ItemType::RawHtml) {
-            if ((*it)->type() == MD::ItemType::Text) {
-                auto t = static_cast<MD::Text<MD::QStringTrait>*>(it->get());
-
-                if (!t->text().simplified().isEmpty()) {
-                    break;
-                }
-            } else {
-                break;
-            }
+        if (isNotHtmlNorSpace(it)) {
+            break;
         }
     }
 
