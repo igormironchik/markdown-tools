@@ -1291,13 +1291,13 @@ skipRawHtmlAndSpaces(Iterator it, Iterator last)
 inline bool isTextAfter(MD::Block<MD::QStringTrait>::Items::const_iterator it,
                        MD::Block<MD::QStringTrait>::Items::const_iterator last)
 {
-    it = std::next(it);
-    skipRawHtmlAndSpaces(it, last);
+    it = skipRawHtmlAndSpaces(std::next(it), last);
 
     if (it != last) {
         switch ((*it)->type()) {
         case MD::ItemType::Text:
         case MD::ItemType::Code:
+        case MD::ItemType::Math:
             return true;
 
         case MD::ItemType::Link: {
@@ -1306,7 +1306,7 @@ inline bool isTextAfter(MD::Block<MD::QStringTrait>::Items::const_iterator it,
             if (!l->p()->isEmpty()) {
                 auto i = l->p()->items().cbegin();
                 auto iLast = l->p()->items().cend();
-                skipRawHtmlAndSpaces(i, iLast);
+                i = skipRawHtmlAndSpaces(i, iLast);
 
                 if (i != iLast) {
                     return ((*i)->type() != MD::ItemType::Image);
@@ -1330,13 +1330,13 @@ inline bool isTextBefore(MD::Block<MD::QStringTrait>::Items::const_iterator it,
                          MD::Block<MD::QStringTrait>::Items::const_iterator last)
 {
     if (it != begin) {
-        it = std::prev(it);
-        it = skipRawHtmlAndSpacesBackward(it, begin, last);
+        it = skipRawHtmlAndSpacesBackward(std::prev(it), begin, last);
 
         if (it != last) {
             switch ((*it)->type()) {
             case MD::ItemType::Text:
             case MD::ItemType::Code:
+            case MD::ItemType::Math:
                 return true;
 
             case MD::ItemType::Link: {
@@ -1345,7 +1345,7 @@ inline bool isTextBefore(MD::Block<MD::QStringTrait>::Items::const_iterator it,
                 if (!l->p()->isEmpty()) {
                     auto i = l->p()->items().crbegin();
                     auto iLast = l->p()->items().crend();
-                    skipRawHtmlAndSpaces(i, iLast);
+                    i = skipRawHtmlAndSpaces(i, iLast);
 
                     if (i != iLast) {
                         return ((*i)->type() != MD::ItemType::Image);
@@ -3212,7 +3212,8 @@ QPair<QRectF, unsigned int> PdfRenderer::drawImage(PdfAuxData &pdfData,
         const auto availableAfter = pdfData.m_layout.availableWidth() - (iWidth * imgScale +
                 (addSpace ? spaceWidth * (draw ? cw.scale() / 100.0 : 1.0) : 0.0));
 
-        if ((!onLine && !firstInParagraph) || (onLine && (availableAfter < 0) && (qAbs(availableAfter) > 0.1)) || isPrevText) {
+        if ((!onLine && !firstInParagraph) || (onLine && (availableAfter < 0) && (qAbs(availableAfter) > 0.1)) ||
+            (isPrevText && !onLine)) {
             newLine = true;
 
             if (draw) {
@@ -3324,16 +3325,18 @@ QPair<QRectF, unsigned int> PdfRenderer::drawImage(PdfAuxData &pdfData,
             pdfData.m_layout.moveXToBegin();
         }
 
-        if (draw && !onLine && !lastInParagraph) {
-            moveToNewLine(pdfData, offset, lineHeight * (isNextText ? 2.0 : 1.0), 1.0, (isNextText ? lineHeight : 0.0));
+        if (!onLine && draw) {
+            newLine = true;
+
+            cw.moveToNextLine();
+        }
+
+        if (draw && !onLine && !lastInParagraph && isNextText) {
+            moveToNewLine(pdfData, offset, lineHeight + cw.height(), 1.0, cw.height());
         }
 
         if (!draw) {
             cw.append({iWidth * imgScale, height, false, !onLine, false, ""});
-        } else if (!onLine) {
-            newLine = true;
-
-            cw.moveToNextLine();
         }
 
         return qMakePair(r, pdfData.m_currentPainterIdx);
