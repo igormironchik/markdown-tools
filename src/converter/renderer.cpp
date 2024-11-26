@@ -1212,6 +1212,164 @@ QVector<QPair<QRectF, unsigned int>> normalizeRects(const QVector<QPair<QRectF, 
     return ret;
 }
 
+template<class Iterator>
+inline bool isSpace(Iterator it)
+{
+    if ((*it)->type() == MD::ItemType::Text) {
+        auto t = static_cast<MD::Text<MD::QStringTrait>*>(it->get());
+
+        if (t->text().simplified().isEmpty()) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+template<class Iterator>
+inline bool isNotHtmlNorSpace(Iterator it)
+{
+    if ((*it)->type() != MD::ItemType::RawHtml) {
+        if (isSpace(it)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+inline bool isLastImageInLink(MD::Block<MD::QStringTrait>::Items::const_iterator it,
+                        MD::Block<MD::QStringTrait>::Items::const_iterator last)
+{
+    it = std::next(it);
+
+    for (; it != last; ++it) {
+        if (isNotHtmlNorSpace(it)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+inline MD::Block<MD::QStringTrait>::Items::const_iterator
+skipRawHtmlAndSpacesBackward(MD::Block<MD::QStringTrait>::Items::const_iterator it,
+            MD::Block<MD::QStringTrait>::Items::const_iterator begin,
+            MD::Block<MD::QStringTrait>::Items::const_iterator last)
+{
+    if (it != begin) {
+        for (; it != begin; --it) {
+            if (isNotHtmlNorSpace(it)) {
+                break;
+            }
+        }
+
+        if ((*it)->type() == MD::ItemType::RawHtml) {
+            return last;
+        } else {
+            if (isSpace(it)) {
+                return last;
+            } else {
+                return it;
+            }
+        }
+    }
+
+    return last;
+}
+
+template<class Iterator>
+inline Iterator
+skipRawHtmlAndSpaces(Iterator it, Iterator last)
+{
+    for (; it != last; ++it) {
+        if (isNotHtmlNorSpace(it)) {
+            break;
+        }
+    }
+
+    return it;
+}
+
+inline bool isTextAfter(MD::Block<MD::QStringTrait>::Items::const_iterator it,
+                       MD::Block<MD::QStringTrait>::Items::const_iterator last)
+{
+    it = skipRawHtmlAndSpaces(std::next(it), last);
+
+    if (it != last) {
+        switch ((*it)->type()) {
+        case MD::ItemType::Text:
+        case MD::ItemType::Code:
+        case MD::ItemType::Math:
+            return true;
+
+        case MD::ItemType::Link: {
+            auto l = static_cast<MD::Link<MD::QStringTrait>*>(it->get());
+
+            if (!l->p()->isEmpty()) {
+                auto i = l->p()->items().cbegin();
+                auto iLast = l->p()->items().cend();
+                i = skipRawHtmlAndSpaces(i, iLast);
+
+                if (i != iLast) {
+                    return ((*i)->type() != MD::ItemType::Image);
+                }
+            } else if (l->img()->isEmpty()) {
+                return true;
+            }
+        }
+            break;
+
+        default:
+            return false;
+        }
+    }
+
+    return false;
+}
+
+inline bool isTextBefore(MD::Block<MD::QStringTrait>::Items::const_iterator it,
+                         MD::Block<MD::QStringTrait>::Items::const_iterator begin,
+                         MD::Block<MD::QStringTrait>::Items::const_iterator last)
+{
+    if (it != begin) {
+        it = skipRawHtmlAndSpacesBackward(std::prev(it), begin, last);
+
+        if (it != last) {
+            switch ((*it)->type()) {
+            case MD::ItemType::Text:
+            case MD::ItemType::Code:
+            case MD::ItemType::Math:
+                return true;
+
+            case MD::ItemType::Link: {
+                auto l = static_cast<MD::Link<MD::QStringTrait>*>(it->get());
+
+                if (!l->p()->isEmpty()) {
+                    auto i = l->p()->items().crbegin();
+                    auto iLast = l->p()->items().crend();
+                    i = skipRawHtmlAndSpaces(i, iLast);
+
+                    if (i != iLast) {
+                        return ((*i)->type() != MD::ItemType::Image);
+                    }
+                } else if (!l->img()->isEmpty()) {
+                    return true;
+                }
+            }
+                break;
+
+            default:
+                return false;
+            }
+        }
+    }
+
+    return false;
+}
+
 } /* namespace anonymous */
 
 QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
@@ -1226,6 +1384,9 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
                                                            int footnoteNum,
                                                            double offset,
                                                            bool firstInParagraph,
+                                                           bool lastInParagraph,
+                                                           bool isPrevText,
+                                                           bool isNextText,
                                                            CustomWidth &cw,
                                                            double scale,
                                                            RTLFlag *rtl)
@@ -1255,7 +1416,7 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
                             pdfData);
 
     if (!item->p()->isEmpty()) {
-        for (auto it = item->p()->items().begin(), last = item->p()->items().end(); it != last; ++it) {
+        for (auto it = item->p()->items().cbegin(), last = item->p()->items().cend(); it != last; ++it) {
             switch ((*it)->type()) {
             case MD::ItemType::Text: {
                 auto *text = std::static_pointer_cast<MD::Text<MD::QStringTrait>>(*it).get();
@@ -1329,6 +1490,9 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
                                        newLine,
                                        offset,
                                        (it == item->p()->items().begin() && firstInParagraph),
+                                       isLastImageInLink(it, last) && lastInParagraph,
+                                       isTextBefore(it, item->p()->items().cbegin(), last) || isPrevText,
+                                       isTextAfter(it, last) || isNextText,
                                        cw,
                                        1.0,
                                        renderOpts.m_imageAlignment));
@@ -1379,7 +1543,7 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
     // Otherwise image link.
     else {
         rects.append(drawImage(pdfData, renderOpts, item->img().get(), doc, newLine, offset,
-                               firstInParagraph, cw, 1.0, renderOpts.m_imageAlignment));
+                               firstInParagraph, true, isPrevText, isNextText, cw, 1.0, renderOpts.m_imageAlignment));
 
         setRTLFlagToFalseIfCheck(rtl);
     }
@@ -1920,6 +2084,29 @@ bool isRightToLeft(MD::Block<MD::QStringTrait> *p)
     }
 }
 
+inline bool isLastInParagraph(MD::Block<MD::QStringTrait>::Items::const_iterator it,
+                              MD::Block<MD::QStringTrait>::Items::const_iterator last)
+{
+    it = std::next(it);
+
+    for (; it != last; ++it) {
+        switch ((*it)->type()) {
+        case MD::ItemType::Text:
+        case MD::ItemType::Code:
+        case MD::ItemType::Link:
+        case MD::ItemType::Image:
+        case MD::ItemType::Math:
+        case MD::ItemType::FootnoteRef:
+            return false;
+
+        default:
+            break;
+        }
+    }
+
+    return true;
+}
+
 } /* namespace anonymous */
 
 QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pdfData,
@@ -1939,6 +2126,10 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
     pdfData.m_startPos = item->startColumn();
     pdfData.m_endLine = item->endLine();
     pdfData.m_endPos = item->endColumn();
+
+    if (item->isEmpty()) {
+        return {{}, {}};
+    }
 
     const auto wasRightToLeft = pdfData.m_layout.isRightToLeft();
 
@@ -2056,6 +2247,9 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                      nextFootnoteNum,
                      offset,
                      (firstInParagraph || lineBreak),
+                     isLastInParagraph(it, last),
+                     isTextBefore(it, item->items().begin(), last),
+                     isTextAfter(it, last),
                      cw,
                      scale,
                      rtl);
@@ -2071,6 +2265,9 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                       newLine,
                       offset,
                       (firstInParagraph || lineBreak),
+                      isLastInParagraph(it, last),
+                      isTextBefore(it, item->items().begin(), last),
+                      isTextAfter(it, last),
                       cw,
                       1.0,
                       renderOpts.m_imageAlignment,
@@ -2304,6 +2501,9 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                                   nextFootnoteNum,
                                   offset,
                                   (firstInParagraph || lineBreak),
+                                  isLastInParagraph(it, last),
+                                  isTextBefore(it, item->items().begin(), last),
+                                  isTextAfter(it, last),
                                   cw,
                                   scale,
                                   rtl));
@@ -2323,6 +2523,9 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                                    newLine,
                                    offset,
                                    (firstInParagraph || lineBreak),
+                                   isLastInParagraph(it, last),
+                                   isTextBefore(it, item->items().begin(), last),
+                                   isTextAfter(it, last),
                                    cw,
                                    1.0,
                                    renderOpts.m_imageAlignment,
@@ -2964,6 +3167,9 @@ QPair<QRectF, unsigned int> PdfRenderer::drawImage(PdfAuxData &pdfData,
                                                    bool &newLine,
                                                    double offset,
                                                    bool firstInParagraph,
+                                                   bool lastInParagraph,
+                                                   bool isPrevText,
+                                                   bool isNextText,
                                                    CustomWidth &cw,
                                                    double scale,
                                                    ImageAlignment alignment,
@@ -3004,17 +3210,15 @@ QPair<QRectF, unsigned int> PdfRenderer::drawImage(PdfAuxData &pdfData,
         double imgScale = (scaleImagesToLineHeight ? lineHeight / iHeight : 1.0);
         const double totalAvailableWidth = pdfData.m_layout.pageWidth()
                 - pdfData.m_layout.margins().m_left - pdfData.m_layout.margins().m_right - offset;
-        double availableHeight = pdfData.m_layout.y() - pdfData.currentPageAllowedY();
-        const double pageHeight = pdfData.topY(pdfData.m_currentPainterIdx) - pdfData.m_layout.margins().m_bottom;
         const bool onLine = (totalAvailableWidth / 5.0 > iWidth && iHeight < lineHeight * 2.0);
-        const auto spaceWidth = pdfData.stringWidth(font, renderOpts.m_textFontSize, scale, " ");
         bool addSpace = onLine && !firstInParagraph;
-        double height = 0.0;
-
+        double height = (!onLine ? lineHeight : 0.0);
+        const auto spaceWidth = pdfData.stringWidth(font, renderOpts.m_textFontSize, scale, " ");
         const auto availableAfter = pdfData.m_layout.availableWidth() - (iWidth * imgScale +
-            (addSpace ? spaceWidth * (draw ? cw.scale() / 100.0 : 1.0) : 0.0));
+                (addSpace ? spaceWidth * (draw ? cw.scale() / 100.0 : 1.0) : 0.0));
 
-        if (!onLine && !firstInParagraph || (onLine && availableAfter < 0 && qAbs(availableAfter) > 0.1)) {
+        if ((!onLine && !firstInParagraph) || (onLine && (availableAfter < 0) && (qAbs(availableAfter) > 0.1)) ||
+            (isPrevText && !onLine)) {
             newLine = true;
 
             if (draw) {
@@ -3035,6 +3239,9 @@ QPair<QRectF, unsigned int> PdfRenderer::drawImage(PdfAuxData &pdfData,
 
             addSpace = false;
         }
+
+        double availableHeight = pdfData.m_layout.y() - pdfData.currentPageAllowedY();
+        const double pageHeight = pdfData.topY(pdfData.m_currentPainterIdx) - pdfData.m_layout.margins().m_bottom;
 
         if (!onLine && !scaleImagesToLineHeight) {
             if (iWidth > totalAvailableWidth) {
@@ -3123,12 +3330,14 @@ QPair<QRectF, unsigned int> PdfRenderer::drawImage(PdfAuxData &pdfData,
             pdfData.m_layout.moveXToBegin();
         }
 
-        if (draw && !onLine) {
+        if (!onLine && draw) {
             newLine = true;
 
-            moveToNewLine(pdfData, offset, lineHeight, 1.0, lineHeight);
-
             cw.moveToNextLine();
+        }
+
+        if (draw && !onLine && !lastInParagraph && isNextText) {
+            moveToNewLine(pdfData, offset, lineHeight + cw.height(), 1.0, cw.height());
         }
 
         if (!draw) {
@@ -4161,7 +4370,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTableRow(std::shared_ptr
                                                     int columnsCount)
 {
     QVector<WhereDrawn> ret;
-    auto y = pdfData.m_layout.y();
+    const auto y = pdfData.m_layout.y();
 
     const auto startPage = pdfData.m_currentPainterIdx;
     int endPage = startPage;
@@ -4210,25 +4419,24 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTableRow(std::shared_ptr
         } else {
             tmpY = y - s_tableMargin * 2.0;
 
-            if (i == 0) {
-                firstLine.m_pageIdx = startPage;
-                firstLine.m_y = y - s_tableMargin * 2.0;
+            firstLine.m_pageIdx = startPage;
+            firstLine.m_y = y - s_tableMargin * 2.0;
+            firstLine.m_height = s_tableMargin * 2.0;
 
-                if (firstLine.m_y < pdfData.m_layout.margins().m_bottom) {
-                    createPage(pdfData);
-                    firstLine.m_y = pdfData.m_layout.margins().m_bottom;
+            if (firstLine.m_y < pdfData.m_layout.margins().m_bottom) {
+                createPage(pdfData);
+                firstLine.m_y = pdfData.m_layout.margins().m_bottom;
 
-                    tmpY = pdfData.m_layout.margins().m_top -
-                            (s_tableMargin * 2.0 - (y - pdfData.m_layout.margins().m_bottom)) -
-                            (pdfData.m_drawFootnotes ? pdfData.m_extraInFootnote : 0.0);
-                }
-
-                endPage = pdfData.m_currentPainterIdx;
-                firstLine.m_height = s_tableMargin * 2.0;
+                tmpY = pdfData.m_layout.margins().m_top -
+                        (s_tableMargin * 2.0 - (y - pdfData.m_layout.margins().m_bottom)) -
+                        (pdfData.m_drawFootnotes ? pdfData.m_extraInFootnote : 0.0);
+                firstLine.m_height = y - pdfData.m_layout.margins().m_bottom;
             }
+
+            endPage = pdfData.m_currentPainterIdx;
         }
 
-        if (tmpY < endY && endPage >= currentPage) {
+        if ((tmpY < endY && endPage == currentPage) || endPage > currentPage) {
             endY = tmpY;
             currentPage = endPage;
         }
