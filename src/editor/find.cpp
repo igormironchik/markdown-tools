@@ -32,7 +32,7 @@ struct FindPrivate {
         m_ui.setupUi(m_q);
 
         QObject::connect(m_ui.findEdit, &QLineEdit::textChanged, m_q, &Find::onFindTextChanged);
-        QObject::connect(m_ui.replaceEdit, &QLineEdit::textChanged, m_q, &Find::onReplaceTextChanged);
+        QObject::connect(m_editor, &Editor::ready, m_q, &Find::onEditorReady);
 
         auto findPrevAction = new QAction(Find::tr("Find Previous"), m_q);
         findPrevAction->setShortcutContext(Qt::ApplicationShortcut);
@@ -68,6 +68,24 @@ struct FindPrivate {
         QObject::connect(m_ui.close, &QAbstractButton::clicked, m_q, &Find::onClose);
     }
 
+    void setState()
+    {
+        QColor c = m_textColor;
+
+        if (!m_editor->foundHighlighted()) {
+            c = Qt::red;
+        }
+
+        m_ui.findNextBtn->setEnabled(m_editor->foundHighlighted());
+        m_ui.findPrevBtn->setEnabled(m_editor->foundHighlighted());
+        m_ui.findNextBtn->defaultAction()->setEnabled(m_editor->foundHighlighted());
+        m_ui.findPrevBtn->defaultAction()->setEnabled(m_editor->foundHighlighted());
+
+        QPalette palette = m_ui.findEdit->palette();
+        palette.setColor(QPalette::Text, c);
+        m_ui.findEdit->setPalette(palette);
+    }
+
     Find *m_q = nullptr;
     Editor *m_editor = nullptr;
     MainWindow *m_window = nullptr;
@@ -100,29 +118,11 @@ QLineEdit *Find::replaceLine() const
     return m_d->m_ui.replaceEdit;
 }
 
-void Find::onFindTextChanged(const QString &str)
+void Find::onFindTextChanged(const QString &)
 {
     m_d->m_editor->highlight(m_d->m_ui.findEdit->text(), true);
 
-    QColor c = m_d->m_textColor;
-
-    if (!m_d->m_editor->foundHighlighted()) {
-        c = Qt::red;
-    }
-
-    m_d->m_ui.findNextBtn->setEnabled(m_d->m_editor->foundHighlighted());
-    m_d->m_ui.findPrevBtn->setEnabled(m_d->m_editor->foundHighlighted());
-    m_d->m_ui.findNextBtn->defaultAction()->setEnabled(m_d->m_editor->foundHighlighted());
-    m_d->m_ui.findPrevBtn->defaultAction()->setEnabled(m_d->m_editor->foundHighlighted());
-
-    QPalette palette = m_d->m_ui.findEdit->palette();
-    palette.setColor(QPalette::Text, c);
-    m_d->m_ui.findEdit->setPalette(palette);
-}
-
-void Find::onReplaceTextChanged(const QString &)
-{
-    onSelectionChanged();
+    m_d->setState();
 }
 
 void Find::setFindText(const QString &text)
@@ -145,17 +145,25 @@ void Find::setFocusOnFind()
 void Find::onReplace()
 {
     m_d->m_editor->replaceCurrent(m_d->m_ui.replaceEdit->text());
+
+    onFindTextChanged({});
+
+    onSelectionChanged();
 }
 
 void Find::onReplaceAll()
 {
     m_d->m_editor->replaceAll(m_d->m_ui.replaceEdit->text());
+
+    onFindTextChanged({});
+
+    onSelectionChanged();
 }
 
 void Find::onSelectionChanged()
 {
-    m_d->m_ui.replaceBtn->setEnabled(m_d->m_editor->foundSelected() && !m_d->m_ui.replaceEdit->text().isEmpty());
-    m_d->m_ui.replaceAllBtn->setEnabled(m_d->m_editor->foundHighlighted() && !m_d->m_ui.replaceEdit->text().isEmpty());
+    m_d->m_ui.replaceBtn->setEnabled(m_d->m_editor->foundSelected());
+    m_d->m_ui.replaceAllBtn->setEnabled(m_d->m_editor->foundHighlighted());
 }
 
 void Find::onClose()
@@ -163,6 +171,13 @@ void Find::onClose()
     hide();
 
     m_d->m_window->onToolHide();
+}
+
+void Find::onEditorReady()
+{
+    m_d->setState();
+
+    onSelectionChanged();
 }
 
 } /* namespace MdEditor */

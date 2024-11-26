@@ -644,6 +644,8 @@ void Editor::replaceAll(const QString &with)
     }
 
     connect(this, &QPlainTextEdit::textChanged, this, &Editor::onContentChanged);
+
+    onContentChanged();
 }
 
 void Editor::onContentChanged()

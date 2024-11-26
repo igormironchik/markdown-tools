@@ -42,11 +42,11 @@ public slots:
 
 private slots:
     void onFindTextChanged(const QString &str);
-    void onReplaceTextChanged(const QString &str);
     void onReplace();
     void onReplaceAll();
     void onSelectionChanged();
     void onClose();
+    void onEditorReady();
 
 private:
     friend struct FindPrivate;
