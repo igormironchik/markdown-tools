@@ -32,6 +32,7 @@
 // C++ include.
 #include <memory>
 #include <string_view>
+#include <functional>
 
 // podofo include.
 #include <podofo/podofo.h>
@@ -775,6 +776,7 @@ private:
                                                   Font *footnoteFont,
                                                   double footnoteFontSize,
                                                   double footnoteFontScale,
+                                                  MD::Item<MD::QStringTrait> *prevItem,
                                                   MD::Item<MD::QStringTrait> *nextItem,
                                                   int footnoteNum,
                                                   double offset,
@@ -816,6 +818,12 @@ private:
 
         return false;
     }
+    //! \return Is \par it not HTML?
+    template<class Iterator>
+    inline bool isNotHtml(Iterator it)
+    {
+        return ((*it)->type() != MD::ItemType::RawHtml);
+    }
     //! \return Is after \par it nothing except HTML, spaces.
     inline bool isNothingAfter(MD::Block<MD::QStringTrait>::Items::const_iterator it,
                             MD::Block<MD::QStringTrait>::Items::const_iterator last)
@@ -830,19 +838,54 @@ private:
 
         return true;
     }
+    //! Skip backward til \par func returns true.
+    template<class Iterator, class Func>
+    inline Iterator
+    skipBackwardWithFunc(Iterator it,
+                         Iterator begin,
+                         Iterator last,
+                         Func func)
+    {
+        for (; it != begin; --it) {
+            if (std::invoke(func, this, it)) {
+                break;
+            }
+        }
+
+        if (it == begin && begin != last) {
+            if (std::invoke(func, this, it)) {
+                return it;
+            } else {
+                return last;
+            }
+        }
+
+        return it;
+    }
+    //! \return Previous not HTML item.
+    MD::Item<MD::QStringTrait> *getPrevItem(MD::Block<MD::QStringTrait>::Items::const_iterator it,
+                                         MD::Block<MD::QStringTrait>::Items::const_iterator begin,
+                                         MD::Block<MD::QStringTrait>::Items::const_iterator last)
+    {
+        it = skipBackwardWithFunc(it, begin, last,
+            &PdfRenderer::isNotHtml<MD::Block<MD::QStringTrait>::Items::const_iterator>);
+
+        if (it != last) {
+            return it->get();
+        } else {
+            return nullptr;
+        }
+    }
     //! Skip raw HTML and spaces backward.
     inline MD::Block<MD::QStringTrait>::Items::const_iterator
     skipRawHtmlAndSpacesBackward(MD::Block<MD::QStringTrait>::Items::const_iterator it,
                 MD::Block<MD::QStringTrait>::Items::const_iterator begin,
                 MD::Block<MD::QStringTrait>::Items::const_iterator last)
     {
-        if (it != begin) {
-            for (; it != begin; --it) {
-                if (isNotHtmlNorSpace(it)) {
-                    break;
-                }
-            }
+        it = skipBackwardWithFunc(it, begin, last,
+            &PdfRenderer::isNotHtmlNorSpace<MD::Block<MD::QStringTrait>::Items::const_iterator>);
 
+        if (it != last) {
             if ((*it)->type() == MD::ItemType::RawHtml) {
                 return last;
             } else {
@@ -869,6 +912,12 @@ private:
 
         return it;
     }
+    //! \return Is item a online image, or link with last online image?
+    bool isOnlineImageOrOnlineImageInLink(PdfAuxData &pdfData,
+                                          MD::Item<MD::QStringTrait> *item,
+                                          double offset,
+                                          double lineHeight,
+                                          bool scaleImagesToLineHeight);
     //! \return Is after \par it a text item or online content?
     bool isTextOrOnlineAfter(MD::Block<MD::QStringTrait>::Items::const_iterator it,
                              MD::Block<MD::QStringTrait>::Items::const_iterator last,
@@ -980,6 +1029,7 @@ private:
                                           bool isNextText,
                                           CustomWidth &cw,
                                           double scale,
+                                          MD::Item<MD::QStringTrait> *prevItem,
                                           ImageAlignment alignment,
                                           bool scaleImagesToLineHeight = false);
 

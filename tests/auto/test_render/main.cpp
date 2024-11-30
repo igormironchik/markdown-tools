@@ -104,6 +104,9 @@ private slots:
     void testBlockquoteHighlighting();
     //! Test highlights of blockquotes.
     void testBlockquoteHighlightingBig();
+
+    //! Test placing online/not online content in different cases.
+    void testPlacing();
 }; // class TestRender
 
 namespace MdPdf
@@ -113,7 +116,12 @@ namespace Render
 {
 
 struct TestRendering {
-    static void testRendering(const QString &fileName, const QString &suffix, const QVector<DrawPrimitive> &data, double textFontSize, double codeFontSize)
+    static void testRendering(const QString &fileName,
+                              const QString &suffix,
+                              const QVector<DrawPrimitive> &data,
+                              double textFontSize,
+                              double codeFontSize,
+                              ImageAlignment align = ImageAlignment::Center)
     {
         MD::Parser<MD::QStringTrait> parser;
 
@@ -134,7 +142,7 @@ struct TestRendering {
         opts.m_textFontSize = textFontSize;
         opts.m_top = 50.0;
         opts.m_dpi = 150;
-        opts.m_imageAlignment = ImageAlignment::Center;
+        opts.m_imageAlignment = align;
 
         opts.m_testData = data;
         opts.m_printDrawings = s_printData;
@@ -239,7 +247,8 @@ QVector<DrawPrimitive> loadTestData(const QString &fileName, const QString &suff
 
 } /* namespace MdPdf */
 
-void doTest(const QString &fileName, const QString &suffix, double textFontSize, double codeFontSize)
+void doTest(const QString &fileName, const QString &suffix, double textFontSize, double codeFontSize,
+            MdPdf::Render::ImageAlignment align = MdPdf::Render::ImageAlignment::Center)
 {
     QVector<MdPdf::Render::DrawPrimitive> data;
 
@@ -251,7 +260,7 @@ void doTest(const QString &fileName, const QString &suffix, double textFontSize,
         }
     }
 
-    MdPdf::Render::TestRendering::testRendering(fileName, suffix, data, textFontSize, codeFontSize);
+    MdPdf::Render::TestRendering::testRendering(fileName, suffix, data, textFontSize, codeFontSize, align);
 }
 
 void TestRender::initTestCase()
@@ -421,6 +430,11 @@ void TestRender::testBlockquoteHighlighting()
 void TestRender::testBlockquoteHighlightingBig()
 {
     doTest(QStringLiteral("highlighted_quotes.md"), QStringLiteral("_big"), 16.0, 14.0);
+}
+
+void TestRender::testPlacing()
+{
+    doTest(QStringLiteral("different_placing_cases.md"), QString(), 8.0, 8.0, MdPdf::Render::ImageAlignment::Left);
 }
 
 QTEST_MAIN(TestRender)
