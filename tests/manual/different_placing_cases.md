@@ -29,3 +29,15 @@
 ### 8
 
 text $$a \ne 0$$ text
+
+### 9
+
+text ![](img/not_online.png) text
+
+### 10
+
+text ![](img/online.png) text
+
+### 11
+
+$$a \ne 0$$ ![](img/not_online.png) $$a \ne 0$$
