@@ -2178,7 +2178,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                          doc,
                          newLine,
                          offset,
-                         (std::next(it) != last),
+                         isTextOrOnlineAfter(it, last, pdfData, offset, lineHeight, scaleImagesToLineHeight),
                          (firstInParagraph || lineBreak),
                          cw,
                          scale);
@@ -2446,7 +2446,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                                       doc,
                                       newLine,
                                       offset,
-                                      (std::next(it) != last),
+                                      isTextOrOnlineAfter(it, last, pdfData, offset, lineHeight, scaleImagesToLineHeight),
                                       (firstInParagraph || lineBreak),
                                       cw,
                                       scale));
@@ -2548,7 +2548,7 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
                                                       std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
                                                       bool &newLine,
                                                       double offset,
-                                                      bool hasNext,
+                                                      bool isNextText,
                                                       bool firstInParagraph,
                                                       CustomWidth &cw,
                                                       double scale)
@@ -2602,6 +2602,10 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
             cw.moveToNextLine();
         } else {
             pdfData.m_layout.addY(cw.height(), -1.0);
+        }
+
+        if (!firstInParagraph) {
+            moveToNewLine(pdfData, 0.0, lineHeight, 1.0, 0.0);
         }
 
         pdfData.m_layout.moveXToBegin();
@@ -2662,6 +2666,7 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
 
             pdfData.m_layout.addX(x);
 
+            // y - is a top of a line.
             tex::Graphics2D_qt g2(&p);
             latexRender->draw(g2, pdfData.m_layout.startX(size.width() * imgScale) / 72.0 * pd.physicalDpiX(),
                     (pdfData.m_layout.pageHeight() - pdfData.m_layout.y() + descent * imgScale) / 72.0
@@ -2677,8 +2682,8 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
 
             cw.moveToNextLine();
 
-            if (hasNext)
-                moveToNewLine(pdfData, offset, lineHeight, 1.0, lineHeight);
+            if (isNextText)
+                moveToNewLine(pdfData, offset, lineHeight + cw.height(), 1.0, cw.height());
 
             return {r, idx};
         } else {
@@ -2693,18 +2698,7 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
             cw.append({0.0, calculatedHeight, false, true, false, ""});
         }
     } else {
-        auto sscale = 100.0;
-
-        if (draw && cw.alignment() == ParagraphAlignment::FillWidth) {
-            sscale = cw.scale();
-        }
-
-        const auto spaceWidth = pdfData.stringWidth(font, renderOpts.m_textFontSize, scale, " ");
-
-        if (!firstInParagraph) {
-            pdfData.m_layout.addX(spaceWidth * sscale / 100.0);
-        }
-
+        // y - is bottom of line.
         const double availableTotalWidth = pdfData.m_layout.pageWidth() - pdfData.m_layout.margins().m_left -
                 pdfData.m_layout.margins().m_right - offset;
 
@@ -2718,8 +2712,6 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
                 cw.append({0.0, lineHeight, false, true, true, ""});
                 pdfData.m_layout.moveXToBegin();
             }
-        } else if (!draw && !firstInParagraph) {
-            cw.append({spaceWidth, lineHeight, true, false, true, " "});
         }
 
         double imgScale = 1.0;
@@ -2777,7 +2769,7 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
         } else {
             pdfData.m_layout.addX(size.width() * imgScale);
 
-            cw.append({size.width() * imgScale, size.height() * imgScale + descent * imgScale, false, false, hasNext, ""});
+            cw.append({size.width() * imgScale, size.height() * imgScale + descent * imgScale, false, false, isNextText, ""});
         }
     }
 
@@ -3242,6 +3234,7 @@ QPair<QRectF, unsigned int> PdfRenderer::drawImage(PdfAuxData &pdfData,
 
             pdfData.m_layout.addX(x);
 
+            // y - is bottom.
             pdfData.drawImage(pdfData.m_layout.startX(iWidth * imgScale), pdfData.m_layout.y() + dy,
                               pdfImg.get(), imgScale / dpiScale, imgScale / dpiScale);
         } else {

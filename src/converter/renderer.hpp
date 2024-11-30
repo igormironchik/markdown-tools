@@ -990,7 +990,7 @@ private:
                                              std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
                                              bool &newLine,
                                              double offset,
-                                             bool hasNext,
+                                             bool isNextText,
                                              bool firstInParagraph,
                                              CustomWidth &cw,
                                              double scale);
