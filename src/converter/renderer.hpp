@@ -32,6 +32,7 @@
 // C++ include.
 #include <memory>
 #include <string_view>
+#include <functional>
 
 // podofo include.
 #include <podofo/podofo.h>
@@ -775,16 +776,205 @@ private:
                                                   Font *footnoteFont,
                                                   double footnoteFontSize,
                                                   double footnoteFontScale,
+                                                  MD::Item<MD::QStringTrait> *prevItem,
                                                   MD::Item<MD::QStringTrait> *nextItem,
                                                   int footnoteNum,
                                                   double offset,
+                                                  double lineHeight,
+                                                  double spaceWidth,
                                                   bool firstInParagraph,
                                                   bool lastInParagraph,
                                                   bool isPrevText,
                                                   bool isNextText,
                                                   CustomWidth &cw,
                                                   double scale,
+                                                  bool scaleImagesToLineHeight,
                                                   RTLFlag *rtl = nullptr);
+    //! \return Is \par it a space?
+    template<class Iterator>
+    inline bool isSpace(Iterator it)
+    {
+        if ((*it)->type() == MD::ItemType::Text) {
+            auto t = static_cast<MD::Text<MD::QStringTrait>*>(it->get());
+
+            if (t->text().simplified().isEmpty()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    //! \return Is \par it not HTML nor space?
+    template<class Iterator>
+    inline bool isNotHtmlNorSpace(Iterator it)
+    {
+        if ((*it)->type() != MD::ItemType::RawHtml) {
+            if (isSpace(it)) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    //! \return Is \par it not HTML?
+    template<class Iterator>
+    inline bool isNotHtml(Iterator it)
+    {
+        return ((*it)->type() != MD::ItemType::RawHtml);
+    }
+    //! \return Is after \par it nothing except HTML, spaces.
+    inline bool isNothingAfter(MD::Block<MD::QStringTrait>::Items::const_iterator it,
+                            MD::Block<MD::QStringTrait>::Items::const_iterator last);
+    //! Skip backward til \par func returns true.
+    template<class Iterator, class Func>
+    inline Iterator
+    skipBackwardWithFunc(Iterator it,
+                         Iterator begin,
+                         Iterator last,
+                         Func func)
+    {
+        for (; it != begin; --it) {
+            if (std::invoke(func, this, it)) {
+                break;
+            }
+        }
+
+        if (it == begin && begin != last) {
+            if (std::invoke(func, this, it)) {
+                return it;
+            } else {
+                return last;
+            }
+        }
+
+        return it;
+    }
+    //! \return Previous not HTML item.
+    MD::Item<MD::QStringTrait> *getPrevItem(MD::Block<MD::QStringTrait>::Items::const_iterator it,
+                                         MD::Block<MD::QStringTrait>::Items::const_iterator begin,
+                                         MD::Block<MD::QStringTrait>::Items::const_iterator last);
+    //! Skip raw HTML and spaces backward.
+    inline MD::Block<MD::QStringTrait>::Items::const_iterator
+    skipRawHtmlAndSpacesBackward(MD::Block<MD::QStringTrait>::Items::const_iterator it,
+                MD::Block<MD::QStringTrait>::Items::const_iterator begin,
+                MD::Block<MD::QStringTrait>::Items::const_iterator last);
+    //! Skip raw HTML and spaces.
+    template<class Iterator>
+    inline Iterator
+    skipRawHtmlAndSpaces(Iterator it, Iterator last)
+    {
+        for (; it != last; ++it) {
+            if (isNotHtmlNorSpace(it)) {
+                break;
+            }
+        }
+
+        return it;
+    }
+    //! \return Is item a online image, or link with last online image?
+    bool isOnlineImageOrOnlineImageInLink(PdfAuxData &pdfData,
+                                          MD::Item<MD::QStringTrait> *item,
+                                          double offset,
+                                          double lineHeight,
+                                          bool scaleImagesToLineHeight);
+    //! \return Is after \par it a text item or online content?
+    bool isTextOrOnlineAfter(MD::Block<MD::QStringTrait>::Items::const_iterator it,
+                             MD::Block<MD::QStringTrait>::Items::const_iterator last,
+                             PdfAuxData &pdfData,
+                             double offset,
+                             double lineHeight,
+                             bool scaleImagesToLineHeight);
+    //! \return Is before \par it a text item or online content?
+    bool isTextOrOnlineBefore(MD::Block<MD::QStringTrait>::Items::const_iterator it,
+                              MD::Block<MD::QStringTrait>::Items::const_iterator begin,
+                              MD::Block<MD::QStringTrait>::Items::const_iterator last,
+                              PdfAuxData &pdfData,
+                              double offset,
+                              double lineHeight,
+                              bool scaleImagesToLineHeight);
+    //! \return Is \par it a text or online content?
+    template<class Iterator>
+    bool isTextOrOnline(Iterator it,
+                        Iterator last,
+                        bool reverse,
+                        PdfAuxData &pdfData,
+                        double offset,
+                        double lineHeight,
+                        bool scaleImagesToLineHeight)
+    {
+        it = skipRawHtmlAndSpaces(it, last);
+
+        if (it != last) {
+            return isTextOrOnline(it, reverse, pdfData, offset, lineHeight, scaleImagesToLineHeight);
+        } else {
+            return false;
+        }
+    }
+    //! \return Is \par it a text or online content?
+    template<class Iterator>
+    bool isTextOrOnline(Iterator it,
+                        bool reverse,
+                        PdfAuxData &pdfData,
+                        double offset,
+                        double lineHeight,
+                        bool scaleImagesToLineHeight)
+    {
+        switch ((*it)->type()) {
+        case MD::ItemType::Text:
+        case MD::ItemType::Code:
+            return true;
+
+        case MD::ItemType::Math: {
+            auto m = static_cast<MD::Math<MD::QStringTrait>*>(it->get());
+
+            return m->isInline();
+        }
+            break;
+
+        case MD::ItemType::Image: {
+            return isOnlineImage(pdfData, static_cast<MD::Image<MD::QStringTrait>*>(it->get()),
+                                 offset, lineHeight, scaleImagesToLineHeight);
+        }
+            break;
+
+        case MD::ItemType::Link: {
+            auto l = static_cast<MD::Link<MD::QStringTrait>*>(it->get());
+
+            if (!l->p()->isEmpty()) {
+                if (reverse) {
+                    return isTextOrOnline(l->p()->items().crbegin(), l->p()->items().crend(), reverse,
+                                          pdfData, offset, lineHeight, scaleImagesToLineHeight);
+                } else {
+                    return isTextOrOnline(l->p()->items().cbegin(), l->p()->items().cend(), reverse,
+                                          pdfData, offset, lineHeight, scaleImagesToLineHeight);
+                }
+            } else if (l->img()->isEmpty()) {
+                return true;
+            } else {
+                return isOnlineImage(pdfData, l->img().get(), offset, lineHeight, scaleImagesToLineHeight);
+            }
+        }
+            break;
+
+        default:
+            return false;
+        }
+
+        return false;
+    }
+    //! \return Is image online?
+    bool isOnlineImage(double totalAvailableWidth,
+                       double iWidth,
+                       double iHeight,
+                       double lineHeight);
+    //! \return Is image online?
+    bool isOnlineImage(PdfAuxData &pdfData,
+                       MD::Image<MD::QStringTrait> *item,
+                       double offset,
+                       double lineHeight,
+                       bool scaleImagesToLineHeight);
     //! Draw image.
     QPair<QRectF, unsigned int> drawImage(PdfAuxData &pdfData,
                                           const RenderOpts &renderOpts,
@@ -792,12 +982,15 @@ private:
                                           std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
                                           bool &newLine,
                                           double offset,
+                                          double lineHeight,
+                                          double spaceWidth,
                                           bool firstInParagraph,
                                           bool lastInParagraph,
                                           bool isPrevText,
                                           bool isNextText,
                                           CustomWidth &cw,
                                           double scale,
+                                          MD::Item<MD::QStringTrait> *prevItem,
                                           ImageAlignment alignment,
                                           bool scaleImagesToLineHeight = false);
 
@@ -808,7 +1001,7 @@ private:
                                              std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
                                              bool &newLine,
                                              double offset,
-                                             bool hasNext,
+                                             bool isNextText,
                                              bool firstInParagraph,
                                              CustomWidth &cw,
                                              double scale);

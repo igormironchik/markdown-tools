@@ -1212,60 +1212,82 @@ QVector<QPair<QRectF, unsigned int>> normalizeRects(const QVector<QPair<QRectF, 
     return ret;
 }
 
-template<class Iterator>
-inline bool isSpace(Iterator it)
-{
-    if ((*it)->type() == MD::ItemType::Text) {
-        auto t = static_cast<MD::Text<MD::QStringTrait>*>(it->get());
+} /* namespace anonymous */
 
-        if (t->text().simplified().isEmpty()) {
-            return true;
+bool PdfRenderer::isTextOrOnlineAfter(MD::Block<MD::QStringTrait>::Items::const_iterator it,
+                                      MD::Block<MD::QStringTrait>::Items::const_iterator last,
+                                      PdfAuxData &pdfData,
+                                      double offset,
+                                      double lineHeight,
+                                      bool scaleImagesToLineHeight)
+{
+    it = skipRawHtmlAndSpaces(std::next(it), last);
+
+    if (it != last) {
+        return isTextOrOnline(it, false, pdfData, offset, lineHeight, scaleImagesToLineHeight);
+    }
+
+    return false;
+}
+
+bool PdfRenderer::isTextOrOnlineBefore(MD::Block<MD::QStringTrait>::Items::const_iterator it,
+                                       MD::Block<MD::QStringTrait>::Items::const_iterator begin,
+                                       MD::Block<MD::QStringTrait>::Items::const_iterator last,
+                                       PdfAuxData &pdfData,
+                                       double offset,
+                                       double lineHeight,
+                                       bool scaleImagesToLineHeight)
+{
+    if (it != begin) {
+        it = skipRawHtmlAndSpacesBackward(std::prev(it), begin, last);
+
+        if (it != last) {
+            return isTextOrOnline(it, true, pdfData, offset, lineHeight, scaleImagesToLineHeight);
         }
     }
 
     return false;
 }
 
-template<class Iterator>
-inline bool isNotHtmlNorSpace(Iterator it)
+bool PdfRenderer::isNothingAfter(MD::Block<MD::QStringTrait>::Items::const_iterator it,
+                                 MD::Block<MD::QStringTrait>::Items::const_iterator last)
 {
-    if ((*it)->type() != MD::ItemType::RawHtml) {
-        if (isSpace(it)) {
-            return false;
-        } else {
-            return true;
-        }
-    }
+    if (it != last) {
+        it = std::next(it);
 
-    return false;
-}
-
-inline bool isLastImageInLink(MD::Block<MD::QStringTrait>::Items::const_iterator it,
-                        MD::Block<MD::QStringTrait>::Items::const_iterator last)
-{
-    it = std::next(it);
-
-    for (; it != last; ++it) {
-        if (isNotHtmlNorSpace(it)) {
-            return false;
+        for (; it != last; ++it) {
+            if (isNotHtmlNorSpace(it)) {
+                return false;
+            }
         }
     }
 
     return true;
 }
 
-inline MD::Block<MD::QStringTrait>::Items::const_iterator
-skipRawHtmlAndSpacesBackward(MD::Block<MD::QStringTrait>::Items::const_iterator it,
-            MD::Block<MD::QStringTrait>::Items::const_iterator begin,
-            MD::Block<MD::QStringTrait>::Items::const_iterator last)
+MD::Item<MD::QStringTrait> *PdfRenderer::getPrevItem(MD::Block<MD::QStringTrait>::Items::const_iterator it,
+                                                     MD::Block<MD::QStringTrait>::Items::const_iterator begin,
+                                                     MD::Block<MD::QStringTrait>::Items::const_iterator last)
 {
-    if (it != begin) {
-        for (; it != begin; --it) {
-            if (isNotHtmlNorSpace(it)) {
-                break;
-            }
-        }
+    it = skipBackwardWithFunc(it, begin, last,
+        &PdfRenderer::isNotHtml<MD::Block<MD::QStringTrait>::Items::const_iterator>);
 
+    if (it != last) {
+        return it->get();
+    } else {
+        return nullptr;
+    }
+}
+
+MD::Block<MD::QStringTrait>::Items::const_iterator
+PdfRenderer::skipRawHtmlAndSpacesBackward(MD::Block<MD::QStringTrait>::Items::const_iterator it,
+                                          MD::Block<MD::QStringTrait>::Items::const_iterator begin,
+                                          MD::Block<MD::QStringTrait>::Items::const_iterator last)
+{
+    it = skipBackwardWithFunc(it, begin, last,
+        &PdfRenderer::isNotHtmlNorSpace<MD::Block<MD::QStringTrait>::Items::const_iterator>);
+
+    if (it != last) {
         if ((*it)->type() == MD::ItemType::RawHtml) {
             return last;
         } else {
@@ -1280,98 +1302,6 @@ skipRawHtmlAndSpacesBackward(MD::Block<MD::QStringTrait>::Items::const_iterator 
     return last;
 }
 
-template<class Iterator>
-inline Iterator
-skipRawHtmlAndSpaces(Iterator it, Iterator last)
-{
-    for (; it != last; ++it) {
-        if (isNotHtmlNorSpace(it)) {
-            break;
-        }
-    }
-
-    return it;
-}
-
-inline bool isTextAfter(MD::Block<MD::QStringTrait>::Items::const_iterator it,
-                       MD::Block<MD::QStringTrait>::Items::const_iterator last)
-{
-    it = skipRawHtmlAndSpaces(std::next(it), last);
-
-    if (it != last) {
-        switch ((*it)->type()) {
-        case MD::ItemType::Text:
-        case MD::ItemType::Code:
-        case MD::ItemType::Math:
-            return true;
-
-        case MD::ItemType::Link: {
-            auto l = static_cast<MD::Link<MD::QStringTrait>*>(it->get());
-
-            if (!l->p()->isEmpty()) {
-                auto i = l->p()->items().cbegin();
-                auto iLast = l->p()->items().cend();
-                i = skipRawHtmlAndSpaces(i, iLast);
-
-                if (i != iLast) {
-                    return ((*i)->type() != MD::ItemType::Image);
-                }
-            } else if (l->img()->isEmpty()) {
-                return true;
-            }
-        }
-            break;
-
-        default:
-            return false;
-        }
-    }
-
-    return false;
-}
-
-inline bool isTextBefore(MD::Block<MD::QStringTrait>::Items::const_iterator it,
-                         MD::Block<MD::QStringTrait>::Items::const_iterator begin,
-                         MD::Block<MD::QStringTrait>::Items::const_iterator last)
-{
-    if (it != begin) {
-        it = skipRawHtmlAndSpacesBackward(std::prev(it), begin, last);
-
-        if (it != last) {
-            switch ((*it)->type()) {
-            case MD::ItemType::Text:
-            case MD::ItemType::Code:
-            case MD::ItemType::Math:
-                return true;
-
-            case MD::ItemType::Link: {
-                auto l = static_cast<MD::Link<MD::QStringTrait>*>(it->get());
-
-                if (!l->p()->isEmpty()) {
-                    auto i = l->p()->items().crbegin();
-                    auto iLast = l->p()->items().crend();
-                    i = skipRawHtmlAndSpaces(i, iLast);
-
-                    if (i != iLast) {
-                        return ((*i)->type() != MD::ItemType::Image);
-                    }
-                } else if (!l->img()->isEmpty()) {
-                    return true;
-                }
-            }
-                break;
-
-            default:
-                return false;
-            }
-        }
-    }
-
-    return false;
-}
-
-} /* namespace anonymous */
-
 QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
                                                            const RenderOpts &renderOpts,
                                                            MD::Link<MD::QStringTrait> *item,
@@ -1380,15 +1310,19 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
                                                            Font *footnoteFont,
                                                            double footnoteFontSize,
                                                            double footnoteFontScale,
+                                                           MD::Item<MD::QStringTrait> *prevItem,
                                                            MD::Item<MD::QStringTrait> *nextItem,
                                                            int footnoteNum,
                                                            double offset,
+                                                           double lineHeight,
+                                                           double spaceWidth,
                                                            bool firstInParagraph,
                                                            bool lastInParagraph,
                                                            bool isPrevText,
                                                            bool isNextText,
                                                            CustomWidth &cw,
                                                            double scale,
+                                                           bool scaleImagesToLineHeight,
                                                            RTLFlag *rtl)
 {
     QVector<QPair<QRectF, unsigned int>> rects;
@@ -1483,18 +1417,25 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
                 break;
 
             case MD::ItemType::Image: {
+                auto prev = (it != item->p()->items().begin() ?
+                            getPrevItem(std::prev(it), item->p()->items().begin(), last) : nullptr);
                 rects.append(drawImage(pdfData,
                                        renderOpts,
                                        static_cast<MD::Image<MD::QStringTrait> *>(it->get()),
                                        doc,
                                        newLine,
                                        offset,
+                                       lineHeight,
+                                       spaceWidth,
                                        (it == item->p()->items().begin() && firstInParagraph),
-                                       isLastImageInLink(it, last) && lastInParagraph,
-                                       isTextBefore(it, item->p()->items().cbegin(), last) || isPrevText,
-                                       isTextAfter(it, last) || isNextText,
+                                       isNothingAfter(it, last) && lastInParagraph,
+                                       isTextOrOnlineBefore(it, item->p()->items().cbegin(), last, pdfData,
+                                                            offset, lineHeight, scaleImagesToLineHeight) || isPrevText,
+                                       isTextOrOnlineAfter(it, last, pdfData,
+                                                           offset, lineHeight, scaleImagesToLineHeight) || isNextText,
                                        cw,
                                        1.0,
+                                       (prev ? prev : prevItem),
                                        renderOpts.m_imageAlignment));
 
                 setRTLFlagToFalseIfCheck(rtl);
@@ -1542,8 +1483,9 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
     }
     // Otherwise image link.
     else {
-        rects.append(drawImage(pdfData, renderOpts, item->img().get(), doc, newLine, offset,
-                               firstInParagraph, true, isPrevText, isNextText, cw, 1.0, renderOpts.m_imageAlignment));
+        rects.append(drawImage(pdfData, renderOpts, item->img().get(), doc, newLine, offset, lineHeight, spaceWidth,
+                               firstInParagraph, true, isPrevText, isNextText, cw, 1.0, prevItem,
+                               renderOpts.m_imageAlignment));
 
         setRTLFlagToFalseIfCheck(rtl);
     }
@@ -2152,6 +2094,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
     auto *footnoteFont = font;
 
     const auto lineHeight = pdfData.lineSpacing(font, renderOpts.m_textFontSize, scale);
+    const auto spaceWidth = pdfData.stringWidth(font, renderOpts.m_textFontSize, scale, " ");
 
     pdfData.m_lineHeight = lineHeight;
 
@@ -2243,15 +2186,21 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                      footnoteFont,
                      renderOpts.m_textFontSize * scale,
                      s_footnoteScale,
-                     (it + 1 != last ? (it + 1)->get() : nullptr),
+                     (it != item->items().begin() ? std::prev(it)->get() : nullptr),
+                     (std::next(it) != last ? std::next(it)->get() : nullptr),
                      nextFootnoteNum,
                      offset,
+                     lineHeight,
+                     spaceWidth,
                      (firstInParagraph || lineBreak),
                      isLastInParagraph(it, last),
-                     isTextBefore(it, item->items().begin(), last),
-                     isTextAfter(it, last),
+                     isTextOrOnlineBefore(it, item->items().begin(), last,
+                                          pdfData, offset, lineHeight, scaleImagesToLineHeight),
+                     isTextOrOnlineAfter(it, last,
+                                         pdfData, offset, lineHeight, scaleImagesToLineHeight),
                      cw,
                      scale,
+                     scaleImagesToLineHeight,
                      rtl);
             lineBreak = false;
             firstInParagraph = false;
@@ -2264,12 +2213,17 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                       doc,
                       newLine,
                       offset,
+                      lineHeight,
+                      spaceWidth,
                       (firstInParagraph || lineBreak),
                       isLastInParagraph(it, last),
-                      isTextBefore(it, item->items().begin(), last),
-                      isTextAfter(it, last),
+                      isTextOrOnlineBefore(it, item->items().begin(), last,
+                                           pdfData, offset, lineHeight, scaleImagesToLineHeight),
+                      isTextOrOnlineAfter(it, last,
+                                          pdfData, offset, lineHeight, scaleImagesToLineHeight),
                       cw,
                       1.0,
+                      (it != item->items().begin() ? getPrevItem(std::prev(it), item->items().begin(), last) : nullptr),
                       renderOpts.m_imageAlignment,
                       scaleImagesToLineHeight);
             lineBreak = false;
@@ -2284,7 +2238,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                          doc,
                          newLine,
                          offset,
-                         (std::next(it) != last),
+                         isTextOrOnlineAfter(it, last, pdfData, offset, lineHeight, scaleImagesToLineHeight),
                          (firstInParagraph || lineBreak),
                          cw,
                          scale);
@@ -2491,21 +2445,27 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
 
             rects.append(drawLink(pdfData,
                                   renderOpts,
-                                  link,
+                                  static_cast<MD::Link<MD::QStringTrait> *>(it->get()),
                                   doc,
                                   newLine,
-                                  nullptr,
-                                  0.0,
-                                  1.0,
-                                  nullptr,
+                                  footnoteFont,
+                                  renderOpts.m_textFontSize * scale,
+                                  s_footnoteScale,
+                                  (it != item->items().begin() ? std::prev(it)->get() : nullptr),
+                                  (std::next(it) != last ? std::next(it)->get() : nullptr),
                                   nextFootnoteNum,
                                   offset,
+                                  lineHeight,
+                                  spaceWidth,
                                   (firstInParagraph || lineBreak),
                                   isLastInParagraph(it, last),
-                                  isTextBefore(it, item->items().begin(), last),
-                                  isTextAfter(it, last),
+                                  isTextOrOnlineBefore(it, item->items().begin(), last,
+                                                       pdfData, offset, lineHeight, scaleImagesToLineHeight),
+                                  isTextOrOnlineAfter(it, last,
+                                                      pdfData, offset, lineHeight, scaleImagesToLineHeight),
                                   cw,
                                   scale,
+                                  scaleImagesToLineHeight,
                                   rtl));
             lineBreak = false;
             firstInParagraph = false;
@@ -2522,12 +2482,18 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                                    doc,
                                    newLine,
                                    offset,
+                                   lineHeight,
+                                   spaceWidth,
                                    (firstInParagraph || lineBreak),
                                    isLastInParagraph(it, last),
-                                   isTextBefore(it, item->items().begin(), last),
-                                   isTextAfter(it, last),
+                                   isTextOrOnlineBefore(it, item->items().begin(), last,
+                                                        pdfData, offset, lineHeight, scaleImagesToLineHeight),
+                                   isTextOrOnlineAfter(it, last,
+                                                       pdfData, offset, lineHeight, scaleImagesToLineHeight),
                                    cw,
                                    1.0,
+                                   (it != item->items().begin() ?
+                                        getPrevItem(std::prev(it), item->items().begin(), last) : nullptr),
                                    renderOpts.m_imageAlignment,
                                    scaleImagesToLineHeight));
             lineBreak = false;
@@ -2543,7 +2509,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                                       doc,
                                       newLine,
                                       offset,
-                                      (std::next(it) != last),
+                                      isTextOrOnlineAfter(it, last, pdfData, offset, lineHeight, scaleImagesToLineHeight),
                                       (firstInParagraph || lineBreak),
                                       cw,
                                       scale));
@@ -2645,7 +2611,7 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
                                                       std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
                                                       bool &newLine,
                                                       double offset,
-                                                      bool hasNext,
+                                                      bool isNextText,
                                                       bool firstInParagraph,
                                                       CustomWidth &cw,
                                                       double scale)
@@ -2699,6 +2665,10 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
             cw.moveToNextLine();
         } else {
             pdfData.m_layout.addY(cw.height(), -1.0);
+        }
+
+        if (!firstInParagraph) {
+            moveToNewLine(pdfData, 0.0, lineHeight, 1.0, 0.0);
         }
 
         pdfData.m_layout.moveXToBegin();
@@ -2759,6 +2729,7 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
 
             pdfData.m_layout.addX(x);
 
+            // y - is a top of a line.
             tex::Graphics2D_qt g2(&p);
             latexRender->draw(g2, pdfData.m_layout.startX(size.width() * imgScale) / 72.0 * pd.physicalDpiX(),
                     (pdfData.m_layout.pageHeight() - pdfData.m_layout.y() + descent * imgScale) / 72.0
@@ -2774,8 +2745,8 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
 
             cw.moveToNextLine();
 
-            if (hasNext)
-                moveToNewLine(pdfData, offset, lineHeight, 1.0, lineHeight);
+            if (isNextText)
+                moveToNewLine(pdfData, offset, lineHeight + cw.height(), 1.0, cw.height());
 
             return {r, idx};
         } else {
@@ -2790,18 +2761,7 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
             cw.append({0.0, calculatedHeight, false, true, false, ""});
         }
     } else {
-        auto sscale = 100.0;
-
-        if (draw && cw.alignment() == ParagraphAlignment::FillWidth) {
-            sscale = cw.scale();
-        }
-
-        const auto spaceWidth = pdfData.stringWidth(font, renderOpts.m_textFontSize, scale, " ");
-
-        if (!firstInParagraph) {
-            pdfData.m_layout.addX(spaceWidth * sscale / 100.0);
-        }
-
+        // y - is bottom of line.
         const double availableTotalWidth = pdfData.m_layout.pageWidth() - pdfData.m_layout.margins().m_left -
                 pdfData.m_layout.margins().m_right - offset;
 
@@ -2815,8 +2775,6 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
                 cw.append({0.0, lineHeight, false, true, true, ""});
                 pdfData.m_layout.moveXToBegin();
             }
-        } else if (!draw && !firstInParagraph) {
-            cw.append({spaceWidth, lineHeight, true, false, true, " "});
         }
 
         double imgScale = 1.0;
@@ -2874,7 +2832,7 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
         } else {
             pdfData.m_layout.addX(size.width() * imgScale);
 
-            cw.append({size.width() * imgScale, size.height() * imgScale + descent * imgScale, false, false, hasNext, ""});
+            cw.append({size.width() * imgScale, size.height() * imgScale + descent * imgScale, false, false, isNextText, ""});
         }
     }
 
@@ -3160,18 +3118,92 @@ QVector<WhereDrawn> PdfRenderer::footnoteHeight(PdfAuxData &pdfData,
     return drawFootnote(pdfData, renderOpts, doc, "", note, CalcHeightOpt::Full, lineHeight);
 }
 
+bool PdfRenderer::isOnlineImage(double totalAvailableWidth,
+                                double iWidth,
+                                double iHeight,
+                                double lineHeight)
+{
+    return (totalAvailableWidth / 5.0 > iWidth && iHeight < lineHeight * 2.0);
+}
+
+bool PdfRenderer::isOnlineImage(PdfAuxData &pdfData,
+                                MD::Image<MD::QStringTrait> *item,
+                                double offset,
+                                double lineHeight,
+                                bool scaleImagesToLineHeight)
+{
+    const auto img = loadImage(item, *pdfData.m_resvgOpts.get(),
+                               lineHeight / 72.0 * pdfData.m_dpi, scaleImagesToLineHeight, !scaleImagesToLineHeight);
+
+    if (!img.isNull()) {
+        auto pdfImg = pdfData.m_doc->CreateImage();
+        pdfImg->LoadFromBuffer({img.data(), static_cast<size_t>(img.size())});
+
+        const double iWidth = std::round((double)pdfImg->GetWidth() / (double)pdfData.m_dpi * 72.0);
+        const double iHeight = std::round((double)pdfImg->GetHeight() / (double)pdfData.m_dpi * 72.0);
+
+        const double totalAvailableWidth = pdfData.m_layout.pageWidth()
+                - pdfData.m_layout.margins().m_left - pdfData.m_layout.margins().m_right - offset;
+        return isOnlineImage(totalAvailableWidth, iWidth, iHeight, lineHeight);
+    } else {
+        return true;
+    }
+}
+
+bool PdfRenderer::isOnlineImageOrOnlineImageInLink(PdfAuxData &pdfData,
+                                                   MD::Item<MD::QStringTrait> *item,
+                                                   double offset,
+                                                   double lineHeight,
+                                                   bool scaleImagesToLineHeight)
+{
+    if (item) {
+        if (item->type() == MD::ItemType::Image) {
+            auto i = static_cast<MD::Image<MD::QStringTrait>*>(item);
+            return isOnlineImage(pdfData, i, offset, lineHeight, scaleImagesToLineHeight);
+        } else if (item->type() == MD::ItemType::Link) {
+            auto l = static_cast<MD::Link<MD::QStringTrait>*>(item);
+
+            if (!l->p()->isEmpty()) {
+                for (auto it = l->p()->items().crbegin(), last = l->p()->items().crend(); it != last; ++it) {
+                    if ((*it)->type() == MD::ItemType::RawHtml) {
+                        continue;
+                    } else if ((*it)->type() == MD::ItemType::Image) {
+                        return isOnlineImage(pdfData, static_cast<MD::Image<MD::QStringTrait>*>(it->get()),
+                                             offset, lineHeight, scaleImagesToLineHeight);
+                    } else {
+                        return false;
+                    }
+                }
+
+                return false;
+            } else if (l->img()->isEmpty()) {
+                return false;
+            } else {
+                return isOnlineImage(pdfData, l->img().get(), offset, lineHeight, scaleImagesToLineHeight);
+            }
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
+
 QPair<QRectF, unsigned int> PdfRenderer::drawImage(PdfAuxData &pdfData,
                                                    const RenderOpts &renderOpts,
                                                    MD::Image<MD::QStringTrait> *item,
                                                    std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
                                                    bool &newLine,
                                                    double offset,
+                                                   double lineHeight,
+                                                   double spaceWidth,
                                                    bool firstInParagraph,
                                                    bool lastInParagraph,
                                                    bool isPrevText,
                                                    bool isNextText,
                                                    CustomWidth &cw,
                                                    double scale,
+                                                   MD::Item<MD::QStringTrait> *prevItem,
                                                    ImageAlignment alignment,
                                                    bool scaleImagesToLineHeight)
 {
@@ -3188,10 +3220,6 @@ QPair<QRectF, unsigned int> PdfRenderer::drawImage(PdfAuxData &pdfData,
 
     emit status(tr("Loading image."));
 
-    auto *font = createFont(renderOpts.m_textFont, false, false, renderOpts.m_textFontSize, pdfData.m_doc, scale, pdfData);
-
-    const auto lineHeight = pdfData.lineSpacing(font, renderOpts.m_textFontSize, scale);
-
     const auto img = loadImage(item, *pdfData.m_resvgOpts.get(),
                                lineHeight / 72.0 * pdfData.m_dpi, scaleImagesToLineHeight, !scaleImagesToLineHeight);
 
@@ -3204,22 +3232,20 @@ QPair<QRectF, unsigned int> PdfRenderer::drawImage(PdfAuxData &pdfData,
         const double iWidth = std::round((double)pdfImg->GetWidth() / (double)pdfData.m_dpi * 72.0);
         const double iHeight = std::round((double)pdfImg->GetHeight() / (double)pdfData.m_dpi * 72.0);
 
-        newLine = false;
-
         double x = 0.0;
         double imgScale = (scaleImagesToLineHeight ? lineHeight / iHeight : 1.0);
         const double totalAvailableWidth = pdfData.m_layout.pageWidth()
                 - pdfData.m_layout.margins().m_left - pdfData.m_layout.margins().m_right - offset;
-        const bool onLine = (totalAvailableWidth / 5.0 > iWidth && iHeight < lineHeight * 2.0);
-        bool addSpace = onLine && !firstInParagraph;
+        const bool onLine = isOnlineImage(totalAvailableWidth, iWidth, iHeight, lineHeight);
+        bool addSpace = onLine && !firstInParagraph && !newLine &&
+                (isOnlineImageOrOnlineImageInLink(pdfData, prevItem, offset, lineHeight, scaleImagesToLineHeight) ||
+                 (prevItem ? prevItem->endLine() != item->startLine() : false));
         double height = (!onLine ? lineHeight : 0.0);
-        const auto spaceWidth = pdfData.stringWidth(font, renderOpts.m_textFontSize, scale, " ");
         const auto availableAfter = pdfData.m_layout.availableWidth() - (iWidth * imgScale +
                 (addSpace ? spaceWidth * (draw ? cw.scale() / 100.0 : 1.0) : 0.0));
 
         if ((!onLine && !firstInParagraph) || (onLine && (availableAfter < 0) && (qAbs(availableAfter) > 0.1)) ||
             (isPrevText && !onLine)) {
-            newLine = true;
 
             if (draw) {
                 cw.moveToNextLine();
@@ -3297,8 +3323,10 @@ QPair<QRectF, unsigned int> PdfRenderer::drawImage(PdfAuxData &pdfData,
 
         if (draw) {
             if (!onLine) {
+                newLine = true;
                 pdfData.m_layout.addY(iHeight * imgScale);
             } else if (firstInParagraph) {
+                newLine = false;
                 pdfData.m_layout.addY(cw.height());
             }
 
@@ -3310,6 +3338,7 @@ QPair<QRectF, unsigned int> PdfRenderer::drawImage(PdfAuxData &pdfData,
 
             pdfData.m_layout.addX(x);
 
+            // y - is bottom.
             pdfData.drawImage(pdfData.m_layout.startX(iWidth * imgScale), pdfData.m_layout.y() + dy,
                               pdfImg.get(), imgScale / dpiScale, imgScale / dpiScale);
         } else {
@@ -3330,10 +3359,12 @@ QPair<QRectF, unsigned int> PdfRenderer::drawImage(PdfAuxData &pdfData,
             pdfData.m_layout.moveXToBegin();
         }
 
-        if (!onLine && draw) {
+        if (!onLine) {
             newLine = true;
 
-            cw.moveToNextLine();
+            if (draw) {
+                cw.moveToNextLine();
+            }
         }
 
         if (draw && !onLine && !lastInParagraph && isNextText) {
