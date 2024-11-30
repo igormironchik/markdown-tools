@@ -826,18 +826,7 @@ private:
     }
     //! \return Is after \par it nothing except HTML, spaces.
     inline bool isNothingAfter(MD::Block<MD::QStringTrait>::Items::const_iterator it,
-                            MD::Block<MD::QStringTrait>::Items::const_iterator last)
-    {
-        it = std::next(it);
-
-        for (; it != last; ++it) {
-            if (isNotHtmlNorSpace(it)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
+                            MD::Block<MD::QStringTrait>::Items::const_iterator last);
     //! Skip backward til \par func returns true.
     template<class Iterator, class Func>
     inline Iterator
@@ -865,40 +854,12 @@ private:
     //! \return Previous not HTML item.
     MD::Item<MD::QStringTrait> *getPrevItem(MD::Block<MD::QStringTrait>::Items::const_iterator it,
                                          MD::Block<MD::QStringTrait>::Items::const_iterator begin,
-                                         MD::Block<MD::QStringTrait>::Items::const_iterator last)
-    {
-        it = skipBackwardWithFunc(it, begin, last,
-            &PdfRenderer::isNotHtml<MD::Block<MD::QStringTrait>::Items::const_iterator>);
-
-        if (it != last) {
-            return it->get();
-        } else {
-            return nullptr;
-        }
-    }
+                                         MD::Block<MD::QStringTrait>::Items::const_iterator last);
     //! Skip raw HTML and spaces backward.
     inline MD::Block<MD::QStringTrait>::Items::const_iterator
     skipRawHtmlAndSpacesBackward(MD::Block<MD::QStringTrait>::Items::const_iterator it,
                 MD::Block<MD::QStringTrait>::Items::const_iterator begin,
-                MD::Block<MD::QStringTrait>::Items::const_iterator last)
-    {
-        it = skipBackwardWithFunc(it, begin, last,
-            &PdfRenderer::isNotHtmlNorSpace<MD::Block<MD::QStringTrait>::Items::const_iterator>);
-
-        if (it != last) {
-            if ((*it)->type() == MD::ItemType::RawHtml) {
-                return last;
-            } else {
-                if (isSpace(it)) {
-                    return last;
-                } else {
-                    return it;
-                }
-            }
-        }
-
-        return last;
-    }
+                MD::Block<MD::QStringTrait>::Items::const_iterator last);
     //! Skip raw HTML and spaces.
     template<class Iterator>
     inline Iterator

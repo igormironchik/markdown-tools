@@ -1249,6 +1249,59 @@ bool PdfRenderer::isTextOrOnlineBefore(MD::Block<MD::QStringTrait>::Items::const
     return false;
 }
 
+bool PdfRenderer::isNothingAfter(MD::Block<MD::QStringTrait>::Items::const_iterator it,
+                                 MD::Block<MD::QStringTrait>::Items::const_iterator last)
+{
+    if (it != last) {
+        it = std::next(it);
+
+        for (; it != last; ++it) {
+            if (isNotHtmlNorSpace(it)) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+MD::Item<MD::QStringTrait> *PdfRenderer::getPrevItem(MD::Block<MD::QStringTrait>::Items::const_iterator it,
+                                                     MD::Block<MD::QStringTrait>::Items::const_iterator begin,
+                                                     MD::Block<MD::QStringTrait>::Items::const_iterator last)
+{
+    it = skipBackwardWithFunc(it, begin, last,
+        &PdfRenderer::isNotHtml<MD::Block<MD::QStringTrait>::Items::const_iterator>);
+
+    if (it != last) {
+        return it->get();
+    } else {
+        return nullptr;
+    }
+}
+
+MD::Block<MD::QStringTrait>::Items::const_iterator
+PdfRenderer::skipRawHtmlAndSpacesBackward(MD::Block<MD::QStringTrait>::Items::const_iterator it,
+                                          MD::Block<MD::QStringTrait>::Items::const_iterator begin,
+                                          MD::Block<MD::QStringTrait>::Items::const_iterator last)
+{
+    it = skipBackwardWithFunc(it, begin, last,
+        &PdfRenderer::isNotHtmlNorSpace<MD::Block<MD::QStringTrait>::Items::const_iterator>);
+
+    if (it != last) {
+        if ((*it)->type() == MD::ItemType::RawHtml) {
+            return last;
+        } else {
+            if (isSpace(it)) {
+                return last;
+            } else {
+                return it;
+            }
+        }
+    }
+
+    return last;
+}
+
 QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
                                                            const RenderOpts &renderOpts,
                                                            MD::Link<MD::QStringTrait> *item,
