@@ -404,8 +404,11 @@ struct PdfAuxData {
 
 //! Where was the item drawn?
 struct WhereDrawn {
+    //! Page painter index.
     int m_pageIdx = -1;
+    //! Y of line's bottom.
     double m_y = 0.0;
+    //! Height of the item.
     double m_height = 0.0;
 }; // struct WhereDrawn
 
@@ -454,8 +457,6 @@ private slots:
     void clean() override;
 
 protected:
-    friend struct CellItem;
-    friend struct CellData;
 #ifdef MD_PDF_TESTING
     friend struct TestRendering;
 #endif
@@ -469,11 +470,29 @@ private:
     void createPage(PdfAuxData &pdfData);
 
     //! Draw empty line.
-    void moveToNewLine(PdfAuxData &pdfData, double xOffset, double yOffset,
-                       double yOffsetMultiplier, double yOffsetOnNewPage);
+    void moveToNewLine(
+            //! Auxiliary PDF data.
+            PdfAuxData &pdfData,
+            //! Not used now.
+            double xOffset,
+            //! Offset for Y coordinate.
+            double yOffset,
+            //! Multiplier for Y coordinate. Real offset will be yOffset * yOffsetMultiplier.
+            double yOffsetMultiplier,
+            //! Y offset on new page.
+            double yOffsetOnNewPage);
     //! Load image.
-    QByteArray loadImage(MD::Image<MD::QStringTrait> *item, const ResvgOptions &opts,
-                         double height = 1.0, bool scale = false, bool cache = true);
+    QByteArray loadImage(
+            //! Image.
+            MD::Image<MD::QStringTrait> *item,
+            //! Options for SVG rendering.
+            const ResvgOptions &opts,
+            //! Height to scale image to.
+            double height = 1.0,
+            //! Should image be scaled?
+            bool scale = false,
+            //! Store in cache loaded image data?
+            bool cache = true);
     //! Make all links clickable.
     void resolveLinks(PdfAuxData &pdfData);
     //! Max width of numbered list bullet.
@@ -492,6 +511,7 @@ private:
     //! Finish pages.
     void finishPages(PdfAuxData &pdfData);
 
+    //! Flag for RTL languages support.
     struct RTLFlag {
         RTLFlag()
             : m_isOn(false)
