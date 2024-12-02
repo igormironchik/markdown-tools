@@ -1360,7 +1360,7 @@ void MainWindow::onCursorPositionChanged()
     m_d->m_tabAction->setEnabled(c.hasSelection());
     m_d->m_backtabAction->setEnabled(c.hasSelection());
 
-    m_d->m_cursorPosLabel->setText(tr("Line: %1, Col: %2").arg(c.block().blockNumber() + 1).arg(c.columnNumber() + 1));
+    m_d->m_cursorPosLabel->setText(tr("Line: %1, Col: %2").arg(c.block().blockNumber() + 1).arg(c.positionInBlock() + 1));
 }
 
 void MainWindow::onEditMenuActionTriggered(QAction *action)
