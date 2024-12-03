@@ -2886,7 +2886,7 @@ void PdfRenderer::reserveSpaceForFootnote(PdfAuxData &pdfData,
                                         pdfData.m_layout.topY(),
                                         currentPage + 1,
                                         lineHeight,
-                                        true);
+                                        (i > 0 ? true : false));
 
                 break;
             }
@@ -4267,13 +4267,9 @@ double PdfRenderer::rowHeight(PdfAuxData &pdfData,
         auto p = std::make_shared<MD::Paragraph<MD::QStringTrait>>();
         p->applyBlock(*c.get());
 
-        auto r = drawParagraph(pdfData, renderOpts, p.get(), doc, 0.0, false, CalcHeightOpt::Full, scale);
+        const auto r = drawParagraph(pdfData, renderOpts, p.get(), doc, 0.0, false, CalcHeightOpt::Full, scale);
 
-        auto tmp = 0.0;
-
-        for (const auto &w : r.first) {
-            tmp += w.m_height + 2.0 * s_tableMargin;
-        }
+        const auto tmp = totalHeight(r.first) + 2.0 * s_tableMargin;
 
         if (tmp > height) {
             height = tmp;
@@ -4329,13 +4325,13 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTable(PdfAuxData &pdfDat
 
     switch (heightCalcOpt) {
     case CalcHeightOpt::Minimum: {
-        ret.append({-1, 0.0, r0h + r1h});
+        ret.append({-1, 0.0, r0h + r1h + lineHeight});
 
         return {ret, {}};
     }
 
     case CalcHeightOpt::Full: {
-        ret.append({-1, 0.0, r0h + r1h});
+        ret.append({-1, 0.0, r0h + r1h + lineHeight});
 
         for(long long int i = 2; i < item->rows().size(); ++i) {
             ret.append({-1, 0.0, rowHeight(pdfData, item->rows().at(i), columnWidth, renderOpts, doc, scale)});
