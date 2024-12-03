@@ -5,6 +5,7 @@
 
 #include "src/converter/renderer.hpp"
 #include "src/converter/syntax.hpp"
+#include "src/converter/const.hpp"
 
 // md4qt include.
 #define MD4QT_QT_SUPPORT
@@ -115,6 +116,16 @@ namespace MdPdf
 namespace Render
 {
 
+namespace /* anonymous */
+{
+
+inline double mmInPt(double mm)
+{
+    return mm / s_mmInPt;
+}
+
+} /* namespace anonymous */
+
 struct TestRendering {
     static void testRendering(const QString &fileName,
                               const QString &suffix,
@@ -130,17 +141,17 @@ struct TestRendering {
         RenderOpts opts;
         opts.m_borderColor = QColor(81, 81, 81);
         opts.m_linkColor = QColor(33, 122, 255);
-        opts.m_bottom = 50.0;
+        opts.m_bottom = mmInPt(20.0);
         opts.m_syntax = std::make_shared<Syntax>();
         opts.m_syntax->setTheme(opts.m_syntax->themeForName(QStringLiteral("GitHub Light")));
         opts.m_codeFont = QStringLiteral("Space Mono");
         opts.m_codeFontSize = codeFontSize;
-        opts.m_left = 50.0;
+        opts.m_left = mmInPt(20.0);
         opts.m_linkColor = QColor(33, 122, 255);
-        opts.m_right = 50.0;
+        opts.m_right = mmInPt(20.0);
         opts.m_textFont = QStringLiteral("Droid Serif");
         opts.m_textFontSize = textFontSize;
-        opts.m_top = 50.0;
+        opts.m_top = mmInPt(20.0);
         opts.m_dpi = 150;
         opts.m_imageAlignment = align;
 
