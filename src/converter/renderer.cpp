@@ -4430,11 +4430,12 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTableRow(std::shared_ptr
         pdfData.m_layout.addY(s_tableMargin);
 
         pdfData.m_layout.margins().m_left = (rightToLeftTable ?
-                                                 pdfData.m_layout.pageWidth() - rightMargin - columnWidth * (i + 1) :
-                                                 leftMargin + i * columnWidth) +
+                                                 pdfData.m_layout.pageWidth() - rightMargin -
+                                                 (columnWidth + s_tableMargin * 2.0) * (i + 1) :
+                                                 leftMargin + i * (columnWidth + s_tableMargin * 2.0)) +
                 (pdfData.m_layout.isRightToLeft() ? -offset : offset) + s_tableMargin;
         pdfData.m_layout.margins().m_right = pdfData.m_layout.pageWidth() - pdfData.m_layout.margins().m_left -
-                columnWidth + 2.0 * s_tableMargin;
+                columnWidth;
 
         const auto w = drawTableCell(c, pdfData, renderOpts, doc, table->columnAlignment(i), scale);
 
@@ -4633,7 +4634,7 @@ void PdfRenderer::drawRowBorder(PdfAuxData &pdfData,
         auto endX = startX;
 
         for (int c = 0; c < columnsCount; ++c) {
-            endX += pdfData.m_layout.xIncrementDirection() * columnWidth;
+            endX += pdfData.m_layout.xIncrementDirection() * (columnWidth + s_tableMargin * 2.0);
         }
 
         if (i == startPage) {
@@ -4651,7 +4652,7 @@ void PdfRenderer::drawRowBorder(PdfAuxData &pdfData,
             }
 
             for (int c = 0; c < columnsCount; ++c) {
-                x += pdfData.m_layout.xIncrementDirection() * columnWidth;
+                x += pdfData.m_layout.xIncrementDirection() * (columnWidth + s_tableMargin * 2.0);
 
                 pdfData.drawLine(x, startY, x, y);
             }
@@ -4671,7 +4672,7 @@ void PdfRenderer::drawRowBorder(PdfAuxData &pdfData,
             pdfData.drawLine(x, sy, x, y);
 
             for (int c = 0; c < columnsCount; ++c) {
-                x += pdfData.m_layout.xIncrementDirection() * columnWidth;
+                x += pdfData.m_layout.xIncrementDirection() * (columnWidth + s_tableMargin * 2.0);
 
                 pdfData.drawLine(x, sy, x, y);
             }
@@ -4689,7 +4690,7 @@ void PdfRenderer::drawRowBorder(PdfAuxData &pdfData,
             pdfData.drawLine(x, sy, x, y);
 
             for (int c = 0; c < columnsCount; ++c) {
-                x += pdfData.m_layout.xIncrementDirection() * columnWidth;
+                x += pdfData.m_layout.xIncrementDirection() * (columnWidth + s_tableMargin * 2.0);
 
                 pdfData.drawLine(x, sy, x, y);
             }
