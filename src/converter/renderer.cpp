@@ -3591,13 +3591,13 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawCode(PdfAuxData &pdfData
         if (i < j) {
             pdfData.setColor(m_opts.m_syntax->theme().editorColor(KSyntaxHighlighting::Theme::CodeFolding));
             pdfData.drawRectangle(pdfData.m_layout.startX(pdfData.m_layout.availableWidth()),
-                                  y + pdfData.fontDescent(font, m_opts.m_codeFontSize, scale),
+                                  y,
                                   pdfData.m_layout.availableWidth(),
                                   h,
                                   PoDoFo::PdfPathDrawMode::Fill);
             pdfData.restoreColor();
 
-            ret.append({pdfData.m_currentPainterIdx, y + pdfData.fontDescent(font, m_opts.m_codeFontSize, scale), h});
+            ret.append({pdfData.m_currentPainterIdx, y, h});
         }
 
         for (; i < j; ++i) {
@@ -3624,7 +3624,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawCode(PdfAuxData &pdfData
                 }
 
                 pdfData.drawText(pdfData.m_layout.startX(spaceWidth * length),
-                                 pdfData.m_layout.y(),
+                                 pdfData.m_layout.y() - pdfData.fontDescent(font, m_opts.m_codeFontSize, scale),
                                  createUtf8String(lines.at(i).mid(colored[currentWord].startPos, length)),
                                  f,
                                  m_opts.m_codeFontSize * scale,
