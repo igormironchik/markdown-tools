@@ -3507,14 +3507,18 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawCode(PdfAuxData &pdfData
 
     const auto textLHeight = pdfData.lineSpacing(textFont, m_opts.m_textFontSize, scale);
 
+    auto *font = createFont(m_opts.m_codeFont, false, false, m_opts.m_codeFontSize, pdfData.m_doc, scale, pdfData);
+
+    const auto lineHeight = pdfData.lineSpacing(font, m_opts.m_codeFontSize, scale);
+
     QStringList lines;
 
     if (heightCalcOpt == CalcHeightOpt::Unknown) {
-        if (pdfData.m_layout.y() - (textLHeight * 2.0) < pdfData.currentPageAllowedY()
+        if ((pdfData.m_layout.y() - (pdfData.m_firstOnPage ? 0.0 : textLHeight) - lineHeight) < pdfData.currentPageAllowedY()
             && qAbs(pdfData.m_layout.y() - (textLHeight * 2.0) - pdfData.currentPageAllowedY()) > 0.1) {
             createPage(pdfData);
-        } else {
-            pdfData.m_layout.addY(textLHeight * 2.0);
+        } else if (!pdfData.m_firstOnPage) {
+            pdfData.m_layout.addY(textLHeight);
         }
 
         pdfData.m_layout.moveXToBegin();
@@ -3526,21 +3530,17 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawCode(PdfAuxData &pdfData
         it->replace(QStringLiteral("\t"), QStringLiteral("    "));
     }
 
-    auto *font = createFont(m_opts.m_codeFont, false, false, m_opts.m_codeFontSize, pdfData.m_doc, scale, pdfData);
-
-    const auto lineHeight = pdfData.lineSpacing(font, m_opts.m_codeFontSize, scale);
-
     switch (heightCalcOpt) {
     case CalcHeightOpt::Minimum: {
         QVector<WhereDrawn> r;
-        r.append({-1, 0.0, textLHeight * 2.0 + lineHeight});
+        r.append({-1, 0.0, (pdfData.m_firstOnPage ? 0.0 : textLHeight) + lineHeight});
 
         return {r, {}};
     }
 
     case CalcHeightOpt::Full: {
         QVector<WhereDrawn> r;
-        r.append({-1, 0.0, textLHeight * 2.0 + lineHeight});
+        r.append({-1, 0.0, (pdfData.m_firstOnPage ? 0.0 : textLHeight) + lineHeight});
 
         auto i = 1;
 
@@ -3578,7 +3578,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawCode(PdfAuxData &pdfData
 
     while (i < lines.size()) {
         auto y = pdfData.m_layout.y();
-        int j = i + 1;
+        int j = i;
         double h = 0.0;
 
         while ((y - lineHeight > pdfData.currentPageAllowedY() ||
@@ -3593,16 +3593,17 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawCode(PdfAuxData &pdfData
             pdfData.drawRectangle(pdfData.m_layout.startX(pdfData.m_layout.availableWidth()),
                                   y + pdfData.fontDescent(font, m_opts.m_codeFontSize, scale),
                                   pdfData.m_layout.availableWidth(),
-                                  h + lineHeight,
+                                  h,
                                   PoDoFo::PdfPathDrawMode::Fill);
             pdfData.restoreColor();
 
-            ret.append({pdfData.m_currentPainterIdx, y + pdfData.fontDescent(font, m_opts.m_codeFontSize, scale),
-                        h + lineHeight});
+            ret.append({pdfData.m_currentPainterIdx, y + pdfData.fontDescent(font, m_opts.m_codeFontSize, scale), h});
         }
 
         for (; i < j; ++i) {
             pdfData.m_layout.moveXToBegin();
+
+            pdfData.m_layout.addY(lineHeight);
 
             while (true) {
                 if (currentWord == colored.size() || colored[currentWord].line != i) {
@@ -3636,18 +3637,16 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawCode(PdfAuxData &pdfData
 
                 ++currentWord;
             }
-
-            pdfData.m_layout.addY(lineHeight);
         }
 
         if (i < lines.size()) {
             createPage(pdfData);
             pdfData.m_layout.moveXToBegin();
-            pdfData.m_layout.addY(lineHeight);
         }
     }
 
     pdfData.m_layout.setRightToLeft(wasRightToLeft);
+    pdfData.m_firstOnPage = false;
 
     return {ret, {firstLinePageIdx, firstLineY, firstLineHeight}};
 }
@@ -4016,7 +4015,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawListItem(PdfAuxData &pdf
                 first = false;
             }
 
-            addExtraSpace = false;
+            addExtraSpace = (it != item->items().cbegin());
         } break;
 
         case MD::ItemType::Blockquote: {
