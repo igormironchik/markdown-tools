@@ -628,10 +628,9 @@ void PdfRenderer::renderImpl()
 
         int itemIdx = 0;
 
-        pdfData.m_extraInFootnote =
-            pdfData.lineSpacing(createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize,
-                                           pdfData.m_doc, 1.0, pdfData), m_opts.m_textFontSize, 1.0)
-            / 3.0;
+        pdfData.m_lineHeight = pdfData.lineSpacing(createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize,
+            pdfData.m_doc, 1.0, pdfData), m_opts.m_textFontSize, 1.0);
+        pdfData.m_extraInFootnote = pdfData.m_lineHeight / 3.0;
 
         createPage(pdfData);
 
@@ -722,6 +721,8 @@ void PdfRenderer::renderImpl()
 
             emit progress(static_cast<int>(static_cast<double>(itemIdx) / static_cast<double>(itemsCount) * 100.0));
         }
+
+        pdfData.m_lineHeight *= s_footnoteScale;
 
         if (!m_footnotes.isEmpty()) {
             pdfData.m_drawFootnotes = true;
@@ -2072,8 +2073,6 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
 
     const auto lineHeight = pdfData.lineSpacing(font, m_opts.m_textFontSize, scale);
     const auto spaceWidth = pdfData.stringWidth(font, m_opts.m_textFontSize, scale, " ");
-
-    pdfData.m_lineHeight = lineHeight;
 
     const auto isParagraphRightToLeft = isRightToLeft(item);
     const auto rightToLeft = (rtl && !rtl->isCheck() ? rtl->isRightToLeft() : isParagraphRightToLeft);
@@ -3909,13 +3908,6 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawList(PdfAuxData &pdfData
         if (heightCalcOpt == CalcHeightOpt::Minimum) {
             break;
         }
-    }
-
-    if (!ret.isEmpty()) {
-        ret.front().m_height += pdfData.lineSpacing(createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize,
-                                                               pdfData.m_doc, scale, pdfData),
-                                                  m_opts.m_textFontSize,
-                                                  scale);
     }
 
     return {ret, firstLine};
