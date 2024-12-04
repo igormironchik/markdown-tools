@@ -320,12 +320,8 @@ struct PdfAuxData {
     double m_extraInFootnote = 0.0;
     //! Colors stack.
     QStack<QColor> m_colorsStack;
-    //! DPI.
-    quint16 m_dpi;
     //! Markdown document.
     std::shared_ptr<MD::Document<MD::QStringTrait>> m_md;
-    //! Syntax highlighter.
-    std::shared_ptr<Syntax> m_syntax;
     //! Start line of procesing in the document.
     long long int m_startLine = 0;
     //! Start position in the start line.
@@ -390,8 +386,6 @@ struct PdfAuxData {
     //! Repeat color (needed after new page creation).
     void repeatColor();
 
-    //! \return Image width.
-    double imageWidth(const QByteArray &image);
     //! \return String width.
     double stringWidth(Font *font, double size, double scale, const String &s) const;
     //! \return Line spacing.

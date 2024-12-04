@@ -321,14 +321,6 @@ void PdfAuxData::repeatColor()
     (*m_painters)[m_currentPainterIdx]->GraphicsState.SetStrokeColor(Color(c.redF(), c.greenF(), c.blueF()));
 }
 
-double PdfAuxData::imageWidth(const QByteArray &image)
-{
-    auto pdfImg = m_doc->CreateImage();
-    pdfImg->LoadFromBuffer({image.data(), static_cast<size_t>(image.size())});
-
-    return std::round((double)pdfImg->GetWidth() / (double)m_dpi * 72.0);
-}
-
 double PdfAuxData::stringWidth(Font *font, double size, double scale, const String &s) const
 {
     PoDoFo::PdfTextState st;
@@ -504,8 +496,6 @@ void PdfRenderer::renderImpl()
         pdfData.m_layout.margins().m_right = m_opts.m_right;
         pdfData.m_layout.margins().m_top = m_opts.m_top;
         pdfData.m_layout.margins().m_bottom = m_opts.m_bottom;
-        pdfData.m_dpi = m_opts.m_dpi;
-        pdfData.m_syntax = m_opts.m_syntax;
         pdfData.m_resvgOpts.reset(new ResvgOptions);
         pdfData.m_resvgOpts->setDpi(m_opts.m_dpi);
         pdfData.m_resvgOpts->loadSystemFonts();
@@ -3100,14 +3090,14 @@ bool PdfRenderer::isOnlineImage(PdfAuxData &pdfData,
                                 bool scaleImagesToLineHeight)
 {
     const auto img = loadImage(item, *pdfData.m_resvgOpts.get(),
-                               lineHeight / 72.0 * pdfData.m_dpi, scaleImagesToLineHeight, !scaleImagesToLineHeight);
+                               lineHeight / 72.0 * m_opts.m_dpi, scaleImagesToLineHeight, !scaleImagesToLineHeight);
 
     if (!img.isNull()) {
         auto pdfImg = pdfData.m_doc->CreateImage();
         pdfImg->LoadFromBuffer({img.data(), static_cast<size_t>(img.size())});
 
-        const double iWidth = std::round((double)pdfImg->GetWidth() / (double)pdfData.m_dpi * 72.0);
-        const double iHeight = std::round((double)pdfImg->GetHeight() / (double)pdfData.m_dpi * 72.0);
+        const double iWidth = std::round((double)pdfImg->GetWidth() / (double)m_opts.m_dpi * 72.0);
+        const double iHeight = std::round((double)pdfImg->GetHeight() / (double)m_opts.m_dpi * 72.0);
 
         const double totalAvailableWidth = pdfData.m_layout.pageWidth()
                 - pdfData.m_layout.margins().m_left - pdfData.m_layout.margins().m_right - offset;
@@ -3187,7 +3177,7 @@ QPair<QRectF, unsigned int> PdfRenderer::drawImage(PdfAuxData &pdfData,
     emit status(tr("Loading image."));
 
     const auto img = loadImage(item, *pdfData.m_resvgOpts.get(),
-                               lineHeight / 72.0 * pdfData.m_dpi, scaleImagesToLineHeight, !scaleImagesToLineHeight);
+                               lineHeight / 72.0 * m_opts.m_dpi, scaleImagesToLineHeight, !scaleImagesToLineHeight);
 
     const auto autoOffset = pdfData.m_layout.addOffset(offset, !pdfData.m_layout.isRightToLeft());
 
@@ -3195,8 +3185,8 @@ QPair<QRectF, unsigned int> PdfRenderer::drawImage(PdfAuxData &pdfData,
         auto pdfImg = pdfData.m_doc->CreateImage();
         pdfImg->LoadFromBuffer({img.data(), static_cast<size_t>(img.size())});
 
-        const double iWidth = std::round((double)pdfImg->GetWidth() / (double)pdfData.m_dpi * 72.0);
-        const double iHeight = std::round((double)pdfImg->GetHeight() / (double)pdfData.m_dpi * 72.0);
+        const double iWidth = std::round((double)pdfImg->GetWidth() / (double)m_opts.m_dpi * 72.0);
+        const double iHeight = std::round((double)pdfImg->GetHeight() / (double)m_opts.m_dpi * 72.0);
 
         double x = 0.0;
         double imgScale = (scaleImagesToLineHeight ? lineHeight / iHeight : 1.0);
@@ -3578,8 +3568,8 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawCode(PdfAuxData &pdfData
             return {};
     }
 
-    pdfData.m_syntax->setDefinition(pdfData.m_syntax->definitionForName(item->syntax().toLower()));
-    const auto colored = pdfData.m_syntax->prepare(lines);
+    m_opts.m_syntax->setDefinition(m_opts.m_syntax->definitionForName(item->syntax().toLower()));
+    const auto colored = m_opts.m_syntax->prepare(lines);
     int currentWord = 0;
     const auto spaceWidth = pdfData.stringWidth(font, m_opts.m_codeFontSize, scale, " ");
 
@@ -3620,14 +3610,14 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawCode(PdfAuxData &pdfData
                     break;
                 }
 
-                pdfData.setColor(colored[currentWord].format.textColor(pdfData.m_syntax->theme()));
+                pdfData.setColor(colored[currentWord].format.textColor(m_opts.m_syntax->theme()));
 
                 const auto length = colored[currentWord].endPos - colored[currentWord].startPos + 1;
 
                 Font *f = font;
 
-                const auto italic = colored[currentWord].format.isItalic(pdfData.m_syntax->theme());
-                const auto bold = colored[currentWord].format.isBold(pdfData.m_syntax->theme());
+                const auto italic = colored[currentWord].format.isItalic(m_opts.m_syntax->theme());
+                const auto bold = colored[currentWord].format.isBold(m_opts.m_syntax->theme());
 
                 if (italic || bold) {
                     f = createFont(m_opts.m_codeFont, bold, italic, m_opts.m_codeFontSize, pdfData.m_doc, scale, pdfData);
