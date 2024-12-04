@@ -543,7 +543,6 @@ private:
 
     //! Draw heading.
     QPair<QVector<WhereDrawn>, WhereDrawn> drawHeading(PdfAuxData &pdfData,
-                                                       const RenderOpts &renderOpts,
                                                        MD::Heading<MD::QStringTrait> *item,
                                                        std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
                                                        double offset,
@@ -554,7 +553,6 @@ private:
                                                        RTLFlag *rtl = nullptr);
     //! Draw paragraph.
     QPair<QVector<WhereDrawn>, WhereDrawn> drawParagraph(PdfAuxData &pdfData,
-                                                         const RenderOpts &renderOpts,
                                                          MD::Paragraph<MD::QStringTrait> *item,
                                                          std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
                                                          double offset,
@@ -567,7 +565,6 @@ private:
                                                          ParagraphAlignment align = ParagraphAlignment::FillWidth);
     //! Draw block of code.
     QPair<QVector<WhereDrawn>, WhereDrawn> drawCode(PdfAuxData &pdfData,
-                                                    const RenderOpts &renderOpts,
                                                     MD::Code<MD::QStringTrait> *item,
                                                     std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
                                                     double offset,
@@ -575,7 +572,6 @@ private:
                                                     double scale);
     //! Draw blockquote.
     QPair<QVector<WhereDrawn>, WhereDrawn> drawBlockquote(PdfAuxData &pdfData,
-                                                          const RenderOpts &renderOpts,
                                                           MD::Blockquote<MD::QStringTrait> *item,
                                                           std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
                                                           double offset,
@@ -584,7 +580,6 @@ private:
                                                           RTLFlag *rtl = nullptr);
     //! Draw list.
     QPair<QVector<WhereDrawn>, WhereDrawn> drawList(PdfAuxData &pdfData,
-                                                    const RenderOpts &renderOpts,
                                                     MD::List<MD::QStringTrait> *item,
                                                     std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
                                                     int bulletWidth,
@@ -595,7 +590,6 @@ private:
                                                     RTLFlag *rtl = nullptr);
     //! Draw table.
     QPair<QVector<WhereDrawn>, WhereDrawn> drawTable(PdfAuxData &pdfData,
-                                                     const RenderOpts &renderOpts,
                                                      MD::Table<MD::QStringTrait> *item,
                                                      std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
                                                      double offset,
@@ -604,14 +598,12 @@ private:
 
     //! \return Minimum necessary height to draw item, meant at least one line.
     double minNecessaryHeight(PdfAuxData &pdfData,
-                              const RenderOpts &renderOpts,
                               std::shared_ptr<MD::Item<MD::QStringTrait>> item,
                               std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
                               double offset,
                               double scale);
     //! \return Height of the footnote.
     QVector<WhereDrawn> drawFootnote(PdfAuxData &pdfData,
-                                     const RenderOpts &renderOpts,
                                      std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
                                      const QString &footnoteRefId,
                                      MD::Footnote<MD::QStringTrait> *note,
@@ -620,13 +612,11 @@ private:
                                      RTLFlag *rtl = nullptr);
     //! \return Height of the footnote.
     QVector<WhereDrawn> footnoteHeight(PdfAuxData &pdfData,
-                                       const RenderOpts &renderOpts,
                                        std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
                                        MD::Footnote<MD::QStringTrait> *note,
                                        double *lineHeight);
     //! Reserve space for footnote.
     void reserveSpaceForFootnote(PdfAuxData &pdfData,
-                                 const RenderOpts &renderOpts,
                                  const QVector<WhereDrawn> &h,
                                  const double &currentY,
                                  int currentPage,
@@ -636,7 +626,6 @@ private:
     void addFootnote(const QString &refId,
                      std::shared_ptr<MD::Footnote<MD::QStringTrait>> f,
                      PdfAuxData &pdfData,
-                     const RenderOpts &renderOpts,
                      std::shared_ptr<MD::Document<MD::QStringTrait>> doc);
 
     //! List item type.
@@ -650,7 +639,6 @@ private:
 
     //! Draw list item.
     QPair<QVector<WhereDrawn>, WhereDrawn> drawListItem(PdfAuxData &pdfData,
-                                                        const RenderOpts &renderOpts,
                                                         MD::ListItem<MD::QStringTrait> *item,
                                                         std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
                                                         int &idx,
@@ -728,7 +716,6 @@ private:
 
     //! Draw text.
     QVector<QPair<QRectF, unsigned int>> drawText(PdfAuxData &pdfData,
-                                                  const RenderOpts &renderOpts,
                                                   MD::Text<MD::QStringTrait> *item,
                                                   std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
                                                   bool &newLine,
@@ -745,7 +732,6 @@ private:
                                                   RTLFlag *rtl = nullptr);
     //! Draw inlined code.
     QVector<QPair<QRectF, unsigned int>> drawInlinedCode(PdfAuxData &pdfData,
-                                                         const RenderOpts &renderOpts,
                                                          MD::Code<MD::QStringTrait> *item,
                                                          std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
                                                          bool &newLine,
@@ -757,7 +743,6 @@ private:
                                                          RTLFlag *rtl = nullptr);
     //! Draw string.
     QVector<QPair<QRectF, unsigned int>> drawString(PdfAuxData &pdfData,
-                                                    const RenderOpts &renderOpts,
                                                     const QString &str,
                                                     Font *spaceFont,
                                                     double spaceFontSize,
@@ -789,7 +774,6 @@ private:
                                                     RTLFlag *rtl = nullptr);
     //! Draw link.
     QVector<QPair<QRectF, unsigned int>> drawLink(PdfAuxData &pdfData,
-                                                  const RenderOpts &renderOpts,
                                                   MD::Link<MD::QStringTrait> *item,
                                                   std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
                                                   bool &newLine,
@@ -997,7 +981,6 @@ private:
                        bool scaleImagesToLineHeight);
     //! Draw image.
     QPair<QRectF, unsigned int> drawImage(PdfAuxData &pdfData,
-                                          const RenderOpts &renderOpts,
                                           MD::Image<MD::QStringTrait> *item,
                                           std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
                                           bool &newLine,
@@ -1016,7 +999,6 @@ private:
 
     //! Draw math expression.
     QPair<QRectF, unsigned int> drawMathExpr(PdfAuxData &pdfData,
-                                             const RenderOpts &renderOpts,
                                              MD::Math<MD::QStringTrait> *item,
                                              std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
                                              bool &newLine,
@@ -1030,14 +1012,12 @@ private:
     double rowHeight(PdfAuxData &pdfData,
                      std::shared_ptr<MD::TableRow<MD::QStringTrait>> row,
                      double width,
-                     const RenderOpts &renderOpts,
                      std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
                      double scale);
 
     //! Draw table's row.
     QPair<QVector<WhereDrawn>, WhereDrawn> drawTableRow(std::shared_ptr<MD::TableRow<MD::QStringTrait>> row,
                                                         PdfAuxData &pdfData,
-                                                        const RenderOpts &renderOpts,
                                                         std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
                                                         MD::Table<MD::QStringTrait> *table,
                                                         double offset,
@@ -1049,7 +1029,6 @@ private:
     //! Draw table's cell.
     QPair<QVector<WhereDrawn>, WhereDrawn> drawTableCell(std::shared_ptr<MD::TableCell<MD::QStringTrait>> cell,
                                                          PdfAuxData &pdfData,
-                                                         const RenderOpts &renderOpts,
                                                          std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
                                                          MD::Table<MD::QStringTrait>::Alignment align,
                                                          double scale);
@@ -1058,7 +1037,6 @@ private:
     void drawRowBorder(PdfAuxData &pdfData,
                        int startPage,
                        QVector<WhereDrawn> &ret,
-                       const RenderOpts &renderOpts,
                        double offset,
                        double startY,
                        double endY,
@@ -1066,7 +1044,7 @@ private:
                        int columnsCount);
 
     //! Draw horizontal line.
-    void drawHorizontalLine(PdfAuxData &pdfData, const RenderOpts &renderOpts);
+    void drawHorizontalLine(PdfAuxData &pdfData);
 
     //! Handle rendering exception.
     void handleException(PdfAuxData &pdfData, const QString &msg);
