@@ -784,7 +784,7 @@ void PdfRenderer::renderImpl()
         handleException(pdfData, QString::fromLatin1("Error during drawing PDF:\n%1").arg(msg));
     } catch (const PdfRendererError &e) {
         handleException(pdfData, e.what());
-    } catch (const tex::ex_tex & e) {
+    } catch (const tex::ex_tex &e) {
         handleException(pdfData, QString::fromLatin1("Error during drawing LaTeX math: %1").arg(e.what()));
     } catch (const std::exception &e) {
         handleException(pdfData, QString::fromLatin1("Error during drawing PDF: %1").arg(e.what()));
