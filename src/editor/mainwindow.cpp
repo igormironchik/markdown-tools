@@ -68,6 +68,24 @@ namespace MdEditor
 {
 
 //
+// HtmlVisitor
+//
+
+//! Converter into HTML.
+class HtmlVisitor : public MD::details::HtmlVisitor<MD::QStringTrait>
+{
+protected:
+    //! Prepare text to insert into HTML content.
+    QString prepareTextForHtml(const QString &t) override
+    {
+        auto tmp = MD::details::HtmlVisitor<MD::QStringTrait>::prepareTextForHtml(t);
+        tmp.replace(QLatin1Char('$'), QStringLiteral("<span>$</span>"));
+
+        return tmp;
+    }
+};
+
+//
 // TabBar
 //
 
@@ -1010,7 +1028,8 @@ void MainWindow::onTextChanged()
         m_d->m_mdDoc = m_d->m_editor->currentDoc();
 
         if (m_d->m_livePreviewVisible && m_d->m_mdDoc) {
-            m_d->m_html->setText(MD::toHtml(m_d->m_mdDoc, false, QStringLiteral("qrc:/res/img/go-jump.png")));
+            m_d->m_html->setText(MD::toHtml<MD::QStringTrait, HtmlVisitor>(
+                                     m_d->m_mdDoc, false, QStringLiteral("qrc:/res/img/go-jump.png")));
         }
     }
 
@@ -1510,7 +1529,8 @@ void MainWindow::readAllLinked()
         m_d->m_mdDoc = parser.parse(m_d->m_rootFilePath, true, {QStringLiteral("md"), QStringLiteral("mkd"), QStringLiteral("markdown")});
 
         if (m_d->m_livePreviewVisible) {
-            m_d->m_html->setText(MD::toHtml(m_d->m_mdDoc, false, QStringLiteral("qrc:/res/img/go-jump.png")));
+            m_d->m_html->setText(MD::toHtml<MD::QStringTrait, HtmlVisitor>(
+                                     m_d->m_mdDoc, false, QStringLiteral("qrc:/res/img/go-jump.png")));
         }
     }
 }
@@ -1654,7 +1674,8 @@ void MainWindow::onToggleLivePreviewAction(bool checked)
         m_d->m_splitter->handle(2)->setCursor(m_d->m_splitterCursor);
 
         if (m_d->m_mdDoc) {
-            m_d->m_html->setText(MD::toHtml(m_d->m_mdDoc, false, QStringLiteral("qrc:/res/img/go-jump.png")));
+            m_d->m_html->setText(MD::toHtml<MD::QStringTrait, HtmlVisitor>(
+                                     m_d->m_mdDoc, false, QStringLiteral("qrc:/res/img/go-jump.png")));
         } else {
             m_d->m_html->setText({});
         }
