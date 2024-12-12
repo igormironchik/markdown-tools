@@ -26,6 +26,7 @@
 #include <QScreen>
 #include <QTemporaryFile>
 #include <QThread>
+#include <QScopedValueRollback>
 
 // MicroTeX include.
 #include <platform/qt/graphic_qt.h>
@@ -1031,6 +1032,8 @@ void PdfRenderer::createPage(PdfAuxData &pdfData)
             if (pdfData.m_continueParagraph) {
                 pdfData.m_layout.addY(pdfData.m_lineHeight);
             }
+
+            pdfData.m_firstOnPage = true;
         }
     };
 
@@ -2284,7 +2287,9 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
             {-1,
              0.0,
              ((withNewLine && !pdfData.m_firstOnPage) || (withNewLine && pdfData.m_drawFootnotes) ?
-                lineHeight + cw.firstItemHeight() : cw.firstItemHeight())});
+                lineHeight + cw.firstItemHeight() : cw.firstItemHeight()),
+             ((withNewLine && !pdfData.m_firstOnPage) || (withNewLine && pdfData.m_drawFootnotes) ?
+                             lineHeight : 0.0)});
 
         return {r, {}};
     }
@@ -2294,10 +2299,12 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
 
         double h = 0.0;
         double max = 0.0;
+        double extra = 0.0;
 
         for (auto it = cw.cbegin(), last = cw.cend(); it != last; ++it) {
             if (it == cw.cbegin() && ((withNewLine && !pdfData.m_firstOnPage) || (withNewLine && pdfData.m_drawFootnotes))) {
                 h += lineHeight;
+                extra = lineHeight;
             }
 
             if (h + it->m_height > max) {
@@ -2309,6 +2316,10 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                 max = 0.0;
                 h = 0.0;
             }
+        }
+
+        if (!r.isEmpty()) {
+            r.front().m_extraHeight = extra;
         }
 
         return {r, {}};
@@ -2338,7 +2349,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
     const auto firstLinePageIdx = pdfData.m_currentPainterIdx;
     const auto firstLineHeight = cw.height();
 
-    pdfData.m_continueParagraph = true;
+    QScopedValueRollback continueParagraph(pdfData.m_continueParagraph, true);
 
     lineBreak = false;
     firstInParagraph = true;
@@ -2564,12 +2575,11 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
         extraOnFirstLine = firstInParagraph;
     }
 
-    pdfData.m_continueParagraph = false;
-
     pdfData.m_layout.setRightToLeft(wasRightToLeft);
 
-    return {toWhereDrawn(normalizeRects(rects), pdfData.m_layout.pageHeight()),
-        {firstLinePageIdx, firstLineY, firstLineHeight}};
+    const auto where = toWhereDrawn(normalizeRects(rects), pdfData.m_layout.pageHeight());
+
+    return {where, {firstLinePageIdx, firstLineY, firstLineHeight}};
 }
 
 QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
@@ -2850,7 +2860,7 @@ void PdfRenderer::reserveSpaceForFootnote(PdfAuxData &pdfData,
                                         pdfData.m_layout.topY(),
                                         currentPage + 1,
                                         lineHeight,
-                                        (i > 0 ? true : false));
+                                        (i > 0 && qAbs(h[i].m_extraHeight) < 0.01 ? true : false));
 
                 break;
             }
@@ -2917,8 +2927,6 @@ QVector<WhereDrawn> PdfRenderer::drawFootnote(PdfAuxData &pdfData,
                                    rtl)
                            .first);
 
-            pdfData.m_continueParagraph = true;
-
             if (first) {
                 firstItemIsRightToLeft = (rtl ? rtl->isRightToLeft() : false);
                 first = false;
@@ -2941,8 +2949,6 @@ QVector<WhereDrawn> PdfRenderer::drawFootnote(PdfAuxData &pdfData,
                                      rtl)
                            .first);
 
-            pdfData.m_continueParagraph = true;
-
             if (first) {
                 firstItemIsRightToLeft = (rtl ? rtl->isRightToLeft() : false);
                 first = false;
@@ -2956,7 +2962,6 @@ QVector<WhereDrawn> PdfRenderer::drawFootnote(PdfAuxData &pdfData,
             ret.append(
                 drawCode(pdfData, static_cast<MD::Code<MD::QStringTrait> *>(
                              it->get()), doc, footnoteOffset, heightCalcOpt, s_footnoteScale).first);
-            pdfData.m_continueParagraph = true;
 
             if (first) {
                 firstItemIsRightToLeft = (rtl ? rtl->isRightToLeft() : false);
@@ -2977,8 +2982,6 @@ QVector<WhereDrawn> PdfRenderer::drawFootnote(PdfAuxData &pdfData,
                                       rtl)
                            .first);
 
-            pdfData.m_continueParagraph = true;
-
             if (first) {
                 firstItemIsRightToLeft = (rtl ? rtl->isRightToLeft() : false);
                 first = false;
@@ -2995,8 +2998,6 @@ QVector<WhereDrawn> PdfRenderer::drawFootnote(PdfAuxData &pdfData,
             ret.append(drawList(pdfData, list, doc, bulletWidth, footnoteOffset,
                                 heightCalcOpt, s_footnoteScale, false, rtl).first);
 
-            pdfData.m_continueParagraph = true;
-
             if (first) {
                 firstItemIsRightToLeft = (rtl ? rtl->isRightToLeft() : false);
                 first = false;
@@ -3010,8 +3011,6 @@ QVector<WhereDrawn> PdfRenderer::drawFootnote(PdfAuxData &pdfData,
                 drawTable(pdfData, static_cast<MD::Table<MD::QStringTrait> *>(
                               it->get()), doc, footnoteOffset, heightCalcOpt, s_footnoteScale)
                     .first);
-
-            pdfData.m_continueParagraph = true;
 
             if (first) {
                 firstItemIsRightToLeft = false;
@@ -3063,8 +3062,6 @@ QVector<WhereDrawn> PdfRenderer::drawFootnote(PdfAuxData &pdfData,
     }
 
     pdfData.m_layout.setRightToLeft(false);
-
-    pdfData.m_continueParagraph = false;
 
     return ret;
 }
@@ -3516,6 +3513,8 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawCode(PdfAuxData &pdfData
 
     QStringList lines;
 
+    QScopedValueRollback continueParagraph(pdfData.m_continueParagraph, true);
+
     if (heightCalcOpt == CalcHeightOpt::Unknown) {
         if ((pdfData.m_layout.y() - (pdfData.m_firstOnPage ? 0.0 : textLHeight) - lineHeight) < pdfData.currentPageAllowedY()
             && qAbs(pdfData.m_layout.y() - (textLHeight * 2.0) - pdfData.currentPageAllowedY()) > 0.1) {
@@ -3536,14 +3535,16 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawCode(PdfAuxData &pdfData
     switch (heightCalcOpt) {
     case CalcHeightOpt::Minimum: {
         QVector<WhereDrawn> r;
-        r.append({-1, 0.0, (pdfData.m_firstOnPage ? 0.0 : textLHeight) + lineHeight});
+        r.append({-1, 0.0, (pdfData.m_firstOnPage ? 0.0 : textLHeight) + lineHeight,
+                  (pdfData.m_firstOnPage ? 0.0 : textLHeight)});
 
         return {r, {}};
     }
 
     case CalcHeightOpt::Full: {
         QVector<WhereDrawn> r;
-        r.append({-1, 0.0, (pdfData.m_firstOnPage ? 0.0 : textLHeight) + lineHeight});
+        r.append({-1, 0.0, (pdfData.m_firstOnPage ? 0.0 : textLHeight) + lineHeight,
+                 (pdfData.m_firstOnPage ? 0.0 : textLHeight)});
 
         auto i = 1;
 
@@ -3681,6 +3682,8 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawBlockquote(PdfAuxData &p
     if (pdfData.m_highlightedBlockquotes.contains(item)) {
         color = pdfData.m_highlightedBlockquotes[item];
     }
+
+    QScopedValueRollback continueParagraph(pdfData.m_continueParagraph, true);
 
     // Draw items.
     for (auto it = item->items().cbegin(), last = item->items().cend(); it != last; ++it) {
@@ -3883,6 +3886,8 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawList(PdfAuxData &pdfData
     ListItemType prevListItemType = ListItemType::Unknown;
     bool first = true;
     WhereDrawn firstLine;
+
+    QScopedValueRollback continueParagraph(pdfData.m_continueParagraph, true);
 
     for (auto it = item->items().cbegin(), last = item->items().cend(); it != last; ++it) {
         if ((*it)->type() == MD::ItemType::ListItem) {
@@ -4262,13 +4267,15 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTable(PdfAuxData &pdfDat
 
     switch (heightCalcOpt) {
     case CalcHeightOpt::Minimum: {
-        ret.append({-1, 0.0, r0h + r1h + lineHeight});
+        ret.append({-1, 0.0, r0h + r1h + (!pdfData.m_firstOnPage ? lineHeight : 0.0),
+                   (!pdfData.m_firstOnPage ? lineHeight : 0.0)});
 
         return {ret, {}};
     }
 
     case CalcHeightOpt::Full: {
-        ret.append({-1, 0.0, r0h + r1h + lineHeight});
+        ret.append({-1, 0.0, r0h + r1h + (!pdfData.m_firstOnPage ? lineHeight : 0.0),
+                   (!pdfData.m_firstOnPage ? lineHeight : 0.0)});
 
         for(long long int i = 2; i < item->rows().size(); ++i) {
             ret.append({-1, 0.0, rowHeight(pdfData, item->rows().at(i), columnWidth, doc, scale)});
@@ -4283,6 +4290,8 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTable(PdfAuxData &pdfDat
 
     const auto nonSplittableHeight = r0h + r1h;
 
+    QScopedValueRollback continueParagraph(pdfData.m_continueParagraph, true);
+
     if ((pdfData.m_layout.y() - nonSplittableHeight) < pdfData.currentPageAllowedY() &&
         qAbs(pdfData.m_layout.y() - nonSplittableHeight - pdfData.currentPageAllowedY()) > 0.1) {
         createPage(pdfData);
@@ -4291,7 +4300,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTable(PdfAuxData &pdfDat
     }
 
     if (!pdfData.m_firstOnPage) {
-        moveToNewLine(pdfData, offset, lineHeight, 1.0, lineHeight);
+        moveToNewLine(pdfData, offset, lineHeight, 1.0, 0.0);
     }
 
     const auto rightToLeft = isRightToLeft(item->rows().at(0)->cells().at(0).get());

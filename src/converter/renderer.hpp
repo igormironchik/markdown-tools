@@ -404,6 +404,8 @@ struct WhereDrawn {
     double m_y = 0.0;
     //! Height of the item.
     double m_height = 0.0;
+    //! Extra height that can be skipped (usually extra line before new paragraph or heading).
+    double m_extraHeight = 0.0;
 }; // struct WhereDrawn
 
 //
