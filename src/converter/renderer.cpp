@@ -654,8 +654,9 @@ void PdfRenderer::renderImpl()
             {
                 QMutexLocker lock(&m_mutex);
 
-                if (m_terminate)
+                if (m_terminate) {
                     break;
+                }
             }
 
             switch ((*it)->type()) {
@@ -1636,8 +1637,9 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawString(PdfAuxData &pdfData
     {
         QMutexLocker lock(&m_mutex);
 
-        if (m_terminate)
+        if (m_terminate) {
             return ret;
+        }
     }
 
     if (rtl && rtl->isCheck()) {
@@ -3567,8 +3569,9 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawCode(PdfAuxData &pdfData
     {
         QMutexLocker lock(&m_mutex);
 
-        if (m_terminate)
+        if (m_terminate) {
             return {};
+        }
     }
 
     m_opts.m_syntax->setDefinition(m_opts.m_syntax->definitionForName(item->syntax().toLower()));
@@ -3690,8 +3693,9 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawBlockquote(PdfAuxData &p
         {
             QMutexLocker lock(&m_mutex);
 
-            if (m_terminate)
+            if (m_terminate) {
                 return {};
+            }
         }
 
         switch ((*it)->type()) {
@@ -3874,8 +3878,9 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawList(PdfAuxData &pdfData
     {
         QMutexLocker lock(&m_mutex);
 
-        if (m_terminate)
+        if (m_terminate) {
             return {};
+        }
     }
 
     if (heightCalcOpt == CalcHeightOpt::Unknown) {
