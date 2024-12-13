@@ -4318,6 +4318,14 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTable(PdfAuxData &pdfDat
     pdfData.m_tableDrawing = true;
 
     for (const auto &row : std::as_const(item->rows())) {
+        {
+            QMutexLocker lock(&m_mutex);
+
+            if (m_terminate) {
+                return {};
+            }
+        }
+
         const auto where = drawTableRow(row, pdfData, doc, item, offset, scale, columnWidth, rightToLeft,
                                         columnsCount);
 
@@ -4371,6 +4379,14 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTableRow(std::shared_ptr
     pdfData.m_cachedPainters.insert(startPage, 0);
 
     for (const auto &c : std::as_const(row->cells())) {
+        {
+            QMutexLocker lock(&m_mutex);
+
+            if (m_terminate) {
+                return {};
+            }
+        }
+
         pdfData.m_currentPainterIdx = startPage;
         pdfData.m_layout.setY(y);
         pdfData.m_layout.addY(s_tableMargin);
