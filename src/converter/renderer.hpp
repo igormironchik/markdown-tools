@@ -106,10 +106,12 @@ struct DrawPrimitive {
 #endif // MD_PDF_TESTING
 
 //! Image alignment.
-enum class ImageAlignment { Left, Center, Right }; // enum ImageAlignment
+enum class ImageAlignment { Unknown, Left, Center, Right }; // enum ImageAlignment
 
 //! Paragraph alignment.
 enum class ParagraphAlignment {
+    //! Unknown,
+    Unknown,
     //! Left.
     Left,
     //! Center.
@@ -659,6 +661,7 @@ private:
             bool m_isNewLine = false;
             bool m_shrink = true;
             QString m_word;
+            ParagraphAlignment m_alignment = ParagraphAlignment::Unknown;
         }; // struct Width
 
         //! Append new item.
@@ -686,9 +689,10 @@ private:
         //! Calculate scales.
         void calcScale(double lineWidth);
         //! \return Paragraph alignment.
-        ParagraphAlignment alignment() const { return m_alignment; }
+        ParagraphAlignment alignment() const { return m_alignment.at(m_pos); }
         //! Set paragraph alignment.
-        void setAlignment(ParagraphAlignment a) { m_alignment = a; }
+        void setAlignment(ParagraphAlignment alignment) { std::for_each(m_alignment.begin(), m_alignment.end(),
+            [alignment](auto &a){ if (a == ParagraphAlignment::Unknown) { a = alignment; } }); }
 
     private:
         //! Is drawing?
@@ -703,8 +707,8 @@ private:
         QVector<double> m_lineWidth;
         //! Position of current line.
         int m_pos = 0;
-        //! Paragraph alignment.
-        ParagraphAlignment m_alignment;
+        //! Alignments of lines.
+        QVector<ParagraphAlignment> m_alignment;
     }; // struct CustomWidth
 
     //! Align line.
@@ -990,7 +994,7 @@ private:
                                           CustomWidth &cw,
                                           double scale,
                                           MD::Item<MD::QStringTrait> *prevItem,
-                                          ImageAlignment alignment,
+                                          ImageAlignment alignment = ImageAlignment::Unknown,
                                           bool scaleImagesToLineHeight = false);
 
     //! Draw math expression.

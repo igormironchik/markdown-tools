@@ -423,6 +423,12 @@ void PdfRenderer::CustomWidth::calcScale(double lineWidth)
                 }
             }
 
+            if (m_width.at(i).m_alignment != ParagraphAlignment::Unknown) {
+                m_alignment.append(m_width.at(i).m_alignment);
+            } else {
+                m_alignment.append(ParagraphAlignment::Unknown);
+            }
+
             m_height.append(h);
             m_lineWidth.append(widthWithoutLastSpaces);
 
@@ -1426,7 +1432,7 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
                                        cw,
                                        1.0,
                                        (prev ? prev : prevItem),
-                                       m_opts.m_imageAlignment));
+                                       (pdfData.m_tableDrawing ? ImageAlignment::Unknown : m_opts.m_imageAlignment)));
 
                 setRTLFlagToFalseIfCheck(rtl);
             } break;
@@ -1474,7 +1480,7 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
     else {
         rects.append(drawImage(pdfData, item->img().get(), doc, newLine, offset, lineHeight, spaceWidth,
                                firstInParagraph, true, isPrevText, isNextText, cw, 1.0, prevItem,
-                               m_opts.m_imageAlignment));
+                               (pdfData.m_tableDrawing ? ImageAlignment::Unknown : m_opts.m_imageAlignment)));
 
         setRTLFlagToFalseIfCheck(rtl);
     }
@@ -1539,6 +1545,7 @@ inline bool isTheSameAlignment(ParagraphAlignment align, bool rightToLeft)
 void PdfRenderer::alignLine(PdfAuxData &pdfData, const CustomWidth &cw)
 {
     if (cw.alignment() != ParagraphAlignment::FillWidth) {
+        pdfData.m_layout.moveXToBegin();
         const double delta = (isTheSameAlignment(cw.alignment(), pdfData.m_layout.isRightToLeft()) ? 0.0 :
                             (cw.alignment() == ParagraphAlignment::Center ?
                                  (pdfData.m_layout.availableWidth() - cw.width()) / 2.0 :
@@ -2204,7 +2211,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                       cw,
                       1.0,
                       (it != item->items().begin() ? getPrevItem(std::prev(it), item->items().begin(), last) : nullptr),
-                      m_opts.m_imageAlignment,
+                      (pdfData.m_tableDrawing ? ImageAlignment::Unknown : m_opts.m_imageAlignment),
                       scaleImagesToLineHeight);
             lineBreak = false;
             firstInParagraph = false;
@@ -2476,7 +2483,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                                    1.0,
                                    (it != item->items().begin() ?
                                         getPrevItem(std::prev(it), item->items().begin(), last) : nullptr),
-                                   m_opts.m_imageAlignment,
+                                   (pdfData.m_tableDrawing ? ImageAlignment::Unknown : m_opts.m_imageAlignment),
                                    scaleImagesToLineHeight));
             lineBreak = false;
             firstInParagraph = false;
@@ -3147,6 +3154,26 @@ bool PdfRenderer::isOnlineImageOrOnlineImageInLink(PdfAuxData &pdfData,
     }
 }
 
+ParagraphAlignment imageToParagraphAlignment(ImageAlignment alignment)
+{
+    switch (alignment) {
+    case ImageAlignment::Unknown:
+        return ParagraphAlignment::Unknown;
+
+    case ImageAlignment::Left:
+        return ParagraphAlignment::Left;
+
+    case ImageAlignment::Center:
+        return ParagraphAlignment::Center;
+
+    case ImageAlignment::Right:
+        return ParagraphAlignment::Right;
+
+    default:
+        return ParagraphAlignment::Unknown;
+    }
+}
+
 QPair<QRectF, unsigned int> PdfRenderer::drawImage(PdfAuxData &pdfData,
                                                    MD::Image<MD::QStringTrait> *item,
                                                    std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
@@ -3189,7 +3216,6 @@ QPair<QRectF, unsigned int> PdfRenderer::drawImage(PdfAuxData &pdfData,
         const double iWidth = std::round((double)pdfImg->GetWidth() / (double)m_opts.m_dpi * 72.0);
         const double iHeight = std::round((double)pdfImg->GetHeight() / (double)m_opts.m_dpi * 72.0);
 
-        double x = 0.0;
         double imgScale = (scaleImagesToLineHeight ? lineHeight / iHeight : 1.0);
         const double totalAvailableWidth = pdfData.m_layout.pageWidth()
                 - pdfData.m_layout.margins().m_left - pdfData.m_layout.margins().m_right - offset;
@@ -3250,28 +3276,6 @@ QPair<QRectF, unsigned int> PdfRenderer::drawImage(PdfAuxData &pdfData,
                     pdfData.m_layout.addX(offset);
                 }
             }
-
-            if (iWidth * imgScale < totalAvailableWidth) {
-                switch (alignment) {
-                case ImageAlignment::Left:
-                    x = pdfData.m_layout.isRightToLeft() ? pdfData.m_layout.x() - iWidth * imgScale * scale -
-                                                           pdfData.m_layout.margins().m_left : 0.0;
-                    break;
-
-                case ImageAlignment::Center:
-                    x = (totalAvailableWidth - iWidth * imgScale * scale) / 2.0;
-                    break;
-
-                case ImageAlignment::Right:
-                    x = pdfData.m_layout.isRightToLeft() ? 0.0 :
-                        pdfData.m_layout.pageWidth() - pdfData.m_layout.margins().m_right - iWidth * imgScale * scale -
-                                                           pdfData.m_layout.x();
-                    break;
-
-                default:
-                    break;
-                }
-            }
         }
 
         const double dpiScale = (double)pdfImg->GetWidth() / iWidth;
@@ -3293,7 +3297,7 @@ QPair<QRectF, unsigned int> PdfRenderer::drawImage(PdfAuxData &pdfData,
 
             dy = (onLine ? (cw.height() - iHeight * imgScale) / 2.0 : 0.0);
 
-            pdfData.m_layout.addX(x);
+            alignLine(pdfData, cw);
 
             // y - is bottom.
             pdfData.drawImage(pdfData.m_layout.startX(iWidth * imgScale), pdfData.m_layout.y() + dy,
@@ -3329,7 +3333,8 @@ QPair<QRectF, unsigned int> PdfRenderer::drawImage(PdfAuxData &pdfData,
         }
 
         if (!draw) {
-            cw.append({iWidth * imgScale, height, false, !onLine, false, ""});
+            cw.append({iWidth * imgScale, height, false, !onLine, false, "",
+                (!onLine ? imageToParagraphAlignment(alignment) : ParagraphAlignment::Unknown)});
         }
 
         return qMakePair(r, pdfData.m_currentPainterIdx);
@@ -4315,7 +4320,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTable(PdfAuxData &pdfDat
 
     const auto columnsCount = item->rows().at(0)->cells().size();
 
-    pdfData.m_tableDrawing = true;
+    QScopedValueRollback tableDrawing(pdfData.m_tableDrawing, true);
 
     for (const auto &row : std::as_const(item->rows())) {
         {
@@ -4337,7 +4342,6 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTable(PdfAuxData &pdfDat
         }
     }
 
-    pdfData.m_tableDrawing = false;
     pdfData.m_firstOnPage = false;
     pdfData.m_cachedPainters.clear();
 
