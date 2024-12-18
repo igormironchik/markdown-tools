@@ -821,12 +821,12 @@ void PdfRenderer::handleException(PdfAuxData &pdfData, const QString &msg)
     const auto fullMsg = QStringLiteral(
                              "%1\n\nError occured in the \"%2\" file, "
                              "between start position %3 on line %4 and end position %5 on line %6.")
-                             .arg(msg)
-                             .arg(pdfData.m_currentFile)
-                             .arg(pdfData.m_startPos + 1)
-                             .arg(pdfData.m_startLine + 1)
-                             .arg(pdfData.m_endPos + 1)
-                             .arg(pdfData.m_endLine + 1);
+                             .arg(msg,
+                                  pdfData.m_currentFile,
+                                  QString::number(pdfData.m_startPos + 1),
+                                  QString::number(pdfData.m_startLine + 1),
+                                  QString::number(pdfData.m_endPos + 1),
+                                  QString::number(pdfData.m_endLine + 1));
 
     emit error(fullMsg);
 }

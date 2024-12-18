@@ -1053,8 +1053,7 @@ void MainWindow::onAbout()
                           "Author - Igor Mironchik (igor.mironchik at gmail dot com).\n\n"
                           "Copyright (c) 2023-2024 Igor Mironchik.\n\n"
                           "Licensed under GNU GPL 3.0.")
-                           .arg(c_version)
-                           .arg(c_md4qtVersion));
+                           .arg(c_version, c_md4qtVersion));
 }
 
 void MainWindow::onAboutQt()
@@ -1115,9 +1114,10 @@ inline QString itemType(MD::ItemType t, bool alone)
         return MainWindow::tr("Raw HTML");
     case MD::ItemType::Math:
         return MainWindow::tr("LaTeX Math Expression");
-    }
 
-    return QString();
+    default:
+        return {};
+    }
 }
 
 } /* namespace anonymous */

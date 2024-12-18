@@ -132,8 +132,6 @@ public:
                 }
                 availableWidth -= 2*margin + extraMargin;
 
-                QFontMetrics fm(block.charFormat().font());
-
                 for (int i = 0; i < tl->lineCount(); ++i) {
                     auto line = tl->lineAt(i);
                     line.setPosition({margin + availableWidth - line.naturalTextWidth(), line.position().y()});
@@ -583,8 +581,6 @@ void Editor::onFindNext()
 void Editor::onFindPrev()
 {
     if (!m_d->m_extraSelections.isEmpty()) {
-        auto c = textCursor();
-
         if (!markSelection(m_d->m_extraSelections.crbegin(), m_d->m_extraSelections.crend(),
                            textCursor(), this, std::greater<>{})) {
             auto s = m_d->m_extraSelections.at(m_d->m_extraSelections.size() - 1).cursor;

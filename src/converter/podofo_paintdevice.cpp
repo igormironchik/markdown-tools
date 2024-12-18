@@ -99,9 +99,10 @@ int PoDoFoPaintDevice::metric(QPaintDevice::PaintDeviceMetric metric) const
 
     case PdmDevicePixelRatioScaled:
         return 1 * QPaintDevice::devicePixelRatioFScale();
-    }
 
-    return -1;
+    default:
+        return -1;
+    }
 }
 
 //

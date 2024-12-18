@@ -52,11 +52,11 @@ int main(int argc, char **argv)
 
     parser.process(app);
 
+#ifdef Q_OS_WIN
+#if OPENSSL_VERSION_MAJOR >= 3
     const auto modulesValue = parser.value(modules);
     const auto enginesValue = parser.value(engines);
 
-#ifdef Q_OS_WIN
-#if OPENSSL_VERSION_MAJOR >= 3
     qputenv("OPENSSL_MODULES", modulesValue.toLocal8Bit());
     qputenv("OPENSSL_ENGINES", enginesValue.toLocal8Bit());
 #endif

@@ -444,7 +444,7 @@ public slots:
     //! Don't reuse the same document twice.
     //! Renderer will delete himself on job finish.
     void render(const QString &fileName, std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
-                const RenderOpts &opts, bool testing = false) override;
+                const MdPdf::Render::RenderOpts &opts, bool testing = false) override;
     //! Terminate rendering.
     void terminate();
 

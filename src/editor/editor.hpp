@@ -84,7 +84,7 @@ private slots:
     void onFindNext();
     void onFindPrev();
     void onContentChanged();
-    void highlightSyntax(const Colors &colors, std::shared_ptr<MD::Document<MD::QStringTrait>> doc);
+    void highlightSyntax(const MdEditor::Colors &colors, std::shared_ptr<MD::Document<MD::QStringTrait>> doc);
     void onParsingDone(std::shared_ptr<MD::Document<MD::QStringTrait>> doc, unsigned long long int counter);
 
 protected:
