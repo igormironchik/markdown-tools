@@ -495,6 +495,8 @@ void PdfRenderer::renderImpl()
         emit status(tr("Rendering PDF..."));
 
         Document document;
+        document.GetMetadata().SetCreator(PoDoFo::PdfString("This PDF was generated with Markdown Tools\n"
+                                          "https://github.com/igormironchik/markdown-tools"));
         std::vector<std::shared_ptr<Painter>> painters;
 
         pdfData.m_doc = &document;
