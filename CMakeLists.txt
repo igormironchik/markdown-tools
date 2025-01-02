@@ -75,7 +75,7 @@ add_subdirectory( 3rdparty/podofo )
 add_subdirectory( 3rdparty/MicroTeX )
 
 set( BUILD_MD4QT_QT_TESTS OFF CACHE INTERNAL "" FORCE )
-add_subdirectory( 3rdparty/md4qt )
+add_subdirectory( 3rdparty/KDE/md4qt )
 
 include_directories( ${md4qt_INCLUDE_DIRECTORIES} )
 
