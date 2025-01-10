@@ -7,3 +7,7 @@ qt_version=$(cat $PWD/script/qt.version)
 cmake -S 3rdparty/KDE/syntax-highlighting -B ../build-syntax-highlighting -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH=$PWD/Qt/$qt_version/macos
 cmake --build ../build-syntax-highlighting --config Release
 cmake --install ../build-syntax-highlighting --prefix ../KDE
+
+cmake -S 3rdparty/KDE/sonnet -B ../build-sonnet -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH=$PWD/Qt/$qt_version/macos
+cmake --build ../build-sonnet --config Release
+cmake --install ../build-sonnet --prefix ../KDE

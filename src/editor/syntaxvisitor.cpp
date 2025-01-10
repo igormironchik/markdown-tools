@@ -8,6 +8,9 @@
 #include "colorsdlg.hpp"
 #include "editor.hpp"
 
+// KF6 include.
+#include <Sonnet/Speller>
+
 // Qt include.
 #include <QScopedValueRollback>
 #include <QTextBlock>
@@ -28,6 +31,7 @@ namespace MdEditor
 struct SyntaxVisitorPrivate {
     SyntaxVisitorPrivate(Editor *e)
         : m_editor(e)
+        , m_speller(new Sonnet::Speller)
     {
     }
 
@@ -108,6 +112,8 @@ struct SyntaxVisitorPrivate {
     QFont m_font;
     //! Additional style that should be applied for any item.
     int m_additionalStyle = 0;
+    //! Spell checker.
+    Sonnet::Speller * m_speller = nullptr;
 }; // struct SyntaxVisitorPrivate
 
 //
@@ -175,6 +181,59 @@ void SyntaxVisitor::onReferenceLink(MD::Link<MD::QStringTrait> *l)
     MD::PosCache<MD::QStringTrait>::onReferenceLink(l);
 }
 
+namespace /* anonymous */ {
+
+long long int
+skipSpacesAndPunct(const QTextDocument *doc, long long int pos)
+{
+    auto c = doc->characterAt(pos);
+
+    while (!c.isNull()) {
+        if (!(c.isPunct() || c.isSpace())) {
+            break;
+        }
+
+        c = doc->characterAt(++pos);
+    }
+
+    return pos;
+}
+
+void
+skipLastPunct(QString &word, long long int &pos)
+{
+    while (!word.isEmpty() && word.back().isPunct()) {
+        --pos;
+        word.removeLast();
+    }
+}
+
+QString
+readWord(const QTextDocument *doc, long long int &pos)
+{
+    QString word;
+
+    auto c = doc->characterAt(pos);
+
+    while (!c.isNull()) {
+        if (c.isSpace()) {
+            break;
+        } else {
+            word.append(c);
+            ++pos;
+            c = doc->characterAt(pos);
+        }
+    }
+
+    --pos;
+
+    skipLastPunct(word, pos);
+
+    return word;
+}
+
+} /* namespace anonymous */
+
 void SyntaxVisitor::onText(MD::Text<MD::QStringTrait> *t)
 {
     QTextCharFormat format;
@@ -182,6 +241,32 @@ void SyntaxVisitor::onText(MD::Text<MD::QStringTrait> *t)
     format.setFont(m_d->styleFont(t->opts() | m_d->m_additionalStyle));
 
     m_d->setFormat(format, t->startLine(), t->startColumn(), t->endLine(), t->endColumn());
+
+    const auto block = m_d->m_editor->document()->findBlockByNumber(t->startLine());
+    auto pos = block.position() + t->startColumn();
+
+    format.setUnderlineColor(Qt::red);
+    format.setUnderlineStyle(QTextCharFormat::WaveUnderline);
+    format.setFontUnderline(true);
+
+    pos = skipSpacesAndPunct(m_d->m_editor->document(), pos);
+
+    while (pos - block.position() <= t->endColumn()) {
+        const auto startPos = pos - block.position();
+        auto word = readWord(m_d->m_editor->document(), pos);
+
+        if (startPos + word.length() - 1 > t->endColumn()) {
+            word = word.left(t->endColumn() - startPos + 1);
+            skipLastPunct(word, pos);
+            pos = block.position() + t->endColumn() + 1;
+        }
+
+        if (m_d->m_speller->isMisspelled(word)) {
+            m_d->setFormat(format, t->startLine(), startPos, t->startLine(), startPos + word.length() - 1);
+        }
+
+        pos = skipSpacesAndPunct(m_d->m_editor->document(), ++pos);
+    }
 
     onItemWithOpts(t);
 
