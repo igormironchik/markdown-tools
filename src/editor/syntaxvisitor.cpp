@@ -209,13 +209,13 @@ skipLastPunct(QString &word, long long int &pos)
 }
 
 QString
-readWord(const QTextDocument *doc, long long int &pos)
+readWord(const QTextDocument *doc, long long int &pos, long long int lastPos)
 {
     QString word;
 
     auto c = doc->characterAt(pos);
 
-    while (!c.isNull()) {
+    while (!c.isNull() && pos <= lastPos) {
         if (c.isSpace()) {
             break;
         } else {
@@ -253,13 +253,7 @@ void SyntaxVisitor::onText(MD::Text<MD::QStringTrait> *t)
 
     while (pos - block.position() <= t->endColumn()) {
         const auto startPos = pos - block.position();
-        auto word = readWord(m_d->m_editor->document(), pos);
-
-        if (startPos + word.length() - 1 > t->endColumn()) {
-            word = word.left(t->endColumn() - startPos + 1);
-            skipLastPunct(word, pos);
-            pos = block.position() + t->endColumn() + 1;
-        }
+        auto word = readWord(m_d->m_editor->document(), pos, block.position() + t->endColumn());
 
         if (m_d->m_speller->isMisspelled(word)) {
             m_d->setFormat(format, t->startLine(), startPos, t->startLine(), startPos + word.length() - 1);
