@@ -246,8 +246,8 @@ void SyntaxVisitor::onText(MD::Text<MD::QStringTrait> *t)
     auto pos = block.position() + t->startColumn();
 
     format.setUnderlineColor(Qt::red);
-    format.setUnderlineStyle(QTextCharFormat::WaveUnderline);
     format.setFontUnderline(true);
+    format.setUnderlineStyle(QTextCharFormat::WaveUnderline);
 
     pos = skipSpacesAndPunct(m_d->m_editor->document(), pos);
 
