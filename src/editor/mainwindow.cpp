@@ -710,7 +710,7 @@ struct MainWindowPrivate {
     QString m_launcherExe;
     QString m_htmlContent;
     Colors m_mdColors;
-    bool m_spellingEnabled;
+    bool m_spellingEnabled = false;
     int m_tabWidth = -1;
     int m_minTabWidth = -1;
     int m_currentTab = 0;
@@ -1339,6 +1339,8 @@ void MainWindow::readCfg()
     s.beginGroup(QStringLiteral("spelling"));
     m_d->m_spellingEnabled = s.value(QStringLiteral("enabled")).toBool();
     s.endGroup();
+
+    m_d->m_editor->enableSpellingCheck(m_d->m_spellingEnabled);
 }
 
 void MainWindow::onLessFontSize()
@@ -2212,8 +2214,13 @@ void MainWindow::onSettings()
     SettingsDlg dlg(m_d->m_mdColors, m_d->m_editor->font(), m_d->m_editor->margins(),
                     m_d->m_spellingEnabled, this);
 
+    bool save = false;
+    bool spellingSettingsChanged = false;
+
+    connect(dlg.sonnetConfigWidget(), &Sonnet::ConfigWidget::configChanged,
+            [&save, &spellingSettingsChanged](){ save = true; spellingSettingsChanged = true; });
+
     if (dlg.exec() == QDialog::Accepted) {
-        bool save = false;
 
         if (dlg.colors() != m_d->m_mdColors) {
             m_d->m_mdColors = dlg.colors();
@@ -2238,11 +2245,17 @@ void MainWindow::onSettings()
         if (m_d->m_spellingEnabled != dlg.isSpellingEnabled()) {
             m_d->m_spellingEnabled = dlg.isSpellingEnabled();
 
+            spellingSettingsChanged = true;
             save = true;
         }
 
-        if (save)
+        if (save) {
             saveCfg();
+        }
+
+        if (spellingSettingsChanged) {
+            m_d->m_editor->enableSpellingCheck(m_d->m_spellingEnabled);
+        }
     }
 }
 

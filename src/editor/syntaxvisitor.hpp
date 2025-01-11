@@ -38,6 +38,7 @@ public:
     void highlight(std::shared_ptr<MD::Document<MD::QStringTrait>> doc, const Colors &colors);
     void setFont(const QFont &f);
     void clearHighlighting();
+    void spellingSettingsChanged(bool enabled);
 
 protected:
     void onReferenceLink(MD::Link<MD::QStringTrait> *l) override;

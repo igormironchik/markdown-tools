@@ -110,6 +110,12 @@ SettingsDlg::isSpellingEnabled() const
     return m_ui.m_spellingGroup->isChecked();
 }
 
+Sonnet::ConfigWidget *
+SettingsDlg::sonnetConfigWidget() const
+{
+    return m_ui.m_spellingConfig;
+}
+
 void SettingsDlg::onEnableRightMargin(Qt::CheckState st)
 {
     m_ui.m_rightMarginValue->setEnabled(st == Qt::Checked);

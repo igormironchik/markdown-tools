@@ -14,6 +14,11 @@
 #include "editor.hpp"
 #include "ui_settings.h"
 
+namespace Sonnet
+{
+class ConfigWidget;
+}
+
 namespace MdEditor
 {
 
@@ -34,6 +39,8 @@ public:
     QFont currentFont() const;
     Margins editorMargins() const;
     bool isSpellingEnabled() const;
+
+    Sonnet::ConfigWidget *sonnetConfigWidget() const;
 
 private slots:
     void onPageChanged(int idx);

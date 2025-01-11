@@ -60,6 +60,7 @@ public:
     bool foundHighlighted() const;
     bool foundSelected() const;
     void applyColors(const Colors &colors);
+    void enableSpellingCheck(bool on);
     std::shared_ptr<MD::Document<MD::QStringTrait>> currentDoc() const;
     void applyFont(const QFont &f);
     SyntaxVisitor &syntaxHighlighter() const;

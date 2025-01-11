@@ -276,6 +276,15 @@ void Editor::applyColors(const Colors &colors)
     viewport()->update();
 }
 
+void Editor::enableSpellingCheck(bool on)
+{
+    syntaxHighlighter().spellingSettingsChanged(on);
+
+    onContentChanged();
+
+    viewport()->update();
+}
+
 std::shared_ptr<MD::Document<MD::QStringTrait>> Editor::currentDoc() const
 {
     return m_d->m_currentDoc;

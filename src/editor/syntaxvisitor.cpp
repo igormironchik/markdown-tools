@@ -114,6 +114,8 @@ struct SyntaxVisitorPrivate {
     int m_additionalStyle = 0;
     //! Spell checker.
     Sonnet::Speller * m_speller = nullptr;
+    //! Is spelling check enabled?
+    bool m_spellingEnabled = false;
 }; // struct SyntaxVisitorPrivate
 
 //
@@ -137,6 +139,11 @@ void SyntaxVisitor::setFont(const QFont &f)
 void SyntaxVisitor::clearHighlighting()
 {
     m_d->clearFormats();
+}
+
+void SyntaxVisitor::spellingSettingsChanged(bool enabled)
+{
+    m_d->m_spellingEnabled = enabled;
 }
 
 void SyntaxVisitor::highlight(std::shared_ptr<MD::Document<MD::QStringTrait>> doc, const Colors &colors)
@@ -242,24 +249,26 @@ void SyntaxVisitor::onText(MD::Text<MD::QStringTrait> *t)
 
     m_d->setFormat(format, t->startLine(), t->startColumn(), t->endLine(), t->endColumn());
 
-    const auto block = m_d->m_editor->document()->findBlockByNumber(t->startLine());
-    auto pos = block.position() + t->startColumn();
+    if (m_d->m_spellingEnabled) {
+        const auto block = m_d->m_editor->document()->findBlockByNumber(t->startLine());
+        auto pos = block.position() + t->startColumn();
 
-    format.setUnderlineColor(Qt::red);
-    format.setFontUnderline(true);
-    format.setUnderlineStyle(QTextCharFormat::WaveUnderline);
+        format.setUnderlineColor(Qt::red);
+        format.setFontUnderline(true);
+        format.setUnderlineStyle(QTextCharFormat::WaveUnderline);
 
-    pos = skipSpacesAndPunct(m_d->m_editor->document(), pos);
+        pos = skipSpacesAndPunct(m_d->m_editor->document(), pos);
 
-    while (pos - block.position() <= t->endColumn()) {
-        const auto startPos = pos - block.position();
-        auto word = readWord(m_d->m_editor->document(), pos, block.position() + t->endColumn());
+        while (pos - block.position() <= t->endColumn()) {
+            const auto startPos = pos - block.position();
+            auto word = readWord(m_d->m_editor->document(), pos, block.position() + t->endColumn());
 
-        if (m_d->m_speller->isMisspelled(word)) {
-            m_d->setFormat(format, t->startLine(), startPos, t->startLine(), startPos + word.length() - 1);
+            if (m_d->m_speller->isMisspelled(word)) {
+                m_d->setFormat(format, t->startLine(), startPos, t->startLine(), startPos + word.length() - 1);
+            }
+
+            pos = skipSpacesAndPunct(m_d->m_editor->document(), ++pos);
         }
-
-        pos = skipSpacesAndPunct(m_d->m_editor->document(), ++pos);
     }
 
     onItemWithOpts(t);
