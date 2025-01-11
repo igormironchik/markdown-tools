@@ -230,26 +230,40 @@ skipSpacesAndPunct(const QTextDocument *doc, long long int pos)
 }
 
 void
-skipLastPunct(QString &word, long long int &pos)
+skipLastPunct(QString &word, long long int &pos,
+              QVector<long long int> &puncts)
 {
     while (!word.isEmpty() && word.back().isPunct()) {
+        puncts.pop_back();
         --pos;
         word.removeLast();
     }
 }
 
 QString
-readWord(const QTextDocument *doc, long long int &pos, long long int lastPos)
+readWord(const QTextDocument *doc, long long int &pos, long long int lastPos,
+         QVector<long long int> &puncts, bool &allUpper)
 {
     QString word;
+    const auto startPos = pos;
 
     auto c = doc->characterAt(pos);
+    allUpper = true;
 
     while (!c.isNull() && pos <= lastPos) {
         if (c.isSpace()) {
             break;
         } else {
             word.append(c);
+
+            if (c.isPunct()) {
+                puncts.append(pos - startPos);
+            } else if (c.isLetter()) {
+                if (!c.isUpper()) {
+                    allUpper = false;
+                }
+            }
+
             ++pos;
             c = doc->characterAt(pos);
         }
@@ -257,7 +271,7 @@ readWord(const QTextDocument *doc, long long int &pos, long long int lastPos)
 
     --pos;
 
-    skipLastPunct(word, pos);
+    skipLastPunct(word, pos, puncts);
 
     return word;
 }
@@ -284,7 +298,10 @@ void SyntaxVisitor::onText(MD::Text<MD::QStringTrait> *t)
 
         while (pos - block.position() <= t->endColumn()) {
             const auto startPos = pos - block.position();
-            auto word = readWord(m_d->m_editor->document(), pos, block.position() + t->endColumn());
+            QVector<long long int> puncts;
+            bool allUpper = false;
+            auto word = readWord(m_d->m_editor->document(), pos, block.position() + t->endColumn(),
+                                 puncts, allUpper);
 
             if (m_d->m_autodetectLanguage) {
                 const auto lang = m_d->m_guessLanguage.identify(word);
@@ -297,7 +314,9 @@ void SyntaxVisitor::onText(MD::Text<MD::QStringTrait> *t)
             }
 
             if (m_d->m_speller->isMisspelled(word) && !m_d->m_ignoredWords.contains(word)) {
-                m_d->setFormat(format, t->startLine(), startPos, t->startLine(), startPos + word.length() - 1);
+                if (!(m_d->m_skipRunTogether && !puncts.isEmpty()) && !(m_d->m_skipAllUppercase && allUpper)) {
+                    m_d->setFormat(format, t->startLine(), startPos, t->startLine(), startPos + word.length() - 1);
+                }
             }
 
             pos = skipSpacesAndPunct(m_d->m_editor->document(), ++pos);
