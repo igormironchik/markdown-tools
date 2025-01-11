@@ -8,9 +8,10 @@
 #include "colorsdlg.hpp"
 #include "editor.hpp"
 
-// KF6 include.
+// Sonnet include.
 #include <Sonnet/Speller>
 #include <Sonnet/Settings>
+#include <Sonnet/GuessLanguage>
 
 // Qt include.
 #include <QScopedValueRollback>
@@ -117,6 +118,18 @@ struct SyntaxVisitorPrivate {
     Sonnet::Speller * m_speller = nullptr;
     //! Is spelling check enabled?
     bool m_spellingEnabled = false;
+    //! Should all uppercase words be skipped by spelling check?
+    bool m_skipAllUppercase = false;
+    //! Should language be autodetected by spelling check?
+    bool m_autodetectLanguage = false;
+    //! Should compund words be skipped by spelling check?
+    bool m_skipRunTogether = false;
+    //! Ignore list for spelling check.
+    QStringList m_ignoredWords;
+    //! Default language for spelling check.
+    QString m_defaultLanguage;
+    //! Guess language.
+    Sonnet::GuessLanguage m_guessLanguage;
 }; // struct SyntaxVisitorPrivate
 
 //
@@ -145,6 +158,15 @@ void SyntaxVisitor::clearHighlighting()
 void SyntaxVisitor::spellingSettingsChanged(bool enabled)
 {
     m_d->m_spellingEnabled = enabled;
+
+    Sonnet::Settings sonnet;
+    m_d->m_skipAllUppercase = sonnet.skipUppercase();
+    m_d->m_autodetectLanguage = sonnet.autodetectLanguage();
+    m_d->m_skipRunTogether = sonnet.skipRunTogether();
+    m_d->m_ignoredWords = sonnet.currentIgnoreList();
+    m_d->m_defaultLanguage = sonnet.defaultLanguage();
+
+    m_d->m_speller->setLanguage(m_d->m_defaultLanguage);
 }
 
 void SyntaxVisitor::highlight(std::shared_ptr<MD::Document<MD::QStringTrait>> doc, const Colors &colors)
@@ -264,7 +286,17 @@ void SyntaxVisitor::onText(MD::Text<MD::QStringTrait> *t)
             const auto startPos = pos - block.position();
             auto word = readWord(m_d->m_editor->document(), pos, block.position() + t->endColumn());
 
-            if (m_d->m_speller->isMisspelled(word)) {
+            if (m_d->m_autodetectLanguage) {
+                const auto lang = m_d->m_guessLanguage.identify(word);
+
+                if (!lang.isEmpty()) {
+                    m_d->m_speller->setLanguage(lang);
+                } else {
+                    m_d->m_speller->setLanguage(m_d->m_defaultLanguage);
+                }
+            }
+
+            if (m_d->m_speller->isMisspelled(word) && !m_d->m_ignoredWords.contains(word)) {
                 m_d->setFormat(format, t->startLine(), startPos, t->startLine(), startPos + word.length() - 1);
             }
 
