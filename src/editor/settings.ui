@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout_4">
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
@@ -62,53 +62,74 @@
         </sizepolicy>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>2</number>
        </property>
        <widget class="MdEditor::ColorsPage" name="m_colorsPage"/>
        <widget class="MdEditor::FontPage" name="m_fontPage"/>
        <widget class="QWidget" name="m_editorPage">
-        <layout class="QVBoxLayout" name="verticalLayout_2">
+        <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
-          <widget class="QGroupBox" name="m_marginsGroup">
-           <property name="title">
-            <string>Margins</string>
+          <widget class="QScrollArea" name="scrollArea">
+           <property name="widgetResizable">
+            <bool>true</bool>
            </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <item>
-             <widget class="QCheckBox" name="m_rightMargin">
-              <property name="text">
-               <string>Display right margin at</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QSpinBox" name="m_rightMarginValue">
-              <property name="minimum">
-               <number>1</number>
-              </property>
-              <property name="maximum">
-               <number>99999</number>
-              </property>
-              <property name="value">
-               <number>80</number>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           <widget class="QWidget" name="scrollAreaWidgetContents">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>456</width>
+              <height>362</height>
+             </rect>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_2">
+             <item>
+              <widget class="QGroupBox" name="m_marginsGroup">
+               <property name="title">
+                <string>Margins</string>
+               </property>
+               <layout class="QHBoxLayout" name="horizontalLayout_2">
+                <item>
+                 <widget class="QCheckBox" name="m_rightMargin">
+                  <property name="text">
+                   <string>Display right margin at</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QSpinBox" name="m_rightMarginValue">
+                  <property name="minimum">
+                   <number>1</number>
+                  </property>
+                  <property name="maximum">
+                   <number>99999</number>
+                  </property>
+                  <property name="value">
+                   <number>80</number>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QGroupBox" name="m_spellingGroup">
+               <property name="title">
+                <string>Spelling</string>
+               </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout">
+                <item>
+                 <widget class="MdEditor::SonnetConfig" name="m_spellingConfig" native="true"/>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
+           </widget>
           </widget>
-         </item>
-         <item>
-          <spacer name="verticalSpacer">
-           <property name="orientation">
-            <enum>Qt::Orientation::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>279</height>
-            </size>
-           </property>
-          </spacer>
          </item>
         </layout>
        </widget>
@@ -139,6 +160,12 @@
    <class>MdEditor::FontPage</class>
    <extends>QWidget</extends>
    <header>font.hpp</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MdEditor::SonnetConfig</class>
+   <extends>QWidget</extends>
+   <header location="global">sonnetconfig.hpp</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

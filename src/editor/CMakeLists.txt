@@ -54,7 +54,9 @@ set( LIB_SRC
 	font.hpp
 	font.cpp
 	settings.hpp
-	settings.cpp )
+    settings.cpp
+    sonnetconfig.hpp
+    sonnetconfig.cpp)
 
 set( SRC main.cpp )
 

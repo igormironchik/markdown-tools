@@ -20,6 +20,9 @@
 #include "webview.hpp"
 #include "wordwrapdelegate.hpp"
 
+// Sonnet include.
+#include <Sonnet/Settings>
+
 // Qt include.
 #include <QAction>
 #include <QApplication>
@@ -707,6 +710,7 @@ struct MainWindowPrivate {
     QString m_launcherExe;
     QString m_htmlContent;
     Colors m_mdColors;
+    bool m_spellingEnabled;
     int m_tabWidth = -1;
     int m_minTabWidth = -1;
     int m_currentTab = 0;
@@ -1218,6 +1222,13 @@ void MainWindow::saveCfg() const
     s.setValue(QStringLiteral("maximized"), isMaximized());
 
     s.endGroup();
+
+    s.beginGroup(QStringLiteral("spelling"));
+    s.setValue(QStringLiteral("enabled"), m_d->m_spellingEnabled);
+    s.endGroup();
+
+    Sonnet::Settings sonnet;
+    sonnet.save();
 }
 
 void MainWindow::readCfg()
@@ -1323,6 +1334,10 @@ void MainWindow::readCfg()
         }
     }
 
+    s.endGroup();
+
+    s.beginGroup(QStringLiteral("spelling"));
+    m_d->m_spellingEnabled = s.value(QStringLiteral("enabled")).toBool();
     s.endGroup();
 }
 
@@ -2194,7 +2209,8 @@ void MainWindow::onTabClicked(int index)
 
 void MainWindow::onSettings()
 {
-    SettingsDlg dlg(m_d->m_mdColors, m_d->m_editor->font(), m_d->m_editor->margins(), this);
+    SettingsDlg dlg(m_d->m_mdColors, m_d->m_editor->font(), m_d->m_editor->margins(),
+                    m_d->m_spellingEnabled, this);
 
     if (dlg.exec() == QDialog::Accepted) {
         bool save = false;
@@ -2215,6 +2231,12 @@ void MainWindow::onSettings()
 
         if (dlg.editorMargins() != m_d->m_editor->margins()) {
             m_d->m_editor->margins() = dlg.editorMargins();
+
+            save = true;
+        }
+
+        if (m_d->m_spellingEnabled != dlg.isSpellingEnabled()) {
+            m_d->m_spellingEnabled = dlg.isSpellingEnabled();
 
             save = true;
         }

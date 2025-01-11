@@ -27,12 +27,13 @@ class SettingsDlg : public QDialog
     Q_OBJECT
 
 public:
-    SettingsDlg(const Colors &c, const QFont &f, const Margins &m, QWidget *parent);
+    SettingsDlg(const Colors &c, const QFont &f, const Margins &m, bool enableSpelling, QWidget *parent);
     ~SettingsDlg() override = default;
 
     const Colors &colors() const;
     QFont currentFont() const;
     Margins editorMargins() const;
+    bool isSpellingEnabled() const;
 
 private slots:
     void onPageChanged(int idx);
