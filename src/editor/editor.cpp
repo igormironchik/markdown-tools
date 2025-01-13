@@ -7,6 +7,9 @@
 #include "editor.hpp"
 #include "syntaxvisitor.hpp"
 
+// Sonnet include.
+#include <Sonnet/Settings>
+
 // Qt include.
 #include <QPainter>
 #include <QTextBlock>
@@ -418,6 +421,19 @@ void Editor::contextMenuEvent(QContextMenuEvent *event)
                 suggested.insert(suggestionsMenu->addAction(w), w);
             }
         }
+
+        if (suggestions.isEmpty()) {
+            menu->addSeparator();
+        }
+
+        menu->addAction(tr("Skip Word"), [word, this]() {
+            Sonnet::Settings sonnet;
+            auto ignored = sonnet.currentIgnoreList();
+            ignored.append(word);
+            sonnet.setCurrentIgnoreList(ignored);
+            this->enableSpellingCheck(this->syntaxHighlighter().isSpellingEnabled());
+            sonnet.save();
+        });
     }
 
     auto action = menu->exec(event->globalPos());

@@ -38,6 +38,7 @@ public:
     void highlight(std::shared_ptr<MD::Document<MD::QStringTrait>> doc, const Colors &colors);
     void setFont(const QFont &f);
     void clearHighlighting();
+    bool isSpellingEnabled() const;
     void spellingSettingsChanged(bool enabled);
     bool isMisspelled(long long int line, long long int pos,
                       QPair<long long int, long long int> &wordPos) const;

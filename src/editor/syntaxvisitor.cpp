@@ -173,6 +173,11 @@ void SyntaxVisitor::clearHighlighting()
     m_d->m_misspelledPos.clear();
 }
 
+bool SyntaxVisitor::isSpellingEnabled() const
+{
+    return m_d->m_spellingEnabled;
+}
+
 void SyntaxVisitor::spellingSettingsChanged(bool enabled)
 {
     m_d->m_spellingEnabled = enabled;
