@@ -110,6 +110,18 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
+copy %CD%\..\KDE\bin\KF6SonnetCore.dll installer\packages\mironchik.igor.markdown\data\bin\KF6SonnetCore.dll
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+copy %CD%\..\KDE\bin\KF6SonnetUi.dll installer\packages\mironchik.igor.markdown\data\bin\KF6SonnetUi.dll
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
 xcopy build-markdown-tools\lib installer\packages\mironchik.igor.markdown\data\lib /S /Y
 
 IF %ERRORLEVEL% NEQ 0 (
