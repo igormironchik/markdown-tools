@@ -1,4 +1,4 @@
-version: 51
+version: 53
 
 global-properties:
     - ALLOW_DUPLICATE_CUSTOM_TARGETS
@@ -13,6 +13,7 @@ global-properties:
     - CMAKE_ROLE                                            # Since 3.14
     - DEBUG_CONFIGURATIONS
     - DISABLED_FEATURES
+    - ECLIPSE_EXTRA_NATURES
     - ENABLED_FEATURES
     - ENABLED_LANGUAGES
     - FIND_LIBRARY_USE_LIB32_PATHS
@@ -23,11 +24,11 @@ global-properties:
     - GLOBAL_DEPENDS_DEBUG_MODE
     - GLOBAL_DEPENDS_NO_CYCLES
     - IN_TRY_COMPILE
+    - JOB_POOLS
     - PACKAGES_FOUND
     - PACKAGES_NOT_FOUND
-    - JOB_POOLS
     - PREDEFINED_TARGETS_FOLDER
-    - ECLIPSE_EXTRA_NATURES
+    - PROPAGATE_TOP_LEVEL_INCLUDES_TO_TRY_COMPILE           # Since 3.30
     - REPORT_UNDEFINED_PROPERTIES
     - RULE_LAUNCH_COMPILE
     - RULE_LAUNCH_CUSTOM
@@ -87,6 +88,8 @@ directory-properties:
 target-properties:
     - ADDITIONAL_CLEAN_FILES                                # Since 3.15
     - AIX_EXPORT_ALL_SYMBOLS                                # Since 3.17
+    - AIX_SHARED_LIBRARY_ARCHIVE                            # Since 3.31
+    - ALIAS_GLOBAL                                          # Since 3.18
     - ALIASED_TARGET
     - ANDROID_ANT_ADDITIONAL_OPTIONS
     - ANDROID_API
@@ -189,6 +192,7 @@ target-properties:
     - EXCLUDE_FROM_ALL
     - EXCLUDE_FROM_DEFAULT_BUILD_<CONFIG>
     - EXCLUDE_FROM_DEFAULT_BUILD
+    - EXPORT_BUILD_DATABASE                                 # Since 3.31
     - EXPORT_COMPILE_COMMANDS                               # Since 3.20
     - EXPORT_NAME
     - EXPORT_NO_SYSTEM                                      # Since 3.25
@@ -297,6 +301,9 @@ target-properties:
     - LINK_INTERFACE_MULTIPLICITY
     - LINK_LIBRARIES
     - LINK_LIBRARIES_ONLY_TARGETS                           # Since 3.23
+    - LINK_LIBRARIES_STRATEGY                               # Since 3.31
+    - LINK_LIBRARY_OVERRIDE                                 # Since 3.24
+    - LINK_LIBRARY_OVERRIDE_<LIBRARY>                       # Since 3.24
     - LINK_OPTIONS                                          # Since 3.13
     - LINK_SEARCH_END_STATIC
     - LINK_SEARCH_START_STATIC
@@ -308,6 +315,13 @@ target-properties:
     - MACOSX_BUNDLE_INFO_PLIST
     - MACOSX_BUNDLE
     - MACOSX_FRAMEWORK_INFO_PLIST
+      # BEGIN `MACOSX_FRAMEWORK_INFO_PLIST` props
+    - MACOSX_FRAMEWORK_BUNDLE_NAME                          # Since 3.31
+    - MACOSX_FRAMEWORK_BUNDLE_VERSION
+    - MACOSX_FRAMEWORK_ICON_FILE
+    - MACOSX_FRAMEWORK_IDENTIFIER
+    - MACOSX_FRAMEWORK_SHORT_VERSION_STRING
+      # END `MACOSX_FRAMEWORK_INFO_PLIST` props
     - MACOSX_RPATH
     - MANUALLY_ADDED_DEPENDENCIES
     - MAP_IMPORTED_CONFIG_<CONFIG>
@@ -365,6 +379,8 @@ target-properties:
     - Swift_MODULE_NAME                                     # Since 3.15
     - SYSTEM                                                # Since 3.25
     - TEST_LAUNCHER                                         # Since 3.29
+    - TRANSITIVE_COMPILE_PROPERTIES                         # Since 3.30
+    - TRANSITIVE_LINK_PROPERTIES                            # Since 3.30
     - TYPE
     - UNITY_BUILD                                           # Since 3.16
     - UNITY_BUILD_BATCH_SIZE                                # Since 3.16
@@ -389,6 +405,7 @@ target-properties:
     - VS_DOTNET_TARGET_FRAMEWORK_VERSION
     - VS_DOTNET_DOCUMENTATION_FILE                          # Since 3.17
     - VS_DPI_AWARE                                          # Since 3.16
+    - VS_FRAMEWORK_REFERENCES                               # Since 3.31
     - VS_GLOBAL_KEYWORD
     - VS_GLOBAL_PROJECT_TYPES
     - VS_GLOBAL_ROOTNAMESPACE
@@ -410,7 +427,9 @@ target-properties:
     - VS_SDK_REFERENCES
     - VS_SOLUTION_DEPLOY                                    # Since 3.18
     - VS_SOURCE_SETTINGS_<tool>                             # Since 3.18
+    - VS_USE_DEBUG_LIBRARIES                                # Since 3.30
     - VS_USER_PROPS
+    - VS_FILTER_PROPS                                       # Since 3.30
     - VS_WINDOWS_TARGET_PLATFORM_MIN_VERSION
     - VS_WINRT_COMPONENT
     - VS_WINRT_EXTENSIONS
@@ -672,6 +691,14 @@ generator-expressions:
     - Fortran_COMPILER_ID
     - HIP_COMPILER_ID                                       # Since 3.21
     - ISPC_COMPILER_ID                                      # Since 3.19
+    - C_COMPILER_FRONTEND_VARIANT                           # Since 3.30
+    - CXX_COMPILER_FRONTEND_VARIANT                         # Since 3.30
+    - CUDA_COMPILER_FRONTEND_VARIANT                        # Since 3.30
+    - OBJC_COMPILER_FRONTEND_VARIANT                        # Since 3.30
+    - OBJCXX_COMPILER_FRONTEND_VARIANT                      # Since 3.30
+    - Fortran_COMPILER_FRONTEND_VARIANT                     # Since 3.30
+    - HIP_COMPILER_FRONTEND_VARIANT                         # Since 3.30
+    - ISPC_COMPILER_FRONTEND_VARIANT                        # Since 3.30
     - COMPILE_LANGUAGE                                      # Since 3.3
     - COMPILE_LANG_AND_ID                                   # Since 3.15
     #   * Compile Features
@@ -737,6 +764,7 @@ generator-expressions:
     - ANGLE-R
     - COMMA
     - SEMICOLON
+    - QUOTE                                                 # Since 3.30
     # Deprecated Expressions
     # - CONFIGURATION
 
@@ -772,7 +800,6 @@ variables:
     - CMAKE_DOTNET_TARGET_FRAMEWORK_VERSION                 # Since 3.12
     - CMAKE_EDIT_COMMAND
     - CMAKE_EXECUTABLE_SUFFIX
-    - CMAKE_EXTRA_GENERATOR
     - CMAKE_EXTRA_SHARED_LIBRARY_SUFFIXES
     - CMAKE_FIND_DEBUG_MODE                                 # Since 3.17
     - CMAKE_FIND_PACKAGE_NAME
@@ -856,6 +883,7 @@ variables:
     - CMAKE_VS_TARGET_FRAMEWORK_IDENTIFIER                  # Since 3.22
     - CMAKE_VS_TARGET_FRAMEWORK_TARGETS_VERSION             # Since 3.22
     - CMAKE_VS_TARGET_FRAMEWORK_VERSION                     # Since 3.22
+    - CMAKE_VS_USE_DEBUG_LIBRARIES                          # Since 3.30
     - CMAKE_VS_VERSION_BUILD_NUMBER                         # Since 3.26
     - CMAKE_VS_WINDOWS_TARGET_PLATFORM_MIN_VERSION          # Since 3.27
     - CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION
@@ -888,8 +916,6 @@ variables:
     - CMAKE_ABSOLUTE_DESTINATION_FILES
     - CMAKE_ADD_CUSTOM_COMMAND_DEPENDS_EXPLICIT_ONLY        # Since 3.27
     - CMAKE_APPBUNDLE_PATH
-    - CMAKE_AUTOMOC_RELAXED_MODE
-    - CMAKE_BACKWARDS_COMPATIBILITY
     - CMAKE_BUILD_TYPE
     - CMAKE_CLANG_VFS_OVERLAY                               # Since 3.19
     - CMAKE_CODEBLOCKS_COMPILER_ID                          # Since 3.11
@@ -909,6 +935,7 @@ variables:
     - CMAKE_ERROR_DEPRECATED
     - CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION
     - CMAKE_EXECUTE_PROCESS_COMMAND_ECHO                    # Since 3.15
+    - CMAKE_EXPORT_BUILD_DATABASE                           # Since 3.31
     - CMAKE_EXPORT_COMPILE_COMMANDS
     - CMAKE_EXPORT_PACKAGE_REGISTRY                         # Since 3.15
     - CMAKE_EXPORT_NO_PACKAGE_REGISTRY
@@ -918,8 +945,6 @@ variables:
     - CMAKE_FIND_LIBRARY_PREFIXES
     - CMAKE_FIND_LIBRARY_SUFFIXES
     - CMAKE_FIND_NO_INSTALL_PREFIX
-    - CMAKE_FIND_PACKAGE_NO_PACKAGE_REGISTRY                # Deprecated since 3.16
-    - CMAKE_FIND_PACKAGE_NO_SYSTEM_PACKAGE_REGISTRY
     - CMAKE_FIND_PACKAGE_PREFER_CONFIG                      # Since 3.15
     - CMAKE_FIND_PACKAGE_RESOLVE_SYMLINKS                   # Since 3.14
     - CMAKE_FIND_PACKAGE_TARGETS_GLOBAL                     # Since 3.24
@@ -1021,6 +1046,7 @@ variables:
     - CMAKE_COMPILER_2005
     - CMAKE_HOST_APPLE
     - CMAKE_HOST_BSD                                        # Since 3.25
+    - CMAKE_HOST_EXECUTABLE_SUFFIX                          # Since 3.31
     - CMAKE_HOST_LINUX                                      # Since 3.25
     - CMAKE_HOST_SOLARIS
     - CMAKE_HOST_SYSTEM
@@ -1044,15 +1070,6 @@ variables:
     - LINUX                                                 # Since 3.25
     - MINGW
     - MSVC
-    - MSVC10
-    - MSVC11
-    - MSVC12
-    - MSVC14
-    - MSVC60
-    - MSVC70
-    - MSVC71
-    - MSVC80
-    - MSVC90
     - MSVC_IDE
     - MSVC_TOOLSET_VERSION                                  # Since 3.12
     - MSVC_VERSION
@@ -1064,6 +1081,8 @@ variables:
     - XCODE
     - XCODE_VERSION
     # Variables that Control the Build
+    - CMAKE_ADSP_ROOT                                       # Since 3.24
+    - CMAKE_AIX_SHARED_LIBRARY_ARCHIVE                      # Since 3.31
     - CMAKE_AIX_EXPORT_ALL_SYMBOLS                          # Since 3.17
     - CMAKE_ANDROID_ANT_ADDITIONAL_OPTIONS
     - CMAKE_ANDROID_API
@@ -1179,6 +1198,8 @@ variables:
     - CMAKE_LINK_GROUP_USING_<FEATURE>                      # Since 3.24
     - CMAKE_LINK_GROUP_USING_<FEATURE>_SUPPORTED            # Since 3.24
     - CMAKE_LINK_INTERFACE_LIBRARIES
+    - CMAKE_LINK_LIBRARIES_STRATEGY                         # Since 3.31
+    - CMAKE_LINK_LIBRARY_<FEATURE>_ATTRIBUTES               # Since 3.30
     - CMAKE_LINK_LIBRARY_FILE_FLAG
     - CMAKE_LINK_LIBRARY_FLAG
     - CMAKE_LINK_LIBRARY_USING_<FEATURE>                    # Since 3.24
@@ -1229,7 +1250,6 @@ variables:
     - CMAKE_TRY_COMPILE_TARGET_TYPE
     - CMAKE_UNITY_BUILD                                     # Since 3.16
     - CMAKE_UNITY_BUILD_BATCH_SIZE                          # Since 3.16
-    - CMAKE_USE_RELATIVE_PATHS
     - CMAKE_VERIFY_INTERFACE_HEADER_SETS                    # Since 3.24
     - CMAKE_VISIBILITY_INLINES_HIDDEN
     - CMAKE_VS_DEBUGGER_COMMAND                             # Since 3.27
@@ -1255,12 +1275,9 @@ variables:
     - EXECUTABLE_OUTPUT_PATH
     - LIBRARY_OUTPUT_PATH
     # Variables for Languages
-    - CMAKE_COMPILER_IS_GNUCC
-    - CMAKE_COMPILER_IS_GNUCXX
-    - CMAKE_COMPILER_IS_GNUG77
     - CMAKE_CUDA_ARCHITECTURES                              # Since 3.18
     - CMAKE_CUDA_COMPILE_FEATURES                           # Since 3.17
-    - CMAKE_CUDA_HOST_COMPILER                              # Since 3.17
+    #- CMAKE_CUDA_HOST_COMPILER                             # Since 3.17 (covered by pattern)
     - CMAKE_CUDA_EXTENSIONS
     - CMAKE_CUDA_STANDARD
     - CMAKE_CUDA_STANDARD_REQUIRED
@@ -1291,14 +1308,16 @@ variables:
     - CMAKE_<LANG>_ARCHIVE_CREATE
     - CMAKE_<LANG>_ARCHIVE_FINISH
     - CMAKE_<LANG>_BYTE_ORDER                               # Since 3.20
+    - CMAKE_<LANG>_COMPILE_OBJECT
     - CMAKE_<LANG>_COMPILER
     - CMAKE_<LANG>_COMPILER_EXTERNAL_TOOLCHAIN
     - CMAKE_<LANG>_COMPILER_ID
     - CMAKE_<LANG>_COMPILER_LOADED
+    - CMAKE_<LANG>_COMPILER_PREDEFINES_COMMAND
     - CMAKE_<LANG>_COMPILER_TARGET
     - CMAKE_<LANG>_COMPILER_VERSION
-    - CMAKE_<LANG>_COMPILE_OBJECT
     - CMAKE_<LANG>_CREATE_SHARED_LIBRARY
+    - CMAKE_<LANG>_CREATE_SHARED_LIBRARY_ARCHIVE
     - CMAKE_<LANG>_CREATE_SHARED_MODULE
     - CMAKE_<LANG>_CREATE_STATIC_LIBRARY
     - CMAKE_<LANG>_EXTENSIONS
@@ -1315,10 +1334,9 @@ variables:
     - CMAKE_<LANG>_FLAGS_RELEASE_INIT
     - CMAKE_<LANG>_FLAGS_RELWITHDEBINFO
     - CMAKE_<LANG>_FLAGS_RELWITHDEBINFO_INIT
-    - CMAKE_<LANG>_GHS_KERNEL_FLAGS_DEBUG
-    - CMAKE_<LANG>_GHS_KERNEL_FLAGS_MINSIZEREL
-    - CMAKE_<LANG>_GHS_KERNEL_FLAGS_RELEASE
-    - CMAKE_<LANG>_GHS_KERNEL_FLAGS_RELWITHDEBINFO
+    - CMAKE_<LANG>_HOST_COMPILER
+    - CMAKE_<LANG>_HOST_COMPILER_ID                         # Since 3.31
+    #- CMAKE_<LANG>_HOST_COMPILER_VERSION                   # Since 3.31 (covered by other pattern)
     - CMAKE_<LANG>_IGNORE_EXTENSIONS
     - CMAKE_<LANG>_IMPLICIT_INCLUDE_DIRECTORIES
     - CMAKE_<LANG>_IMPLICIT_LINK_DIRECTORIES
@@ -1327,16 +1345,21 @@ variables:
     - CMAKE_<LANG>_LIBRARY_ARCHITECTURE
     - CMAKE_<LANG>_LINKER_PREFERENCE
     - CMAKE_<LANG>_LINKER_PREFERENCE_PROPAGATES
+    - CMAKE_<LANG>_LINK_EXECUTABLE
     - CMAKE_<LANG>_LINKER_WRAPPER_FLAG                      # Since 3.13
     - CMAKE_<LANG>_LINKER_WRAPPER_FLAG_SEP                  # Since 3.13
-    - CMAKE_<LANG>_LINK_EXECUTABLE
     - CMAKE_<LANG>_OUTPUT_EXTENSION
     - CMAKE_<LANG>_SIMULATE_ID
     - CMAKE_<LANG>_SIMULATE_VERSION
     - CMAKE_<LANG>_SIZEOF_DATA_PTR
     - CMAKE_<LANG>_SOURCE_FILE_EXTENSIONS
+    #- CMAKE_<LANG>_STANDARD                                # Use per-language vars
+    - CMAKE_<LANG>_STANDARD_DEFAULT
     - CMAKE_<LANG>_STANDARD_INCLUDE_DIRECTORIES
+    - CMAKE_<LANG>_STANDARD_LATEST                          # Since 3.30
     - CMAKE_<LANG>_STANDARD_LIBRARIES
+    - CMAKE_<LANG>_STANDARD_LINK_DIRECTORIES                # Since 3.31
+    #- CMAKE_<LANG>_STANDARD_REQUIRED                       # Use per-language vars
     - CMAKE_OBJC_EXTENSIONS                                 # Since 3.16
     - CMAKE_OBJC_STANDARD                                   # Since 3.16
     - CMAKE_OBJC_STANDARD_REQUIRED                          # Since 3.16
@@ -1376,7 +1399,6 @@ variables:
     - CTEST_CUSTOM_TEST_OUTPUT_TRUNCATION                   # Since 3.24
     - CTEST_CUSTOM_WARNING_EXCEPTION
     - CTEST_CUSTOM_WARNING_MATCH
-    - CTEST_CVS_CHECKOUT
     - CTEST_CVS_COMMAND
     - CTEST_CVS_UPDATE_OPTIONS
     - CTEST_DROP_LOCATION
@@ -1405,7 +1427,6 @@ variables:
     - CTEST_P4_UPDATE_OPTIONS
     - CTEST_RESOURCE_SPEC_FILE                              # Since 3.18
     - CTEST_RUN_CURRENT_SCRIPT                              # Since 3.11
-    - CTEST_SCP_COMMAND
     - CTEST_SITE
     - CTEST_SUBMIT_INACTIVITY_TIMEOUT                       # Since 3.23
     - CTEST_SUBMIT_URL                                      # Since 3.14
@@ -1415,7 +1436,8 @@ variables:
     - CTEST_SVN_UPDATE_OPTIONS
     - CTEST_TEST_LOAD
     - CTEST_TEST_TIMEOUT
-    - CTEST_TRIGGER_SITE
+    - CTEST_TLS_VERSION                                     # Since 3.30
+    - CTEST_TLS_VERIFY                                      # Since 3.30
     - CTEST_UPDATE_COMMAND
     - CTEST_UPDATE_OPTIONS
     - CTEST_UPDATE_VERSION_ONLY
@@ -1497,6 +1519,32 @@ variables:
     # - `cmake_parse_arguments`
     - <pfx>_UNPARSED_ARGUMENTS
     - <pfx>_KEYWORDS_MISSING_VALUES
+    # - `cmake_pkg_config`
+    - CMAKE_PKG_CONFIG_PC_LIB_DIRS
+    - CMAKE_PKG_CONFIG_PC_PATH
+    - CMAKE_PKG_CONFIG_DISABLE_UNINSTALLED
+    - CMAKE_PKG_CONFIG_SYSROOT_DIR
+    - CMAKE_PKG_CONFIG_TOP_BUILD_DIR
+    - CMAKE_PKG_CONFIG_SYS_INCLUDE_DIRS
+    - CMAKE_PKG_CONFIG_PKGCONF_INCLUDES
+    - CMAKE_PKG_CONFIG_SYS_LIB_DIRS
+    - CMAKE_PKG_CONFIG_ALLOW_SYS_INCLUDES
+    - CMAKE_PKG_CONFIG_ALLOW_SYS_LIBS
+    # The following variables will be populated from the contents of package file:
+    - CMAKE_PKG_CONFIG_NAME
+    - CMAKE_PKG_CONFIG_DESCRIPTION
+    #- CMAKE_PKG_CONFIG_VERSION                             # Skip due to more generic parretn match
+    - CMAKE_PKG_CONFIG_PROVIDES
+    - CMAKE_PKG_CONFIG_REQUIRES
+    - CMAKE_PKG_CONFIG_CONFLICTS
+    - CMAKE_PKG_CONFIG_CFLAGS
+    - CMAKE_PKG_CONFIG_INCLUDES
+    - CMAKE_PKG_CONFIG_COMPILE_OPTIONS
+    - CMAKE_PKG_CONFIG_LIBS
+    - CMAKE_PKG_CONFIG_LIBDIRS
+    - CMAKE_PKG_CONFIG_LIBNAMES
+    - CMAKE_PKG_CONFIG_LINK_OPTIONS
+    - CMAKE_PKG_CONFIG_<FLAGS>_PRIVATE
     # Variables that control `file(GET_RUNTIME_DEPENDENCIES)` behavior
     - CMAKE_GET_RUNTIME_DEPENDENCIES_PLATFORM
     - CMAKE_GET_RUNTIME_DEPENDENCIES_TOOL
@@ -1544,6 +1592,7 @@ variables:
     - CMAKE_CUDA_LINK_NO_PIE_SUPPORTED
     - CMAKE_HIP_LINK_PIE_SUPPORTED
     - CMAKE_HIP_LINK_NO_PIE_SUPPORTED
+    - CMAKE_REQUIRED_LINK_DIRECTORIES                       # Since 3.31
     # - CheckPrototypeDefinition
     # - CheckStructHasMember
     # - CheckSymbolExists
@@ -1658,6 +1707,8 @@ variables:
     - CPACK_DEBIAN_<COMPONENT>_PACKAGE_CONTROL_STRICT_PERMISSION
     - CPACK_DEBIAN_PACKAGE_SOURCE
     - CPACK_DEBIAN_<COMPONENT>_PACKAGE_SOURCE
+    - CPACK_DEBIAN_PACKAGE_MULTIARCH
+    - CPACK_DEBIAN_<COMPONENT>_PACKAGE_MULTIARCH            # Since 3.31
     - CPACK_DEBIAN_DEBUGINFO_PACKAGE                        # Since 3.13
     - CPACK_DEBIAN_<component>_DEBUGINFO_PACKAGE            # Since 3.13
     # - CPackDMG
@@ -1750,6 +1801,7 @@ variables:
     - CPACK_IFW_REPOSITORIES_ALL
     - CPACK_IFW_DOWNLOAD_ALL
     - CPACK_IFW_PACKAGE_PRODUCT_IMAGES                      # Since 3.23
+    - CPACK_IFW_PACKAGE_PRODUCT_IMAGE_URLS                  # Since 3.31
     - CPACK_IFW_PACKAGE_RUN_PROGRAM                         # Since 3.23
     - CPACK_IFW_PACKAGE_RUN_PROGRAM_ARGUMENTS               # Since 3.23
     - CPACK_IFW_PACKAGE_RUN_PROGRAM_DESCRIPTION             # Since 3.23
@@ -1805,8 +1857,9 @@ variables:
     - CPACK_NUGET_COMPONENT_INSTALL
     - CPACK_NUGET_PACKAGE_NAME
     - CPACK_NUGET_<compName>_PACKAGE_NAME
-    - CPACK_NUGET_PACKAGE_VERSION
-    - CPACK_NUGET_<compName>_PACKAGE_VERSION
+      # NOTE The followed two variables are covered by generic `<ID>_VERSION` pattern
+    #- CPACK_NUGET_PACKAGE_VERSION
+    #- CPACK_NUGET_<compName>_PACKAGE_VERSION
     - CPACK_NUGET_PACKAGE_DESCRIPTION
     - CPACK_NUGET_<compName>_PACKAGE_DESCRIPTION
     - CPACK_NUGET_PACKAGE_AUTHORS
@@ -1839,9 +1892,28 @@ variables:
     - CPACK_NUGET_<compName>_PACKAGE_TAGS
     - CPACK_NUGET_PACKAGE_DEPENDENCIES
     - CPACK_NUGET_<compName>_PACKAGE_DEPENDENCIES
-    - CPACK_NUGET_PACKAGE_DEPENDENCIES_<dependency>_VERSION
-    - CPACK_NUGET_<compName>_PACKAGE_DEPENDENCIES_<dependency>_VERSION
+      # NOTE The followed two variables are covered by generic `<ID>_VERSION` pattern
+    #- CPACK_NUGET_PACKAGE_DEPENDENCIES_<dependency>_VERSION
+    #- CPACK_NUGET_<compName>_PACKAGE_DEPENDENCIES_<dependency>_VERSION
     - CPACK_NUGET_PACKAGE_DEBUG
+    # Since 3.30
+    - CPACK_NUGET_PACKAGE_README
+    - CPACK_NUGET_<compName>_PACKAGE_README
+    - CPACK_NUGET_PACKAGE_REPOSITORY_URL
+    - CPACK_NUGET_<compName>_REPOSITORY_URL
+    - CPACK_NUGET_PACKAGE_REPOSITORY_TYPE
+    - CPACK_NUGET_<compName>_REPOSITORY_TYPE
+    - CPACK_NUGET_PACKAGE_REPOSITORY_BRANCH
+    - CPACK_NUGET_<compName>_REPOSITORY_BRANCH
+    - CPACK_NUGET_PACKAGE_REPOSITORY_COMMIT
+    - CPACK_NUGET_<compName>_REPOSITORY_COMMIT
+    - CPACK_NUGET_PACKAGE_TFMS
+    - CPACK_NUGET_<compName>_PACKAGE_TFMS
+    - CPACK_NUGET_PACKAGE_DEPENDENCIES_<tfm>
+    - CPACK_NUGET_<compName>_PACKAGE_DEPENDENCIES_<tfm>
+      # NOTE The followed two variables are covered by generic `<ID>_VERSION` pattern
+    #- CPACK_NUGET_PACKAGE_DEPENDENCIES_<tfm_dependency>_VERSION
+    #- CPACK_NUGET_<compName>_PACKAGE_DEPENDENCIES_<tfm_dependency>_VERSION
     # - CPackPackageMaker is deprecated and gonna be removed in next versions of CPack
     #   NOTE CPackPackageMaker has been removed in 3.24
     # - CPackProductBuild
@@ -2013,6 +2085,8 @@ variables:
     - CPACK_POST_BUILD_SCRIPTS                              # Since 3.19
     - CPACK_PACKAGE_FILES                                   # Since 3.19
     # - CPackWIX
+      # NOTE The following variable covered by generic `<ID>_VERSION`
+    # - CPACK_WIX_VERSION                                   # Since 3.30
     - CPACK_WIX_UPGRADE_GUID
     - CPACK_WIX_PRODUCT_GUID
     - CPACK_WIX_LICENSE_RTF
@@ -2425,6 +2499,7 @@ variables:
     - OpenMP_Fortran_HAVE_OMPLIB_HEADER
     - OpenMP_Fortran_HAVE_OMPLIB_MODULE
     - OpenMP_<lang>_SPEC_DATE
+    - OpenMP_RUNTIME_MSVC                                   # Since 3.30
     # - FindOpenSceneGraph
     # - FindOpenSSL
     - OPENSSL_CRYPTO_LIBRARY
@@ -2506,15 +2581,19 @@ variables:
     - Protobuf_LITE_LIBRARY_DEBUG
     # - FindPython
     - Python_EXECUTABLE
+    - Python_EXECUTABLE_DEBUG                               # Since 3.30
+    - Python_INTERPRETER                                    # Since 3.30
     - Python_INTERPRETER_ID
     - Python_STDLIB
     - Python_STDARCH
     - Python_SITELIB
     - Python_SITEARCH
     - Python_SOABI
+    - Python_SOSABI                                         # Since 3.26
     - Python_COMPILER
     - Python_COMPILER_ID
     - Python_DOTNET_LAUNCHER
+    - Python_DEBUG_POSTFIX                                  # Since 3.30
     - Python_LINK_OPTIONS
     - Python_USE_STATIC_LIBS
     - Python_FIND_ABI
@@ -2527,6 +2606,8 @@ variables:
     - Python_ARTIFACTS_INTERACTIVE
     # - FindPython2
     - Python2_EXECUTABLE
+    - Python2_EXECUTABLE_DEBUG                              # Since 3.30
+    - Python2_INTERPRETER                                   # Since 3.30
     - Python2_INTERPRETER_ID
     - Python2_STDLIB
     - Python2_STDARCH
@@ -2536,6 +2617,7 @@ variables:
     - Python2_COMPILER
     - Python2_COMPILER_ID
     - Python2_DOTNET_LAUNCHER
+    - Python2_DEBUG_POSTFIX                                 # Since 3.30
     - Python2_LINK_OPTIONS
     - Python2_USE_STATIC_LIBS
     - Python2_FIND_ABI
@@ -2548,15 +2630,19 @@ variables:
     - Python2_ARTIFACTS_INTERACTIVE
     # - FindPython3
     - Python3_EXECUTABLE
+    - Python3_EXECUTABLE_DEBUG                              # Since 3.30
+    - Python3_INTERPRETER                                   # Since 3.30
     - Python3_INTERPRETER_ID
     - Python3_STDLIB
     - Python3_STDARCH
     - Python3_SITELIB
     - Python3_SITEARCH
     - Python3_SOABI
+    - Python3_SOSABI                                        # Since 3.26
     - Python3_COMPILER
     - Python3_COMPILER_ID
     - Python3_DOTNET_LAUNCHER
+    - Python3_DEBUG_POSTFIX                                 # Since 3.30
     - Python3_LINK_OPTIONS
     - Python3_USE_STATIC_LIBS
     - Python3_FIND_ABI
@@ -2750,6 +2836,7 @@ variables:
     - SWIG_USE_SWIG_DEPENDENCIES                            # Since 3.20
 
 deprecated-or-internal-variables:
+    # Internal Variables
     - CMAKE_HOME_DIRECTORY
     - CMAKE_INTERNAL_PLATFORM_ABI
     - CMAKE_<LANG>_COMPILER_ABI
@@ -2758,6 +2845,35 @@ deprecated-or-internal-variables:
     - CMAKE_<LANG>_PLATFORM_ID
     - CMAKE_NOT_USING_CONFIG_FLAGS
     - CMAKE_VS_INTEL_Fortran_PROJECT_VERSION
+    # Deprecated Variables that Provide Information
+    - CMAKE_EXTRA_GENERATOR
+    # Deprecated Variables that Change Behavior
+    - CMAKE_AUTOMOC_RELAXED_MODE
+    - CMAKE_BACKWARDS_COMPATIBILITY
+    - CMAKE_FIND_PACKAGE_NO_PACKAGE_REGISTRY
+    - CMAKE_FIND_PACKAGE_NO_SYSTEM_PACKAGE_REGISTRY
+    # Deprecated Variables that Describe the System
+    - MSVC10
+    - MSVC11
+    - MSVC12
+    - MSVC14
+    - MSVC60
+    - MSVC70
+    - MSVC71
+    - MSVC80
+    - MSVC90
+    # Deprecated Variables that Control the Build
+    - CMAKE_IOS_INSTALL_COMBINED                            # Since 3.28
+    - CMAKE_USE_RELATIVE_PATHS
+    # Deprecated Variables for Languages
+    - CMAKE_COMPILER_IS_GNUCC
+    - CMAKE_COMPILER_IS_GNUCXX
+    - CMAKE_COMPILER_IS_GNUG77
+    # Deprecated Variables for CTest
+    - CTEST_CVS_CHECKOUT
+    - CTEST_SCP_COMMAND
+    - CTEST_TRIGGER_SITE
+    # Other deprecated (but not documented)
     - CPACK_INSTALL_SCRIPT                                  # Deprecated since 3.16
     # Various undocumented variables (yet)
     - CMAKE_SUPPRESS_DEVELOPER_WARNINGS                     # CMake <= 3.10
@@ -2779,7 +2895,6 @@ deprecated-or-internal-variables:
     - CMAKE_SYSTEM_ARCH
     # Superseded by `CMAKE_EXECUTABLE_ENABLE_EXPORTS`
     - CMAKE_ENABLE_EXPORTS
-    - CMAKE_IOS_INSTALL_COMBINED                            # Since 3.28
 
 
 
@@ -2787,7 +2902,15 @@ deprecated-or-internal-variables:
 # NOTE Added to syntax file version 14 at 3.15.0 version of CMake
 environment-variables:
     # Environment Variables that Change Behavior
+    - CMAKE_APPBUNDLE_PATH
+    - CMAKE_FRAMEWORK_PATH
+    - CMAKE_INCLUDE_PATH
+    - CMAKE_LIBRARY_PATH
+    - CMAKE_MAXIMUM_RECURSION_DEPTH                         # Since 3.27
+    - CMAKE_PROGRAM_PATH
     - CMAKE_PREFIX_PATH
+    - CMAKE_TLS_VERIFY                                      # Since 3.30
+    - CMAKE_TLS_VERSION                                     # Since 3.30
     - SSL_CERT_DIR                                          # Since 3.25
     - SSL_CERT_FILE                                         # Since 3.25
     # Environment Variables that Control the Build
@@ -2799,6 +2922,7 @@ environment-variables:
     - CMAKE_CONFIGURATION_TYPES                             # Since 3.22
     - CMAKE_CONFIG_TYPE
     - CMAKE_CROSSCOMPILING_EMULATOR                         # Since 3.28
+    - CMAKE_EXPORT_BUILD_DATABASE                           # Since 3.31
     - CMAKE_EXPORT_COMPILE_COMMANDS                         # Since 3.17
     - CMAKE_GENERATOR
     - CMAKE_GENERATOR_INSTANCE
@@ -2860,6 +2984,7 @@ environment-variables:
     # Environment Variables recognized by some standard modules
     - QTIFWDIR
     - CUDA_PATH                                             # FindCUDAToolkit
+    - SOURCE_DATE_EPOCH                                     # CPack DEB Generator
 
 scripting-commands:
     -
@@ -3014,6 +3139,26 @@ scripting-commands:
             # Hashing
           , HASH
         ]
+    -
+        name: cmake_pkg_config                              # Since 3.31
+        named-args: [
+            EXTRACT
+          , EXACT
+          , QUIET
+          , REQUIRED
+          , STRICTNESS
+          , ENV_MODE
+          , PC_LIBDIR
+          , PC_PATH
+          , DISABLE_UNINSTALLED
+          , PC_SYSROOT_DIR
+          , TOP_BUILD_DIR
+          , SYSTEM_INCLUDE_DIRS
+          , SYSTEM_LIBRARY_DIRS
+          , ALLOW_SYSTEM_INCLUDES
+          , ALLOW_SYSTEM_LIBS
+          ]
+        special-args: [STRICT, PERMISSIVE, BEST_EFFORT, FDO, PKGCONF, IGNORE ]
     -
         name: cmake_policy
         named-args: [GET, SET, PUSH, POP, VERSION]
@@ -3193,6 +3338,7 @@ scripting-commands:
           , RANGE_START                                     # Since 3.24
           , RANGE_END                                       # Since 3.24
           , TLS_VERIFY
+          , TLS_VERSION                                     # Since 3.30
           , TLS_CAINFO
           , TIMESTAMP
           , UTC
@@ -3249,6 +3395,7 @@ scripting-commands:
           , COMPRESSION
           , COMPRESSION_LEVEL                               # Since 3.19
           , MTIME
+          , WORKING_DIRECTORY                               # Since 3.31
           , VERBOSE
           , ARCHIVE_EXTRACT
           , LIST_ONLY
@@ -3721,6 +3868,7 @@ project-commands:
           , APPEND
           , USES_TERMINAL
           , COMMAND_EXPAND_LISTS
+          , CODEGEN                                         # Since 3.31
           , DEPENDS_EXPLICIT_ONLY                           # Since 3.27
           , TARGET
           , PRE_BUILD
@@ -3941,7 +4089,7 @@ project-commands:
           , POST_EXCLUDE_FILES
           , DIRECTORIES
           ]
-        special-args: &valid_permissions [
+        special-args: [
             OWNER_READ
           , OWNER_WRITE
           , OWNER_EXECUTE
@@ -3953,6 +4101,21 @@ project-commands:
           , WORLD_EXECUTE
           , SETUID
           , SETGID
+            # Recognized `TYPE` values
+          , BIN
+          , SBIN
+          , LIB
+          , INCLUDE
+          , SYSCONF
+          , SHAREDSTATE
+          , LOCALSTATE
+          , RUNSTATE
+          , DATA
+          , INFO
+          , LOCALE
+          , MAN
+          , DOC
+          , LIBEXEC
           ]
         has-target-names-after-kw: TARGETS
     -
@@ -4994,6 +5157,7 @@ standard-module-commands:
             - HTTP_USERNAME
             - HTTP_PASSWORD
             - HTTP_HEADER
+            - TLS_VERSION                                   # Since 3.30
             - TLS_VERIFY
             - TLS_CAINFO
             - NETRC
@@ -5301,6 +5465,7 @@ standard-module-commands:
             - DISCOVERY_TIMEOUT
             - XML_OUTPUT_DIR
             - DISCOVERY_MODE
+            - DISCOVERY_EXTRA_ARGS
         special-args: [POST_BUILD, PRE_TEST]
         first-arg-is-target?: true
     # InstallRequiredSystemLibraries

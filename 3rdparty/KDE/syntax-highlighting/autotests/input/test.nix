@@ -45,4 +45,22 @@ in {
         inherit (import ./.);
         x = a;
     };
+
+    var5 = {
+        inherit a b c;
+        inherit (expr) a b c;
+    };
+
+    var6 = {
+        ${foo} = bar;
+        ${bar} = baz;
+        a.${b} = c;
+    };
+
+    var7 = {
+        "first" = 1;
+        "second" = 2;
+    };
+
+    abc."cde".fgh = abc."cde".fgh;
 }

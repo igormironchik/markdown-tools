@@ -12,7 +12,7 @@
 # Petros Vidalis <p_vidalis@hotmail.com>, 2010.
 # Stelios <sstavra@gmail.com>, 2012, 2013, 2021.
 # Dimitrios Glentadakis <dglent@gmail.com>, 2012, 2013, 2014.
-# Antonis Geralis <capoiosct@gmail.com>, 2014.
+# SPDX-FileCopyrightText: 2014, 2024 Antonis Geralis <capoiosct@gmail.com>
 # Dimitris Kardarakos <dimkard@gmail.com>, 2015, 2016.
 # George Stefanakis <george.stefanakis@gmail.com>, 2023.
 msgid ""
@@ -20,15 +20,15 @@ msgstr ""
 "Project-Id-Version: katepart4\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2016-09-08 07:30+0000\n"
-"PO-Revision-Date: 2023-10-25 23:20+0300\n"
-"Last-Translator: George Stefanakis <george.stefanakis@gmail.com>\n"
-"Language-Team: Greek <kde-i18n-doc@kde.org>\n"
+"PO-Revision-Date: 2024-09-19 16:11+0300\n"
+"Last-Translator: Antonis Geralis <capoiosct@gmail.com>\n"
+"Language-Team: Greek <kde-i18n-el@kde.org>\n"
 "Language: el\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 3.4\n"
+"X-Generator: Lokalize 24.08.1\n"
 "X-Qt-Contexts: true\n"
 
 msgctxt "Language|"
@@ -447,6 +447,10 @@ msgid "Git Rebase"
 msgstr "Git Rebase"
 
 msgctxt "Language|"
+msgid "Gleam"
+msgstr ""
+
+msgctxt "Language|"
 msgid "GlossTex"
 msgstr "GlossTex"
 
@@ -597,6 +601,13 @@ msgstr "Julia"
 msgctxt "Language|"
 msgid "J"
 msgstr "J"
+
+#, fuzzy
+#| msgctxt "Language|"
+#| msgid "Klipper Config"
+msgctxt "Language|"
+msgid "Kate Config"
+msgstr "Ρύθμιση klipper"
 
 msgctxt "Language|"
 msgid "KBasic"
@@ -878,6 +889,13 @@ msgctxt "Language|"
 msgid "OpenSCAD"
 msgstr "OpenSCAD"
 
+#, fuzzy
+#| msgctxt "Language|"
+#| msgid "PostScript"
+msgctxt "Language|"
+msgid "opsi-script"
+msgstr "PostScript"
+
 msgctxt "Language|"
 msgid "Org Mode"
 msgstr "Org Mode"
@@ -969,6 +987,10 @@ msgstr "Python"
 msgctxt "Language|"
 msgid "QDoc Configuration"
 msgstr "QDoc Διαμόρφωση"
+
+msgctxt "Language|"
+msgid "QFace"
+msgstr ""
 
 msgctxt "Language|"
 msgid "QMake"
@@ -1217,6 +1239,10 @@ msgstr "TI Basic"
 msgctxt "Language|"
 msgid "Tiger"
 msgstr "Tiger"
+
+msgctxt "Language|"
+msgid "TLA+"
+msgstr ""
 
 msgctxt "Language|"
 msgid "TSV"
@@ -1500,7 +1526,7 @@ msgstr "Radical"
 
 msgctxt "Theme|"
 msgid "Solarized Dark"
-msgstr "Solarized ακούρο"
+msgstr "Solarized σκούρο"
 
 msgctxt "Theme|"
 msgid "Solarized Light"
@@ -1601,21 +1627,25 @@ msgctxt "SyntaxHighlightingCLI|"
 msgid "theme"
 msgstr "θέμα"
 
-#: cli/ksyntaxhighlighter.cpp:98
+#: cli/ksyntaxhighlighter.cpp:97
+#, fuzzy
+#| msgctxt "SyntaxHighlightingCLI|"
+#| msgid ""
+#| "Use the specified format instead of html. Must be html, ansi or "
+#| "ansi256Colors."
 msgctxt "SyntaxHighlightingCLI|"
 msgid ""
-"Use the specified format instead of html. Must be html, ansi or "
-"ansi256Colors."
+"Use the specified format instead of html. Must be html, ansi or ansi256."
 msgstr ""
 "Χρήση του συγκεκριμένου τύπου αντί του html. Πρέπει να είναι html, ansi ή "
 "ansi256Colors."
 
-#: cli/ksyntaxhighlighter.cpp:99
+#: cli/ksyntaxhighlighter.cpp:98
 msgctxt "SyntaxHighlightingCLI|"
 msgid "format"
 msgstr "format"
 
-#: cli/ksyntaxhighlighter.cpp:104
+#: cli/ksyntaxhighlighter.cpp:103
 #, fuzzy
 #| msgctxt "SyntaxHighlightingCLI|"
 #| msgid ""
@@ -1625,30 +1655,41 @@ msgstr "format"
 msgctxt "SyntaxHighlightingCLI|"
 msgid ""
 "Add information to debug a syntax file. Only works with --output-format=ansi "
-"or ansi256Colors. Possible values are format, region, context, stackSize and "
-"all."
+"or ansi256. Possible values are format, region, context, stackSize and all."
 msgstr ""
 "Προσθήκη πληροφοριών για την αποσφαλμάτωση αρχείου συντακτικού. Λειτουργεί "
 "μόνο με --output-format=ansi ή ansi256Colors. Οι πιθανές τιμές είναι format, "
 "region, context και stackSize."
 
-#: cli/ksyntaxhighlighter.cpp:107
+#: cli/ksyntaxhighlighter.cpp:106
 msgctxt "SyntaxHighlightingCLI|"
 msgid "type"
 msgstr "type"
 
-#: cli/ksyntaxhighlighter.cpp:111
+#: cli/ksyntaxhighlighter.cpp:110
 msgctxt "SyntaxHighlightingCLI|"
 msgid "Disable ANSI background for the default color."
 msgstr "Απενεργοποίηση ANSI φόντου για το προκαθορισμένο χρώμα."
 
+#: cli/ksyntaxhighlighter.cpp:114
+#, fuzzy
+#| msgctxt "short translation please"
+#| msgid "Set the background color for the current line."
+msgctxt "SyntaxHighlightingCLI|"
+msgid "Select background color role from theme."
+msgstr "Ορίζει το χρώμα φόντου για την τρέχουσα γραμμή."
+
 #: cli/ksyntaxhighlighter.cpp:115
 msgctxt "SyntaxHighlightingCLI|"
-msgid ""
-"For ansi and ansi256Colors formats, flush the output buffer on each line."
+msgid "role"
 msgstr ""
 
-#: cli/ksyntaxhighlighter.cpp:120
+#: cli/ksyntaxhighlighter.cpp:119
+msgctxt "SyntaxHighlightingCLI|"
+msgid "For ansi and ansi256 formats, flush the output buffer on each line."
+msgstr ""
+
+#: cli/ksyntaxhighlighter.cpp:124
 #, fuzzy
 #| msgctxt "SyntaxHighlightingCLI|"
 #| msgid ""
@@ -1664,12 +1705,12 @@ msgstr ""
 "(προκαθορισμένο: το όνομα του αρχείου ή «Τονισμός σύνταξης του Kate» αν η "
 "ανάγνωση γίνεται από το stdin)."
 
-#: cli/ksyntaxhighlighter.cpp:121
+#: cli/ksyntaxhighlighter.cpp:125
 msgctxt "SyntaxHighlightingCLI|"
 msgid "title"
 msgstr "title"
 
-#: lib/definition_p.h:104
+#: lib/definition_p.h:116
 msgctxt "Language|"
 msgid "None"
 msgstr "Καμία"
@@ -1680,20 +1721,16 @@ msgid "All syntax definitions are up-to-date."
 msgstr "Όλοι οι ορισμοί σύνταξης είναι ενημερωμένοι."
 
 #: lib/definitiondownloader.cpp:78
-#, fuzzy, qt-format
-#| msgctxt "QObject|"
-#| msgid "Downloading new syntax definition for '%1'..."
+#, qt-format
 msgctxt "QObject|@info"
 msgid "Downloading new syntax definition for '%1'…"
-msgstr "Λήψη νέων ορισμών σύνταξης για το '%1'..."
+msgstr "Λήψη νέων ορισμών σύνταξης για το '%1'…"
 
 #: lib/definitiondownloader.cpp:85
-#, fuzzy, qt-format
-#| msgctxt "QObject|"
-#| msgid "Updating syntax definition for '%1' to version %2..."
+#, qt-format
 msgctxt "QObject|@info"
 msgid "Updating syntax definition for '%1' to version %2…"
-msgstr "Ενημέρωση ορισμών σύνταξης για το '%1' στην έκδοση %2..."
+msgstr "Ενημέρωση ορισμών σύνταξης για το '%1' στην έκδοση %2…"
 
 #~ msgctxt "SyntaxHighlightingCLI|"
 #~ msgid "The source file to highlight."
@@ -5704,10 +5741,6 @@ msgstr "Ενημέρωση ορισμών σύνταξης για το '%1' στ
 #~ msgctxt "short translation please"
 #~ msgid "Enable the byte order marker when saving unicode files."
 #~ msgstr "Ενεργοποίηση δείκτη σειράς byte στην αποθήκευση unicode αρχείων."
-
-#~ msgctxt "short translation please"
-#~ msgid "Set the background color for the current line."
-#~ msgstr "Ορίζει το χρώμα φόντου για την τρέχουσα γραμμή."
 
 #~ msgctxt "short translation please"
 #~ msgid "Set the default dictionary used for spell checking."

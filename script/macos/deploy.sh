@@ -34,7 +34,7 @@ cp ./build-markdown-tools/bin/md-editor ./installer/packages/mironchik.igor.mark
 
 cp ./build-markdown-tools/bin/md-launcher ./installer/packages/mironchik.igor.markdown/data/bin/md-launcher || exit 1
 
-cp $PWD/../KDE/lib/libKF6SyntaxHighlighting.6.3.0.dylib ./installer/packages/mironchik.igor.markdown/data/lib/libKF6SyntaxHighlighting.6.3.0.dylib || exit 1
+cp $PWD/../KDE/lib/libKF6SyntaxHighlighting.6.9.0.dylib ./installer/packages/mironchik.igor.markdown/data/lib/libKF6SyntaxHighlighting.6.9.0.dylib || exit 1
 
 cp $PWD/../KDE/lib/libKF6SyntaxHighlighting.6.dylib ./installer/packages/mironchik.igor.markdown/data/lib/libKF6SyntaxHighlighting.6.dylib || exit 1
 

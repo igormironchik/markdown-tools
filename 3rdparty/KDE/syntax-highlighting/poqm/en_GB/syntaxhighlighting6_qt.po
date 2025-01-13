@@ -5,13 +5,13 @@
 # Andrew Coles <andrew_coles@yahoo.co.uk>, 2004, 2005, 2009, 2010, 2011.
 # Peter Murdoch <pete@pmurdoch.com>, 2007.
 # Brendan Osborne <danborne.kde@gmail.com>, 2007.
-# Steve Allewell <steve.allewell@gmail.com>, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023.
+# SPDX-FileCopyrightText: 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024 Steve Allewell <steve.allewell@gmail.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: katepart4\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2016-09-08 07:30+0000\n"
-"PO-Revision-Date: 2023-05-21 14:47+0100\n"
+"PO-Revision-Date: 2024-11-01 14:07+0000\n"
 "Last-Translator: Steve Allewell <steve.allewell@gmail.com>\n"
 "Language-Team: British English\n"
 "Language: en_GB\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 23.03.70\n"
+"X-Generator: Lokalize 24.08.2\n"
 "X-Qt-Contexts: true\n"
 
 msgctxt "Language|"
@@ -76,7 +76,7 @@ msgstr "Ansys"
 
 msgctxt "Language|"
 msgid "ANTLR"
-msgstr ""
+msgstr "ANTLR"
 
 msgctxt "Language|"
 msgid "Apache Configuration"
@@ -150,12 +150,9 @@ msgctxt "Language|"
 msgid "CartoCSS MSS"
 msgstr "CartoCSS MSS"
 
-#, fuzzy
-#| msgctxt "Language Section|"
-#| msgid "Scripts"
 msgctxt "Language|"
 msgid "CashScript"
-msgstr "Scripts"
+msgstr "CashScript"
 
 msgctxt "Language|"
 msgid "CleanCSS"
@@ -438,6 +435,10 @@ msgid "Git Rebase"
 msgstr "Git Rebase"
 
 msgctxt "Language|"
+msgid "Gleam"
+msgstr "Gleam"
+
+msgctxt "Language|"
 msgid "GlossTex"
 msgstr "GlossTex"
 
@@ -459,7 +460,7 @@ msgstr "Go"
 
 msgctxt "Language|"
 msgid "GPRBuild"
-msgstr ""
+msgstr "GPRBuild"
 
 msgctxt "Language|"
 msgid "KDev-PG[-Qt] Grammar"
@@ -483,7 +484,7 @@ msgstr "Haml"
 
 msgctxt "Language|"
 msgid "Hare"
-msgstr ""
+msgstr "Hare"
 
 msgctxt "Language|"
 msgid "Haskell"
@@ -571,7 +572,7 @@ msgstr "Jira"
 
 msgctxt "Language|"
 msgid "Jsonnet"
-msgstr ""
+msgstr "Jsonnet"
 
 msgctxt "Language|"
 msgid "JSON"
@@ -590,6 +591,10 @@ msgid "J"
 msgstr "J"
 
 msgctxt "Language|"
+msgid "Kate Config"
+msgstr "Kate Config"
+
+msgctxt "Language|"
 msgid "KBasic"
 msgstr "KBasic"
 
@@ -597,18 +602,13 @@ msgctxt "Language|"
 msgid "Kconfig"
 msgstr "Kconfig"
 
-#, fuzzy
-#| msgid "Folder Config File"
 msgctxt "Language|"
 msgid "Klipper Config"
-msgstr "Folder Config File"
+msgstr "Klipper Config"
 
-#, fuzzy
-#| msgctxt "Language|"
-#| msgid "G-Code"
 msgctxt "Language|"
 msgid "Klipper G-Code"
-msgstr "G-Code"
+msgstr "Klipper G-Code"
 
 msgctxt "Language|"
 msgid "Kotlin"
@@ -856,7 +856,7 @@ msgstr "Octave"
 
 msgctxt "Language|"
 msgid "Odin"
-msgstr ""
+msgstr "Odin"
 
 msgctxt "Language|"
 msgid "OORS"
@@ -873,6 +873,10 @@ msgstr "OpenCL"
 msgctxt "Language|"
 msgid "OpenSCAD"
 msgstr "OpenSCAD"
+
+msgctxt "Language|"
+msgid "opsi-script"
+msgstr "opsi-script"
 
 msgctxt "Language|"
 msgid "Org Mode"
@@ -965,6 +969,10 @@ msgstr "Python"
 msgctxt "Language|"
 msgid "QDoc Configuration"
 msgstr "QDoc Configuration"
+
+msgctxt "Language|"
+msgid "QFace"
+msgstr "QFace"
 
 msgctxt "Language|"
 msgid "QMake"
@@ -1215,6 +1223,10 @@ msgid "Tiger"
 msgstr "Tiger"
 
 msgctxt "Language|"
+msgid "TLA+"
+msgstr "TLA+"
+
+msgctxt "Language|"
 msgid "TSV"
 msgstr "TSV"
 
@@ -1276,7 +1288,7 @@ msgstr "VHDL"
 
 msgctxt "Language|"
 msgid "Viper"
-msgstr ""
+msgstr "Viper"
 
 msgctxt "Language|"
 msgid "VRML"
@@ -1284,7 +1296,7 @@ msgstr "VRML"
 
 msgctxt "Language|"
 msgid "Vue"
-msgstr ""
+msgstr "Vue"
 
 msgctxt "Language|"
 msgid "V"
@@ -1504,38 +1516,30 @@ msgstr "Solarised Light"
 
 msgctxt "Theme|"
 msgid "Tokyo Night Light"
-msgstr ""
+msgstr "Tokyo Night Light"
 
 msgctxt "Theme|"
 msgid "Tokyo Night Storm"
-msgstr ""
+msgstr "Tokyo Night Storm"
 
-#, fuzzy
-#| msgctxt "Theme|"
-#| msgid "ayu Light"
 msgctxt "Theme|"
 msgid "Tokyo Night"
-msgstr "ayu Light"
+msgstr "Tokyo Night"
 
 msgctxt "Theme|"
 msgid "Vim Dark"
 msgstr "Vim Dark"
 
-#, fuzzy
-#| msgctxt "Theme|"
-#| msgid "Vim Dark"
 msgctxt "Theme|"
 msgid "VSCodium Dark"
-msgstr "Vim Dark"
+msgstr "VSCodium Dark"
 
 #: cli/ksyntaxhighlighter.cpp:64
-#, fuzzy
-#| msgctxt "SyntaxHighlightingCLI|"
-#| msgid "Command line syntax highlighter using Kate syntax definitions."
 msgctxt "SyntaxHighlightingCLI|"
 msgid ""
 "Command line syntax highlighter using KSyntaxHighlighting syntax definitions."
-msgstr "Command line syntax highlighter using Kate syntax definitions."
+msgstr ""
+"Command line syntax highlighter using KSyntaxHighlighting syntax definitions."
 
 #: cli/ksyntaxhighlighter.cpp:68
 msgctxt "SyntaxHighlightingCLI|"
@@ -1548,6 +1552,8 @@ msgid ""
 "The source file to highlight. If absent, read the file from stdin and the --"
 "syntax option must be used."
 msgstr ""
+"The source file to highlight. If absent, read the file from stdin and the --"
+"syntax option must be used."
 
 #: cli/ksyntaxhighlighter.cpp:72
 msgctxt "SyntaxHighlightingCLI|"
@@ -1598,73 +1604,67 @@ msgctxt "SyntaxHighlightingCLI|"
 msgid "theme"
 msgstr "theme"
 
-#: cli/ksyntaxhighlighter.cpp:98
+#: cli/ksyntaxhighlighter.cpp:97
 msgctxt "SyntaxHighlightingCLI|"
 msgid ""
-"Use the specified format instead of html. Must be html, ansi or "
-"ansi256Colors."
+"Use the specified format instead of html. Must be html, ansi or ansi256."
 msgstr ""
-"Use the specified format instead of HTML. Must be HTML, ANSI or "
-"ansi256Colors."
+"Use the specified format instead of html. Must be html, ansi or ansi256."
 
-#: cli/ksyntaxhighlighter.cpp:99
+#: cli/ksyntaxhighlighter.cpp:98
 msgctxt "SyntaxHighlightingCLI|"
 msgid "format"
 msgstr "format"
 
-#: cli/ksyntaxhighlighter.cpp:104
-#, fuzzy
-#| msgctxt "SyntaxHighlightingCLI|"
-#| msgid ""
-#| "Add information to debug a syntax file. Only works with --output-"
-#| "format=ansi or ansi256Colors. Possible values are format, region, context "
-#| "and stackSize."
+#: cli/ksyntaxhighlighter.cpp:103
 msgctxt "SyntaxHighlightingCLI|"
 msgid ""
 "Add information to debug a syntax file. Only works with --output-format=ansi "
-"or ansi256Colors. Possible values are format, region, context, stackSize and "
-"all."
+"or ansi256. Possible values are format, region, context, stackSize and all."
 msgstr ""
 "Add information to debug a syntax file. Only works with --output-format=ansi "
-"or ansi256Colors. Possible values are format, region, context and stackSize."
+"or ansi256. Possible values are format, region, context, stackSize and all."
 
-#: cli/ksyntaxhighlighter.cpp:107
+#: cli/ksyntaxhighlighter.cpp:106
 msgctxt "SyntaxHighlightingCLI|"
 msgid "type"
 msgstr "type"
 
-#: cli/ksyntaxhighlighter.cpp:111
+#: cli/ksyntaxhighlighter.cpp:110
 msgctxt "SyntaxHighlightingCLI|"
 msgid "Disable ANSI background for the default color."
 msgstr "Disable ANSI background for the default colour."
 
+#: cli/ksyntaxhighlighter.cpp:114
+msgctxt "SyntaxHighlightingCLI|"
+msgid "Select background color role from theme."
+msgstr "Select background colour role from theme."
+
 #: cli/ksyntaxhighlighter.cpp:115
 msgctxt "SyntaxHighlightingCLI|"
-msgid ""
-"For ansi and ansi256Colors formats, flush the output buffer on each line."
-msgstr ""
+msgid "role"
+msgstr "role"
 
-#: cli/ksyntaxhighlighter.cpp:120
-#, fuzzy
-#| msgctxt "SyntaxHighlightingCLI|"
-#| msgid ""
-#| "Set HTML page's title\n"
-#| "(default: the filename or \"Kate Syntax Highlighter\" if reading from "
-#| "stdin)."
+#: cli/ksyntaxhighlighter.cpp:119
+msgctxt "SyntaxHighlightingCLI|"
+msgid "For ansi and ansi256 formats, flush the output buffer on each line."
+msgstr "For ansi and ansi256 formats, flush the output buffer on each line."
+
+#: cli/ksyntaxhighlighter.cpp:124
 msgctxt "SyntaxHighlightingCLI|"
 msgid ""
 "Set HTML page's title\n"
 "(default: the filename or \"KSyntaxHighlighter\" if reading from stdin)."
 msgstr ""
 "Set HTML page's title\n"
-"(default: the filename or \"Kate Syntax Highlighter\" if reading from stdin)."
+"(default: the filename or \"KSyntaxHighlighter\" if reading from stdin)."
 
-#: cli/ksyntaxhighlighter.cpp:121
+#: cli/ksyntaxhighlighter.cpp:125
 msgctxt "SyntaxHighlightingCLI|"
 msgid "title"
 msgstr "title"
 
-#: lib/definition_p.h:104
+#: lib/definition_p.h:116
 msgctxt "Language|"
 msgid "None"
 msgstr "None"
@@ -1675,20 +1675,16 @@ msgid "All syntax definitions are up-to-date."
 msgstr "All syntax definitions are up-to-date."
 
 #: lib/definitiondownloader.cpp:78
-#, fuzzy, qt-format
-#| msgctxt "QObject|"
-#| msgid "Downloading new syntax definition for '%1'..."
+#, qt-format
 msgctxt "QObject|@info"
 msgid "Downloading new syntax definition for '%1'…"
-msgstr "Downloading new syntax definition for '%1'..."
+msgstr "Downloading new syntax definition for '%1'…"
 
 #: lib/definitiondownloader.cpp:85
-#, fuzzy, qt-format
-#| msgctxt "QObject|"
-#| msgid "Updating syntax definition for '%1' to version %2..."
+#, qt-format
 msgctxt "QObject|@info"
 msgid "Updating syntax definition for '%1' to version %2…"
-msgstr "Updating syntax definition for '%1' to version %2..."
+msgstr "Updating syntax definition for '%1' to version %2…"
 
 #~ msgctxt "SyntaxHighlightingCLI|"
 #~ msgid "The source file to highlight."
@@ -5542,10 +5538,6 @@ msgstr "Updating syntax definition for '%1' to version %2..."
 #~ msgctxt "short translation please"
 #~ msgid "Enable the byte order marker when saving unicode files."
 #~ msgstr "Enable the byte order marker when saving unicode files."
-
-#~ msgctxt "short translation please"
-#~ msgid "Set the background color for the current line."
-#~ msgstr "Set the background colour for the current line."
 
 #~ msgctxt "short translation please"
 #~ msgid "Set the default dictionary used for spell checking."
