@@ -1,5 +1,5 @@
 /*
-    SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
+    SPDX-FileCopyrightText: 2024-2025 Igor Mironchik <igor.mironchik@gmail.com>
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 
@@ -60,6 +60,7 @@ public:
     bool foundHighlighted() const;
     bool foundSelected() const;
     void applyColors(const Colors &colors);
+    void enableSpellingCheck(bool on);
     std::shared_ptr<MD::Document<MD::QStringTrait>> currentDoc() const;
     void applyFont(const QFont &f);
     SyntaxVisitor &syntaxHighlighter() const;
@@ -91,6 +92,7 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
     void paintEvent(QPaintEvent *event) override;
+    void contextMenuEvent(QContextMenuEvent *event) override;
 
 protected:
     int lineNumber(const QPoint &p);

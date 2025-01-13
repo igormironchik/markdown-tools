@@ -24,7 +24,7 @@ endif()
 qt6_policy(SET QTP0001 NEW)
 
 function(ecm_add_qml_module ARG_TARGET)
-    cmake_parse_arguments(PARSE_ARGV 1 ARG "NO_PLUGIN;QT_NO_PLUGIN;GENERATE_PLUGIN_SOURCE" "URI;VERSION;CLASSNAME" "")
+    cmake_parse_arguments(PARSE_ARGV 1 ARG "NO_PLUGIN;QT_NO_PLUGIN;GENERATE_PLUGIN_SOURCE" "URI;VERSION;CLASSNAME;OUTPUT_TARGETS" "")
 
     if ("${ARG_TARGET}" STREQUAL "")
         message(FATAL_ERROR "ecm_add_qml_module called without a valid target name.")
@@ -72,9 +72,25 @@ function(ecm_add_qml_module ARG_TARGET)
         endif()
     endif()
 
+    # make qmlimportscanner also find QML modules installed
+    # outside of the Qt prefix
+    if(IS_DIRECTORY "${CMAKE_INSTALL_PREFIX}/${KDE_INSTALL_QMLDIR}")
+        list(APPEND _import_paths "${CMAKE_INSTALL_PREFIX}/${KDE_INSTALL_QMLDIR}")
+    endif()
+    foreach(_prefix ${CMAKE_PREFIX_PATH})
+        if(IS_DIRECTORY "${_prefix}/${KDE_INSTALL_QMLDIR}")
+            list(APPEND _import_paths "${_prefix}/${KDE_INSTALL_QMLDIR}")
+        endif()
+    endforeach()
+    list(APPEND _arguments IMPORT_PATH ${_import_paths})
+
     list(APPEND _arguments ${ARG_UNPARSED_ARGUMENTS})
 
-    qt6_add_qml_module(${_arguments})
+    qt6_add_qml_module(${_arguments} OUTPUT_TARGETS _out_targets)
+    if (ARG_OUTPUT_TARGETS)
+        set(${ARG_OUTPUT_TARGETS} ${_out_targets} PARENT_SCOPE)
+    endif()
+    set_target_properties(${ARG_TARGET} PROPERTIES _ecm_output_targets "${_out_targets}")
 
     # KDECMakeSettings sets the prefix of MODULE targets to empty but Qt will
     # not load a QML plugin without prefix. So we need to force it here.
@@ -98,7 +114,7 @@ function(ecm_add_qml_module_dependencies ARG_TARGET)
 endfunction()
 
 function(ecm_target_qml_sources ARG_TARGET)
-    cmake_parse_arguments(PARSE_ARGV 1 ARG "PRIVATE" "VERSION;PATH" "SOURCES")
+    cmake_parse_arguments(PARSE_ARGV 1 ARG "PRIVATE" "VERSION;PATH;OUTPUT_TARGETS" "SOURCES")
 
     if ("${ARG_SOURCES}" STREQUAL "")
         message(FATAL_ERROR "ecm_target_qml_sources called without required argument SOURCES")
@@ -130,16 +146,23 @@ function(ecm_target_qml_sources ARG_TARGET)
     endforeach()
 
     if(_QML_FILES)
-        qt6_target_qml_sources(${ARG_TARGET} QML_FILES ${_QML_FILES} ${ARG_UNPARSED_ARGUMENTS})
+        qt6_target_qml_sources(${ARG_TARGET} QML_FILES ${_QML_FILES} OUTPUT_TARGETS _out_targets_qml ${ARG_UNPARSED_ARGUMENTS})
     endif()
     if(_RESOURCES)
-        qt6_target_qml_sources(${ARG_TARGET} RESOURCES ${_RESOURCES} ${ARG_UNPARSED_ARGUMENTS})
+        qt6_target_qml_sources(${ARG_TARGET} RESOURCES ${_RESOURCES} OUTPUT_TARGETS _out_targets_qrc ${ARG_UNPARSED_ARGUMENTS})
     endif()
+    list(APPEND _out_targets "${_out_targets_qml}" "${_out_targets_qrc}")
+    if (ARG_OUTPUT_TARGETS)
+        set(${ARG_OUTPUT_TARGETS} ${_out_targets} PARENT_SCOPE)
+    endif()
+    get_target_property(_ecm_output_targets ${ARG_TARGET} _ecm_output_targets)
+    list(APPEND _ecm_output_targets ${_out_targets})
+    set_target_properties(${ARG_TARGET} PROPERTIES _ecm_output_targets "${_ecm_output_targets}")
 
 endfunction()
 
 function(ecm_finalize_qml_module ARG_TARGET)
-    cmake_parse_arguments(PARSE_ARGV 1 ARG "" "DESTINATION;VERSION" "")
+    cmake_parse_arguments(PARSE_ARGV 1 ARG "" "DESTINATION;VERSION;EXPORT" "")
 
     if (NOT ARG_DESTINATION)
         set(ARG_DESTINATION "${KDE_INSTALL_QMLDIR}")
@@ -172,28 +195,47 @@ function(ecm_finalize_qml_module ARG_TARGET)
         return()
     endif()
 
+    if (ARG_EXPORT AND NOT BUILD_SHARED_LIBS)
+        set(_install_targets_args EXPORT "${ARG_EXPORT}")
+    endif()
     install(TARGETS "${module_plugin_target}"
+        ${_install_targets_args}
         LIBRARY DESTINATION "${module_dir}"
         RUNTIME DESTINATION "${module_dir}"
     )
+
+    # Install dependent targets created for static builds
+    get_target_property(_ecm_output_targets ${ARG_TARGET} _ecm_output_targets)
+    if (_ecm_output_targets AND ARG_EXPORT)
+        install(TARGETS ${_ecm_output_targets}
+            EXPORT ${ARG_EXPORT}
+            LIBRARY DESTINATION "${module_dir}"
+            RUNTIME DESTINATION "${module_dir}"
+            OBJECTS DESTINATION "${module_dir}"
+        )
+    endif()
 
     # Install the QML module meta information.
     install(FILES "${module_qmldir}"   DESTINATION "${module_dir}")
     install(FILES "${module_typeinfo}" DESTINATION "${module_dir}")
 
     # Install QML files, possibly renamed.
-    list(LENGTH module_qml_files num_files)
-    if (NOT "${module_qml_files}" MATCHES "NOTFOUND" AND ${num_files} GREATER 0)
-        qt6_query_qml_module(${ARG_TARGET} QML_FILES_DEPLOY_PATHS qml_files_deploy_paths)
+    # see Kirigami::StyleSelector::resolveFileX, on Android we never use QML files from disk
+    # but rather always the ones from qrc
+    if (NOT ANDROID)
+        list(LENGTH module_qml_files num_files)
+        if (NOT "${module_qml_files}" MATCHES "NOTFOUND" AND ${num_files} GREATER 0)
+            qt6_query_qml_module(${ARG_TARGET} QML_FILES_DEPLOY_PATHS qml_files_deploy_paths)
 
-        math(EXPR last_index "${num_files} - 1")
-        foreach(i RANGE 0 ${last_index})
-            list(GET module_qml_files       ${i} src_file)
-            list(GET qml_files_deploy_paths ${i} deploy_path)
-            get_filename_component(dst_name "${deploy_path}" NAME)
-            get_filename_component(dest_dir "${deploy_path}" DIRECTORY)
-            install(FILES "${src_file}" DESTINATION "${module_dir}/${dest_dir}" RENAME "${dst_name}")
-        endforeach()
+            math(EXPR last_index "${num_files} - 1")
+            foreach(i RANGE 0 ${last_index})
+                list(GET module_qml_files       ${i} src_file)
+                list(GET qml_files_deploy_paths ${i} deploy_path)
+                get_filename_component(dst_name "${deploy_path}" NAME)
+                get_filename_component(dest_dir "${deploy_path}" DIRECTORY)
+                install(FILES "${src_file}" DESTINATION "${module_dir}/${dest_dir}" RENAME "${dst_name}")
+            endforeach()
+        endif()
     endif()
 
     # Install resources, possibly renamed.

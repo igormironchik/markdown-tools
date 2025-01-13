@@ -8,6 +8,9 @@ set( CMAKE_AUTOUIC ON )
 find_package( Qt6Core REQUIRED )
 find_package( Qt6Widgets REQUIRED )
 find_package( Qt6WebEngineWidgets REQUIRED )
+find_package( KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
+    Sonnet
+)
 
 set( LIB_SRC
 	editor.hpp
@@ -51,7 +54,9 @@ set( LIB_SRC
 	font.hpp
 	font.cpp
 	settings.hpp
-	settings.cpp )
+    settings.cpp
+    sonnetconfig.hpp
+    sonnetconfig.cpp)
 
 set( SRC main.cpp )
 
@@ -71,10 +76,12 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR}
 
 add_library( md-editor-lib STATIC ${LIB_SRC} )
 
-target_link_libraries( md-editor-lib markdown-widgets Qt6::WebEngineWidgets Qt6::Widgets Qt6::Core )
+target_link_libraries( md-editor-lib markdown-widgets KF${KF_MAJOR_VERSION}::SonnetUi KF${KF_MAJOR_VERSION}::SonnetCore
+    Qt6::WebEngineWidgets Qt6::Widgets Qt6::Core )
 
 add_executable( md-editor WIN32 ${SRC} )
 
 install( TARGETS md-editor )
 
-target_link_libraries( md-editor md-editor-lib markdown-widgets Qt6::WebEngineWidgets Qt6::Widgets Qt6::Core )
+target_link_libraries( md-editor md-editor-lib markdown-widgets KF${KF_MAJOR_VERSION}::SonnetUi KF${KF_MAJOR_VERSION}::SonnetCore
+    Qt6::WebEngineWidgets Qt6::Widgets Qt6::Core )

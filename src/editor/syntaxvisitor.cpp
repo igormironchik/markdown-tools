@@ -1,5 +1,5 @@
 /*
-    SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
+    SPDX-FileCopyrightText: 2024-2025 Igor Mironchik <igor.mironchik@gmail.com>
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 
@@ -7,6 +7,11 @@
 #include "syntaxvisitor.hpp"
 #include "colorsdlg.hpp"
 #include "editor.hpp"
+
+// Sonnet include.
+#include <Sonnet/Speller>
+#include <Sonnet/Settings>
+#include <Sonnet/GuessLanguage>
 
 // Qt include.
 #include <QScopedValueRollback>
@@ -28,6 +33,7 @@ namespace MdEditor
 struct SyntaxVisitorPrivate {
     SyntaxVisitorPrivate(Editor *e)
         : m_editor(e)
+        , m_speller(new Sonnet::Speller)
     {
     }
 
@@ -90,6 +96,19 @@ struct SyntaxVisitorPrivate {
         return f;
     }
 
+    void identifyLanguage(const QString &word)
+    {
+        if (m_autodetectLanguage) {
+            const auto lang = m_guessLanguage.identify(word);
+
+            if (!lang.isEmpty()) {
+                m_speller->setLanguage(lang);
+            } else {
+                m_speller->setLanguage(m_defaultLanguage);
+            }
+        }
+    }
+
     //! Editor.
     Editor *m_editor = nullptr;
     //! Document.
@@ -108,6 +127,26 @@ struct SyntaxVisitorPrivate {
     QFont m_font;
     //! Additional style that should be applied for any item.
     int m_additionalStyle = 0;
+    //! Spell checker.
+    Sonnet::Speller * m_speller = nullptr;
+    //! Is spelling check enabled?
+    bool m_spellingEnabled = false;
+    //! Should all uppercase words be skipped by spelling check?
+    bool m_skipAllUppercase = false;
+    //! Should language be autodetected by spelling check?
+    bool m_autodetectLanguage = false;
+    //! Should compund words be skipped by spelling check?
+    bool m_skipRunTogether = false;
+    //! Ignore list for spelling check.
+    QStringList m_ignoredWords;
+    //! Default language for spelling check.
+    QString m_defaultLanguage;
+    //! Preferred languages.
+    QStringList m_preferredLanguages;
+    //! Guess language.
+    Sonnet::GuessLanguage m_guessLanguage;
+    //! Misspelled positions.
+    QMap<long long int, QVector<QPair<long long int, long long int>>> m_misspelledPos;
 }; // struct SyntaxVisitorPrivate
 
 //
@@ -131,11 +170,63 @@ void SyntaxVisitor::setFont(const QFont &f)
 void SyntaxVisitor::clearHighlighting()
 {
     m_d->clearFormats();
+    m_d->m_misspelledPos.clear();
+}
+
+bool SyntaxVisitor::isSpellingEnabled() const
+{
+    return m_d->m_spellingEnabled;
+}
+
+void SyntaxVisitor::spellingSettingsChanged(bool enabled)
+{
+    m_d->m_spellingEnabled = enabled;
+
+    Sonnet::Settings sonnet;
+    m_d->m_skipAllUppercase = sonnet.skipUppercase();
+    m_d->m_autodetectLanguage = sonnet.autodetectLanguage();
+    m_d->m_skipRunTogether = sonnet.skipRunTogether();
+    m_d->m_ignoredWords = sonnet.currentIgnoreList();
+    m_d->m_defaultLanguage = sonnet.defaultLanguage();
+    m_d->m_preferredLanguages = sonnet.preferredLanguages();
+
+    m_d->m_speller->setLanguage(m_d->m_defaultLanguage);
+}
+
+bool SyntaxVisitor::isMisspelled(long long int line, long long int pos,
+                                 QPair<long long int, long long int> &wordPos) const
+{
+    if (m_d->m_misspelledPos.contains(line)) {
+        for (const auto &p : std::as_const(m_d->m_misspelledPos[line])) {
+            if (pos >= p.first && pos <= p.second) {
+                wordPos = p;
+                return true;
+            } else if (pos < p.first) {
+                return false;
+            }
+        }
+    }
+
+    return false;
+}
+
+QStringList SyntaxVisitor::spellSuggestions(const QString &word) const
+{
+    QStringList ret;
+
+    for (const auto & lang : std::as_const(m_d->m_preferredLanguages)) {
+        m_d->m_speller->setLanguage(lang);
+        ret.append(m_d->m_speller->suggest(word));
+    }
+
+    m_d->m_speller->setLanguage(m_d->m_defaultLanguage);
+
+    return ret;
 }
 
 void SyntaxVisitor::highlight(std::shared_ptr<MD::Document<MD::QStringTrait>> doc, const Colors &colors)
 {
-    m_d->clearFormats();
+    clearHighlighting();
 
     m_d->m_doc = doc;
     m_d->m_colors = colors;
@@ -175,6 +266,73 @@ void SyntaxVisitor::onReferenceLink(MD::Link<MD::QStringTrait> *l)
     MD::PosCache<MD::QStringTrait>::onReferenceLink(l);
 }
 
+namespace /* anonymous */ {
+
+long long int
+skipSpacesAndPunct(const QTextDocument *doc, long long int pos)
+{
+    auto c = doc->characterAt(pos);
+
+    while (!c.isNull()) {
+        if (!(c.isPunct() || c.isSpace())) {
+            break;
+        }
+
+        c = doc->characterAt(++pos);
+    }
+
+    return pos;
+}
+
+void
+skipLastPunct(QString &word, long long int &pos,
+              QVector<long long int> &puncts)
+{
+    while (!word.isEmpty() && word.back().isPunct()) {
+        puncts.pop_back();
+        --pos;
+        word.removeLast();
+    }
+}
+
+QString
+readWord(const QTextDocument *doc, long long int &pos, long long int lastPos,
+         QVector<long long int> &puncts, bool &allUpper)
+{
+    QString word;
+    const auto startPos = pos;
+
+    auto c = doc->characterAt(pos);
+    allUpper = true;
+
+    while (!c.isNull() && pos <= lastPos) {
+        if (c.isSpace()) {
+            break;
+        } else {
+            word.append(c);
+
+            if (c.isPunct()) {
+                puncts.append(pos - startPos);
+            } else if (c.isLetter()) {
+                if (!c.isUpper()) {
+                    allUpper = false;
+                }
+            }
+
+            ++pos;
+            c = doc->characterAt(pos);
+        }
+    }
+
+    --pos;
+
+    skipLastPunct(word, pos, puncts);
+
+    return word;
+}
+
+} /* namespace anonymous */
+
 void SyntaxVisitor::onText(MD::Text<MD::QStringTrait> *t)
 {
     QTextCharFormat format;
@@ -182,6 +340,36 @@ void SyntaxVisitor::onText(MD::Text<MD::QStringTrait> *t)
     format.setFont(m_d->styleFont(t->opts() | m_d->m_additionalStyle));
 
     m_d->setFormat(format, t->startLine(), t->startColumn(), t->endLine(), t->endColumn());
+
+    if (m_d->m_spellingEnabled) {
+        const auto block = m_d->m_editor->document()->findBlockByNumber(t->startLine());
+        auto pos = block.position() + t->startColumn();
+
+        format.setUnderlineColor(Qt::red);
+        format.setFontUnderline(true);
+        format.setUnderlineStyle(QTextCharFormat::WaveUnderline);
+
+        pos = skipSpacesAndPunct(m_d->m_editor->document(), pos);
+
+        while (pos - block.position() <= t->endColumn()) {
+            const auto startPos = pos - block.position();
+            QVector<long long int> puncts;
+            bool allUpper = false;
+            auto word = readWord(m_d->m_editor->document(), pos, block.position() + t->endColumn(),
+                                 puncts, allUpper);
+
+            m_d->identifyLanguage(word);
+
+            if (m_d->m_speller->isMisspelled(word) && !m_d->m_ignoredWords.contains(word)) {
+                if (!(m_d->m_skipRunTogether && !puncts.isEmpty()) && !(m_d->m_skipAllUppercase && allUpper)) {
+                    m_d->setFormat(format, t->startLine(), startPos, t->startLine(), startPos + word.length() - 1);
+                    m_d->m_misspelledPos[t->startLine()].append(qMakePair(startPos, startPos + word.length() - 1));
+                }
+            }
+
+            pos = skipSpacesAndPunct(m_d->m_editor->document(), ++pos);
+        }
+    }
 
     onItemWithOpts(t);
 

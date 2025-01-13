@@ -61,7 +61,7 @@ jobs:
 
     - run: brew upgrade
 
-    - run: brew install fontconfig freetype openssl libxml2 jpeg-turbo libpng libtiff libidn tinyxml2
+    - run: brew install fontconfig freetype openssl libxml2 jpeg-turbo libpng libtiff libidn tinyxml2 hunspell
 
     - run: python3 -m venv ${{ github.workspace }}/python
 

@@ -28,7 +28,7 @@ jobs:
 
     - run: sudo apt upgrade
 
-    - run: sudo apt install libfreetype6-dev libjpeg-dev libpng-dev zlib1g zlib1g-dev libfontconfig1-dev fontconfig libxml2-dev libtiff-dev freeglut3-dev libxcb-icccm4  libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-shape0 libxcb-xinerama0 libxcb-xkb1 libxkbcommon-x11-0 patchelf libcups2-dev lcov libtinyxml2-dev
+    - run: sudo apt install libfreetype6-dev libjpeg-dev libpng-dev zlib1g zlib1g-dev libfontconfig1-dev fontconfig libxml2-dev libtiff-dev freeglut3-dev libxcb-icccm4  libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-shape0 libxcb-xinerama0 libxcb-xkb1 libxkbcommon-x11-0 patchelf libcups2-dev lcov libtinyxml2-dev libhunspell-dev
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
@@ -50,8 +50,8 @@ jobs:
     - name: Copy libresvg.so
       run: cp "${{ github.workspace }}/3rdparty/resvg/target/release/libresvg.so" "${{ github.workspace }}/build-markdown-tools/lib"
 
-    - name: Copy libKF6SyntaxHighlighting.so.6.3.0
-      run: cp "${{ github.workspace }}/../KDE/lib/x86_64-linux-gnu/libKF6SyntaxHighlighting.so.6.3.0" "${{ github.workspace }}/build-markdown-tools/lib"
+    - name: Copy libKF6SyntaxHighlighting.so.6.9.0
+      run: cp "${{ github.workspace }}/../KDE/lib/x86_64-linux-gnu/libKF6SyntaxHighlighting.so.6.9.0" "${{ github.workspace }}/build-markdown-tools/lib"
 
     - name: Copy libKF6SyntaxHighlighting.so.6
       run: cp "${{ github.workspace }}/../KDE/lib/x86_64-linux-gnu/libKF6SyntaxHighlighting.so.6" "${{ github.workspace }}/build-markdown-tools/lib"

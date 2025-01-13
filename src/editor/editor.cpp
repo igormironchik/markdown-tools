@@ -1,5 +1,5 @@
 /*
-    SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
+    SPDX-FileCopyrightText: 2024-2025 Igor Mironchik <igor.mironchik@gmail.com>
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 
@@ -7,12 +7,16 @@
 #include "editor.hpp"
 #include "syntaxvisitor.hpp"
 
+// Sonnet include.
+#include <Sonnet/Settings>
+
 // Qt include.
 #include <QPainter>
 #include <QTextBlock>
 #include <QTextDocument>
 #include <QThread>
 #include <QTextLayout>
+#include <QMenu>
 
 // C++ include.
 #include <functional>
@@ -276,6 +280,15 @@ void Editor::applyColors(const Colors &colors)
     viewport()->update();
 }
 
+void Editor::enableSpellingCheck(bool on)
+{
+    syntaxHighlighter().spellingSettingsChanged(on);
+
+    onContentChanged();
+
+    viewport()->update();
+}
+
 std::shared_ptr<MD::Document<MD::QStringTrait>> Editor::currentDoc() const
 {
     return m_d->m_currentDoc;
@@ -379,6 +392,62 @@ void Editor::paintEvent(QPaintEvent *event)
     }
 
     QPlainTextEdit::paintEvent(event);
+}
+
+void Editor::contextMenuEvent(QContextMenuEvent *event)
+{
+    auto menu = createStandardContextMenu(event->pos());
+
+    auto c = cursorForPosition(event->pos());
+    const auto line = c.block().blockNumber();
+    const auto pos = c.position() - c.block().position();
+
+    QPair<long long int, long long int> wordPos;
+    QMap<QAction*, QString> suggested;
+
+    if (syntaxHighlighter().isMisspelled(line, pos, wordPos)) {
+        c.setPosition(c.block().position() + wordPos.first);
+        c.setPosition(c.block().position() + wordPos.second + 1, QTextCursor::KeepAnchor);
+        const auto word = c.selectedText();
+
+        const auto suggestions = syntaxHighlighter().spellSuggestions(word);
+
+        if (!suggestions.isEmpty()) {
+            menu->addSeparator();
+            auto suggestionsMenu = new QMenu(tr("Spelling"), menu);
+            menu->addMenu(suggestionsMenu);
+
+            for (const auto &w : std::as_const(suggestions)) {
+                suggested.insert(suggestionsMenu->addAction(w), w);
+            }
+        }
+
+        if (suggestions.isEmpty()) {
+            menu->addSeparator();
+        }
+
+        menu->addAction(tr("Skip Word"), [word, this]() {
+            Sonnet::Settings sonnet;
+            auto ignored = sonnet.currentIgnoreList();
+            ignored.append(word);
+            sonnet.setCurrentIgnoreList(ignored);
+            this->enableSpellingCheck(this->syntaxHighlighter().isSpellingEnabled());
+            sonnet.save();
+        });
+    }
+
+    auto action = menu->exec(event->globalPos());
+
+    if (suggested.contains(action)) {
+        c.beginEditBlock();
+        c.removeSelectedText();
+        c.insertText(suggested[action]);
+        c.endEditBlock();
+    }
+
+    event->accept();
+
+    menu->deleteLater();
 }
 
 void Editor::highlightCurrentLine()

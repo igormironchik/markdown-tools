@@ -1,5 +1,5 @@
 /*
-    SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
+    SPDX-FileCopyrightText: 2024-2025 Igor Mironchik <igor.mironchik@gmail.com>
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 
@@ -14,6 +14,11 @@
 #include "editor.hpp"
 #include "ui_settings.h"
 
+namespace Sonnet
+{
+class ConfigWidget;
+}
+
 namespace MdEditor
 {
 
@@ -27,12 +32,15 @@ class SettingsDlg : public QDialog
     Q_OBJECT
 
 public:
-    SettingsDlg(const Colors &c, const QFont &f, const Margins &m, QWidget *parent);
+    SettingsDlg(const Colors &c, const QFont &f, const Margins &m, bool enableSpelling, QWidget *parent);
     ~SettingsDlg() override = default;
 
     const Colors &colors() const;
     QFont currentFont() const;
     Margins editorMargins() const;
+    bool isSpellingEnabled() const;
+
+    Sonnet::ConfigWidget *sonnetConfigWidget() const;
 
 private slots:
     void onPageChanged(int idx);

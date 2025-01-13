@@ -362,12 +362,24 @@
             },
             "Special Variable": {
                 "bold": false,
-                "selected-text-color": "#f8f8f2",
-                "text-color": "#f8f8f2"
+                "selected-text-color": "#bd93f9",
+                "text-color": "#bd93f9"
             },
             "Variable": {
                 "selected-text-color": "#f8f8f2",
                 "text-color": "#f8f8f2"
+            }
+        },
+        "Pascal": {
+            "ISO/Delphi Extended": {
+                "text-color": "#ff79c6"
+            }
+        },
+        "Odin": {
+            "Context Variable": {
+                "italic": true,
+                "selected-text-color": "#bd93f9",
+                "text-color": "#bd93f9"
             }
         },
         "Python": {
@@ -570,7 +582,7 @@
         ],
         "license": "SPDX-License-Identifier: MIT",
         "name": "Dracula",
-        "revision": 8
+        "revision": 10
     },
     "text-styles": {
         "Alert": {

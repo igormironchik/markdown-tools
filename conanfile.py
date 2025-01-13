@@ -13,6 +13,7 @@ class DependenciesRecipe(ConanFile):
         self.requires("libtiff/4.4.0")
         self.requires("libxml2/2.10.3")
         self.requires("libiconv/1.17")
+        self.requires("hunspell/1.7.2")
         if self.settings.os == "Windows":
             self.requires("fontconfig/2.15.0")
 
@@ -26,6 +27,7 @@ class DependenciesRecipe(ConanFile):
         self.options["libiconv"].shared = False
         self.options["fontconfig"].shared = False
         self.options["tinyxml2"].shared = False
+        self.options["hunspell"].shared = False
 
     def imports(self):
         self.copy("*.dll", "bin", "bin")

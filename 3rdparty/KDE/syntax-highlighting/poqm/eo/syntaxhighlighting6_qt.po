@@ -2,7 +2,7 @@
 # Copyright (C) 2003, 2007, 2008 Free Software Foundation, Inc.
 # This file is distributed under the same license as the syntax-highlighting package.
 # Heiko Evermann <heiko@evermann.de>, 2003.
-# Oliver M. Kellogg <okellogg@users.sourceforge.net>, 2007.
+# Oliver M. Kellogg <olivermkellogg@gmail.com>, 2007.
 # Cindy McKee <cfmckee@gmail.com>, 2007, 2008.
 #
 # Minuskloj: ĉ ĝ ĵ ĥ ŝ ŭ   Majuskloj: Ĉ Ĝ Ĵ Ĥ Ŝ Ŭ
@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: katepart4\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2016-09-08 07:30+0000\n"
-"PO-Revision-Date: 2024-05-09 22:01+0100\n"
-"Last-Translator: Oliver Kellogg <okellogg@users.sourceforge.net>\n"
+"PO-Revision-Date: 2024-08-23 21:45+0200\n"
+"Last-Translator: Oliver Kellogg <olivermkellogg@gmail.com>\n"
 "Language-Team: Esperanto <kde-i18n-eo@kde.org>\n"
 "Language: eo\n"
 "MIME-Version: 1.0\n"
@@ -436,6 +436,10 @@ msgid "Git Rebase"
 msgstr "Git Rebase"
 
 msgctxt "Language|"
+msgid "Gleam"
+msgstr "Gleam"
+
+msgctxt "Language|"
 msgid "GlossTex"
 msgstr "GlossTex"
 
@@ -586,6 +590,10 @@ msgstr "Julia"
 msgctxt "Language|"
 msgid "J"
 msgstr "J"
+
+msgctxt "Language|"
+msgid "Kate Config"
+msgstr "Kate-Agordo"
 
 msgctxt "Language|"
 msgid "KBasic"
@@ -868,6 +876,10 @@ msgid "OpenSCAD"
 msgstr "OpenSCAD"
 
 msgctxt "Language|"
+msgid "opsi-script"
+msgstr "opsi-script"
+
+msgctxt "Language|"
 msgid "Org Mode"
 msgstr "Org Mode"
 
@@ -958,6 +970,10 @@ msgstr "Python"
 msgctxt "Language|"
 msgid "QDoc Configuration"
 msgstr "QDoc-Agordo"
+
+msgctxt "Language|"
+msgid "QFace"
+msgstr ""
 
 msgctxt "Language|"
 msgid "QMake"
@@ -1206,6 +1222,10 @@ msgstr "TI Basic"
 msgctxt "Language|"
 msgid "Tiger"
 msgstr "Tiger"
+
+msgctxt "Language|"
+msgid "TLA+"
+msgstr ""
 
 msgctxt "Language|"
 msgid "TSV"
@@ -1585,50 +1605,55 @@ msgctxt "SyntaxHighlightingCLI|"
 msgid "theme"
 msgstr "etoso"
 
-#: cli/ksyntaxhighlighter.cpp:98
+#: cli/ksyntaxhighlighter.cpp:97
 msgctxt "SyntaxHighlightingCLI|"
 msgid ""
-"Use the specified format instead of html. Must be html, ansi or "
-"ansi256Colors."
+"Use the specified format instead of html. Must be html, ansi or ansi256."
 msgstr ""
-"Uzi la specifitan formaton anstataŭ html. Devas esti html, ansi aŭ "
-"ansi256Colors."
+"Uzi la specifitan formaton anstataŭ html. Devas esti html, ansi aŭ ansi256."
 
-#: cli/ksyntaxhighlighter.cpp:99
+#: cli/ksyntaxhighlighter.cpp:98
 msgctxt "SyntaxHighlightingCLI|"
 msgid "format"
 msgstr "formato"
 
-#: cli/ksyntaxhighlighter.cpp:104
+#: cli/ksyntaxhighlighter.cpp:103
 msgctxt "SyntaxHighlightingCLI|"
 msgid ""
 "Add information to debug a syntax file. Only works with --output-format=ansi "
-"or ansi256Colors. Possible values are format, region, context, stackSize and "
-"all."
+"or ansi256. Possible values are format, region, context, stackSize and all."
 msgstr ""
 "Aldoni informojn por sencimigi sintaksdosieron. Nur funkcias kun --output-"
-"format=ansi aŭ ansi256Colors. Eblaj valoroj estas format, region, context, "
+"format=ansi aŭ ansi256. Eblaj valoroj estas format, region, context, "
 "stackSize kaj all."
 
-#: cli/ksyntaxhighlighter.cpp:107
+#: cli/ksyntaxhighlighter.cpp:106
 msgctxt "SyntaxHighlightingCLI|"
 msgid "type"
 msgstr "tipo"
 
-#: cli/ksyntaxhighlighter.cpp:111
+#: cli/ksyntaxhighlighter.cpp:110
 msgctxt "SyntaxHighlightingCLI|"
 msgid "Disable ANSI background for the default color."
 msgstr "Malŝalti ANSI-fonon por defaŭltkoloro."
 
+#: cli/ksyntaxhighlighter.cpp:114
+msgctxt "SyntaxHighlightingCLI|"
+msgid "Select background color role from theme."
+msgstr "Elekti fonkoloran rolon el etoso."
+
 #: cli/ksyntaxhighlighter.cpp:115
 msgctxt "SyntaxHighlightingCLI|"
-msgid ""
-"For ansi and ansi256Colors formats, flush the output buffer on each line."
-msgstr ""
-"Por ansi- kaj ansi256Colors-formatoj, ĝismalplenigi la eligbufron ĉe ĉiu "
-"linio."
+msgid "role"
+msgstr "rolo"
 
-#: cli/ksyntaxhighlighter.cpp:120
+#: cli/ksyntaxhighlighter.cpp:119
+msgctxt "SyntaxHighlightingCLI|"
+msgid "For ansi and ansi256 formats, flush the output buffer on each line."
+msgstr ""
+"Por ansi- kaj ansi256-formatoj, ĝismalplenigi la eligbufron je ĉiu linio."
+
+#: cli/ksyntaxhighlighter.cpp:124
 msgctxt "SyntaxHighlightingCLI|"
 msgid ""
 "Set HTML page's title\n"
@@ -1637,12 +1662,12 @@ msgstr ""
 "Meti titolon de HTML-paĝo\n"
 "(defaŭlto: la dosiernomo aŭ \"KSyntaxHighlighter\" se legante de stdin)."
 
-#: cli/ksyntaxhighlighter.cpp:121
+#: cli/ksyntaxhighlighter.cpp:125
 msgctxt "SyntaxHighlightingCLI|"
 msgid "title"
 msgstr "titolo"
 
-#: lib/definition_p.h:104
+#: lib/definition_p.h:116
 msgctxt "Language|"
 msgid "None"
 msgstr "Nenio"

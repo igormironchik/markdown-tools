@@ -1,5 +1,5 @@
 /*
-    SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
+    SPDX-FileCopyrightText: 2024-2025 Igor Mironchik <igor.mironchik@gmail.com>
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 
@@ -21,7 +21,7 @@ namespace MdEditor
 // SettingsDlg
 //
 
-SettingsDlg::SettingsDlg(const Colors &c, const QFont &f, const Margins &m, QWidget *parent)
+SettingsDlg::SettingsDlg(const Colors &c, const QFont &f, const Margins &m, bool enableSpelling, QWidget *parent)
     : QDialog(parent)
 {
     m_ui.setupUi(this);
@@ -39,12 +39,12 @@ SettingsDlg::SettingsDlg(const Colors &c, const QFont &f, const Margins &m, QWid
     connect(m_ui.m_stack, &QStackedWidget::currentChanged, this, &SettingsDlg::onPageChanged);
     connect(m_ui.m_rightMargin, &QCheckBox::checkStateChanged, this, &SettingsDlg::onEnableRightMargin);
 
-    m_ui.buttonBox->addButton(QDialogButtonBox::StandardButton::RestoreDefaults);
-
     m_ui.m_menu->item(0)->setIcon(QIcon::fromTheme(QStringLiteral("fill-color"), QIcon(QStringLiteral(":/res/img/fill-color.png"))));
     m_ui.m_menu->item(1)->setIcon(
         QIcon::fromTheme(QStringLiteral("preferences-desktop-font"), QIcon(QStringLiteral(":/res/img/preferences-desktop-font.png"))));
     m_ui.m_menu->item(2)->setIcon(QIcon::fromTheme(QStringLiteral("document-properties"), QIcon(QStringLiteral(":/res/img/document-properties.png"))));
+
+    m_ui.m_spellingGroup->setChecked(enableSpelling);
 }
 
 const Colors &SettingsDlg::colors() const
@@ -59,17 +59,32 @@ QFont SettingsDlg::currentFont() const
 
 void SettingsDlg::onPageChanged(int idx)
 {
-    if (idx == 0) {
-        m_ui.buttonBox->addButton(QDialogButtonBox::StandardButton::RestoreDefaults);
-    } else {
+    if (static_cast<QAbstractButton *>(m_ui.buttonBox->button(QDialogButtonBox::RestoreDefaults)) != nullptr) {
         m_ui.buttonBox->removeButton(m_ui.buttonBox->button(QDialogButtonBox::StandardButton::RestoreDefaults));
+    }
+
+    if (idx == 0 || idx == 2) {
+        m_ui.buttonBox->addButton(QDialogButtonBox::StandardButton::RestoreDefaults);
     }
 }
 
 void SettingsDlg::onButtonclicked(QAbstractButton *btn)
 {
     if (static_cast<QAbstractButton *>(m_ui.buttonBox->button(QDialogButtonBox::RestoreDefaults)) == btn) {
-        m_ui.m_colorsPage->resetDefaults();
+        switch (m_ui.m_stack->currentIndex()) {
+        case 0:
+            m_ui.m_colorsPage->resetDefaults();
+            break;
+
+        case 2:
+            m_ui.m_spellingConfig->slotDefault();
+            break;
+
+        default:
+            break;
+        }
+    } else if (static_cast<QAbstractButton *>(m_ui.buttonBox->button(QDialogButtonBox::Ok)) == btn) {
+        m_ui.m_spellingConfig->save();
     }
 }
 
@@ -87,6 +102,18 @@ Margins SettingsDlg::editorMargins() const
     m.m_length = m_ui.m_rightMarginValue->value();
 
     return m;
+}
+
+bool
+SettingsDlg::isSpellingEnabled() const
+{
+    return m_ui.m_spellingGroup->isChecked();
+}
+
+Sonnet::ConfigWidget *
+SettingsDlg::sonnetConfigWidget() const
+{
+    return m_ui.m_spellingConfig;
 }
 
 void SettingsDlg::onEnableRightMargin(Qt::CheckState st)
