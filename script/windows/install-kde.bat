@@ -8,6 +8,8 @@ cmake -S 3rdparty/KDE/syntax-highlighting -B ../build-syntax-highlighting -DCMAK
 cmake --build ../build-syntax-highlighting --config Release
 cmake --install ../build-syntax-highlighting --prefix ../KDE
 
+conan install . -of ../build-sonnet -s build_type=Release --build=missing
+
 cmake -S 3rdparty/KDE/sonnet -B ../build-sonnet -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH=%CD%/Qt/%qt_version%/msvc2019_64
 cmake --build ../build-sonnet --config Release
 cmake --install ../build-sonnet --prefix ../KDE
