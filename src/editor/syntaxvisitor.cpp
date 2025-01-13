@@ -96,6 +96,19 @@ struct SyntaxVisitorPrivate {
         return f;
     }
 
+    void identifyLanguage(const QString &word)
+    {
+        if (m_autodetectLanguage) {
+            const auto lang = m_guessLanguage.identify(word);
+
+            if (!lang.isEmpty()) {
+                m_speller->setLanguage(lang);
+            } else {
+                m_speller->setLanguage(m_defaultLanguage);
+            }
+        }
+    }
+
     //! Editor.
     Editor *m_editor = nullptr;
     //! Document.
@@ -128,8 +141,12 @@ struct SyntaxVisitorPrivate {
     QStringList m_ignoredWords;
     //! Default language for spelling check.
     QString m_defaultLanguage;
+    //! Preferred languages.
+    QStringList m_preferredLanguages;
     //! Guess language.
     Sonnet::GuessLanguage m_guessLanguage;
+    //! Misspelled positions.
+    QMap<long long int, QVector<QPair<long long int, long long int>>> m_misspelledPos;
 }; // struct SyntaxVisitorPrivate
 
 //
@@ -153,6 +170,7 @@ void SyntaxVisitor::setFont(const QFont &f)
 void SyntaxVisitor::clearHighlighting()
 {
     m_d->clearFormats();
+    m_d->m_misspelledPos.clear();
 }
 
 void SyntaxVisitor::spellingSettingsChanged(bool enabled)
@@ -165,13 +183,43 @@ void SyntaxVisitor::spellingSettingsChanged(bool enabled)
     m_d->m_skipRunTogether = sonnet.skipRunTogether();
     m_d->m_ignoredWords = sonnet.currentIgnoreList();
     m_d->m_defaultLanguage = sonnet.defaultLanguage();
+    m_d->m_preferredLanguages = sonnet.preferredLanguages();
 
     m_d->m_speller->setLanguage(m_d->m_defaultLanguage);
 }
 
+bool SyntaxVisitor::isMisspelled(long long int line, long long int pos,
+                                 QPair<long long int, long long int> &wordPos) const
+{
+    if (m_d->m_misspelledPos.contains(line)) {
+        for (const auto &p : std::as_const(m_d->m_misspelledPos[line])) {
+            if (pos >= p.first && pos <= p.second) {
+                wordPos = p;
+                return true;
+            } else if (pos < p.first) {
+                return false;
+            }
+        }
+    }
+
+    return false;
+}
+
+QStringList SyntaxVisitor::spellSuggestions(const QString &word) const
+{
+    QStringList ret;
+
+    for (const auto & lang : std::as_const(m_d->m_preferredLanguages)) {
+        m_d->m_speller->setLanguage(lang);
+        ret.append(m_d->m_speller->suggest(word));
+    }
+
+    return ret;
+}
+
 void SyntaxVisitor::highlight(std::shared_ptr<MD::Document<MD::QStringTrait>> doc, const Colors &colors)
 {
-    m_d->clearFormats();
+    clearHighlighting();
 
     m_d->m_doc = doc;
     m_d->m_colors = colors;
@@ -303,19 +351,12 @@ void SyntaxVisitor::onText(MD::Text<MD::QStringTrait> *t)
             auto word = readWord(m_d->m_editor->document(), pos, block.position() + t->endColumn(),
                                  puncts, allUpper);
 
-            if (m_d->m_autodetectLanguage) {
-                const auto lang = m_d->m_guessLanguage.identify(word);
-
-                if (!lang.isEmpty()) {
-                    m_d->m_speller->setLanguage(lang);
-                } else {
-                    m_d->m_speller->setLanguage(m_d->m_defaultLanguage);
-                }
-            }
+            m_d->identifyLanguage(word);
 
             if (m_d->m_speller->isMisspelled(word) && !m_d->m_ignoredWords.contains(word)) {
                 if (!(m_d->m_skipRunTogether && !puncts.isEmpty()) && !(m_d->m_skipAllUppercase && allUpper)) {
                     m_d->setFormat(format, t->startLine(), startPos, t->startLine(), startPos + word.length() - 1);
+                    m_d->m_misspelledPos[t->startLine()].append(qMakePair(startPos, startPos + word.length() - 1));
                 }
             }
 

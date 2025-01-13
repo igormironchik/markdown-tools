@@ -92,6 +92,7 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
     void paintEvent(QPaintEvent *event) override;
+    void contextMenuEvent(QContextMenuEvent *event) override;
 
 protected:
     int lineNumber(const QPoint &p);

@@ -39,6 +39,9 @@ public:
     void setFont(const QFont &f);
     void clearHighlighting();
     void spellingSettingsChanged(bool enabled);
+    bool isMisspelled(long long int line, long long int pos,
+                      QPair<long long int, long long int> &wordPos) const;
+    QStringList spellSuggestions(const QString &word) const;
 
 protected:
     void onReferenceLink(MD::Link<MD::QStringTrait> *l) override;
