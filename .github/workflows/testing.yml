@@ -50,8 +50,8 @@ jobs:
     - name: Copy libresvg.so
       run: cp "${{ github.workspace }}/3rdparty/resvg/target/release/libresvg.so" "${{ github.workspace }}/build-markdown-tools/lib"
 
-    - name: Copy libKF6SyntaxHighlighting.so.6.3.0
-      run: cp "${{ github.workspace }}/../KDE/lib/x86_64-linux-gnu/libKF6SyntaxHighlighting.so.6.3.0" "${{ github.workspace }}/build-markdown-tools/lib"
+    - name: Copy libKF6SyntaxHighlighting.so.6.9.0
+      run: cp "${{ github.workspace }}/../KDE/lib/x86_64-linux-gnu/libKF6SyntaxHighlighting.so.6.9.0" "${{ github.workspace }}/build-markdown-tools/lib"
 
     - name: Copy libKF6SyntaxHighlighting.so.6
       run: cp "${{ github.workspace }}/../KDE/lib/x86_64-linux-gnu/libKF6SyntaxHighlighting.so.6" "${{ github.workspace }}/build-markdown-tools/lib"
