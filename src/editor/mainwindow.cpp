@@ -714,6 +714,9 @@ struct MainWindowPrivate {
     int m_tabWidth = -1;
     int m_minTabWidth = -1;
     int m_currentTab = 0;
+    int m_settingsWindowWidth = -1;
+    int m_settingsWindowHeight = -1;
+    bool m_settingsWindowMaximized = false;
 }; // struct MainWindowPrivate
 
 //
@@ -1223,6 +1226,12 @@ void MainWindow::saveCfg() const
 
     s.endGroup();
 
+    s.beginGroup(QStringLiteral("settings_window"));
+    s.setValue(QStringLiteral("width"), m_d->m_settingsWindowWidth);
+    s.setValue(QStringLiteral("height"), m_d->m_settingsWindowHeight);
+    s.setValue(QStringLiteral("maximized"), m_d->m_settingsWindowMaximized);
+    s.endGroup();
+
     s.beginGroup(QStringLiteral("spelling"));
     s.setValue(QStringLiteral("enabled"), m_d->m_spellingEnabled);
     s.endGroup();
@@ -1334,6 +1343,12 @@ void MainWindow::readCfg()
         }
     }
 
+    s.endGroup();
+
+    s.beginGroup(QStringLiteral("settings_window"));
+    m_d->m_settingsWindowWidth = s.value(QStringLiteral("width"), -1).toInt();
+    m_d->m_settingsWindowHeight = s.value(QStringLiteral("height"), -1).toInt();
+    m_d->m_settingsWindowMaximized = s.value(QStringLiteral("maximized")).toBool();
     s.endGroup();
 
     s.beginGroup(QStringLiteral("spelling"));
@@ -2214,11 +2229,18 @@ void MainWindow::onSettings()
     SettingsDlg dlg(m_d->m_mdColors, m_d->m_editor->font(), m_d->m_editor->margins(),
                     m_d->m_spellingEnabled, this);
 
-    bool save = false;
+    if (m_d->m_settingsWindowWidth != -1 && m_d->m_settingsWindowHeight != -1) {
+        dlg.resize(m_d->m_settingsWindowWidth, m_d->m_settingsWindowHeight);
+    }
+
+    if (m_d->m_settingsWindowMaximized) {
+        dlg.showMaximized();
+    }
+
     bool spellingSettingsChanged = false;
 
     connect(dlg.sonnetConfigWidget(), &Sonnet::ConfigWidget::configChanged,
-            [&save, &spellingSettingsChanged](){ save = true; spellingSettingsChanged = true; });
+        [&spellingSettingsChanged](){ spellingSettingsChanged = true; });
 
     if (dlg.exec() == QDialog::Accepted) {
 
@@ -2226,37 +2248,32 @@ void MainWindow::onSettings()
             m_d->m_mdColors = dlg.colors();
 
             m_d->m_editor->applyColors(m_d->m_mdColors);
-
-            save = true;
         }
 
         if (dlg.currentFont() != m_d->m_editor->font()) {
             m_d->m_editor->applyFont(dlg.currentFont());
-
-            save = true;
         }
 
         if (dlg.editorMargins() != m_d->m_editor->margins()) {
             m_d->m_editor->margins() = dlg.editorMargins();
-
-            save = true;
         }
 
         if (m_d->m_spellingEnabled != dlg.isSpellingEnabled()) {
             m_d->m_spellingEnabled = dlg.isSpellingEnabled();
 
             spellingSettingsChanged = true;
-            save = true;
-        }
-
-        if (save) {
-            saveCfg();
         }
 
         if (spellingSettingsChanged) {
             m_d->m_editor->enableSpellingCheck(m_d->m_spellingEnabled);
         }
     }
+
+    m_d->m_settingsWindowWidth = dlg.width();
+    m_d->m_settingsWindowHeight = dlg.height();
+    m_d->m_settingsWindowMaximized = dlg.isMaximized();
+
+    saveCfg();
 }
 
 } /* namespace MdEditor */
