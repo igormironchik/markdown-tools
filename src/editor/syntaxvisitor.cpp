@@ -214,6 +214,8 @@ QStringList SyntaxVisitor::spellSuggestions(const QString &word) const
         ret.append(m_d->m_speller->suggest(word));
     }
 
+    m_d->m_speller->setLanguage(m_d->m_defaultLanguage);
+
     return ret;
 }
 
