@@ -36,7 +36,7 @@ preview viewer, converter to `PDF`.
 You can get installers for `Windows` and `Linux` at
 [actions page](https://github.com/igormironchik/markdown-tools/actions). Just check
 for artifact at corresponding `deploy_linux` or `deploy_win` latest workflow run.
-But for `Linux`, espcially for `KDE`, I'd recommend to use your own build with system
+But for `Linux`, especially for `KDE`, I'd recommend to use your own build with system
 `Qt`, in this case you won't have issues with platform integration in `KDE`.
 
 # Building
@@ -75,15 +75,15 @@ install dependencies.
 
 On Windows `Conan` is a fresh wind to build this project.
 
-On Linux you can use what you want, that is why this is my favorite OS.
+On Linux you can use what you want, that is why this is my favourite OS.
 
 # Known issues
 
 * Don't use `HTML` attribute `class` in `HTML` tags, it can lead to wrongly rendered content.
-`GitHub` do a magick in this case, it just deletes `class` attribute, but this editor places
+`GitHub` do a magic in this case, it just deletes `class` attribute, but this editor places
 `HTML` tags as they present.
 
-* Strange behaviour of font combo box in fonts dialog on check in/out check box to constraint
+* Strange behaviour of font combo box in fonts dialogue on check in/out check box to constraint
 fonts to monospaced due to [QTBUG-112145](https://bugreports.qt.io/browse/QTBUG-112145)
 
 * I do not render HTML tags in PDF.
