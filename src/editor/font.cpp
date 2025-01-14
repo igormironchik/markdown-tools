@@ -21,7 +21,7 @@ FontPage::FontPage(QWidget *parent)
 {
     m_ui.setupUi(this);
 
-    QObject::connect(m_ui.monospacedCheckBox, &QCheckBox::stateChanged, this, &FontPage::onShowOnlyMonospaced);
+    QObject::connect(m_ui.monospacedCheckBox, &QCheckBox::checkStateChanged, this, &FontPage::onShowOnlyMonospaced);
 }
 
 Ui::FontPage &FontPage::ui()
@@ -43,7 +43,7 @@ void FontPage::initWithFont(const QFont &f)
     m_ui.fontSize->setValue(f.pointSize());
 }
 
-void FontPage::onShowOnlyMonospaced(int state)
+void FontPage::onShowOnlyMonospaced(Qt::CheckState state)
 {
     if (state == Qt::Checked) {
         m_ui.fontComboBox->setFontFilters(QFontComboBox::MonospacedFonts);

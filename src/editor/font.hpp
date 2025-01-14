@@ -32,7 +32,7 @@ public:
     void initWithFont(const QFont &f);
 
 private slots:
-    void onShowOnlyMonospaced(int state);
+    void onShowOnlyMonospaced(Qt::CheckState state);
 
 private:
     Q_DISABLE_COPY(FontPage)
