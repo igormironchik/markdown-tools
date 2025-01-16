@@ -104,7 +104,20 @@ struct SyntaxVisitorPrivate {
             if (!lang.isEmpty()) {
                 m_speller->setLanguage(lang);
             } else {
-                m_speller->setLanguage(m_defaultLanguage);
+                bool languageDetected = false;
+
+                for (const auto &lang :std::as_const(m_preferredLanguages)) {
+                    m_speller->setLanguage(lang);
+
+                    if (!m_speller->isMisspelled(word)) {
+                        languageDetected = true;
+                        break;
+                    }
+                }
+
+                if (!languageDetected) {
+                    m_speller->setLanguage(m_defaultLanguage);
+                }
             }
         }
     }
@@ -363,8 +376,6 @@ readWord(const QTextDocument *doc, long long int &pos, long long int lastPos,
 
     --pos;
 
-    skipLastPunct(word, pos, puncts);
-
     return word;
 }
 
@@ -398,13 +409,23 @@ void SyntaxVisitor::onText(MD::Text<MD::QStringTrait> *t)
             auto word = readWord(m_d->m_editor->document(), pos, block.position() + t->endColumn(),
                                  puncts, allUpper);
 
-            m_d->identifyLanguage(word);
+            while (true) {
+                m_d->identifyLanguage(word);
 
-            if (m_d->m_speller->isMisspelled(word) && !m_d->m_ignoredWords.contains(word)) {
-                if (!(m_d->m_skipRunTogether && !puncts.isEmpty()) && !(m_d->m_skipAllUppercase && allUpper)) {
-                    m_d->setFormat(format, t->startLine(), startPos, t->startLine(), startPos + word.length() - 1);
-                    m_d->m_misspelledPos[t->startLine()].append(qMakePair(startPos, startPos + word.length() - 1));
+                if (m_d->m_speller->isMisspelled(word) && !m_d->m_ignoredWords.contains(word)) {
+                    if (!word.isEmpty() && word.back().isPunct()) {
+                        word.removeLast();
+                        puncts.pop_back();
+                        continue;
+                    }
+
+                    if (!(m_d->m_skipRunTogether && !puncts.isEmpty()) && !(m_d->m_skipAllUppercase && allUpper)) {
+                        m_d->setFormat(format, t->startLine(), startPos, t->startLine(), startPos + word.length() - 1);
+                        m_d->m_misspelledPos[t->startLine()].append(qMakePair(startPos, startPos + word.length() - 1));
+                    }
                 }
+
+                break;
             }
 
             pos = skipSpacesAndPunct(m_d->m_editor->document(), ++pos);
