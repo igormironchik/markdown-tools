@@ -271,11 +271,7 @@ void Editor::applyColors(const Colors &colors)
 {
     m_d->m_colors = colors;
 
-    if (m_d->m_colors.m_enabled) {
-        onContentChanged();
-    } else {
-        m_d->m_syntax.clearHighlighting();
-    }
+    onContentChanged();
 
     viewport()->update();
 }

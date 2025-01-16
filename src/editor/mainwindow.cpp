@@ -1334,6 +1334,8 @@ void MainWindow::readCfg()
     const auto enableColors = s.value(QStringLiteral("enableColors")).toBool();
     m_d->m_mdColors.m_enabled = enableColors;
 
+    m_d->m_editor->applyColors(m_d->m_mdColors);
+
     const auto sidebarWidth = s.value(QStringLiteral("sidebarWidth")).toInt();
     if (sidebarWidth > 0) {
         m_d->m_tabWidth = sidebarWidth;
