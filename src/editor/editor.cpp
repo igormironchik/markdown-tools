@@ -616,8 +616,9 @@ void Editor::highlight(const QString &text, bool initCursor)
             s.format.setBackground(color);
             s.cursor = document()->find(text, c, QTextDocument::FindCaseSensitively);
 
-            if (!s.cursor.isNull())
+            if (!s.cursor.isNull()) {
                 m_d->m_extraSelections.append(s);
+            }
 
             c = s.cursor;
         }
@@ -738,6 +739,7 @@ void Editor::onParsingDone(std::shared_ptr<MD::Document<MD::QStringTrait>> doc, 
 
         viewport()->update();
 
+        emit misspelled(syntaxHighlighter().hasMisspelled());
         emit ready();
     }
 }
@@ -778,6 +780,11 @@ void Editor::goToLine(int l)
 void Editor::setText(const QString &t)
 {
     setPlainText(t);
+}
+
+void Editor::onNextMisspelled()
+{
+    syntaxHighlighter().highlightNextMisspelled();
 }
 
 void Editor::highlightSyntax(const Colors &colors, std::shared_ptr<MD::Document<MD::QStringTrait>> doc)

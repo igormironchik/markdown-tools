@@ -43,6 +43,8 @@ public:
     bool isMisspelled(long long int line, long long int pos,
                       QPair<long long int, long long int> &wordPos) const;
     QStringList spellSuggestions(const QString &word) const;
+    bool hasMisspelled() const;
+    void highlightNextMisspelled();
 
 protected:
     void onReferenceLink(MD::Link<MD::QStringTrait> *l) override;

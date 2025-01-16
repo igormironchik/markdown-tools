@@ -147,6 +147,8 @@ struct SyntaxVisitorPrivate {
     Sonnet::GuessLanguage m_guessLanguage;
     //! Misspelled positions.
     QMap<long long int, QVector<QPair<long long int, long long int>>> m_misspelledPos;
+    //! Current highlighted misspelled.
+    QPair<long long int, long long int> m_currentHighlightedMisspelled = {-1, -1};
 }; // struct SyntaxVisitorPrivate
 
 //
@@ -170,7 +172,6 @@ void SyntaxVisitor::setFont(const QFont &f)
 void SyntaxVisitor::clearHighlighting()
 {
     m_d->clearFormats();
-    m_d->m_misspelledPos.clear();
 }
 
 bool SyntaxVisitor::isSpellingEnabled() const
@@ -224,9 +225,45 @@ QStringList SyntaxVisitor::spellSuggestions(const QString &word) const
     return ret;
 }
 
+bool SyntaxVisitor::hasMisspelled() const
+{
+    return !m_d->m_misspelledPos.isEmpty();
+}
+
+void SyntaxVisitor::highlightNextMisspelled()
+{
+    if (!m_d->m_misspelledPos.isEmpty()) {
+        if (m_d->m_currentHighlightedMisspelled.first == -1) {
+            m_d->m_currentHighlightedMisspelled = {m_d->m_misspelledPos.firstKey(), 0};
+        } else {
+            if (m_d->m_currentHighlightedMisspelled.first == m_d->m_misspelledPos.lastKey() &&
+                m_d->m_currentHighlightedMisspelled.second == m_d->m_misspelledPos.last().size() - 1) {
+                m_d->m_currentHighlightedMisspelled = {m_d->m_misspelledPos.firstKey(), 0};
+            } else {
+                ++m_d->m_currentHighlightedMisspelled.second;
+
+                if (m_d->m_currentHighlightedMisspelled.second >= m_d->m_misspelledPos[m_d->m_currentHighlightedMisspelled.first].size()) {
+                    m_d->m_currentHighlightedMisspelled.first = std::next(m_d->m_misspelledPos.find(
+                                                                              m_d->m_currentHighlightedMisspelled.first)).key();
+                    m_d->m_currentHighlightedMisspelled.second = 0;
+                }
+            }
+        }
+
+        const auto b = m_d->m_editor->document()->findBlockByNumber(m_d->m_currentHighlightedMisspelled.first);
+        auto c = QTextCursor(b);
+        const auto p = m_d->m_misspelledPos[m_d->m_currentHighlightedMisspelled.first][m_d->m_currentHighlightedMisspelled.second];
+        c.setPosition(b.position() + p.first);
+        c.setPosition(b.position() + p.second + 1, QTextCursor::KeepAnchor);
+        m_d->m_editor->setTextCursor(c);
+    }
+}
+
 void SyntaxVisitor::highlight(std::shared_ptr<MD::Document<MD::QStringTrait>> doc, const Colors &colors)
 {
     clearHighlighting();
+    m_d->m_misspelledPos.clear();
+    m_d->m_currentHighlightedMisspelled = {-1, -1};
 
     m_d->m_doc = doc;
     m_d->m_colors = colors;

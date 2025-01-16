@@ -426,6 +426,11 @@ struct MainWindowPrivate {
 
         m_addTOCAction = new QAction(MainWindow::tr("Add ToC"), m_q);
 
+        m_nextMisspelled = new QAction(MainWindow::tr("Next Misspelled"), m_q);
+        m_nextMisspelled->setShortcut(MainWindow::tr("F6"));
+        m_nextMisspelled->setEnabled(false);
+        m_q->addAction(m_nextMisspelled);
+
         auto formatMenu = m_q->menuBar()->addMenu(MainWindow::tr("F&ormat"));
 
         m_tabAction = new QAction(MainWindow::tr("Indent"), formatMenu);
@@ -522,12 +527,14 @@ struct MainWindowPrivate {
         QObject::connect(m_editor->document(), &QTextDocument::modificationChanged, m_saveAction, &QAction::setEnabled);
         QObject::connect(m_editor->document(), &QTextDocument::modificationChanged, m_q, &MainWindow::setWindowModified);
         QObject::connect(m_editor, &Editor::ready, m_q, &MainWindow::onTextChanged);
+        QObject::connect(m_editor, &Editor::misspelled, m_q, &MainWindow::onMisspelledFount);
         QObject::connect(m_editor, &Editor::lineHovered, m_q, &MainWindow::onLineHovered);
         QObject::connect(toggleLineNumbersAction, &QAction::toggled, m_editor, &Editor::showLineNumbers);
         QObject::connect(toggleUnprintableCharacters, &QAction::toggled, m_editor, &Editor::showUnprintableCharacters);
         QObject::connect(m_toggleFindAction, &QAction::triggered, m_q, &MainWindow::onFind);
         QObject::connect(m_toggleFindWebAction, &QAction::triggered, m_q, &MainWindow::onFindWeb);
         QObject::connect(m_toggleGoToLineAction, &QAction::triggered, m_q, &MainWindow::onGoToLine);
+        QObject::connect(m_nextMisspelled, &QAction::triggered, m_q, &MainWindow::onNextMisspelled);
         QObject::connect(m_page, &QWebEnginePage::linkHovered, [this](const QString &url) {
             if (!url.isEmpty())
                 this->m_q->statusBar()->showMessage(url);
@@ -684,6 +691,7 @@ struct MainWindowPrivate {
     QAction *m_livePreviewAction = nullptr;
     QAction *m_convertToPdfAction = nullptr;
     QAction *m_addTOCAction = nullptr;
+    QAction *m_nextMisspelled = nullptr;
     QAction *m_tabAction = nullptr;
     QAction *m_backtabAction = nullptr;
     QMenu *m_standardEditMenu = nullptr;
@@ -1177,6 +1185,16 @@ void MainWindow::onGoToLine(bool)
     m_d->m_gotoline->setFocusOnLine();
 }
 
+void MainWindow::onNextMisspelled()
+{
+    m_d->m_editor->onNextMisspelled();
+}
+
+void MainWindow::onMisspelledFount(bool found)
+{
+    m_d->m_nextMisspelled->setEnabled(found);
+}
+
 void MainWindow::onChooseFont()
 {
     FontDlg dlg(m_d->m_editor->font(), this);
@@ -1399,6 +1417,8 @@ void MainWindow::onCursorPositionChanged()
     m_d->m_standardEditMenu->addAction(m_d->m_toggleGoToLineAction);
     m_d->m_standardEditMenu->addSeparator();
     m_d->m_standardEditMenu->addAction(m_d->m_toggleFindWebAction);
+    m_d->m_standardEditMenu->addSeparator();
+    m_d->m_standardEditMenu->addAction(m_d->m_nextMisspelled);
     m_d->m_standardEditMenu->addSeparator();
     m_d->m_standardEditMenu->addAction(m_d->m_addTOCAction);
 

@@ -54,6 +54,8 @@ private slots:
     void onFind(bool on);
     void onFindWeb(bool on);
     void onGoToLine(bool on);
+    void onMisspelledFount(bool found);
+    void onNextMisspelled();
     void onChooseFont();
     void onLessFontSize();
     void onMoreFontSize();

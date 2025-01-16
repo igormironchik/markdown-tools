@@ -46,6 +46,7 @@ signals:
     void lineHovered(int lineNumber, const QPoint &pos);
     void hoverLeaved();
     void ready();
+    void misspelled(bool found);
     void doParsing(const QString &md, const QString &path, const QString &fileName, unsigned long long int counter);
 
 public:
@@ -77,6 +78,7 @@ public slots:
     void clearHighlighting();
     void goToLine(int l);
     void setText(const QString &t);
+    void onNextMisspelled();
 
 private slots:
     void updateLineNumberAreaWidth(int newBlockCount);
