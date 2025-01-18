@@ -52,6 +52,7 @@ To build these applications first of all install dependencies:
  * `fontconfig`
  * `extra-cmake-modules`
  * `kf6-syntax-highlighting`
+ * `kf6-sonnet`
  * `Qt >= 6.7`
  * `tinyxml2`
 
