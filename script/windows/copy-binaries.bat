@@ -116,7 +116,7 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-mkdir installer\packages\mironchik.igor.markdown\data\lib\plugins
+mkdir installer\packages\mironchik.igor.markdown\data\plugins\kf6
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
