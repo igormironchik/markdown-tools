@@ -30,6 +30,8 @@ private:
     Speller();
     ~Speller() = default;
 
+    static void cleanup();
+
     Q_DISABLE_COPY(Speller)
 }; // struct Speller
 

@@ -6,6 +6,9 @@
 // md-editor include.
 #include "speller.hpp"
 
+// Qt include.
+#include <QCoreApplication>
+
 namespace MdEditor
 {
 
@@ -13,16 +16,30 @@ namespace MdEditor
 // Speller
 //
 
+static Speller * s_speller = nullptr;
+
 Speller &Speller::instance()
 {
-    static Speller speller;
-    return speller;
+    if (!s_speller) {
+        s_speller = new Speller;
+
+        qAddPostRoutine(&Speller::cleanup);
+    }
+
+    return *s_speller;
 }
 
 Speller::Speller()
     : m_speller(new Sonnet::Speller)
     , m_guessLanguage(new Sonnet::GuessLanguage)
 {
+}
+
+void Speller::cleanup()
+{
+    delete s_speller;
+
+    s_speller = nullptr;
 }
 
 }
