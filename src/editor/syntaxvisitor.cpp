@@ -19,6 +19,7 @@
 #include <QTextCharFormat>
 #include <QTextCursor>
 #include <QTextEdit>
+#include <QHash>
 
 // C++ include.
 #include <algorithm>
@@ -31,30 +32,36 @@ namespace MdEditor
 //
 
 struct SyntaxVisitorPrivate {
-    SyntaxVisitorPrivate(Editor *e)
-        : m_editor(e)
-        , m_speller(new Sonnet::Speller)
+    SyntaxVisitorPrivate()
+        : m_speller(new Sonnet::Speller)
+        , m_guessLanguage(new Sonnet::GuessLanguage)
     {
     }
 
-    void clearFormats()
+    ~SyntaxVisitorPrivate() = default;
+
+    SyntaxVisitorPrivate(const SyntaxVisitorPrivate &other) = default;
+    SyntaxVisitorPrivate &operator=(const SyntaxVisitorPrivate &other) = default;
+
+    void clearFormats(QTextDocument *doc)
     {
-        auto b = m_editor->document()->firstBlock();
+        auto b = doc->firstBlock();
 
         while (b.isValid()) {
             b.layout()->clearFormats();
 
             b = b.next();
         }
-
-        m_formats.clear();
     }
 
-    void applyFormats()
+    void applyFormats(QTextDocument *doc)
     {
-        for (const auto &f : std::as_const(m_formats)) {
-            f.m_block.layout()->setFormats(f.m_format);
+        for (auto it = m_formats.cbegin(), last = m_formats.cend(); it != last; ++it) {
+            doc->findBlockByNumber(it.key()).layout()->setFormats(it.value().m_format);
         }
+
+        m_textDoc = doc;
+        m_formats.clear();
     }
 
     void setFormat(const QTextCharFormat &format, const MD::WithPosition &pos)
@@ -62,16 +69,17 @@ struct SyntaxVisitorPrivate {
         setFormat(format, pos.startLine(), pos.startColumn(), pos.endLine(), pos.endColumn());
     }
 
-    void setFormat(const QTextCharFormat &format, long long int startLine, long long int startColumn, long long int endLine, long long int endColumn)
+    void setFormat(const QTextCharFormat &format, long long int startLine, long long int startColumn,
+                   long long int endLine, long long int endColumn)
     {
         for (auto i = startLine; i <= endLine; ++i) {
-            m_formats[i].m_block = m_editor->document()->findBlockByNumber(i);
+            const auto block = m_textDoc->findBlockByNumber(i);
 
             QTextLayout::FormatRange r;
             r.format = format;
             r.start = (i == startLine ? startColumn : 0);
-            r.length = (i == startLine ? (i == endLine ? endColumn - startColumn + 1 : m_formats[i].m_block.length() - 1 - startColumn)
-                                       : (i == endLine ? endColumn + 1 : m_formats[i].m_block.length() - 1));
+            r.length = (i == startLine ? (i == endLine ? endColumn - startColumn + 1 : block.length() - 1 - startColumn)
+                                       : (i == endLine ? endColumn + 1 : block.length() - 1));
 
             m_formats[i].m_format.push_back(r);
         }
@@ -99,49 +107,53 @@ struct SyntaxVisitorPrivate {
     void identifyLanguage(const QString &word)
     {
         if (m_autodetectLanguage) {
-            const auto lang = m_guessLanguage.identify(word);
+            if (!m_detectedLanguages.contains(word)) {
+                const auto lang = m_guessLanguage->identify(word);
 
-            if (!lang.isEmpty()) {
-                m_speller->setLanguage(lang);
-            } else {
-                bool languageDetected = false;
-
-                for (const auto &lang :std::as_const(m_preferredLanguages)) {
+                if (!lang.isEmpty()) {
                     m_speller->setLanguage(lang);
+                    m_detectedLanguages.insert(word, lang);
+                } else {
+                    bool languageDetected = false;
 
-                    if (!m_speller->isMisspelled(word)) {
-                        languageDetected = true;
-                        break;
+                    for (const auto &lang :std::as_const(m_preferredLanguages)) {
+                        m_speller->setLanguage(lang);
+
+                        if (!m_speller->isMisspelled(word)) {
+                            m_detectedLanguages.insert(word, lang);
+                            languageDetected = true;
+                            break;
+                        }
+                    }
+
+                    if (!languageDetected) {
+                        m_speller->setLanguage(m_defaultLanguage);
+                        m_detectedLanguages.insert(word, m_defaultLanguage);
                     }
                 }
-
-                if (!languageDetected) {
-                    m_speller->setLanguage(m_defaultLanguage);
-                }
+            } else {
+                m_speller->setLanguage(m_detectedLanguages[word]);
             }
         }
     }
 
-    //! Editor.
-    Editor *m_editor = nullptr;
-    //! Document.
-    std::shared_ptr<MD::Document<MD::QStringTrait>> m_doc;
     //! Colors.
     Colors m_colors;
 
     struct Format {
-        QTextBlock m_block;
         QList<QTextLayout::FormatRange> m_format;
     };
 
     //! Formats.
     QMap<int, Format> m_formats;
-    //! Default m_font.
+    //! Default font.
     QFont m_font;
+    //! Text document.
+    QTextDocument *m_textDoc = nullptr;
     //! Additional style that should be applied for any item.
     int m_additionalStyle = 0;
     //! Spell checker.
-    Sonnet::Speller * m_speller = nullptr;
+    QSharedPointer<Sonnet::Speller> m_speller = nullptr;
     //! Is spelling check enabled?
     bool m_spellingEnabled = false;
     //! Should all uppercase words be skipped by spelling check?
@@ -157,24 +169,45 @@ struct SyntaxVisitorPrivate {
     //! Preferred languages.
     QStringList m_preferredLanguages;
     //! Guess language.
-    Sonnet::GuessLanguage m_guessLanguage;
+    QSharedPointer<Sonnet::GuessLanguage> m_guessLanguage = nullptr;
     //! Misspelled positions.
     QMap<long long int, QVector<QPair<long long int, long long int>>> m_misspelledPos;
     //! Current highlighted misspelled.
     QPair<long long int, long long int> m_currentHighlightedMisspelled = {-1, -1};
+    //! Map of already detected languages for words.
+    QHash<QString, QString> m_detectedLanguages;
+    //! Cache of correct words.
+    QSet<QString> m_correctWords;
 }; // struct SyntaxVisitorPrivate
 
 //
 // SyntaxVisitor
 //
 
-SyntaxVisitor::SyntaxVisitor(Editor *editor)
-    : m_d(new SyntaxVisitorPrivate(editor))
+SyntaxVisitor::SyntaxVisitor()
+    : m_d(new SyntaxVisitorPrivate)
 {
 }
 
-SyntaxVisitor::~SyntaxVisitor()
+SyntaxVisitor::~SyntaxVisitor() = default;
+
+SyntaxVisitor::SyntaxVisitor(const SyntaxVisitor &other)
+    : m_d(new SyntaxVisitorPrivate)
 {
+    *this = other;
+}
+
+SyntaxVisitor &SyntaxVisitor::operator=(const SyntaxVisitor &other)
+{
+    if (this != &other) {
+        m_cache = other.m_cache;
+        m_skipInCache = other.m_skipInCache;
+        m_anchors = other.m_anchors;
+        m_doc = other.m_doc;
+        *m_d = *other.m_d;
+    }
+
+    return *this;
 }
 
 void SyntaxVisitor::setFont(const QFont &f)
@@ -182,11 +215,17 @@ void SyntaxVisitor::setFont(const QFont &f)
     m_d->m_font = f;
 }
 
-void SyntaxVisitor::clearHighlighting()
+void SyntaxVisitor::clearHighlighting(QTextDocument *doc)
 {
-    m_d->clearFormats();
+    m_d->clearFormats(doc);
     m_d->m_misspelledPos.clear();
     m_d->m_currentHighlightedMisspelled = {-1, -1};
+}
+
+void SyntaxVisitor::applyFormats(QTextDocument *doc)
+{
+    m_d->clearFormats(doc);
+    m_d->applyFormats(doc);
 }
 
 bool SyntaxVisitor::isSpellingEnabled() const
@@ -207,6 +246,9 @@ void SyntaxVisitor::spellingSettingsChanged(bool enabled)
     m_d->m_preferredLanguages = sonnet.preferredLanguages();
 
     m_d->m_speller->setLanguage(m_d->m_defaultLanguage);
+
+    m_d->m_detectedLanguages.clear();
+    m_d->m_correctWords.clear();
 }
 
 bool SyntaxVisitor::isMisspelled(long long int line, long long int pos,
@@ -245,7 +287,7 @@ bool SyntaxVisitor::hasMisspelled() const
     return !m_d->m_misspelledPos.isEmpty();
 }
 
-void SyntaxVisitor::highlightNextMisspelled()
+void SyntaxVisitor::highlightNextMisspelled(QPlainTextEdit *editor)
 {
     if (!m_d->m_misspelledPos.isEmpty()) {
         if (m_d->m_currentHighlightedMisspelled.first == -1) {
@@ -265,25 +307,35 @@ void SyntaxVisitor::highlightNextMisspelled()
             }
         }
 
-        const auto b = m_d->m_editor->document()->findBlockByNumber(m_d->m_currentHighlightedMisspelled.first);
+        const auto b = editor->document()->findBlockByNumber(m_d->m_currentHighlightedMisspelled.first);
         auto c = QTextCursor(b);
         const auto p = m_d->m_misspelledPos[m_d->m_currentHighlightedMisspelled.first][m_d->m_currentHighlightedMisspelled.second];
         c.setPosition(b.position() + p.first);
         c.setPosition(b.position() + p.second + 1, QTextCursor::KeepAnchor);
-        m_d->m_editor->setTextCursor(c);
+        editor->setTextCursor(c);
     }
 }
 
-void SyntaxVisitor::highlight(std::shared_ptr<MD::Document<MD::QStringTrait>> doc, const Colors &colors)
+void SyntaxVisitor::highlight(QTextDocument *textDoc,
+                              std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                              const Colors &cols)
 {
-    clearHighlighting();
+    m_d->m_misspelledPos.clear();
+    m_d->m_currentHighlightedMisspelled = {-1, -1};
+    m_d->m_colors = cols;
+    m_d->m_textDoc = textDoc;
 
-    m_d->m_doc = doc;
-    m_d->m_colors = colors;
+    MD::PosCache<MD::QStringTrait>::initialize(doc);
+}
 
-    MD::PosCache<MD::QStringTrait>::initialize(m_d->m_doc);
+const Colors &SyntaxVisitor::colors() const
+{
+    return m_d->m_colors;
+}
 
-    m_d->applyFormats();
+void SyntaxVisitor::setColors(const Colors &c)
+{
+    m_d->m_colors = c;
 }
 
 void SyntaxVisitor::onItemWithOpts(MD::ItemWithOpts<MD::QStringTrait> *i)
@@ -393,26 +445,29 @@ void SyntaxVisitor::onText(MD::Text<MD::QStringTrait> *t)
     }
 
     if (m_d->m_spellingEnabled) {
-        const auto block = m_d->m_editor->document()->findBlockByNumber(t->startLine());
+        const auto block = m_d->m_textDoc->findBlockByNumber(t->startLine());
         auto pos = block.position() + t->startColumn();
 
         format.setUnderlineColor(Qt::red);
         format.setFontUnderline(true);
         format.setUnderlineStyle(QTextCharFormat::WaveUnderline);
 
-        pos = skipSpacesAndPunct(m_d->m_editor->document(), pos);
+        pos = skipSpacesAndPunct(m_d->m_textDoc, pos);
 
         while (pos - block.position() <= t->endColumn()) {
             const auto startPos = pos - block.position();
             QVector<long long int> puncts;
             bool allUpper = false;
-            auto word = readWord(m_d->m_editor->document(), pos, block.position() + t->endColumn(),
+            auto word = readWord(m_d->m_textDoc, pos, block.position() + t->endColumn(),
                                  puncts, allUpper);
 
             while (true) {
                 m_d->identifyLanguage(word);
 
-                if (m_d->m_speller->isMisspelled(word) && !m_d->m_ignoredWords.contains(word)) {
+                const auto correctWord = m_d->m_correctWords.contains(word);
+                const auto ignoredWord = m_d->m_ignoredWords.contains(word);
+
+                if (!correctWord && !ignoredWord && m_d->m_speller->isMisspelled(word)) {
                     if (!word.isEmpty() && word.back().isPunct()) {
                         word.removeLast();
                         puncts.pop_back();
@@ -423,12 +478,14 @@ void SyntaxVisitor::onText(MD::Text<MD::QStringTrait> *t)
                         m_d->setFormat(format, t->startLine(), startPos, t->startLine(), startPos + word.length() - 1);
                         m_d->m_misspelledPos[t->startLine()].append(qMakePair(startPos, startPos + word.length() - 1));
                     }
+                } else if (!correctWord && !ignoredWord) {
+                    m_d->m_correctWords.insert(word);
                 }
 
                 break;
             }
 
-            pos = skipSpacesAndPunct(m_d->m_editor->document(), ++pos);
+            pos = skipSpacesAndPunct(m_d->m_textDoc, ++pos);
         }
     }
 
@@ -657,7 +714,7 @@ void SyntaxVisitor::onImage(MD::Image<MD::QStringTrait> *i)
 void SyntaxVisitor::onFootnoteRef(MD::FootnoteRef<MD::QStringTrait> *ref)
 {
     if (m_d->m_colors.m_enabled) {
-        if (m_d->m_doc->footnotesMap().find(ref->id()) != m_d->m_doc->footnotesMap().cend()) {
+        if (m_doc->footnotesMap().find(ref->id()) != m_doc->footnotesMap().cend()) {
             QTextCharFormat format;
             format.setForeground(m_d->m_colors.m_linkColor);
             format.setFont(m_d->styleFont(ref->opts() | m_d->m_additionalStyle));

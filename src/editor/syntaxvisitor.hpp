@@ -16,6 +16,11 @@
 // C++ include.
 #include <vector>
 
+QT_BEGIN_NAMESPACE
+class QTextDocument;
+class QPlainTextEdit;
+QT_END_NAMESPACE
+
 namespace MdEditor
 {
 
@@ -32,19 +37,31 @@ struct SyntaxVisitorPrivate;
 class SyntaxVisitor : public MD::PosCache<MD::QStringTrait>
 {
 public:
-    explicit SyntaxVisitor(Editor *editor);
+    SyntaxVisitor();
     ~SyntaxVisitor() override;
 
-    void highlight(std::shared_ptr<MD::Document<MD::QStringTrait>> doc, const Colors &colors);
+    SyntaxVisitor(const SyntaxVisitor &other);
+    SyntaxVisitor &operator=(const SyntaxVisitor &other);
+
+    void highlight(QTextDocument *textDoc,
+                   std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                   const Colors &cols);
+
+    const Colors &colors() const;
+    void setColors(const Colors &c);
+
     void setFont(const QFont &f);
-    void clearHighlighting();
+
+    void clearHighlighting(QTextDocument *doc);
+    void applyFormats(QTextDocument *doc);
+
     bool isSpellingEnabled() const;
     void spellingSettingsChanged(bool enabled);
     bool isMisspelled(long long int line, long long int pos,
                       QPair<long long int, long long int> &wordPos) const;
     QStringList spellSuggestions(const QString &word) const;
     bool hasMisspelled() const;
-    void highlightNextMisspelled();
+    void highlightNextMisspelled(QPlainTextEdit *editor);
 
 protected:
     void onReferenceLink(MD::Link<MD::QStringTrait> *l) override;
@@ -67,8 +84,6 @@ private:
     void onItemWithOpts(MD::ItemWithOpts<MD::QStringTrait> *i);
 
 private:
-    Q_DISABLE_COPY(SyntaxVisitor)
-
     QScopedPointer<SyntaxVisitorPrivate> m_d;
 }; // class SyntaxVisitor
 

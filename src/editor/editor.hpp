@@ -11,6 +11,7 @@
 
 // md-editor include.
 #include "colorsdlg.hpp"
+#include "syntaxvisitor.hpp"
 
 // md4qt include.
 #define MD4QT_QT_SUPPORT
@@ -47,7 +48,9 @@ signals:
     void hoverLeaved();
     void ready();
     void misspelled(bool found);
-    void doParsing(const QString &md, const QString &path, const QString &fileName, unsigned long long int counter);
+    void doParsing(const QString &md, const QString &path, const QString &fileName, unsigned long long int counter,
+                   QTextDocument *doc, SyntaxVisitor syntax);
+    void doHighlight();
 
 public:
     explicit Editor(QWidget *parent);
@@ -87,8 +90,8 @@ private slots:
     void onFindNext();
     void onFindPrev();
     void onContentChanged();
-    void highlightSyntax(const MdEditor::Colors &colors, std::shared_ptr<MD::Document<MD::QStringTrait>> doc);
-    void onParsingDone(std::shared_ptr<MD::Document<MD::QStringTrait>> doc, unsigned long long int counter);
+    void onParsingDone(std::shared_ptr<MD::Document<MD::QStringTrait>> doc, unsigned long long int counter,
+                       SyntaxVisitor syntax);
 
 protected:
     void resizeEvent(QResizeEvent *event) override;

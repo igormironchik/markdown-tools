@@ -5,7 +5,6 @@
 
 // md-editor include.
 #include "editor.hpp"
-#include "syntaxvisitor.hpp"
 
 // Sonnet include.
 #include <Sonnet/Settings>
@@ -41,7 +40,8 @@ class DataParser : public QObject
 
 signals:
     void newData();
-    void done(std::shared_ptr<MD::Document<MD::QStringTrait>>, unsigned long long int);
+    void done(std::shared_ptr<MD::Document<MD::QStringTrait>>, unsigned long long int, SyntaxVisitor syntax);
+    void highlighted();
 
 public:
     DataParser()
@@ -52,13 +52,21 @@ public:
     ~DataParser() override = default;
 
 public slots:
-    void onData(const QString &md, const QString &path, const QString &fileName, unsigned long long int counter)
+    void onData(const QString &md, const QString &path, const QString &fileName, unsigned long long int counter,
+                QTextDocument *doc, SyntaxVisitor syntax)
     {
         m_data.clear();
         m_data.push_back(md);
         m_path = path;
         m_fileName = fileName;
         m_counter = counter;
+
+        if (m_doc) {
+            m_doc->deleteLater();
+        }
+
+        m_doc = doc;
+        m_syntax = syntax;
 
         emit newData();
     }
@@ -73,7 +81,12 @@ private slots:
 
             m_data.clear();
 
-            emit done(doc, m_counter);
+            m_syntax.highlight(m_doc, doc, m_syntax.colors());
+
+            m_doc->deleteLater();
+            m_doc = nullptr;
+
+            emit done(doc, m_counter, m_syntax);
         }
     }
 
@@ -83,6 +96,8 @@ private:
     QString m_fileName;
     unsigned long long int m_counter;
     MD::Parser<MD::QStringTrait> m_parser;
+    QTextDocument *m_doc;
+    SyntaxVisitor m_syntax;
 };
 
 //
@@ -157,7 +172,6 @@ private:
 struct EditorPrivate {
     explicit EditorPrivate(Editor *parent)
         : m_q(parent)
-        , m_syntax(parent)
         , m_parsingThread(new QThread(m_q))
         , m_parser(new DataParser)
     {
@@ -296,7 +310,7 @@ void Editor::applyFont(const QFont &f)
 
     m_d->m_syntax.setFont(f);
 
-    highlightSyntax(m_d->m_colors, m_d->m_currentDoc);
+    onContentChanged();
 }
 
 void Editor::setDocName(const QString &name)
@@ -721,15 +735,19 @@ void Editor::onContentChanged()
 
     ++m_d->m_currentParsingCounter;
 
-    emit doParsing(md, info.absolutePath(), info.fileName(), m_d->m_currentParsingCounter);
+    emit doParsing(md, info.absolutePath(), info.fileName(), m_d->m_currentParsingCounter,
+                   document()->clone(), m_d->m_syntax);
 }
 
-void Editor::onParsingDone(std::shared_ptr<MD::Document<MD::QStringTrait>> doc, unsigned long long int counter)
+void Editor::onParsingDone(std::shared_ptr<MD::Document<MD::QStringTrait>> doc, unsigned long long int counter,
+                           SyntaxVisitor syntax)
 {
     if (m_d->m_currentParsingCounter == counter) {
         m_d->m_currentDoc = doc;
 
-        highlightSyntax(m_d->m_colors, m_d->m_currentDoc);
+        m_d->m_syntax = syntax;
+
+        m_d->m_syntax.applyFormats(document());
 
         highlightCurrent();
 
@@ -780,12 +798,7 @@ void Editor::setText(const QString &t)
 
 void Editor::onNextMisspelled()
 {
-    syntaxHighlighter().highlightNextMisspelled();
-}
-
-void Editor::highlightSyntax(const Colors &colors, std::shared_ptr<MD::Document<MD::QStringTrait>> doc)
-{
-    m_d->m_syntax.highlight(doc, colors);
+    syntaxHighlighter().highlightNextMisspelled(this);
 }
 
 void Editor::keyPressEvent(QKeyEvent *event)
