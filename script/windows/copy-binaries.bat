@@ -104,6 +104,18 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
+copy /Y %CD%\..KDE\bin\data installer\packages\mironchik.igor.markdown\data\bin\data
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+copy /Y %CD%\..KDE\lib\plugins installer\packages\mironchik.igor.markdown\data\lib\plugins
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
 copy %CD%\..\KDE\bin\KF6SyntaxHighlighting.dll installer\packages\mironchik.igor.markdown\data\bin\KF6SyntaxHighlighting.dll
 
 IF %ERRORLEVEL% NEQ 0 (

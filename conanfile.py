@@ -2,7 +2,7 @@ from conan import ConanFile
 
 class DependenciesRecipe(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
-    generators = "CMakeDeps"
+    generators = "CMakeDeps", "PkgConfigDeps"
 
     def requirements(self):
         self.requires("freetype/2.13.2")
