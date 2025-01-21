@@ -224,7 +224,6 @@ struct EditorPrivate {
     QList<QTextEdit::ExtraSelection> m_syntaxHighlighting;
     QTextEdit::ExtraSelection m_currentLine;
     QString m_highlightedText;
-    Colors m_colors;
     std::shared_ptr<MD::Document<MD::QStringTrait>> m_currentDoc;
     SyntaxVisitor m_syntax;
     Margins m_margins;
@@ -283,7 +282,7 @@ bool Editor::foundSelected() const
 
 void Editor::applyColors(const Colors &colors)
 {
-    m_d->m_colors = colors;
+    m_d->m_syntax.setColors(colors);
 
     onContentChanged();
 
