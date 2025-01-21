@@ -96,7 +96,7 @@ private:
     QString m_fileName;
     unsigned long long int m_counter;
     MD::Parser<MD::QStringTrait> m_parser;
-    QTextDocument *m_doc;
+    QTextDocument *m_doc = nullptr;
     SyntaxVisitor m_syntax;
 };
 

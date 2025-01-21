@@ -7,11 +7,10 @@
 #include "syntaxvisitor.hpp"
 #include "colorsdlg.hpp"
 #include "editor.hpp"
+#include "speller.hpp"
 
 // Sonnet include.
-#include <Sonnet/Speller>
 #include <Sonnet/Settings>
-#include <Sonnet/GuessLanguage>
 
 // Qt include.
 #include <QScopedValueRollback>
@@ -20,6 +19,7 @@
 #include <QTextCursor>
 #include <QTextEdit>
 #include <QHash>
+#include <QMutexLocker>
 
 // C++ include.
 #include <algorithm>
@@ -32,17 +32,6 @@ namespace MdEditor
 //
 
 struct SyntaxVisitorPrivate {
-    SyntaxVisitorPrivate()
-        : m_speller(new Sonnet::Speller)
-        , m_guessLanguage(new Sonnet::GuessLanguage)
-    {
-    }
-
-    ~SyntaxVisitorPrivate() = default;
-
-    SyntaxVisitorPrivate(const SyntaxVisitorPrivate &other) = default;
-    SyntaxVisitorPrivate &operator=(const SyntaxVisitorPrivate &other) = default;
-
     void clearFormats(QTextDocument *doc)
     {
         auto b = doc->firstBlock();
@@ -107,19 +96,22 @@ struct SyntaxVisitorPrivate {
     void identifyLanguage(const QString &word)
     {
         if (m_autodetectLanguage) {
-            if (!m_detectedLanguages.contains(word)) {
-                const auto lang = m_guessLanguage->identify(word);
+            auto &speller = Speller::instance();
+            QMutexLocker lock(&speller.m_mutex);
 
-                if (!lang.isEmpty()) {
-                    m_speller->setLanguage(lang);
+            if (!m_detectedLanguages.contains(word)) {
+                const auto lang = speller.m_guessLanguage->identify(word);
+
+                if (!lang.isEmpty() && m_preferredLanguages.contains(lang)) {
+                    speller.m_speller->setLanguage(lang);
                     m_detectedLanguages.insert(word, lang);
                 } else {
                     bool languageDetected = false;
 
                     for (const auto &lang :std::as_const(m_preferredLanguages)) {
-                        m_speller->setLanguage(lang);
+                        speller.m_speller->setLanguage(lang);
 
-                        if (!m_speller->isMisspelled(word)) {
+                        if (!speller.m_speller->isMisspelled(word)) {
                             m_detectedLanguages.insert(word, lang);
                             languageDetected = true;
                             break;
@@ -127,12 +119,12 @@ struct SyntaxVisitorPrivate {
                     }
 
                     if (!languageDetected) {
-                        m_speller->setLanguage(m_defaultLanguage);
+                        speller.m_speller->setLanguage(m_defaultLanguage);
                         m_detectedLanguages.insert(word, m_defaultLanguage);
                     }
                 }
             } else {
-                m_speller->setLanguage(m_detectedLanguages[word]);
+                speller.m_speller->setLanguage(m_detectedLanguages[word]);
             }
         }
     }
@@ -152,8 +144,6 @@ struct SyntaxVisitorPrivate {
     QTextDocument *m_textDoc = nullptr;
     //! Additional style that should be applied for any item.
     int m_additionalStyle = 0;
-    //! Spell checker.
-    QSharedPointer<Sonnet::Speller> m_speller = nullptr;
     //! Is spelling check enabled?
     bool m_spellingEnabled = false;
     //! Should all uppercase words be skipped by spelling check?
@@ -168,8 +158,6 @@ struct SyntaxVisitorPrivate {
     QString m_defaultLanguage;
     //! Preferred languages.
     QStringList m_preferredLanguages;
-    //! Guess language.
-    QSharedPointer<Sonnet::GuessLanguage> m_guessLanguage = nullptr;
     //! Misspelled positions.
     QMap<long long int, QVector<QPair<long long int, long long int>>> m_misspelledPos;
     //! Current highlighted misspelled.
@@ -245,7 +233,11 @@ void SyntaxVisitor::spellingSettingsChanged(bool enabled)
     m_d->m_defaultLanguage = sonnet.defaultLanguage();
     m_d->m_preferredLanguages = sonnet.preferredLanguages();
 
-    m_d->m_speller->setLanguage(m_d->m_defaultLanguage);
+    {
+        auto &speller = Speller::instance();
+        QMutexLocker lock(&speller.m_mutex);
+        speller.m_speller->setLanguage(m_d->m_defaultLanguage);
+    }
 
     m_d->m_detectedLanguages.clear();
     m_d->m_correctWords.clear();
@@ -272,12 +264,15 @@ QStringList SyntaxVisitor::spellSuggestions(const QString &word) const
 {
     QStringList ret;
 
+    auto &speller = Speller::instance();
+    QMutexLocker lock(&speller.m_mutex);
+
     for (const auto & lang : std::as_const(m_d->m_preferredLanguages)) {
-        m_d->m_speller->setLanguage(lang);
-        ret.append(m_d->m_speller->suggest(word));
+        speller.m_speller->setLanguage(lang);
+        ret.append(speller.m_speller->suggest(word));
     }
 
-    m_d->m_speller->setLanguage(m_d->m_defaultLanguage);
+    speller.m_speller->setLanguage(m_d->m_defaultLanguage);
 
     return ret;
 }
@@ -466,8 +461,15 @@ void SyntaxVisitor::onText(MD::Text<MD::QStringTrait> *t)
 
                 const auto correctWord = m_d->m_correctWords.contains(word);
                 const auto ignoredWord = m_d->m_ignoredWords.contains(word);
+                bool isMisspelled = false;
 
-                if (!correctWord && !ignoredWord && m_d->m_speller->isMisspelled(word)) {
+                {
+                    auto &speller = Speller::instance();
+                    QMutexLocker lock(&speller.m_mutex);
+                    isMisspelled = speller.m_speller->isMisspelled(word);
+                }
+
+                if (!correctWord && !ignoredWord && isMisspelled) {
                     if (!word.isEmpty() && word.back().isPunct()) {
                         word.removeLast();
                         puncts.pop_back();
