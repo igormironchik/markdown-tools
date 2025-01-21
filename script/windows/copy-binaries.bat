@@ -122,7 +122,7 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-xcopy %CD%\..\KDE\lib\plugins installer\packages\mironchik.igor.markdown\data\lib\plugins /S /Y
+xcopy %CD%\..\KDE\lib\plugins\kf6 installer\packages\mironchik.igor.markdown\data\plugins\kf6 /S /Y
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
