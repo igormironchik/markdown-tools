@@ -104,13 +104,25 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-copy /Y %CD%\..KDE\bin\data installer\packages\mironchik.igor.markdown\data\bin\data
+mkdir installer\packages\mironchik.igor.markdown\data\bin\data
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-copy /Y %CD%\..KDE\lib\plugins installer\packages\mironchik.igor.markdown\data\lib\plugins
+xcopy %CD%\..KDE\bin\data installer\packages\mironchik.igor.markdown\data\bin\data /S /Y
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+mkdir installer\packages\mironchik.igor.markdown\data\lib\plugins
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+xcopy %CD%\..KDE\lib\plugins installer\packages\mironchik.igor.markdown\data\lib\plugins /S /Y
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
