@@ -134,7 +134,7 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-copy /Y %CD%\..\build-sonnet\hunspell.dll installer\packages\mironchik.igor.markdown\data\plugins\kf6\sonnet\hunspell.dll
+copy /Y %CD%\..\build-sonnet\hunspell.dll installer\packages\mironchik.igor.markdown\data\bin\hunspell.dll
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
