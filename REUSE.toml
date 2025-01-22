@@ -16,6 +16,12 @@ SPDX-FileCopyrightText = "2020 Christoph Cullmann <cullmann@kde.org>"
 SPDX-License-Identifier = "MIT"
 
 [[annotations]]
+path = "3rdparty/KDE/sonnet/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2004 Zack Rusin <zack@kde.org>, 2009 Jakub Stachowski <qbast@go2.pl>"
+SPDX-License-Identifier = "LGPL-2.1-or-later"
+
+[[annotations]]
 path = ["tests/auto/test_render/**.data", "tests/manual/**", "doc/**.png", "src/shared/icon.ico", "src/converter/md-pdf.rc", "src/editor/md-editor.rc", "src/converter/resources.qrc", "src/editor/resources.qrc", "README.md", "roadmap.md", ".gitignore", "src/editor/**.ui", ".github/**", ".gitmodules", "conanfile.py", "codecov.yml", "installer/**", "script/**", "src/converter/svg/**", "REUSE.toml", "src/editor/res/index.html"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2024 Igor Mironchik <igor.mironchik@gmail.com>"
