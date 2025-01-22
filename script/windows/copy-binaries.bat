@@ -116,6 +116,18 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
+mkdir installer\packages\mironchik.igor.markdown\data\bin\data\hunspell
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+xcopy 3rdparty\Windows\hunspell installer\packages\mironchik.igor.markdown\data\bin\data\hunspell /S /Y
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
 mkdir installer\packages\mironchik.igor.markdown\data\plugins\kf6
 
 IF %ERRORLEVEL% NEQ 0 (
