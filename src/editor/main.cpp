@@ -60,7 +60,7 @@ int main(int argc, char **argv)
     appIcon.addFile(QStringLiteral(":/icon/icon_16x16.png"));
     app.setWindowIcon(appIcon);
 
-    const auto hunspellUserPath = QDir::currentPath() + QStringLiteral("/data/hunspell/");
+    const auto hunspellUserPath = app.applicationDirPath() + QStringLiteral("/data/hunspell/");
     qputenv("SONNET_HUNSPELL_DICPATH", hunspellUserPath.toLocal8Bit());
 
     MdEditor::MainWindow w;
