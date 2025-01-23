@@ -56,7 +56,9 @@ set( LIB_SRC
 	settings.hpp
     settings.cpp
     sonnetconfig.hpp
-    sonnetconfig.cpp)
+    sonnetconfig.cpp
+    speller.hpp
+    speller.cpp)
 
 set( SRC main.cpp )
 

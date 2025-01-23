@@ -27,7 +27,7 @@ class DependenciesRecipe(ConanFile):
         self.options["libiconv"].shared = False
         self.options["fontconfig"].shared = False
         self.options["tinyxml2"].shared = False
-        self.options["hunspell"].shared = False
+        self.options["hunspell"].shared = True
 
     def imports(self):
         self.copy("*.dll", "bin", "bin")

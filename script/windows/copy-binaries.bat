@@ -116,17 +116,42 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-mkdir installer\packages\mironchik.igor.markdown\data\lib\plugins
+mkdir installer\packages\mironchik.igor.markdown\data\bin\data\hunspell
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-xcopy %CD%\..\KDE\lib\plugins\kf6 installer\packages\mironchik.igor.markdown\data\plugins\kf6 /S /Y
+xcopy 3rdparty\Windows\hunspell installer\packages\mironchik.igor.markdown\data\bin\data\hunspell /S /Y
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
+
+mkdir installer\packages\mironchik.igor.markdown\data\plugins\kf6
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+mkdir installer\packages\mironchik.igor.markdown\data\plugins\kf6\sonnet
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+copy /Y %CD%\..\KDE\lib\plugins\kf6\sonnet\sonnet_hunspell.dll installer\packages\mironchik.igor.markdown\data\plugins\kf6\sonnet\sonnet_hunspell.dll
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+copy /Y %CD%\..\build-sonnet\hunspell.dll installer\packages\mironchik.igor.markdown\data\bin\hunspell.dll
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
 
 copy %CD%\..\KDE\bin\KF6SyntaxHighlighting.dll installer\packages\mironchik.igor.markdown\data\bin\KF6SyntaxHighlighting.dll
 

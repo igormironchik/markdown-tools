@@ -36,6 +36,11 @@ HunspellClient::HunspellClient(QObject *parent)
     };
 #ifdef Q_OS_WIN
     maybeAddPath(QStringLiteral(SONNET_INSTALL_PREFIX "/bin/data/hunspell/"));
+    const auto hunspellUserPath = qgetenv("SONNET_HUNSPELL_DICPATH");
+
+    if (!hunspellUserPath.isEmpty()) {
+        maybeAddPath(QString::fromLocal8Bit(hunspellUserPath));
+    }
 #else
     maybeAddPath(QStringLiteral("/System/Library/Spelling"));
     maybeAddPath(QStringLiteral("/usr/share/hunspell/"));

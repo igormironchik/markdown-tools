@@ -36,11 +36,13 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-conan install . -of ../build-sonnet -s build_type=Release --build=missing
+conan install . -of ../build-sonnet -s build_type=Release --build=missing --deployer=runtime_deploy
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
+
+set PKG_CONFIG_PATH=%CD%/../build-sonnet
 
 cmake -S 3rdparty/KDE/sonnet -B ../build-sonnet -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH=%CD%/Qt/%qt_version%/msvc2019_64
 
