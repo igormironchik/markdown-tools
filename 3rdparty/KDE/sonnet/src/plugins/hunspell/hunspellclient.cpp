@@ -36,7 +36,6 @@ HunspellClient::HunspellClient(QObject *parent)
     };
 #ifdef Q_OS_WIN
     const auto paths = QStandardPaths::locateAll(QStandardPaths::AppLocalDataLocation, QStringLiteral("hunspell"), QStandardPaths::LocateDirectory);
-    dirList.append(paths);
 
     for (const auto &p : paths) {
         maybeAddPath(p);
