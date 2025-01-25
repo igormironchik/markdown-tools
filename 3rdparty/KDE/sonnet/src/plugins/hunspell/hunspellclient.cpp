@@ -35,7 +35,13 @@ HunspellClient::HunspellClient(QObject *parent)
         }
     };
 #ifdef Q_OS_WIN
-    dirList.append(QStandardPaths::locateAll(QStandardPaths::AppLocalDataLocation, QStringLiteral("hunspell"), QStandardPaths::LocateDirectory));
+    const auto paths = QStandardPaths::locateAll(QStandardPaths::AppLocalDataLocation, QStringLiteral("hunspell"), QStandardPaths::LocateDirectory);
+    dirList.append(paths);
+
+    for (const auto &p : paths) {
+        maybeAddPath(p);
+    }
+
     maybeAddPath(QStringLiteral(SONNET_INSTALL_PREFIX "/bin/data/hunspell/"));
 #else
     maybeAddPath(QStringLiteral("/System/Library/Spelling"));
