@@ -21,8 +21,6 @@ HunspellClient::HunspellClient(QObject *parent)
     qCDebug(SONNET_HUNSPELL) << " HunspellClient::HunspellClient";
 
     QStringList dirList;
-    // search QStandardPaths
-    dirList.append(QStandardPaths::locateAll(QStandardPaths::GenericDataLocation, QStringLiteral("hunspell"), QStandardPaths::LocateDirectory));
 
     auto maybeAddPath = [&dirList](const QString &path) {
         if (QFileInfo::exists(path)) {
@@ -34,13 +32,26 @@ HunspellClient::HunspellClient(QObject *parent)
             }
         }
     };
-#ifdef Q_OS_WIN
-    const auto paths = QStandardPaths::locateAll(QStandardPaths::AppLocalDataLocation, QStringLiteral("hunspell"), QStandardPaths::LocateDirectory);
 
-    for (const auto &p : paths) {
+    QSet<QString> paths;
+
+    const auto genericPaths = QStandardPaths::locateAll(QStandardPaths::GenericDataLocation, QStringLiteral("hunspell"), QStandardPaths::LocateDirectory);
+
+    for (const auto &p : genericPaths) {
+        paths.insert(p);
+    }
+
+    const auto appLocalPaths = QStandardPaths::locateAll(QStandardPaths::AppLocalDataLocation, QStringLiteral("hunspell"), QStandardPaths::LocateDirectory);
+
+    for (const auto &p : appLocalPaths) {
+        paths.insert(p);
+    }
+
+    for (const auto &p : std::as_const(paths)) {
         maybeAddPath(p);
     }
 
+#ifdef Q_OS_WIN
     maybeAddPath(QStringLiteral(SONNET_INSTALL_PREFIX "/bin/data/hunspell/"));
 #else
     maybeAddPath(QStringLiteral("/System/Library/Spelling"));
