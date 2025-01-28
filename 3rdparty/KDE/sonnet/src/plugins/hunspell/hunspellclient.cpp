@@ -33,21 +33,15 @@ HunspellClient::HunspellClient(QObject *parent)
         }
     };
 
-    QSet<QString> paths;
-
     const auto genericPaths = QStandardPaths::locateAll(QStandardPaths::GenericDataLocation, QStringLiteral("hunspell"), QStandardPaths::LocateDirectory);
 
     for (const auto &p : genericPaths) {
-        paths.insert(p);
+        maybeAddPath(p);
     }
 
     const auto appLocalPaths = QStandardPaths::locateAll(QStandardPaths::AppLocalDataLocation, QStringLiteral("hunspell"), QStandardPaths::LocateDirectory);
 
     for (const auto &p : appLocalPaths) {
-        paths.insert(p);
-    }
-
-    for (const auto &p : std::as_const(paths)) {
         maybeAddPath(p);
     }
 
