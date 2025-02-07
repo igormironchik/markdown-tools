@@ -309,6 +309,7 @@ struct MainWindowPrivate {
         v->setSpacing(0);
         m_editor = new Editor(editorPanel);
         m_find = new Find(m_q, m_editor, editorPanel);
+        m_editor->setFindWidget(m_find);
         m_gotoline = new GoToLine(m_q, m_editor, editorPanel);
         v->addWidget(m_editor);
         v->addWidget(m_gotoline);
@@ -1232,6 +1233,8 @@ void MainWindow::saveCfg() const
     s.setValue(QStringLiteral("margin"), m_d->m_editor->margins().m_length);
     s.setValue(QStringLiteral("enableColors"), m_d->m_mdColors.m_enabled);
     s.setValue(QStringLiteral("sidebarWidth"), m_d->m_tabWidth);
+
+    s.setValue(QStringLiteral("findCaseSensitive"), m_d->m_find->isCaseSensitive());
     s.endGroup();
 
     s.beginGroup(QStringLiteral("window"));
@@ -1279,6 +1282,9 @@ void MainWindow::readCfg()
     }
 
     s.endGroup();
+
+    const auto isFindCaseSensitive = s.value(QStringLiteral("findCaseSensitive"), true).toBool();
+    m_d->m_find->setCaseSensitive(isFindCaseSensitive);
 
     const auto linkColor = s.value(QStringLiteral("linkColor"), m_d->m_mdColors.m_linkColor).value<QColor>();
     if (linkColor.isValid()) {

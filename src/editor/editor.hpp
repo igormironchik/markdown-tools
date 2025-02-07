@@ -37,6 +37,7 @@ bool operator!=(const Margins &l, const Margins &r);
 
 struct EditorPrivate;
 class SyntaxVisitor;
+class Find;
 
 //! Markdown text editor.
 class Editor : public QPlainTextEdit
@@ -69,11 +70,12 @@ public:
     void applyFont(const QFont &f);
     SyntaxVisitor &syntaxHighlighter() const;
     Margins &margins();
+    void setFindWidget(Find *findWidget);
 
 public slots:
     void showUnprintableCharacters(bool on);
     void showLineNumbers(bool on);
-    void highlight(const QString &text, bool initCursor);
+    void highlight(const QString &text, bool initCursor, bool isCaseSensitive);
     void clearExtraSelections();
     void replaceCurrent(const QString &with);
     void replaceAll(const QString &with);

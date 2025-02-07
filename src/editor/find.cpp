@@ -66,6 +66,7 @@ struct FindPrivate {
         QObject::connect(replaceAllAction, &QAction::triggered, m_q, &Find::onReplaceAll);
         QObject::connect(m_editor, &QPlainTextEdit::selectionChanged, m_q, &Find::onSelectionChanged);
         QObject::connect(m_ui.close, &QAbstractButton::clicked, m_q, &Find::onClose);
+        QObject::connect(m_ui.m_caseSensitive, &QCheckBox::checkStateChanged, m_q, &Find::onCaseSensitiveChanged);
     }
 
     void setState()
@@ -118,9 +119,14 @@ QLineEdit *Find::replaceLine() const
     return m_d->m_ui.replaceEdit;
 }
 
+bool Find::isCaseSensitive() const
+{
+    return m_d->m_ui.m_caseSensitive->isChecked();
+}
+
 void Find::onFindTextChanged(const QString &)
 {
-    m_d->m_editor->highlight(m_d->m_ui.findEdit->text(), true);
+    m_d->m_editor->highlight(m_d->m_ui.findEdit->text(), true, isCaseSensitive());
 
     m_d->setState();
 }
@@ -139,7 +145,12 @@ void Find::setFocusOnFind()
     m_d->m_ui.findEdit->setFocus();
     m_d->m_ui.findEdit->selectAll();
 
-    m_d->m_editor->highlight(m_d->m_ui.findEdit->text(), true);
+    m_d->m_editor->highlight(m_d->m_ui.findEdit->text(), true, isCaseSensitive());
+}
+
+void Find::setCaseSensitive(bool on)
+{
+    m_d->m_ui.m_caseSensitive->setChecked(on);
 }
 
 void Find::onReplace()
@@ -178,6 +189,13 @@ void Find::onEditorReady()
     m_d->setState();
 
     onSelectionChanged();
+}
+
+void Find::onCaseSensitiveChanged(Qt::CheckState state)
+{
+    m_d->m_editor->highlight(m_d->m_ui.findEdit->text(), true, state == Qt::Checked ? true : false);
+
+    m_d->setState();
 }
 
 } /* namespace MdEditor */

@@ -35,10 +35,12 @@ public:
 
     QLineEdit *editLine() const;
     QLineEdit *replaceLine() const;
+    bool isCaseSensitive() const;
 
 public slots:
     void setFindText(const QString &text);
     void setFocusOnFind();
+    void setCaseSensitive(bool on = true);
 
 private slots:
     void onFindTextChanged(const QString &str);
@@ -47,6 +49,7 @@ private slots:
     void onSelectionChanged();
     void onClose();
     void onEditorReady();
+    void onCaseSensitiveChanged(Qt::CheckState state);
 
 private:
     friend struct FindPrivate;
