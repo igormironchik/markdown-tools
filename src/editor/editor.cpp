@@ -615,7 +615,7 @@ bool markSelection(Iterator first, Iterator last, QTextCursor c, Editor *e, C cm
 
 } /* namespace anonymous */
 
-void Editor::highlight(const QString &text, bool initCursor, bool isCaseSensitive)
+void Editor::highlight(const QString &text, bool initCursor, QTextDocument::FindFlags findFlags)
 {
     m_d->m_highlightedText = text;
 
@@ -630,8 +630,7 @@ void Editor::highlight(const QString &text, bool initCursor, bool isCaseSensitiv
             QTextEdit::ExtraSelection s;
 
             s.format.setBackground(color);
-            s.cursor = document()->find(text, c, isCaseSensitive ?
-                                            QTextDocument::FindCaseSensitively : QTextDocument::FindFlag());
+            s.cursor = document()->find(text, c, findFlags);
 
             if (!s.cursor.isNull()) {
                 m_d->m_extraSelections.append(s);
@@ -767,7 +766,7 @@ void Editor::onParsingDone(std::shared_ptr<MD::Document<MD::QStringTrait>> doc, 
 
 void Editor::highlightCurrent()
 {
-    highlight(m_d->m_highlightedText, false, m_d->m_find->isCaseSensitive());
+    highlight(m_d->m_highlightedText, false, m_d->m_find->findFlags());
 }
 
 void Editor::clearHighlighting()

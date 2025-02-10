@@ -75,7 +75,7 @@ public:
 public slots:
     void showUnprintableCharacters(bool on);
     void showLineNumbers(bool on);
-    void highlight(const QString &text, bool initCursor, bool isCaseSensitive);
+    void highlight(const QString &text, bool initCursor, QTextDocument::FindFlags findFlags);
     void clearExtraSelections();
     void replaceCurrent(const QString &with);
     void replaceAll(const QString &with);

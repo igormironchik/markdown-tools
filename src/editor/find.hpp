@@ -8,6 +8,7 @@
 // Qt include.
 #include <QFrame>
 #include <QScopedPointer>
+#include <QTextDocument>
 
 QT_BEGIN_NAMESPACE
 class QLineEdit;
@@ -36,11 +37,14 @@ public:
     QLineEdit *editLine() const;
     QLineEdit *replaceLine() const;
     bool isCaseSensitive() const;
+    bool isWholeWord() const;
+    QTextDocument::FindFlags findFlags() const;
 
 public slots:
     void setFindText(const QString &text);
     void setFocusOnFind();
     void setCaseSensitive(bool on = true);
+    void setWholeWord(bool on = true);
 
 private slots:
     void onFindTextChanged(const QString &str);
@@ -49,7 +53,7 @@ private slots:
     void onSelectionChanged();
     void onClose();
     void onEditorReady();
-    void onCaseSensitiveChanged(Qt::CheckState state);
+    void onFindFlagsChanged(Qt::CheckState state);
 
 private:
     friend struct FindPrivate;

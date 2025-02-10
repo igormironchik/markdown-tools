@@ -66,7 +66,8 @@ struct FindPrivate {
         QObject::connect(replaceAllAction, &QAction::triggered, m_q, &Find::onReplaceAll);
         QObject::connect(m_editor, &QPlainTextEdit::selectionChanged, m_q, &Find::onSelectionChanged);
         QObject::connect(m_ui.close, &QAbstractButton::clicked, m_q, &Find::onClose);
-        QObject::connect(m_ui.m_caseSensitive, &QCheckBox::checkStateChanged, m_q, &Find::onCaseSensitiveChanged);
+        QObject::connect(m_ui.m_caseSensitive, &QCheckBox::checkStateChanged, m_q, &Find::onFindFlagsChanged);
+        QObject::connect(m_ui.m_wholeWord, &QCheckBox::checkStateChanged, m_q, &Find::onFindFlagsChanged);
     }
 
     void setState()
@@ -124,9 +125,29 @@ bool Find::isCaseSensitive() const
     return m_d->m_ui.m_caseSensitive->isChecked();
 }
 
+bool Find::isWholeWord() const
+{
+    return m_d->m_ui.m_wholeWord->isChecked();
+}
+
+QTextDocument::FindFlags Find::findFlags() const
+{
+    QTextDocument::FindFlags flags;
+
+    if (isCaseSensitive()) {
+        flags |= QTextDocument::FindCaseSensitively;
+    }
+
+    if (isWholeWord()) {
+        flags |= QTextDocument::FindWholeWords;
+    }
+
+    return flags;
+}
+
 void Find::onFindTextChanged(const QString &)
 {
-    m_d->m_editor->highlight(m_d->m_ui.findEdit->text(), true, isCaseSensitive());
+    m_d->m_editor->highlight(m_d->m_ui.findEdit->text(), true, findFlags());
 
     m_d->setState();
 }
@@ -145,12 +166,17 @@ void Find::setFocusOnFind()
     m_d->m_ui.findEdit->setFocus();
     m_d->m_ui.findEdit->selectAll();
 
-    m_d->m_editor->highlight(m_d->m_ui.findEdit->text(), true, isCaseSensitive());
+    m_d->m_editor->highlight(m_d->m_ui.findEdit->text(), true, findFlags());
 }
 
 void Find::setCaseSensitive(bool on)
 {
     m_d->m_ui.m_caseSensitive->setChecked(on);
+}
+
+void Find::setWholeWord(bool on)
+{
+    m_d->m_ui.m_wholeWord->setChecked(on);
 }
 
 void Find::onReplace()
@@ -191,9 +217,9 @@ void Find::onEditorReady()
     onSelectionChanged();
 }
 
-void Find::onCaseSensitiveChanged(Qt::CheckState state)
+void Find::onFindFlagsChanged(Qt::CheckState)
 {
-    m_d->m_editor->highlight(m_d->m_ui.findEdit->text(), true, state == Qt::Checked ? true : false);
+    m_d->m_editor->highlight(m_d->m_ui.findEdit->text(), true, findFlags());
 
     m_d->setState();
 }

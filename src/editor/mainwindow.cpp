@@ -1235,6 +1235,7 @@ void MainWindow::saveCfg() const
     s.setValue(QStringLiteral("sidebarWidth"), m_d->m_tabWidth);
 
     s.setValue(QStringLiteral("findCaseSensitive"), m_d->m_find->isCaseSensitive());
+    s.setValue(QStringLiteral("findWholeWord"), m_d->m_find->isWholeWord());
     s.endGroup();
 
     s.beginGroup(QStringLiteral("window"));
@@ -1285,6 +1286,9 @@ void MainWindow::readCfg()
 
     const auto isFindCaseSensitive = s.value(QStringLiteral("findCaseSensitive"), true).toBool();
     m_d->m_find->setCaseSensitive(isFindCaseSensitive);
+
+    const auto isFindWholeWord = s.value(QStringLiteral("findWholeWord"), true).toBool();
+    m_d->m_find->setWholeWord(isFindWholeWord);
 
     const auto linkColor = s.value(QStringLiteral("linkColor"), m_d->m_mdColors.m_linkColor).value<QColor>();
     if (linkColor.isValid()) {

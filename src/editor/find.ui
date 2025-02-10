@@ -155,6 +155,13 @@
          </widget>
         </item>
         <item>
+         <widget class="QCheckBox" name="m_wholeWord">
+          <property name="text">
+           <string>Whole Word</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <spacer name="horizontalSpacer">
           <property name="orientation">
            <enum>Qt::Orientation::Horizontal</enum>
