@@ -5,6 +5,10 @@
 #include "graphic/graphic.h"
 #include "utils/enums.h"
 
+#ifdef DEBUG
+#undef DEBUG
+#endif
+
 namespace tex {
 class Environment;
 
