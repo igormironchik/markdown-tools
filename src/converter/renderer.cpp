@@ -1112,11 +1112,14 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawHeading(PdfAuxData &pdfD
                           heightCalcOpt, scale * (1.0 + (7 - item->level()) * 0.25), Qt::black, false, rtl);
 
         if (heightCalcOpt == CalcHeightOpt::Unknown && !item->label().isEmpty() && !where.first.isEmpty()) {
-            m_dests.insert(item->label(),
-                           std::make_shared<Destination>(pdfData.m_doc->GetPages().GetPageAt(static_cast<unsigned int>(where.first.front().m_pageIdx)),
-                                                         pdfData.m_layout.borderStartX() + pdfData.m_layout.xIncrementDirection() * offset,
-                                                         where.first.front().m_y + where.first.front().m_height,
-                                                         0.0));
+            const auto dest = std::make_shared<Destination>(pdfData.m_doc->GetPages().GetPageAt(static_cast<unsigned int>(where.first.front().m_pageIdx)),
+                                                      pdfData.m_layout.borderStartX() + pdfData.m_layout.xIncrementDirection() * offset,
+                                                      where.first.front().m_y + where.first.front().m_height,
+                                                      0.0);
+
+            for (const auto &label : std::as_const(item->labelVariants())) {
+                m_dests.insert(label, dest);
+            }
         }
 
         return where;
