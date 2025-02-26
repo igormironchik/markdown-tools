@@ -1,6 +1,5 @@
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Copyright 2022 the Resvg Authors
+// SPDX-License-Identifier: Apache-2.0 OR MIT
 
 //! A collection of SVG filters.
 
@@ -76,7 +75,7 @@ pub(crate) fn convert(
                 id: cache.gen_filter_id(),
                 rect,
                 primitives: vec![Primitive {
-                    rect: rect,
+                    rect,
                     // Unlike `filter` elements, filter functions use sRGB colors by default.
                     color_interpolation: ColorInterpolation::SRGB,
                     result: "result".to_string(),
@@ -801,8 +800,8 @@ fn convert_std_dev_attr(fe: SvgNode, scale: Size, default: &str) -> (PositiveF32
     let std_dev_x = (std_dev_x as f32) * scale.width();
     let std_dev_y = (std_dev_y as f32) * scale.height();
 
-    let std_dev_x = PositiveF32::new(std_dev_x as f32).unwrap_or(PositiveF32::ZERO);
-    let std_dev_y = PositiveF32::new(std_dev_y as f32).unwrap_or(PositiveF32::ZERO);
+    let std_dev_x = PositiveF32::new(std_dev_x).unwrap_or(PositiveF32::ZERO);
+    let std_dev_y = PositiveF32::new(std_dev_y).unwrap_or(PositiveF32::ZERO);
 
     (std_dev_x, std_dev_y)
 }

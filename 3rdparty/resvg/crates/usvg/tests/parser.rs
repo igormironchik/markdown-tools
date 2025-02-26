@@ -1,3 +1,6 @@
+// Copyright 2018 the Resvg Authors
+// SPDX-License-Identifier: Apache-2.0 OR MIT
+
 use usvg::Color;
 
 #[test]
@@ -13,7 +16,7 @@ fn clippath_with_invalid_child() {
 
     let tree = usvg::Tree::from_str(&svg, &usvg::Options::default()).unwrap();
     // clipPath is invalid and should be removed together with rect.
-    assert_eq!(tree.root().has_children(), false);
+    assert!(!tree.root().has_children());
 }
 
 #[test]
@@ -28,6 +31,7 @@ fn stylesheet_injection() {
     <rect id='rect2' x='120' y='20' width='60' height='60' fill='green'/>
     <rect id='rect3' x='20' y='120' width='60' height='60' style='fill: green'/>
     <rect id='rect4' x='120' y='120' width='60' height='60'/>
+    <rect id='rect5' x='70' y='70' width='60' height='60' style='fill: green !important'/>
 </svg>
 ";
 
@@ -72,6 +76,82 @@ fn stylesheet_injection() {
     assert_eq!(
         third.fill().unwrap().paint(),
         &usvg::Paint::Color(Color::new_rgb(0, 128, 0))
+    );
+
+    let usvg::Node::Path(ref third) = &tree.root().children()[3] else {
+        unreachable!()
+    };
+    assert_eq!(
+        third.fill().unwrap().paint(),
+        &usvg::Paint::Color(Color::new_rgb(0, 128, 0))
+    );
+}
+
+#[test]
+fn stylesheet_injection_with_important() {
+    let svg = "<svg id='svg1' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'>
+    <style>
+        #rect4 {
+            fill: green
+        }
+    </style>
+    <rect id='rect1' x='20' y='20' width='60' height='60'/>
+    <rect id='rect2' x='120' y='20' width='60' height='60' fill='green'/>
+    <rect id='rect3' x='20' y='120' width='60' height='60' style='fill: green'/>
+    <rect id='rect4' x='120' y='120' width='60' height='60'/>
+    <rect id='rect5' x='70' y='70' width='60' height='60' style='fill: green !important'/>
+</svg>
+";
+
+    let stylesheet = "rect { fill: red !important }".to_string();
+
+    let options = usvg::Options {
+        style_sheet: Some(stylesheet),
+        ..usvg::Options::default()
+    };
+
+    let tree = usvg::Tree::from_str(&svg, &options).unwrap();
+
+    let usvg::Node::Path(ref first) = &tree.root().children()[0] else {
+        unreachable!()
+    };
+
+    // All rects should be overridden, since we use `important`.
+    assert_eq!(
+        first.fill().unwrap().paint(),
+        &usvg::Paint::Color(Color::new_rgb(255, 0, 0))
+    );
+
+    let usvg::Node::Path(ref second) = &tree.root().children()[1] else {
+        unreachable!()
+    };
+    assert_eq!(
+        second.fill().unwrap().paint(),
+        &usvg::Paint::Color(Color::new_rgb(255, 0, 0))
+    );
+
+    let usvg::Node::Path(ref third) = &tree.root().children()[2] else {
+        unreachable!()
+    };
+    assert_eq!(
+        third.fill().unwrap().paint(),
+        &usvg::Paint::Color(Color::new_rgb(255, 0, 0))
+    );
+
+    let usvg::Node::Path(ref third) = &tree.root().children()[3] else {
+        unreachable!()
+    };
+    assert_eq!(
+        third.fill().unwrap().paint(),
+        &usvg::Paint::Color(Color::new_rgb(255, 0, 0))
+    );
+
+    let usvg::Node::Path(ref third) = &tree.root().children()[4] else {
+        unreachable!()
+    };
+    assert_eq!(
+        third.fill().unwrap().paint(),
+        &usvg::Paint::Color(Color::new_rgb(255, 0, 0))
     );
 }
 

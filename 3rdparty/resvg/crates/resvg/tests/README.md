@@ -67,7 +67,7 @@ And then place it into the `png` dir.
 ## resvg tests vs resvg-test-suite tests
 
 resvg tests are stored in two repos: this one and in
-[resvg-test-suite](https://github.com/RazrFalcon/resvg-test-suite).
+[resvg-test-suite](https://github.com/linebender/resvg-test-suite).
 Which can be a bit confusing.
 
 `resvg-test-suite` is the source of truth. It contains the latest version of the tests
@@ -78,10 +78,3 @@ The major difference is `png` directories. `resvg-test-suite/png` contains refer
 This is how the SVG files should be rendered.
 While `resvg/tests/png` contains PNGs rendered by the resvg itself
 and used only for regression testing.
-
-## License
-
-MIT
-
-The library itself is under the MPL2.0, but tests are under MIT,
-so you can do whatever you want with them.

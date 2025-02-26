@@ -1,6 +1,5 @@
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Copyright 2021 the Resvg Authors
+// SPDX-License-Identifier: Apache-2.0 OR MIT
 
 use std::collections::HashMap;
 use std::num::NonZeroU32;
@@ -156,7 +155,7 @@ pub(crate) struct NodeId(NonZeroU32);
 impl NodeId {
     #[inline]
     fn new(id: u32) -> Self {
-        debug_assert!(id < core::u32::MAX);
+        debug_assert!(id < u32::MAX);
 
         // We are using `NonZeroU32` to reduce overhead of `Option<NodeId>`.
         NodeId(NonZeroU32::new(id + 1).unwrap())
@@ -177,7 +176,7 @@ impl From<usize> for NodeId {
     #[inline]
     fn from(id: usize) -> Self {
         // We already checked that `id` is limited by u32::MAX.
-        debug_assert!(id <= core::u32::MAX as usize);
+        debug_assert!(id <= u32::MAX as usize);
         NodeId::new(id as u32)
     }
 }
@@ -205,14 +204,16 @@ pub struct Attribute<'input> {
     pub name: AId,
     /// Attribute's value.
     pub value: roxmltree::StringStorage<'input>,
+    /// Attribute's importance
+    pub important: bool,
 }
 
 impl std::fmt::Debug for Attribute<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
         write!(
             f,
-            "Attribute {{ name: {:?}, value: {} }}",
-            self.name, self.value
+            "Attribute {{ name: {:?}, value: {}, important: {} }}",
+            self.name, self.value, self.important
         )
     }
 }
@@ -674,6 +675,7 @@ impl AId {
             self,
             AId::AlignmentBaseline
                 | AId::BaselineShift
+                | AId::BackgroundColor // non-standard SVG attribute
                 | AId::ClipPath
                 | AId::ClipRule
                 | AId::Color
@@ -1019,6 +1021,10 @@ impl<'a, 'input: 'a> FromValue<'a, 'input> for ImageRendering {
         match value {
             "auto" | "optimizeQuality" => Some(ImageRendering::OptimizeQuality),
             "optimizeSpeed" => Some(ImageRendering::OptimizeSpeed),
+            "smooth" => Some(ImageRendering::Smooth),
+            "high-quality" => Some(ImageRendering::HighQuality),
+            "crisp-edges" => Some(ImageRendering::CrispEdges),
+            "pixelated" => Some(ImageRendering::Pixelated),
             _ => None,
         }
     }

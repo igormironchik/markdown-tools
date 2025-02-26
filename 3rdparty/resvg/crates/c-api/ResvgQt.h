@@ -1,8 +1,5 @@
-/*
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- */
+// Copyright 2018 the Resvg Authors
+// SPDX-License-Identifier: Apache-2.0 OR MIT
 
 /**
  * @file ResvgQt.h
@@ -14,9 +11,9 @@
 #define RESVG_QT_H
 
 #define RESVG_QT_MAJOR_VERSION 0
-#define RESVG_QT_MINOR_VERSION 44
+#define RESVG_QT_MINOR_VERSION 45
 #define RESVG_QT_PATCH_VERSION 0
-#define RESVG_QT_VERSION "0.44.0"
+#define RESVG_QT_VERSION "0.45.0"
 
 #include <cmath>
 
@@ -104,7 +101,7 @@ public:
     {
         // Do not set the default font via QFont::family()
         // because it will return a dummy one on Windows.
-        // See https://github.com/RazrFalcon/resvg/issues/159
+        // See https://github.com/linebender/resvg/issues/159
 
         setLanguages({ QLocale().bcp47Name() });
     }

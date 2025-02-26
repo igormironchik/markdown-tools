@@ -1,6 +1,5 @@
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Copyright 2018 the Resvg Authors
+// SPDX-License-Identifier: Apache-2.0 OR MIT
 
 use super::converter::{self, SvgColorExt};
 use super::paint_server;
@@ -161,14 +160,12 @@ fn convert_paint(
         svgtypes::Paint::ContextFill => state
             .context_element
             .clone()
-            .map(|(f, _)| f)
-            .flatten()
+            .and_then(|(f, _)| f)
             .map(|f| (f.paint, f.context_element)),
         svgtypes::Paint::ContextStroke => state
             .context_element
             .clone()
-            .map(|(_, s)| s)
-            .flatten()
+            .and_then(|(_, s)| s)
             .map(|s| (s.paint, s.context_element)),
         svgtypes::Paint::CurrentColor => {
             let svg_color: svgtypes::Color = node

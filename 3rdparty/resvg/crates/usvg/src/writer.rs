@@ -1,6 +1,5 @@
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Copyright 2023 the Resvg Authors
+// SPDX-License-Identifier: Apache-2.0 OR MIT
 
 use std::fmt::Display;
 use std::io::Write;
@@ -646,6 +645,18 @@ fn write_element(node: &Node, is_clip_path: bool, opt: &WriteOptions, xml: &mut 
                 ImageRendering::OptimizeQuality => {}
                 ImageRendering::OptimizeSpeed => {
                     xml.write_svg_attribute(AId::ImageRendering, "optimizeSpeed");
+                }
+                ImageRendering::Smooth => {
+                    xml.write_attribute(AId::Style.to_str(), "image-rendering:smooth");
+                }
+                ImageRendering::HighQuality => {
+                    xml.write_attribute(AId::Style.to_str(), "image-rendering:high-quality");
+                }
+                ImageRendering::CrispEdges => {
+                    xml.write_attribute(AId::Style.to_str(), "image-rendering:crisp-edges");
+                }
+                ImageRendering::Pixelated => {
+                    xml.write_attribute(AId::Style.to_str(), "image-rendering:pixelated");
                 }
             }
 

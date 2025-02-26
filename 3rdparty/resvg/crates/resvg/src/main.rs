@@ -1,6 +1,5 @@
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Copyright 2020 the Resvg Authors
+// SPDX-License-Identifier: Apache-2.0 OR MIT
 
 #![allow(clippy::uninlined_format_args)]
 
@@ -162,7 +161,7 @@ OPTIONS:
                                 geometricPrecision]
   --image-rendering HINT        Selects the default image rendering method
                                 [default: optimizeQuality]
-                                [possible values: optimizeQuality, optimizeSpeed]
+                                [possible values: optimizeQuality, optimizeSpeed, smooth, high-quality, crisp-edges, pixelated]
   --resources-dir DIR           Sets a directory that will be used during
                                 relative paths resolving.
                                 Expected to be the same as the directory that
@@ -425,7 +424,7 @@ impl FitTo {
 
 fn list_fonts(args: &CliArgs) {
     let mut fontdb = fontdb::Database::new();
-    load_fonts(&args, &mut fontdb);
+    load_fonts(args, &mut fontdb);
 
     use fontdb::Family;
     println!("serif: {}", fontdb.family_name(&Family::Serif));
@@ -554,7 +553,7 @@ fn parse_args() -> Result<Args, String> {
 
     let style_sheet = match args.style_sheet.as_ref() {
         Some(p) => Some(
-            std::fs::read(&p)
+            std::fs::read(p)
                 .ok()
                 .and_then(|s| std::str::from_utf8(&s).ok().map(|s| s.to_string()))
                 .ok_or("failed to read stylesheet".to_string())?,

@@ -1,3 +1,6 @@
+// Copyright 2017 the Resvg Authors
+// SPDX-License-Identifier: Apache-2.0 OR MIT
+
 fn main() {
     let args: Vec<String> = std::env::args().collect();
     if args.len() != 3 {
@@ -6,12 +9,13 @@ fn main() {
     }
 
     let tree = {
-        let mut opt = usvg::Options::default();
-        // Get file's absolute directory.
-        opt.resources_dir = std::fs::canonicalize(&args[1])
-            .ok()
-            .and_then(|p| p.parent().map(|p| p.to_path_buf()));
-
+        let mut opt = usvg::Options {
+            // Get file's absolute directory.
+            resources_dir: std::fs::canonicalize(&args[1])
+                .ok()
+                .and_then(|p| p.parent().map(|p| p.to_path_buf())),
+            ..usvg::Options::default()
+        };
         opt.fontdb_mut().load_system_fonts();
 
         let svg_data = std::fs::read(&args[1]).unwrap();

@@ -1,6 +1,5 @@
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Copyright 2019 the Resvg Authors
+// SPDX-License-Identifier: Apache-2.0 OR MIT
 
 pub mod filter;
 mod geom;
@@ -170,6 +169,11 @@ impl std::str::FromStr for TextRendering {
 pub enum ImageRendering {
     OptimizeQuality,
     OptimizeSpeed,
+    // The following can only appear as presentation attributes.
+    Smooth,
+    HighQuality,
+    CrispEdges,
+    Pixelated,
 }
 
 impl Default for ImageRendering {
@@ -185,6 +189,10 @@ impl std::str::FromStr for ImageRendering {
         match s {
             "optimizeQuality" => Ok(ImageRendering::OptimizeQuality),
             "optimizeSpeed" => Ok(ImageRendering::OptimizeSpeed),
+            "smooth" => Ok(ImageRendering::Smooth),
+            "high-quality" => Ok(ImageRendering::HighQuality),
+            "crisp-edges" => Ok(ImageRendering::CrispEdges),
+            "pixelated" => Ok(ImageRendering::Pixelated),
             _ => Err("invalid"),
         }
     }
@@ -1629,7 +1637,7 @@ impl Tree {
                 if !self
                     .linear_gradients
                     .iter()
-                    .any(|other| Arc::ptr_eq(&lg, other))
+                    .any(|other| Arc::ptr_eq(lg, other))
                 {
                     self.linear_gradients.push(lg.clone());
                 }
@@ -1638,13 +1646,13 @@ impl Tree {
                 if !self
                     .radial_gradients
                     .iter()
-                    .any(|other| Arc::ptr_eq(&rg, other))
+                    .any(|other| Arc::ptr_eq(rg, other))
                 {
                     self.radial_gradients.push(rg.clone());
                 }
             }
             Paint::Pattern(patt) => {
-                if !self.patterns.iter().any(|other| Arc::ptr_eq(&patt, other)) {
+                if !self.patterns.iter().any(|other| Arc::ptr_eq(patt, other)) {
                     self.patterns.push(patt.clone());
                 }
             }
@@ -1722,12 +1730,12 @@ impl Group {
         for node in self.children() {
             if let Node::Group(ref g) = node {
                 if let Some(ref clip) = g.clip_path {
-                    if !clip_paths.iter().any(|other| Arc::ptr_eq(&clip, other)) {
+                    if !clip_paths.iter().any(|other| Arc::ptr_eq(clip, other)) {
                         clip_paths.push(clip.clone());
                     }
 
                     if let Some(ref sub_clip) = clip.clip_path {
-                        if !clip_paths.iter().any(|other| Arc::ptr_eq(&sub_clip, other)) {
+                        if !clip_paths.iter().any(|other| Arc::ptr_eq(sub_clip, other)) {
                             clip_paths.push(sub_clip.clone());
                         }
                     }
@@ -1746,12 +1754,12 @@ impl Group {
         for node in self.children() {
             if let Node::Group(ref g) = node {
                 if let Some(ref mask) = g.mask {
-                    if !masks.iter().any(|other| Arc::ptr_eq(&mask, other)) {
+                    if !masks.iter().any(|other| Arc::ptr_eq(mask, other)) {
                         masks.push(mask.clone());
                     }
 
                     if let Some(ref sub_mask) = mask.mask {
-                        if !masks.iter().any(|other| Arc::ptr_eq(&sub_mask, other)) {
+                        if !masks.iter().any(|other| Arc::ptr_eq(sub_mask, other)) {
                             masks.push(sub_mask.clone());
                         }
                     }
@@ -1770,7 +1778,7 @@ impl Group {
         for node in self.children() {
             if let Node::Group(ref g) = node {
                 for filter in g.filters() {
-                    if !filters.iter().any(|other| Arc::ptr_eq(&filter, other)) {
+                    if !filters.iter().any(|other| Arc::ptr_eq(filter, other)) {
                         filters.push(filter.clone());
                     }
                 }

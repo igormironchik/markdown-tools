@@ -1,6 +1,5 @@
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Copyright 2018 the Resvg Authors
+// SPDX-License-Identifier: Apache-2.0 OR MIT
 
 use std::fs::File;
 use std::io::{self, Read, Write};
@@ -43,7 +42,7 @@ OPTIONS:
                                     geometricPrecision]
   --image-rendering HINT            Selects the default image rendering method
                                     [default: optimizeQuality]
-                                    [possible values: optimizeQuality, optimizeSpeed]
+                                    [possible values: optimizeQuality, optimizeSpeed, smooth, high-quality, crisp-edges, pixelated]
   --resources-dir DIR               Sets a directory that will be used during
                                     relative paths resolving.
                                     Expected to be the same as the directory that
@@ -314,7 +313,7 @@ fn main() {
     }
 
     if let Err(e) = process(args) {
-        eprintln!("Error: {}.", e.to_string());
+        eprintln!("Error: {}.", e);
         process::exit(1);
     }
 }
@@ -327,7 +326,7 @@ fn process(args: Args) -> Result<(), String> {
         let svg_from = if in_svg == "-" {
             InputFrom::Stdin
         } else if in_svg == "-c" {
-            return Err(format!("-c should be set after input"));
+            return Err("-c should be set after input".to_string());
         } else {
             InputFrom::File(in_svg)
         };
@@ -457,13 +456,13 @@ fn process(args: Args) -> Result<(), String> {
         OutputTo::Stdout => {
             io::stdout()
                 .write_all(s.as_bytes())
-                .map_err(|_| format!("failed to write to the stdout"))?;
+                .map_err(|_| "failed to write to the stdout".to_string())?;
         }
         OutputTo::File(path) => {
             let mut f =
-                File::create(path).map_err(|_| format!("failed to create the output file"))?;
+                File::create(path).map_err(|_| "failed to create the output file".to_string())?;
             f.write_all(s.as_bytes())
-                .map_err(|_| format!("failed to write to the output file"))?;
+                .map_err(|_| "failed to write to the output file".to_string())?;
         }
     }
 
@@ -477,7 +476,7 @@ fn load_stdin() -> Result<Vec<u8>, String> {
 
     handle
         .read_to_end(&mut buf)
-        .map_err(|_| format!("failed to read from stdin"))?;
+        .map_err(|_| "failed to read from stdin".to_string())?;
 
     Ok(buf)
 }

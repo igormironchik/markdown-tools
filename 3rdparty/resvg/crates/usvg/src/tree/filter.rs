@@ -1,6 +1,5 @@
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Copyright 2018 the Resvg Authors
+// SPDX-License-Identifier: Apache-2.0 OR MIT
 
 //! SVG filter types.
 
@@ -135,17 +134,14 @@ pub enum Input {
 }
 
 /// A color interpolation mode.
+///
+/// The default is `ColorInterpolation::LinearRGB`.
 #[allow(missing_docs)]
-#[derive(Clone, Copy, PartialEq, Debug)]
+#[derive(Clone, Copy, PartialEq, Debug, Default)]
 pub enum ColorInterpolation {
     SRGB,
+    #[default]
     LinearRGB,
-}
-
-impl Default for ColorInterpolation {
-    fn default() -> Self {
-        ColorInterpolation::LinearRGB
-    }
 }
 
 /// A blend filter primitive.

@@ -1,6 +1,5 @@
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Copyright 2018 the Resvg Authors
+// SPDX-License-Identifier: Apache-2.0 OR MIT
 
 pub fn render(
     image: &usvg::Image,
@@ -57,6 +56,7 @@ fn render_vector(
 #[cfg(feature = "raster-images")]
 mod raster_images {
     use crate::OptionLog;
+    use usvg::ImageRendering;
 
     fn decode_raster(image: &usvg::ImageKind) -> Option<tiny_skia::Pixmap> {
         match image {
@@ -86,7 +86,25 @@ mod raster_images {
 
         let options = DecoderOptions::default().jpeg_set_out_colorspace(ColorSpace::RGBA);
         let mut decoder = zune_jpeg::JpegDecoder::new_with_options(data, options);
-        let img_data = decoder.decode().ok()?;
+        decoder.decode_headers().ok()?;
+        let output_cs = decoder.get_output_colorspace()?;
+
+        let img_data = {
+            let data = decoder.decode().ok()?;
+            match output_cs {
+                ColorSpace::RGBA => data,
+                // `set_output_color_space` is not guaranteed to actually always set the output space
+                // to RGBA (its docs say "we do not guarantee the decoder can convert to all colorspaces").
+                // In particular, it seems like it doesn't work for luma JPEGs,
+                // so we convert them manually.
+                ColorSpace::Luma => data
+                    .into_iter()
+                    .flat_map(|p| [p, p, p, 255])
+                    .collect::<Vec<_>>(),
+                _ => return None,
+            }
+        };
+
         let info = decoder.info()?;
 
         let size = tiny_skia::IntSize::from_wh(info.width as u32, info.height as u32)?;
@@ -169,10 +187,14 @@ mod raster_images {
         let rect = tiny_skia::Size::from_wh(raster.width() as f32, raster.height() as f32)?
             .to_rect(0.0, 0.0)?;
 
-        let mut quality = tiny_skia::FilterQuality::Bicubic;
-        if rendering_mode == usvg::ImageRendering::OptimizeSpeed {
-            quality = tiny_skia::FilterQuality::Nearest;
-        }
+        let quality = match rendering_mode {
+            ImageRendering::OptimizeQuality => tiny_skia::FilterQuality::Bicubic,
+            ImageRendering::OptimizeSpeed => tiny_skia::FilterQuality::Nearest,
+            ImageRendering::Smooth => tiny_skia::FilterQuality::Bilinear,
+            ImageRendering::HighQuality => tiny_skia::FilterQuality::Bicubic,
+            ImageRendering::CrispEdges => tiny_skia::FilterQuality::Nearest,
+            ImageRendering::Pixelated => tiny_skia::FilterQuality::Nearest,
+        };
 
         let pattern = tiny_skia::Pattern::new(
             raster.as_ref(),

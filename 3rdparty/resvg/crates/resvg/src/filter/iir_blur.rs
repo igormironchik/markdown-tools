@@ -1,6 +1,5 @@
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Copyright 2020 the Resvg Authors
+// SPDX-License-Identifier: Apache-2.0 OR MIT
 
 // An IIR blur.
 //
@@ -66,7 +65,7 @@ pub fn apply(sigma_x: f64, sigma_y: f64, src: ImageRefMut) {
     gaussian_channel(data, &d, 3, buf);
 }
 
-fn gaussian_channel(data: &mut [u8], d: &BlurData, channel: usize, buf: &mut Vec<f64>) {
+fn gaussian_channel(data: &mut [u8], d: &BlurData, channel: usize, buf: &mut [f64]) {
     for i in 0..data.len() / 4 {
         buf[i] = data[i * 4 + channel] as f64 / 255.0;
     }
@@ -78,7 +77,7 @@ fn gaussian_channel(data: &mut [u8], d: &BlurData, channel: usize, buf: &mut Vec
     }
 }
 
-fn gaussianiir2d(d: &BlurData, buf: &mut Vec<f64>) {
+fn gaussianiir2d(d: &BlurData, buf: &mut [f64]) {
     // Filter horizontally along each row.
     let (lambda_x, dnu_x) = if d.sigma_x > 0.0 {
         let (lambda, dnu) = gen_coefficients(d.sigma_x, d.steps);

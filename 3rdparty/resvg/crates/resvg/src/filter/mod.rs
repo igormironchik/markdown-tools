@@ -1,6 +1,5 @@
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Copyright 2018 the Resvg Authors
+// SPDX-License-Identifier: Apache-2.0 OR MIT
 
 use std::rc::Rc;
 
@@ -25,7 +24,7 @@ mod turbulence;
 ///
 /// Image pixels should be stored in RGBA order.
 ///
-/// Some filters will require premultipled channels, some not.
+/// Some filters will require premultiplied channels, some not.
 /// See specific filter documentation for details.
 #[derive(Clone, Copy)]
 pub struct ImageRef<'a> {

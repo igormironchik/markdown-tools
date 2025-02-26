@@ -1,10 +1,10 @@
 [Setup]
 AppName="resvg Explorer Extension"
-AppVersion="0.44.0"
-VersionInfoVersion="0.0.44.0"
-AppVerName="resvg Explorer Extension 0.44.0"
-AppPublisher="Yevhenii Reizner"
-AppPublisherURL=https://github.com/RazrFalcon/resvg
+AppVersion="0.45.0"
+VersionInfoVersion="0.0.45.0"
+AppVerName="resvg Explorer Extension 0.45.0"
+AppPublisher="The Resvg Authors"
+AppPublisherURL=https://github.com/linebender/resvg
 DefaultDirName="{pf}\resvg Explorer Extension"
 Compression=lzma
 SolidCompression=yes
@@ -17,11 +17,12 @@ OutputBaseFilename="resvg-explorer-extension"
 OutputDir=.
 
 [Languages]
-Name: "en"; MessagesFile: "compiler:Default.isl"; LicenseFile: "..\LICENSE.txt"
+Name: "en"; MessagesFile: "compiler:Default.isl"; LicenseFile: "..\LICENSE-SUMMARY.txt"
 
 [Files]
 Source: "..\target\release\server.dll"; DestDir: "{app}"
-Source: "..\LICENSE.txt"; DestDir: "{app}";
+Source: "..\LICENSE-APACHE"; DestDir: "{app}";
+Source: "..\LICENSE-MIT"; DestDir: "{app}";
 
 [Registry]
 Root: HKCR; Subkey: "CLSID\{{4432C229-DFD0-4B18-8C4D-F58932AF6105}"; Flags: uninsdeletekey

@@ -1,5 +1,9 @@
+// Copyright 2020 the Resvg Authors
+// SPDX-License-Identifier: Apache-2.0 OR MIT
+
 use once_cell::sync::Lazy;
 use rgb::{FromSlice, RGBA8};
+use std::process::Command;
 use std::sync::Arc;
 use usvg::fontdb;
 
@@ -29,14 +33,16 @@ pub fn render(name: &str) -> usize {
     let svg_path = format!("tests/{}.svg", name);
     let png_path = format!("tests/{}.png", name);
 
-    let mut opt = usvg::Options::default();
-    opt.resources_dir = Some(
-        std::path::PathBuf::from(&svg_path)
-            .parent()
-            .unwrap()
-            .to_owned(),
-    );
-    opt.fontdb = GLOBAL_FONTDB.clone();
+    let opt = usvg::Options {
+        resources_dir: Some(
+            std::path::PathBuf::from(&svg_path)
+                .parent()
+                .unwrap()
+                .to_owned(),
+        ),
+        fontdb: GLOBAL_FONTDB.clone(),
+        ..usvg::Options::default()
+    };
 
     let tree = {
         let svg_data = std::fs::read(&svg_path).unwrap();
@@ -55,10 +61,14 @@ pub fn render(name: &str) -> usize {
     );
     resvg::render(&tree, render_ts, &mut pixmap.as_mut());
 
-    // pixmap.save_png(&format!("tests/{}.png", name)).unwrap();
-    // Command::new("oxipng")
-    //     .args(["-o".to_owned(), "6".to_owned(), "-Z".to_owned(), format!("tests/{}.png", name)])
-    //     .output().unwrap();
+    if option_env!("REPLACE").is_some() {
+        pixmap.save_png(&png_path).unwrap();
+        Command::new("oxipng")
+            .args(["-o".to_owned(), "6".to_owned(), "-Z".to_owned(), png_path])
+            .output()
+            .unwrap();
+        panic!("new reference image created");
+    }
 
     let mut rgba = pixmap.take();
     demultiply_alpha(rgba.as_mut_slice().as_rgba_mut());
@@ -90,8 +100,10 @@ pub fn render_extra_with_scale(name: &str, scale: f32) -> usize {
     let svg_path = format!("tests/{}.svg", name);
     let png_path = format!("tests/{}.png", name);
 
-    let mut opt = usvg::Options::default();
-    opt.fontdb = GLOBAL_FONTDB.clone();
+    let opt = usvg::Options {
+        fontdb: GLOBAL_FONTDB.clone(),
+        ..usvg::Options::default()
+    };
 
     let tree = {
         let svg_data = std::fs::read(&svg_path).unwrap();
@@ -140,8 +152,10 @@ pub fn render_node(name: &str, id: &str) -> usize {
     let svg_path = format!("tests/{}.svg", name);
     let png_path = format!("tests/{}.png", name);
 
-    let mut opt = usvg::Options::default();
-    opt.fontdb = GLOBAL_FONTDB.clone();
+    let opt = usvg::Options {
+        fontdb: GLOBAL_FONTDB.clone(),
+        ..usvg::Options::default()
+    };
 
     let tree = {
         let svg_data = std::fs::read(&svg_path).unwrap();

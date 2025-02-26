@@ -8,6 +8,40 @@ This changelog also contains important changes in dependencies.
 
 ## [Unreleased]
 
+## [0.45.0] - 2025-02-26
+This is the first release under the stewardship of [Linebender][], who is now responsible for maintenance of this crate.
+Many thanks to Yevhenii Reizner for the years of hard work that he has poured into this and other crates.
+
+Please note that the license of this project changed from `MPL-2.0` to `Apache-2.0 OR MIT`.
+See [resvg#838](https://github.com/linebender/resvg/issues/838) for more information.
+
+This release has an MSRV of 1.65 for `usvg` and 1.67.1 for `resvg` and the C API.
+
+### Added
+- Support for the `background-color` attribute.
+- Support for additional `image-rendering` attributes.
+- Support for the `!important` CSS flag.
+- Support for Luma JPEG images.
+- (c-api) `resvg_options_set_stylesheet`.
+  Thanks to [@michabay05][].
+- (svgtypes) Support for floating point hue in `hsl()` and `hsla()`.
+
+### Changed
+- License to `Apache-2.0 OR MIT`.
+  See [resvg#838](https://github.com/linebender/resvg/issues/838) for more information.
+- Updated WebP decoder for bug fixes and improved performance.
+  Thanks to [@Shnatsel][].
+- MSRV of resvg and c-api bumped to 1.67.1.
+- `fontdb` and `rustybuzz` have been updated.
+- Updated other dependencies.
+- (svgtypes) Simplified color component rounding and bounds checking.
+- Improved handling of paths with paint order `markers` but no actual markers.
+
+### Fixed
+- Relative unit handling when `use` references `symbol`.
+- (svgtypes) Rounding of hues in HSL to RGB conversion.
+- (svgtypes) Rounding of alpha.
+
 ## [0.44.0] - 2024-09-28
 ### Added
 - Stylesheet injection support.
@@ -686,7 +720,7 @@ This changelog also contains important changes in dependencies.
 - `usvg::Color` is a custom type and not a `svgtypes::Color` reexport now.
 - `usvg::Color` doesn't contain alpha anymore, which have been added in v0.16
   Alpha would be automatically flattened.
-  This makes [Micro SVG](https://github.com/RazrFalcon/resvg/blob/master/docs/usvg_spec.adoc)
+  This makes [Micro SVG](https://github.com/linebender/resvg/blob/main/crates/usvg/docs/spec.adoc)
   compatible with SVG 1.1 again.
 - (c-api) Rename `RESVG_FIT_TO_*` into `RESVG_FIT_TO_TYPE_*`.
 
@@ -1055,7 +1089,7 @@ This changelog also contains important changes in dependencies.
 - `letter-spacing` on cursive scripts (like Arabic).
 - (rctree) Prevent stack overflow on a huge, deeply nested SVG.
 - (c-api) `resvg_is_image_empty` was always returning `false`.
-- (resvg) Panic when `filter` with `objectBoudningBox` was set on an empty group.
+- (resvg) Panic when `filter` with `objectBoundingBox` was set on an empty group.
 - (usvg) `mask` with `objectBoundingBox` resolving.
 - (usvg) `pattern`'s `viewBox` attribute resolving via `href`.
 - (roxmltree) Namespace resolving.
@@ -1116,7 +1150,7 @@ This changelog also contains important changes in dependencies.
 ### Fixed
 - Object bounding box calculation.
 - Pattern scaling.
-- Nested `objectBoundigBox` support.
+- Nested `objectBoundingBox` support.
 - (usvg) `color` on `use` resolving.
 - (usvg) `offset` attribute resolving inside the `stop` element.
 - (usvg) Ungrouping of groups with non-inheritable attributes.
@@ -1235,54 +1269,59 @@ This changelog also contains important changes in dependencies.
 ### Fixed
 - `font-size` attribute inheritance during `use` resolving.
 
-[Unreleased]: https://github.com/RazrFalcon/resvg/compare/v0.44.0...HEAD
-[0.44.0]: https://github.com/RazrFalcon/resvg/compare/v0.43.0...v0.44.0
-[0.43.0]: https://github.com/RazrFalcon/resvg/compare/v0.42.0...v0.43.0
-[0.42.0]: https://github.com/RazrFalcon/resvg/compare/v0.41.0...v0.42.0
-[0.41.0]: https://github.com/RazrFalcon/resvg/compare/v0.40.0...v0.41.0
-[0.40.0]: https://github.com/RazrFalcon/resvg/compare/v0.39.0...v0.40.0
-[0.39.0]: https://github.com/RazrFalcon/resvg/compare/v0.38.0...v0.39.0
-[0.38.0]: https://github.com/RazrFalcon/resvg/compare/v0.37.0...v0.38.0
-[0.37.0]: https://github.com/RazrFalcon/resvg/compare/v0.36.0...v0.37.0
-[0.36.0]: https://github.com/RazrFalcon/resvg/compare/v0.35.0...v0.36.0
-[0.35.0]: https://github.com/RazrFalcon/resvg/compare/v0.34.1...v0.35.0
-[0.34.1]: https://github.com/RazrFalcon/resvg/compare/v0.34.0...v0.34.1
-[0.34.0]: https://github.com/RazrFalcon/resvg/compare/v0.33.0...v0.34.0
-[0.33.0]: https://github.com/RazrFalcon/resvg/compare/v0.32.0...v0.33.0
-[0.32.0]: https://github.com/RazrFalcon/resvg/compare/v0.31.1...v0.32.0
-[0.31.1]: https://github.com/RazrFalcon/resvg/compare/v0.31.0...v0.31.1
-[0.31.0]: https://github.com/RazrFalcon/resvg/compare/v0.30.0...v0.31.0
-[0.30.0]: https://github.com/RazrFalcon/resvg/compare/v0.29.0...v0.30.0
-[0.29.0]: https://github.com/RazrFalcon/resvg/compare/v0.28.0...v0.29.0
-[0.28.0]: https://github.com/RazrFalcon/resvg/compare/v0.27.0...v0.28.0
-[0.27.0]: https://github.com/RazrFalcon/resvg/compare/v0.26.1...v0.27.0
-[0.26.1]: https://github.com/RazrFalcon/resvg/compare/v0.26.0...v0.26.1
-[0.26.0]: https://github.com/RazrFalcon/resvg/compare/v0.25.0...v0.26.0
-[0.25.0]: https://github.com/RazrFalcon/resvg/compare/v0.24.0...v0.25.0
-[0.24.0]: https://github.com/RazrFalcon/resvg/compare/v0.23.0...v0.24.0
-[0.23.0]: https://github.com/RazrFalcon/resvg/compare/v0.22.0...v0.23.0
-[0.22.0]: https://github.com/RazrFalcon/resvg/compare/v0.21.0...v0.22.0
-[0.21.0]: https://github.com/RazrFalcon/resvg/compare/v0.20.0...v0.21.0
-[0.20.0]: https://github.com/RazrFalcon/resvg/compare/v0.19.0...v0.20.0
-[0.19.0]: https://github.com/RazrFalcon/resvg/compare/v0.18.0...v0.19.0
-[0.18.0]: https://github.com/RazrFalcon/resvg/compare/v0.17.0...v0.18.0
-[0.17.0]: https://github.com/RazrFalcon/resvg/compare/v0.16.0...v0.17.0
-[0.16.0]: https://github.com/RazrFalcon/resvg/compare/v0.15.0...v0.16.0
-[0.15.0]: https://github.com/RazrFalcon/resvg/compare/v0.14.1...v0.15.0
-[0.14.1]: https://github.com/RazrFalcon/resvg/compare/v0.14.0...v0.14.1
-[0.14.0]: https://github.com/RazrFalcon/resvg/compare/v0.13.1...v0.14.0
-[0.13.1]: https://github.com/RazrFalcon/resvg/compare/v0.13.0...v0.13.1
-[0.13.0]: https://github.com/RazrFalcon/resvg/compare/v0.12.0...v0.13.0
-[0.12.0]: https://github.com/RazrFalcon/resvg/compare/v0.11.0...v0.12.0
-[0.11.0]: https://github.com/RazrFalcon/resvg/compare/v0.10.0...v0.11.0
-[0.10.0]: https://github.com/RazrFalcon/resvg/compare/v0.9.1...v0.10.0
-[0.9.1]: https://github.com/RazrFalcon/resvg/compare/v0.9.0...v0.9.1
-[0.9.0]: https://github.com/RazrFalcon/resvg/compare/v0.8.0...v0.9.0
-[0.8.0]: https://github.com/RazrFalcon/resvg/compare/v0.7.0...v0.8.0
-[0.7.0]: https://github.com/RazrFalcon/resvg/compare/v0.6.1...v0.7.0
-[0.6.1]: https://github.com/RazrFalcon/resvg/compare/v0.6.0...v0.6.1
-[0.6.0]: https://github.com/RazrFalcon/resvg/compare/v0.5.0...v0.6.0
-[0.5.0]: https://github.com/RazrFalcon/resvg/compare/v0.4.0...v0.5.0
-[0.4.0]: https://github.com/RazrFalcon/resvg/compare/v0.3.0...v0.4.0
-[0.3.0]: https://github.com/RazrFalcon/resvg/compare/v0.2.0...v0.3.0
-[0.2.0]: https://github.com/RazrFalcon/resvg/compare/v0.1.0...v0.2.0
+[Linebender]: https://github.com/linebender
+[@michabay05]: https://github.com/michabay05
+[@Shnatsel]: https://github.com/Shnatsel
+
+[Unreleased]: https://github.com/linebender/resvg/compare/v0.45.0...HEAD
+[0.45.0]: https://github.com/linebender/resvg/compare/v0.44.0...v0.45.0
+[0.44.0]: https://github.com/linebender/resvg/compare/v0.43.0...v0.44.0
+[0.43.0]: https://github.com/linebender/resvg/compare/v0.42.0...v0.43.0
+[0.42.0]: https://github.com/linebender/resvg/compare/v0.41.0...v0.42.0
+[0.41.0]: https://github.com/linebender/resvg/compare/v0.40.0...v0.41.0
+[0.40.0]: https://github.com/linebender/resvg/compare/v0.39.0...v0.40.0
+[0.39.0]: https://github.com/linebender/resvg/compare/v0.38.0...v0.39.0
+[0.38.0]: https://github.com/linebender/resvg/compare/v0.37.0...v0.38.0
+[0.37.0]: https://github.com/linebender/resvg/compare/v0.36.0...v0.37.0
+[0.36.0]: https://github.com/linebender/resvg/compare/v0.35.0...v0.36.0
+[0.35.0]: https://github.com/linebender/resvg/compare/v0.34.1...v0.35.0
+[0.34.1]: https://github.com/linebender/resvg/compare/v0.34.0...v0.34.1
+[0.34.0]: https://github.com/linebender/resvg/compare/v0.33.0...v0.34.0
+[0.33.0]: https://github.com/linebender/resvg/compare/v0.32.0...v0.33.0
+[0.32.0]: https://github.com/linebender/resvg/compare/v0.31.1...v0.32.0
+[0.31.1]: https://github.com/linebender/resvg/compare/v0.31.0...v0.31.1
+[0.31.0]: https://github.com/linebender/resvg/compare/v0.30.0...v0.31.0
+[0.30.0]: https://github.com/linebender/resvg/compare/v0.29.0...v0.30.0
+[0.29.0]: https://github.com/linebender/resvg/compare/v0.28.0...v0.29.0
+[0.28.0]: https://github.com/linebender/resvg/compare/v0.27.0...v0.28.0
+[0.27.0]: https://github.com/linebender/resvg/compare/v0.26.1...v0.27.0
+[0.26.1]: https://github.com/linebender/resvg/compare/v0.26.0...v0.26.1
+[0.26.0]: https://github.com/linebender/resvg/compare/v0.25.0...v0.26.0
+[0.25.0]: https://github.com/linebender/resvg/compare/v0.24.0...v0.25.0
+[0.24.0]: https://github.com/linebender/resvg/compare/v0.23.0...v0.24.0
+[0.23.0]: https://github.com/linebender/resvg/compare/v0.22.0...v0.23.0
+[0.22.0]: https://github.com/linebender/resvg/compare/v0.21.0...v0.22.0
+[0.21.0]: https://github.com/linebender/resvg/compare/v0.20.0...v0.21.0
+[0.20.0]: https://github.com/linebender/resvg/compare/v0.19.0...v0.20.0
+[0.19.0]: https://github.com/linebender/resvg/compare/v0.18.0...v0.19.0
+[0.18.0]: https://github.com/linebender/resvg/compare/v0.17.0...v0.18.0
+[0.17.0]: https://github.com/linebender/resvg/compare/v0.16.0...v0.17.0
+[0.16.0]: https://github.com/linebender/resvg/compare/v0.15.0...v0.16.0
+[0.15.0]: https://github.com/linebender/resvg/compare/v0.14.1...v0.15.0
+[0.14.1]: https://github.com/linebender/resvg/compare/v0.14.0...v0.14.1
+[0.14.0]: https://github.com/linebender/resvg/compare/v0.13.1...v0.14.0
+[0.13.1]: https://github.com/linebender/resvg/compare/v0.13.0...v0.13.1
+[0.13.0]: https://github.com/linebender/resvg/compare/v0.12.0...v0.13.0
+[0.12.0]: https://github.com/linebender/resvg/compare/v0.11.0...v0.12.0
+[0.11.0]: https://github.com/linebender/resvg/compare/v0.10.0...v0.11.0
+[0.10.0]: https://github.com/linebender/resvg/compare/v0.9.1...v0.10.0
+[0.9.1]: https://github.com/linebender/resvg/compare/v0.9.0...v0.9.1
+[0.9.0]: https://github.com/linebender/resvg/compare/v0.8.0...v0.9.0
+[0.8.0]: https://github.com/linebender/resvg/compare/v0.7.0...v0.8.0
+[0.7.0]: https://github.com/linebender/resvg/compare/v0.6.1...v0.7.0
+[0.6.1]: https://github.com/linebender/resvg/compare/v0.6.0...v0.6.1
+[0.6.0]: https://github.com/linebender/resvg/compare/v0.5.0...v0.6.0
+[0.5.0]: https://github.com/linebender/resvg/compare/v0.4.0...v0.5.0
+[0.4.0]: https://github.com/linebender/resvg/compare/v0.3.0...v0.4.0
+[0.3.0]: https://github.com/linebender/resvg/compare/v0.2.0...v0.3.0
+[0.2.0]: https://github.com/linebender/resvg/compare/v0.1.0...v0.2.0
