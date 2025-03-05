@@ -31,7 +31,7 @@ jobs:
 
     - run: sudo apt upgrade
 
-    - run: sudo apt install libfreetype6-dev libjpeg-dev libpng-dev zlib1g zlib1g-dev libfontconfig1-dev fontconfig libxml2-dev libtiff-dev freeglut3-dev libxcb-icccm4  libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-shape0 libxcb-xinerama0 libxcb-xkb1 libxkbcommon-x11-0 patchelf libcups2-dev lcov libtinyxml2-dev
+    - run: sudo apt install libfreetype6-dev libjpeg-dev libpng-dev zlib1g zlib1g-dev libfontconfig1-dev fontconfig libxml2-dev libtiff-dev freeglut3-dev libxcb-icccm4  libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-shape0 libxcb-xinerama0 libxcb-xkb1 libxkbcommon-x11-0 patchelf libcups2-dev lcov libtinyxml2-dev libhunspell-dev
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
@@ -53,7 +53,7 @@ jobs:
     - run: ./script/linux/install-kde.sh
 
     - name: Generate Makefiles
-      run: cmake -S . -B build -DECM_DIR=$PWD/../KDE/share/ECM/cmake -DKF6SyntaxHighlighting_DIR=$PWD/../KDE/lib/x86_64-linux-gnu/cmake/KF6SyntaxHighlighting
+      run: cmake -S . -B build -DECM_DIR=$PWD/../KDE/share/ECM/cmake -DKF6SyntaxHighlighting_DIR=$PWD/../KDE/lib/x86_64-linux-gnu/cmake/KF6SyntaxHighlighting -DKF6Sonnet_DIR=$PWD/../KDE/lib/x86_64-linux-gnu/cmake/KF6Sonnet
 
     - name: Build
       run: cmake --build build --config Release
