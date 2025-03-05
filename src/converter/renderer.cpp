@@ -1717,7 +1717,7 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawString(PdfAuxData &pdfData
                     pdfData.drawRectangle(pdfData.m_layout.startX(width),
                                           pdfData.m_layout.y() + cw.descent() + pdfData.fontDescent(font, fontSize, fontScale),
                                           width,
-                                          pdfData.lineSpacing(font, fontSize, fontScale) + pdfData.fontDescent(font, fontSize, fontScale) / 2.0,
+                                          pdfData.lineSpacing(font, fontSize, fontScale) + pdfData.fontDescent(font, fontSize, fontScale) / 3.0,
                                           PoDoFo::PdfPathDrawMode::Fill);
                     pdfData.restoreColor();
                 }
@@ -1794,7 +1794,7 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawString(PdfAuxData &pdfData
                         pdfData.drawRectangle(pdfData.m_layout.startX(length),
                                               pdfData.m_layout.y() + cw.descent() + pdfData.fontDescent(font, fontSize, fontScale),
                                               length,
-                                              pdfData.lineSpacing(font, fontSize, fontScale) + pdfData.fontDescent(font, fontSize, fontScale) / 2.0,
+                                              pdfData.lineSpacing(font, fontSize, fontScale) + pdfData.fontDescent(font, fontSize, fontScale) / 3.0,
                                               PoDoFo::PdfPathDrawMode::Fill);
                         pdfData.restoreColor();
                     }
