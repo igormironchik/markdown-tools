@@ -2227,6 +2227,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
             drawMathExpr(pdfData,
                          static_cast<MD::Math<MD::QStringTrait> *>(it->get()),
                          doc,
+                         (it != item->items().begin() ? std::prev(it)->get() : nullptr),
                          newLine,
                          offset,
                          isTextOrOnlineAfter(it, last, pdfData, offset, lineHeight, scaleImagesToLineHeight),
@@ -2500,6 +2501,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
             rects.append(drawMathExpr(pdfData,
                                       static_cast<MD::Math<MD::QStringTrait> *>(it->get()),
                                       doc,
+                                      (it != item->items().begin() ? std::prev(it)->get() : nullptr),
                                       newLine,
                                       offset,
                                       isTextOrOnlineAfter(it, last, pdfData, offset, lineHeight, scaleImagesToLineHeight),
@@ -2599,6 +2601,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
 QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
                                                       MD::Math<MD::QStringTrait> *item,
                                                       std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                                                      MD::Item<MD::QStringTrait> *prevItem,
                                                       bool &newLine,
                                                       double offset,
                                                       bool isNextText,
@@ -2764,6 +2767,49 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
             } else {
                 cw.append({0.0, lineHeight, false, true, true, ""});
                 pdfData.m_layout.moveXToBegin();
+            }
+        } else {
+            auto addSpace = [&]()
+            {
+                const auto spaceScale = draw ? (cw.scale() / 100.0) : 1.0;
+                const auto spaceWidth = pdfData.stringWidth(font, m_opts.m_textFontSize, scale, " ") * spaceScale;
+
+                if (pdfData.m_layout.isFit(spaceWidth)) {
+                    if (draw) {
+                        const double actualLineHeight = pdfData.lineSpacing(font, m_opts.m_textFontSize, scale);
+                        const double d = -pdfData.fontDescent(font, m_opts.m_textFontSize, scale) +
+                                (lineHeight - actualLineHeight) / 2.0;
+
+                        pdfData.drawText(pdfData.m_layout.startX(spaceWidth), pdfData.m_layout.y() + d, " ",
+                                         font, m_opts.m_textFontSize, spaceScale, false);
+                    } else {
+                        cw.append({spaceWidth, lineHeight, true, false, true, " "});
+                    }
+
+                    pdfData.m_layout.addX(spaceWidth);
+                }
+            };
+
+            if (prevItem) {
+                switch (prevItem->type()) {
+                case MD::ItemType::Code:
+                case MD::ItemType::Math:
+                    addSpace();
+                    break;
+
+                case MD::ItemType::Text:
+                {
+                    auto t = static_cast<MD::Text<MD::QStringTrait>*>(prevItem);
+
+                    if (!t->text().isEmpty() && !t->text().back().isSpace()) {
+                        addSpace();
+                    }
+                }
+                    break;
+
+                default:
+                    break;
+                }
             }
         }
 

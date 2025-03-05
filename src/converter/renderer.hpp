@@ -1001,6 +1001,7 @@ private:
     QPair<QRectF, unsigned int> drawMathExpr(PdfAuxData &pdfData,
                                              MD::Math<MD::QStringTrait> *item,
                                              std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                                             MD::Item<MD::QStringTrait> *prevItem,
                                              bool &newLine,
                                              double offset,
                                              bool isNextText,
