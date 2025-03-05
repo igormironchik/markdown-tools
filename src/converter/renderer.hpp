@@ -660,7 +660,8 @@ private:
             bool m_isSpace = false;
             bool m_isNewLine = false;
             bool m_shrink = true;
-            QString m_word;
+            QString m_word = {};
+            double m_descent = 0.0;
             ParagraphAlignment m_alignment = ParagraphAlignment::Unknown;
         }; // struct Width
 
@@ -670,6 +671,8 @@ private:
         double scale() const { return m_scale.at(m_pos); }
         //! \return Height of the line.
         double height() const { return m_height.at(m_pos); }
+        //! \return Descent of the line.
+        double descent() const { return m_descent.at(m_pos); }
         //! \return Width of the line.
         double width() const { return m_lineWidth.at(m_pos); }
         //! Move to next line.
@@ -705,6 +708,8 @@ private:
         QVector<double> m_height;
         //! Widthes of lines.
         QVector<double> m_lineWidth;
+        //! Descents.
+        QVector<double> m_descent;
         //! Position of current line.
         int m_pos = 0;
         //! Alignments of lines.
