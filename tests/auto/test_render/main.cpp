@@ -108,6 +108,9 @@ private slots:
 
     //! Test placing online/not online content in different cases.
     void testPlacing();
+
+    //! Test descent calculation.
+    void testDescent();
 }; // class TestRender
 
 namespace MdPdf
@@ -166,6 +169,78 @@ struct TestRendering {
 
         if (render.isError()) {
             QFAIL("Rendering of Markdown failed. Test aborted.");
+        }
+    }
+
+    static void testDescent()
+    {
+        {
+            PdfRenderer::CustomWidth cw;
+
+            cw.append({10., 10., false, false, true, {}, 5.});
+            cw.append({10., 20., false, false, true, {}, 10.});
+            cw.append({10., 20., false, false, true, {}, 15.});
+            cw.append({0., 0., false, true, true});
+
+            cw.calcScale(100.);
+
+            QVERIFY(qFuzzyCompare(cw.descent(), 15.));
+            QVERIFY(qFuzzyCompare(cw.height(), 25.));
+        }
+
+        {
+            PdfRenderer::CustomWidth cw;
+
+            cw.append({10., 10., false, false, true, {}, 9.});
+            cw.append({10., 20., false, false, true, {}, 1.});
+            cw.append({10., 20., false, false, true, {}, 1.});
+            cw.append({0., 0., false, true, true});
+
+            cw.calcScale(100.);
+
+            QVERIFY(qFuzzyCompare(cw.descent(), 9.));
+            QVERIFY(qFuzzyCompare(cw.height(), 28.));
+        }
+
+        {
+            PdfRenderer::CustomWidth cw;
+
+            cw.append({10., 10., false, false, true, {}, 9.});
+            cw.append({10., 10., false, false, true, {}, 10.});
+            cw.append({0., 0., false, true, true});
+
+            cw.calcScale(100.);
+
+            QVERIFY(qFuzzyCompare(cw.descent(), 10.));
+            QVERIFY(qFuzzyCompare(cw.height(), 11.));
+        }
+
+        {
+            PdfRenderer::CustomWidth cw;
+
+            cw.append({10., 10., false, false, true, {}, 0.});
+            cw.append({10., 10., false, false, true, {}, 10.});
+            cw.append({10., 10., false, false, true, {}, 0.});
+            cw.append({0., 0., false, true, true});
+
+            cw.calcScale(100.);
+
+            QVERIFY(qFuzzyCompare(cw.descent(), 10.));
+            QVERIFY(qFuzzyCompare(cw.height(), 20.));
+        }
+
+        {
+            PdfRenderer::CustomWidth cw;
+
+            cw.append({10., 20., false, false, true, {}, 1.});
+            cw.append({10., 20., false, false, true, {}, 1.});
+            cw.append({10., 10., false, false, true, {}, 9.});
+            cw.append({0., 0., false, true, true});
+
+            cw.calcScale(100.);
+
+            QVERIFY(qFuzzyCompare(cw.descent(), 9.));
+            QVERIFY(qFuzzyCompare(cw.height(), 28.));
         }
     }
 };
@@ -446,6 +521,11 @@ void TestRender::testBlockquoteHighlightingBig()
 void TestRender::testPlacing()
 {
     doTest(QStringLiteral("different_placing_cases.md"), QString(), 8.0, 8.0, MdPdf::Render::ImageAlignment::Left);
+}
+
+void TestRender::testDescent()
+{
+    MdPdf::Render::TestRendering::testDescent();
 }
 
 QTEST_MAIN(TestRender)

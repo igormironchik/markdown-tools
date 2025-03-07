@@ -376,22 +376,14 @@ void PdfRenderer::CustomWidth::calcScale(double lineWidth)
     double h = 0.0;
     double d = 0.0;
     double lastSpaceWidth = 0.0;
-    double descentAtMaxH = 0.0;
 
     for (int i = 0, last = m_width.size(); i < last; ++i) {
-        if (m_width.at(i).m_height > h) {
-            h = m_width.at(i).m_height;
-            descentAtMaxH = m_width.at(i).m_descent;
-
-            if (d < 0.01) {
-                d = m_width.at(i).m_descent;
-            }
+        if (m_width.at(i).m_descent > d) {
+            d = m_width.at(i).m_descent;
         }
 
-        if (m_width.at(i).m_descent > d) {
-            h = h - descentAtMaxH + m_width.at(i).m_descent;
-            descentAtMaxH = m_width.at(i).m_descent;
-            d = descentAtMaxH;
+        if (m_width.at(i).m_height - m_width.at(i).m_descent > h) {
+            h = m_width.at(i).m_height - m_width.at(i).m_descent;
         }
 
         w += m_width.at(i).m_width;
@@ -442,7 +434,7 @@ void PdfRenderer::CustomWidth::calcScale(double lineWidth)
                 m_alignment.append(ParagraphAlignment::Unknown);
             }
 
-            m_height.append(h);
+            m_height.append(h + d);
             m_lineWidth.append(widthWithoutLastSpaces);
             m_descent.append(d);
 
@@ -451,7 +443,6 @@ void PdfRenderer::CustomWidth::calcScale(double lineWidth)
             ww = 0.0;
             h = 0.0;
             d = 0.0;
-            descentAtMaxH = 0.0;
         }
     }
 }
@@ -1653,7 +1644,7 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawString(PdfAuxData &pdfData
 
             h = cw.height();
         } else {
-            cw.append({0.0, lineHeight, false, true, true});
+            cw.append({0.0, 0.0, false, true, true});
             pdfData.m_layout.moveXToBegin();
         }
     };
@@ -2260,7 +2251,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
 
         case MD::ItemType::LineBreak: {
             lineBreak = true;
-            cw.append({0.0, lineHeight, false, true, false, ""});
+            cw.append({0.0, 0.0, false, true, false, ""});
             pdfData.m_layout.moveXToBegin();
         } break;
 
@@ -2305,7 +2296,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
     }
 
     if (!cw.isNewLineAtEnd()) {
-        cw.append({0.0, lineHeight, false, true, false});
+        cw.append({0.0, 0.0, false, true, false});
     }
 
     cw.calcScale(pdfData.m_layout.pageWidth() - pdfData.m_layout.margins().m_left -
@@ -2783,7 +2774,7 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
 
                 moveToNewLine(pdfData, offset, cw.height(), 1.0, cw.height());
             } else {
-                cw.append({0.0, lineHeight, false, true, true});
+                cw.append({0.0, 0.0, false, true, true});
                 pdfData.m_layout.moveXToBegin();
             }
         } else {
@@ -2801,7 +2792,8 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
                         pdfData.drawText(pdfData.m_layout.startX(spaceWidth), pdfData.m_layout.y() + d, " ",
                                          font, m_opts.m_textFontSize, spaceScale, false);
                     } else {
-                        cw.append({spaceWidth, lineHeight, true, false, true, " "});
+                        cw.append({spaceWidth, lineHeight, true, false, true, " ",
+                                   -pdfData.fontDescent(font, m_opts.m_textFontSize, spaceScale)});
                     }
 
                     pdfData.m_layout.addX(spaceWidth);
@@ -2888,7 +2880,8 @@ QPair<QRectF, unsigned int> PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
         } else {
             pdfData.m_layout.addX(size.width() * imgScale);
 
-            cw.append({size.width() * imgScale, size.height() * imgScale, false, false, isNextText, "", descent});
+            cw.append({size.width() * imgScale, size.height() * imgScale, false, false, isNextText, "",
+                       descent * imgScale});
         }
     }
 
@@ -3375,7 +3368,7 @@ QPair<QRectF, unsigned int> PdfRenderer::drawImage(PdfAuxData &pdfData,
                               pdfImg.get(), imgScale / dpiScale, imgScale / dpiScale);
         } else {
             if (onLine && addSpace) {
-                cw.append({spaceWidth, lineHeight, true, false, true, " "});
+                cw.append({spaceWidth, 0.0, true, false, true, " "});
                 pdfData.m_layout.addX(spaceWidth);
             }
 
