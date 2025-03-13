@@ -1418,7 +1418,6 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
                                              (it == item->p()->items().begin() && firstInParagraph),
                                              cw,
                                              scale,
-                                             m_opts.m_linkColor,
                                              rtl));
 
                 setRTLFlagToFalseIfCheck(rtl);
@@ -1890,7 +1889,6 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawInlinedCode(PdfAuxData &pd
                                                                   bool firstInParagraph,
                                                                   CustomWidth &cw,
                                                                   double scale,
-                                                                  const QColor &color,
                                                                   RTLFlag *rtl)
 {
     Q_UNUSED(rtl)
@@ -1931,7 +1929,7 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawInlinedCode(PdfAuxData &pd
                       item->startColumn(),
                       item->endLine(),
                       item->endColumn(),
-                      color,
+                      m_opts.m_syntax->theme().textColor(KSyntaxHighlighting::Theme::Normal),
                       textFont,
                       m_opts.m_textFontSize,
                       scale,
@@ -2175,7 +2173,6 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                             (firstInParagraph || lineBreak),
                             cw,
                             scale,
-                            Qt::black,
                             rtl);
             lineBreak = false;
             firstInParagraph = false;
