@@ -744,7 +744,8 @@ private:
                                                          bool firstInParagraph,
                                                          CustomWidth &cw,
                                                          double scale,
-                                                         RTLFlag *rtl = nullptr);
+                                                         RTLFlag *rtl = nullptr,
+                                                         bool inLink = false);
     //! Draw string.
     QVector<QPair<QRectF, unsigned int>> drawString(PdfAuxData &pdfData,
                                                     const QString &str,

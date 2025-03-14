@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 project(LaTeX)
 
-add_library(LaTeX "")
+add_library(LaTeX STATIC "")
 
 # MSVC Compat
 

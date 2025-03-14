@@ -1418,7 +1418,8 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
                                              (it == item->p()->items().begin() && firstInParagraph),
                                              cw,
                                              scale,
-                                             rtl));
+                                             rtl,
+                                             true));
 
                 setRTLFlagToFalseIfCheck(rtl);
             }
@@ -1889,7 +1890,8 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawInlinedCode(PdfAuxData &pd
                                                                   bool firstInParagraph,
                                                                   CustomWidth &cw,
                                                                   double scale,
-                                                                  RTLFlag *rtl)
+                                                                  RTLFlag *rtl,
+                                                                  bool inLink)
 {
     Q_UNUSED(rtl)
 
@@ -1903,6 +1905,21 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawInlinedCode(PdfAuxData &pd
                             pdfData.m_doc,
                             scale,
                             pdfData);
+
+    auto backgroundColor = m_opts.m_syntax->theme().editorColor(KSyntaxHighlighting::Theme::CodeFolding);
+    auto textColor = m_opts.m_syntax->theme().textColor(KSyntaxHighlighting::Theme::Normal);
+
+    if (inLink) {
+        const auto linkColor = m_opts.m_linkColor.rgb();
+
+        backgroundColor = qRgb((qRed(backgroundColor) + qRed(linkColor)) / 2,
+                               (qGreen(backgroundColor) + qGreen(linkColor)) / 2,
+                               (qBlue(backgroundColor) + qBlue(linkColor)) / 2);
+
+        textColor = qRgb((qRed(textColor) + qRed(linkColor)) / 2,
+                         (qGreen(textColor) + qGreen(linkColor)) / 2,
+                         (qBlue(textColor) + qBlue(linkColor)) / 2);
+    }
 
     return drawString(pdfData,
                       item->text(),
@@ -1923,13 +1940,13 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawInlinedCode(PdfAuxData &pd
                       offset,
                       firstInParagraph,
                       cw,
-                      m_opts.m_syntax->theme().editorColor(KSyntaxHighlighting::Theme::CodeFolding),
+                      backgroundColor,
                       item->opts() & MD::TextOption::StrikethroughText,
                       item->startLine(),
                       item->startColumn(),
                       item->endLine(),
                       item->endColumn(),
-                      m_opts.m_syntax->theme().textColor(KSyntaxHighlighting::Theme::Normal),
+                      textColor,
                       textFont,
                       m_opts.m_textFontSize,
                       scale,
