@@ -4503,7 +4503,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTableRow(std::shared_ptr
                 createPage(pdfData);
                 firstLine.m_y = pdfData.m_layout.margins().m_bottom;
 
-                tmpY = pdfData.m_layout.margins().m_top -
+                tmpY = pdfData.m_layout.pageHeight() - pdfData.m_layout.margins().m_top -
                         (s_tableMargin * 2.0 - (y - pdfData.m_layout.margins().m_bottom)) -
                         (pdfData.m_drawFootnotes ? pdfData.m_extraInFootnote : 0.0);
                 firstLine.m_height = y - pdfData.m_layout.margins().m_bottom;
