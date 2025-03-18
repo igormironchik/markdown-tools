@@ -3411,7 +3411,7 @@ QPair<QRectF, unsigned int> PdfRenderer::drawImage(PdfAuxData &pdfData,
         }
 
         if (!draw) {
-            cw.append({iWidth * imgScale, height, false, !onLine, false, "", 0.0,
+            cw.append({iWidth * imgScale, std::max(height, lineHeight), false, !onLine, false, "", 0.0,
                 (!onLine ? imageToParagraphAlignment(alignment) : ParagraphAlignment::Unknown)});
         }
 
