@@ -1782,7 +1782,7 @@ inline QString paragraphToMD(MD::Paragraph<MD::QStringTrait> *p, QPlainTextEdit 
 
 inline QString simplifyLabel(const QString &label, const QString &fileName)
 {
-    return label.sliced(0, label.lastIndexOf(fileName) - 1);
+    return label.sliced(0, label.lastIndexOf(fileName) - 1).toLower();
 }
 
 } /* namespace anonymous */
