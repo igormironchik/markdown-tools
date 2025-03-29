@@ -50,6 +50,7 @@
 #include <QTextBlock>
 #include <QTextDocumentFragment>
 #include <QToolTip>
+#include <QToolButton>
 #include <QTreeView>
 #include <QTreeWidget>
 #include <QVBoxLayout>
@@ -196,6 +197,71 @@ protected:
         }
     }
 }; // class TocTreeView
+
+//
+// WorkingDirectoryWidget
+//
+
+class WorkingDirectoryWidget : public QWidget
+{
+    Q_OBJECT
+
+signals:
+    void workingDirectoryChanged(const QString &);
+
+public:
+    WorkingDirectoryWidget(QWidget *parent)
+        : QWidget(parent)
+        , m_label(new QLabel(this))
+        , m_btn(new QToolButton(this))
+    {
+        auto layout = new QHBoxLayout(this);
+        layout->setContentsMargins(0, 0, 0, 0);
+        layout->addWidget(m_label);
+        layout->addWidget(m_btn);
+
+        m_label->setText(QStringLiteral("T"));
+        const auto h = m_label->sizeHint().height();
+        m_label->setText({});
+
+        m_btn->setText(tr("..."));
+        m_btn->setToolTip(tr("Change Working Directory."));
+        m_btn->setMinimumHeight(h);
+        m_btn->setMaximumHeight(h);
+
+        connect(m_btn, &QToolButton::clicked, this, &WorkingDirectoryWidget::onChangeButtonClicked);
+    }
+
+    ~WorkingDirectoryWidget() override = default;
+
+public slots:
+    void setWorkingDirectory(const QString &wd)
+    {
+        m_label->setText(tr("<b>Working Directory:</b> ") + wd);
+        m_wd = wd;
+
+        show();
+    }
+
+private slots:
+    void onChangeButtonClicked()
+    {
+        const auto wd = QFileDialog::getExistingDirectory(this, tr("Choose Working Directory..."), m_wd,
+                                                          QFileDialog::ReadOnly | QFileDialog::ShowDirsOnly |
+                                                          QFileDialog::DontUseNativeDialog);
+
+        if (!wd.isEmpty() && m_wd != wd) {
+            setWorkingDirectory(wd);
+
+            emit workingDirectoryChanged(wd);
+        }
+    }
+
+private:
+    QLabel *m_label = nullptr;
+    QToolButton *m_btn = nullptr;
+    QString m_wd;
+}; // class WorkingDirectoryWidget
 
 //
 // MainWindowPrivate
@@ -348,14 +414,6 @@ struct MainWindowPrivate {
         auto channel = new QWebChannel(m_q);
         channel->registerObject(QStringLiteral("content"), m_html);
         m_page->setWebChannel(channel);
-
-        m_baseUrl =
-            QString("file:%1/").arg(QString(QUrl::toPercentEncoding(QStandardPaths::standardLocations(
-                                                                        QStandardPaths::HomeLocation).first(), "/\\:", {})));
-        m_editor->setDocName(QStringLiteral("default.md"));
-        m_page->setHtml(m_q->htmlContent(), m_baseUrl);
-
-        m_q->updateWindowTitle();
 
 #ifdef Q_OS_WIN
         m_mdPdfExe = QStringLiteral("md-pdf-gui.exe");
@@ -523,8 +581,13 @@ struct MainWindowPrivate {
                             &MainWindow::onShowLicenses);
 
         m_cursorPosLabel = new QLabel(m_q);
+        m_workingDirectoryWidget = new WorkingDirectoryWidget(m_q);
+        m_q->statusBar()->addPermanentWidget(m_workingDirectoryWidget);
         m_q->statusBar()->addPermanentWidget(m_cursorPosLabel);
+        m_workingDirectoryWidget->hide();
 
+        QObject::connect(m_workingDirectoryWidget, &WorkingDirectoryWidget::workingDirectoryChanged,
+                         m_q, &MainWindow::onWorkingDirectoryChange);
         QObject::connect(m_editor->document(), &QTextDocument::modificationChanged, m_saveAction, &QAction::setEnabled);
         QObject::connect(m_editor->document(), &QTextDocument::modificationChanged, m_q, &MainWindow::setWindowModified);
         QObject::connect(m_editor, &Editor::ready, m_q, &MainWindow::onTextChanged);
@@ -550,17 +613,15 @@ struct MainWindowPrivate {
         QObject::connect(m_tocTree, &QTreeView::activated, m_q, &MainWindow::onTocClicked);
         QObject::connect(m_tocTree, &QTreeView::clicked, m_q, &MainWindow::onTocClicked);
 
-        m_q->onCursorPositionChanged();
-
         m_editor->setFocus();
-
         m_preview->setFocusPolicy(Qt::ClickFocus);
-
         m_editor->applyColors(m_mdColors);
 
         m_q->setTabOrder(m_gotoline->line(), m_find->editLine());
         m_q->setTabOrder(m_find->editLine(), m_find->replaceLine());
         m_q->setTabOrder(m_find->replaceLine(), m_findWeb->line());
+
+        m_q->onFileNew();
     }
 
     void handleCurrentTab()
@@ -699,6 +760,7 @@ struct MainWindowPrivate {
     QMenu *m_settingsMenu = nullptr;
     QTreeWidget *m_fileTree = nullptr;
     QWidget *m_tocPanel = nullptr;
+    WorkingDirectoryWidget *m_workingDirectoryWidget = nullptr;
     TocTreeView *m_tocTree = nullptr;
     TocModel *m_tocModel = nullptr;
     QSortFilterProxyModel *m_filterTocModel = nullptr;
@@ -754,6 +816,12 @@ void MainWindow::onTabActivated()
     }
 
     m_d->handleCurrentTab();
+}
+
+void MainWindow::onWorkingDirectoryChange(const QString &wd)
+{
+    m_d->m_baseUrl = QString("file:%1/").arg(QString(QUrl::toPercentEncoding(wd, "/\\:", {})));
+    m_d->m_page->setHtml(htmlContent(), m_d->m_baseUrl);
 }
 
 void MainWindow::onConvertToPdf()
@@ -817,9 +885,9 @@ void MainWindow::openFile(const QString &path)
     }
 
     m_d->m_editor->setDocName(path);
-    m_d->m_baseUrl = QString("file:%1/").arg(QString(QUrl::toPercentEncoding(
-                                                         QFileInfo(path).absoluteDir().absolutePath(), "/\\:", {})));
-    m_d->m_page->setHtml(htmlContent(), m_d->m_baseUrl);
+    const auto wd = QFileInfo(path).absoluteDir().absolutePath();
+    m_d->m_workingDirectoryWidget->setWorkingDirectory(wd);
+    onWorkingDirectoryChange(wd);
 
     m_d->m_editor->setText(f.readAll());
     f.close();
@@ -875,8 +943,9 @@ void MainWindow::onFileNew()
     m_d->m_editor->document()->clearUndoRedoStacks();
     updateWindowTitle();
 
-    m_d->m_baseUrl = QString("file:%1/").arg(QString(QUrl::toPercentEncoding(QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first(), "/\\:", {})));
-    m_d->m_page->setHtml(htmlContent(), m_d->m_baseUrl);
+    const auto wd = QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first();
+    m_d->m_workingDirectoryWidget->setWorkingDirectory(wd);
+    onWorkingDirectoryChange(wd);
     onCursorPositionChanged();
     m_d->m_loadAllAction->setEnabled(false);
     m_d->m_rootFilePath.clear();
@@ -959,7 +1028,8 @@ void MainWindow::onFileSaveAs()
     }
 
     m_d->m_editor->setDocName(dialog.selectedFiles().constFirst());
-    m_d->m_baseUrl = QString("file:%1/").arg(QString(QUrl::toPercentEncoding(QFileInfo(m_d->m_editor->docName()).absoluteDir().absolutePath(), "/\\:", {})));
+    const auto wd = QFileInfo(m_d->m_editor->docName()).absoluteDir().absolutePath();
+    m_d->m_workingDirectoryWidget->setWorkingDirectory(wd);
     m_d->m_rootFilePath = m_d->m_editor->docName();
 
     if (m_d->m_convertToPdfAction) {
@@ -968,7 +1038,7 @@ void MainWindow::onFileSaveAs()
 
     onFileSave();
 
-    m_d->m_page->setHtml(htmlContent(), m_d->m_baseUrl);
+    onWorkingDirectoryChange(wd);
 
     closeAllLinkedFiles();
 
@@ -1443,7 +1513,7 @@ void MainWindow::onCursorPositionChanged()
     m_d->m_tabAction->setEnabled(c.hasSelection());
     m_d->m_backtabAction->setEnabled(c.hasSelection());
 
-    m_d->m_cursorPosLabel->setText(tr("Line: %1, Col: %2").arg(c.block().blockNumber() + 1).arg(c.positionInBlock() + 1));
+    m_d->m_cursorPosLabel->setText(tr("<b>Line:</b> %1, <b>Col:</b> %2").arg(c.block().blockNumber() + 1).arg(c.positionInBlock() + 1));
 }
 
 void MainWindow::onEditMenuActionTriggered(QAction *action)

@@ -73,6 +73,7 @@ private slots:
     void onTabClicked(int index);
     void onSettings();
     void onTabActivated();
+    void onWorkingDirectoryChange(const QString &);
 
 private:
     bool isModified() const;
