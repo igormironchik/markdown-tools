@@ -232,6 +232,7 @@ struct EditorPrivate {
     DataParser *m_parser = nullptr;
     Find *m_find = nullptr;
     unsigned long long int m_currentParsingCounter = 0;
+    QString m_workingDirectory;
 }; // struct EditorPrivate
 
 //
@@ -741,7 +742,7 @@ void Editor::onContentChanged()
 
     ++m_d->m_currentParsingCounter;
 
-    emit doParsing(md, info.absolutePath(), info.fileName(), m_d->m_currentParsingCounter,
+    emit doParsing(md, m_d->m_workingDirectory, info.fileName(), m_d->m_currentParsingCounter,
                    document()->clone(), m_d->m_syntax);
 }
 
@@ -805,6 +806,13 @@ void Editor::setText(const QString &t)
 void Editor::onNextMisspelled()
 {
     syntaxHighlighter().highlightNextMisspelled(this);
+}
+
+void Editor::onWorkingDirectoryChange(const QString &wd)
+{
+    m_d->m_workingDirectory = wd;
+
+    onContentChanged();
 }
 
 void Editor::keyPressEvent(QKeyEvent *event)

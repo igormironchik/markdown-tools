@@ -234,6 +234,11 @@ public:
 
     ~WorkingDirectoryWidget() override = default;
 
+    const QString &workingDirectory() const
+    {
+        return m_wd;
+    }
+
 public slots:
     void setWorkingDirectory(const QString &wd)
     {
@@ -822,6 +827,7 @@ void MainWindow::onWorkingDirectoryChange(const QString &wd)
 {
     m_d->m_baseUrl = QString("file:%1/").arg(QString(QUrl::toPercentEncoding(wd, "/\\:", {})));
     m_d->m_page->setHtml(htmlContent(), m_d->m_baseUrl);
+    m_d->m_editor->onWorkingDirectoryChange(wd);
 }
 
 void MainWindow::onConvertToPdf()
@@ -1533,6 +1539,21 @@ struct Node {
     QTreeWidgetItem *m_self = nullptr;
 };
 
+qsizetype countOfFiles(const Node &root)
+{
+    qsizetype count = 0;
+
+    for (qsizetype i = 0; i < root.m_children.size(); ++i) {
+        if (!root.m_children.at(i).second->data(0, Qt::UserRole).toString().isEmpty()) {
+            ++count;
+        } else {
+            count += countOfFiles(*root.m_children.at(i).first.get());
+        }
+    }
+
+    return count;
+}
+
 }
 
 void MainWindow::loadAllLinkedFiles()
@@ -1568,7 +1589,7 @@ void MainWindow::loadAllLinkedFiles()
     m_d->m_fileTree->show();
     m_d->m_tabs->addTab(m_d->m_fileTree, tr("&Navigation"));
 
-    const auto rootFolder = QFileInfo(m_d->m_rootFilePath).absolutePath() + QStringLiteral("/");
+    const auto rootFolder = m_d->m_workingDirectoryWidget->workingDirectory() + QStringLiteral("/");
 
     Node root;
 
@@ -1590,7 +1611,7 @@ void MainWindow::loadAllLinkedFiles()
                         if (!current->m_keys.contains(f)) {
                             auto tmp = QSharedPointer<Node>::create();
                             auto item = new QTreeWidgetItem(current->m_self);
-                            item->setIcon(0, QIcon(":/res/img/icon_16x16.png"));
+                            item->setIcon(0, QIcon(":/icon/icon_16x16.png"));
                             item->setData(0, Qt::UserRole, fullFileName);
                             tmp->m_self = item;
                             item->setText(0, f);
@@ -1617,7 +1638,7 @@ void MainWindow::loadAllLinkedFiles()
         }
     }
 
-    if (root.m_children.size() > 1) {
+    if (countOfFiles(root) > 1) {
         for (auto it = root.m_children.cbegin(), last = root.m_children.cend(); it != last; ++it) {
             m_d->m_fileTree->addTopLevelItem(it->second);
         }
@@ -1660,7 +1681,8 @@ void MainWindow::readAllLinked()
     if (m_d->m_loadAllFlag) {
         MD::Parser<MD::QStringTrait> parser;
 
-        m_d->m_mdDoc = parser.parse(m_d->m_rootFilePath, true, {QStringLiteral("md"), QStringLiteral("mkd"), QStringLiteral("markdown")});
+        m_d->m_mdDoc = parser.parse(m_d->m_rootFilePath, m_d->m_workingDirectoryWidget->workingDirectory(),
+                                    true, {QStringLiteral("md"), QStringLiteral("mkd"), QStringLiteral("markdown")});
 
         if (m_d->m_livePreviewVisible) {
             m_d->m_html->setText(MD::toHtml<MD::QStringTrait, HtmlVisitor>(
