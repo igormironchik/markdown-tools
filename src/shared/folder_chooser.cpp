@@ -151,7 +151,7 @@ struct FolderChooserPrivate {
 
     void init()
     {
-        for (const auto &f : m_path) {
+        for (const auto &f : std::as_const(m_path)) {
             auto folder = new FolderWidget(f, m_folders.size(), m_q);
             m_folders.push_back(folder);
             folder->move(m_width, 0);
