@@ -231,6 +231,8 @@ public:
         m_btn->setMaximumHeight(h);
 
         m_folderChooser = new MdShared::FolderChooser(this);
+        m_folderChooser->setPopup();
+        m_folderChooser->hide();
 
         connect(m_btn, &QToolButton::clicked, this, &WorkingDirectoryWidget::onChangeButtonClicked);
         connect(m_folderChooser, &MdShared::FolderChooser::pathSelected, this, &WorkingDirectoryWidget::onPathChanged);

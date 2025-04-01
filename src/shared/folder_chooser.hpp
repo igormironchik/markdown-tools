@@ -33,8 +33,11 @@ public:
 
     static QStringList splitPath(const QString &path);
 
+    QString currentPath() const;
+
 public slots:
     void setPath(const QString &path);
+    void setPopup(bool on = true);
 
 private slots:
     void onClicked(int idx);

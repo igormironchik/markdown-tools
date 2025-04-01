@@ -66,6 +66,7 @@ public:
         createMask(m, path, m_width, m_height);
         m_path = path;
         setMask(m);
+        setToolTip(tr("Choose working directory..."));
     }
 
     ~FolderWidget() override
@@ -153,9 +154,9 @@ struct FolderChooserPrivate {
     {
         for (const auto &f : std::as_const(m_path)) {
             auto folder = new FolderWidget(f, m_folders.size(), m_q);
+            folder->show();
             m_folders.push_back(folder);
             folder->move(m_width, 0);
-            m_height = folder->sizeHint().height();
             m_width += folder->sizeHint().width() - folder->offset() - 1;
             QObject::connect(folder, &FolderWidget::clicked, m_q, &FolderChooser::onClicked);
         }
@@ -174,7 +175,6 @@ struct FolderChooserPrivate {
     void deinit()
     {
         m_width = 0;
-        m_height = 0;
 
         for (const auto &w : std::as_const(m_folders)) {
             w->deleteLater();
@@ -196,6 +196,8 @@ struct FolderChooserPrivate {
     int m_height = 0;
     //! Mask.
     QBitmap m_mask;
+    //! Current index.
+    int m_idx = -1;
 }; // struct FolderChooserPrivate
 
 //
@@ -203,9 +205,12 @@ struct FolderChooserPrivate {
 //
 
 FolderChooser::FolderChooser(QWidget *parent)
-    : QWidget(parent, Qt::Popup)
+    : QWidget(parent)
     , m_d(new FolderChooserPrivate(this))
 {
+    auto folder = new FolderWidget(QStringLiteral("/"), 0, this);
+    m_d->m_height = folder->sizeHint().height();
+    folder->deleteLater();
 }
 
 FolderChooser::~FolderChooser()
@@ -230,25 +235,14 @@ QStringList FolderChooser::splitPath(const QString &path)
     return splitted;
 }
 
-void FolderChooser::setPath(const QString &path)
-{
-    m_d->deinit();
-    m_d->m_path = splitPath(path);
-    m_d->init();
-
-    if (!m_d->m_folders.isEmpty()) {
-        m_d->m_folders.back()->setSelected(true, false);
-    }
-}
-
-void FolderChooser::onClicked(int idx)
+QString FolderChooser::currentPath() const
 {
     QString path;
 
     for (int i = 0; i < m_d->m_folders.size(); ++i) {
-        m_d->m_folders.at(i)->setSelected(i == idx, false);
+        m_d->m_folders.at(i)->setSelected(i == m_d->m_idx, false);
 
-        if (i <= idx) {
+        if (i <= m_d->m_idx) {
             path.append(m_d->m_folders.at(i)->folderName());
 
             if (m_d->m_folders.at(i)->folderName() != QStringLiteral("/")) {
@@ -257,11 +251,41 @@ void FolderChooser::onClicked(int idx)
         }
     }
 
-    if (!path.isEmpty()) {
-        if (path.size() > 1) {
-            path.removeLast();
-        }
+    if (path.size() > 1) {
+        path.removeLast();
+    }
 
+    return path;
+}
+
+void FolderChooser::setPath(const QString &path)
+{
+    m_d->deinit();
+    m_d->m_path = splitPath(path);
+    m_d->init();
+
+    if (!m_d->m_folders.isEmpty()) {
+        m_d->m_folders.back()->setSelected(true, false);
+        m_d->m_idx = m_d->m_folders.size() - 1;
+    } else {
+        m_d->m_idx = -1;
+    }
+
+    resize(sizeHint());
+}
+
+void FolderChooser::setPopup(bool on)
+{
+    setWindowFlag(Qt::Popup, on);
+}
+
+void FolderChooser::onClicked(int idx)
+{
+    m_d->m_idx = idx;
+
+    const auto path = currentPath();
+
+    if (!path.isEmpty()) {
         emit pathSelected(path);
     }
 }

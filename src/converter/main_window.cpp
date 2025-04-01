@@ -349,6 +349,7 @@ void MainWidget::applyCfg(QSettings &cfg)
 void MainWidget::setMarkdownFile(const QString &fileName)
 {
     m_ui->m_fileName->setText(fileName);
+    m_ui->m_workingDirectory->setPath(QFileInfo(fileName).absolutePath());
 
     changeStateOfStartButton();
 }
@@ -389,9 +390,7 @@ void MainWidget::selectMarkdown()
                                                        tr("Markdown (*.md *.markdown)"));
 
     if (!fileName.isEmpty()) {
-        m_ui->m_fileName->setText(fileName);
-
-        changeStateOfStartButton();
+        setMarkdownFile(fileName);
     }
 }
 
@@ -406,7 +405,8 @@ void MainWidget::process()
 
         MD::Parser<MD::QStringTrait> parser;
 
-        auto doc = parser.parse(m_ui->m_fileName->text(), m_ui->m_recursive->isChecked());
+        auto doc = parser.parse(m_ui->m_fileName->text(), m_ui->m_workingDirectory->currentPath(),
+                                m_ui->m_recursive->isChecked());
 
         if (!doc->isEmpty()) {
             auto *pdf = new Render::PdfRenderer();
