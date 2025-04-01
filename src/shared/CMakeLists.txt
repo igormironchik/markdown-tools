@@ -16,7 +16,9 @@ set( SRC license_dialog.hpp
 	color_widget.cpp
 	color_widget.hpp
 	utils.hpp
-	utils.cpp )
+	utils.cpp
+	folder_chooser.hpp
+	folder_chooser.cpp )
 
 qt6_add_resources( SRC qt.qrc )
 qt6_add_resources( SRC icon.qrc )

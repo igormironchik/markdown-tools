@@ -67,6 +67,7 @@
 
 // shared include.
 #include "license_dialog.hpp"
+#include "folder_chooser.hpp"
 
 namespace MdEditor
 {
@@ -229,7 +230,10 @@ public:
         m_btn->setMinimumHeight(h);
         m_btn->setMaximumHeight(h);
 
+        m_folderChooser = new MdShared::FolderChooser(this);
+
         connect(m_btn, &QToolButton::clicked, this, &WorkingDirectoryWidget::onChangeButtonClicked);
+        connect(m_folderChooser, &MdShared::FolderChooser::pathSelected, this, &WorkingDirectoryWidget::onPathChanged);
     }
 
     ~WorkingDirectoryWidget() override = default;
@@ -240,10 +244,14 @@ public:
     }
 
 public slots:
-    void setWorkingDirectory(const QString &wd)
+    void setWorkingDirectory(const QString &wd, bool notify = true)
     {
         m_label->setText(tr("<b>Working Directory:</b> ") + wd);
         m_wd = wd;
+
+        if (notify) {
+            m_folderChooser->setPath(wd);
+        }
 
         show();
     }
@@ -251,20 +259,29 @@ public slots:
 private slots:
     void onChangeButtonClicked()
     {
-        const auto wd = QFileDialog::getExistingDirectory(this, tr("Choose Working Directory..."), m_wd,
-                                                          QFileDialog::ReadOnly | QFileDialog::ShowDirsOnly |
-                                                          QFileDialog::DontUseNativeDialog);
+        const auto p1 = mapToGlobal(m_btn->pos());
+        auto s = static_cast<QWidget*>(parent());
+        const auto p2 = s->mapToGlobal(QPoint{0, 0});
 
-        if (!wd.isEmpty() && m_wd != wd) {
-            setWorkingDirectory(wd);
+        m_folderChooser->move(p1.x() -
+                (layoutDirection() == Qt::LeftToRight ? m_folderChooser->sizeHint().width() : 0),
+            p2.y() - m_folderChooser->sizeHint().height() - 3);
+        m_folderChooser->show();
+    }
 
-            emit workingDirectoryChanged(wd);
+    void onPathChanged(const QString &path)
+    {
+        if (!path.isEmpty() && m_wd != path) {
+            setWorkingDirectory(path, false);
+
+            emit workingDirectoryChanged(path);
         }
     }
 
 private:
     QLabel *m_label = nullptr;
     QToolButton *m_btn = nullptr;
+    MdShared::FolderChooser *m_folderChooser = nullptr;
     QString m_wd;
 }; // class WorkingDirectoryWidget
 
