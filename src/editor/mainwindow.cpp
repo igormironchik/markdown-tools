@@ -215,11 +215,13 @@ public:
         : QWidget(parent)
         , m_label(new QLabel(this))
         , m_btn(new QToolButton(this))
+        , m_useWorkingDir(new QCheckBox(this))
     {
         auto layout = new QHBoxLayout(this);
         layout->setContentsMargins(0, 0, 0, 0);
         layout->addWidget(m_label);
         layout->addWidget(m_btn);
+        layout->addWidget(m_useWorkingDir);
 
         m_label->setText(QStringLiteral("T"));
         const auto h = m_label->sizeHint().height();
@@ -230,29 +232,39 @@ public:
         m_btn->setMinimumHeight(h);
         m_btn->setMaximumHeight(h);
 
+        m_useWorkingDir->setToolTip(tr("Use Working Directory."));
+        m_useWorkingDir->setChecked(false);
+
         m_folderChooser = new MdShared::FolderChooser(this);
         m_folderChooser->setPopup();
         m_folderChooser->hide();
 
         connect(m_btn, &QToolButton::clicked, this, &WorkingDirectoryWidget::onChangeButtonClicked);
         connect(m_folderChooser, &MdShared::FolderChooser::pathSelected, this, &WorkingDirectoryWidget::onPathChanged);
+        connect(m_useWorkingDir, &QCheckBox::checkStateChanged, this, &WorkingDirectoryWidget::onUseWorkingDirChanged);
     }
 
     ~WorkingDirectoryWidget() override = default;
 
     const QString &workingDirectory() const
     {
-        return m_wd;
+        return (isRelative() ? m_fullPath : m_currentPath);
+    }
+
+    bool isRelative() const
+    {
+        return !m_useWorkingDir->isChecked();
     }
 
 public slots:
     void setWorkingDirectory(const QString &wd, bool notify = true)
     {
         m_label->setText(tr("<b>Working Directory:</b> ") + wd);
-        m_wd = wd;
+        m_currentPath = wd;
 
         if (notify) {
             m_folderChooser->setPath(wd);
+            m_fullPath = wd;
         }
 
         show();
@@ -273,18 +285,31 @@ private slots:
 
     void onPathChanged(const QString &path)
     {
-        if (!path.isEmpty() && m_wd != path) {
+        if (!path.isEmpty() && m_currentPath != path) {
+            disconnect(m_useWorkingDir, &QCheckBox::checkStateChanged,
+                       this, &WorkingDirectoryWidget::onUseWorkingDirChanged);
+            m_useWorkingDir->setChecked(true);
+            connect(m_useWorkingDir, &QCheckBox::checkStateChanged,
+                    this, &WorkingDirectoryWidget::onUseWorkingDirChanged);
+
             setWorkingDirectory(path, false);
 
             emit workingDirectoryChanged(path);
         }
     }
 
+    void onUseWorkingDirChanged(Qt::CheckState)
+    {
+        emit workingDirectoryChanged(m_currentPath);
+    }
+
 private:
     QLabel *m_label = nullptr;
     QToolButton *m_btn = nullptr;
+    QCheckBox *m_useWorkingDir = nullptr;
     MdShared::FolderChooser *m_folderChooser = nullptr;
-    QString m_wd;
+    QString m_currentPath;
+    QString m_fullPath;
 }; // class WorkingDirectoryWidget
 
 //
@@ -842,11 +867,17 @@ void MainWindow::onTabActivated()
     m_d->handleCurrentTab();
 }
 
-void MainWindow::onWorkingDirectoryChange(const QString &wd)
+void MainWindow::onWorkingDirectoryChange(const QString &)
 {
-    m_d->m_baseUrl = QString("file:%1/").arg(QString(QUrl::toPercentEncoding(wd, "/\\:", {})));
+    m_d->m_baseUrl = QString("file:%1/").arg(QString(QUrl::toPercentEncoding(
+        m_d->m_workingDirectoryWidget->workingDirectory(), "/\\:", {})));
     m_d->m_page->setHtml(htmlContent(), m_d->m_baseUrl);
-    m_d->m_editor->onWorkingDirectoryChange(wd);
+    m_d->m_editor->onWorkingDirectoryChange(m_d->m_workingDirectoryWidget->workingDirectory(),
+                                            !m_d->m_workingDirectoryWidget->isRelative());
+
+    readAllLinked();
+
+    m_d->initMarkdownMenu();
 }
 
 void MainWindow::onConvertToPdf()
@@ -1700,8 +1731,13 @@ void MainWindow::readAllLinked()
     if (m_d->m_loadAllFlag) {
         MD::Parser<MD::QStringTrait> parser;
 
-        m_d->m_mdDoc = parser.parse(m_d->m_rootFilePath, m_d->m_workingDirectoryWidget->workingDirectory(),
-                                    true, {QStringLiteral("md"), QStringLiteral("mkd"), QStringLiteral("markdown")});
+        if (m_d->m_workingDirectoryWidget->isRelative()) {
+            m_d->m_mdDoc = parser.parse(m_d->m_rootFilePath,
+                                        true, {QStringLiteral("md"), QStringLiteral("mkd"), QStringLiteral("markdown")});
+        } else {
+            m_d->m_mdDoc = parser.parse(m_d->m_rootFilePath, m_d->m_workingDirectoryWidget->workingDirectory(),
+                                        true, {QStringLiteral("md"), QStringLiteral("mkd"), QStringLiteral("markdown")});
+        }
 
         if (m_d->m_livePreviewVisible) {
             m_d->m_html->setText(MD::toHtml<MD::QStringTrait, HtmlVisitor>(

@@ -233,6 +233,7 @@ struct EditorPrivate {
     Find *m_find = nullptr;
     unsigned long long int m_currentParsingCounter = 0;
     QString m_workingDirectory;
+    bool m_useWorkingDir = false;
 }; // struct EditorPrivate
 
 //
@@ -742,8 +743,8 @@ void Editor::onContentChanged()
 
     ++m_d->m_currentParsingCounter;
 
-    emit doParsing(md, m_d->m_workingDirectory, info.fileName(), m_d->m_currentParsingCounter,
-                   document()->clone(), m_d->m_syntax);
+    emit doParsing(md, (m_d->m_useWorkingDir ? m_d->m_workingDirectory : info.absolutePath()), info.fileName(),
+                   m_d->m_currentParsingCounter, document()->clone(), m_d->m_syntax);
 }
 
 void Editor::onParsingDone(std::shared_ptr<MD::Document<MD::QStringTrait>> doc, unsigned long long int counter,
@@ -808,9 +809,10 @@ void Editor::onNextMisspelled()
     syntaxHighlighter().highlightNextMisspelled(this);
 }
 
-void Editor::onWorkingDirectoryChange(const QString &wd)
+void Editor::onWorkingDirectoryChange(const QString &wd, bool useWorkingDir)
 {
     m_d->m_workingDirectory = wd;
+    m_d->m_useWorkingDir = useWorkingDir;
 
     onContentChanged();
 }

@@ -350,6 +350,7 @@ void MainWidget::setMarkdownFile(const QString &fileName)
 {
     m_ui->m_fileName->setText(fileName);
     m_ui->m_workingDirectory->setPath(QFileInfo(fileName).absolutePath());
+    m_ui->m_workingDirBox->setChecked(false);
 
     changeStateOfStartButton();
 }
@@ -405,8 +406,14 @@ void MainWidget::process()
 
         MD::Parser<MD::QStringTrait> parser;
 
-        auto doc = parser.parse(m_ui->m_fileName->text(), m_ui->m_workingDirectory->currentPath(),
-                                m_ui->m_recursive->isChecked());
+        std::shared_ptr<MD::Document<MD::QStringTrait>> doc;
+
+        if (m_ui->m_workingDirBox->isChecked()) {
+            doc = parser.parse(m_ui->m_fileName->text(), m_ui->m_workingDirectory->currentPath(),
+                               m_ui->m_recursive->isChecked());
+        } else {
+            doc = parser.parse(m_ui->m_fileName->text(), m_ui->m_recursive->isChecked());
+        }
 
         if (!doc->isEmpty()) {
             auto *pdf = new Render::PdfRenderer();

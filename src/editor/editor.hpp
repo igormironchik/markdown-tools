@@ -84,7 +84,7 @@ public slots:
     void goToLine(int l);
     void setText(const QString &t);
     void onNextMisspelled();
-    void onWorkingDirectoryChange(const QString &wd);
+    void onWorkingDirectoryChange(const QString &wd, bool useWorkingDir);
 
 private slots:
     void updateLineNumberAreaWidth(int newBlockCount);
