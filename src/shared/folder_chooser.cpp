@@ -60,13 +60,17 @@ public:
         m_height = fm.height();
         m_width = fm.horizontalAdvance(folderName);
 
-        QBitmap m(sizeHint());
+        QBitmap m(desiredSize());
         QPainterPath path;
 
         createMask(m, path, m_width, m_height);
         m_path = path;
         setMask(m);
         setToolTip(tr("Choose working directory..."));
+        setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        resize(desiredSize());
+        setMinimumSize(desiredSize());
+        setMaximumSize(desiredSize());
     }
 
     ~FolderWidget() override
@@ -128,6 +132,12 @@ protected:
         }
 
         e->accept();
+    }
+
+private:
+    QSize desiredSize() const
+    {
+        return {m_width + m_height + 2, m_height + 1};
     }
 
 private:
@@ -211,6 +221,7 @@ FolderChooser::FolderChooser(QWidget *parent)
     auto folder = new FolderWidget(QStringLiteral("/"), 0, this);
     m_d->m_height = folder->sizeHint().height();
     folder->deleteLater();
+    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 }
 
 FolderChooser::~FolderChooser()
@@ -272,6 +283,8 @@ void FolderChooser::setPath(const QString &path)
     }
 
     resize(sizeHint());
+    setMinimumSize(sizeHint());
+    setMaximumSize(sizeHint());
 }
 
 void FolderChooser::setPopup(bool on)
