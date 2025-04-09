@@ -359,10 +359,10 @@ double PdfAuxData::fontDescent(Font *font, double size, double scale) const
 // PdfRenderer::CustomWidth
 //
 
-double PdfRenderer::CustomWidth::firstItemHeight() const
+double PdfRenderer::CustomWidth::firstLineHeight() const
 {
-    if (!m_width.isEmpty()) {
-        return m_width.constFirst().m_height;
+    if (!m_height.isEmpty()) {
+        return m_height.first();
     } else {
         return 0.0;
     }
@@ -453,7 +453,6 @@ void PdfRenderer::CustomWidth::calcScale(double lineWidth)
 
 PdfRenderer::PdfRenderer()
     : m_terminate(false)
-    , m_footnoteNum(1)
 #ifdef MD_PDF_TESTING
     , m_isError(false)
 #endif
@@ -1936,7 +1935,7 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawInlinedCode(PdfAuxData &pd
                       0.0,
                       0.0,
                       nullptr,
-                      m_footnoteNum,
+                      pdfData.m_footnoteNum,
                       offset,
                       firstInParagraph,
                       cw,
@@ -2003,10 +2002,10 @@ QVector<WhereDrawn> toWhereDrawn(const QVector<QPair<QRectF, unsigned int>> &rec
     return ret;
 }
 
-double totalHeight(const QVector<WhereDrawn> &where)
+double totalHeight(const QVector<WhereDrawn> &where, bool withExtra = true)
 {
-    return std::accumulate(where.cbegin(), where.cend(), 0.0, [](const double &val, const WhereDrawn &cur) -> double {
-        return (val + cur.m_height);
+    return std::accumulate(where.cbegin(), where.cend(), 0.0, [withExtra](const double &val, const WhereDrawn &cur) -> double {
+        return (val + cur.m_height + (withExtra ? cur.m_extraHeight : 0.0));
     });
 }
 
@@ -2142,7 +2141,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
             }
         }
 
-        int nextFootnoteNum = m_footnoteNum;
+        int nextFootnoteNum = pdfData.m_footnoteNum;
 
         if (it + 1 != last && (it + 1)->get()->type() == MD::ItemType::FootnoteRef) {
             auto *ref = static_cast<MD::FootnoteRef<MD::QStringTrait> *>((it + 1)->get());
@@ -2278,7 +2277,8 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                 auto anchorIt = pdfData.m_footnotesAnchorsMap.constFind(fit->second.get());
 
                 if (anchorIt == pdfData.m_footnotesAnchorsMap.cend()) {
-                    pdfData.m_footnotesAnchorsMap.insert(fit->second.get(), {pdfData.m_currentFile, m_footnoteNum++});
+                    pdfData.m_footnotesAnchorsMap.insert(fit->second.get(),
+                                                         {pdfData.m_currentFile, pdfData.m_footnoteNum++});
                 }
             } else {
                 auto text = static_cast<MD::Text<MD::QStringTrait> *>(it->get());
@@ -2325,8 +2325,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
         r.append(
             {-1,
              0.0,
-             ((withNewLine && !pdfData.m_firstOnPage) || (withNewLine && pdfData.m_drawFootnotes) ?
-                lineHeight + cw.firstItemHeight() : cw.firstItemHeight()),
+             cw.firstLineHeight(),
              ((withNewLine && !pdfData.m_firstOnPage) || (withNewLine && pdfData.m_drawFootnotes) ?
                              lineHeight : 0.0)});
 
@@ -2336,25 +2335,11 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
     case CalcHeightOpt::Full: {
         QVector<WhereDrawn> r;
 
-        double h = 0.0;
-        double max = 0.0;
-        double extra = 0.0;
+        const double extra = (((withNewLine && !pdfData.m_firstOnPage) || (withNewLine && pdfData.m_drawFootnotes)) ?
+                            lineHeight : 0.0);
 
         for (auto it = cw.cbegin(), last = cw.cend(); it != last; ++it) {
-            if (it == cw.cbegin() && ((withNewLine && !pdfData.m_firstOnPage) || (withNewLine && pdfData.m_drawFootnotes))) {
-                h += lineHeight;
-                extra = lineHeight;
-            }
-
-            if (h + it->m_height > max) {
-                max = h + it->m_height;
-            }
-
-            if (it->m_isNewLine) {
-                r.append({-1, 0.0, max});
-                max = 0.0;
-                h = 0.0;
-            }
+            r.append({-1, 0.0, *it});
         }
 
         if (!r.isEmpty()) {
@@ -2403,7 +2388,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
             }
         }
 
-        int nextFootnoteNum = m_footnoteNum;
+        int nextFootnoteNum = pdfData.m_footnoteNum;
 
         if (it + 1 != last && (it + 1)->get()->type() == MD::ItemType::FootnoteRef) {
             auto *ref = static_cast<MD::FootnoteRef<MD::QStringTrait> *>((it + 1)->get());
@@ -2553,7 +2538,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
 
             if (fit != doc->footnotesMap().cend()) {
                 auto anchorIt = pdfData.m_footnotesAnchorsMap.constFind(fit->second.get());
-                int num = m_footnoteNum;
+                int num = pdfData.m_footnoteNum;
 
                 if (anchorIt != pdfData.m_footnotesAnchorsMap.cend()) {
                     num = anchorIt->second;
@@ -2933,7 +2918,7 @@ void PdfRenderer::reserveSpaceForFootnote(PdfAuxData &pdfData,
         height = extra + (addExtraLine ? lineHeight : 0.0);
 
         for (int i = 0; i < h.size(); ++i) {
-            const auto tmp = h[i].m_height;
+            const auto tmp = h[i].m_height + h[i].m_extraHeight;
 
             if (height + tmp < available) {
                 height += tmp;
@@ -3620,16 +3605,14 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawCode(PdfAuxData &pdfData
     switch (heightCalcOpt) {
     case CalcHeightOpt::Minimum: {
         QVector<WhereDrawn> r;
-        r.append({-1, 0.0, (pdfData.m_firstOnPage ? 0.0 : textLHeight) + lineHeight,
-                  (pdfData.m_firstOnPage ? 0.0 : textLHeight)});
+        r.append({-1, 0.0, lineHeight, (pdfData.m_firstOnPage ? 0.0 : textLHeight)});
 
         return {r, {}};
     }
 
     case CalcHeightOpt::Full: {
         QVector<WhereDrawn> r;
-        r.append({-1, 0.0, (pdfData.m_firstOnPage ? 0.0 : textLHeight) + lineHeight,
-                 (pdfData.m_firstOnPage ? 0.0 : textLHeight)});
+        r.append({-1, 0.0, lineHeight, (pdfData.m_firstOnPage ? 0.0 : textLHeight)});
 
         auto i = 1;
 
@@ -4300,7 +4283,7 @@ double PdfRenderer::rowHeight(PdfAuxData &pdfData,
 
         const auto r = drawParagraph(pdfData, p.get(), doc, 0.0, false, CalcHeightOpt::Full, scale);
 
-        const auto tmp = totalHeight(r.first) + 2.0 * s_tableMargin;
+        const auto tmp = totalHeight(r.first, false) + 2.0 * s_tableMargin;
 
         if (tmp > height) {
             height = tmp;
@@ -4355,15 +4338,13 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawTable(PdfAuxData &pdfDat
 
     switch (heightCalcOpt) {
     case CalcHeightOpt::Minimum: {
-        ret.append({-1, 0.0, r0h + r1h + (!pdfData.m_firstOnPage ? lineHeight : 0.0),
-                   (!pdfData.m_firstOnPage ? lineHeight : 0.0)});
+        ret.append({-1, 0.0, r0h + r1h, (!pdfData.m_firstOnPage ? lineHeight : 0.0)});
 
         return {ret, {}};
     }
 
     case CalcHeightOpt::Full: {
-        ret.append({-1, 0.0, r0h + r1h + (!pdfData.m_firstOnPage ? lineHeight : 0.0),
-                   (!pdfData.m_firstOnPage ? lineHeight : 0.0)});
+        ret.append({-1, 0.0, r0h + r1h, (!pdfData.m_firstOnPage ? lineHeight : 0.0)});
 
         for(long long int i = 2; i < item->rows().size(); ++i) {
             ret.append({-1, 0.0, rowHeight(pdfData, item->rows().at(i), columnWidth, doc, scale)});

@@ -332,6 +332,8 @@ struct PdfAuxData {
     long long int m_endLine = 0;
     //! End position in the end line.
     long long int m_endPos = 0;
+    //! Footnote counter.
+    int m_footnoteNum = 1;
     //! Current file.
     QString m_currentFile;
     //! Footnotes map to map anchors.
@@ -684,11 +686,11 @@ private:
         //! \return Is last element is new line?
         bool isNewLineAtEnd() const { return (m_width.isEmpty() ? false : m_width.back().m_isNewLine); }
         //! \return Begin iterator.
-        QVector<Width>::ConstIterator cbegin() const { return m_width.cbegin(); }
+        QVector<double>::ConstIterator cbegin() const { return m_height.cbegin(); }
         //! \return End iterator.
-        QVector<Width>::ConstIterator cend() const { return m_width.cend(); }
+        QVector<double>::ConstIterator cend() const { return m_height.cend(); }
         //! \return Height of first item.
-        double firstItemHeight() const;
+        double firstLineHeight() const;
         //! Calculate scales.
         void calcScale(double lineWidth);
         //! \return Paragraph alignment.
@@ -1074,8 +1076,6 @@ private:
     QMultiMap<QString, QPair<QRectF, unsigned int>> m_unresolvedFootnotesLinks;
     //! Cache of images.
     QMap<QString, QByteArray> m_imageCache;
-    //! Footnote counter.
-    int m_footnoteNum;
     //! Footnotes to draw.
     QVector<QPair<QString, std::shared_ptr<MD::Footnote<MD::QStringTrait>>>> m_footnotes;
 #ifdef MD_PDF_TESTING
