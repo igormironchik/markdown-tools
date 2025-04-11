@@ -815,7 +815,8 @@ struct MainWindowPrivate {
     QSortFilterProxyModel *m_filterTocModel = nullptr;
     QLabel *m_cursorPosLabel = nullptr;
     QLineEdit *m_tocFilterLine = nullptr;
-    bool m_init = false;
+    bool m_sizesInitialized = false;
+    bool m_shownAlready = false;
     bool m_loadAllFlag = false;
     bool m_previewMode = false;
     bool m_tabsVisible = false;
@@ -900,8 +901,8 @@ void MainWindow::onConvertToPdf()
 
 void MainWindow::resizeEvent(QResizeEvent *e)
 {
-    if (!m_d->m_init) {
-        m_d->m_init = true;
+    if (!m_d->m_sizesInitialized) {
+        m_d->m_sizesInitialized = true;
 
         QStyleOptionTab opt;
         opt.initFrom(m_d->m_tabs);
@@ -926,7 +927,11 @@ void MainWindow::resizeEvent(QResizeEvent *e)
 
 void MainWindow::showEvent(QShowEvent *e)
 {
-    readCfg();
+    if (!m_d->m_shownAlready) {
+        m_d->m_shownAlready = true;
+
+        readCfg();
+    }
 
     e->accept();
 }
