@@ -62,6 +62,7 @@ private:
     bool m_textFontOk;
     bool m_codeFontOk;
     std::shared_ptr<Syntax> m_syntax;
+    bool m_alreadyShown = false;
 
     Q_DISABLE_COPY(MainWidget)
 }; // class MainWindow
@@ -101,6 +102,7 @@ private:
 
 private:
     MainWidget *ui = nullptr;
+    bool m_alreadyShown = false;
 }; // class MainWindow
 
 } /* namespace MdPdf */

@@ -121,12 +121,16 @@ MainWidget::~MainWidget()
 
 void MainWidget::showEvent(QShowEvent *event)
 {
+    if (!m_alreadyShown) {
+        m_alreadyShown = true;
+
+        const auto w = std::max(m_ui->m_mm->width(), m_ui->m_pt->width());
+
+        m_ui->m_mm->setMinimumWidth(w);
+        m_ui->m_pt->setMinimumWidth(w);
+    }
+
     event->accept();
-
-    const auto w = std::max(m_ui->m_mm->width(), m_ui->m_pt->width());
-
-    m_ui->m_mm->setMinimumWidth(w);
-    m_ui->m_pt->setMinimumWidth(w);
 }
 
 static const QString s_leftAlignment = QStringLiteral("left");
@@ -623,9 +627,13 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::showEvent(QShowEvent *event)
 {
-    event->accept();
+    if (!m_alreadyShown) {
+        m_alreadyShown = true;
 
-    readCfg();
+        readCfg();
+    }
+
+    event->accept();
 }
 
 void MainWindow::setMarkdownFile(const QString &fileName)
