@@ -11,7 +11,7 @@ cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 # Preliminary setup
 #
 
-set(VERSION "6.9.0") # handled by release scripts
+set(VERSION "6.12.0") # handled by release scripts
 
 project(ECM
     VERSION "${VERSION}"
@@ -60,7 +60,11 @@ set(MAN_INSTALL_DIR ${SHARE_INSTALL_DIR}/man
 # Documentation
 #
 
-add_subdirectory(docs)
+option(BUILD_DOC "Build documentation." ON)
+add_feature_info(BUILD_DOC BUILD_DOC "Build documentation.")
+if(BUILD_DOC)
+    add_subdirectory(docs)
+endif()
 
 
 #

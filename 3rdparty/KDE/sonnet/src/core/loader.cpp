@@ -21,13 +21,6 @@
 
 #include <algorithm>
 
-#ifdef SONNET_STATIC
-#include "../plugins/hunspell/hunspellclient.h"
-#ifdef Q_OS_MACOS
-#include "../plugins/nsspellchecker/nsspellcheckerclient.h"
-#endif
-#endif
-
 namespace Sonnet
 {
 class LoaderPrivate
@@ -286,50 +279,56 @@ void Loader::loadPlugins()
         qCWarning(SONNET_LOG_CORE) << "Sonnet: No speller backends available!";
     }
 #else
-#ifdef Q_OS_MACOS
-    loadPlugin(QString());
+    for (auto plugin : QPluginLoader::staticPlugins()) {
+        if (plugin.metaData()[QLatin1String("IID")].toString() == QLatin1String("org.kde.sonnet.Client")) {
+            loadPlugin(plugin);
+        }
+    }
 #endif
-    loadPlugin(QStringLiteral("Hunspell"));
-#endif
+}
+
+void Loader::loadPlugin(const QStaticPlugin &plugin)
+{
+    Client *client = qobject_cast<Client *>(plugin.instance());
+    if (!client) {
+        qCWarning(SONNET_LOG_CORE) << "Sonnet: Invalid static plugin loaded" << plugin.metaData();
+        return;
+    }
+
+    addClient(client);
 }
 
 void Loader::loadPlugin(const QString &pluginPath)
 {
-#ifndef SONNET_STATIC
     QPluginLoader plugin(pluginPath);
-    const QString pluginIID = plugin.metaData()[QStringLiteral("IID")].toString();
-    if (!pluginIID.isEmpty()) {
-        if (d->loadedPlugins.contains(pluginIID)) {
+    const QString pluginId = QFileInfo(pluginPath).completeBaseName();
+    if (!pluginId.isEmpty()) {
+        if (d->loadedPlugins.contains(pluginId)) {
             qCDebug(SONNET_LOG_CORE) << "Skipping already loaded" << pluginPath;
             return;
         }
-        d->loadedPlugins.insert(pluginIID);
     }
+    d->loadedPlugins.insert(pluginId);
 
     if (!plugin.load()) { // We do this separately for better error handling
         qCDebug(SONNET_LOG_CORE) << "Sonnet: Unable to load plugin" << pluginPath << "Error:" << plugin.errorString();
-        d->loadedPlugins.remove(pluginIID);
+        d->loadedPlugins.remove(pluginId);
         return;
     }
 
     Client *client = qobject_cast<Client *>(plugin.instance());
+
     if (!client) {
         qCWarning(SONNET_LOG_CORE) << "Sonnet: Invalid plugin loaded" << pluginPath;
         plugin.unload(); // don't leave it in memory
         return;
     }
-#else
-    Client *client = nullptr;
-    if (pluginPath == QLatin1String("Hunspell")) {
-        client = new HunspellClient(this);
-    }
-#ifdef Q_OS_MACOS
-    else {
-        client = new NSSpellCheckerClient(this);
-    }
-#endif
-#endif
 
+    addClient(client);
+}
+
+void Loader::addClient(Client *client)
+{
     const QStringList languages = client->languages();
     d->clients.append(client->name());
 

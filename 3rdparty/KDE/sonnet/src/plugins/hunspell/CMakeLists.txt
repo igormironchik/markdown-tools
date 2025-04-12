@@ -1,4 +1,6 @@
-add_library(sonnet_hunspell MODULE
+qt_add_plugin(sonnet_hunspell CLASS_NAME HunspellClient)
+
+target_sources(sonnet_hunspell PRIVATE
     hunspellclient.cpp
     hunspelldict.cpp
 )

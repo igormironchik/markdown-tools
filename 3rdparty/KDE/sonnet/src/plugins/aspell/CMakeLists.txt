@@ -1,4 +1,6 @@
-add_library(sonnet_aspell MODULE
+qt_add_plugin(sonnet_aspell CLASS_NAME ASpellClient)
+
+target_sources(sonnet_aspell PRIVATE
     aspellclient.cpp
     aspelldict.cpp
 )

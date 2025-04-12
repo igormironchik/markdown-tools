@@ -9,7 +9,9 @@ if (NOT HAS_SPELLCHECK_H)
     return()
 endif()
 
-add_library(sonnet_ispellchecker MODULE
+qt_add_plugin(sonnet_ispellchecker CLASS_NAME ISpellCheckerClient)
+
+target_sources(sonnet_ispellchecker PRIVATE
     ispellcheckerclient.cpp
     ispellcheckerdict.cpp
 )

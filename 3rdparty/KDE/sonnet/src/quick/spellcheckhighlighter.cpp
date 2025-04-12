@@ -422,7 +422,6 @@ QStringList SpellcheckHighlighter::suggestions(int mousePosition, int max)
 
     wordSelectCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, d->selectedWord.size());
 
-    int endSelection = wordSelectCursor.selectionEnd();
     Q_EMIT wordUnderMouseChanged();
 
     bool isMouseCursorInsideWord = true;

@@ -1,8 +1,9 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.16)
 set(ECM_KDE_MODULE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../kde-modules)
 set(ECM_MODULE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../modules)
 set(CMAKE_MODULE_PATH "${ECM_KDE_MODULE_DIR}")
 
+set(CMAKE_CROSSCOMPILING OFF)
 include(KDEPackageAppTemplates)
 
 message(STATUS "Test: generate compressed template")

@@ -15,11 +15,14 @@
 
 #include <memory>
 
+class QStaticPlugin;
+
 namespace Sonnet
 {
 class SettingsImpl;
 class SpellerPlugin;
 class LoaderPrivate;
+class Client;
 /**
  * \internal
  * @short Class used to deal with dictionaries
@@ -131,6 +134,8 @@ protected:
 private:
     SONNETCORE_NO_EXPORT void loadPlugins();
     SONNETCORE_NO_EXPORT void loadPlugin(const QString &pluginPath);
+    SONNETCORE_NO_EXPORT void loadPlugin(const QStaticPlugin &plugin);
+    SONNETCORE_NO_EXPORT void addClient(Sonnet::Client *client);
 
 private:
     std::unique_ptr<LoaderPrivate> const d;

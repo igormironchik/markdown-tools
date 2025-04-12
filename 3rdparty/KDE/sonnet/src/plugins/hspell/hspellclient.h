@@ -26,7 +26,7 @@ class HSpellClient : public Sonnet::Client
 {
     Q_OBJECT
     Q_INTERFACES(Sonnet::Client)
-    Q_PLUGIN_METADATA(IID "org.kde.Sonnet.HSpellClient")
+    Q_PLUGIN_METADATA(IID "org.kde.sonnet.Client")
 public:
     explicit HSpellClient(QObject *parent = nullptr);
     ~HSpellClient();

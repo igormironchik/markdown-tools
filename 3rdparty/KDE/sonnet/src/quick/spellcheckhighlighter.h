@@ -178,10 +178,6 @@ public:
     void setQuoteColor(const QColor &color);
     Q_REQUIRED_RESULT QColor quoteColor() const;
 
-    /// Return true if checker is enabled by default
-    /// \since 5.88
-    bool checkerEnabledByDefault() const;
-
     /// Set a new @ref QTextDocument for this highlighter to operate on.
     /// \param document the new document to operate on.
     /// \since 5.88

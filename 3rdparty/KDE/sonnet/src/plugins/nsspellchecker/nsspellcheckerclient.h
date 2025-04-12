@@ -20,7 +20,7 @@ class NSSpellCheckerClient : public Sonnet::Client
 {
     Q_OBJECT
     Q_INTERFACES(Sonnet::Client)
-    Q_PLUGIN_METADATA(IID "org.kde.Sonnet.NSSpellClient")
+    Q_PLUGIN_METADATA(IID "org.kde.sonnet.Client")
 public:
     explicit NSSpellCheckerClient(QObject *parent = nullptr);
     ~NSSpellCheckerClient();

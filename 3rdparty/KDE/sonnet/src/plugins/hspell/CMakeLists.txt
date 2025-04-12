@@ -5,7 +5,9 @@ set_package_properties(ZLIB PROPERTIES DESCRIPTION "Support for gzip compressed 
                        PURPOSE "Required by the hspell sonnet plugin"
                        )
 
-add_library(sonnet_hspell MODULE
+qt_add_plugin(sonnet_hspell CLASS_NAME HSpellClient)
+
+target_sources(sonnet_hspell PRIVATE
     hspellclient.cpp
     hspelldict.cpp
 )

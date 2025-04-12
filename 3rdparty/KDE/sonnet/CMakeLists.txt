@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.16)
 
-set(KF_VERSION "6.9.0") # handled by release scripts
+set(KF_VERSION "6.12.0") # handled by release scripts
 project(Sonnet VERSION ${KF_VERSION})
 
 include(FeatureSummary)
 include(CMakeDependentOption)
-find_package(ECM 6.9.0  NO_MODULE)
+find_package(ECM 6.12.0  NO_MODULE)
 set_package_properties(ECM PROPERTIES TYPE REQUIRED DESCRIPTION "Extra CMake Modules." URL "https://commits.kde.org/extra-cmake-modules")
 feature_summary(WHAT REQUIRED_PACKAGES_NOT_FOUND FATAL_ON_MISSING_REQUIRED_PACKAGES)
 
@@ -64,8 +64,13 @@ ecm_set_disabled_deprecation_versions(
     QT 6.8.0
 )
 
+if (NOT BUILD_SHARED_LIBS)
+    add_definitions(-DSONNET_STATIC)
+endif()
+
 add_subdirectory(data)
 add_subdirectory(src)
+
 if (BUILD_TESTING)
      add_subdirectory(autotests)
 endif()

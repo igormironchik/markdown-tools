@@ -20,7 +20,7 @@ msgstr ""
 "X-Poedit-Country: AFGHANISTAN\n"
 "X-Qt-Contexts: true\n"
 
-#: core/loader.cpp:184
+#: core/loader.cpp:177
 #, fuzzy
 #| msgctxt "dictionary variant"
 #| msgid "40"
@@ -28,7 +28,7 @@ msgctxt "Sonnet::Loader|dictionary variant"
 msgid "40"
 msgstr "۴۰"
 
-#: core/loader.cpp:185
+#: core/loader.cpp:178
 #, fuzzy
 #| msgctxt "dictionary variant"
 #| msgid "60"
@@ -36,7 +36,7 @@ msgctxt "Sonnet::Loader|dictionary variant"
 msgid "60"
 msgstr "۶۰"
 
-#: core/loader.cpp:186
+#: core/loader.cpp:179
 #, fuzzy
 #| msgctxt "dictionary variant"
 #| msgid "80"
@@ -44,7 +44,7 @@ msgctxt "Sonnet::Loader|dictionary variant"
 msgid "80"
 msgstr "۸۰"
 
-#: core/loader.cpp:187
+#: core/loader.cpp:180
 #, fuzzy
 #| msgctxt "dictionary variant"
 #| msgid "-ise suffixes"
@@ -52,7 +52,7 @@ msgctxt "Sonnet::Loader|dictionary variant"
 msgid "-ise suffixes"
 msgstr "-ise وروستاړي"
 
-#: core/loader.cpp:188
+#: core/loader.cpp:181
 #, fuzzy
 #| msgctxt "dictionary variant"
 #| msgid "-ize suffixes"
@@ -60,7 +60,7 @@ msgctxt "Sonnet::Loader|dictionary variant"
 msgid "-ize suffixes"
 msgstr "-ize وروستاړي"
 
-#: core/loader.cpp:189
+#: core/loader.cpp:182
 #, fuzzy
 #| msgctxt "dictionary variant"
 #| msgid "-ise suffixes and with accents"
@@ -68,7 +68,7 @@ msgctxt "Sonnet::Loader|dictionary variant"
 msgid "-ise suffixes and with accents"
 msgstr "وروستاړي او د نښو سره -ise"
 
-#: core/loader.cpp:190
+#: core/loader.cpp:183
 #, fuzzy
 #| msgctxt "dictionary variant"
 #| msgid "-ise suffixes and without accents"
@@ -76,7 +76,7 @@ msgctxt "Sonnet::Loader|dictionary variant"
 msgid "-ise suffixes and without accents"
 msgstr "وروستاړي او بې له نښو -ise"
 
-#: core/loader.cpp:191
+#: core/loader.cpp:184
 #, fuzzy
 #| msgctxt "dictionary variant"
 #| msgid "-ize suffixes and with accents"
@@ -84,7 +84,7 @@ msgctxt "Sonnet::Loader|dictionary variant"
 msgid "-ize suffixes and with accents"
 msgstr "وروستاړي او د نښو سره -ize"
 
-#: core/loader.cpp:192
+#: core/loader.cpp:185
 #, fuzzy
 #| msgctxt "dictionary variant"
 #| msgid "-ize suffixes and without accents"
@@ -92,7 +92,7 @@ msgctxt "Sonnet::Loader|dictionary variant"
 msgid "-ize suffixes and without accents"
 msgstr "وروستاړي او بې له نښو -ize"
 
-#: core/loader.cpp:193
+#: core/loader.cpp:186
 #, fuzzy
 #| msgctxt "dictionary variant"
 #| msgid "large"
@@ -100,7 +100,7 @@ msgctxt "Sonnet::Loader|dictionary variant"
 msgid "large"
 msgstr "لوی"
 
-#: core/loader.cpp:194
+#: core/loader.cpp:187
 #, fuzzy
 #| msgctxt "dictionary variant"
 #| msgid "medium"
@@ -108,7 +108,7 @@ msgctxt "Sonnet::Loader|dictionary variant"
 msgid "medium"
 msgstr "منځنی"
 
-#: core/loader.cpp:195
+#: core/loader.cpp:188
 #, fuzzy
 #| msgctxt "dictionary variant"
 #| msgid "small"
@@ -116,7 +116,7 @@ msgctxt "Sonnet::Loader|dictionary variant"
 msgid "small"
 msgstr "وړوکی"
 
-#: core/loader.cpp:196
+#: core/loader.cpp:189
 #, fuzzy
 #| msgctxt "dictionary variant"
 #| msgid "variant 0"
@@ -124,7 +124,7 @@ msgctxt "Sonnet::Loader|dictionary variant"
 msgid "variant 0"
 msgstr "۰ بدلون"
 
-#: core/loader.cpp:197
+#: core/loader.cpp:190
 #, fuzzy
 #| msgctxt "dictionary variant"
 #| msgid "variant 1"
@@ -132,7 +132,7 @@ msgctxt "Sonnet::Loader|dictionary variant"
 msgid "variant 1"
 msgstr "۱ بدلون"
 
-#: core/loader.cpp:198
+#: core/loader.cpp:191
 #, fuzzy
 #| msgctxt "dictionary variant"
 #| msgid "variant 2"
@@ -140,7 +140,7 @@ msgctxt "Sonnet::Loader|dictionary variant"
 msgid "variant 2"
 msgstr "۲ بدلون"
 
-#: core/loader.cpp:199
+#: core/loader.cpp:192
 #, fuzzy
 #| msgctxt "dictionary variant"
 #| msgid "without accents"
@@ -148,7 +148,7 @@ msgctxt "Sonnet::Loader|dictionary variant"
 msgid "without accents"
 msgstr "بې له نښو"
 
-#: core/loader.cpp:200
+#: core/loader.cpp:193
 #, fuzzy
 #| msgctxt "dictionary variant"
 #| msgid "with accents"
@@ -156,22 +156,22 @@ msgctxt "Sonnet::Loader|dictionary variant"
 msgid "with accents"
 msgstr "سره له نښو"
 
-#: core/loader.cpp:201
+#: core/loader.cpp:194
 msgctxt "Sonnet::Loader|dictionary variant"
 msgid "with ye, modern russian"
 msgstr ""
 
-#: core/loader.cpp:202
+#: core/loader.cpp:195
 msgctxt "Sonnet::Loader|dictionary variant"
 msgid "with yeyo, modern and old russian"
 msgstr ""
 
-#: core/loader.cpp:203
+#: core/loader.cpp:196
 msgctxt "Sonnet::Loader|dictionary variant"
 msgid "with yo, old russian"
 msgstr ""
 
-#: core/loader.cpp:204
+#: core/loader.cpp:197
 #, fuzzy
 #| msgctxt "dictionary variant"
 #| msgid "extended"
@@ -179,7 +179,7 @@ msgctxt "Sonnet::Loader|dictionary variant"
 msgid "extended"
 msgstr "ژور"
 
-#: core/loader.cpp:238
+#: core/loader.cpp:231
 #, fuzzy, qt-format
 #| msgctxt "dictionary name. %1-language, %2-country and %3 variant name"
 #| msgid "%1 (%2) [%3]"
@@ -189,7 +189,7 @@ msgctxt ""
 msgid "%1 (%2) [%3]"
 msgstr "%1 (%2) [%3]"
 
-#: core/loader.cpp:241
+#: core/loader.cpp:234
 #, fuzzy, qt-format
 #| msgctxt "dictionary name. %1-language and %2-country name"
 #| msgid "%1 (%2)"

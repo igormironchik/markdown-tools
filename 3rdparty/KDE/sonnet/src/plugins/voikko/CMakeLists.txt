@@ -1,4 +1,6 @@
-add_library(sonnet_voikko MODULE
+qt_add_plugin(sonnet_voikko CLASS_NAME VoikkoClient)
+
+target_sources(sonnet_voikko PRIVATE
     voikkoclient.cpp
     voikkodict.cpp
 )

@@ -1,4 +1,6 @@
-add_library(sonnet_nsspellchecker MODULE
+qt_add_plugin(sonnet_nsspellchecker CLASS_NAME NSSpellCheckerClient)
+
+target_sources(sonnet_nsspellchecker PRIVATE
     nsspellcheckerclient.mm
     nsspellcheckerdict.mm
 )
