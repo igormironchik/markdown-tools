@@ -1,4 +1,5 @@
 set /P qt_version=<%CD%\script\qt.version
+set /P qt_arch=<%CD%\script\qt.arch.win
 
 echo "Copying binaries..."
 
@@ -44,7 +45,7 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-copy /Y Qt\%qt_version%\msvc2022_64\bin installer\packages\mironchik.igor.markdown\data\bin
+copy /Y Qt\%qt_version%\%qt_arch%\bin installer\packages\mironchik.igor.markdown\data\bin
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
@@ -195,25 +196,25 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-copy /Y Qt\%qt_version%\msvc2022_64\bin\QtWebEngineProcess.exe installer\packages\mironchik.igor.markdown\data\bin\QtWebEngineProcess.exe
+copy /Y Qt\%qt_version%\%qt_arch%\bin\QtWebEngineProcess.exe installer\packages\mironchik.igor.markdown\data\bin\QtWebEngineProcess.exe
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-xcopy Qt\%qt_version%\msvc2022_64\plugins installer\packages\mironchik.igor.markdown\data\plugins /S /Y
+xcopy Qt\%qt_version%\%qt_arch%\plugins installer\packages\mironchik.igor.markdown\data\plugins /S /Y
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-xcopy Qt\%qt_version%\msvc2022_64\resources installer\packages\mironchik.igor.markdown\data\resources /S /Y
+xcopy Qt\%qt_version%\%qt_arch%\resources installer\packages\mironchik.igor.markdown\data\resources /S /Y
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-xcopy Qt\%qt_version%\msvc2022_64\translations installer\packages\mironchik.igor.markdown\data\translations /S /Y
+xcopy Qt\%qt_version%\%qt_arch%\translations installer\packages\mironchik.igor.markdown\data\translations /S /Y
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%

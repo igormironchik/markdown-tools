@@ -35,7 +35,10 @@ jobs:
     - run: conan profile detect
          
     - name: Set PATH to Qt
-      run: echo "${{ github.workspace }}\Qt\6.9.0\msvc2022_64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+      run: |
+        set /P qt_version=<${{ github.workspace }}\script\qt.version
+        set /P qt_arch=<${{ github.workspace }}\script\qt.arch.win
+        echo "${{ github.workspace }}\Qt\%qt_version%\%qt_arch%\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
        
     - name: Set PATH to KDE
       run: echo "${{ github.workspace }}\..\KDE\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append

@@ -18,7 +18,9 @@ IF %ERRORLEVEL% NEQ 0 (
 
 set /P qt_version=<%CD%\script\qt.version
 
-cmake -S 3rdparty/KDE/syntax-highlighting -B ../build-syntax-highlighting -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%CD%/../KDE -DECM_DIR=%CD%/../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH=%CD%/Qt/%qt_version%/msvc2022_64 -G "NMake Makefiles"
+set /P qt_arch=<%CD%\script\qt.arch.win
+
+cmake -S 3rdparty/KDE/syntax-highlighting -B ../build-syntax-highlighting -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%CD%/../KDE -DECM_DIR=%CD%/../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH=%CD%/Qt/%qt_version%/%qt_arch% -G "NMake Makefiles"
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
@@ -44,7 +46,7 @@ IF %ERRORLEVEL% NEQ 0 (
 
 set PKG_CONFIG_PATH=%CD%/../build-sonnet
 
-cmake -S 3rdparty/KDE/sonnet -B ../build-sonnet -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH=%CD%/Qt/%qt_version%/msvc2022_64 -G "NMake Makefiles"
+cmake -S 3rdparty/KDE/sonnet -B ../build-sonnet -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH=%CD%/Qt/%qt_version%/%qt_arch% -G "NMake Makefiles"
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
