@@ -36,8 +36,8 @@ jobs:
          
     - name: Set PATH to Qt
       run: |
-        $qt_version=<${{ github.workspace }}\script\qt.version
-        $qt_arch=<${{ github.workspace }}\script\qt.arch.win
+        $qt_version = Get-Content ${{ github.workspace }}\script\qt.version -TotalCount 1
+        $qt_arch = Get-Content ${{ github.workspace }}\script\qt.arch.win -TotalCount 1
         echo "${{ github.workspace }}\Qt\$qt_version\$qt_arch\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
        
     - name: Set PATH to KDE
