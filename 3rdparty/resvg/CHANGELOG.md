@@ -8,6 +8,15 @@ This changelog also contains important changes in dependencies.
 
 ## [Unreleased]
 
+This release has an MSRV of 1.65 for `usvg` and 1.67.1 for `resvg` and the C API.
+
+### Added
+- Support SVGs without the xmlns attribute on the root. Thanks to [@JosefKuchar][].
+
+### Removed
+
+- tools/kde-dolphin-thumbnailer. This was never a released tool, and it doesn't support current versions of KDE/dolphin ([#897][] by [@DJMcNab][])
+
 ## [0.45.0] - 2025-02-26
 This is the first release under the stewardship of [Linebender][], who is now responsible for maintenance of this crate.
 Many thanks to Yevhenii Reizner for the years of hard work that he has poured into this and other crates.
@@ -1270,10 +1279,15 @@ This release has an MSRV of 1.65 for `usvg` and 1.67.1 for `resvg` and the C API
 - `font-size` attribute inheritance during `use` resolving.
 
 [Linebender]: https://github.com/linebender
+[@DJMcNab]: https://github.com/DJMcNab
 [@michabay05]: https://github.com/michabay05
 [@Shnatsel]: https://github.com/Shnatsel
+[@JosefKuchar]: https://github.com/JosefKuchar
 
-[Unreleased]: https://github.com/linebender/resvg/compare/v0.45.0...HEAD
+[#897]: https://github.com/linebender/resvg/pull/897
+
+[Unreleased]: https://github.com/linebender/resvg/compare/v0.45.1...HEAD
+[0.45.1]: https://github.com/linebender/resvg/compare/v0.45.0...v0.45.1
 [0.45.0]: https://github.com/linebender/resvg/compare/v0.44.0...v0.45.0
 [0.44.0]: https://github.com/linebender/resvg/compare/v0.43.0...v0.44.0
 [0.43.0]: https://github.com/linebender/resvg/compare/v0.42.0...v0.43.0
