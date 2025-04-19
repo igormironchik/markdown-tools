@@ -84,38 +84,40 @@ include_directories( ${md4qt_INCLUDE_DIRECTORIES} )
 set( _DISABLE_INSTALLATION FALSE )
 
 install( TARGETS podofo_shared )
-install(TARGETS LaTeX)
 
-set( CFGFILE_GENERATOR ${CMAKE_CURRENT_BINARY_DIR}/bin/cfgfile.generator${CMAKE_EXECUTABLE_SUFFIX} )
+file(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg.version RESVG_VERSION)
+file(ARCHIVE_EXTRACT
+    INPUT ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg-${RESVG_VERSION}.tar.xz
+    DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty)
 
 add_library( resvg UNKNOWN IMPORTED )
 add_custom_target( build_resvg ALL
 	COMMAND cargo build --release
-	WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg/crates/c-api"
-	BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg/target/release/${CMAKE_STATIC_LIBRARY_PREFIX}resvg${CMAKE_SHARED_LIBRARY_SUFFIX}${CMAKE_STATIC_LIBRARY_SUFFIX} )
+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg-${RESVG_VERSION}/crates/c-api"
+    BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg-${RESVG_VERSION}/target/release/${CMAKE_STATIC_LIBRARY_PREFIX}resvg${CMAKE_SHARED_LIBRARY_SUFFIX}${CMAKE_STATIC_LIBRARY_SUFFIX} )
 
 if( UNIX AND NOT APPLE )
 	add_custom_command( TARGET build_resvg POST_BUILD
 		COMMAND patchelf --set-soname libresvg.so libresvg.so
-		WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg/target/release" )
+        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg-${RESVG_VERSION}/target/release" )
 endif()
 
 if( WIN32 )
 	set_target_properties( resvg PROPERTIES
-		IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg/target/release/${CMAKE_STATIC_LIBRARY_PREFIX}resvg${CMAKE_SHARED_LIBRARY_SUFFIX}${CMAKE_STATIC_LIBRARY_SUFFIX} )
+        IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg-${RESVG_VERSION}/target/release/${CMAKE_STATIC_LIBRARY_PREFIX}resvg${CMAKE_SHARED_LIBRARY_SUFFIX}${CMAKE_STATIC_LIBRARY_SUFFIX} )
 
-	install( FILES ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg/target/release/${CMAKE_STATIC_LIBRARY_PREFIX}resvg${CMAKE_SHARED_LIBRARY_SUFFIX}
+    install( FILES ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg-${RESVG_VERSION}/target/release/${CMAKE_STATIC_LIBRARY_PREFIX}resvg${CMAKE_SHARED_LIBRARY_SUFFIX}
 		TYPE BIN )
 else()
 	set_target_properties( resvg PROPERTIES
-		IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg/target/release/${CMAKE_STATIC_LIBRARY_PREFIX}resvg${CMAKE_SHARED_LIBRARY_SUFFIX} )
+        IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg-${RESVG_VERSION}/target/release/${CMAKE_STATIC_LIBRARY_PREFIX}resvg${CMAKE_SHARED_LIBRARY_SUFFIX} )
 
-	install( FILES ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg/target/release/${CMAKE_STATIC_LIBRARY_PREFIX}resvg${CMAKE_SHARED_LIBRARY_SUFFIX}
+    install( FILES ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg-${RESVG_VERSION}/target/release/${CMAKE_STATIC_LIBRARY_PREFIX}resvg${CMAKE_SHARED_LIBRARY_SUFFIX}
 		TYPE LIB )
 endif()
 
 set_target_properties( resvg PROPERTIES
-	INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg/crates/c-api )
+    INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg-${RESVG_VERSION}/crates/c-api )
 add_dependencies( resvg build_resvg )
 
 add_subdirectory( src )

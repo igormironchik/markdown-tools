@@ -12,3 +12,5 @@
 /**/ui_*.h
 /**/qrc_*.cpp
 /3rdparty/badge-highlight/node_modules/
+/3rdparty/resvg-*/
+!/3rdparty/resvg*.tar.xz
