@@ -1,4 +1,5 @@
 qt_version=$(cat $PWD/script/qt.version)
+resvg_version=$(cat $PWD/3rdparty/resvg.version)
 
 echo "Installing Qt Installer Framework..."
 
@@ -68,7 +69,7 @@ cp -r ./Qt/$qt_version/gcc_64/resources ./installer/packages/mironchik.igor.mark
 
 cp -r ./Qt/$qt_version/gcc_64/translations ./installer/packages/mironchik.igor.markdown/data || exit 1
 
-cp -r ./3rdparty/resvg/target/release/libresvg.so ./installer/packages/mironchik.igor.markdown/data/lib/libresvg.so || exit 1
+cp -r ./3rdparty/resvg-$resvg_version/target/release/libresvg.so ./installer/packages/mironchik.igor.markdown/data/lib/libresvg.so || exit 1
 
 rm -rf ./installer/packages/mironchik.igor.markdown/data/lib/cmake || exit 1
 
