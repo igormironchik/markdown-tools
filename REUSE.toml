@@ -22,7 +22,7 @@ SPDX-FileCopyrightText = "2004 Zack Rusin <zack@kde.org>, 2009 Jakub Stachowski 
 SPDX-License-Identifier = "LGPL-2.1-or-later"
 
 [[annotations]]
-path = ["tests/auto/test_render/**.data", "tests/manual/**", "doc/**.png", "src/shared/icon.ico", "src/converter/md-pdf.rc", "src/editor/md-editor.rc", "src/converter/resources.qrc", "src/editor/resources.qrc", "README.md", "roadmap.md", ".gitignore", "src/editor/**.ui", ".github/**", ".gitmodules", ".gitattributes", "conanfile.py", "codecov.yml", "installer/**", "script/**", "src/converter/svg/**", "REUSE.toml", "src/editor/res/index.html"]
+path = ["tests/auto/test_render/**.data", "tests/manual/**", "doc/**.png", "src/shared/icon.ico", "src/converter/md-pdf.rc", "src/editor/md-editor.rc", "src/converter/resources.qrc", "src/editor/resources.qrc", "README.md", "roadmap.md", ".gitignore", "src/editor/**.ui", ".github/**", ".gitmodules", ".gitattributes", "conanfile.py", "codecov.yml", "installer/**", "script/**", "src/converter/svg/**", "REUSE.toml", "src/editor/res/index.html", "3rdparty/resvg.version"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2024 Igor Mironchik <igor.mironchik@gmail.com>"
 SPDX-License-Identifier = "GPL-3.0-or-later"
@@ -160,7 +160,7 @@ SPDX-FileCopyrightText = "2024 Ivan Stanevich, 2024 Igor Mironchik <igor.mironch
 SPDX-License-Identifier = "MIT"
 
 [[annotations]]
-path = "3rdparty/resvg/**"
+path = "3rdparty/resvg-*"
 precedence = "aggregate"
-SPDX-FileCopyrightText = "none"
-SPDX-License-Identifier = "MPL-2.0"
+SPDX-FileCopyrightText = "2017 the Resvg Authors"
+SPDX-License-Identifier = "MIT"
