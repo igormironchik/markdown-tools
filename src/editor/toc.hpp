@@ -5,6 +5,7 @@
 
 // Qt include.
 #include <QAbstractItemModel>
+#include <QRect>
 #include <QScopedPointer>
 
 namespace MdEditor
@@ -14,13 +15,19 @@ namespace MdEditor
 // StringData
 //
 
-struct StringData {
-    StringData(const QString &t, bool c, bool rtl);
-
+struct UnitData {
     QString m_text;
     bool m_code = false;
     bool m_isRightToLeft = false;
+};
+
+struct StringData {
+    StringData(const QString &t, bool c, bool rtl);
+
+    UnitData m_data;
     QVector<QPair<QString, bool>> m_splittedText;
+    QVector<QRect> m_backgroundRects;
+    QVector<QPair<QRect, UnitData>> m_textRects;
 }; // struct StringData
 
 using StringDataVec = QVector<StringData>;
@@ -49,7 +56,7 @@ public:
     //! \return Line number.
     int lineNumber(const QModelIndex &index) const;
     //! \return String data.
-    const StringDataVec &stringData(const QModelIndex &index) const;
+    StringDataVec &stringData(const QModelIndex &index) const;
 
     //! \return Count of the rows.
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;

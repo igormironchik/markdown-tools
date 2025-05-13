@@ -13,12 +13,10 @@ namespace MdEditor
 {
 
 StringData::StringData(const QString &t, bool c, bool rtl)
-    : m_text(t)
-    , m_code(c)
-    , m_isRightToLeft(rtl)
-    , m_splittedText(splitString(m_text, true))
+    : m_data({t, c, rtl})
+    , m_splittedText(splitString(m_data.m_text, true))
 {
-    if (m_isRightToLeft) {
+    if (m_data.m_isRightToLeft) {
         orderWords(m_splittedText);
     }
 }
@@ -46,7 +44,7 @@ struct TocData {
                 tmp.append(QStringLiteral(" "));
             }
 
-            tmp.append(t.m_text);
+            tmp.append(t.m_data.m_text);
 
             first = false;
         }
@@ -124,7 +122,7 @@ int TocModel::lineNumber(const QModelIndex &index) const
     return static_cast<TocData *>(index.internalPointer())->m_line;
 }
 
-const StringDataVec &TocModel::stringData(const QModelIndex &index) const
+StringDataVec &TocModel::stringData(const QModelIndex &index) const
 {
     return static_cast<TocData *>(index.internalPointer())->m_text;
 }
