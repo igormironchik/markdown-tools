@@ -25,39 +25,32 @@ StringData::StringData(const QString &t, bool c, bool rtl)
 // TocData
 //
 
-struct TocData {
-    TocData(const StringDataVec &t, long long int l, int v, TocData *p = nullptr)
-        : m_text(t)
-        , m_line(l)
-        , m_level(v)
-        , m_parent(p)
-    {
-    }
+TocData::TocData(const StringDataVec &t, long long int l, int v, const QString &id, TocData *p)
+    : m_text(t)
+    , m_id(id)
+    , m_line(l)
+    , m_level(v)
+    , m_parent(p)
+{
+}
 
-    QString concatenatedText() const
-    {
-        QString tmp;
-        bool first = true;
+QString TocData::concatenatedText() const
+{
+    QString tmp;
+    bool first = true;
 
-        for (const auto &t : std::as_const(m_text)) {
-            if (!first) {
-                tmp.append(QStringLiteral(" "));
-            }
-
-            tmp.append(t.m_data.m_text);
-
-            first = false;
+    for (const auto &t : std::as_const(m_text)) {
+        if (!first) {
+            tmp.append(QStringLiteral(" "));
         }
 
-        return tmp;
+        tmp.append(t.m_data.m_text);
+
+        first = false;
     }
 
-    StringDataVec m_text;
-    long long int m_line = -1;
-    int m_level = -1;
-    TocData *m_parent = nullptr;
-    std::vector<std::shared_ptr<TocData>> m_children;
-}; // struct TocData
+    return tmp;
+}
 
 //
 // TocModelPrivate
@@ -67,6 +60,17 @@ struct TocModelPrivate {
     TocModelPrivate(TocModel *parent)
         : m_q(parent)
     {
+    }
+
+    QString labelToId(const QString &label) const
+    {
+        auto id = label;
+
+        if (id.startsWith(QStringLiteral("#"))) {
+            id.remove(0, 1);
+        }
+
+        return id;
     }
 
     //! Parent.
@@ -89,19 +93,20 @@ TocModel::~TocModel()
 {
 }
 
-void TocModel::addTopLevelItem(const StringDataVec &text, long long int line, int level)
+void TocModel::addTopLevelItem(const StringDataVec &text, long long int line, int level, const QString &label)
 {
     beginInsertRows(QModelIndex(), m_d->m_data.size(), m_d->m_data.size());
-    m_d->m_data.push_back(std::make_shared<TocData>(text, line, level));
+    m_d->m_data.push_back(std::make_shared<TocData>(text, line, level, m_d->labelToId(label)));
     endInsertRows();
 }
 
-void TocModel::addChildItem(const QModelIndex &parent, const StringDataVec &text, long long int line, int level)
+void TocModel::addChildItem(const QModelIndex &parent, const StringDataVec &text, long long int line, int level,
+                            const QString &label)
 {
     auto data = static_cast<TocData *>(parent.internalPointer());
 
     beginInsertRows(parent, data->m_children.size(), data->m_children.size());
-    data->m_children.push_back(std::make_shared<TocData>(text, line, level, data));
+    data->m_children.push_back(std::make_shared<TocData>(text, line, level, m_d->labelToId(label), data));
     endInsertRows();
 }
 

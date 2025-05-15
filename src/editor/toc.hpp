@@ -33,6 +33,23 @@ struct StringData {
 using StringDataVec = QVector<StringData>;
 
 //
+// TocData
+//
+
+struct TocData {
+    TocData(const StringDataVec &t, long long int l, int v, const QString &id, TocData *p = nullptr);
+
+    QString concatenatedText() const;
+
+    StringDataVec m_text;
+    QString m_id;
+    long long int m_line = -1;
+    int m_level = -1;
+    TocData *m_parent = nullptr;
+    std::vector<std::shared_ptr<TocData>> m_children;
+}; // struct TocData
+
+//
 // TocModel
 //
 
@@ -46,9 +63,11 @@ public:
     ~TocModel() override;
 
     //! Add top-level item.
-    void addTopLevelItem(const StringDataVec &text, long long int line, int level);
+    void addTopLevelItem(const StringDataVec &text, long long int line, int level,
+                         const QString &label);
     //! Add child item.
-    void addChildItem(const QModelIndex &parent, const StringDataVec &text, long long int line, int level);
+    void addChildItem(const QModelIndex &parent, const StringDataVec &text, long long int line, int level,
+                      const QString &label);
     //! Clear.
     void clear();
     //! \return Level.

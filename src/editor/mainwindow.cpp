@@ -180,6 +180,11 @@ protected:
 //! Tree view for ToC.
 class TocTreeView : public QTreeView
 {
+    Q_OBJECT
+
+signals:
+    void scrollWebViewToRequested(const QString &id);
+
 public:
     explicit TocTreeView(QWidget *parent)
         : QTreeView(parent)
@@ -196,6 +201,20 @@ protected:
         if (e->key() == Qt::Key_Return) {
             e->accept();
         }
+    }
+
+    void contextMenuEvent(QContextMenuEvent *e) override
+    {
+        QMenu menu;
+
+        const auto id = static_cast<TocData *>(static_cast<QSortFilterProxyModel*>(model())->
+                                               mapToSource(indexAt(e->pos())).internalPointer())->m_id;
+
+        menu.addAction(tr("Scroll Web Preview To"), [id, this](){ emit this->scrollWebViewToRequested(id); });
+
+        menu.exec(e->globalPos());
+
+        e->accept();
     }
 }; // class TocTreeView
 
@@ -410,6 +429,7 @@ struct MainWindowPrivate {
         QObject::connect(m_tocTree->header(), &QHeaderView::sectionResized, [this](int, int, int) {
             notifyTocTree(this->m_filterTocModel, this->m_delegate, QModelIndex());
         });
+        QObject::connect(m_tocTree, &TocTreeView::scrollWebViewToRequested, m_q, &MainWindow::onScrollWebViewTo);
 
         QObject::connect(m_tocFilterLine, &QLineEdit::textChanged, [this](const QString &text) {
             this->m_filterTocModel->setFilterFixedString(text);
@@ -761,14 +781,18 @@ struct MainWindowPrivate {
                             }
 
                             if (current.empty()) {
-                                this->m_tocModel->addTopLevelItem(this->paragraphToMenuText(h->text().get()), h->startLine(), h->level());
+                                this->m_tocModel->addTopLevelItem(this->paragraphToMenuText(h->text().get()),
+                                                                  h->startLine(), h->level(), h->label());
                                 current.push_back(this->m_tocModel->index(this->m_tocModel->rowCount() - 1, 0));
                             } else {
-                                this->m_tocModel->addChildItem(current.back(), this->paragraphToMenuText(h->text().get()), h->startLine(), h->level());
-                                current.push_back(this->m_tocModel->index(this->m_tocModel->rowCount(current.back()) - 1, 0, current.back()));
+                                this->m_tocModel->addChildItem(current.back(), this->paragraphToMenuText(h->text().get()),
+                                                               h->startLine(), h->level(), h->label());
+                                current.push_back(this->m_tocModel->index(this->m_tocModel->rowCount(current.back()) - 1,
+                                                                          0, current.back()));
                             }
                         } else {
-                            this->m_tocModel->addTopLevelItem(this->paragraphToMenuText(h->text().get()), h->startLine(), h->level());
+                            this->m_tocModel->addTopLevelItem(this->paragraphToMenuText(h->text().get()),
+                                                              h->startLine(), h->level(), h->label());
                             current.push_back(this->m_tocModel->index(this->m_tocModel->rowCount() - 1, 0));
                         }
                     }
@@ -879,6 +903,11 @@ void MainWindow::onWorkingDirectoryChange(const QString &)
     readAllLinked();
 
     m_d->initMarkdownMenu();
+}
+
+void MainWindow::onScrollWebViewTo(const QString &id)
+{
+    m_d->m_page->runJavaScript(QStringLiteral("scrollToHeading('%1')").arg(id));
 }
 
 void MainWindow::onConvertToPdf()

@@ -74,6 +74,7 @@ private slots:
     void onSettings();
     void onTabActivated();
     void onWorkingDirectoryChange(const QString &);
+    void onScrollWebViewTo(const QString &id);
 
 private:
     bool isModified() const;

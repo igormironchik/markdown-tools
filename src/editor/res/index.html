@@ -11,6 +11,15 @@
   <script src="qrc:/res/katex/contrib/auto-render.min.js"></script>
   <link href="qrc:/res/css/emoji.css" rel="stylesheet" type="text/css" />
   <script src="qrc:/res/emoji.js" type="text/javascript"></script>
+  <script>
+    function scrollToHeading(headingId) {
+      const heading = document.getElementById(headingId);
+
+      if (heading) {
+        heading.scrollIntoView();
+      }
+    }
+  </script>
 </head>
 <body>
   <div id="placeholder"></div>
