@@ -9,6 +9,7 @@
 #define MD4QT_QT_SUPPORT
 #include <md4qt/poscache.h>
 #include <md4qt/traits.h>
+#include <md4qt/parser.h>
 
 // Qt include.
 #include <QScopedPointer>
@@ -43,7 +44,7 @@ public:
     SyntaxVisitor(const SyntaxVisitor &other);
     SyntaxVisitor &operator=(const SyntaxVisitor &other);
 
-    void highlight(QTextDocument *textDoc,
+    void highlight(MD::StringListStream<MD::QStringTrait> *stream,
                    std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
                    const Colors &cols);
 

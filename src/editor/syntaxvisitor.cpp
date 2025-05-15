@@ -49,7 +49,6 @@ struct SyntaxVisitorPrivate {
             doc->findBlockByNumber(it.key()).layout()->setFormats(it.value().m_format);
         }
 
-        m_textDoc = doc;
         m_formats.clear();
     }
 
@@ -62,15 +61,17 @@ struct SyntaxVisitorPrivate {
                    long long int endLine, long long int endColumn)
     {
         for (auto i = startLine; i <= endLine; ++i) {
-            const auto block = m_textDoc->findBlockByNumber(i);
+            if (m_stream) {
+                const auto block = m_stream->lineAt(i).asString();
 
-            QTextLayout::FormatRange r;
-            r.format = format;
-            r.start = (i == startLine ? startColumn : 0);
-            r.length = (i == startLine ? (i == endLine ? endColumn - startColumn + 1 : block.length() - 1 - startColumn)
-                                       : (i == endLine ? endColumn + 1 : block.length() - 1));
+                QTextLayout::FormatRange r;
+                r.format = format;
+                r.start = (i == startLine ? startColumn : 0);
+                r.length = (i == startLine ? (i == endLine ? endColumn - startColumn + 1 : block.length() - 1 - startColumn)
+                                           : (i == endLine ? endColumn + 1 : block.length() - 1));
 
-            m_formats[i].m_format.push_back(r);
+                m_formats[i].m_format.push_back(r);
+            }
         }
     }
 
@@ -140,8 +141,8 @@ struct SyntaxVisitorPrivate {
     QMap<int, Format> m_formats;
     //! Default font.
     QFont m_font;
-    //! Text document.
-    QTextDocument *m_textDoc = nullptr;
+    //! Lines stream.
+    MD::StringListStream<MD::QStringTrait> *m_stream = nullptr;
     //! Additional style that should be applied for any item.
     int m_additionalStyle = 0;
     //! Is spelling check enabled?
@@ -311,16 +312,18 @@ void SyntaxVisitor::highlightNextMisspelled(QPlainTextEdit *editor)
     }
 }
 
-void SyntaxVisitor::highlight(QTextDocument *textDoc,
+void SyntaxVisitor::highlight(MD::StringListStream<MD::QStringTrait> *stream,
                               std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
                               const Colors &cols)
 {
     m_d->m_misspelledPos.clear();
     m_d->m_currentHighlightedMisspelled = {-1, -1};
     m_d->m_colors = cols;
-    m_d->m_textDoc = textDoc;
+    m_d->m_stream = stream;
 
     MD::PosCache<MD::QStringTrait>::initialize(doc);
+
+    m_d->m_stream = nullptr;
 }
 
 const Colors &SyntaxVisitor::colors() const
@@ -366,16 +369,18 @@ void SyntaxVisitor::onReferenceLink(MD::Link<MD::QStringTrait> *l)
 namespace /* anonymous */ {
 
 long long int
-skipSpacesAndPunct(const QTextDocument *doc, long long int pos)
+skipSpacesAndPunct(const QString &str, long long int pos)
 {
-    auto c = doc->characterAt(pos);
+    QChar c;
 
-    while (!c.isNull()) {
+    while (pos < str.length()) {
+        c = str.at(pos);
+
         if (!(c.isPunct() || c.isSpace())) {
             break;
         }
 
-        c = doc->characterAt(++pos);
+        ++pos;
     }
 
     return pos;
@@ -393,16 +398,18 @@ skipLastPunct(QString &word, long long int &pos,
 }
 
 QString
-readWord(const QTextDocument *doc, long long int &pos, long long int lastPos,
+readWord(const QString &str, long long int &pos, long long int lastPos,
          QVector<long long int> &puncts, bool &allUpper)
 {
     QString word;
     const auto startPos = pos;
 
-    auto c = doc->characterAt(pos);
+    QChar c;
     allUpper = true;
 
-    while (!c.isNull() && pos <= lastPos) {
+    while (pos <= lastPos) {
+        c = str.at(pos);
+
         if (c.isSpace()) {
             break;
         } else {
@@ -417,7 +424,6 @@ readWord(const QTextDocument *doc, long long int &pos, long long int lastPos,
             }
 
             ++pos;
-            c = doc->characterAt(pos);
         }
     }
 
@@ -439,22 +445,21 @@ void SyntaxVisitor::onText(MD::Text<MD::QStringTrait> *t)
         m_d->setFormat(format, t->startLine(), t->startColumn(), t->endLine(), t->endColumn());
     }
 
-    if (m_d->m_spellingEnabled) {
-        const auto block = m_d->m_textDoc->findBlockByNumber(t->startLine());
-        auto pos = block.position() + t->startColumn();
+    if (m_d->m_spellingEnabled && m_d->m_stream) {
+        const auto block = m_d->m_stream->lineAt(t->startLine()).asString();
+        auto pos = t->startColumn();
 
         format.setUnderlineColor(Qt::red);
         format.setFontUnderline(true);
         format.setUnderlineStyle(QTextCharFormat::WaveUnderline);
 
-        pos = skipSpacesAndPunct(m_d->m_textDoc, pos);
+        pos = skipSpacesAndPunct(block, pos);
 
-        while (pos - block.position() <= t->endColumn()) {
-            const auto startPos = pos - block.position();
+        while (pos <= t->endColumn()) {
+            const auto startPos = pos;
             QVector<long long int> puncts;
             bool allUpper = false;
-            auto word = readWord(m_d->m_textDoc, pos, block.position() + t->endColumn(),
-                                 puncts, allUpper);
+            auto word = readWord(block, pos, t->endColumn(), puncts, allUpper);
 
             while (true) {
                 m_d->identifyLanguage(word);
@@ -487,7 +492,7 @@ void SyntaxVisitor::onText(MD::Text<MD::QStringTrait> *t)
                 break;
             }
 
-            pos = skipSpacesAndPunct(m_d->m_textDoc, ++pos);
+            pos = skipSpacesAndPunct(block, ++pos);
         }
     }
 

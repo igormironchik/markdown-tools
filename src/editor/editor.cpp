@@ -54,19 +54,13 @@ public:
 
 public slots:
     void onData(const QString &md, const QString &path, const QString &fileName, unsigned long long int counter,
-                QTextDocument *doc, SyntaxVisitor syntax)
+                SyntaxVisitor syntax)
     {
         m_data.clear();
         m_data.push_back(md);
         m_path = path;
         m_fileName = fileName;
         m_counter = counter;
-
-        if (m_doc) {
-            m_doc->deleteLater();
-        }
-
-        m_doc = doc;
         m_syntax = syntax;
 
         emit newData();
@@ -77,15 +71,28 @@ private slots:
     {
         if (!m_data.isEmpty()) {
             QTextStream stream(&m_data.back());
+            MD::MdBlock<MD::QStringTrait>::Data data;
+
+            {
+                MD::TextStream<MD::QStringTrait> tmp(stream);
+
+                long long int i = 0;
+
+                while (!tmp.atEnd()) {
+                    data.push_back(std::pair<MD::QStringTrait::InternalString, MD::MdLineData>(tmp.readLine(), {i}));
+                    ++i;
+                }
+            }
+
+            stream.seek(0);
+
+            MD::StringListStream<MD::QStringTrait> linesStream(data);
 
             const auto doc = m_parser.parse(stream, m_path, m_fileName);
 
             m_data.clear();
 
-            m_syntax.highlight(m_doc, doc, m_syntax.colors());
-
-            m_doc->deleteLater();
-            m_doc = nullptr;
+            m_syntax.highlight(&linesStream, doc, m_syntax.colors());
 
             emit done(doc, m_counter, m_syntax);
         }
@@ -97,7 +104,6 @@ private:
     QString m_fileName;
     unsigned long long int m_counter;
     MD::Parser<MD::QStringTrait> m_parser;
-    QTextDocument *m_doc = nullptr;
     SyntaxVisitor m_syntax;
 };
 
@@ -744,7 +750,7 @@ void Editor::onContentChanged()
     ++m_d->m_currentParsingCounter;
 
     emit doParsing(md, (m_d->m_useWorkingDir ? m_d->m_workingDirectory : info.absolutePath()), info.fileName(),
-                   m_d->m_currentParsingCounter, document()->clone(), m_d->m_syntax);
+                   m_d->m_currentParsingCounter, m_d->m_syntax);
 }
 
 void Editor::onParsingDone(std::shared_ptr<MD::Document<MD::QStringTrait>> doc, unsigned long long int counter,

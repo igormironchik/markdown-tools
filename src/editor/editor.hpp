@@ -50,7 +50,7 @@ signals:
     void ready();
     void misspelled(bool found);
     void doParsing(const QString &md, const QString &path, const QString &fileName, unsigned long long int counter,
-                   QTextDocument *doc, SyntaxVisitor syntax);
+                   SyntaxVisitor syntax);
     void doHighlight();
 
 public:
