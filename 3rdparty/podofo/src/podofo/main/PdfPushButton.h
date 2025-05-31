@@ -14,14 +14,14 @@ namespace PoDoFo
     /** A push button is a button which has no state and value
      *  but can toggle actions.
      */
-    class PODOFO_API PdfPushButton : public PdfButton
+    class PODOFO_API PdfPushButton final : public PdfButton
     {
         friend class PdfField;
 
     private:
-        PdfPushButton(PdfAcroForm& acroform, const std::shared_ptr<PdfField>& parent);
+        PdfPushButton(PdfAcroForm& acroform, std::shared_ptr<PdfField>&& parent);
 
-        PdfPushButton(PdfAnnotationWidget& widget, const std::shared_ptr<PdfField>& parent);
+        PdfPushButton(PdfAnnotationWidget& widget, std::shared_ptr<PdfField>&& parent);
 
         PdfPushButton(PdfObject& obj, PdfAcroForm* acroform);
 

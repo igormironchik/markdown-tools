@@ -7,21 +7,22 @@
 #ifndef PDF_MEM_DOCUMENT_H
 #define PDF_MEM_DOCUMENT_H
 
-#include "PdfDocument.h"
-#include "PdfExtension.h"
 #include <podofo/auxiliary/InputDevice.h>
 #include <podofo/auxiliary/OutputDevice.h>
+
+#include "PdfDocument.h"
+#include "PdfEncryptSession.h"
 
 namespace PoDoFo {
 
 class PdfParser;
-class PdfWriter;
+class PdfEncryptSession;
 
 /** PdfMemDocument is the core class for reading and manipulating
  *  PDF files and writing them back to disk.
  *
  *  PdfMemDocument was designed to allow easy access to the object
- *  structur of a PDF file.
+ *  structure of a PDF file.
  *
  *  PdfMemDocument should be used whenever you want to change
  *  the object structure of a PDF file.
@@ -32,18 +33,17 @@ class PdfWriter;
  *  \see PdfDocument
  *  \see PdfStreamedDocument
  *  \see PdfParser
- *  \see PdfWriter
  */
 class PODOFO_API PdfMemDocument final : public PdfDocument
 {
-    friend class PdfWriter;
+    PODOFO_PRIVATE_FRIEND(class PdfWriter);
 
 public:
     /** Construct a new PdfMemDocument
      */
     PdfMemDocument();
 
-    PdfMemDocument(const std::shared_ptr<InputStreamDevice>& device, const std::string_view& password = { });
+    PdfMemDocument(std::shared_ptr<InputStreamDevice> device, const std::string_view& password = { });
 
     /** Construct a copy of the given document
      */
@@ -74,7 +74,7 @@ public:
      *
      *  \see WriteUpdate, Load, LoadFromBuffer
      */
-    void LoadFromDevice(const std::shared_ptr<InputStreamDevice>& device, const std::string_view& password = { });
+    void Load(std::shared_ptr<InputStreamDevice> device, const std::string_view& password = { });
 
     /** Save the complete document to a file
      *
@@ -126,31 +126,6 @@ public:
      */
     void SaveUpdate(OutputStreamDevice& device, PdfSaveOptions opts = PdfSaveOptions::None);
 
-    /** Add a vendor-specific extension to the current PDF version.
-     *  \param ns namespace of the extension
-     *  \param level level of the extension
-     */
-    void AddPdfExtension(const PdfName& ns, int64_t level);
-
-    /** Checks whether the documents is tagged to imlpement a vendor-specific
-     *  extension to the current PDF version.
-     *  \param ns  namespace of the extension
-     *  \param level  level of the extension
-     */
-    bool HasPdfExtension(const PdfName& ns, int64_t level) const;
-
-    /** Remove a vendor-specific extension to the current PDF version.
-     *  \param ns  namespace of the extension
-     *  \param level  level of the extension
-     */
-    void RemovePdfExtension(const PdfName& ns, int64_t level);
-
-    /** Return the list of all vendor-specific extensions to the current PDF version.
-     *  \param ns  namespace of the extension
-     *  \param level  level of the extension
-     */
-    std::vector<PdfExtension> GetPdfExtensions() const;
-
     /** Encrypt the document during writing.
      *
      *  \param userPassword the user password (if empty the user does not have
@@ -166,53 +141,14 @@ public:
      */
     void SetEncrypted(const std::string_view& userPassword, const std::string_view& ownerPassword,
         PdfPermissions protection = PdfPermissions::Default,
-        PdfEncryptAlgorithm algorithm = PdfEncryptAlgorithm::AESV2,
-        PdfKeyLength keyLength = PdfKeyLength::L40);
+        PdfEncryptionAlgorithm algorithm = PdfEncryptionAlgorithm::AESV3R6,
+        PdfKeyLength keyLength = PdfKeyLength::Unknown);
 
     /** Encrypt the document during writing using a PdfEncrypt object
      *
      *  \param encrypt an encryption object that will be owned by PdfMemDocument
      */
     void SetEncrypt(std::unique_ptr<PdfEncrypt>&& encrypt);
-
-    /** Tries to free all memory allocated by the given
-     *  PdfObject (variables and streams) and reads
-     *  it from disk again if it is requested another time.
-     *
-     *  This will only work if load on demand is used. Other-
-     *  wise any call to this method will be ignored. Load on
-     *  demand is currently always enabled when using PdfMemDocument.
-     *  If the object is dirty if will not be free'd.
-     *
-     *  \param ref free all memory allocated by the object
-     *              with this reference.
-     *  \param force if true the object will be free'd
-     *                even if IsDirty() returns true.
-     *                So you will loose any changes made
-     *                to this object.
-     *
-     *  This is an overloaded member for your convenience.
-     */
-    void FreeObjectMemory(const PdfReference& ref, bool force = false);
-
-    /** Tries to free all memory allocated by the given
-     *  PdfObject (variables and streams) and reads
-     *  it from disk again if it is requested another time.
-     *
-     *  This will only work if load on demand is used. Other-
-     *  wise any call to this method will be ignored. Load on
-     *  demand is currently always enabled when using PdfMemDocument.
-     *  If the object is dirty if will not be free'd.
-     *
-     *  \param obj free object from memory
-     *  \param force if true the object will be free'd
-     *                even if IsDirty() returns true.
-     *                So you will loose any changes made
-     *                to this object.
-     *
-     *  \see IsDirty
-     */
-    void FreeObjectMemory(PdfObject* obj, bool force = false);
 
     const PdfEncrypt* GetEncrypt() const override;
 
@@ -229,7 +165,7 @@ private:
     PdfMemDocument(bool empty);
 
 private:
-    void loadFromDevice(const std::shared_ptr<InputStreamDevice>& device, const std::string_view& password);
+    void loadFromDevice(std::shared_ptr<InputStreamDevice>&& device, const std::string_view& password);
 
     /** Internal method to load all objects from a PdfParser object.
      *  The objects will be removed from the parser and are now
@@ -237,10 +173,11 @@ private:
      */
     void initFromParser(PdfParser& parser);
 
-    /** Clear all internal variables
-     */
-    void Clear();
-    void clear();
+    /** Clear all variables that have internal memory usage
+      */
+    void clear() override;
+
+    void reset() override;
 
     void beforeWrite(PdfSaveOptions options);
 
@@ -252,7 +189,7 @@ private:
     PdfVersion m_InitialVersion;
     bool m_HasXRefStream;
     int64_t m_PrevXRefOffset;
-    std::shared_ptr<PdfEncrypt> m_Encrypt;
+    std::unique_ptr<PdfEncryptSession> m_Encrypt;
     std::shared_ptr<InputStreamDevice> m_device;
 };
 

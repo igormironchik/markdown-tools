@@ -8,8 +8,7 @@
 #include "PdfPage.h"
 
 #include <regex>
-#include <deque>
-#include <stack>
+#include <list>
 
 #include <utf8cpp/utf8.h>
 
@@ -40,6 +39,12 @@ static constexpr float NaN = numeric_limits<float>::quiet_NaN();
 // 5.3 Text Objects
 struct TextState
 {
+    TextState()
+    {
+        // Reset font size
+        PdfState.FontSize = -1;
+    }
+
     Matrix T_rm;  // Current T_rm
     Matrix CTM;   // Current CTM
     Matrix T_m;   // Current T_m
@@ -47,11 +52,14 @@ struct TextState
     double T_l = 0;             // Leading text Tl
     PdfTextState PdfState;
     Vector2 WordSpacingVectorRaw;
+    Vector2 SpaceCharVectorRaw;
     double WordSpacingLength = 0;
+    double CharSpaceLength = 0;
     void ComputeDependentState();
-    void ComputeSpaceLength();
+    void ComputeSpaceDescriptors();
     void ComputeT_rm();
     double GetWordSpacingLength() const;
+    double GetSpaceCharLength() const;
     void ScanString(const PdfString& encodedStr, string& decoded, vector<double>& lengths, vector<unsigned>& positions);
 };
 
@@ -190,36 +198,45 @@ void PdfPage::ExtractTextTo(vector<PdfTextEntry>& entries, const string_view& pa
     ExtractionContext context(entries, *this, pattern, params.Flags, params.ClipRect);
 
     // Look FIGURE 4.1 Graphics objects
-    PdfContentStreamReader reader(*this);
+    PdfContentReaderArgs args;
+    args.Flags = PdfContentReaderFlags::SkipHandleNonFormXObjects; // Images are not needed for text extraction
+    PdfContentStreamReader reader(*this, args);
     PdfContent content;
     vector<double> lengths;
     vector<unsigned> positions;
     string decoded;
+    AbortCheckInfo info;
     while (reader.TryReadNext(content))
     {
-        switch (content.Type)
+        // Check for an abort
+        if (++info.ReadCount % 100 == 0)
+        {
+            if (params.AbortCheck && params.AbortCheck(info))
+                break;
+        }
+
+        switch (content.GetType())
         {
             case PdfContentType::Operator:
             {
-                if ((content.Warnings & PdfContentWarnings::InvalidOperator)
-                    != PdfContentWarnings::None)
+                if (content.HasErrors())
                 {
                     // Ignore invalid operators
                     continue;
                 }
 
                 // T_l TL: Set the text leading, T_l
-                switch (content.Operator)
+                switch (content->Operator)
                 {
                     case PdfOperator::TL:
                     {
-                        context.States.Current->T_l = content.Stack[0].GetReal();
+                        context.States.Current->T_l = content->Stack[0].GetReal();
                         break;
                     }
                     case PdfOperator::cm:
                     {
                         double a, b, c, d, e, f;
-                        read(content.Stack, a, b, c, d, e, f);
+                        read(content->Stack, a, b, c, d, e, f);
                         context.cm_Operator(a, b, c, d, e, f);
                         break;
                     }
@@ -230,24 +247,24 @@ void PdfPage::ExtractTextTo(vector<PdfTextEntry>& entries, const string_view& pa
                     case PdfOperator::TD:
                     case PdfOperator::Tm:
                     {
-                        if (content.Operator == PdfOperator::Td || content.Operator == PdfOperator::TD)
+                        if (content->Operator == PdfOperator::Td || content->Operator == PdfOperator::TD)
                         {
                             double tx, ty;
-                            read(content.Stack, tx, ty);
+                            read(content->Stack, tx, ty);
                             context.TdTD_Operator(tx, ty);
 
-                            if (content.Operator == PdfOperator::TD)
+                            if (content->Operator == PdfOperator::TD)
                                 context.States.Current->T_l = -ty;
                         }
-                        else if (content.Operator == PdfOperator::Tm)
+                        else if (content->Operator == PdfOperator::Tm)
                         {
                             double a, b, c, d, e, f;
-                            read(content.Stack, a, b, c, d, e, f);
+                            read(content->Stack, a, b, c, d, e, f);
                             context.Tm_Operator(a, b, c, d, e, f);
                         }
                         else
                         {
-                            throw runtime_error("Invalid flow");
+                            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InternalLogic, "Invalid flow");
                         }
 
                         break;
@@ -277,8 +294,8 @@ void PdfPage::ExtractTextTo(vector<PdfTextEntry>& entries, const string_view& pa
                     // font size Tf : Set the text font, T_f
                     case PdfOperator::Tf:
                     {
-                        double fontSize = content.Stack[0].GetReal();
-                        auto& fontName = content.Stack[1].GetName();
+                        double fontSize = content->Stack[0].GetReal();
+                        auto& fontName = content->Stack[1].GetName();
                         context.Tf_Operator(fontName, fontSize);
                         break;
                     }
@@ -293,12 +310,12 @@ void PdfPage::ExtractTextTo(vector<PdfTextEntry>& entries, const string_view& pa
                     {
                         ASSERT(context.BlockOpen, "No text block open");
 
-                        auto& str = content.Stack[0].GetString();
-                        if (content.Operator == PdfOperator::DoubleQuote)
+                        auto& str = content->Stack[0].GetString();
+                        if (content->Operator == PdfOperator::DoubleQuote)
                         {
                             // Operator " arguments: aw ac string "
-                            context.States.Current->PdfState.CharSpacing = content.Stack[1].GetReal();
-                            context.States.Current->PdfState.WordSpacing = content.Stack[2].GetReal();
+                            context.States.Current->PdfState.CharSpacing = content->Stack[1].GetReal();
+                            context.States.Current->PdfState.WordSpacing = content->Stack[2].GetReal();
                         }
 
                         if (decodeString(str, *context.States.Current, decoded, lengths, positions)
@@ -308,8 +325,8 @@ void PdfPage::ExtractTextTo(vector<PdfTextEntry>& entries, const string_view& pa
                                 std::move(lengths), std::move(positions)), true);
                         }
 
-                        if (content.Operator == PdfOperator::Quote
-                            || content.Operator == PdfOperator::DoubleQuote)
+                        if (content->Operator == PdfOperator::Quote
+                            || content->Operator == PdfOperator::DoubleQuote)
                         {
                             context.TStar_Operator();
                         }
@@ -321,7 +338,7 @@ void PdfPage::ExtractTextTo(vector<PdfTextEntry>& entries, const string_view& pa
                     {
                         ASSERT(context.BlockOpen, "No text block open");
 
-                        auto& array = content.Stack[0].GetArray();
+                        auto& array = content->Stack[0].GetArray();
                         for (unsigned i = 0; i < array.GetSize(); i++)
                         {
                             const PdfString* str;
@@ -357,12 +374,12 @@ void PdfPage::ExtractTextTo(vector<PdfTextEntry>& entries, const string_view& pa
                     // Tc : word spacing
                     case PdfOperator::Tc:
                     {
-                        context.States.Current->PdfState.CharSpacing = content.Stack[0].GetReal();
+                        context.States.Current->PdfState.CharSpacing = content->Stack[0].GetReal();
                         break;
                     }
                     case PdfOperator::Tw:
                     {
-                        context.States.Current->PdfState.WordSpacing = content.Stack[0].GetReal();
+                        context.States.Current->PdfState.WordSpacing = content->Stack[0].GetReal();
                         break;
                     }
                     // q : Save the current graphics state
@@ -395,29 +412,31 @@ void PdfPage::ExtractTextTo(vector<PdfTextEntry>& entries, const string_view& pa
                 // Ignore image data token
                 break;
             }
-            case PdfContentType::DoXObject:
+            case PdfContentType::BeginFormXObject:
             {
-                if (content.XObject->GetType() == PdfXObjectType::Form)
-                {
-                    context.XObjectStateIndices.push_back({
-                        (const PdfXObjectForm*)content.XObject.get(),
-                        context.States.GetSize()
+                context.XObjectStateIndices.push_back({
+                    (const PdfXObjectForm*)content->XObject.get(),
+                    context.States.GetSize()
                     });
-                    context.States.Push();
-                }
+                context.States.Push();
 
                 break;
             }
-            case PdfContentType::EndXObjectForm:
+            case PdfContentType::EndFormXObject:
             {
                 PODOFO_ASSERT(context.XObjectStateIndices.size() != 0);
                 context.States.Pop(context.States.GetSize() - context.XObjectStateIndices.back().TextStateIndex);
                 context.XObjectStateIndices.pop_back();
                 break;
             }
+            case PdfContentType::DoXObject:
+            {
+                // Ignore handling of non Form XObjects
+                break;
+            }
             default:
             {
-                throw runtime_error("Unsupported PdfContentType");
+                PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidDataType, "Unsupported PdfContentType");
             }
         }
     }
@@ -596,7 +615,7 @@ void addEntryChunk(vector<PdfTextEntry> &textEntries, StringChunkList &chunks, c
                     if (lowerIndex != 0)
                     {
                         // Compute substring translation and apply it
-                        // TODO: Handle vertical scritps
+                        // TODO: Handle vertical scripts
                         double substringTx = computeLength(strings, glyphAddresses, 0, lowerIndex - 1);
                         textState.T_rm.Apply<Tx>(substringTx);
                     }
@@ -678,9 +697,9 @@ bool decodeString(const PdfString &str, TextState &state, string &decoded,
             // CHECK-ME: Maybe intrepret them as PdfDocEncoding?
             decoded = str.GetString();
             lengths.resize(decoded.length());
-            positions.reserve(decoded.length());
+            positions.resize(decoded.length());
             for (unsigned i = 0; i < decoded.length(); i++)
-                positions.push_back(i);
+                positions[i] = i;
 
             return true;
         }
@@ -853,8 +872,8 @@ ExtractionContext::ExtractionContext(vector<PdfTextEntry>& entries, const PdfPag
 
     // Determine page rotation transformation
     double teta;
-    if (page.HasRotation(teta))
-        Rotation = std::make_unique<Matrix>(PoDoFo::GetFrameRotationTransform(page.GetRectRaw(), teta));
+    if (page.TryGetRotationRadians(teta))
+        Rotation = std::make_unique<Matrix>(PoDoFo::GetFrameRotationTransform((Rect)page.GetRectRaw(), teta));
 }
 
 void ExtractionContext::BeginText()
@@ -878,33 +897,47 @@ void ExtractionContext::Tf_Operator(const PdfName &fontname, double fontsize)
 {
     auto resources = getActualCanvas().GetResources();
     double spacingLengthRaw = 0;
+    double spaceCharLengthRaw = 0;
     States.Current->PdfState.FontSize = fontsize;
     if (resources == nullptr || (States.Current->PdfState.Font = resources->GetFont(fontname)) == nullptr)
+    {
         PoDoFo::LogMessage(PdfLogSeverity::Warning, "Unable to find font object {}", fontname.GetString());
+    }
     else
+    {
         spacingLengthRaw = States.Current->GetWordSpacingLength();
+        spaceCharLengthRaw = States.Current->GetSpaceCharLength();
+    }
 
     States.Current->WordSpacingVectorRaw = Vector2(spacingLengthRaw, 0);
     if (spacingLengthRaw == 0)
     {
-        PoDoFo::LogMessage(PdfLogSeverity::Warning, "Unable to provide a space size, setting default font size");
+        PoDoFo::LogMessage(PdfLogSeverity::Warning, "Unable to provide a word spacing length, setting default font size");
         States.Current->WordSpacingVectorRaw = Vector2(fontsize, 0);
     }
-    States.Current->ComputeSpaceLength();
+
+    States.Current->SpaceCharVectorRaw = Vector2(spaceCharLengthRaw, 0);
+    if (spaceCharLengthRaw == 0)
+    {
+        PoDoFo::LogMessage(PdfLogSeverity::Warning, "Unable to provide a space char length, setting default font size");
+        States.Current->SpaceCharVectorRaw = Vector2(fontsize, 0);
+    }
+
+    States.Current->ComputeSpaceDescriptors();
 }
 
 void ExtractionContext::cm_Operator(double a, double b, double c, double d, double e, double f)
 {
     // TABLE 4.7: "cm" Modify the current transformation
     // matrix (CTM) by concatenating the specified matrix
-    Matrix cm = Matrix::FromCoefficients(a, b, c, d, e, f);
+    Matrix cm(a, b, c, d, e, f);
     States.Current->CTM = cm * States.Current->CTM;
     States.Current->ComputeT_rm();
 }
 
 void ExtractionContext::Tm_Operator(double a, double b, double c, double d, double e, double f)
 {
-    States.Current->T_lm = Matrix::FromCoefficients(a, b, c, d, e, f);
+    States.Current->T_lm = Matrix(a, b, c, d, e, f);
     States.Current->T_m = States.Current->T_lm;
     States.Current->ComputeDependentState();
 }
@@ -935,7 +968,7 @@ void ExtractionContext::PushString(const StatefulString &str, bool pushchunk)
     PODOFO_ASSERT(str.String.length() != 0);
     if (std::isnan(CurrentEntryT_rm_y))
     {
-        // Initalize tracking for line
+        // Initialize tracking for line
         CurrentEntryT_rm_y = States.Current->T_rm.Get<Ty>();
     }
 
@@ -1013,7 +1046,7 @@ void ExtractionContext::tryAddEntry(const StatefulString& currStr)
             {
                 if (Options.TokenizeWords
                     || distance + SEPARATION_EPSILON >
-                        States.Current->WordSpacingLength * HARD_SEPARATION_SPACING_MULTIPLIER)
+                        States.Current->CharSpaceLength * HARD_SEPARATION_SPACING_MULTIPLIER)
                 {
                     // Current entry is space separated and either we
                     //  tokenize words, or it's an hard entry separation
@@ -1105,7 +1138,7 @@ void splitStringBySpaces(vector<StatefulString> &separatedStrings, const Statefu
     unsigned upperPosLim = (unsigned)str.String.length();
     unsigned lowerPosIndex;
     unsigned upperPosLimIndex;
-    
+
     auto pushString = [&]() {
         getSubstringIndices(str.StringPositions, lowerPos, upperPosLim, lowerPosIndex, upperPosLimIndex);
         double length = 0;
@@ -1211,13 +1244,14 @@ bool areEqual(double lhs, double rhs)
 
 void TextState::ComputeDependentState()
 {
-    ComputeSpaceLength();
+    ComputeSpaceDescriptors();
     ComputeT_rm();
 }
 
-void TextState::ComputeSpaceLength()
+void TextState::ComputeSpaceDescriptors()
 {
     WordSpacingLength = (WordSpacingVectorRaw * T_m.GetScalingRotation()).GetLength();
+    CharSpaceLength = (SpaceCharVectorRaw * T_m.GetScalingRotation()).GetLength();
 }
 
 void TextState::ComputeT_rm()
@@ -1228,6 +1262,11 @@ void TextState::ComputeT_rm()
 double TextState::GetWordSpacingLength() const
 {
     return PdfState.Font->GetWordSpacingLength(PdfState);
+}
+
+double TextState::GetSpaceCharLength() const
+{
+    return PdfState.Font->GetSpaceCharLength(PdfState);
 }
 
 void TextState::ScanString(const PdfString& encodedStr, string& decoded, vector<double>& lengths, vector<unsigned>& positions)
@@ -1260,7 +1299,7 @@ void processChunks(const StringChunkList& chunks, string& destString,
     }
 }
 
-// TODO: Handle vertical scritps
+// TODO: Handle vertical scripts
 double computeLength(const vector<const StatefulString*>& strings, const vector<GlyphAddress>& glyphAddresses,
     unsigned lowerIndex, unsigned upperIndex)
 {
@@ -1343,7 +1382,7 @@ Rect computeBoundingBox(const TextState& textState, double boxWidth)
     // NOTE: This is very inaccurate
     // TODO1: Handle multiple text/pdf states
     // TODO2: Handle actual font glyphs (HARD)
-    // TODO3: Handle vertical scritps
+    // TODO3: Handle vertical scripts
     double descend = 0;
     double ascent = 0;
     auto& pdfState = textState.PdfState;

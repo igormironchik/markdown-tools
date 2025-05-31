@@ -14,12 +14,43 @@
 namespace PoDoFo {
 
 class PdfPage;
-class PdfXObjectForm;
+class PdfXObject;
+class PdfAnnotationText;
+class PdfAnnotationLink;
+class PdfAnnotationFreeText;
+class PdfAnnotationLine;
+class PdfAnnotationSquare;
+class PdfAnnotationCircle;
+class PdfAnnotationPolygon;
+class PdfAnnotationPolyLine;
+class PdfAnnotationHighlight;
+class PdfAnnotationUnderline;
+class PdfAnnotationSquiggly;
+class PdfAnnotationStrikeOut;
+class PdfAnnotationStamp;
+class PdfAnnotationCaret;
+class PdfAnnotationInk;
+class PdfAnnotationPopup;
+class PdfAnnotationFileAttachment;
+class PdfAnnotationSound;
+class PdfAnnotationMovie;
+class PdfAnnotationWidget;
+class PdfAnnotationScreen;
+class PdfAnnotationPrinterMark;
+class PdfAnnotationTrapNet;
+class PdfAnnotationWatermark;
+class PdfAnnotationModel3D;
+class PdfAnnotationRichMedia;
+class PdfAnnotationWebMedia;
+class PdfAnnotationRedact;
+class PdfAnnotationProjection;
 
-struct PdfAppearanceIdentity final
+/** A qualified appearance stream, with type and state name
+ */
+struct PODOFO_API PdfAppearanceStream final
 {
-    const PdfObject* Object;
-    PdfAppearanceType Type;
+    const PdfObject* Object = nullptr;
+    PdfAppearanceType Type = PdfAppearanceType::Normal;
     PdfName State;
 };
 
@@ -31,10 +62,41 @@ struct PdfAppearanceIdentity final
 class PODOFO_API PdfAnnotation : public PdfDictionaryElement
 {
     friend class PdfAnnotationCollection;
+    friend class PdfAnnotationTextMarkupBase;
+    friend class PdfAnnotationPopup;
+    friend class PdfAnnotationText;
+    friend class PdfAnnotationCaret;
+    friend class PdfAnnotationFileAttachment;
+    friend class PdfAnnotationFreeText;
+    friend class PdfAnnotationHighlight;
+    friend class PdfAnnotationInk;
+    friend class PdfAnnotationLine;
+    friend class PdfAnnotationModel3D;
+    friend class PdfAnnotationMovie;
+    friend class PdfAnnotationPolygon;
+    friend class PdfAnnotationPolyLine;
+    friend class PdfAnnotationPrinterMark;
+    friend class PdfAnnotationRichMedia;
+    friend class PdfAnnotationScreen;
+    friend class PdfAnnotationSquiggly;
+    friend class PdfAnnotationStrikeOut;
+    friend class PdfAnnotationSound;
+    friend class PdfAnnotationSquare;
+    friend class PdfAnnotationCircle;
+    friend class PdfAnnotationStamp;
+    friend class PdfAnnotationTrapNet;
+    friend class PdfAnnotationUnderline;
+    friend class PdfAnnotationWatermark;
+    friend class PdfAnnotationWebMedia;
+    friend class PdfAnnotationRedact;
+    friend class PdfAnnotationProjection;
+    friend class PdfAnnotationActionBase;
+    friend class PdfToggleButton;
 
-protected:
+private:
     PdfAnnotation(PdfPage& page, PdfAnnotationType annotType, const Rect& rect);
     PdfAnnotation(PdfObject& obj, PdfAnnotationType annotType);
+    PdfAnnotation(const PdfAnnotation&) = delete;
 
 public:
     static bool TryCreateFromObject(PdfObject& obj, std::unique_ptr<PdfAnnotation>& xobj);
@@ -51,20 +113,28 @@ public:
     /** Set an appearance stream for this object
      *  to specify its visual appearance
      *  \param xobj an XObject form
-     *  \param appearance an apperance type to set
+     *  \param appearance an appearance type to set
      *  \param state the state for which set it the obj; states depend on the annotation type
+     *  \param skipSelectedState skip setting the selected state, if non null
      */
-    void SetAppearanceStream(const PdfXObjectForm& xobj, PdfAppearanceType appearance = PdfAppearanceType::Normal, const PdfName& state = "");
+    void SetAppearanceStream(const PdfXObject& xobj, PdfAppearanceType appearance = PdfAppearanceType::Normal,
+        const PdfName& state = { }, bool skipSelectedState = false);
 
     /** Set an appearance stream for this object
-     *  to specify its visual appearance withot handling page rotations
+     *  to specify its visual appearance without handling page rotations
      *  \param xobj an XObject form
-     *  \param appearance an apperance type to set
+     *  \param appearance an appearance type to set
      *  \param state the state for which set it the obj; states depend on the annotation type
+     *  \param skipSelectedState skip setting the selected state, if non null
      */
-    void SetAppearanceStreamRaw(const PdfXObjectForm& xobj, PdfAppearanceType appearance = PdfAppearanceType::Normal, const PdfName& state = "");
+    void SetAppearanceStreamRaw(const PdfXObject& xobj, PdfAppearanceType appearance = PdfAppearanceType::Normal,
+        const PdfName& state = { }, bool skipSelectedState = false);
 
-    void GetAppearanceStreams(std::vector<PdfAppearanceIdentity>& streams) const;
+    /** Get a list of qualified appearance streams
+     */
+    void GetAppearanceStreams(std::vector<PdfAppearanceStream>& states) const;
+
+    void ClearAppearances();
 
     /**
     * \returns the appearance /AP object for this annotation
@@ -74,23 +144,25 @@ public:
 
     /**
     * \returns the appearance stream for this object
-     *  \param appearance an apperance type to get
+     *  \param appearance an appearance type to get
      *  \param state a child state. Meaning depends on the annotation type
     */
-    PdfObject* GetAppearanceStream(PdfAppearanceType appearance = PdfAppearanceType::Normal, const PdfName& state = "");
-    const PdfObject* GetAppearanceStream(PdfAppearanceType appearance = PdfAppearanceType::Normal, const PdfName& state = "") const;
+    PdfObject* GetAppearanceStream(PdfAppearanceType appearance = PdfAppearanceType::Normal, const std::string_view& state = { });
+    const PdfObject* GetAppearanceStream(PdfAppearanceType appearance = PdfAppearanceType::Normal, const std::string_view& state = { }) const;
 
     /** Get the rectangle of this annotation.
-     *  \returns a rectangle
+     *  \returns a rectangle. It's oriented according to the canonical PDF coordinate system
      */
     Rect GetRect() const;
-    Rect GetRectRaw() const;
 
     /** Set the rectangle of this annotation.
-     * \param rect rectangle to set
+     * \param rect rectangle to set. It's oriented according to the canonical PDF coordinate system
      */
     void SetRect(const Rect& rect);
-    void SetRectRaw(const Rect& rect);
+
+    Corners GetRectRaw() const;
+
+    void SetRectRaw(const Corners& rect);
 
     /** Set the flags of this annotation.
      *  \see GetFlags
@@ -121,7 +193,7 @@ public:
     void SetBorderStyle(double hCorner, double vCorner, double width, const PdfArray& strokeStyle);
 
     /** Set the title of this annotation.
-     *  \param title title of the annoation as string in PDF format
+     *  \param title title of the annotation as string in PDF format
      *
      *  \see GetTitle
      */
@@ -137,7 +209,7 @@ public:
 
     /** Set the text of this annotation.
      *
-     *  \param contents text of the annoation as string in PDF format
+     *  \param contents text of the annotation as string in PDF format
      *
      *  \see GetContents
      */
@@ -179,18 +251,19 @@ public:
     const PdfPage& MustGetPage() const;
 
 private:
-    static std::unique_ptr<PdfAnnotation> Create(PdfPage& page, PdfAnnotationType annotType, const Rect& rect);
+    template <typename TAnnot>
+    static constexpr PdfAnnotationType GetAnnotationType();
 
-    static std::unique_ptr<PdfAnnotation> Create(PdfPage& page, const std::type_info& typeInfo, const Rect& rect);
+    static std::unique_ptr<PdfAnnotation> Create(PdfPage& page, PdfAnnotationType annotType, const Rect& rect);
 
     void SetPage(PdfPage& page) { m_Page = &page; }
 
+    void PushAppearanceStream(const PdfXObject& xobj, PdfAppearanceType appearance, const PdfName& state, bool raw);
+
 private:
     static bool tryCreateFromObject(const PdfObject& obj, PdfAnnotationType targetType, PdfAnnotation*& xobj);
-    static bool tryCreateFromObject(const PdfObject& obj, const std::type_info& typeInfo, PdfAnnotation*& xobj);
-    static PdfAnnotationType getAnnotationType(const std::type_info& typeInfo);
     static PdfAnnotationType getAnnotationType(const PdfObject& obj);
-    PdfObject* getAppearanceStream(PdfAppearanceType appearance, const PdfName& state) const;
+    PdfObject* getAppearanceStream(PdfAppearanceType appearance, const std::string_view& state) const;
     PdfDictionary* getAppearanceDictionary() const;
 
 private:
@@ -202,7 +275,7 @@ template<typename TAnnotation>
 bool PdfAnnotation::TryCreateFromObject(PdfObject& obj, std::unique_ptr<TAnnotation>& xobj)
 {
     PdfAnnotation* xobj_;
-    if (!tryCreateFromObject(obj, typeid(TAnnotation), xobj_))
+    if (!tryCreateFromObject(obj, GetAnnotationType<TAnnotation>(), xobj_))
         return false;
 
     xobj.reset((TAnnotation*)xobj_);
@@ -213,11 +286,76 @@ template<typename TAnnotation>
 bool PdfAnnotation::TryCreateFromObject(const PdfObject& obj, std::unique_ptr<const TAnnotation>& xobj)
 {
     PdfAnnotation* xobj_;
-    if (!tryCreateFromObject(obj, typeid(TAnnotation), xobj_))
+    if (!tryCreateFromObject(obj, GetAnnotationType<TAnnotation>(), xobj_))
         return false;
 
     xobj.reset((const TAnnotation*)xobj_);
     return true;
+}
+
+template<typename TAnnot>
+constexpr PdfAnnotationType PdfAnnotation::GetAnnotationType()
+{
+    if (std::is_same_v<TAnnot, PdfAnnotationText>)
+        return PdfAnnotationType::Text;
+    else if (std::is_same_v<TAnnot, PdfAnnotationLink>)
+        return PdfAnnotationType::Link;
+    else if (std::is_same_v<TAnnot, PdfAnnotationFreeText>)
+        return PdfAnnotationType::FreeText;
+    else if (std::is_same_v<TAnnot, PdfAnnotationLine>)
+        return PdfAnnotationType::Line;
+    else if (std::is_same_v<TAnnot, PdfAnnotationSquare>)
+        return PdfAnnotationType::Square;
+    else if (std::is_same_v<TAnnot, PdfAnnotationCircle>)
+        return PdfAnnotationType::Circle;
+    else if (std::is_same_v<TAnnot, PdfAnnotationPolygon>)
+        return PdfAnnotationType::Polygon;
+    else if (std::is_same_v<TAnnot, PdfAnnotationPolyLine>)
+        return PdfAnnotationType::PolyLine;
+    else if (std::is_same_v<TAnnot, PdfAnnotationHighlight>)
+        return PdfAnnotationType::Highlight;
+    else if (std::is_same_v<TAnnot, PdfAnnotationUnderline>)
+        return PdfAnnotationType::Underline;
+    else if (std::is_same_v<TAnnot, PdfAnnotationSquiggly>)
+        return PdfAnnotationType::Squiggly;
+    else if (std::is_same_v<TAnnot, PdfAnnotationStrikeOut>)
+        return PdfAnnotationType::StrikeOut;
+    else if (std::is_same_v<TAnnot, PdfAnnotationStamp>)
+        return PdfAnnotationType::Stamp;
+    else if (std::is_same_v<TAnnot, PdfAnnotationCaret>)
+        return PdfAnnotationType::Caret;
+    else if (std::is_same_v<TAnnot, PdfAnnotationInk>)
+        return PdfAnnotationType::Ink;
+    else if (std::is_same_v<TAnnot, PdfAnnotationPopup>)
+        return PdfAnnotationType::Popup;
+    else if (std::is_same_v<TAnnot, PdfAnnotationFileAttachment>)
+        return PdfAnnotationType::FileAttachement;
+    else if (std::is_same_v<TAnnot, PdfAnnotationSound>)
+        return PdfAnnotationType::Sound;
+    else if (std::is_same_v<TAnnot, PdfAnnotationMovie>)
+        return PdfAnnotationType::Movie;
+    else if (std::is_same_v<TAnnot, PdfAnnotationWidget>)
+        return PdfAnnotationType::Widget;
+    else if (std::is_same_v<TAnnot, PdfAnnotationScreen>)
+        return PdfAnnotationType::Screen;
+    else if (std::is_same_v<TAnnot, PdfAnnotationPrinterMark>)
+        return PdfAnnotationType::PrinterMark;
+    else if (std::is_same_v<TAnnot, PdfAnnotationTrapNet>)
+        return PdfAnnotationType::TrapNet;
+    else if (std::is_same_v<TAnnot, PdfAnnotationWatermark>)
+        return PdfAnnotationType::Watermark;
+    else if (std::is_same_v<TAnnot, PdfAnnotationModel3D>)
+        return PdfAnnotationType::Model3D;
+    else if (std::is_same_v<TAnnot, PdfAnnotationRichMedia>)
+        return PdfAnnotationType::RichMedia;
+    else if (std::is_same_v<TAnnot, PdfAnnotationWebMedia>)
+        return PdfAnnotationType::WebMedia;
+    else if (std::is_same_v<TAnnot, PdfAnnotationRedact>)
+        return PdfAnnotationType::Redact;
+    else if (std::is_same_v<TAnnot, PdfAnnotationProjection>)
+        return PdfAnnotationType::Projection;
+    else
+        return PdfAnnotationType::Unknown;
 }
 
 };

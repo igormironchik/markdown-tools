@@ -4,16 +4,18 @@
  * SPDX-License-Identifier: MPL-2.0
  */
 
-#ifndef PODOFO_PDFA_FUNCTIONS_H
-#define PODOFO_PDFA_FUNCTIONS_H
+#pragma once
 
-#include <podofo/main/PdfXMPMetadata.h>
-#include <podofo/main/PdfXMPPacket.h>
+#include "XmlUtils.h"
+#include <podofo/main/PdfMetadataStore.h>
 
 namespace PoDoFo
 {
-    PdfXMPMetadata GetXMPMetadata(const std::string_view& xmpview, std::unique_ptr<PdfXMPPacket>& packet);
-    void UpdateOrCreateXMPMetadata(std::unique_ptr<PdfXMPPacket>& packet, const PdfXMPMetadata& metatata);
+    /**
+     * \remarks the store is not cleared: the function sets only read properties
+     */
+    void GetXMPMetadata(xmlNodePtr description, PdfMetadataStore& metadata);
+    void SetXMPMetadata(xmlDocPtr doc, xmlNodePtr description, const PdfMetadataStore& metadata);
 }
 
 // Low level XMP functions
@@ -27,7 +29,9 @@ namespace utls
     };
 
     void SetListNodeContent(xmlDocPtr doc, xmlNodePtr node, XMPListType seqType,
-        const PoDoFo::cspan<std::string>& value, xmlNodePtr& newNode);
+        const std::string_view& value, xmlNodePtr& newNode);
+
+    void SetListNodeContent(xmlDocPtr doc, xmlNodePtr node, XMPListType seqType,
+        const PoDoFo::cspan<std::string_view>& value, xmlNodePtr& newNode);
 }
 
-#endif // PODOFO_PDFA_FUNCTIONS_H

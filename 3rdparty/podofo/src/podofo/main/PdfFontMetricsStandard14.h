@@ -21,28 +21,43 @@ struct Standard14FontData;
  */
 class PODOFO_API PdfFontMetricsStandard14 final : public PdfFontMetricsBase
 {
+    friend class PdfFont;
 private:
     PdfFontMetricsStandard14(PdfStandard14FontType fontType,
         const Standard14FontData& data,
-        std::unique_ptr<std::vector<double>> parsedWidths = { });
+        GlyphMetricsListConstPtr parsedWidths = { });
 
 public:
     /** Create a Standard14 font metrics
      * \param fontObj optionally try to read a /Widths entry from the supplied
      */
-    static std::unique_ptr<PdfFontMetricsStandard14> Create(
+    static std::unique_ptr<const PdfFontMetricsStandard14> Create(
         PdfStandard14FontType fontType);
-    static std::unique_ptr<PdfFontMetricsStandard14> Create(
+    static std::unique_ptr<const PdfFontMetricsStandard14> Create(
         PdfStandard14FontType fontType, const PdfObject& fontObj);
 
+private:
+    static std::unique_ptr<const PdfFontMetricsStandard14> Create(
+        PdfStandard14FontType fontType, GlyphMetricsListConstPtr&& parsedWidths);
+
 public:
-    unsigned GetGlyphCount() const override;
-
-    bool TryGetGlyphWidth(unsigned gid, double& width) const override;
-
     bool HasUnicodeMapping() const override;
 
     bool TryGetGID(char32_t codePoint, unsigned& gid) const override;
+
+    bool TryGetFlags(PdfFontDescriptorFlags& value) const override;
+
+    bool TryGetBoundingBox(Corners& value) const override;
+
+    bool TryGetItalicAngle(double& value) const override;
+
+    bool TryGetAscent(double& value) const override;
+
+    bool TryGetDescent(double& value) const override;
+
+    bool TryGetCapHeight(double& value) const override;
+
+    bool TryGetStemV(double& value) const override;
 
     double GetDefaultWidthRaw() const override;
 
@@ -58,31 +73,15 @@ public:
 
     std::string_view GetFontName() const override;
 
-    std::string_view GetBaseFontName() const override;
-
     std::string_view GetFontFamilyName() const override;
 
     PdfFontStretch GetFontStretch() const override;
 
     int GetWeightRaw() const override;
 
-    PdfFontDescriptorFlags GetFlags() const override;
-
-    void GetBoundingBox(std::vector<double>& bbox) const override;
-
-    double GetItalicAngle() const override;
-
-    double GetAscent() const override;
-
-    double GetDescent() const override;
-
     double GetLeadingRaw() const override;
 
-    double GetCapHeight() const override;
-
     double GetXHeightRaw() const override;
-
-    double GetStemV() const override;
 
     double GetStemHRaw() const override;
 
@@ -103,6 +102,14 @@ public:
     inline const Standard14FontData& GetRawData() const { return m_data; }
 
 protected:
+    std::string_view GetBaseFontName() const override;
+
+    unsigned GetGlyphCountFontProgram() const override;
+
+    bool TryGetGlyphWidthFontProgram(unsigned gid, double& width) const override;
+
+    PdfFontType GetFontType() const override;
+
     bool getIsItalicHint() const override;
 
     bool getIsBoldHint() const override;
@@ -119,8 +126,6 @@ public:
 private:
     PdfStandard14FontType m_Std14FontType;
     const Standard14FontData& m_data;
-    // /Widths parsed from a font object, if available
-    std::unique_ptr<std::vector<double>> m_parsedWidths;
 
     double m_Ascent;
     double m_Descent;

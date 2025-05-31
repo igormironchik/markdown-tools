@@ -13,14 +13,14 @@ namespace PoDoFo
 {
     /** A combo box with a drop down list of items.
      */
-    class PODOFO_API PdfComboBox : public PdChoiceField
+    class PODOFO_API PdfComboBox final : public PdChoiceField
     {
         friend class PdfField;
 
     private:
-        PdfComboBox(PdfAcroForm& acroform, const std::shared_ptr<PdfField>& parent);
+        PdfComboBox(PdfAcroForm& acroform, std::shared_ptr<PdfField>&& parent);
 
-        PdfComboBox(PdfAnnotationWidget& widget, const std::shared_ptr<PdfField>& parent);
+        PdfComboBox(PdfAnnotationWidget& widget, std::shared_ptr<PdfField>&& parent);
 
         PdfComboBox(PdfObject& obj, PdfAcroForm* acroform);
 

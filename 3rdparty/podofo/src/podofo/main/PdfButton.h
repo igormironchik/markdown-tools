@@ -18,10 +18,10 @@ namespace PoDoFo
 
     private:
         PdfButton(PdfAcroForm& acroform, PdfFieldType fieldType,
-            const std::shared_ptr<PdfField>& parent);
+            std::shared_ptr<PdfField>&& parent);
 
         PdfButton(PdfAnnotationWidget& widget, PdfFieldType fieldType,
-            const std::shared_ptr<PdfField>& parent);
+            std::shared_ptr<PdfField>&& parent);
 
         PdfButton(PdfObject& obj, PdfAcroForm* acroform, PdfFieldType fieldType);
 
@@ -60,12 +60,38 @@ namespace PoDoFo
 
     private:
         PdfToggleButton(PdfAcroForm& acroform, PdfFieldType fieldType,
-            const std::shared_ptr<PdfField>& parent);
+            std::shared_ptr<PdfField>&& parent);
 
         PdfToggleButton(PdfAnnotationWidget& widget, PdfFieldType fieldType,
-            const std::shared_ptr<PdfField>& parent);
+            std::shared_ptr<PdfField>&& parent);
 
         PdfToggleButton(PdfObject& obj, PdfAcroForm* acroform, PdfFieldType fieldType);
+
+    public:
+        /** Sets the state of this toggle button
+         *
+         *  \param isChecked if true the toggle button will be checked
+         */
+        void SetChecked(bool isChecked);
+
+        /**
+         * \returns true if the toggle button is checked
+         */
+        bool IsChecked() const;
+
+        /** Set the appearance stream which is displayed when the checkbox
+         *  is checked.
+         *
+         *  \param rXObject an xobject which contains the drawing commands for a checked checkbox
+         */
+        void SetAppearanceChecked(const PdfXObject& xobj);
+
+        /** Set the appearance stream which is displayed when the checkbox
+         *  is unchecked.
+         *
+         *  \param rXObject an xobject which contains the drawing commands for an unchecked checkbox
+         */
+        void SetAppearanceUnchecked(const PdfXObject& xobj);
     };
 }
 

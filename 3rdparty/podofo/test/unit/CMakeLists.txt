@@ -1,4 +1,4 @@
-file(GLOB SOURCE_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "*.h" "*.cpp")
+file(GLOB SOURCE_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "[^.]*.h" "[^.]*.cpp")
 source_group("" FILES ${SOURCE_FILES})
 
 include_directories(
@@ -13,6 +13,7 @@ target_link_libraries(podofo-unit
     podofo_test
     ${PODOFO_LIBRARIES}
     podofo_private
+    podofo_3rdparty
     ${PODOFO_LIB_DEPENDS}
 )
 add_compile_options(${PODOFO_CFLAGS})

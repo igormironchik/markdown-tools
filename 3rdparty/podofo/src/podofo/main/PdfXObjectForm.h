@@ -19,6 +19,7 @@ class PODOFO_API PdfXObjectForm final : public PdfXObject, public PdfCanvas
 {
     friend class PdfDocument;
     friend class PdfXObject;
+    friend class PdfAnnotation;
 
 private:
     /** Create a new XObject with a specified dimension
@@ -26,10 +27,8 @@ private:
      *
      *  \param doc the parent document of the XObject
      *  \param rect the size of the XObject
-     *  \param prefix optional prefix for XObject-name
      */
-    PdfXObjectForm(PdfDocument& doc, const Rect& rect,
-        const std::string_view& prefix);
+    PdfXObjectForm(PdfDocument& doc, const Rect& rect);
 
 public:
     /** Create a new XObject from a page of another document
@@ -40,14 +39,8 @@ public:
      */
     void FillFromPage(const PdfPage& page, bool useTrimBox = false);
 
-    /** Ensure resources initialized on this XObject
-     */
-    void EnsureResourcesCreated() override;
-
 public:
     PdfResources& GetOrCreateResources() override;
-
-    bool HasRotation(double& teta) const override;
 
     Rect GetRect() const override;
 
@@ -56,23 +49,34 @@ public:
      */
     void SetRect(const Rect& rect);
 
+    void SetMatrix(const Matrix& m);
+
+    const Matrix& GetMatrix() const override;
+
 public:
     inline PdfResources* GetResources() { return m_Resources.get(); }
     inline const PdfResources* GetResources() const { return m_Resources.get(); }
+
+protected:
+    const PdfXObjectForm* GetForm() const override;
 
 private:
     PdfXObjectForm(PdfObject& obj);
 
 private:
-    Rect GetRectRaw() const override;
+    bool TryGetRotationRadians(double& teta) const override;
+    Corners GetRectRaw() const override;
     PdfObject* getContentsObject() override;
     PdfResources* getResources() override;
-    PdfElement& getElement() override;
-    PdfObjectStream& GetStreamForAppending(PdfStreamAppendFlags flags) override;
+    PdfDictionaryElement& getElement() override;
+    PdfObjectStream& GetOrCreateContentsStream(PdfStreamAppendFlags flags) override;
+    PdfObjectStream& ResetContentsStream() override;
+    void CopyContentsTo(OutputStream& stream) const override;
     void initXObject(const Rect& rect);
     void initAfterPageInsertion(const PdfPage& page);
 
 private:
+    // Remove some PdfCanvas methods to maintain the class API surface clean
     PdfElement& GetElement() = delete;
     const PdfElement& GetElement() const = delete;
     PdfObject* GetContentsObject() = delete;
@@ -80,7 +84,7 @@ private:
 
 private:
     Rect m_Rect;
-    PdfArray m_Matrix;
+    Matrix m_Matrix;
     std::unique_ptr<PdfResources> m_Resources;
 };
 

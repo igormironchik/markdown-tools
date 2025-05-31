@@ -13,58 +13,61 @@
 namespace PoDoFo {
 
 class PdfFontMetrics;
+struct CodePointMapNode;
+
+struct PODOFO_API PdfDifferenceMapping final
+{
+    PdfName Name;
+    unsigned char Code = 0;
+    CodePointSpan CodePoints;
+};
 
 /** A helper class for PdfDifferenceEncoding that
  *  can be used to create a differences array.
  */
-class PODOFO_API PdfDifferenceList
+class PODOFO_API PdfDifferenceMap final
 {
-    struct Difference
-    {
-        unsigned char Code = 0;
-        PdfName Name;
-        char32_t MappedCodePoint = U'\0';
-    };
-
-    using List = std::vector<Difference>;
-    using iterator = std::vector<Difference>::iterator;
-    using const_iterator = std::vector<Difference>::const_iterator;
+    friend class PdfDifferenceEncoding;
+public:
+    using const_iterator = std::vector<PdfDifferenceMapping>::const_iterator;
 
 public:
     /** Create a PdfEncodingDifference object.
      */
-    PdfDifferenceList();
+    PdfDifferenceMap();
 
-    PdfDifferenceList(const PdfDifferenceList& rhs) = default;
-    PdfDifferenceList& operator=(const PdfDifferenceList& rhs) = default;
+    PdfDifferenceMap(const PdfDifferenceMap& rhs) = default;
+    PdfDifferenceMap& operator=(const PdfDifferenceMap& rhs) = default;
 
-    /** Add a difference to the object.
+    /** Add a difference to the encoding
      *
-     *  \param nCode unicode code point of the difference (0 to 255 are legal values)
-     *  \param unicodeValue actual unicode value for nCode; can be 0
+     * The added name is determined by the "Adobe Glyph List for New Fonts"
+     * https://github.com/adobe-type-tools/agl-aglfn/blob/master/aglfn.txt
+     * \param code code unit of the difference (0 to 255 are legal values)
+     * \param codePoint actual unicode code point
      *
-     *  \see AddDifference if you know the name of the code point
-     *       use the overload below which is faster
      */
     void AddDifference(unsigned char code, char32_t codePoint);
 
-    /** Add a difference to the object.
+    /** Add a difference to the encoding
      *
-     *  \param name unicode code point of the difference (0 to 255 are legal values)
-     *  \param name name of the different code point or .notdef if none
-     *  \param explicitNames if true, the unicode value is set to nCode as name is meaningless (Type3 fonts)
+     * The added name is determined by the "Adobe Glyph List for New Fonts"
+     * https://github.com/adobe-type-tools/agl-aglfn/blob/master/aglfn.txt
+     *  \param code code unit of the difference (0 to 255 are legal values)
+     *  \param codePoints a span of unicode code points
+     *
      */
-    void AddDifference(unsigned char code, const PdfName& name, bool explicitNames = false);
+    void AddDifference(unsigned char code, const codepointview& codePoints);
 
     /** Get the mapped code point from a char code
      *
      *  \param code test if the given code is part of the differences
-     *  \param codePoint write the associated unicode value of the name to this value
+     *  \param codePoints write the associated unicode values of the name to this value
      *
      *  \returns true if the code is part of the difference
      */
     bool TryGetMappedName(unsigned char code, const PdfName*& name) const;
-    bool TryGetMappedName(unsigned char code, const PdfName*& name, char32_t& codePoint) const;
+    bool TryGetMappedName(unsigned char code, const PdfName*& name, CodePointSpan& codePoints) const;
 
     /** Convert the PdfEncodingDifference to an array
      *
@@ -78,34 +81,43 @@ public:
      *
      *  \returns the number of differences in this object
      */
-    size_t GetCount() const;
+    unsigned GetCount() const;
 
     const_iterator begin() const { return m_differences.begin(); }
 
     const_iterator end() const { return m_differences.end(); }
 
 private:
-    void addDifference(unsigned char code, char32_t codePoint, const PdfName& name);
-    bool contains(unsigned char code, const PdfName*& name, char32_t& codePoint);
+    /**
+     * \param explicitNames if true, the unicode value is set to nCode as name is meaningless (Type3 fonts)
+     */
+    void AddDifference(unsigned char code, const std::string_view& name);
+
+    void addDifference(unsigned char code, const codepointview& codepoints, const PdfName& name);
 
     struct DifferenceComparatorPredicate
     {
     public:
-        inline bool operator()(const Difference& diff1, const Difference& diff2) const
+        bool operator()(const PdfDifferenceMapping& diff1, const PdfDifferenceMapping& diff2) const
         {
             return diff1.Code < diff2.Code;
         }
     };
 
-    List m_differences;
+    using DifferenceList = std::vector<PdfDifferenceMapping>;
+
+private:
+    DifferenceList m_differences;
 };
 
 /** PdfDifferenceEncoding is an encoding, which is based
  *  on either the fonts encoding or a predefined encoding
  *  and defines differences to this base encoding.
  */
-class PODOFO_API PdfDifferenceEncoding final : public PdfEncodingMapOneByte
+class PODOFO_API PdfDifferenceEncoding final : public PdfEncodingMapSimple
 {
+    friend class PdfDifferenceMap;
+
 public:
     /** Create a new PdfDifferenceEncoding which is based on
      *  a predefined encoding.
@@ -113,32 +125,36 @@ public:
      *  \param difference the differences in this encoding
      *  \param baseEncoding the base encoding of this font
      */
-    PdfDifferenceEncoding(const PdfDifferenceList& difference,
-        const PdfEncodingMapConstPtr& baseEncoding);
+    PdfDifferenceEncoding(PdfEncodingMapConstPtr baseEncoding,
+        PdfDifferenceMap differences);
 
+    ~PdfDifferenceEncoding();
+
+public:
     /** Create a new PdfDifferenceEncoding from an existing object
-     *  in a PDF file.
      *
      *  \param obj object for the difference encoding
      *  \param metrics an existing font metrics
      */
-    static std::unique_ptr<PdfDifferenceEncoding> Create(const PdfObject& obj,
-        const PdfFontMetrics& metrics);
+    static bool TryCreateFromObject(const PdfObject& obj, const PdfFontMetrics& metrics,
+        std::unique_ptr<PdfDifferenceEncoding>& encoding);
 
-    /** Convert a standard character name to a unicode code point
+    /** Create a new PdfDifferenceEncoding from an existing object
      *
-     *  \param name a standard character name
-     *  \returns an unicode code point
+     * \param obj object for the difference encoding
+     * \param metrics an existing font metrics
+     * \returns On success, returns a non null PdfDifferenceEncoding
+     * \remarks throws on failure
      */
-    static char32_t NameToCodePoint(const PdfName& name);
-    static char32_t NameToCodePoint(const std::string_view& name);
+    static std::unique_ptr<PdfDifferenceEncoding> CreateFromObject(const PdfObject& obj, const PdfFontMetrics& metrics);
 
-    /** Convert an unicode code point to a standard character name
+    /** Try to convert a standard character name to a unicode code points
      *
-     *  \param codePoint a code point
-     *  \returns a standard character name of /.notdef if none could be found
+     * \param name a standard character name.
+     *   See https://github.com/adobe-type-tools/agl-aglfn/ for known names
+     * \param codepoints the returned unicode code points span
      */
-    static PdfName CodePointToName(char32_t codePoint);
+    static bool TryGetCodePointsFromCharName(const std::string_view& name, CodePointSpan& codepoints);
 
     /**
      * Get read-only access to the object containing the actual
@@ -146,21 +162,27 @@ public:
      *
      * \returns the container with the actual differences
      */
-    inline const PdfDifferenceList& GetDifferences() const { return m_differences; }
+    const PdfDifferenceMap& GetDifferences() const { return m_differences; }
 
 protected:
+    void GetBaseEncoding(const PdfEncodingMap*& baseEncoding, const PdfDifferenceMap*& differences) const override;
+
     void getExportObject(PdfIndirectObjectList& objects, PdfName& name, PdfObject*& obj) const override;
     bool tryGetCharCode(char32_t codePoint, PdfCharCode& codeUnit) const override;
-    bool tryGetCodePoints(const PdfCharCode& codeUnit, std::vector<char32_t>& codePoints) const override;
+    bool tryGetCharCodeSpan(const unicodeview& codePoints, PdfCharCode& codeUnit) const override;
+    bool tryGetNextCharCode(std::string_view::iterator& it,
+        const std::string_view::iterator& end, PdfCharCode& codeUnit) const override;
+    bool tryGetCodePoints(const PdfCharCode& codeUnit, const unsigned* cidId, CodePointSpan& codePoints) const override;
 
 private:
+    static bool TryGetCodePointsFromCharName(std::string_view charName, CodePointSpan& codepoints, const PdfName*& actualName);
+
     void buildReverseMap();
 
 private:
-    PdfDifferenceList m_differences;
     PdfEncodingMapConstPtr m_baseEncoding;
-    bool m_reverseMapBuilt;
-    std::unordered_map<char32_t, unsigned char> m_reverseMap;
+    PdfDifferenceMap m_differences;
+    CodePointMapNode* m_reverseMap;
 };
 
 };

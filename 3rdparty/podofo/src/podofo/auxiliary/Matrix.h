@@ -17,14 +17,17 @@ namespace PoDoFo
     class PODOFO_API Matrix final
     {
     public:
+        static Matrix Identity;
+
+    public:
         /** Constructs an identity matrix
          */
         Matrix();
+        Matrix(double a, double b, double c, double d, double e, double f);
 
     public:
         static Matrix FromArray(const double arr[6]);
         static Matrix FromArray(const PdfArray& arr);
-        static Matrix FromCoefficients(double a, double b, double c, double d, double e, double f);
         static Matrix CreateTranslation(const Vector2& tx);
         static Matrix CreateScale(const Vector2& scale);
         static Matrix CreateRotation(double teta);
@@ -70,6 +73,7 @@ namespace PoDoFo
         Vector2 GetTranslationVector() const;
         void ToArray(double arr[6]) const;
         void ToArray(PdfArray& arr) const;
+        PdfArray ToArray() const;
 
     public:
         Matrix(const Matrix&) = default;
@@ -82,7 +86,6 @@ namespace PoDoFo
 
     private:
         Matrix(const double arr[6]);
-        Matrix(double a, double b, double c, double d, double e, double f);
 
     private:
         double m_mat[6];

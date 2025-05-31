@@ -5,6 +5,9 @@
  */
 
 #include "PdfDeclarationsPrivate.h"
+
+#include <podofo/optional/PdfConvert.h>
+
 #include "XMPUtils.h"
 #include "XmlUtils.h"
 
@@ -12,8 +15,11 @@ using namespace std;
 using namespace PoDoFo;
 using namespace utls;
 
-enum class XMPMetadataKind
+#define ADDITIONAL_METADATA_OFFSET 20
+
+enum class XMPMetadataKind : uint8_t
 {
+    PDFVersion = 1,     // Available since XMP specification 2004
     Title,
     Author,
     Subject,
@@ -22,62 +28,75 @@ enum class XMPMetadataKind
     Producer,
     CreationDate,
     ModDate,
-    PdfALevel,
-    PdfAConformance,
-    PdfARevision,
+    Trapped,        // Available since XMP specification 2008
+    PdfAIdPart,
+    PdfAIdConformance,
+    PdfUAIdPart,
+    PdfAIdAmd = ADDITIONAL_METADATA_OFFSET + 1, // Used up to PDF/A-3
+    PdfAIdCorr,         // Used up to PDF/A-3
+    PdfAIdRev,          // Used since PDF/A-4
+    PdfUAIdAmd,         // Used up to PDF/UA-1
+    PdfUAIdCorr,        // Used up to PDF/UA-1
+    PdfUAIdRev,         // Used since to PDF/UA-2
 };
 
-enum class PdfANamespaceKind
+enum class PdfANamespaceKind : uint8_t
 {
     Dc,
     Pdf,
     Xmp,
     PdfAId,
+    PdfUAId,
+    PdfAExtension,
+    PdfASchema,
+    PdfAProperty,
+    PdfAType,
 };
 
-static void setXMPMetadata(xmlDocPtr doc, xmlNodePtr xmpmeta, const PdfXMPMetadata& metatata);
+// Coming from: https://pdfa.org/resource/xmp-extension-schema-templates/
+constexpr string_view PdfUAIdSchema = R"(<rdf:li rdf:parseType="Resource">
+   <pdfaSchema:namespaceURI>http://www.aiim.org/pdfua/ns/id/</pdfaSchema:namespaceURI>
+   <pdfaSchema:prefix>pdfuaid</pdfaSchema:prefix>
+   <pdfaSchema:schema>PDF/UA ID Schema</pdfaSchema:schema>
+   <pdfaSchema:property>
+      <rdf:Seq>
+         <rdf:li rdf:parseType="Resource">
+            <pdfaProperty:category>internal</pdfaProperty:category>
+            <pdfaProperty:description>Part of PDF/UA standard</pdfaProperty:description>
+            <pdfaProperty:name>part</pdfaProperty:name>
+            <pdfaProperty:valueType>Open Choice of Integer</pdfaProperty:valueType>
+         </rdf:li>
+         <rdf:li rdf:parseType="Resource">
+            <pdfaProperty:category>internal</pdfaProperty:category>
+            <pdfaProperty:description>Optional PDF/UA amendment identifier</pdfaProperty:description>
+            <pdfaProperty:name>amd</pdfaProperty:name>
+            <pdfaProperty:valueType>Open Choice of Text</pdfaProperty:valueType>
+         </rdf:li>
+         <rdf:li rdf:parseType="Resource">
+            <pdfaProperty:category>internal</pdfaProperty:category>
+            <pdfaProperty:description>Optional PDF/UA corrigenda identifier</pdfaProperty:description>
+            <pdfaProperty:name>corr</pdfaProperty:name>
+            <pdfaProperty:valueType>Open Choice of Text</pdfaProperty:valueType>
+         </rdf:li>
+      </rdf:Seq>
+   </pdfaSchema:property>
+</rdf:li>)";
+
 static void addXMPProperty(xmlDocPtr doc, xmlNodePtr description,
-    XMPMetadataKind property, const string& value);
-static void addXMPProperty(xmlDocPtr doc, xmlNodePtr description,
-    XMPMetadataKind property, const cspan<string>& values);
+    XMPMetadataKind property, const string_view& value);
 static void removeXMPProperty(xmlNodePtr description, XMPMetadataKind property);
 static xmlNsPtr findOrCreateNamespace(xmlDocPtr doc, xmlNodePtr description, PdfANamespaceKind nsKind);
-static PdfALevel getPDFALevelFromString(const string_view& level);
-static void getPdfALevelComponents(PdfALevel level, string& levelStr, string& conformanceStr, string& revision);
+static void getPdfALevelComponents(PdfALevel level, string& partStr, string& conformanceStr, string& revision);
+static void getPdfUALevelComponents(PdfUALevel version, string& part, string& revision);
 static nullable<PdfString> getListElementText(xmlNodePtr elem);
 static nullable<PdfString> getElementText(xmlNodePtr elem);
+static void addExtension(xmlDocPtr doc, xmlNodePtr description, string_view extension);
+static xmlNodePtr getOrCreateExtensionBag(xmlDocPtr doc, xmlNodePtr description);
 
-PdfXMPMetadata PoDoFo::GetXMPMetadata(const string_view& xmpview, unique_ptr<PdfXMPPacket>& packet)
+void PoDoFo::GetXMPMetadata(xmlNodePtr description, PdfMetadataStore& metadata)
 {
-    utls::InitXml();
-
-    PdfXMPMetadata metadata;
-    xmlNodePtr description;
-    packet = PdfXMPPacket::Create(xmpview);
-    if (packet == nullptr || (description = packet->GetDescription()) == nullptr)
-    {
-        // The the XMP metadata is missing or has insufficient data
-        // to determine a PDF/A level
-        return metadata;
-    }
-
     xmlNodePtr childElement = nullptr;
     nullable<PdfString> text;
-
-    {
-        nullable<string> pdfaid_part;
-        nullable<string> pdfaid_conformance;
-
-        childElement = utls::FindChildElement(description, "pdfaid", "part");
-        if (childElement != nullptr)
-            pdfaid_part = utls::GetNodeContent(childElement);
-        childElement = utls::FindChildElement(description, "pdfaid", "conformance");
-        if (childElement != nullptr)
-            pdfaid_conformance = utls::GetNodeContent(childElement);
-
-        if (pdfaid_part.has_value() && pdfaid_conformance.has_value())
-            metadata.PdfaLevel = getPDFALevelFromString(*pdfaid_part + *pdfaid_conformance);
-    }
 
     childElement = utls::FindChildElement(description, "dc", "title");
     if (childElement != nullptr)
@@ -118,20 +137,62 @@ PdfXMPMetadata PoDoFo::GetXMPMetadata(const string_view& xmpview, unique_ptr<Pdf
         metadata.ModDate = date;
     }
 
-    return metadata;
+    nullable<string> part;
+    nullable<string> conformance;
+    string tmp;
+
+    childElement = utls::FindChildElement(description, "pdfaid", "part");
+    if (childElement != nullptr && (part = utls::GetNodeContent(childElement)).has_value())
+    {
+        childElement = utls::FindChildElement(description, "pdfaid", "conformance");
+        if (childElement != nullptr)
+            conformance = utls::GetNodeContent(childElement);
+
+        tmp = "L";
+        if (conformance.has_value())
+            tmp += *part + *conformance;
+        else
+            tmp += *part;
+
+        (void)PoDoFo::TryConvertTo(tmp, metadata.PdfaLevel);
+
+        childElement = utls::FindChildElement(description, "pdfaid", "amd");
+        if (childElement != nullptr)
+            metadata.SetMetadata(PdfAdditionalMetadata::PdfAIdAmd, getElementText(childElement));
+
+        childElement = utls::FindChildElement(description, "pdfaid", "corr");
+        if (childElement != nullptr)
+            metadata.SetMetadata(PdfAdditionalMetadata::PdfAIdCorr, getElementText(childElement));
+
+        childElement = utls::FindChildElement(description, "pdfaid", "rev");
+        if (childElement != nullptr)
+            metadata.SetMetadata(PdfAdditionalMetadata::PdfAIdRev, getElementText(childElement));
+    }
+
+    childElement = utls::FindChildElement(description, "pdfuaid", "part");
+    if (childElement != nullptr && (part = utls::GetNodeContent(childElement)).has_value())
+    {
+        tmp = "L";
+        tmp += *part;
+        (void)PoDoFo::TryConvertTo(tmp, metadata.PdfuaLevel);
+
+        childElement = utls::FindChildElement(description, "pdfuaid", "amd");
+        if (childElement != nullptr)
+            metadata.SetMetadata(PdfAdditionalMetadata::PdfUAIdAmd, getElementText(childElement));
+
+        childElement = utls::FindChildElement(description, "pdfuaid", "corr");
+        if (childElement != nullptr)
+            metadata.SetMetadata(PdfAdditionalMetadata::PdfUAIdCorr, getElementText(childElement));
+
+        childElement = utls::FindChildElement(description, "pdfuaid", "rev");
+        if (childElement != nullptr)
+            metadata.SetMetadata(PdfAdditionalMetadata::PdfUAIdRev, getElementText(childElement));
+    }
 }
 
-void PoDoFo::UpdateOrCreateXMPMetadata(unique_ptr<PdfXMPPacket>& packet, const PdfXMPMetadata& metatata)
+void PoDoFo::SetXMPMetadata(xmlDocPtr doc, xmlNodePtr description, const PdfMetadataStore& metadata)
 {
-    utls::InitXml();
-    if (packet == nullptr)
-        packet.reset(new PdfXMPPacket());
-
-    setXMPMetadata(packet->GetDoc(), packet->GetOrCreateDescription(), metatata);
-}
-
-void setXMPMetadata(xmlDocPtr doc, xmlNodePtr description, const PdfXMPMetadata& metatata)
-{
+    removeXMPProperty(description, XMPMetadataKind::PDFVersion);
     removeXMPProperty(description, XMPMetadataKind::Title);
     removeXMPProperty(description, XMPMetadataKind::Author);
     removeXMPProperty(description, XMPMetadataKind::Subject);
@@ -140,37 +201,76 @@ void setXMPMetadata(xmlDocPtr doc, xmlNodePtr description, const PdfXMPMetadata&
     removeXMPProperty(description, XMPMetadataKind::Producer);
     removeXMPProperty(description, XMPMetadataKind::CreationDate);
     removeXMPProperty(description, XMPMetadataKind::ModDate);
-    removeXMPProperty(description, XMPMetadataKind::PdfALevel);
-    removeXMPProperty(description, XMPMetadataKind::PdfAConformance);
-    removeXMPProperty(description, XMPMetadataKind::PdfARevision);
-    if (metatata.Title.has_value())
-        addXMPProperty(doc, description, XMPMetadataKind::Title, metatata.Title->GetString());
-    if (metatata.Author.has_value())
-        addXMPProperty(doc, description, XMPMetadataKind::Author, metatata.Author->GetString());
-    if (metatata.Subject.has_value())
-        addXMPProperty(doc, description, XMPMetadataKind::Subject, metatata.Subject->GetString());
-    if (metatata.Keywords.has_value())
-        addXMPProperty(doc, description, XMPMetadataKind::Keywords, metatata.Keywords->GetString());
-    if (metatata.Creator.has_value())
-        addXMPProperty(doc, description, XMPMetadataKind::Creator, metatata.Creator->GetString());
-    if (metatata.Producer.has_value())
-        addXMPProperty(doc, description, XMPMetadataKind::Producer, metatata.Producer->GetString());
-    if (metatata.CreationDate.has_value())
-        addXMPProperty(doc, description, XMPMetadataKind::CreationDate, metatata.CreationDate->ToStringW3C().GetString());
-    if (metatata.ModDate.has_value())
-        addXMPProperty(doc, description, XMPMetadataKind::ModDate, metatata.ModDate->ToStringW3C().GetString());
+    removeXMPProperty(description, XMPMetadataKind::Trapped);
+    removeXMPProperty(description, XMPMetadataKind::PdfAIdPart);
+    removeXMPProperty(description, XMPMetadataKind::PdfAIdConformance);
+    removeXMPProperty(description, XMPMetadataKind::PdfAIdAmd);
+    removeXMPProperty(description, XMPMetadataKind::PdfAIdCorr);
+    removeXMPProperty(description, XMPMetadataKind::PdfAIdRev);
+    removeXMPProperty(description, XMPMetadataKind::PdfUAIdPart);
+    removeXMPProperty(description, XMPMetadataKind::PdfUAIdAmd);
+    removeXMPProperty(description, XMPMetadataKind::PdfUAIdCorr);
+    removeXMPProperty(description, XMPMetadataKind::PdfUAIdRev);
+    if (metadata.Title.has_value())
+        addXMPProperty(doc, description, XMPMetadataKind::Title, metadata.Title->GetString());
+    if (metadata.Author.has_value())
+        addXMPProperty(doc, description, XMPMetadataKind::Author, metadata.Author->GetString());
+    if (metadata.Subject.has_value())
+        addXMPProperty(doc, description, XMPMetadataKind::Subject, metadata.Subject->GetString());
+    if (metadata.Keywords.has_value())
+        addXMPProperty(doc, description, XMPMetadataKind::Keywords, metadata.Keywords->GetString());
+    if (metadata.Creator.has_value())
+        addXMPProperty(doc, description, XMPMetadataKind::Creator, metadata.Creator->GetString());
+    if (metadata.Producer.has_value())
+        addXMPProperty(doc, description, XMPMetadataKind::Producer, metadata.Producer->GetString());
+    if (metadata.CreationDate.has_value())
+        addXMPProperty(doc, description, XMPMetadataKind::CreationDate, metadata.CreationDate->ToStringW3C().GetString());
+    if (metadata.ModDate.has_value())
+        addXMPProperty(doc, description, XMPMetadataKind::ModDate, metadata.ModDate->ToStringW3C().GetString());
 
-    if (metatata.PdfaLevel != PdfALevel::Unknown)
+    // NOTE: Ignore setting PDFVersion (which is better set by
+    // the %PDF-X.Y header) and Trapped (which is deprecated in PDF 2.0)
+
+    if (metadata.PdfaLevel != PdfALevel::Unknown)
     {
         // Set actual PdfA level
-        string levelStr;
+        string partStr;
         string conformanceStr;
         string revision;
-        getPdfALevelComponents(metatata.PdfaLevel, levelStr, conformanceStr, revision);
-        addXMPProperty(doc, description, XMPMetadataKind::PdfALevel, levelStr);
-        addXMPProperty(doc, description, XMPMetadataKind::PdfAConformance, conformanceStr);
+        getPdfALevelComponents(metadata.PdfaLevel, partStr, conformanceStr, revision);
+        addXMPProperty(doc, description, XMPMetadataKind::PdfAIdPart, partStr);
+        if (conformanceStr.length() != 0)
+            addXMPProperty(doc, description, XMPMetadataKind::PdfAIdConformance, conformanceStr);
         if (revision.length() != 0)
-            addXMPProperty(doc, description, XMPMetadataKind::PdfARevision, revision);
+            addXMPProperty(doc, description, XMPMetadataKind::PdfAIdRev, revision);
+    }
+
+    if (metadata.PdfuaLevel != PdfUALevel::Unknown)
+    {
+        if (metadata.PdfaLevel != PdfALevel::Unknown
+            && metadata.PdfaLevel < PdfALevel::L4)
+        {
+            // PDF/A up to 3 needs extensions schema for external properties
+            addExtension(doc, description, PdfUAIdSchema);
+        }
+
+        // Set actual PdfUA version
+        string partStr;
+        string revision;
+        getPdfUALevelComponents(metadata.PdfuaLevel, partStr, revision);
+        addXMPProperty(doc, description, XMPMetadataKind::PdfUAIdPart, partStr);
+        if (revision.length() != 0)
+            addXMPProperty(doc, description, XMPMetadataKind::PdfUAIdRev, revision);
+    }
+
+    auto additionalMetadata = metadata.GetAdditionalMetadata();
+    if (additionalMetadata != nullptr)
+    {
+        for (auto& pair : *additionalMetadata)
+        {
+            addXMPProperty(doc, description,
+                (XMPMetadataKind)((unsigned)pair.first + ADDITIONAL_METADATA_OFFSET), pair.second);
+        }
     }
 }
 
@@ -196,8 +296,28 @@ xmlNsPtr findOrCreateNamespace(xmlDocPtr doc, xmlNodePtr description, PdfANamesp
             prefix = "pdfaid";
             href = "http://www.aiim.org/pdfa/ns/id/";
             break;
+        case PdfANamespaceKind::PdfUAId:
+            prefix = "pdfuaid";
+            href = "http://www.aiim.org/pdfua/ns/id/";
+            break;
+        case PdfANamespaceKind::PdfAExtension:
+            prefix = "pdfaExtension";
+            href = "http://www.aiim.org/pdfa/ns/extension/";
+            break;
+        case PdfANamespaceKind::PdfASchema:
+            prefix = "pdfaSchema";
+            href = "http://www.aiim.org/pdfa/ns/schema#";
+            break;
+        case PdfANamespaceKind::PdfAProperty:
+            prefix = "pdfaProperty";
+            href = "http://www.aiim.org/pdfa/ns/property#";
+            break;
+        case PdfANamespaceKind::PdfAType:
+            prefix = "pdfaType";
+            href = "http://www.aiim.org/pdfa/ns/type#";
+            break;
         default:
-            throw runtime_error("Unsupported");
+            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InternalLogic, "Unsupported");
     }
     auto xmlNs = xmlSearchNs(doc, description, XMLCHAR prefix);
     if (xmlNs == nullptr)
@@ -209,18 +329,16 @@ xmlNsPtr findOrCreateNamespace(xmlDocPtr doc, xmlNodePtr description, PdfANamesp
     return xmlNs;
 }
 
-void addXMPProperty(xmlDocPtr doc, xmlNodePtr description, XMPMetadataKind prop, const string& value)
-{
-    addXMPProperty(doc, description, prop, cspan<string>(&value, 1));
-}
-
-void addXMPProperty(xmlDocPtr doc, xmlNodePtr description,
-    XMPMetadataKind property, const cspan<string>& values)
+void addXMPProperty(xmlDocPtr doc, xmlNodePtr description, XMPMetadataKind property, const string_view& value)
 {
     xmlNsPtr xmlNs;
     const char* propName;
     switch (property)
     {
+        case XMPMetadataKind::PDFVersion:
+            xmlNs = findOrCreateNamespace(doc, description, PdfANamespaceKind::Pdf);
+            propName = "PDFVersion";
+            break;
         case XMPMetadataKind::Title:
             xmlNs = findOrCreateNamespace(doc, description, PdfANamespaceKind::Dc);
             propName = "title";
@@ -253,20 +371,48 @@ void addXMPProperty(xmlDocPtr doc, xmlNodePtr description,
             xmlNs = findOrCreateNamespace(doc, description, PdfANamespaceKind::Xmp);
             propName = "ModifyDate";
             break;
-        case XMPMetadataKind::PdfALevel:
+        case XMPMetadataKind::Trapped:
+            xmlNs = findOrCreateNamespace(doc, description, PdfANamespaceKind::Pdf);
+            propName = "Trapped";
+            break;
+        case XMPMetadataKind::PdfAIdPart:
             xmlNs = findOrCreateNamespace(doc, description, PdfANamespaceKind::PdfAId);
             propName = "part";
             break;
-        case XMPMetadataKind::PdfAConformance:
+        case XMPMetadataKind::PdfAIdConformance:
             xmlNs = findOrCreateNamespace(doc, description, PdfANamespaceKind::PdfAId);
             propName = "conformance";
             break;
-        case XMPMetadataKind::PdfARevision:
+        case XMPMetadataKind::PdfAIdCorr:
+            xmlNs = findOrCreateNamespace(doc, description, PdfANamespaceKind::PdfAId);
+            propName = "corr";
+            break;
+        case XMPMetadataKind::PdfAIdAmd:
+            xmlNs = findOrCreateNamespace(doc, description, PdfANamespaceKind::PdfAId);
+            propName = "amd";
+            break;
+        case XMPMetadataKind::PdfAIdRev:
             xmlNs = findOrCreateNamespace(doc, description, PdfANamespaceKind::PdfAId);
             propName = "rev";
             break;
+        case XMPMetadataKind::PdfUAIdPart:
+            xmlNs = findOrCreateNamespace(doc, description, PdfANamespaceKind::PdfUAId);
+            propName = "part";
+            break;
+        case XMPMetadataKind::PdfUAIdAmd:
+            xmlNs = findOrCreateNamespace(doc, description, PdfANamespaceKind::PdfUAId);
+            propName = "amd";
+            break;
+        case XMPMetadataKind::PdfUAIdCorr:
+            xmlNs = findOrCreateNamespace(doc, description, PdfANamespaceKind::PdfUAId);
+            propName = "corr";
+            break;
+        case XMPMetadataKind::PdfUAIdRev:
+            xmlNs = findOrCreateNamespace(doc, description, PdfANamespaceKind::PdfUAId);
+            propName = "rev";
+            break;
         default:
-            throw runtime_error("Unsupported");
+            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InternalLogic, "Unsupported");
     }
 
     auto element = xmlNewChild(description, xmlNs, XMLCHAR propName, nullptr);
@@ -279,25 +425,31 @@ void addXMPProperty(xmlDocPtr doc, xmlNodePtr description,
         case XMPMetadataKind::Subject:
         {
             xmlNodePtr newNode;
-            utls::SetListNodeContent(doc, element, XMPListType::LangAlt, values, newNode);
+            utls::SetListNodeContent(doc, element, XMPListType::LangAlt, value, newNode);
             break;
         }
         case XMPMetadataKind::Author:
         {
             xmlNodePtr newNode;
-            utls::SetListNodeContent(doc, element, XMPListType::Seq, values, newNode);
+            utls::SetListNodeContent(doc, element, XMPListType::Seq, value, newNode);
             break;
         }
         default:
         {
-            xmlNodeSetContent(element, XMLCHAR values[0].data());
+            xmlNodeAddContent(element, XMLCHAR value.data());
             break;
         }
     }
 }
 
 void utls::SetListNodeContent(xmlDocPtr doc, xmlNodePtr node, XMPListType seqType,
-    const cspan<string>& values, xmlNodePtr& newNode)
+    const string_view& value, xmlNodePtr& newNode)
+{
+    SetListNodeContent(doc, node, seqType, cspan<string_view>(&value, 1), newNode);
+}
+
+void utls::SetListNodeContent(xmlDocPtr doc, xmlNodePtr node, XMPListType seqType,
+    const cspan<string_view>& values, xmlNodePtr& newNode)
 {
     const char* elemName;
     switch (seqType)
@@ -337,7 +489,7 @@ void utls::SetListNodeContent(xmlDocPtr doc, xmlNodePtr node, XMPListType seqTyp
                 THROW_LIBXML_EXCEPTION(utls::Format("Can't set xml:lang attribute on rdf:li node"));
         }
 
-        xmlNodeSetContent(liElem, XMLCHAR view.data());
+        xmlNodeAddContent(liElem, XMLCHAR view.data());
     }
 
     newNode = innerElem->children;
@@ -349,6 +501,10 @@ void removeXMPProperty(xmlNodePtr description, XMPMetadataKind property)
     const char* ns;
     switch (property)
     {
+        case XMPMetadataKind::PDFVersion:
+            ns = "pdf";
+            propname = "PDFVersion";
+            break;
         case XMPMetadataKind::Title:
             ns = "dc";
             propname = "title";
@@ -381,20 +537,48 @@ void removeXMPProperty(xmlNodePtr description, XMPMetadataKind property)
             ns = "xmp";
             propname = "ModifyDate";
             break;
-        case XMPMetadataKind::PdfALevel:
+        case XMPMetadataKind::Trapped:
+            ns = "pdf";
+            propname = "Trapped";
+            break;
+        case XMPMetadataKind::PdfAIdPart:
             ns = "pdfaid";
             propname = "part";
             break;
-        case XMPMetadataKind::PdfAConformance:
+        case XMPMetadataKind::PdfAIdConformance:
             ns = "pdfaid";
             propname = "conformance";
             break;
-        case XMPMetadataKind::PdfARevision:
+        case XMPMetadataKind::PdfAIdAmd:
+            ns = "pdfaid";
+            propname = "amd";
+            break;
+        case XMPMetadataKind::PdfAIdCorr:
+            ns = "pdfaid";
+            propname = "corr";
+            break;
+        case XMPMetadataKind::PdfAIdRev:
             ns = "pdfaid";
             propname = "rev";
             break;
+        case XMPMetadataKind::PdfUAIdPart:
+            ns = "pdfuaid";
+            propname = "part";
+            break;
+        case XMPMetadataKind::PdfUAIdAmd:
+            ns = "pdfuaid";
+            propname = "amd";
+            break;
+        case XMPMetadataKind::PdfUAIdCorr:
+            ns = "pdfuaid";
+            propname = "corr";
+            break;
+        case XMPMetadataKind::PdfUAIdRev:
+            ns = "pdfuaid";
+            propname = "rev";
+            break;
         default:
-            throw runtime_error("Unsupported");
+            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InternalLogic, "Unsupported");
     }
 
     xmlNodePtr elemModDate = nullptr;
@@ -415,88 +599,88 @@ void removeXMPProperty(xmlNodePtr description, XMPMetadataKind property)
     }
 }
 
-PdfALevel getPDFALevelFromString(const string_view& pdfaid)
-{
-    if (pdfaid == "1B")
-        return PdfALevel::L1B;
-    else if (pdfaid == "1A")
-        return PdfALevel::L1A;
-    else if (pdfaid == "2B")
-        return PdfALevel::L2B;
-    else if (pdfaid == "2A")
-        return PdfALevel::L2A;
-    else if (pdfaid == "2U")
-        return PdfALevel::L2U;
-    else if (pdfaid == "3B")
-        return PdfALevel::L3B;
-    else if (pdfaid == "3A")
-        return PdfALevel::L3A;
-    else if (pdfaid == "3U")
-        return PdfALevel::L3U;
-    else if (pdfaid == "4E")
-        return PdfALevel::L4E;
-    else if (pdfaid == "4F")
-        return PdfALevel::L4F;
-    else
-        return PdfALevel::Unknown;
-}
-
-void getPdfALevelComponents(PdfALevel level, string& levelStr, string& conformanceStr, string& revision)
+void getPdfALevelComponents(PdfALevel level, string& partStr, string& conformanceStr, string& revision)
 {
     switch (level)
     {
         case PdfALevel::L1B:
-            levelStr = "1";
+            partStr = "1";
             conformanceStr = "B";
             revision.clear();
             return;
         case PdfALevel::L1A:
-            levelStr = "1";
+            partStr = "1";
             conformanceStr = "A";
             revision.clear();
             return;
         case PdfALevel::L2B:
-            levelStr = "2";
+            partStr = "2";
             conformanceStr = "B";
             revision.clear();
             return;
         case PdfALevel::L2A:
-            levelStr = "2";
+            partStr = "2";
             conformanceStr = "A";
             revision.clear();
             return;
         case PdfALevel::L2U:
-            levelStr = "2";
+            partStr = "2";
             conformanceStr = "U";
             revision.clear();
             return;
         case PdfALevel::L3B:
-            levelStr = "3";
+            partStr = "3";
             conformanceStr = "B";
             revision.clear();
             return;
         case PdfALevel::L3A:
-            levelStr = "3";
+            partStr = "3";
             conformanceStr = "A";
             revision.clear();
             return;
         case PdfALevel::L3U:
-            levelStr = "3";
+            partStr = "3";
             conformanceStr = "U";
             revision.clear();
             return;
+        case PdfALevel::L4:
+            partStr = "4";
+            conformanceStr.clear();
+            revision = "2020";
+            return;
         case PdfALevel::L4E:
-            levelStr = "4";
+            partStr = "4";
             conformanceStr = "E";
             revision = "2020";
             return;
         case PdfALevel::L4F:
-            levelStr = "4";
+            partStr = "4";
             conformanceStr = "F";
             revision = "2020";
             return;
         default:
-            throw runtime_error("Unsupported");
+            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InternalLogic, "Unsupported");
+    }
+}
+
+void getPdfUALevelComponents(PdfUALevel version, string& part, string& revision)
+{
+    switch (version)
+    {
+        case PdfUALevel::L1:
+        {
+            part = "1";
+            revision.clear();
+            break;
+        }
+        case PdfUALevel::L2:
+        {
+            part = "2";
+            revision = "2024";
+            break;
+        }
+        default:
+            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InternalLogic, "Unsupported");
     }
 }
 
@@ -520,4 +704,53 @@ nullable<PdfString> getElementText(xmlNodePtr elem)
         return nullptr;
     else
         return PdfString(*text);
+}
+
+void addExtension(xmlDocPtr doc, xmlNodePtr description, string_view extension)
+{
+    auto bag = getOrCreateExtensionBag(doc, description);
+    xmlNodePtr newNode = NULL;
+    auto rc = xmlParseInNodeContext(description, extension.data(), (int)extension.size(), 0, &newNode);
+    if (rc != XML_ERR_OK)
+        THROW_LIBXML_EXCEPTION("Could not parse extension fragment");
+
+    if (xmlAddChild(bag, newNode) == nullptr)
+    {
+        xmlFreeNode(newNode);
+        THROW_LIBXML_EXCEPTION("Can't add element to extension bag");
+    }
+}
+
+xmlNodePtr getOrCreateExtensionBag(xmlDocPtr doc, xmlNodePtr description)
+{
+    // Add required namespace to write extensions
+    auto pdfaExtNs = findOrCreateNamespace(doc, description, PdfANamespaceKind::PdfAExtension);
+    (void)findOrCreateNamespace(doc, description, PdfANamespaceKind::PdfASchema);
+    (void)findOrCreateNamespace(doc, description, PdfANamespaceKind::PdfAProperty);
+    (void)findOrCreateNamespace(doc, description, PdfANamespaceKind::PdfAType);
+
+    auto pdfaExtension = utls::FindChildElement(description, "pdfaExtension", "schemas");
+    if (pdfaExtension == nullptr)
+    {
+        pdfaExtension = xmlNewChild(description, nullptr, XMLCHAR "schemas", nullptr);
+        if (pdfaExtension == nullptr)
+            THROW_LIBXML_EXCEPTION("Can't create pdfaExtension:schemas node");
+
+        xmlSetNs(pdfaExtension, pdfaExtNs);
+    }
+
+    auto bag = utls::FindChildElement(description, "rdf", "Bag");
+    if (bag == nullptr)
+    {
+        bag = xmlNewChild(pdfaExtension, nullptr, XMLCHAR "Bag", nullptr);
+        if (bag == nullptr)
+            THROW_LIBXML_EXCEPTION("Can't create rdf:Bag node");
+
+        auto rdfNs = xmlSearchNs(doc, description, XMLCHAR "rdf");
+        PODOFO_ASSERT(rdfNs != nullptr);
+
+        xmlSetNs(bag, rdfNs);
+    }
+
+    return bag;
 }

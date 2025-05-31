@@ -19,22 +19,19 @@ private:
     /** Create a PdfFontObject based on an existing PdfObject
      *  To be used by PdfFontFactory
      */
-    PdfFontObject(PdfObject& obj, const PdfFontMetricsConstPtr& metrics,
+    PdfFontObject(PdfObject& obj, PdfFontMetricsConstPtr&& metrics,
         const PdfEncoding& encoding);
 
-public:
+private:
+    // To be used by PdfFont
     static std::unique_ptr<PdfFontObject> Create(PdfObject& obj, PdfObject& descendantObj,
-        const PdfFontMetricsConstPtr& metrics, const PdfEncoding& encoding);
+        PdfFontMetricsConstPtr&& metrics, const PdfEncoding& encoding);
 
     static std::unique_ptr<PdfFontObject> Create(PdfObject& obj,
-        const PdfFontMetricsConstPtr& metrics, const PdfEncoding& encoding);
-
-public:
-    bool tryMapCIDToGID(unsigned cid, unsigned& gid) const override;
+        PdfFontMetricsConstPtr&& metrics, const PdfEncoding& encoding);
 
 public:
     bool IsObjectLoaded() const override;
-    PdfFontType GetType() const override;
 };
 
 }

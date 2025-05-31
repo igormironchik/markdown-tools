@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.23)
 
 if ("${CMAKE_BUILD_TYPE}" STREQUAL "")
     set(CMAKE_BUILD_TYPE "Release")
@@ -15,7 +15,7 @@ enable_testing() # Needed to enable "make test" from binary dir
 set(PODOFO_PLAYGROUND TRUE)
 
 if ("${ARCH}" STREQUAL "")
-    message(FATAL_ERROR "ARCH is not set. Run the boostrap scripts")
+    message(FATAL_ERROR "ARCH is not set. Run the bootstrap scripts")
 endif()
 
 if ("${PODOFO_DIR}" STREQUAL "")
@@ -31,7 +31,12 @@ if(NOT EXISTS "${DEPS_PATH}")
     message(FATAL_ERROR "Deps path doesn't exists: try fetch git submodules with:\n    git submodule update --init")
 endif()
 
+cmake_host_system_information(RESULT CORE_COUNT QUERY NUMBER_OF_PHYSICAL_CORES)
+
 if (MSVC)
+    # Set parallel compilation by default in Visual Studio
+    add_compile_options("/MP${CORE_COUNT}")
+
     # Ignore warnings about missing pdbs
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ignore:4099")
     set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /ignore:4099")
@@ -52,7 +57,7 @@ list(APPEND CMAKE_INCLUDE_PATH
     "${DEPS_PATH}/libjpeg/include"
     "${DEPS_PATH}/libtiff/include"
     "${DEPS_PATH}/openssl/include"
-    "${DEPS_PATH}/libidn/include"
+    "${DEPS_PATH}/lcms2/include"
 )
 
 # Set library folders for find_package()
@@ -65,13 +70,11 @@ list(APPEND CMAKE_LIBRARY_PATH
     "${DEPS_PATH}/libjpeg/lib/${ARCH}"
     "${DEPS_PATH}/libtiff/lib/${ARCH}"
     "${DEPS_PATH}/openssl/lib/${ARCH}"
-    "${DEPS_PATH}/libidn/lib/${ARCH}"
+    "${DEPS_PATH}/lcms2/lib/${ARCH}"
 )
 
 # Set use libxml2 static for fontconfig
 add_compile_definitions(LIBXML_STATIC)
-# Set use libidn static
-add_compile_definitions(LIBIDN_STATIC)
 
 if(WIN32)
     if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")

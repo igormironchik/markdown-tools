@@ -302,8 +302,8 @@ void PdfAuxData::setColor(const QColor &c)
 {
     m_colorsStack.push(c);
 
-    (*m_painters)[m_currentPainterIdx]->GraphicsState.SetFillColor(Color(c.redF(), c.greenF(), c.blueF()));
-    (*m_painters)[m_currentPainterIdx]->GraphicsState.SetStrokeColor(Color(c.redF(), c.greenF(), c.blueF()));
+    (*m_painters)[m_currentPainterIdx]->GraphicsState.SetNonStrokingColor(Color(c.redF(), c.greenF(), c.blueF()));
+    (*m_painters)[m_currentPainterIdx]->GraphicsState.SetStrokingColor(Color(c.redF(), c.greenF(), c.blueF()));
 }
 
 void PdfAuxData::restoreColor()
@@ -319,8 +319,8 @@ void PdfAuxData::repeatColor()
 {
     const auto &c = m_colorsStack.top();
 
-    (*m_painters)[m_currentPainterIdx]->GraphicsState.SetFillColor(Color(c.redF(), c.greenF(), c.blueF()));
-    (*m_painters)[m_currentPainterIdx]->GraphicsState.SetStrokeColor(Color(c.redF(), c.greenF(), c.blueF()));
+    (*m_painters)[m_currentPainterIdx]->GraphicsState.SetNonStrokingColor(Color(c.redF(), c.greenF(), c.blueF()));
+    (*m_painters)[m_currentPainterIdx]->GraphicsState.SetStrokingColor(Color(c.redF(), c.greenF(), c.blueF()));
 }
 
 double PdfAuxData::stringWidth(Font *font, double size, double scale, const String &s) const
@@ -726,9 +726,10 @@ void PdfRenderer::renderImpl()
 
             case MD::ItemType::Anchor: {
                 auto *a = static_cast<MD::Anchor<MD::QStringTrait> *>(it->get());
-                m_dests.insert(a->label(),
-                               std::make_shared<Destination>(*pdfData.m_page, pdfData.m_layout.margins().m_left,
-                                                             pdfData.m_layout.topY(), 0.0));
+                auto dest = pdfData.m_doc->CreateDestination();
+                dest->SetDestination(*pdfData.m_page, pdfData.m_layout.margins().m_left,
+                                     pdfData.m_layout.topY(), 0.0);
+                m_dests.insert(a->label(), std::move(dest));
                 pdfData.m_currentFile = a->label();
             } break;
 
@@ -862,7 +863,7 @@ void PdfRenderer::resolveLinks(PdfAuxData &pdfData)
                 auto &annot = page.GetAnnotations().CreateAnnot<PoDoFo::PdfAnnotationLink>(
                             Rect(r.first.x(), r.first.y(), r.first.width(), r.first.height()));
                 annot.SetBorderStyle(0.0, 0.0, 0.0);
-                annot.SetDestination(m_dests.value(it.key()));
+                annot.SetDestination(*m_dests.value(it.key()).get());
             }
         }
 #ifdef MD_PDF_TESTING
@@ -880,7 +881,7 @@ void PdfRenderer::resolveLinks(PdfAuxData &pdfData)
             auto &annot = page.GetAnnotations().CreateAnnot<PoDoFo::PdfAnnotationLink>(
                 Rect(it.value().first.x(), it.value().first.y(), it.value().first.width(), it.value().first.height()));
             annot.SetBorderStyle(0.0, 0.0, 0.0);
-            annot.SetDestination(m_dests.value(it.key()));
+            annot.SetDestination(*m_dests.value(it.key()).get());
         }
 #ifdef MD_PDF_TESTING
         else {
@@ -896,13 +897,16 @@ Font *PdfRenderer::createFont(const QString &name, bool bold, bool italic, doubl
                               Document *doc, double scale, const PdfAuxData &pdfData)
 {
     PoDoFo::PdfFontSearchParams params;
-    params.Style = PoDoFo::PdfFontStyle::Regular;
+    PoDoFo::PdfFontStyle style = PoDoFo::PdfFontStyle::Regular;
+
     if (bold) {
-        params.Style.value() |= PoDoFo::PdfFontStyle::Bold;
+        style |= PoDoFo::PdfFontStyle::Bold;
     }
     if (italic) {
-        params.Style.value() |= PoDoFo::PdfFontStyle::Italic;
+        style |= PoDoFo::PdfFontStyle::Italic;
     }
+
+    params.Style = style;
 
 #ifdef MD_PDF_TESTING
     const QString internalName = name + (bold ? QStringLiteral(" Bold") :
@@ -1118,10 +1122,13 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawHeading(PdfAuxData &pdfD
                           heightCalcOpt, scale * (1.0 + (7 - item->level()) * 0.25), Qt::black, false, rtl);
 
         if (heightCalcOpt == CalcHeightOpt::Unknown && !item->label().isEmpty() && !where.first.isEmpty()) {
-            const auto dest = std::make_shared<Destination>(pdfData.m_doc->GetPages().GetPageAt(static_cast<unsigned int>(where.first.front().m_pageIdx)),
-                                                      pdfData.m_layout.borderStartX() + pdfData.m_layout.xIncrementDirection() * offset,
-                                                      where.first.front().m_y + where.first.front().m_height,
-                                                      0.0);
+            auto tmpDest = pdfData.m_doc->CreateDestination();
+            tmpDest->SetDestination(pdfData.m_doc->GetPages().GetPageAt(static_cast<unsigned int>(where.first.front().m_pageIdx)),
+                                 pdfData.m_layout.borderStartX() + pdfData.m_layout.xIncrementDirection() * offset,
+                                 where.first.front().m_y + where.first.front().m_height,
+                                 0.0);
+
+            auto dest = std::shared_ptr<Destination>(std::move(tmpDest));
 
             for (const auto &label : std::as_const(item->labelVariants())) {
                 m_dests.insert(label, dest);
@@ -1502,16 +1509,17 @@ QVector<QPair<QRectF, unsigned int>> PdfRenderer::drawLink(PdfAuxData &pdfData,
         // If Web URL.
         if (!pdfData.m_anchors.contains(url) && pdfData.m_md->labeledHeadings().find(url) == pdfData.m_md->labeledHeadings().cend()) {
             for (const auto &r : std::as_const(rects)) {
-                auto &annot = pdfData.m_doc->GetPages()
+                auto &annot = static_cast<PoDoFo::PdfAnnotationLink&>(pdfData.m_doc->GetPages()
                                   .GetPageAt(static_cast<unsigned int>(r.second))
                                   .GetAnnotations()
-                                  .CreateAnnot<PoDoFo::PdfAnnotationLink>(Rect(r.first.x(), r.first.y(), r.first.width(), r.first.height()));
+                                  .CreateAnnot<PoDoFo::PdfAnnotationLink>(Rect(r.first.x(), r.first.y(), r.first.width(), r.first.height())));
                 annot.SetBorderStyle(0.0, 0.0, 0.0);
 
-                auto action = std::make_shared<PoDoFo::PdfAction>(*pdfData.m_doc, PoDoFo::PdfActionType::URI);
-                action->SetURI(url.toLatin1().data());
+                auto actionSmart = pdfData.m_doc->CreateAction(PoDoFo::PdfActionType::URI);
+                auto action = static_cast<PoDoFo::PdfActionURI*>(actionSmart.get());
+                action->SetURI(PoDoFo::PdfString(url.toLatin1().constData()));
 
-                annot.SetAction(action);
+                annot.SetAction(*action);
             }
         }
         // Otherwise internal link.
@@ -3116,12 +3124,13 @@ QVector<WhereDrawn> PdfRenderer::drawFootnote(PdfAuxData &pdfData,
                     (footnoteOffset - c_offset - (pdfData.m_layout.isRightToLeft() ? 0.0 : w));
             const auto p = ret.constFirst().m_pageIdx;
 
-            m_dests.insert(footnoteRefId,
-                           std::make_shared<Destination>(pdfData.m_doc->GetPages().GetPageAt(p),
-                                                         x,
-                                                         y + pdfData.lineSpacing(font, m_opts.m_textFontSize, s_footnoteScale)
-                                                             + pdfData.fontDescent(font, m_opts.m_textFontSize, s_footnoteScale),
-                                                         0.0));
+            auto dest = pdfData.m_doc->CreateDestination();
+            dest->SetDestination(pdfData.m_doc->GetPages().GetPageAt(p),
+                                 x,
+                                 y + pdfData.lineSpacing(font, m_opts.m_textFontSize, s_footnoteScale)
+                                     + pdfData.fontDescent(font, m_opts.m_textFontSize, s_footnoteScale),
+                                 0.0);
+            m_dests.insert(footnoteRefId, std::move(dest));
 
             pdfData.m_currentPainterIdx = p;
 

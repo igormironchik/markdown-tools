@@ -26,10 +26,10 @@ namespace PoDoFo
 
     private:
         PdChoiceField(PdfAcroForm& acroform, PdfFieldType fieldType,
-            const std::shared_ptr<PdfField>& parent);
+            std::shared_ptr<PdfField>&& parent);
 
         PdChoiceField(PdfAnnotationWidget& widget, PdfFieldType fieldType,
-            const std::shared_ptr<PdfField>& parent);
+            std::shared_ptr<PdfField>&& parent);
 
         PdChoiceField(PdfObject& obj, PdfAcroForm* acroform, PdfFieldType fieldType);
 
@@ -95,12 +95,12 @@ namespace PoDoFo
          *
          *  combobox are spellchecked by default
          */
-        void SetSpellcheckingEnabled(bool spellCheck);
+        void SetSpellCheckingEnabled(bool spellCheck);
 
         /**
          *  \returns true if spellchecking is enabled for this combobox
          */
-        bool IsSpellcheckingEnabled() const;
+        bool IsSpellCheckingEnabled() const;
 
         /**
          * Enable or disable sorting of items.

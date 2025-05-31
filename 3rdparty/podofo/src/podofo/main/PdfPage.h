@@ -20,25 +20,114 @@
 namespace PoDoFo {
 
 class PdfDocument;
-class PdfDictionary;
-class PdfIndirectObjectList;
 class InputStream;
+class PdfPage;
 
-struct PdfTextEntry final
+struct PODOFO_API PdfTextEntry final
 {
     std::string Text;
-    int Page;
-    double X;
-    double Y;
-    double Length;
+    int Page = -1;
+    double X = -1;
+    double Y = -1;
+    double Length = -1;
     nullable<Rect> BoundingBox;
 };
 
-struct PdfTextExtractParams
+/** A structure with status progress attributes of certain operations
+ */
+struct PODOFO_API AbortCheckInfo final
+{
+    unsigned ReadCount = 0;
+};
+
+struct PODOFO_API PdfTextExtractParams final
 {
     nullable<Rect> ClipRect;
-    PdfTextExtractFlags Flags;
+    PdfTextExtractFlags Flags = PdfTextExtractFlags::None;
+
+    ///< A callback to early interrupt text extraction
+    std::function<bool(const AbortCheckInfo& info)> AbortCheck = nullptr;
 };
+
+template <typename TField>
+class PdfPageFieldIterableBase final
+{
+    friend class PdfPage;
+
+public:
+    PdfPageFieldIterableBase()
+        : m_page(nullptr) { }
+
+private:
+    PdfPageFieldIterableBase(PdfPage& page)
+        : m_page(&page) { }
+
+public:
+    class Iterator final
+    {
+        friend class PdfPageFieldIterableBase;
+    public:
+        using difference_type = void;
+        using value_type = TField*;
+        using pointer = void;
+        using reference = void;
+        using iterator_category = std::forward_iterator_tag;
+    public:
+        Iterator()
+            : m_Field(nullptr) { }
+    private:
+        void stepIntoPageAnnot();
+
+        Iterator(PdfAnnotationCollection::iterator begin,
+            PdfAnnotationCollection::iterator end)
+            : m_annotsIterator(std::move(begin)), m_annotsEnd(std::move(end)), m_Field(nullptr)
+        {
+            stepIntoPageAnnot();
+        }
+
+    public:
+        Iterator(const Iterator&) = default;
+        Iterator& operator=(const Iterator&) = default;
+        bool operator==(const Iterator& rhs) const
+        {
+            return m_annotsIterator == rhs.m_annotsIterator;
+        }
+        bool operator!=(const Iterator& rhs) const
+        {
+            return m_annotsIterator != rhs.m_annotsIterator;
+        }
+        Iterator& operator++()
+        {
+            m_annotsIterator++;
+            stepIntoPageAnnot();
+            return *this;
+        }
+        Iterator operator++(int)
+        {
+            auto copy = *this;
+            m_annotsIterator++;
+            stepIntoPageAnnot();
+            return copy;
+        }
+        value_type operator*() { return m_Field; }
+        value_type operator->() { return m_Field; }
+    private:
+        PdfAnnotationCollection::iterator m_annotsIterator;
+        PdfAnnotationCollection::iterator m_annotsEnd;
+        value_type m_Field;
+        std::unordered_set<PdfReference> m_visitedObjs;
+    };
+
+public:
+    Iterator begin() const;
+    Iterator end() const;
+
+private:
+    PdfPage* m_page;
+};
+
+using PdfPageFieldIterable = PdfPageFieldIterableBase<PdfField>;
+using PdfPageConstFieldIterable = PdfPageFieldIterableBase<const PdfField>;
 
 /** PdfPage is one page in the pdf document.
  *  It is possible to draw on a page using a PdfPainter object.
@@ -46,7 +135,7 @@ struct PdfTextExtractParams
  */
 class PODOFO_API PdfPage final : public PdfDictionaryElement, public PdfCanvas
 {
-    PODOFO_UNIT_TEST(PdfPageTest);
+    PODOFO_PRIVATE_FRIEND(class PdfPageTest);
     friend class PdfPageCollection;
     friend class PdfDocument;
 
@@ -76,56 +165,51 @@ public:
         const std::string_view& pattern = { },
         const PdfTextExtractParams& params = { }) const;
 
-    Rect GetRect() const;
+    /** Get the rectangle of this page.
+     *  \returns a rectangle. It's oriented according to the canonical PDF coordinate system
+     */
+    Rect GetRect() const { return m_Rect; }
 
-    Rect GetRectRaw() const override;
-
+    /** Set the rectangle of this annotation.
+     * \param rect rectangle to set. It's oriented according to the canonical PDF coordinate system
+     */
     void SetRect(const Rect& rect);
 
-    void SetRectRaw(const Rect& rect);
+    Corners GetRectRaw() const override;
 
-    bool HasRotation(double& teta) const override;
+    void SetRectRaw(const Corners& rect);
 
-    // added by Petr P. Petrov 21 Febrary 2010
-    /** Set the current page width in PDF Units
-     *
-     * \returns true if successful, false otherwise
-     *
+    bool TryGetRotationRadians(double& teta) const override;
+
+    /** Get the current page rotation in radians
+     * \returns a counterclockwise rotation in radians
      */
-    [[deprecated]] bool SetPageWidth(int newWidth);
-
-    // added by Petr P. Petrov 21 Febrary 2010
-    /** Set the current page height in PDF Units
-     *
-     * \returns true if successful, false otherwise
-     *
-     */
-    [[deprecated]] bool SetPageHeight(int newHeight);
+    double GetRotationRadians() const;
 
     /** Set the /MediaBox in PDF Units
      * \param rect a Rect in PDF units
      */
-    void SetMediaBox(const Rect& rect, bool raw = false);
+    void SetMediaBox(const Rect& rect);
 
     /** Set the /CropBox in PDF Units
      * \param rect a Rect in PDF units
      */
-    void SetCropBox(const Rect& rect, bool raw = false);
+    void SetCropBox(const Rect& rect);
 
     /** Set the /TrimBox in PDF Units
      * \param rect a Rect in PDF units
      */
-    void SetTrimBox(const Rect& rect, bool raw = false);
+    void SetTrimBox(const Rect& rect);
 
     /** Set the /BleedBox in PDF Units
      * \param rect a Rect in PDF units
      */
-    void SetBleedBox(const Rect& rect, bool raw = false);
+    void SetBleedBox(const Rect& rect);
 
     /** Set the /ArtBox in PDF Units
      * \param rect a Rect in PDF units
      */
-    void SetArtBox(const Rect& rect, bool raw = false);
+    void SetArtBox(const Rect& rect);
 
     /** Page number inside of the document. The  first page
      *  has the number 1
@@ -146,71 +230,75 @@ public:
     /** Get the current MediaBox (physical page size) in PDF units.
      *  \returns Rect the page box
      */
-    Rect GetMediaBox(bool raw = false) const;
+    Rect GetMediaBox() const;
+    Corners GetMediaBoxRaw() const;
 
     /** Get the current CropBox (visible page size) in PDF units.
      *  \returns Rect the page box
      */
-    Rect GetCropBox(bool raw = false) const;
+    Rect GetCropBox() const;
+    Corners GetCropBoxRaw() const;
 
     /** Get the current TrimBox (cut area) in PDF units.
      *  \returns Rect the page box
      */
-    Rect GetTrimBox(bool raw = false) const;
+    Rect GetTrimBox() const;
+    Corners GetTrimBoxRaw() const;
 
     /** Get the current BleedBox (extra area for printing purposes) in PDF units.
      *  \returns Rect the page box
      */
-    Rect GetBleedBox(bool raw = false) const;
+    Rect GetBleedBox() const;
+    Corners GetBleedBoxRaw() const;
 
     /** Get the current ArtBox in PDF units.
      *  \returns Rect the page box
      */
-    Rect GetArtBox(bool raw = false) const;
+    Rect GetArtBox() const;
+    Corners GetArtBoxRaw() const;
 
-    /** Get the current page rotation (if any), it's a clockwise rotation
-     *  \returns int 0, 90, 180 or 270
+    /** Get the normalized page rotation (0, 90, 180 or 270)
+     * \returns a clockwise rotation in degrees
      */
-    int GetRotationRaw() const;
+    unsigned GetRotation() const { return m_Rotation; }
+
+    /** Get the raw page rotation (if any)
+     * \param rotation a clockwise rotation in degrees
+     * \remarks it may return an invalid page rotation
+     */
+    bool TryGetRotationRaw(double& rotation) const;
 
     /** Set the current page rotation.
-     *  \param iRotation Rotation to set to the page. Valid value are 0, 90, 180, 270.
+     * \param rotation The rotation to set to the page. Must be a multiple of 90
+     * \remarks The actual stored rotation will be normalzed to 0, 90, 180 or 270
      */
-    void SetRotationRaw(int rotation);
+    void SetRotation(int rotation);
 
-    /** Move the page at the given index
+    /** Move the page to the given index
      */
-    void MoveAt(unsigned index);
+    bool MoveTo(unsigned index);
 
     template <typename TField>
-    TField& CreateField(const std::string_view& name, const Rect& rect, bool rawRect = false);
+    TField& CreateField(const std::string_view& name, const Rect& rect);
 
-    PdfField& CreateField(const std::string_view& name, PdfFieldType fieldType, const Rect& rect, bool rawRect = false);
+    PdfField& CreateField(const std::string_view& name, PdfFieldType fieldType, const Rect& rect);
 
-    /** Set an ICC profile for this page
-     *
-     *  \param csTag a ColorSpace tag
-     *  \param stream an input stream from which the ICC profiles data can be read
-     *  \param colorComponents the number of colorcomponents of the ICC profile (expected is 1, 3 or 4 components)
-     *  \param alternateColorSpace an alternate colorspace to use if the ICC profile cannot be used
-     *
-     *  \see PdfPainter::SetDependICCProfileColor()
+    /**
+     * Get an iterator for all fields in the page. All widget annotation fields
+     * in the pages will be returned
      */
-    void SetICCProfile(const std::string_view& csTag, InputStream& stream, int64_t colorComponents,
-        PdfColorSpace alternateColorSpace = PdfColorSpace::DeviceRGB);
+    PdfPageFieldIterable GetFieldsIterator();
+    PdfPageConstFieldIterable GetFieldsIterator() const;
 
 public:
     unsigned GetIndex() const { return m_Index; }
     PdfContents& GetOrCreateContents();
-    PdfResources& GetOrCreateResources() override;
     inline const PdfContents* GetContents() const { return m_Contents.get(); }
     inline PdfContents* GetContents() { return m_Contents.get(); }
     const PdfContents& MustGetContents() const;
     PdfContents& MustGetContents();
-    inline const PdfResources* GetResources() const { return m_Resources.get(); }
-    inline PdfResources* GetResources() { return m_Resources.get(); }
-    const PdfResources& MustGetResources() const;
-    PdfResources& MustGetResources();
+    const PdfResources& GetResources() const;
+    PdfResources& GetResources();
     inline PdfAnnotationCollection& GetAnnotations() { return m_Annotations; }
     inline const PdfAnnotationCollection& GetAnnotations() const { return m_Annotations; }
 
@@ -219,42 +307,40 @@ private:
     void FlattenStructure();
     void SetIndex(unsigned index) { m_Index = index; }
 
-    void EnsureResourcesCreated() override;
+    void CopyContentsTo(OutputStream& stream) const override;
 
-    PdfObjectStream& GetStreamForAppending(PdfStreamAppendFlags flags) override;
+    PdfObjectStream& GetOrCreateContentsStream(PdfStreamAppendFlags flags) override;
 
-    PdfField& createField(const std::string_view& name, const std::type_info& typeInfo, const Rect& rect, bool rawRect);
+    PdfObjectStream& ResetContentsStream() override;
+
+    PdfResources& GetOrCreateResources() override;
 
     PdfResources* getResources() override;
 
     PdfObject* getContentsObject() override;
 
-    PdfElement& getElement() override;
+    PdfDictionaryElement& getElement() override;
 
     PdfObject* findInheritableAttribute(const std::string_view& name) const;
 
     PdfObject* findInheritableAttribute(const std::string_view& name, bool& isShallow) const;
 
-    /**
-     * Initialize a new page object.
-     * m_Contents must be initialized before calling this!
-     *
-     * \param size page size
-     */
-    void initNewPage(const Rect& size);
-
     void ensureContentsCreated();
-    void ensureResourcesCreated();
 
     /** Get the bounds of a specified page box in PDF units.
      * This function is internal, since there are wrappers for all standard boxes
      *  \returns Rect the page box
      */
-    Rect getPageBox(const std::string_view& inBox, bool isInheritable, bool raw) const;
+    Rect getPageBox(const std::string_view& inBox, bool isInheritable) const;
 
-    void setPageBox(const std::string_view& inBox, const Rect& rect, bool raw);
+    Corners getPageBoxRaw(const std::string_view& inBox, bool isInheritable) const;
+
+    void setPageBox(const PdfName& inBox, const Rect& rect);
+
+    void adjustRectToCurrentRotation(Rect& rect) const;
 
 private:
+    // Remove some PdfCanvas methods to maintain the class API surface clean
     PdfElement& GetElement() = delete;
     const PdfElement& GetElement() const = delete;
     PdfObject* GetContentsObject() = delete;
@@ -262,6 +348,8 @@ private:
 
 private:
     unsigned m_Index;
+    unsigned m_Rotation;
+    Rect m_Rect;
     std::vector<PdfObject*> m_parents;
     std::unique_ptr<PdfContents> m_Contents;
     std::unique_ptr<PdfResources> m_Resources;
@@ -269,9 +357,53 @@ private:
 };
 
 template<typename TField>
-TField& PdfPage::CreateField(const std::string_view& name, const Rect & rect, bool rawRect)
+TField& PdfPage::CreateField(const std::string_view& name, const Rect & rect)
 {
-    return static_cast<TField&>(createField(name, typeid(TField), rect, rawRect));
+    return static_cast<TField&>(CreateField(name, PdfField::GetFieldType<TField>(), rect));
+}
+
+template<typename TField>
+typename PdfPageFieldIterableBase<TField>::Iterator PdfPageFieldIterableBase<TField>::begin() const
+{
+    if (m_page == nullptr)
+        return Iterator();
+    else
+        return Iterator(m_page->GetAnnotations().begin(), m_page->GetAnnotations().end());
+}
+
+template<typename TField>
+typename PdfPageFieldIterableBase<TField>::Iterator PdfPageFieldIterableBase<TField>::end() const
+{
+    if (m_page == nullptr)
+        return Iterator();
+    else
+        return Iterator(m_page->GetAnnotations().end(), m_page->GetAnnotations().end());
+}
+
+template<typename TField>
+void PdfPageFieldIterableBase<TField>::Iterator::stepIntoPageAnnot()
+{
+    while (true)
+    {
+        if (m_annotsIterator == m_annotsEnd)
+            break;
+
+        auto& annot = **m_annotsIterator;
+        PdfField* field = nullptr;
+        if (annot.GetType() == PdfAnnotationType::Widget &&
+            (field = &static_cast<PdfAnnotationWidget&>(annot).GetField(),
+                m_visitedObjs.find(field->GetObject().GetIndirectReference()) == m_visitedObjs.end()))
+        {
+            m_Field = field;
+            m_visitedObjs.insert(field->GetObject().GetIndirectReference());
+            return;
+        }
+
+        m_annotsIterator++;
+    }
+
+    m_Field = nullptr;
+    m_visitedObjs.clear();
 }
 
 };

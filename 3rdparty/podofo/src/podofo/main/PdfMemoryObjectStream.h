@@ -27,7 +27,7 @@ class PODOFO_API PdfMemoryObjectStream final : public PdfObjectStreamProvider
 {
     friend class PdfObject;
     friend class PdfIndirectObjectList;
-    friend class PdfImmediateWriter;
+    PODOFO_PRIVATE_FRIEND(class PdfImmediateWriter);
 
 private:
     PdfMemoryObjectStream();
@@ -45,7 +45,7 @@ public:
 
     std::unique_ptr<OutputStream> GetOutputStream(PdfObject& obj) override;
 
-    void Write(OutputStream& stream, const PdfStatefulEncrypt& encrypt) override;
+    void Write(OutputStream& stream, const PdfStatefulEncrypt* encrypt) override;
 
     size_t GetLength() const override;
 

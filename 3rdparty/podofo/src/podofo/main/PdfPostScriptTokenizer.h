@@ -13,14 +13,9 @@
 
 namespace PoDoFo {
 
-class PdfDocument;
-class PdfCanvas;
-class PdfObject;
-
-
 /** An enum describing the type of a read token
  */
-enum class PdfPostScriptTokenType
+enum class PdfPostScriptTokenType : uint8_t
 {
     Unknown = 0,
     Keyword, ///< The token is a PDF keyword.
@@ -35,7 +30,10 @@ class PODOFO_API PdfPostScriptTokenizer final : private PdfTokenizer
 {
 public:
     PdfPostScriptTokenizer(PdfPostScriptLanguageLevel level = PdfPostScriptLanguageLevel::L2);
-    PdfPostScriptTokenizer(const std::shared_ptr<charbuff>& buffer,
+    /**
+     * \param buffer a shareable internal/temporary buffer. It's not the buffer where the contents will be read!
+     */
+    PdfPostScriptTokenizer(std::shared_ptr<charbuff> buffer,
         PdfPostScriptLanguageLevel level = PdfPostScriptLanguageLevel::L2);
 public:
     bool TryReadNext(InputStreamDevice& device, PdfPostScriptTokenType& tokenType, std::string_view& keyword, PdfVariant& variant);

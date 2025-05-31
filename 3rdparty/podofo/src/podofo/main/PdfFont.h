@@ -9,8 +9,6 @@
 
 #include "PdfDeclarations.h"
 
-#include <ostream>
-
 #include "PdfTextState.h"
 #include "PdfName.h"
 #include "PdfEncoding.h"
@@ -19,20 +17,15 @@
 
 namespace PoDoFo {
 
-class PdfObject;
-class PdfPage;
-class PdfWriter;
 class PdfCharCodeMap;
 
-using UsedGIDsMap = std::map<unsigned, PdfCID>;
-
-struct PdfFontCreateParams
+struct PODOFO_API PdfFontCreateParams final
 {
     PdfEncoding Encoding;
     PdfFontCreateFlags Flags = PdfFontCreateFlags::None;
 };
 
-struct PdfSplittedString
+struct PODOFO_API PdfSplittedString final
 {
     PdfString String;
     bool IsSeparator = false;
@@ -42,21 +35,22 @@ struct PdfSplittedString
  *  a font object first. You can reuse this font object as often
  *  as you want.
  *
- *  Use PdfDocument::CreateFont to create a new font object.
- *  It will choose a correct subclass using PdfFontFactory.
+ *  Use methods in PdfFontManager, which you can access with
+ *  PdfDocument::GetFonts(), to retrieve a font object.
  *
  *  This is only an abstract base class which is implemented
  *  for different font formats.
  */
 class PODOFO_API PdfFont : public PdfDictionaryElement
 {
+    friend class PdfFontSimple;
+    friend class PdfFontCID;
     friend class PdfFontFactory;
     friend class PdfFontObject;
     friend class PdfEncoding;
     friend class PdfFontManager;
-    friend class PdfFontSimple;
 
-protected:
+private:
     /** Create a new PdfFont object which will introduce itself
      *  automatically to every page object it is used on.
      *
@@ -66,14 +60,13 @@ protected:
      *         deleted along with the font.
      *  \param encoding the encoding of this font
      */
-    PdfFont(PdfDocument& doc, const PdfFontMetricsConstPtr& metrics,
+    PdfFont(PdfDocument& doc, PdfFontType type, PdfFontMetricsConstPtr&& metrics,
         const PdfEncoding& encoding);
 
-private:
     /** Create a PdfFont based on an existing PdfObject
      * To be used only by PdfFontObject!
      */
-    PdfFont(PdfObject& obj, const PdfFontMetricsConstPtr& metrics,
+    PdfFont(PdfObject& obj, PdfFontType type, PdfFontMetricsConstPtr&& metrics,
         const PdfEncoding& encoding);
 
 public:
@@ -87,6 +80,7 @@ public:
      *  \param font the created font object
      */
     static bool TryCreateFromObject(PdfObject& obj, std::unique_ptr<PdfFont>& font);
+    static bool TryCreateFromObject(const PdfObject& obj, std::unique_ptr<const PdfFont>& font);
 
 private:
     /** Create a new PdfFont object
@@ -98,11 +92,12 @@ private:
      *      here.
      * \param encoding the encoding of this font.
      * \param flags flags for font init
+     * \param isProxy true if the font will substitute another font
      * \remarks to be called by PdfFontManager
      * \returns a new PdfFont object or nullptr
      */
-    static std::unique_ptr<PdfFont> Create(PdfDocument& doc, const PdfFontMetricsConstPtr& metrics,
-        const PdfFontCreateParams& createParams);
+    static std::unique_ptr<PdfFont> Create(PdfDocument& doc, PdfFontMetricsConstPtr&& metrics,
+        const PdfFontCreateParams& createParams, bool isProxy = false);
 
     /**
      * Creates a new standard 14 font object (of class PdfFontStandard14) if
@@ -120,11 +115,12 @@ private:
         const PdfFontCreateParams& createParams);
 
 public:
-    /** Try get a replacement font based on this font characteristics
-     *  \param substFont the created substitute font
+    /** Try create a replacement font that can be used for rendering or font
+     * program embedding based on this font characteristics
+     * \param proxyFont the created substitute font
      */
-    bool TryGetSubstituteFont(PdfFont*& substFont) const;
-    bool TryGetSubstituteFont(PdfFontCreateFlags initFlags, PdfFont*& substFont) const;
+    bool TryCreateProxyFont(PdfFont*& proxyFont) const;
+    bool TryCreateProxyFont(PdfFontCreateFlags initFlags, PdfFont*& proxyFont) const;
 
     /** Write a string to a PdfObjectStream in a format so that it can
      *  be used with this font.
@@ -182,12 +178,23 @@ public:
         std::vector<double>& lengths, std::vector<unsigned>& positions) const;
 
     /**
-     *  \returns The spacing width
+     * \returns The word spacing length
+     * \remarks This differs from GetSpaceCharLength() as this will
+     * be used to determine words splitting, while space char length
+     * will be used to visually represent a space
      */
     double GetWordSpacingLength(const PdfTextState& state) const;
 
     /**
-     *  \remarks Doesn't throw if characater glyph could not be found
+     * \returns The space char length
+     * \remarks This differs from GetWordSpacingLength() as this will
+     * be used to visually represent a space, while word spacing length
+     * will be used to determine words splitting
+     */
+    double GetSpaceCharLength(const PdfTextState& state) const;
+
+    /**
+     *  \remarks Doesn't throw if character glyph could not be found
      */
     double GetCharLength(char32_t codePoint, const PdfTextState& state, bool ignoreCharSpacing = false) const;
 
@@ -204,10 +211,19 @@ public:
     //std::vector<PdfSplittedString> SplitEncodedString(const PdfString& str) const;
 
     /** Add used GIDs to this font for subsetting from an encoded string
-     *
      * If the subsetting is not enabled it's a no-op
+     * \remarks Can't be called on non proxy fonts
      */
-    void AddSubsetGIDs(const PdfString& encodedStr);
+    void AddSubsetCIDs(const PdfString& encodedStr);
+
+    /** True if the font has defines a custom subset and needs CID /Encoding writing
+     */
+    bool HasCIDSubset() const;
+
+    /**
+     * Get the final unscaled width of a CID identifier from the provided /Widths, /W arrays
+     */
+    double GetCIDWidth(unsigned cid) const;
 
     /** Retrieve the line spacing for this font
      *  \returns the linespacing in PDF units
@@ -259,8 +275,6 @@ public:
 
     virtual bool SupportsSubsetting() const;
 
-    virtual PdfFontType GetType() const = 0;
-
     bool IsStandard14Font() const;
 
     bool IsStandard14Font(PdfStandard14FontType& std14Font) const;
@@ -280,14 +294,16 @@ public:
     static bool IsStandard14Font(const std::string_view& fontName, bool useAltNames, PdfStandard14FontType& stdFont);
 
 public:
-    /** True if the font is CID keyed
+    /** True if the font is a composite CIDFont
      */
-    bool IsCIDKeyed() const;
+    bool IsCIDFont() const;
 
     /**
      * True if the font is loaded from a PdfObject
      */
     virtual bool IsObjectLoaded() const;
+
+    PdfFontType GetType() const { return m_Type; }
 
     /** Check if this is a subsetting font.
      * \returns true if this is a subsetting font
@@ -300,13 +316,7 @@ public:
      * \returns empty string or a 6 uppercase letter and "+" sign prefix
      *          used for font subsets
      */
-    inline const std::string& GetSubsetPrefix() const { return m_SubsetPrefix; }
-
-    /** Returns the identifier of this font how it is known
-     *  in the pages resource dictionary.
-     *  \returns PdfName containing the identifier (e.g. /Ft13)
-     */
-    inline const PdfName& GetIdentifier() const { return m_Identifier; }
+    inline std::string_view GetSubsetPrefix() const;
 
     /** Returns a reference to the fonts encoding
      *  \returns a PdfEncoding object.
@@ -327,34 +337,48 @@ public:
      */
     inline const std::string& GetName() const { return m_Name; }
 
-    const UsedGIDsMap& GetUsedGIDs() const { return m_SubsetGIDs; }
+    /** True if the font is substitute for embedding
+     */
+    inline bool IsProxy() const { return m_IsProxy; }
 
     PdfObject& GetDescendantFontObject();
 
 protected:
-    void EmbedFontFile(PdfObject& descriptor);
-    void EmbedFontFileType1(PdfObject& descriptor, const bufferview& data,
-        unsigned length1, unsigned length2, unsigned length3);
-    void EmbedFontFileType1CCF(PdfObject& descriptor, const bufferview& data);
-    void EmbedFontFileTrueType(PdfObject& descriptor, const bufferview& data);
-    void EmbedFontFileOpenType(PdfObject& descriptor, const bufferview& data);
+    void EmbedFontFile(PdfDictionary& descriptor) const;
+    void EmbedFontFileType1(PdfDictionary& descriptor, const bufferview& data,
+        unsigned length1, unsigned length2, unsigned length3) const;
+    void EmbedFontFileCFF(PdfDictionary& descriptor, const bufferview& data, bool cidKeyed) const;
+    void EmbedFontFileTrueType(PdfDictionary& descriptor, const bufferview& data) const;
+    void EmbedFontFileOpenType(PdfDictionary& descriptor, const bufferview& data) const;
 
-    virtual bool tryMapCIDToGID(unsigned cid, unsigned& gid) const;
-
-    /**
-     * Get the raw width of a CID identifier
+    /** Try to map the CID to a glyph ID using the /FirstChar, /LastChar limits
      */
-    double GetCIDLengthRaw(unsigned cid) const;
+    bool tryMapCIDToGIDLoadedMetrics(unsigned cid, unsigned& gid) const;
+
+    /** Map the CID to a glyph ID in the font metrics using an Unicode map
+     */
+    bool tryMapCIDToGIDNormal(unsigned cid, unsigned& gid) const;
 
     void GetBoundingBox(PdfArray& arr) const;
 
     /** Fill the /FontDescriptor object dictionary
      */
-    void FillDescriptor(PdfDictionary& dict) const;
+    void WriteDescriptors(PdfDictionary& fontDict, PdfDictionary& descriptorDict) const;
+
+    /** Try getting a map that can be used to produce a replacement CID /Encoding object
+     * \remarks needed when exporting substitute fonts
+     */
+    bool TryGetSubstituteCIDEncoding(std::unique_ptr<PdfEncodingMap>& cidEncodingMap) const;
+
+    PdfCIDSystemInfo GetCIDSystemInfo() const;
+
+    /** Get an ordered list of CID/GID info entries
+     */
+    std::vector<PdfCharGIDInfo> GetCharGIDInfos() const;
 
     virtual PdfObject* getDescendantFontObject();
 
-    /** Inititialization tasks for imported/created from scratch fonts
+    /** Initialization tasks for imported/created from scratch fonts
      */
     virtual void initImported();
 
@@ -371,20 +395,22 @@ private:
     void EmbedFont();
 
     /**
-     * Perform inititialization tasks for fonts imported or created
+     * Perform initialization tasks for fonts imported or created
      * from scratch
      */
-    void InitImported(bool wantEmbed, bool wantSubset);
+    void InitImported(bool wantEmbed, bool wantSubset, bool isProxy);
 
     /** Add glyph to used in case of subsetting
      *  It either maps them using the font encoding or generate a new code
-     *
+     * 
+     * \remarks Can't be called on proxy fonts
      * \param gid the gid to add
      * \param codePoints code points mapped by this gid. May be a single
      *      code point or a ligature
-     * \return A mapped CID. Return existing CID if already present
+     * \param The mapped CID. Return an existing CID if already present
+     * \returns true if the font provides the mapping for the codepoints
      */
-    PdfCID AddSubsetGIDSafe(unsigned gid, const unicodeview& codePoints);
+    bool TryAddSubsetGID(unsigned gid, const unicodeview& codePoints, PdfCID& cid);
 
     /** Add dynamic charcode from code points.
      *
@@ -396,9 +422,18 @@ private:
      *
      * Example for /Type2 CID fonts may have a /CIDToGIDMap
      */
+    bool TryMapCIDToGID(unsigned cid, PdfGID& gid) const;
     bool TryMapCIDToGID(unsigned cid, PdfGlyphAccess access, unsigned& gid) const;
 
 private:
+    struct CIDSubsetInfo
+    {
+        PdfGID Gid;                     ///< The GID mapped from the source CID in the map
+        PdfCharCodeList Codes;          ///< The codes that maps to the CID in the map
+    };
+
+    using CIDSubsetMap = std::map<unsigned, CIDSubsetInfo>;
+
     bool tryConvertToGIDs(const std::string_view& utf8Str, PdfGlyphAccess access, std::vector<unsigned>& gids) const;
     bool tryAddSubsetGID(unsigned gid, const unicodeview& codePoints, PdfCID& cid);
 
@@ -406,29 +441,35 @@ private:
 
     double getStringLength(const std::vector<PdfCID>& cids, const PdfTextState& state) const;
 
-    PdfObject& embedFontFileData(PdfObject& descriptor, const PdfName& fontFileName, const bufferview& data);
+    void embedFontFileData(PdfDictionary& descriptor, const PdfName& fontFileName,
+        const std::function<void(PdfDictionary& dict)>& dictWriter, const bufferview& data) const;
 
-    static std::unique_ptr<PdfFont> createFontForType(PdfDocument& doc, const PdfFontMetricsConstPtr& metrics,
-        const PdfEncoding& encoding, PdfFontFileType type, bool preferNonCID);
+    static std::unique_ptr<PdfFont> createFontForType(PdfDocument& doc, PdfFontMetricsConstPtr&& metrics,
+        const PdfEncoding& encoding, bool preferNonCID);
 
-    void initWordSpacingLength();
+    void initSpaceDescriptors();
+
+    void pushSubsetInfo(unsigned cid, const PdfGID& gid, const PdfCharCode& code);
 
 private:
     std::string m_Name;
     std::string m_SubsetPrefix;
+    PdfFontType m_Type;
     bool m_EmbeddingEnabled;
     bool m_IsEmbedded;
     bool m_SubsettingEnabled;
-    UsedGIDsMap m_SubsetGIDs;
-    PdfCIDToGIDMapConstPtr m_cidToGidMap;
+    bool m_IsProxy;
+    std::unique_ptr<CIDSubsetMap> m_subsetCIDMap;
+    std::unique_ptr<std::unordered_map<unsigned, unsigned>> m_subsetGIDToCIDMap;
+    const PdfCIDToGIDMap* m_fontProgCIDToGIDMap;
     double m_WordSpacingLengthRaw;
+    double m_SpaceCharLengthRaw;
 
 protected:
     PdfFontMetricsConstPtr m_Metrics;
     std::unique_ptr<PdfEncoding> m_Encoding;
     std::shared_ptr<PdfCharCodeMap> m_DynamicCIDMap;
     std::shared_ptr<PdfCharCodeMap> m_DynamicToUnicodeMap;
-    PdfName m_Identifier;
 };
 
 };

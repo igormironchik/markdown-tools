@@ -10,12 +10,8 @@
 #include <cstdio>
 #include <string>
 #include <iostream>
-#include <openssl/bio.h>
-#include <openssl/evp.h>
-#include <openssl/err.h>
-#include <openssl/pem.h>
-#include <openssl/ssl.h>
-#include <openssl/x509.h>
+
+#include <podofo/private/OpenSSLInternal.h>
 
 #if defined(_WIN64)
 #define fseeko _fseeki64
@@ -241,7 +237,7 @@ static void print_help(bool bOnlyUsage)
     cout << "       text ... the actual UTF-8 encoded string to add to the annotation" << endl;
     cout << "  -annot-image [left,top,width,height,filename] ... an image to add to the annotation" << endl;
     cout << "       left,top,width,height ... a rectangle (in annot-units) where to place the image (double), relative to annot-position" << endl;
-    cout << "       filename ... a filname of the image to add" << endl;
+    cout << "       filename ... a filename of the image to add" << endl;
     cout << "The annotation arguments can be repeated, except of the -annot-position and -annot-print, which can appear up to once." << endl;
     cout << "The -annot-print, -annot-font, -annot-text and -annot-image can appear only after -annot-position." << endl;
     cout << "All the left,top positions are treated with 0,0 being at the left-top of the page." << endl;
@@ -389,7 +385,7 @@ static void draw_annotation(PdfDocument& document,
                 }
 
                 painter.TextState.SetFont(*font, font_size);
-                painter.GraphicsState.SetStrokeColor(font_color);
+                painter.GraphicsState.SetStrokingColor(font_color);
             }
 
             left = convert_to_pdf_units(annot_units, left);
@@ -440,7 +436,7 @@ static void draw_annotation(PdfDocument& document,
 
 static PdfObject* find_existing_signature_field(PdfAcroForm& acroForm, const PdfString& name)
 {
-    PdfObject* fields = acroForm.GetObject().GetDictionary().GetKey("Fields");
+    PdfObject* fields = acroForm.GetDictionary().GetKey("Fields");
     if (fields)
     {
         if (fields->GetDataType() == PdfDataType::Reference)
@@ -475,7 +471,7 @@ static PdfObject* find_existing_signature_field(PdfAcroForm& acroForm, const Pdf
 
                         if (!ft)
                         {
-                            PODOFO_RAISE_ERROR(PdfErrorCode::NoObject);
+                            PODOFO_RAISE_ERROR(PdfErrorCode::InvalidObject);
                         }
 
                         const PdfName fieldType = ft->GetName();
@@ -827,18 +823,18 @@ void Main(const cspan<string_view>& args)
     document.Load(inputfile);
 
     if (!document.GetPages().GetCount())
-        PODOFO_RAISE_ERROR_INFO(PdfErrorCode::PageNotFound, "The document has no page. Only documents with at least one page can be signed");
+        PODOFO_RAISE_ERROR_INFO(PdfErrorCode::ValueOutOfRange, "The document has no page. Only documents with at least one page can be signed");
 
     auto& acroForm = document.GetOrCreateAcroForm();
-    if (!acroForm.GetObject().GetDictionary().HasKey("SigFlags") ||
-        !acroForm.GetObject().GetDictionary().MustGetKey("SigFlags").IsNumber() ||
-        acroForm.GetObject().GetDictionary().FindKeyAsSafe<int64_t>("SigFlags") != 3)
+    if (!acroForm.GetDictionary().HasKey("SigFlags") ||
+        !acroForm.GetDictionary().MustGetKey("SigFlags").IsNumber() ||
+        acroForm.GetDictionary().FindKeyAsSafe<int64_t>("SigFlags") != 3)
     {
-        if (acroForm.GetObject().GetDictionary().HasKey("SigFlags"))
-            acroForm.GetObject().GetDictionary().RemoveKey("SigFlags");
+        if (acroForm.GetDictionary().HasKey("SigFlags"))
+            acroForm.GetDictionary().RemoveKey("SigFlags");
 
         int64_t val = 3;
-        acroForm.GetObject().GetDictionary().AddKey("SigFlags", val);
+        acroForm.GetDictionary().AddKey("SigFlags", val);
     }
 
     if (acroForm.GetNeedAppearances())
@@ -883,7 +879,7 @@ void Main(const cspan<string_view>& args)
             err += name.GetString();
             err += "' doesn't have a page reference";
 
-            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::PageNotFound, err.c_str());
+            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::ValueOutOfRange, err.c_str());
         }
 
         auto& page = document.GetPages().GetPage(existingSigField->GetDictionary().GetKey("P")->GetReference());
@@ -924,7 +920,7 @@ void Main(const cspan<string_view>& args)
 
                 draw_annotation(document, painter, args, annot_rect);
 
-                signature->SetAppearanceStream(*sigXObject);
+                signature->MustGetWidget().SetAppearanceStream(*sigXObject);
             }
             catch (...)
             {
@@ -950,7 +946,7 @@ void Main(const cspan<string_view>& args)
         X509_free(cert);
 }
 
-// TODO: Optmize so the process is buffered
+// TODO: Optimize so the process is buffered
 void MySigner::ComputeSignature(charbuff& buffer, bool dryrun)
 {
     (void)dryrun;

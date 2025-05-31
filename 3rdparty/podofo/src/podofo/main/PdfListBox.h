@@ -13,14 +13,14 @@ namespace PoDoFo
 {
     /** A list box
      */
-    class PODOFO_API PdfListBox : public PdChoiceField
+    class PODOFO_API PdfListBox final : public PdChoiceField
     {
         friend class PdfField;
 
     private:
-        PdfListBox(PdfAcroForm& acroform, const std::shared_ptr<PdfField>& parent);
+        PdfListBox(PdfAcroForm& acroform, std::shared_ptr<PdfField>&& parent);
 
-        PdfListBox(PdfAnnotationWidget& widget, const std::shared_ptr<PdfField>& parent);
+        PdfListBox(PdfAnnotationWidget& widget, std::shared_ptr<PdfField>&& parent);
 
         PdfListBox(PdfObject& obj, PdfAcroForm* acroform);
 

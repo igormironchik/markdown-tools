@@ -7,14 +7,14 @@
 #ifndef AUX_RECT_H
 #define AUX_RECT_H
 
-#include "basedefs.h"
+#include "Corners.h"
 
 namespace PoDoFo {
 
 class PdfArray;
 class Matrix;
 
-/** A rectangle defined by position and size
+/** An normalized rectangle defined by position (left-bottom) and size
  */
 class PODOFO_API Rect final
 {
@@ -29,7 +29,7 @@ public:
      */
     Rect();
 
-    /** Create a rectangle with a given size and position
+    /** Create a rectangle with a given position and size
      */
     Rect(double x, double y, double width, double height);
 
@@ -42,6 +42,9 @@ public:
      * \returns the created Rect
      */
     static Rect FromCorners(double x1, double y1, double x2, double y2);
+    static Rect FromCorners(const Vector2& corner1, const Vector2& corner2);
+
+    static Rect FromCorners(const Corners& corners);
 
     /** Create a Rect from a the 4 values in the array
      *  \param arr the array to load the values from
@@ -52,6 +55,8 @@ public:
      *  \param var the array to store the Rect
      */
     void ToArray(PdfArray& arr) const;
+
+    PdfArray ToArray() const;
 
     /** Returns a string representation of the Rect
      * \returns std::string representation as [ left bottom right top ]
@@ -66,7 +71,19 @@ public:
      */
     void Intersect(const Rect& rect);
 
+    bool IsValid() const;
+
+    Corners ToCorners() const;
+
 public:
+    /** Get the oriented left-bottom point
+     */
+    Vector2 GetLeftBottom() const;
+
+    /** Get the oriented left-bottom point
+     */
+    Vector2 GetRightTop() const;
+
     /** Get the left coordinate of the rectangle
      */
     double GetLeft() const { return X; }
@@ -86,10 +103,9 @@ public:
 public:
     bool operator==(const Rect& rect) const;
     bool operator!=(const Rect& rect) const;
-
-public:
     Rect operator*(const Matrix& m) const;
     Rect& operator=(const Rect& rhs) = default;
+    operator Corners() const;
 };
 
 };

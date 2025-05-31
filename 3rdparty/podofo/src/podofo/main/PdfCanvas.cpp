@@ -11,6 +11,7 @@
 #include "PdfDictionary.h"
 #include "PdfName.h"
 #include "PdfObjectStream.h"
+#include <podofo/auxiliary/StreamDevice.h>
 
 using namespace std;
 using namespace PoDoFo;
@@ -27,14 +28,18 @@ PdfObject* PdfCanvas::GetContentsObject()
     return getContentsObject();
 }
 
-PdfObject* PdfCanvas::GetFromResources(const string_view& type, const string_view& key)
+charbuff PdfCanvas::GetContentsCopy() const
 {
-    return getFromResources(type, key);
+    charbuff ret;
+    CopyContentsTo(ret);
+    return ret;
 }
 
-const PdfObject* PdfCanvas::GetFromResources(const string_view& type, const string_view& key) const
+void PdfCanvas::CopyContentsTo(charbuff& buffer) const
 {
-    return const_cast<PdfCanvas&>(*this).getFromResources(type, key);
+    buffer.clear();
+    BufferStreamDevice stream(buffer);
+    CopyContentsTo(stream);
 }
 
 PdfResources* PdfCanvas::GetResources()
@@ -47,22 +52,17 @@ const PdfResources* PdfCanvas::GetResources() const
     return const_cast<PdfCanvas&>(*this).getResources();
 }
 
-PdfElement& PdfCanvas::GetElement()
+PdfDictionaryElement& PdfCanvas::GetElement()
 {
     return getElement();
 }
 
-const PdfElement& PdfCanvas::GetElement() const
+const PdfDictionaryElement& PdfCanvas::GetElement() const
 {
     return const_cast<PdfCanvas&>(*this).getElement();
 }
 
-PdfObject* PdfCanvas::getFromResources(const string_view& type, const string_view& key)
+void PdfCanvas::EnsureResourcesCreated()
 {
-    auto resources = getResources();
-    if (resources == nullptr)
-        return nullptr;
-
-    return resources->GetResource(type, key);
-
+    (void)GetOrCreateResources();
 }

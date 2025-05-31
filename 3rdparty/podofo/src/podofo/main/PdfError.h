@@ -7,10 +7,7 @@
 #ifndef PDF_ERROR_H
 #define PDF_ERROR_H
 
-// NOTE: PdfError.h should not include PdfDeclarations.h, since it is included by it.
-// It should avoid depending on anything defined in PdfDeclarations.h .
-#include <podofo/auxiliary/basedefs.h>
-#include <podofo/auxiliary/baseincludes.h>
+#include <podofo/main/PdfDeclarations.h>
 
 /** \file PdfError.h
  *  Error information and logging is implemented in this file.
@@ -25,85 +22,59 @@ namespace PoDoFo {
  *
  *  \see PdfError
  */
-enum class PdfErrorCode
+enum class PdfErrorCode : uint8_t
 {
     Unknown = 0,              ///< Unknown error
-    InvalidHandle,            ///< Null pointer was passed, but null pointer is not allowed.
+    InvalidHandle,            ///< Unexpected null pointer or invalid state
     FileNotFound,             ///< A file was not found or cannot be opened.
-    InvalidDeviceOperation,	  ///< Tried to do something unsupported to an I/O device like seek a non-seekable input device
+    IOError,	              ///< Tried to do something unsupported to an I/O device like seek a non-seekable input device
     UnexpectedEOF,            ///< End of file was reached but data was expected.
     OutOfMemory,              ///< Not enough memory to complete an operation.
     ValueOutOfRange,          ///< The specified memory is out of the allowed range.
     InternalLogic,            ///< An internal sanity check or assertion failed.
     InvalidEnumValue,         ///< An invalid enum value was specified.
+    MaxRecursionReached,      ///< Reached maximum recursion depth
+    ObjectNotFound,           ///< An object was requested but was not found
     BrokenFile,               ///< The file content is broken.
 
-    PageNotFound,             ///< The requested page could not be found in the PDF.
-
-    NoPdfFile,                ///< The file is no PDF file.
-    NoXRef,                   ///< The PDF file has no or an invalid XRef table.
-    NoTrailer,                ///< The PDF file has no or an invalid trailer.
-    NoNumber,                 ///< A number was expected in the PDF file, but the read string is no number.
-    NoObject,                 ///< A object was expected and none was found.
-    NoEOFToken,               ///< The PDF file has no or an invalid EOF marker.
-
-    InvalidTrailerSize,       ///< The trailer size is invalid.
+    InvalidPDF,               ///< The file is no PDF file.
+    InvalidTrailer,           ///< The PDF file has no or an invalid trailer.
+    InvalidNumber,            ///< A number was expected in the PDF file, but the read string is no number.
+    InvalidEncoding,          ///< Invalid encoding information
+    InvalidObject,            ///< Invalid object or none none was found.
+    InvalidEOFToken,          ///< The PDF file has no or an invalid EOF marker.
     InvalidDataType,          ///< The passed datatype is invalid or was not recognized
     InvalidXRef,              ///< The XRef table is invalid
-    InvalidXRefStream,        ///< A XRef steam is invalid
-    InvalidXRefType,          ///< The XRef type is invalid or was not found
+    InvalidXRefStream,        ///< A XRef stream is invalid
     InvalidPredictor,         ///< Invalid or unimplemented predictor
     InvalidStrokeStyle,       ///< Invalid stroke style during drawing
-    InvalidHexString,         ///< Invalid hex string
     InvalidStream,            ///< The stream is invalid
-    InvalidStreamLength,      ///< The stream length is invalid
     InvalidKey,               ///< The specified key is invalid
     InvalidName,              ///< The specified Name is not valid in this context
     InvalidEncryptionDict,    ///< The encryption dictionary is invalid or misses a required key
     InvalidPassword,          ///< The password used to open the PDF file was invalid
     InvalidFontData,          ///< The font file is invalid
     InvalidContentStream,     ///< The content stream is invalid due to mismatched context pairing or other problems
+    InvalidInput,             ///< Invalid input
 
     UnsupportedFilter,        ///< The requested filter is not yet implemented.
     UnsupportedFontFormat,    ///< This font format is not supported by PoDoFo.
-    ActionAlreadyPresent,     ///< An Action was already present when trying to add a Destination
     WrongDestinationType,     ///< The requested field is not available for the given destination type
 
-    MissingEndStream,         ///< The required token endstream was not found.
-    Date,                     ///< Date/time error
-    Flate,                    ///< Error in zlib
-    FreeType,                 ///< Error in FreeType
-    SignatureError,           ///< Error in signature
+    FlateError,               ///< Error in zlib
+    FreeTypeError,            ///< Error in FreeType
 
+    UnsupportedPixelFormat,   ///< This pixel format is not supported by PoDoFo.
     UnsupportedImageFormat,   ///< This image format is not supported by PoDoFo.
     CannotConvertColor,       ///< This color format cannot be converted.
 
     NotImplemented,           ///< This feature is currently not implemented.
 
-    DestinationAlreadyPresent,///< A destination was already present when trying to add an Action
+    ItemAlreadyPresent,       ///< An item to be inserted is already in this container
     ChangeOnImmutable,        ///< Changing values on immutable objects is not allowed.
 
-    NotCompiled,              ///< This feature was disabled at compile time.
-
-    OutlineItemAlreadyPresent,///< An outline item to be inserted was already in that outlines tree.
-    NotLoadedForUpdate,       ///< The document had not been loaded for update.
-    CannotEncryptedForUpdate, ///< Cannot load encrypted documents for update.
-
-    XmpMetadata,              ///< Error while creating or reading XMP metadata
-};
-
-/**
- * Used in PoDoFo::LogMessage to specify the log level.
- *
- * \see PoDoFo::LogMessage
- */
-enum class PdfLogSeverity
-{
-    None = 0,            ///< Logging disabled
-    Error,               ///< Error
-    Warning,             ///< Warning
-    Information,         ///< Information message
-    Debug,               ///< Debug information
+    XmpMetadataError,         ///< Error while creating or reading XMP metadata
+    OpenSSLError,             ///< OpenSSL error
 };
 
 class PODOFO_API PdfErrorInfo final
@@ -129,7 +100,6 @@ private:
 };
 
 using PdErrorInfoStack = std::deque<PdfErrorInfo>;
-using LogMessageCallback = std::function<void(PdfLogSeverity logSeverity, const std::string_view& msg)>;
 
 // This is required to generate the documentation with Doxygen.
 // Without this define doxygen thinks we have a class called PODOFO_EXCEPTION_API(PODOFO_API) ...
@@ -147,6 +117,8 @@ using LogMessageCallback = std::function<void(PdfLogSeverity logSeverity, const 
  */
 class PODOFO_EXCEPTION_API_DOXYGEN PdfError final : public std::exception
 {
+    PODOFO_PRIVATE_FRIEND(void AddToCallStack(PdfError& err, std::string filepath, unsigned line, std::string information));
+
 public:
     /** Create a PdfError object with a given error code.
      *  \param code the error code of this object
@@ -169,12 +141,6 @@ public:
      *  \returns this object
      */
     PdfError& operator=(const PdfError& rhs) = default;
-
-    /** Overloaded assignment operator
-     *  \param code a PdfErrorCode code
-     *  \returns this object
-     */
-    PdfError& operator=(const PdfErrorCode& code);
 
     /** Compares this PdfError object
      *  with an error code
@@ -202,21 +168,6 @@ public:
      */
     inline const PdErrorInfoStack& GetCallStack() const { return m_CallStack; }
 
-    /** Add callstack information to an error object. Always call this function
-     *  if you get an error object but do not handle the error but throw it again.
-     *
-     *  \param filepath the filename of the source file causing
-     *                 the error or nullptr. Typically you will use
-     *                 the gcc macro __FILE__ here.
-     *  \param line    the line of source causing the error
-     *                 or 0. Typically you will use the gcc
-     *                 macro __LINE__ here.
-     *  \param information additional information on the error,
-     *         e.g. how to fix the error. This string is intended to
-     *         be shown to the user.
-     */
-    void AddToCallStack(std::string filepath, unsigned line, std::string information = { });
-
     /** Print an error message to stderr. This includes callstack
      *  and extra info, if any of either was set.
      */
@@ -242,6 +193,21 @@ public:
     static std::string_view ErrorMessage(PdfErrorCode code);
 
 private:
+    /** Add callstack information to an error object. Always call this function
+     *  if you get an error object but do not handle the error but throw it again.
+     *
+     *  \param filepath the filename of the source file causing
+     *                 the error or nullptr. Typically you will use
+     *                 the gcc macro __FILE__ here.
+     *  \param line    the line of source causing the error
+     *                 or 0. Typically you will use the gcc
+     *                 macro __LINE__ here.
+     *  \param information additional information on the error,
+     *         e.g. how to fix the error. This string is intended to
+     *         be shown to the user.
+     */
+    void AddToCallStack(std::string&& filepath, unsigned line, std::string&& information);
+
     void initFullDescription();
 
 private:

@@ -46,10 +46,13 @@ endif()
 set( LIB_SYNTAX_SRC syntax.cpp
 	syntax.hpp )
 
+message(${CMAKE_CURRENT_BINARY_DIR})
+
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/podofo/src
     ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/MicroTeX/src
 	${CMAKE_CURRENT_BINARY_DIR}/../../3rdparty/podofo/src/podofo
+    ${CMAKE_CURRENT_BINARY_DIR}/../../3rdparty/podofo/src/podofo/podofo/auxiliary
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/../shared )
 

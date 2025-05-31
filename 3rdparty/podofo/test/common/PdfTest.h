@@ -13,7 +13,6 @@
 
 #include <PdfTestConfig.h>
 
-#define PODOFO_UNIT_TEST(classname) friend class classname
 #include <podofo/private/PdfDeclarationsPrivate.h>
 #include <podofo/podofo.h>
 
@@ -115,6 +114,10 @@ namespace PoDoFo
             PdfPixelFormat srcPixelFormat, unsigned width, unsigned height);
         static void SaveFramePPM(OutputStream& stream, const void* data,
             PdfPixelFormat srcPixelFormat, unsigned width, unsigned height);
+
+        static bool IsBufferEqual(const bufferview& buffer, const std::string_view& filename);
+
+        static bool AreFilesEqual(const std::string_view& filename1, const std::string_view& filename2);
     };
 
     template<typename ...Ts>

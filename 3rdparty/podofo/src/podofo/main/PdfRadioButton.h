@@ -14,14 +14,14 @@ namespace PoDoFo
     /** A radio button
      * TODO: This is just a stub
      */
-    class PODOFO_API PdfRadioButton : public PdfToggleButton
+    class PODOFO_API PdfRadioButton final : public PdfToggleButton
     {
         friend class PdfField;
 
     private:
-        PdfRadioButton(PdfAcroForm& acroform, const std::shared_ptr<PdfField>& parent);
+        PdfRadioButton(PdfAcroForm& acroform, std::shared_ptr<PdfField>&& parent);
 
-        PdfRadioButton(PdfAnnotationWidget& widget, const std::shared_ptr<PdfField>& parent);
+        PdfRadioButton(PdfAnnotationWidget& widget, std::shared_ptr<PdfField>&& parent);
 
         PdfRadioButton(PdfObject& obj, PdfAcroForm* acroform);
 

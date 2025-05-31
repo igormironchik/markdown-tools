@@ -19,8 +19,10 @@ using namespace PoDoFo;
 //                            | e f 1 |
 //
 
+Matrix Matrix::Identity;
+
 Matrix::Matrix()
-    : Matrix(1, 0, 0, 1, 0, 0) { }
+    : m_mat{ 1, 0, 0, 1, 0, 0 } { }
 
 Matrix Matrix::FromArray(const double arr[6])
 {
@@ -30,11 +32,6 @@ Matrix Matrix::FromArray(const double arr[6])
 Matrix Matrix::FromArray(const PdfArray& arr)
 {
     return Matrix(arr[0].GetReal(), arr[1].GetReal(), arr[2].GetReal(), arr[3].GetReal(), arr[4].GetReal(), arr[5].GetReal());
-}
-
-Matrix Matrix::FromCoefficients(double a, double b, double c, double d, double e, double f)
-{
-    return Matrix(a, b, c, d, e, f);
 }
 
 Matrix Matrix::CreateTranslation(const Vector2& tx)
@@ -139,6 +136,18 @@ void Matrix::ToArray(PdfArray& arr) const
     arr.Add(m_mat[3]);
     arr.Add(m_mat[4]);
     arr.Add(m_mat[5]);
+}
+
+PdfArray Matrix::ToArray() const
+{
+    PdfArray arr;
+    arr.Add(m_mat[0]);
+    arr.Add(m_mat[1]);
+    arr.Add(m_mat[2]);
+    arr.Add(m_mat[3]);
+    arr.Add(m_mat[4]);
+    arr.Add(m_mat[5]);
+    return arr;
 }
 
 bool Matrix::operator==(const Matrix& m) const

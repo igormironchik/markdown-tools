@@ -14,28 +14,6 @@ namespace PoDoFo {
 
 class PdfDictionary;
 
-// Compartor to enable heterogeneous lookup in
-// PdfDictionary with both PdfName and string_view
-// See https://stackoverflow.com/a/31924435/213871
-struct PdfDictionaryComparator final
-{
-    using is_transparent = std::true_type;
-    bool operator()(const PdfName& lhs, const PdfName& rhs) const
-    {
-        return lhs < rhs;
-    }
-    bool operator()(const PdfName& lhs, const std::string_view& rhs) const
-    {
-        return lhs.GetRawData() < rhs;
-    }
-    bool operator()(const std::string_view& lhs, const PdfName& rhs) const
-    {
-        return lhs < rhs.GetRawData();
-    }
-};
-
-using PdfDictionaryMap = std::map<PdfName, PdfObject, PdfDictionaryComparator>;
-
 /**
  * Helper class to iterate through indirect objects
  */
@@ -51,7 +29,7 @@ private:
     PdfDictionaryIndirectIterableBase(PdfDictionary& dict);
 
 public:
-    class iterator final
+    class Iterator final
     {
         friend class PdfDictionaryIndirectIterableBase;
     public:
@@ -61,15 +39,16 @@ public:
         using reference = const value_type&;
         using iterator_category = std::forward_iterator_tag;
     public:
-        iterator();
+        Iterator();
     private:
-        iterator(TMapIterator&& iterator, PdfIndirectObjectList* objects);
+        Iterator(TMapIterator&& iterator, PdfIndirectObjectList* objects);
     public:
-        iterator(const iterator&) = default;
-        iterator& operator=(const iterator&) = default;
-        bool operator==(const iterator& rhs) const;
-        bool operator!=(const iterator& rhs) const;
-        iterator& operator++();
+        Iterator(const Iterator&) = default;
+        Iterator& operator=(const Iterator&) = default;
+        bool operator==(const Iterator& rhs) const;
+        bool operator!=(const Iterator& rhs) const;
+        Iterator& operator++();
+        Iterator operator++(int);
         reference operator*();
         pointer operator->();
     private:
@@ -81,15 +60,15 @@ public:
     };
 
 public:
-    iterator begin() const;
-    iterator end() const;
+    Iterator begin() const;
+    Iterator end() const;
 
 private:
     PdfDictionary* m_dict;
 };
 
-using PdfDictionaryIndirectIterable = PdfDictionaryIndirectIterableBase<PdfObject, PdfDictionaryMap::iterator>;
-using PdfDictionaryConstIndirectIterable = PdfDictionaryIndirectIterableBase<const PdfObject, PdfDictionaryMap::const_iterator>;
+using PdfDictionaryIndirectIterable = PdfDictionaryIndirectIterableBase<PdfObject, PdfNameMap<PdfObject>::iterator>;
+using PdfDictionaryConstIndirectIterable = PdfDictionaryIndirectIterableBase<const PdfObject, PdfNameMap<PdfObject>::const_iterator>;
 
 /** The PDF dictionary data type of PoDoFo (inherits from PdfDataContainer,
  * the base class for such representations)
@@ -103,6 +82,9 @@ class PODOFO_API PdfDictionary final : public PdfDataContainer
 {
     friend class PdfObject;
     friend class PdfTokenizer;
+    friend class PdfSignature;
+    friend class PdfObjectStream;
+    friend class PdfObjectOutputStream;
 
 public:
     /** Create a new, empty dictionary
@@ -258,25 +240,52 @@ public:
     PdfObject& MustGetKey(const std::string_view& key);
 
     template <typename T>
-    T GetKeyAs(const std::string_view& key, const std::common_type_t<T>& defvalue = { }) const;
+    const typename ObjectAdapter<T>::TRet GetKeyAs(const std::string_view& key) const;
 
     template <typename T>
-    T FindKeyAs(const std::string_view& key, const std::common_type_t<T>& defvalue = { }) const;
+    typename ObjectAdapter<T>::TRet GetKeyAs(const std::string_view& key);
 
     template <typename T>
-    T FindKeyParentAs(const std::string_view& key, const std::common_type_t<T>& defvalue = { }) const;
+    const typename ObjectAdapter<T>::TRet FindKeyAs(const std::string_view& key) const;
 
     template <typename T>
-    T FindKeyAsSafe(const std::string_view& key, const std::common_type_t<T>& defvalue = { }) const;
+    typename ObjectAdapter<T>::TRet FindKeyAs(const std::string_view& key);
 
     template <typename T>
-    T FindKeyParentAsSafe(const std::string_view& key, const std::common_type_t<T>& defvalue = { }) const;
+    const typename ObjectAdapter<T>::TRet FindKeyParentAs(const std::string_view& key) const;
+
+    template <typename T>
+    typename ObjectAdapter<T>::TRet FindKeyParentAs(const std::string_view& key);
+
+    template <typename T>
+    const typename ObjectAdapter<T>::TRet GetKeyAsSafe(const std::string_view& key, const std::common_type_t<T>& fallback = { }) const;
+
+    template <typename T>
+    typename ObjectAdapter<T>::TRet GetKeyAsSafe(const std::string_view& key, const std::common_type_t<T>& fallback = { });
+
+    template <typename T>
+    const typename ObjectAdapter<T>::TRet FindKeyAsSafe(const std::string_view& key, const std::common_type_t<T>& fallback = { }) const;
+
+    template <typename T>
+    typename ObjectAdapter<T>::TRet FindKeyAsSafe(const std::string_view& key, const std::common_type_t<T>& fallback = { });
+
+    template <typename T>
+    const typename ObjectAdapter<T>::TRet FindKeyParentAsSafe(const std::string_view& key, const std::common_type_t<T>& fallback = { }) const;
+
+    template <typename T>
+    typename ObjectAdapter<T>::TRet FindKeyParentAsSafe(const std::string_view& key, const std::common_type_t<T>& fallback = { });
 
     template <typename T>
     bool TryFindKeyAs(const std::string_view& key, T& value) const;
 
     template <typename T>
+    bool TryFindKeyAs(const std::string_view& key, T& value);
+
+    template <typename T>
     bool TryFindKeyParentAs(const std::string_view& key, T& value) const;
+
+    template <typename T>
+    bool TryFindKeyParentAs(const std::string_view& key, T& value);
 
     /** Allows to check if a dictionary contains a certain key.
      * \param key look for the key named key.Name() in the dictionary
@@ -299,7 +308,7 @@ public:
     bool RemoveKey(const std::string_view& key);
 
     void Write(OutputStream& stream, PdfWriteFlags writeMode,
-        const PdfStatefulEncrypt& encrypt, charbuff& buffer) const override;
+        const PdfStatefulEncrypt* encrypt, charbuff& buffer) const override;
 
     /**
      * \returns the size of the internal map
@@ -311,8 +320,8 @@ public:
     PdfDictionaryConstIndirectIterable GetIndirectIterator() const;
 
 public:
-    using iterator = PdfDictionaryMap::iterator;
-    using const_iterator = PdfDictionaryMap::const_iterator;
+    using iterator = PdfNameMap<PdfObject>::iterator;
+    using const_iterator = PdfNameMap<PdfObject>::const_iterator;
 
 public:
     iterator begin();
@@ -322,80 +331,145 @@ public:
     size_t size() const;
 
 protected:
-    void ResetDirtyInternal() override;
+    void resetDirty() override;
     void setChildrenParent() override;
 
 private:
-    std::pair<iterator, bool> AddKey(const PdfName& key, PdfObject&& obj, bool noDirtySet);
+    // NOTE: It also doesn't dirty set the moved "obj"
+    void AddKeyNoDirtySet(const PdfName& key, PdfObject&& obj);
+    void AddKeyNoDirtySet(const PdfName& key, PdfVariant&& var);
+    void RemoveKeyNoDirtySet(const std::string_view& key);
+    // Append a new "null" object with the given key
+    PdfObject& EmplaceNoDirtySet(const PdfName& key);
 
 private:
     PdfObject& addKey(const PdfName& key, PdfObject&& obj);
     PdfObject* getKey(const std::string_view& key) const;
     PdfObject* findKey(const std::string_view& key) const;
     PdfObject* findKeyParent(const std::string_view& key) const;
+    void write(OutputStream& stream, PdfWriteFlags writeMode, bool addDelimiters,
+        const PdfStatefulEncrypt* encrypt, charbuff& buffer) const;
 
 private:
-    PdfDictionaryMap m_Map;
+    PdfNameMap<PdfObject> m_Map;
 };
 
 template<typename T>
-T PdfDictionary::GetKeyAs(const std::string_view& key, const std::common_type_t<T>& defvalue) const
+const typename ObjectAdapter<T>::TRet PdfDictionary::GetKeyAs(const std::string_view& key) const
+{
+    return ObjectAdapter<T>::Get(MustGetKey(key));
+}
+
+template<typename T>
+typename ObjectAdapter<T>::TRet PdfDictionary::GetKeyAs(const std::string_view& key)
+{
+    return ObjectAdapter<T>::Get(MustGetKey(key));
+}
+
+template<typename T>
+const typename ObjectAdapter<T>::TRet PdfDictionary::FindKeyAs(const std::string_view& key) const
+{
+    return ObjectAdapter<T>::Get(MustFindKey(key));
+}
+
+template<typename T>
+typename ObjectAdapter<T>::TRet PdfDictionary::FindKeyAs(const std::string_view& key)
+{
+    return ObjectAdapter<T>::Get(MustFindKey(key));
+}
+
+template<typename T>
+const typename ObjectAdapter<T>::TRet PdfDictionary::FindKeyParentAs(const std::string_view& key) const
+{
+    return ObjectAdapter<T>::Get(MustFindKeyParent(key));
+}
+
+template<typename T>
+typename ObjectAdapter<T>::TRet PdfDictionary::FindKeyParentAs(const std::string_view& key)
+{
+    return ObjectAdapter<T>::Get(MustFindKeyParent(key));
+}
+
+template<typename T>
+const typename ObjectAdapter<T>::TRet PdfDictionary::GetKeyAsSafe(const std::string_view& key, const std::common_type_t<T>& fallback) const
 {
     auto obj = getKey(key);
     if (obj == nullptr)
-        return defvalue;
-
-    return Object<T>::Get(*obj);
+        return fallback;
+    else
+        return ObjectAdapter<T>::Get(const_cast<const PdfObject&>(*obj), fallback);
 }
 
 template<typename T>
-T PdfDictionary::FindKeyAs(const std::string_view& key, const std::common_type_t<T>& defvalue) const
+typename ObjectAdapter<T>::TRet PdfDictionary::GetKeyAsSafe(const std::string_view& key, const std::common_type_t<T>& fallback)
+{
+    auto obj = getKey(key);
+    if (obj == nullptr)
+        return fallback;
+    else
+        return ObjectAdapter<T>::Get(*obj, fallback);
+}
+
+template<typename T>
+const typename ObjectAdapter<T>::TRet PdfDictionary::FindKeyAsSafe(const std::string_view& key, const std::common_type_t<T>& fallback) const
 {
     auto obj = findKey(key);
     if (obj == nullptr)
-        return defvalue;
-
-    return Object<T>::Get(*obj);
+        return fallback;
+    else
+        return ObjectAdapter<T>::Get(const_cast<const PdfObject&>(*obj), fallback);
 }
 
 template<typename T>
-T PdfDictionary::FindKeyParentAs(const std::string_view& key, const std::common_type_t<T>& defvalue) const
+typename ObjectAdapter<T>::TRet PdfDictionary::FindKeyAsSafe(const std::string_view& key, const std::common_type_t<T>& fallback)
 {
-    auto obj = findKeyParent(key);
-    T ret{ };
-    if (obj == nullptr)
-        return defvalue;
-
-    return Object<T>::Get(*obj);
-}
-
-template<typename T>
-T PdfDictionary::FindKeyAsSafe(const std::string_view& key, const std::common_type_t<T>& defvalue) const
-{
-    T value;
     auto obj = findKey(key);
-    if (obj != nullptr && Object<T>::TryGet(*obj, value))
-        return value;
+    if (obj == nullptr)
+        return fallback;
     else
-        return defvalue;
+        return ObjectAdapter<T>::Get(*obj, fallback);
 }
 
 template<typename T>
-T PdfDictionary::FindKeyParentAsSafe(const std::string_view& key, const std::common_type_t<T>& defvalue) const
+const typename ObjectAdapter<T>::TRet PdfDictionary::FindKeyParentAsSafe(const std::string_view& key, const std::common_type_t<T>& fallback) const
 {
-    T value;
     auto obj = findKeyParent(key);
-    if (obj != nullptr && Object<T>::TryGet(*obj, value))
-        return value;
+    if (obj == nullptr)
+        return fallback;
     else
-        return defvalue;
+        return ObjectAdapter<T>::Get(const_cast<const PdfObject&>(*obj), fallback);
+}
+
+template<typename T>
+typename ObjectAdapter<T>::TRet PdfDictionary::FindKeyParentAsSafe(const std::string_view& key, const std::common_type_t<T>& fallback)
+{
+    auto obj = findKeyParent(key);
+    if (obj == nullptr)
+        return fallback;
+    else
+        return ObjectAdapter<T>::Get(*obj, fallback);
 }
 
 template <typename T>
 bool PdfDictionary::TryFindKeyAs(const std::string_view& key, T& value) const
 {
     auto obj = findKey(key);
-    if (obj != nullptr && Object<T>::TryGet(*obj, value))
+    if (obj != nullptr && ObjectAdapter<T>::TryGet(const_cast<const PdfObject&>(*obj), value))
+    {
+        return true;
+    }
+    else
+    {
+        value = { };
+        return false;
+    }
+}
+
+template<typename T>
+bool PdfDictionary::TryFindKeyAs(const std::string_view& key, T& value)
+{
+    auto obj = findKey(key);
+    if (obj != nullptr && ObjectAdapter<T>::TryGet(*obj, value))
     {
         return true;
     }
@@ -410,7 +484,22 @@ template <typename T>
 bool PdfDictionary::TryFindKeyParentAs(const std::string_view& key, T& value) const
 {
     auto obj = findKeyParent(key);
-    if (obj != nullptr && Object<T>::TryGet(*obj, value))
+    if (obj != nullptr && ObjectAdapter<T>::TryGet(const_cast<const PdfObject&>(*obj), value))
+    {
+        return true;
+    }
+    else
+    {
+        value = { };
+        return false;
+    }
+}
+
+template<typename T>
+bool PdfDictionary::TryFindKeyParentAs(const std::string_view& key, T& value)
+{
+    auto obj = findKeyParent(key);
+    if (obj != nullptr && ObjectAdapter<T>::TryGet(*obj, value))
     {
         return true;
     }
@@ -430,66 +519,73 @@ PdfDictionaryIndirectIterableBase<TObject, TMapIterator>::PdfDictionaryIndirectI
     : PdfIndirectIterableBase(dict), m_dict(&dict) { }
 
 template <typename TObject, typename TMapIterator>
-typename PdfDictionaryIndirectIterableBase<TObject, TMapIterator>::iterator PdfDictionaryIndirectIterableBase<TObject, TMapIterator>::begin() const
+typename PdfDictionaryIndirectIterableBase<TObject, TMapIterator>::Iterator PdfDictionaryIndirectIterableBase<TObject, TMapIterator>::begin() const
 {
     if (m_dict == nullptr)
-        return iterator();
+        return Iterator();
     else
-        return iterator(m_dict->begin(), GetObjects());
+        return Iterator(m_dict->begin(), GetObjects());
 }
 
 template <typename TObject, typename TMapIterator>
-typename PdfDictionaryIndirectIterableBase<TObject, TMapIterator>::iterator PdfDictionaryIndirectIterableBase<TObject, TMapIterator>::end() const
+typename PdfDictionaryIndirectIterableBase<TObject, TMapIterator>::Iterator PdfDictionaryIndirectIterableBase<TObject, TMapIterator>::end() const
 {
     if (m_dict == nullptr)
-        return iterator();
+        return Iterator();
     else
-        return iterator(m_dict->end(), GetObjects());
+        return Iterator(m_dict->end(), GetObjects());
 }
 
+template<typename TObject, typename TMapIterator>
+PdfDictionaryIndirectIterableBase<TObject, TMapIterator>::Iterator::Iterator() : m_objects(nullptr) { }
 
 template<typename TObject, typename TMapIterator>
-PdfDictionaryIndirectIterableBase<TObject, TMapIterator>::iterator::iterator() : m_objects(nullptr) { }
-
-template<typename TObject, typename TMapIterator>
-PdfDictionaryIndirectIterableBase<TObject, TMapIterator>::iterator::iterator(TMapIterator&& iterator, PdfIndirectObjectList* objects)
+PdfDictionaryIndirectIterableBase<TObject, TMapIterator>::Iterator::Iterator(TMapIterator&& iterator, PdfIndirectObjectList* objects)
     : m_iterator(std::move(iterator)), m_objects(objects) { }
 
 template<typename TObject, typename TMapIterator>
-bool PdfDictionaryIndirectIterableBase<TObject, TMapIterator>::iterator::operator==(const iterator& rhs) const
+bool PdfDictionaryIndirectIterableBase<TObject, TMapIterator>::Iterator::operator==(const Iterator& rhs) const
 {
     return m_iterator == rhs.m_iterator;
 }
 
 template<typename TObject, typename TMapIterator>
-bool PdfDictionaryIndirectIterableBase<TObject, TMapIterator>::iterator::operator!=(const iterator& rhs) const
+bool PdfDictionaryIndirectIterableBase<TObject, TMapIterator>::Iterator::operator!=(const Iterator& rhs) const
 {
     return m_iterator != rhs.m_iterator;
 }
 
 template<typename TObject, typename TMapIterator>
-typename PdfDictionaryIndirectIterableBase<TObject, TMapIterator>::iterator& PdfDictionaryIndirectIterableBase<TObject, TMapIterator>::iterator::operator++()
+typename PdfDictionaryIndirectIterableBase<TObject, TMapIterator>::Iterator& PdfDictionaryIndirectIterableBase<TObject, TMapIterator>::Iterator::operator++()
 {
     m_iterator++;
     return *this;
 }
 
 template<typename TObject, typename TMapIterator>
-typename PdfDictionaryIndirectIterableBase<TObject, TMapIterator>::iterator::reference PdfDictionaryIndirectIterableBase<TObject, TMapIterator>::iterator::operator*()
+typename PdfDictionaryIndirectIterableBase<TObject, TMapIterator>::Iterator PdfDictionaryIndirectIterableBase<TObject, TMapIterator>::Iterator::operator++(int)
+{
+    auto copy = *this;
+    m_iterator++;
+    return copy;
+}
+
+template<typename TObject, typename TMapIterator>
+typename PdfDictionaryIndirectIterableBase<TObject, TMapIterator>::Iterator::reference PdfDictionaryIndirectIterableBase<TObject, TMapIterator>::Iterator::operator*()
 {
     resolve();
     return m_pair;
 }
 
 template<typename TObject, typename TMapIterator>
-typename PdfDictionaryIndirectIterableBase<TObject, TMapIterator>::iterator::pointer PdfDictionaryIndirectIterableBase<TObject, TMapIterator>::iterator::operator->()
+typename PdfDictionaryIndirectIterableBase<TObject, TMapIterator>::Iterator::pointer PdfDictionaryIndirectIterableBase<TObject, TMapIterator>::Iterator::operator->()
 {
     resolve();
     return &m_pair;
 }
 
 template<typename TObject, typename TMapIterator>
-void PdfDictionaryIndirectIterableBase<TObject, TMapIterator>::iterator::resolve()
+void PdfDictionaryIndirectIterableBase<TObject, TMapIterator>::Iterator::resolve()
 {
     TObject& robj = m_iterator->second;
     TObject* indirectobj;

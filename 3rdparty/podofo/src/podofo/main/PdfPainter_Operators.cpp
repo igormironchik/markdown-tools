@@ -195,14 +195,14 @@ void PdfPainter::EMC_Operator()
 void PdfPainter::q_Operator()
 {
     checkStream();
-    checkStatus(StatusDefault | StatusTextObject);
+    checkStatus(StatusDefault);
     PoDoFo::WriteOperator_q(m_stream);
 }
 
 void PdfPainter::Q_Operator()
 {
     checkStream();
-    checkStatus(StatusDefault | StatusTextObject);
+    checkStatus(StatusDefault);
     PoDoFo::WriteOperator_Q(m_stream);
 }
 
@@ -227,6 +227,13 @@ void PdfPainter::Td_Operator(double tx, double ty)
     checkStream();
     checkStatus(StatusTextObject);
     PoDoFo::WriteOperator_Td(m_stream, tx, ty);
+}
+
+void PoDoFo::PdfPainter::TD_Operator(double tx, double ty)
+{
+    checkStream();
+    checkStatus(StatusTextObject);
+    PoDoFo::WriteOperator_TD(m_stream, tx, ty);
 }
 
 void PdfPainter::Tm_Operator(double a, double b, double c, double d, double e, double f)
@@ -393,7 +400,7 @@ void PdfPainter::Do_Operator(const string_view& xobjname)
     PoDoFo::WriteOperator_Do(m_stream, xobjname);
 }
 
-void PdfPainter::cs_Operator(PdfColorSpace colorSpace)
+void PdfPainter::cs_Operator(PdfColorSpaceType colorSpace)
 {
     checkStream();
     checkStatus(StatusDefault | StatusTextObject);
@@ -407,7 +414,7 @@ void PdfPainter::cs_Operator(const string_view& name)
     PoDoFo::WriteOperator_cs(m_stream, name);
 }
 
-void PdfPainter::CS_Operator(PdfColorSpace colorSpace)
+void PdfPainter::CS_Operator(PdfColorSpaceType colorSpace)
 {
     checkStream();
     checkStatus(StatusDefault | StatusTextObject);
@@ -519,6 +526,13 @@ void PdfPainter::k_Operator(double cyan, double magenta, double yellow, double b
     PoDoFo::WriteOperator_k(m_stream, cyan, magenta, yellow, black);
 }
 
+void PdfPainter::sh_Operator(const string_view& shadingDictName)
+{
+    checkStream();
+    checkStatus(StatusDefault);
+    PoDoFo::WriteOperator_sh(m_stream, shadingDictName);
+}
+
 void PdfPainter::BX_Operator()
 {
     checkStream();
@@ -535,7 +549,25 @@ void PdfPainter::EX_Operator()
     m_painterStatus = StatusDefault;
 }
 
-void PdfPainter::Extension_Operator(const string_view& opName, const cspan<PdfObject>& operands)
+void PdfPainter::v_Operator(double cx, double cy, double x, double y)
+{
+    checkStream();
+    checkStatus(StatusDefault | StatusTextObject);
+    checkPathOpened();
+    PoDoFo::WriteOperator_v(m_stream, cx, cy, x, y);
+    m_StateStack.Current->CurrentPoint = Vector2(x, y);
+}
+
+void PdfPainter::y_Operator(double cx, double cy, double x, double y)
+{
+    checkStream();
+    checkStatus(StatusDefault | StatusTextObject);
+    checkPathOpened();
+    PoDoFo::WriteOperator_y(m_stream, cx, cy, x, y);
+    m_StateStack.Current->CurrentPoint = Vector2(x, y);
+}
+
+void PdfPainter::Extension_Operator(const string_view& opName, const cspan<PdfVariant>& operands)
 {
     checkStream();
     checkStatus(StatusExtension);

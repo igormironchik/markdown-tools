@@ -13,16 +13,18 @@ FORWARD_DECLARE_FCONFIG();
 
 namespace PoDoFo {
 
-enum class PdfFontConfigSearchFlags
+enum class PdfFontConfigSearchFlags : uint8_t
 {
     None = 0,
-    MatchPostScriptName = 1,        ///< Match postscript font name. The default is match family name. This search may be more specific
+    SkipMatchPostScriptName = 1,        ///< Skip matching postscript font name
 };
 
-struct PdfFontConfigSearchParams
+struct PODOFO_API PdfFontConfigSearchParams final
 {
     nullable<PdfFontStyle> Style;
     PdfFontConfigSearchFlags Flags = PdfFontConfigSearchFlags::None;
+    ///< A font family name specific pattern, to be alternatively used when postscript name match failed
+    std::string FontFamilyPattern;
 };
 
 /**
@@ -41,9 +43,18 @@ class PODOFO_API PdfFontConfigWrapper final
 {
 public:
     /**
+     * Create a new FontConfigWrapper from a XML config string
+     */
+    PdfFontConfigWrapper(const std::string_view& configStr);
+
+#if PODOFO_3RDPARTY_INTEROP_ENABLED
+    /**
      * Create a new FontConfigWrapper and initialize the fontconfig library.
      */
     PdfFontConfigWrapper(FcConfig* fcConfig = nullptr);
+
+    FcConfig* GetFcConfig();
+#endif // PODOFO_3RDPARTY_INTEROP_ENABLED
 
     ~PdfFontConfigWrapper();
 
@@ -63,8 +74,6 @@ public:
         unsigned& faceIndex);
 
     void AddFontDirectory(const std::string_view& path);
-
-    FcConfig* GetFcConfig();
 
 private:
     PdfFontConfigWrapper(const PdfFontConfigWrapper& rhs) = delete;

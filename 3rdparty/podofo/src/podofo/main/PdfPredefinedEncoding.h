@@ -25,8 +25,20 @@ namespace PoDoFo
      */
     class PODOFO_API PdfPredefinedEncoding : public PdfBuiltInEncoding
     {
-    protected:
+        friend class PdfWinAnsiEncoding;
+        friend class PdfMacRomanEncoding;
+        friend class PdfMacExpertEncoding;
+
+    private:
         PdfPredefinedEncoding(const PdfName& name);
+
+        PdfPredefinedEncodingType GetPredefinedEncodingType() const override;
+
+    public:
+        /** Try get a latin text character name from a codepoint,
+         * as listed by ISO 32000-2:2020 Table D.1 "Latin-text encodings"
+         */
+        static bool TryGetCharNameFromCodePoint(char32_t codepoint, const PdfName*& name);
 
     protected:
         void getExportObject(PdfIndirectObjectList& objects, PdfName& name, PdfObject*& obj) const override;
@@ -43,7 +55,7 @@ namespace PoDoFo
      *
      * \see PdfFont::WinAnsiEncoding
      */
-    class PODOFO_API PdfWinAnsiEncoding : public PdfPredefinedEncoding
+    class PODOFO_API PdfWinAnsiEncoding final : public PdfPredefinedEncoding
     {
         friend class PdfEncodingMapFactory;
         friend class PdfWin1250Encoding;
@@ -61,7 +73,12 @@ namespace PoDoFo
     };
 
     /**
-     * MacRomanEncoding 
+     * MacRomanEncoding
+     * 
+     * The encoding here also defines the entries specified in
+     * ISO 32000-2:2020 "Table 113 — Additional entries in Mac OS Roman
+     * encoding not in MacRomanEncoding", other than the ones specified
+     * in "Table D.2 — Latin character set and encodings"
      */
     class PODOFO_API PdfMacRomanEncoding final : public PdfPredefinedEncoding
     {

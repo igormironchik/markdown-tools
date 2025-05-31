@@ -13,29 +13,40 @@ namespace PoDoFo {
 
 class PdfDocument;
 
-enum class PdfAcroFormDefaulAppearance
+enum class PdfAcroFormDefaulAppearance : uint8_t
 {
-    None, ///< Do not add a default appearrance
-    BlackText12pt ///< Add a default appearance with Arial embedded and black text 12pt if no other DA key is present
+    None = 0, ///< Do not add a default appearrance
+    ArialBlack ///< Add a default appearance with Arial embedded and black text if no other DA key is present
+};
+
+enum class PdfAcroFormSigFlags
+{
+    None = 0,
+    SignaturesExist = 1,
+    AppendOnly = 2,
 };
 
 class PODOFO_API PdfAcroForm final : public PdfDictionaryElement
 {
     friend class PdfField;
+    friend class PdfDocument;
+    friend class PdfSigningContext;
+    friend class PdfSignature;
 
-public:
+private:
     /** Create a new PdfAcroForm dictionary object
      *  \param doc parent of this action
      *  \param defaultAppearance specifies if a default appearance should be added
      */
     PdfAcroForm(PdfDocument & doc,
-                 PdfAcroFormDefaulAppearance defaultAppearance = PdfAcroFormDefaulAppearance::BlackText12pt);
+                 PdfAcroFormDefaulAppearance defaultAppearance = PdfAcroFormDefaulAppearance::ArialBlack);
 
     /** Create a PdfAcroForm dictionary object from an existing PdfObject
      *	\param obj the object to create from
      */
     PdfAcroForm(PdfObject& obj);
 
+public:
     /** Set the value of the NeedAppearances key in the interactive forms
      *  dictionary.
      *
@@ -53,6 +64,10 @@ public:
      *  \see SetNeedAppearances
      */
     bool GetNeedAppearances() const;
+
+    /** Get the value of the /SigFlags document-level characteristics related to signature fields
+     */
+    PdfAcroFormSigFlags GetSigFlags() const;
 
     template <typename TField>
     TField& CreateField(const std::string_view& name);
@@ -79,7 +94,7 @@ public:
      */
     void RemoveFieldAt(unsigned index);
 
-    /** Delete the field with the given object referece
+    /** Delete the field with the given object reference
      *  \param ref the object reference
      */
     void RemoveField(const PdfReference& ref);
@@ -119,6 +134,12 @@ public:
             m_iterator++;
             return *this;
         }
+        Iterator operator++(int)
+        {
+            auto copy = *this;
+            m_iterator++;
+            return copy;
+        }
         value_type operator*()
         {
             return (*m_iterator).get();
@@ -146,14 +167,15 @@ private:
     PdfField& AddField(std::unique_ptr<PdfField>&& field);
     std::shared_ptr<PdfField> GetFieldPtr(const PdfReference& ref);
 
+    // To be called by PdfSignature/PdfSigningContext
+    void SetSigFlags(PdfAcroFormSigFlags flags);
+
 private:
     /** Initialize this object
      *  with a default appearance
      *  \param defaultAppearance specifies if a default appearance should be added
      */
     void init(PdfAcroFormDefaulAppearance defaultAppearance);
-
-    PdfField& createField(const std::string_view& name, const std::type_info& typeInfo);
 
     PdfArray* getFieldArray() const;
 
@@ -176,9 +198,11 @@ private:
 template<typename TField>
 TField& PdfAcroForm::CreateField(const std::string_view& name)
 {
-    return static_cast<TField&>(createField(name, typeid(TField)));
+    return static_cast<TField&>(CreateField(name, PdfField::GetFieldType<TField>()));
 }
 
 };
+
+ENABLE_BITMASK_OPERATORS(PoDoFo::PdfAcroFormSigFlags);
 
 #endif // PDF_ACRO_FORM_H

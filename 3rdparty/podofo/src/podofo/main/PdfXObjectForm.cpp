@@ -13,8 +13,8 @@
 using namespace std;
 using namespace PoDoFo;
 
-PdfXObjectForm::PdfXObjectForm(PdfDocument& doc, const Rect& rect, const string_view& prefix)
-    : PdfXObject(doc, PdfXObjectType::Form, prefix), m_Rect(rect)
+PdfXObjectForm::PdfXObjectForm(PdfDocument& doc, const Rect& rect)
+    : PdfXObject(doc, PdfXObjectType::Form), m_Rect(rect)
 {
     initXObject(rect);
 }
@@ -22,10 +22,15 @@ PdfXObjectForm::PdfXObjectForm(PdfDocument& doc, const Rect& rect, const string_
 PdfXObjectForm::PdfXObjectForm(PdfObject& obj)
     : PdfXObject(obj, PdfXObjectType::Form)
 {
-    if (obj.GetDictionary().HasKey("BBox"))
-        m_Rect = Rect::FromArray(obj.GetDictionary().MustFindKey("BBox").GetArray());
+    auto& dict = GetDictionary();
+    const PdfArray* arr;
+    if (dict.TryFindKeyAs("BBox", arr))
+        m_Rect = Rect::FromArray(*arr);
 
-    auto resources = obj.GetDictionary().FindKey("Resources");
+    if (dict.TryFindKeyAs("Matrix", arr))
+        m_Matrix = Matrix::FromArray(*arr);
+
+    auto resources = dict.FindKey("Resources");
     if (resources != nullptr)
         m_Resources.reset(new PdfResources(*resources));
 }
@@ -37,16 +42,7 @@ void PdfXObjectForm::FillFromPage(const PdfPage& page, bool useTrimBox)
     initAfterPageInsertion(page);
 }
 
-void PdfXObjectForm::EnsureResourcesCreated()
-{
-    if (m_Resources == nullptr)
-        m_Resources.reset(new PdfResources(GetDictionary()));
-
-    // A Form XObject must have a stream
-    GetObject().ForceCreateStream();
-}
-
-bool PdfXObjectForm::HasRotation(double& teta) const
+bool PdfXObjectForm::TryGetRotationRadians(double& teta) const
 {
     teta = 0;
     return false;
@@ -56,8 +52,27 @@ void PdfXObjectForm::SetRect(const Rect& rect)
 {
     PdfArray bbox;
     rect.ToArray(bbox);
-    GetObject().GetDictionary().AddKey("BBox", bbox);
+    GetDictionary().AddKey("BBox"_n, bbox);
     m_Rect = rect;
+}
+
+void PdfXObjectForm::SetMatrix(const Matrix& m)
+{
+    PdfArray arr;
+    arr.Add(m[0]);
+    arr.Add(m[1]);
+    arr.Add(m[2]);
+    arr.Add(m[3]);
+    arr.Add(m[4]);
+    arr.Add(m[5]);
+
+    GetDictionary().AddKey("Matrix"_n, std::move(arr));
+    m_Matrix = m;
+}
+
+const Matrix& PdfXObjectForm::GetMatrix() const
+{
+    return m_Matrix;
 }
 
 PdfResources* PdfXObjectForm::getResources()
@@ -65,15 +80,31 @@ PdfResources* PdfXObjectForm::getResources()
     return m_Resources.get();
 }
 
-PdfElement& PdfXObjectForm::getElement()
+PdfDictionaryElement& PdfXObjectForm::getElement()
 {
-    return const_cast<PdfXObjectForm&>(*this);
+    return *this;
 }
 
-inline PdfObjectStream& PdfXObjectForm::GetStreamForAppending(PdfStreamAppendFlags flags)
+PdfObjectStream& PdfXObjectForm::GetOrCreateContentsStream(PdfStreamAppendFlags flags)
 {
     (void)flags; // Flags have no use here
     return GetObject().GetOrCreateStream();
+}
+
+PdfObjectStream& PdfXObjectForm::ResetContentsStream()
+{
+    auto& ret = GetObject().GetOrCreateStream();
+    ret.Clear();
+    return ret;
+}
+
+void PdfXObjectForm::CopyContentsTo(OutputStream& stream) const
+{
+    auto objStream = GetObject().GetStream();
+    if (objStream == nullptr)
+        return;
+
+    objStream->CopyTo(stream);
 }
 
 Rect PdfXObjectForm::GetRect() const
@@ -81,54 +112,56 @@ Rect PdfXObjectForm::GetRect() const
     return m_Rect;
 }
 
-Rect PdfXObjectForm::GetRectRaw() const
+Corners PdfXObjectForm::GetRectRaw() const
 {
-    return m_Rect;
+    return Corners::FromCorners(m_Rect.GetLeftBottom(), m_Rect.GetRightTop());
 }
 
 PdfObject* PdfXObjectForm::getContentsObject()
 {
-    return &const_cast<PdfXObjectForm&>(*this).GetObject();
+    return &GetObject();
 }
 
 PdfResources& PdfXObjectForm::GetOrCreateResources()
 {
-    EnsureResourcesCreated();
+    if (m_Resources == nullptr)
+        m_Resources.reset(new PdfResources(*this));
+
+    // A Form XObject must have a stream
+    GetObject().ForceCreateStream();
     return *m_Resources;
+}
+
+const PdfXObjectForm* PdfXObjectForm::GetForm() const
+{
+    return this;
 }
 
 void PdfXObjectForm::initXObject(const Rect& rect)
 {
     // Initialize static data
-    if (m_Matrix.IsEmpty())
-    {
-        // This matrix is the same for all PdfXObjects so cache it
-        m_Matrix.Add(PdfObject(static_cast<int64_t>(1)));
-        m_Matrix.Add(PdfObject(static_cast<int64_t>(0)));
-        m_Matrix.Add(PdfObject(static_cast<int64_t>(0)));
-        m_Matrix.Add(PdfObject(static_cast<int64_t>(1)));
-        m_Matrix.Add(PdfObject(static_cast<int64_t>(0)));
-        m_Matrix.Add(PdfObject(static_cast<int64_t>(0)));
-    }
+    PdfArray arr;
+    arr.Add(PdfObject(static_cast<int64_t>(m_Matrix[0])));
+    arr.Add(PdfObject(static_cast<int64_t>(m_Matrix[1])));
+    arr.Add(PdfObject(static_cast<int64_t>(m_Matrix[2])));
+    arr.Add(PdfObject(static_cast<int64_t>(m_Matrix[3])));
+    arr.Add(PdfObject(static_cast<int64_t>(m_Matrix[4])));
+    arr.Add(PdfObject(static_cast<int64_t>(m_Matrix[5])));
 
     PdfArray bbox;
     rect.ToArray(bbox);
-    this->GetObject().GetDictionary().AddKey("BBox", bbox);
-    this->GetObject().GetDictionary().AddKey("FormType", PdfVariant(static_cast<int64_t>(1))); // only 1 is only defined in the specification.
-    this->GetObject().GetDictionary().AddKey("Matrix", m_Matrix);
+    GetDictionary().AddKey("BBox"_n, bbox);
+    GetDictionary().AddKey("FormType"_n, PdfVariant(static_cast<int64_t>(1))); // only 1 is only defined in the specification.
+    GetDictionary().AddKey("Matrix"_n, arr);
 }
 
 void PdfXObjectForm::initAfterPageInsertion(const PdfPage& page)
 {
     PdfArray bbox;
     m_Rect.ToArray(bbox);
-    this->GetObject().GetDictionary().AddKey("BBox", bbox);
+    GetDictionary().AddKey("BBox"_n, bbox);
 
-    int rotation = page.GetRotationRaw();
-    // correct negative rotation
-    if (rotation < 0)
-        rotation = 360 + rotation;
-
+    int rotation = page.GetRotation();
     // Swap offsets/width/height for vertical rotation
     switch (rotation)
     {
@@ -193,5 +226,5 @@ void PdfXObjectForm::initAfterPageInsertion(const PdfPage& page)
     matrix.Add(PdfObject(e));
     matrix.Add(PdfObject(f));
 
-    this->GetObject().GetDictionary().AddKey("Matrix", matrix);
+    GetDictionary().AddKey("Matrix"_n, matrix);
 }

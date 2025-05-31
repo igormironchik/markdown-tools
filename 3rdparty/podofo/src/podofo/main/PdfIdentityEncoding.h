@@ -14,11 +14,11 @@ namespace PoDoFo {
 
 /** Orientation for predefined CID identity encodings
  */
-enum class PdfIdentityOrientation
+enum class PdfIdentityOrientation : uint8_t
 {
     Unkwnown = 0,
-    Horizontal, // Corresponts to /Identity-H
-    Vertical,   // Corresponts to /Identity-V
+    Horizontal, // Corresponds to /Identity-H
+    Vertical,   // Corresponds to /Identity-V
 };
 
 /** PdfIdentityEncoding is a two-byte encoding which can be
@@ -29,24 +29,29 @@ enum class PdfIdentityOrientation
  */
 class PODOFO_API PdfIdentityEncoding final : public PdfEncodingMap
 {
-    friend class PdfCMapEncoding;
+    friend class PdfEncodingMapFactory;
+    friend class PdfEncodingFactory;
+    friend class PdfFontMetrics;
+    PODOFO_PRIVATE_FRIEND(class PdfEncodingTest);
 
-public:
+private:
     /**
      *  Create a new PdfIdentityEncoding.
      *
      *  \param codeSpaceSize size of the codespace size
      */
-    PdfIdentityEncoding(unsigned char codeSpaceSize);
+    PdfIdentityEncoding(PdfEncodingMapType type, unsigned char codeSpaceSize);
 
     /**
      *  Create a standard 2 bytes CID PdfIdentityEncoding
      */
     PdfIdentityEncoding(PdfIdentityOrientation orientation);
 
+    PdfIdentityEncoding(PdfEncodingMapType type, const PdfEncodingLimits& limits,
+        PdfIdentityOrientation orientation);
 protected:
     bool tryGetCharCode(char32_t codePoint, PdfCharCode& codeUnit) const override;
-    bool tryGetCodePoints(const PdfCharCode& codeUnit, std::vector<char32_t>& codePoints) const override;
+    bool tryGetCodePoints(const PdfCharCode& codeUnit, const unsigned* cidId, CodePointSpan& codePoints) const override;
     void getExportObject(PdfIndirectObjectList& objects, PdfName& name, PdfObject*& obj) const override;
     void AppendToUnicodeEntries(OutputStream& stream, charbuff& temp) const override;
     void AppendCIDMappingEntries(OutputStream& stream, const PdfFont& font, charbuff& temp) const override;
@@ -54,9 +59,7 @@ protected:
 public:
     const PdfEncodingLimits& GetLimits() const override;
 
-private:
-    PdfIdentityEncoding(PdfEncodingMapType type, const PdfEncodingLimits& limits,
-        PdfIdentityOrientation orientation);
+    PdfPredefinedEncodingType GetPredefinedEncodingType() const override;
 
 private:
     PdfEncodingLimits m_Limits;

@@ -15,9 +15,6 @@
 
 namespace PoDoFo {
 
-class PdfObject;
-class Rect;
-
 /** Class for managing the tree of Pages in a PDF document
  *  Don't use this class directly. Use PdfDocument instead.
  *
@@ -75,7 +72,8 @@ public:
      *  \param size a Rect specifying the size of the page (i.e the /MediaBox key) in PDF units
      *  \returns a pointer to a PdfPage object
      */
-    PdfPage& CreatePage(const Rect& size);
+    PdfPage& CreatePage(const nullable<Rect>& size = nullptr);
+    PdfPage& CreatePage(PdfPageSize pageSize);
 
     /** Creates a new page object and inserts it at index atIndex.
      *  The returned page is owned by the pages tree and will get deleted along
@@ -85,7 +83,8 @@ public:
      *  \param atIndex index where to insert the new page (0-based)
      *  \returns a pointer to a PdfPage object
      */
-    PdfPage& CreatePageAt(unsigned atIndex, const Rect& size);
+    PdfPage& CreatePageAt(unsigned atIndex, const nullable<Rect>& size = nullptr);
+    PdfPage& CreatePageAt(unsigned atIndex, PdfPageSize pageSize);
 
     /** Create count new page objects and insert at the index atIndex. This is significantly faster
      *  than calling CreatePageAt repeatedly.
@@ -94,7 +93,8 @@ public:
      *  \param count number of pages to create
      *  \param atIndex index where to insert the new page (0-based)
      */
-    void CreatePagesAt(unsigned atIndex, unsigned count, const Rect& size);
+    void CreatePagesAt(unsigned atIndex, unsigned count, const nullable<Rect>& size = nullptr);
+    void CreatePagesAt(unsigned atIndex, unsigned count, PdfPageSize pageSize);
 
     /** Appends another PdfDocument to this document.
      *  \param doc the document to append
@@ -120,7 +120,7 @@ public:
      *
      *   \param atIndex the page number (0-based) to be removed
      *
-     *   The PdfPage object refering to this page will be deleted by this call!
+     *   The PdfPage object referring to this page will be deleted by this call!
      *   Empty page nodes will also be deleted.
      *
      *   \see PdfMemDocument::DeletePages
@@ -133,6 +133,66 @@ public:
      * This operation is allowed by the PDF specification, see "ISO 32000-2:2020, 7.7.3.2 Page tree nodes"
      */
     void FlattenStructure();
+
+public:
+    template <typename TObject, typename TListIterator>
+    class Iterator final
+    {
+        friend class PdfPageCollection;
+    public:
+        using difference_type = void;
+        using value_type = TObject*;
+        using pointer = void;
+        using reference = void;
+        using iterator_category = std::forward_iterator_tag;
+    public:
+        Iterator() { }
+    private:
+        Iterator(const TListIterator& iterator) : m_iterator(iterator) { }
+    public:
+        Iterator(const Iterator&) = default;
+        Iterator& operator=(const Iterator&) = default;
+        bool operator==(const Iterator& rhs) const
+        {
+            return m_iterator == rhs.m_iterator;
+        }
+        bool operator!=(const Iterator& rhs) const
+        {
+            return m_iterator != rhs.m_iterator;
+        }
+        Iterator& operator++()
+        {
+            m_iterator++;
+            return *this;
+        }
+        Iterator operator++(int)
+        {
+            auto copy = *this;
+            m_iterator++;
+            return copy;
+        }
+        value_type operator*()
+        {
+            return *m_iterator;
+        }
+        value_type operator->()
+        {
+            return *m_iterator;
+        }
+    private:
+        TListIterator m_iterator;
+    };
+
+    using PageList = std::vector<PdfPage*>;
+
+    using iterator = Iterator<PdfPage, PageList::iterator>;
+    using const_iterator = Iterator<const PdfPage, PageList::const_iterator>;
+
+    public:
+        iterator begin();
+        iterator end();
+        const_iterator begin() const;
+        const_iterator end() const;
 
 private:
     /**
@@ -147,7 +207,13 @@ private:
      */
     void InsertPagesAt(unsigned atIndex, cspan<PdfPage*> pages);
 
+    bool TryMovePageTo(unsigned atIndex, unsigned toIndex);
+
 private:
+    void insertPageAt(unsigned atIndex, PdfPage& page);
+    void insertPagesAt(unsigned atIndex, cspan<PdfPage*> pages);
+    Rect getActualRect(const nullable<Rect>& size);
+
     PdfPage& getPage(const PdfReference& ref) const;
 
     void initPages();
@@ -155,9 +221,12 @@ private:
     unsigned traversePageTreeNode(PdfObject& obj, unsigned count,
         std::vector<PdfObject*>& parents, std::unordered_set<PdfObject*>& visitedNodes);
 
+    PdfPageCollection(PdfPageCollection&) = delete;
+    PdfPageCollection& operator=(PdfPageCollection&) = delete;
+
 private:
     bool m_initialized;
-    std::vector<PdfPage*> m_Pages;
+    PageList m_Pages;
     PdfArray* m_kidsArray;
 };
 

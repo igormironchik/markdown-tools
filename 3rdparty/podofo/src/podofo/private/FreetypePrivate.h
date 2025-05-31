@@ -14,19 +14,31 @@
 #include <podofo/main/PdfDeclarations.h>
 
 #define CHECK_FT_RC(rc, func) if (rc != 0)\
-    PODOFO_RAISE_ERROR_INFO(PdfErrorCode::FreeType, "Function " #func " failed")
+    PODOFO_RAISE_ERROR_INFO(PdfErrorCode::FreeTypeError, "Function " #func " failed")
 
 namespace FT
 {
     FT_Library GetLibrary();
-    bool TryCreateFaceFromBuffer(const PoDoFo::bufferview & view, FT_Face& face);
-    bool TryCreateFaceFromBuffer(const PoDoFo::bufferview& view, unsigned faceIndex, FT_Face& face);
-    FT_Face CreateFaceFromBuffer(const PoDoFo::bufferview& view, unsigned faceIndex = 0);
-    bool TryCreateFaceFromFile(const std::string_view& filepath, FT_Face& face);
-    bool TryCreateFaceFromFile(const std::string_view& filepath, unsigned faceIndex, FT_Face& face);
-    FT_Face CreateFaceFromFile(const std::string_view& filepath, unsigned faceIndex = 0);
+    /**
+     * \param buffer a copy of the buffer from which the face will be loaded.
+     * It must be retained
+     */
+    FT_Face CreateFaceFromFile(const std::string_view& filepath, unsigned faceIndex,
+        PoDoFo::charbuff& buffer);
+    /**
+     * \param buffer a copy of the buffer from which the face will be loaded.
+     * It must be retained
+     */
+    FT_Face CreateFaceFromBuffer(const PoDoFo::bufferview& view, unsigned faceIndex,
+        PoDoFo::charbuff& buffer);
+    // Extract a CFF table from a OpenType CFF font
+    FT_Face ExtractCFFFont(FT_Face face, PoDoFo::charbuff& buffer);
+    // No check for TTC fonts
+    FT_Face CreateFaceFromBuffer(const PoDoFo::bufferview& view);
     PoDoFo::charbuff GetDataFromFace(FT_Face face);
     bool TryGetFontFileFormat(FT_Face face, PoDoFo::PdfFontFileType& format);
+    bool IsPdfSupported(FT_Face face);
+    std::unordered_map<std::string_view, unsigned> GetPostMap(FT_Face face);
 }
 
 // Other legacy TrueType tables defined in Apple documentation

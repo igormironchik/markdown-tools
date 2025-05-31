@@ -11,7 +11,7 @@
 using namespace std;
 using namespace PoDoFo;
 
-TEST_CASE("testDevices")
+TEST_CASE("TestDevices")
 {
     string_view testString = "Hello World Buffer!";
     charbuff buffer1;
@@ -25,13 +25,27 @@ TEST_CASE("testDevices")
         FAIL(utls::Format("Buffer1 size is wrong after 100 attaches: {}", buffer1.size()));
 }
 
-TEST_CASE("testSaveIncremental")
+TEST_CASE("TestSaveIncremental")
 {
     PdfMemDocument doc;
-    auto testPath = TestUtils::GetTestOutputFilePath("testSaveIncremental.pdf");
-    doc.GetPages().CreatePage(PdfPage::CreateStandardPageSize(PdfPageSize::A4));
+    auto testPath = TestUtils::GetTestOutputFilePath("TestSaveIncremental.pdf");
+    doc.GetPages().CreatePage(PdfPageSize::A4);
     doc.Save(testPath);
     doc.Load(testPath);
     doc.SaveUpdate(testPath);
     doc.Load(testPath);
+}
+
+TEST_CASE("TestStreamedDocument")
+{
+    auto testPath = TestUtils::GetTestOutputFilePath("TestStreamedDocument.pdf");
+    PdfStreamedDocument document(testPath);
+    auto& page = document.GetPages().CreatePage(PdfPageSize::A4);
+    // NOTE: use a TTC version of the LiberationSans format to test TTC extraction
+    auto& font = document.GetFonts().GetOrCreateFont(TestUtils::GetTestInputFilePath("FontsTTC", "LiberationSans.ttc"), 2);
+    PdfPainter painter;
+    painter.SetCanvas(page);
+    painter.TextState.SetFont(font, 18);
+    painter.DrawText("Hello World!", 56.69, page.GetRect().Height - 56.69);
+    painter.FinishDrawing();
 }

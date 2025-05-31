@@ -11,9 +11,9 @@
 
 namespace PoDoFo {
 
-/** A PdfFont that represents a CID-keyed font that has a TrueType font backend
+/** A PdfFont that represents a CID-keyed font that has a TrueType/OpenType font backend (aka "CIDFontType2")
  */
-class PdfFontCIDTrueType final : public PdfFontCID
+class PODOFO_API PdfFontCIDTrueType final : public PdfFontCID
 {
     friend class PdfFont;
 
@@ -26,14 +26,12 @@ private:
      *         deleted along with the font.
      *  \param encoding the encoding of this font
      */
-    PdfFontCIDTrueType(PdfDocument& doc, const PdfFontMetricsConstPtr& metrics,
+    PdfFontCIDTrueType(PdfDocument& doc, PdfFontMetricsConstPtr&& metrics,
         const PdfEncoding& encoding);
 
-public:
-    PdfFontType GetType() const override;
-
 protected:
-    void embedFontSubset() override;
+    void embedFontFileSubset(const std::vector<PdfCharGIDInfo>& infos,
+        const PdfCIDSystemInfo& cidInfo) override;
 };
 
 };

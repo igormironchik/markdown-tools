@@ -68,19 +68,19 @@ int PoDoFoPaintDevice::metric(QPaintDevice::PaintDeviceMetric metric) const
     switch (metric) {
     case PdmWidth:
         return qRound(d->m_engine.pdfPainter() ?
-                          d->m_engine.pdfPainter()->GetCanvas()->GetRectRaw().Width / 72.0 * 1200.0 : 100);
+                          d->m_engine.pdfPainter()->GetCanvas()->GetRectRaw().GetWidth() / 72.0 * 1200.0 : 100);
 
     case PdmHeight:
         return qRound(d->m_engine.pdfPainter() ?
-                          d->m_engine.pdfPainter()->GetCanvas()->GetRectRaw().Height / 72.0 * 1200.0 : 100);
+                          d->m_engine.pdfPainter()->GetCanvas()->GetRectRaw().GetHeight() / 72.0 * 1200.0 : 100);
 
     case PdmWidthMM:
         return qRound(d->m_engine.pdfPainter() ?
-                          d->m_engine.pdfPainter()->GetCanvas()->GetRectRaw().Width / 72.0 * 25.4 : 100.0 / 1200.0 * 25.4);
+                          d->m_engine.pdfPainter()->GetCanvas()->GetRectRaw().GetWidth() / 72.0 * 25.4 : 100.0 / 1200.0 * 25.4);
 
     case PdmHeightMM:
         return qRound(d->m_engine.pdfPainter() ?
-                          d->m_engine.pdfPainter()->GetCanvas()->GetRectRaw().Height / 72.0 * 25.4 : 100.0 / 1200.0 * 25.4);
+                          d->m_engine.pdfPainter()->GetCanvas()->GetRectRaw().GetHeight() / 72.0 * 25.4 : 100.0 / 1200.0 * 25.4);
 
     case PdmNumColors:
         return INT_MAX;
@@ -426,13 +426,16 @@ QPair<PoDoFo::PdfFont *, double> PoDoFoPaintEngine::qFontToPoDoFo(const QFont &f
         return {&font, size};
     } else {
         PoDoFo::PdfFontSearchParams params;
+        PoDoFo::PdfFontStyle style;
         params.Style = PoDoFo::PdfFontStyle::Regular;
         if (f.bold()) {
-            params.Style.value() |= PoDoFo::PdfFontStyle::Bold;
+            style |= PoDoFo::PdfFontStyle::Bold;
         }
         if (f.italic()) {
-            params.Style.value() |= PoDoFo::PdfFontStyle::Italic;
+            style |= PoDoFo::PdfFontStyle::Italic;
         }
+
+        params.Style = style;
 
         auto *font = d->m_pdfData.m_doc->GetFonts().SearchFont(f.family().toLocal8Bit().data(), params);
 
@@ -459,13 +462,13 @@ void PoDoFoPaintEngine::updateState(const QPaintEngineState &state)
         painter->GraphicsState.SetLineWidth(p.widthF() * scale / paintDevice()->physicalDpiX() * 72.0);
         painter->GraphicsState.SetLineCapStyle(capStyle(p.capStyle()));
         painter->GraphicsState.SetLineJoinStyle(joinStyle(p.joinStyle()));
-        painter->GraphicsState.SetFillColor(color(p.brush().color()));
-        painter->GraphicsState.SetStrokeColor(color(p.color()));
+        painter->GraphicsState.SetNonStrokingColor(color(p.brush().color()));
+        painter->GraphicsState.SetStrokingColor(color(p.color()));
         painter->GraphicsState.SetMiterLevel(p.miterLimit());
     }
 
     if (st & QPaintEngine::DirtyBrush) {
-        painter->GraphicsState.SetFillColor(color(state.brush().color()));
+        painter->GraphicsState.SetNonStrokingColor(color(state.brush().color()));
     }
 
     // if (st & QPaintEngine::DirtyFont) {
