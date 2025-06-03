@@ -100,32 +100,19 @@ struct SyntaxVisitorPrivate {
             auto &speller = Speller::instance();
             QMutexLocker lock(&speller.m_mutex);
 
-            if (!m_detectedLanguages.contains(word)) {
-                const auto lang = speller.m_guessLanguage->identify(word);
+            bool languageDetected = false;
 
-                if (!lang.isEmpty() && m_preferredLanguages.contains(lang)) {
-                    speller.m_speller->setLanguage(lang);
-                    m_detectedLanguages.insert(word, lang);
-                } else {
-                    bool languageDetected = false;
+            for (const auto &lang : std::as_const(m_preferredLanguages)) {
+                speller.m_speller->setLanguage(lang);
 
-                    for (const auto &lang :std::as_const(m_preferredLanguages)) {
-                        speller.m_speller->setLanguage(lang);
-
-                        if (!speller.m_speller->isMisspelled(word)) {
-                            m_detectedLanguages.insert(word, lang);
-                            languageDetected = true;
-                            break;
-                        }
-                    }
-
-                    if (!languageDetected) {
-                        speller.m_speller->setLanguage(m_defaultLanguage);
-                        m_detectedLanguages.insert(word, m_defaultLanguage);
-                    }
+                if (!speller.m_speller->isMisspelled(word)) {
+                    languageDetected = true;
+                    break;
                 }
-            } else {
-                speller.m_speller->setLanguage(m_detectedLanguages[word]);
+            }
+
+            if (!languageDetected) {
+                speller.m_speller->setLanguage(m_defaultLanguage);
             }
         }
     }
@@ -163,8 +150,6 @@ struct SyntaxVisitorPrivate {
     QMap<long long int, QVector<QPair<long long int, long long int>>> m_misspelledPos;
     //! Current highlighted misspelled.
     QPair<long long int, long long int> m_currentHighlightedMisspelled = {-1, -1};
-    //! Map of already detected languages for words.
-    QHash<QString, QString> m_detectedLanguages;
     //! Cache of correct words.
     QSet<QString> m_correctWords;
 }; // struct SyntaxVisitorPrivate
@@ -240,7 +225,6 @@ void SyntaxVisitor::spellingSettingsChanged(bool enabled)
         speller.m_speller->setLanguage(m_d->m_defaultLanguage);
     }
 
-    m_d->m_detectedLanguages.clear();
     m_d->m_correctWords.clear();
 }
 

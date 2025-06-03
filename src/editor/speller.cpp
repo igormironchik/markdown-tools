@@ -16,7 +16,7 @@ namespace MdEditor
 // Speller
 //
 
-static Speller * s_speller = nullptr;
+static Speller *s_speller = nullptr;
 
 Speller &Speller::instance()
 {
@@ -31,7 +31,6 @@ Speller &Speller::instance()
 
 Speller::Speller()
     : m_speller(new Sonnet::Speller)
-    , m_guessLanguage(new Sonnet::GuessLanguage)
 {
 }
 

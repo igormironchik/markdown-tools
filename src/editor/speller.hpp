@@ -5,7 +5,6 @@
 
 // Sonnet include.
 #include <Sonnet/Speller>
-#include <Sonnet/GuessLanguage>
 
 // Qt include.
 #include <QSharedPointer>
@@ -21,7 +20,6 @@ namespace MdEditor
 //! Singleton for spelling stuff.
 struct Speller {
     QSharedPointer<Sonnet::Speller> m_speller;
-    QSharedPointer<Sonnet::GuessLanguage> m_guessLanguage;
     QMutex m_mutex;
 
     static Speller &instance();
