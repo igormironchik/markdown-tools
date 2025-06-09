@@ -62,7 +62,7 @@ struct SyntaxVisitorPrivate {
     {
         for (auto i = startLine; i <= endLine; ++i) {
             if (m_stream) {
-                const auto block = m_stream->lineAt(i).asString();
+                const auto block = m_stream->lineAt(i);
 
                 QTextLayout::FormatRange r;
                 r.format = format;
@@ -352,37 +352,9 @@ void SyntaxVisitor::onReferenceLink(MD::Link<MD::QStringTrait> *l)
 
 namespace /* anonymous */ {
 
-long long int
-skipSpacesAndPunct(const QString &str, long long int pos)
-{
-    QChar c;
-
-    while (pos < str.length()) {
-        c = str.at(pos);
-
-        if (!(c.isPunct() || c.isSpace())) {
-            break;
-        }
-
-        ++pos;
-    }
-
-    return pos;
-}
-
-void
-skipLastPunct(QString &word, long long int &pos,
-              QVector<long long int> &puncts)
-{
-    while (!word.isEmpty() && word.back().isPunct()) {
-        puncts.pop_back();
-        --pos;
-        word.removeLast();
-    }
-}
-
+template<class String>
 QString
-readWord(const QString &str, long long int &pos, long long int lastPos,
+readWord(const String &str, long long int &pos, long long int lastPos,
          QVector<long long int> &puncts, bool &allUpper)
 {
     QString word;
@@ -392,7 +364,7 @@ readWord(const QString &str, long long int &pos, long long int lastPos,
     allUpper = true;
 
     while (pos <= lastPos) {
-        c = str.at(pos);
+        c = str[pos];
 
         if (c.isSpace()) {
             break;
@@ -430,14 +402,14 @@ void SyntaxVisitor::onText(MD::Text<MD::QStringTrait> *t)
     }
 
     if (m_d->m_spellingEnabled && m_d->m_stream) {
-        const auto block = m_d->m_stream->lineAt(t->startLine()).asString();
+        const auto block = m_d->m_stream->lineAt(t->startLine());
         auto pos = t->startColumn();
 
         format.setUnderlineColor(Qt::red);
         format.setFontUnderline(true);
         format.setUnderlineStyle(QTextCharFormat::WaveUnderline);
 
-        pos = skipSpacesAndPunct(block, pos);
+        pos = MD::skipIf(pos, block, [](const QChar &ch) { return (ch.isPunct() || ch.isSpace()); });
 
         while (pos <= t->endColumn()) {
             const auto startPos = pos;
@@ -476,7 +448,7 @@ void SyntaxVisitor::onText(MD::Text<MD::QStringTrait> *t)
                 break;
             }
 
-            pos = skipSpacesAndPunct(block, ++pos);
+            pos = MD::skipIf(++pos, block, [](const QChar &ch) { return (ch.isPunct() || ch.isSpace()); });
         }
     }
 

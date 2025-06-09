@@ -73,15 +73,13 @@ private slots:
             QTextStream stream(&m_data.back());
             MD::MdBlock<MD::QStringTrait>::Data data;
 
-            {
-                MD::TextStream<MD::QStringTrait> tmp(stream);
+            MD::TextStream<MD::QStringTrait> tmp(stream);
 
-                long long int i = 0;
+            long long int i = 0;
 
-                while (!tmp.atEnd()) {
-                    data.push_back(std::pair<MD::QStringTrait::InternalString, MD::MdLineData>(tmp.readLine(), {i}));
-                    ++i;
-                }
+            while (!tmp.atEnd()) {
+                data.push_back(std::pair<MD::QStringTrait::InternalString, MD::MdLineData>(tmp.readLine(), {i}));
+                ++i;
             }
 
             stream.seek(0);
