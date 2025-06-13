@@ -584,7 +584,7 @@ void SyntaxVisitor::onBlockquote(MD::Blockquote<MD::QStringTrait> *b)
     }
 }
 
-void SyntaxVisitor::onListItem(MD::ListItem<MD::QStringTrait> *l, bool first)
+void SyntaxVisitor::onListItem(MD::ListItem<MD::QStringTrait> *l, bool first, bool)
 {
     MD::PosCache<MD::QStringTrait>::onListItem(l, first);
 
