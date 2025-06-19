@@ -23,6 +23,9 @@
 #include <limits>
 #include <utility>
 
+// md4qt include.
+#include <md4qt/algo.h>
+
 namespace MdEditor
 {
 
@@ -41,12 +44,15 @@ class DataParser : public QObject
 
 signals:
     void newData();
-    void done(std::shared_ptr<MD::Document<MD::QStringTrait>>, unsigned long long int, SyntaxVisitor syntax);
+    void done(std::shared_ptr<MD::Document<MD::QStringTrait>>, unsigned long long int, SyntaxVisitor syntax,
+              MD::details::IdsMap<MD::QStringTrait> idsMap);
     void highlighted();
 
 public:
     DataParser()
-    {
+        : m_itemTypes({MD::ItemType::Paragraph, MD::ItemType::Blockquote,
+                      MD::ItemType::List, MD::ItemType::Code, MD::ItemType::Table})
+    {                    
         connect(this, &DataParser::newData, this, &DataParser::onParse, Qt::QueuedConnection);
     }
 
@@ -92,8 +98,21 @@ private slots:
 
             m_syntax.highlight(&linesStream, doc, m_syntax.colors());
 
-            emit done(doc, m_counter, m_syntax);
+            MD::details::IdsMap<MD::QStringTrait> idsMap;
+
+            m_id = 0;
+
+            MD::forEach<MD::QStringTrait>(m_itemTypes, doc,
+                [&idsMap, this](MD::Item<MD::QStringTrait> *item) { idsMap.insert({item, this->generateId()}); }, 1);
+
+            emit done(doc, m_counter, m_syntax, idsMap);
         }
+    }
+
+private:
+    QString generateId()
+    {
+        return QStringLiteral("md4qt-line-id-%1/%2/%3").arg(QString::number(++m_id), m_path, m_fileName);
     }
 
 private:
@@ -103,6 +122,8 @@ private:
     unsigned long long int m_counter;
     MD::Parser<MD::QStringTrait> m_parser;
     SyntaxVisitor m_syntax;
+    QVector<MD::ItemType> m_itemTypes;
+    long long int m_id = 0;
 };
 
 //
@@ -198,6 +219,8 @@ struct EditorPrivate {
 
         QObject::connect(m_q, &Editor::cursorPositionChanged, m_q, &Editor::highlightCurrentLine);
         QObject::connect(m_q, &QPlainTextEdit::textChanged, m_q, &Editor::onContentChanged);
+        QObject::connect(m_lineNumberArea, &LineNumberArea::lineNumberContextMenuRequested,
+                         m_q, &Editor::lineNumberContextMenuRequested);
 
         m_q->showLineNumbers(true);
         m_q->applyFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
@@ -230,6 +253,7 @@ struct EditorPrivate {
     QTextEdit::ExtraSelection m_currentLine;
     QString m_highlightedText;
     std::shared_ptr<MD::Document<MD::QStringTrait>> m_currentDoc;
+    MD::details::IdsMap<MD::QStringTrait> m_idsMap;
     SyntaxVisitor m_syntax;
     Margins m_margins;
     QThread *m_parsingThread = nullptr;
@@ -268,6 +292,11 @@ Margins &Editor::margins()
 void Editor::setFindWidget(Find *findWidget)
 {
     m_d->m_find = findWidget;
+}
+
+const MD::details::IdsMap<MD::QStringTrait> &Editor::idsMap() const
+{
+    return m_d->m_idsMap;
 }
 
 bool Editor::foundHighlighted() const
@@ -552,6 +581,13 @@ void LineNumberArea::leaveEvent(QEvent *event)
     event->ignore();
 }
 
+void LineNumberArea::contextMenuEvent(QContextMenuEvent *event)
+{
+    emit lineNumberContextMenuRequested(m_lineNumber, event->globalPos());
+
+    event->accept();
+}
+
 void LineNumberArea::onHover(const QPoint &p)
 {
     const auto ln = m_codeEditor->lineNumber(p);
@@ -752,11 +788,11 @@ void Editor::onContentChanged()
 }
 
 void Editor::onParsingDone(std::shared_ptr<MD::Document<MD::QStringTrait>> doc, unsigned long long int counter,
-                           SyntaxVisitor syntax)
+                           SyntaxVisitor syntax, MD::details::IdsMap<MD::QStringTrait> idsMap)
 {
     if (m_d->m_currentParsingCounter == counter) {
         m_d->m_currentDoc = doc;
-
+        m_d->m_idsMap = idsMap;
         m_d->m_syntax = syntax;
 
         m_d->m_syntax.applyFormats(document());

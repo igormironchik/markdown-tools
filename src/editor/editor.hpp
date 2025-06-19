@@ -16,6 +16,7 @@
 // md4qt include.
 #define MD4QT_QT_SUPPORT
 #include <md4qt/parser.h>
+#include <md4qt/html.h>
 
 namespace MdEditor
 {
@@ -46,6 +47,7 @@ class Editor : public QPlainTextEdit
 
 signals:
     void lineHovered(int lineNumber, const QPoint &pos);
+    void lineNumberContextMenuRequested(int lineNumber, const QPoint &pos);
     void hoverLeaved();
     void ready();
     void misspelled(bool found);
@@ -71,6 +73,7 @@ public:
     SyntaxVisitor &syntaxHighlighter() const;
     Margins &margins();
     void setFindWidget(Find *findWidget);
+    const MD::details::IdsMap<MD::QStringTrait> &idsMap() const;
 
 public slots:
     void showUnprintableCharacters(bool on);
@@ -94,7 +97,7 @@ private slots:
     void onFindPrev();
     void onContentChanged();
     void onParsingDone(std::shared_ptr<MD::Document<MD::QStringTrait>> doc, unsigned long long int counter,
-                       SyntaxVisitor syntax);
+                       SyntaxVisitor syntax, MD::details::IdsMap<MD::QStringTrait> idsMap);
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
@@ -127,6 +130,7 @@ class LineNumberArea : public QWidget
 signals:
     void lineHovered(int lineNumber, const QPoint &pos);
     void hoverLeaved();
+    void lineNumberContextMenuRequested(int lineNumber, const QPoint &pos);
 
 public:
     LineNumberArea(Editor *editor)
@@ -150,6 +154,7 @@ protected:
     void enterEvent(QEnterEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void leaveEvent(QEvent *event) override;
+    void contextMenuEvent(QContextMenuEvent *event) override;
 
 private:
     void onHover(const QPoint &p);

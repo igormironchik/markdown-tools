@@ -51,6 +51,7 @@ private slots:
     void onAbout();
     void onAboutQt();
     void onLineHovered(int lineNumber, const QPoint &pos);
+    void onLineNumberContextMenuRequested(int lineNumber, const QPoint &pos);
     void onFind(bool on);
     void onFindWeb(bool on);
     void onGoToLine(bool on);

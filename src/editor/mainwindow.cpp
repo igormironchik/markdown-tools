@@ -662,6 +662,8 @@ struct MainWindowPrivate {
         QObject::connect(m_editor, &Editor::ready, m_q, &MainWindow::onTextChanged);
         QObject::connect(m_editor, &Editor::misspelled, m_q, &MainWindow::onMisspelledFount);
         QObject::connect(m_editor, &Editor::lineHovered, m_q, &MainWindow::onLineHovered);
+        QObject::connect(m_editor, &Editor::lineNumberContextMenuRequested,
+                         m_q, &MainWindow::onLineNumberContextMenuRequested);
         QObject::connect(toggleLineNumbersAction, &QAction::toggled, m_editor, &Editor::showLineNumbers);
         QObject::connect(toggleUnprintableCharacters, &QAction::toggled, m_editor, &Editor::showUnprintableCharacters);
         QObject::connect(m_toggleFindAction, &QAction::triggered, m_q, &MainWindow::onFind);
@@ -907,7 +909,7 @@ void MainWindow::onWorkingDirectoryChange(const QString &)
 
 void MainWindow::onScrollWebViewTo(const QString &id)
 {
-    m_d->m_page->runJavaScript(QStringLiteral("scrollToHeading('%1')").arg(id));
+    m_d->m_page->runJavaScript(QStringLiteral("scrollToId('%1')").arg(id));
 }
 
 void MainWindow::onConvertToPdf()
@@ -1205,7 +1207,8 @@ void MainWindow::onTextChanged()
 
         if (m_d->m_livePreviewVisible && m_d->m_mdDoc) {
             m_d->m_html->setText(MD::toHtml<MD::QStringTrait, HtmlVisitor>(
-                                     m_d->m_mdDoc, false, QStringLiteral("qrc:/res/img/go-jump.png")));
+                                     m_d->m_mdDoc, false, QStringLiteral("qrc:/res/img/go-jump.png"),
+                                     true, &m_d->m_editor->idsMap()));
         }
     }
 
@@ -1311,6 +1314,27 @@ void MainWindow::onLineHovered(int lineNumber, const QPoint &pos)
         } else {
             QToolTip::showText(pos, tr("%1 in %2").arg(itemType(items.at(1)->type(), items.size() == 1),
                                                        itemType(items.front()->type(), items.size() == 1)));
+        }
+    }
+}
+
+void MainWindow::onLineNumberContextMenuRequested(int lineNumber, const QPoint &pos)
+{
+    const auto items =
+        m_d->m_editor->syntaxHighlighter().findFirstInCache(
+                {0, lineNumber, m_d->m_editor->document()->findBlockByLineNumber(lineNumber).length(), lineNumber});
+
+    if (!items.isEmpty()) {
+        const auto it = m_d->m_editor->idsMap().find(items.front());
+
+        if (it != m_d->m_editor->idsMap().cend()) {
+            QMenu menu;
+
+            const auto id = it->second;
+
+            menu.addAction(tr("Scroll Web Preview To"), [id, this](){ this->onScrollWebViewTo(id); });
+
+            menu.exec(pos);
         }
     }
 }
@@ -1775,7 +1799,8 @@ void MainWindow::readAllLinked()
 
         if (m_d->m_livePreviewVisible) {
             m_d->m_html->setText(MD::toHtml<MD::QStringTrait, HtmlVisitor>(
-                                     m_d->m_mdDoc, false, QStringLiteral("qrc:/res/img/go-jump.png")));
+                                     m_d->m_mdDoc, false, QStringLiteral("qrc:/res/img/go-jump.png"),
+                                     true, &m_d->m_editor->idsMap()));
         }
     }
 }
@@ -1920,7 +1945,8 @@ void MainWindow::onToggleLivePreviewAction(bool checked)
 
         if (m_d->m_mdDoc) {
             m_d->m_html->setText(MD::toHtml<MD::QStringTrait, HtmlVisitor>(
-                                     m_d->m_mdDoc, false, QStringLiteral("qrc:/res/img/go-jump.png")));
+                                     m_d->m_mdDoc, false, QStringLiteral("qrc:/res/img/go-jump.png"),
+                                     true, &m_d->m_editor->idsMap()));
         } else {
             m_d->m_html->setText({});
         }
