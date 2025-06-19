@@ -51,7 +51,7 @@ signals:
 public:
     DataParser()
         : m_itemTypes({MD::ItemType::Paragraph, MD::ItemType::Blockquote,
-                      MD::ItemType::List, MD::ItemType::Code, MD::ItemType::Table})
+                      MD::ItemType::List, MD::ItemType::Code, MD::ItemType::Table, MD::ItemType::Heading})
     {                    
         connect(this, &DataParser::newData, this, &DataParser::onParse, Qt::QueuedConnection);
     }
@@ -103,16 +103,37 @@ private slots:
             m_id = 0;
 
             MD::forEach<MD::QStringTrait>(m_itemTypes, doc,
-                [&idsMap, this](MD::Item<MD::QStringTrait> *item) { idsMap.insert({item, this->generateId()}); }, 1);
+                [&idsMap, this](MD::Item<MD::QStringTrait> *item) {
+                    const auto id = this->generateId(item);
+
+                    if (!id.isEmpty()) {
+                        idsMap.insert({item, id});
+                    }
+                }, 1);
 
             emit done(doc, m_counter, m_syntax, idsMap);
         }
     }
 
 private:
-    QString generateId()
+    QString generateId(MD::Item<MD::QStringTrait> *item)
     {
-        return QStringLiteral("md4qt-line-id-%1/%2/%3").arg(QString::number(++m_id), m_path, m_fileName);
+        if (item->type() != MD::ItemType::Heading) {
+            return QStringLiteral("md4qt-line-id-%1/%2/%3").arg(QString::number(++m_id), m_path, m_fileName);
+        } else {
+            const auto labelToId = [](const QString &label) -> QString
+            {
+                auto id = label;
+
+                if (id.startsWith(QStringLiteral("#"))) {
+                    id.remove(0, 1);
+                }
+
+                return id;
+            };
+
+            return labelToId(static_cast<MD::Heading<MD::QStringTrait>*>(item)->label());
+        }
     }
 
 private:
