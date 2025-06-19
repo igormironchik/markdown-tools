@@ -864,6 +864,7 @@ struct MainWindowPrivate {
     int m_settingsWindowWidth = -1;
     int m_settingsWindowHeight = -1;
     bool m_settingsWindowMaximized = false;
+    bool m_isDefaultFile = true;
 }; // struct MainWindowPrivate
 
 //
@@ -978,6 +979,7 @@ void MainWindow::openFile(const QString &path)
         return;
     }
 
+    m_d->m_isDefaultFile = false;
     m_d->m_editor->setDocName(path);
     const auto wd = QFileInfo(path).absoluteDir().absolutePath();
     m_d->m_workingDirectoryWidget->setWorkingDirectory(wd);
@@ -1031,6 +1033,7 @@ void MainWindow::onFileNew()
         }
     }
 
+    m_d->m_isDefaultFile = true;
     m_d->m_editor->setDocName(QStringLiteral("default.md"));
     m_d->m_editor->setText({});
     m_d->m_editor->document()->setModified(false);
@@ -1069,8 +1072,7 @@ void MainWindow::onFileOpen()
         }
     }
 
-    const auto folder = m_d->m_editor->docName() == QStringLiteral("default.md") ?
-                QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first()
+    const auto folder = m_d->m_isDefaultFile ? QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first()
               : QFileInfo(m_d->m_editor->docName()).absolutePath();
 
     QFileDialog dialog(this, tr("Open Markdown File"), folder);
@@ -1084,7 +1086,7 @@ void MainWindow::onFileOpen()
 
 void MainWindow::onFileSave()
 {
-    if (m_d->m_editor->docName() == QStringLiteral("default.md")) {
+    if (m_d->m_isDefaultFile) {
         onFileSaveAs();
         return;
     }
@@ -1123,6 +1125,7 @@ void MainWindow::onFileSaveAs()
         return;
     }
 
+    m_d->m_isDefaultFile = false;
     m_d->m_editor->setDocName(dialog.selectedFiles().constFirst());
     const auto wd = QFileInfo(m_d->m_editor->docName()).absoluteDir().absolutePath();
     m_d->m_workingDirectoryWidget->setWorkingDirectory(wd);
