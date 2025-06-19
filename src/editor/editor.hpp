@@ -74,6 +74,7 @@ public:
     Margins &margins();
     void setFindWidget(Find *findWidget);
     const MD::details::IdsMap<MD::QStringTrait> &idsMap() const;
+    bool isReady() const;
 
 public slots:
     void showUnprintableCharacters(bool on);

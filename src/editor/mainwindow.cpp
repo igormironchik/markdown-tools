@@ -902,9 +902,11 @@ void MainWindow::onWorkingDirectoryChange(const QString &)
     m_d->m_editor->onWorkingDirectoryChange(m_d->m_workingDirectoryWidget->workingDirectory(),
                                             !m_d->m_workingDirectoryWidget->isRelative());
 
-    readAllLinked();
-
-    m_d->initMarkdownMenu();
+    if (m_d->m_editor->isReady()) {
+        onEditorReady();
+    } else {
+        connect(m_d->m_editor, &Editor::ready, this, &MainWindow::onEditorReady);
+    }
 }
 
 void MainWindow::onScrollWebViewTo(const QString &id)
@@ -1103,9 +1105,11 @@ void MainWindow::onFileSave()
 
     updateWindowTitle();
 
-    readAllLinked();
-
-    m_d->initMarkdownMenu();
+    if (m_d->m_editor->isReady()) {
+        onEditorReady();
+    } else {
+        connect(m_d->m_editor, &Editor::ready, this, &MainWindow::onEditorReady);
+    }
 }
 
 void MainWindow::onFileSaveAs()
@@ -1666,29 +1670,41 @@ qsizetype countOfFiles(const Node &root)
 
 void MainWindow::loadAllLinkedFiles()
 {
-    if (m_d->m_loadAllFlag) {
-        m_d->m_loadAllFlag = false;
-
-        m_d->m_tabs->removeTab(1);
-        m_d->m_fileTree->hide();
-
-        closeAllLinkedFiles();
-
-        updateLoadAllLinkedFilesMenuText();
-
-        onTextChanged();
-
-        return;
+    if(sender() == m_d->m_editor) {
+        disconnect(m_d->m_editor, &Editor::ready, this, &MainWindow::loadAllLinkedFiles);
     } else {
-        if (isModified()) {
-            QMessageBox::information(this, windowTitle(), tr("You have unsaved changes. Please save document first."));
+        if (m_d->m_loadAllFlag) {
+            m_d->m_loadAllFlag = false;
 
-            m_d->m_editor->setFocus();
+            m_d->m_tabs->removeTab(1);
+            m_d->m_fileTree->hide();
+
+            m_d->m_saveAsAction->setEnabled(true);
+
+            closeAllLinkedFiles();
+
+            updateLoadAllLinkedFilesMenuText();
+
+            onTextChanged();
 
             return;
+        } else {
+            if (isModified()) {
+                QMessageBox::information(this, windowTitle(), tr("You have unsaved changes. Please save document first."));
+
+                m_d->m_editor->setFocus();
+
+                return;
+            }
+
+            m_d->m_loadAllFlag = true;
+
+            m_d->m_saveAsAction->setEnabled(false);
         }
 
-        m_d->m_loadAllFlag = true;
+        if (!m_d->m_editor->isReady()) {
+            connect(m_d->m_editor, &Editor::ready, this, &MainWindow::loadAllLinkedFiles);
+        }
     }
 
     readAllLinked();
@@ -1797,10 +1813,32 @@ void MainWindow::readAllLinked()
                                         true, {QStringLiteral("md"), QStringLiteral("mkd"), QStringLiteral("markdown")});
         }
 
+        MD::details::IdsMap<MD::QStringTrait> idsMap;
+
+        for (auto it = m_d->m_mdDoc->items().cbegin(), last = m_d->m_mdDoc->items().cend(); it != last; ++it) {
+            if ((*it)->type() == MD::ItemType::Anchor) {
+                auto a = static_cast<MD::Anchor<MD::QStringTrait>*>(it->get());
+
+                if (a->label() == m_d->m_editor->docName()) {
+                    const auto doc = m_d->m_editor->currentDoc();
+
+                    for (auto eIt = doc->items().cbegin(), eLast = doc->items().cend(); eIt != eLast; ++eIt, ++it) {
+                        const auto idIt = m_d->m_editor->idsMap().find(eIt->get());
+
+                        if (idIt != m_d->m_editor->idsMap().cend()) {
+                            idsMap.insert({it->get(), idIt->second});
+                        }
+                    }
+
+                    break;
+                }
+            }
+        }
+
         if (m_d->m_livePreviewVisible) {
             m_d->m_html->setText(MD::toHtml<MD::QStringTrait, HtmlVisitor>(
                                      m_d->m_mdDoc, false, QStringLiteral("qrc:/res/img/go-jump.png"),
-                                     true, &m_d->m_editor->idsMap()));
+                                     true, &idsMap));
         }
     }
 }
@@ -1836,8 +1874,17 @@ void MainWindow::onNavigationDoubleClicked(QTreeWidgetItem *item, int)
 
         onCursorPositionChanged();
 
-        m_d->initMarkdownMenu();
+        connect(m_d->m_editor, &Editor::ready, this, &MainWindow::onEditorReady);
     }
+}
+
+void MainWindow::onEditorReady()
+{
+    disconnect(m_d->m_editor, &Editor::ready, this, &MainWindow::onEditorReady);
+
+    readAllLinked();
+
+    m_d->initMarkdownMenu();
 }
 
 void MainWindow::updateWindowTitle()

@@ -283,6 +283,7 @@ struct EditorPrivate {
     unsigned long long int m_currentParsingCounter = 0;
     QString m_workingDirectory;
     bool m_useWorkingDir = false;
+    bool m_isReady = true;
 }; // struct EditorPrivate
 
 //
@@ -318,6 +319,11 @@ void Editor::setFindWidget(Find *findWidget)
 const MD::details::IdsMap<MD::QStringTrait> &Editor::idsMap() const
 {
     return m_d->m_idsMap;
+}
+
+bool Editor::isReady() const
+{
+    return m_d->m_isReady;
 }
 
 bool Editor::foundHighlighted() const
@@ -804,6 +810,8 @@ void Editor::onContentChanged()
 
     ++m_d->m_currentParsingCounter;
 
+    m_d->m_isReady = false;
+
     emit doParsing(md, (m_d->m_useWorkingDir ? m_d->m_workingDirectory : info.absolutePath()), info.fileName(),
                    m_d->m_currentParsingCounter, m_d->m_syntax);
 }
@@ -821,6 +829,8 @@ void Editor::onParsingDone(std::shared_ptr<MD::Document<MD::QStringTrait>> doc, 
         highlightCurrent();
 
         viewport()->update();
+
+        m_d->m_isReady = true;
 
         emit misspelled(syntaxHighlighter().hasMisspelled());
         emit ready();
