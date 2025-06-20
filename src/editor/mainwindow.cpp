@@ -1707,6 +1707,8 @@ void MainWindow::loadAllLinkedFiles()
 
         if (!m_d->m_editor->isReady()) {
             connect(m_d->m_editor, &Editor::ready, this, &MainWindow::loadAllLinkedFiles);
+
+            return;
         }
     }
 
