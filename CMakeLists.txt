@@ -32,6 +32,7 @@ execute_process(COMMAND git rev-parse --short HEAD
 	OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 set(MD_TOOLS_VERSION_NUMBER "0.13.0")
+set(HomeDir "@HomeDir@")
 string(TIMESTAMP MD_CURRENT_DATE "%Y-%m-%d")
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.xml.in ${CMAKE_CURRENT_SOURCE_DIR}/installer/config/config.xml @ONLY)
