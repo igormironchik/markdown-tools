@@ -1,18 +1,18 @@
 # SPDX-FileCopyrightText: 2024 Igor Mironchik <igor.mironchik@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-set( CMAKE_AUTOMOC ON )
-set( CMAKE_AUTORCC ON )
-set( CMAKE_AUTOUIC ON )
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
 
-find_package( Qt6Core REQUIRED )
-find_package( Qt6Widgets REQUIRED )
-find_package( Qt6WebEngineWidgets REQUIRED )
-find_package( KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
+find_package(Qt6Core REQUIRED)
+find_package(Qt6Widgets REQUIRED)
+find_package(Qt6WebEngineWidgets REQUIRED)
+find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
     Sonnet
 )
 
-set( LIB_SRC
+set(LIB_SRC
 	editor.hpp
 	editor.cpp
 	mainwindow.hpp
@@ -60,30 +60,30 @@ set( LIB_SRC
     speller.hpp
     speller.cpp)
 
-set( SRC main.cpp )
+set(SRC main.cpp)
 
-qt6_add_resources( LIB_SRC resources.qrc )
+qt6_add_resources(LIB_SRC resources.qrc)
 
-if( WIN32 )
-	list( APPEND SRC md-editor.rc )
+if(WIN32)
+    list(APPEND SRC md-editor.rc)
 endif()
 
-configure_file( version.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/version.hpp )
+configure_file(version.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/version.hpp)
 
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR}
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}
 	${md4qt_INCLUDE_DIRECTORIES}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/widgets/include
-	${CMAKE_CURRENT_SOURCE_DIR}/../shared )
+    ${CMAKE_CURRENT_SOURCE_DIR}/../shared)
 
-add_library( md-editor-lib STATIC ${LIB_SRC} )
+add_library(md-editor-lib STATIC ${LIB_SRC})
 
-target_link_libraries( md-editor-lib markdown-widgets KF${KF_MAJOR_VERSION}::SonnetUi KF${KF_MAJOR_VERSION}::SonnetCore
-    Qt6::WebEngineWidgets Qt6::Widgets Qt6::Core )
+target_link_libraries(md-editor-lib markdown-widgets KF${KF_MAJOR_VERSION}::SonnetUi KF${KF_MAJOR_VERSION}::SonnetCore
+    Qt6::WebEngineWidgets Qt6::Widgets Qt6::Core)
 
-add_executable( md-editor WIN32 ${SRC} )
+add_executable(md-editor WIN32 ${SRC})
 
-install( TARGETS md-editor )
+install(TARGETS md-editor)
 
-target_link_libraries( md-editor md-editor-lib markdown-widgets KF${KF_MAJOR_VERSION}::SonnetUi KF${KF_MAJOR_VERSION}::SonnetCore
-    Qt6::WebEngineWidgets Qt6::Widgets Qt6::Core )
+target_link_libraries(md-editor md-editor-lib markdown-widgets KF${KF_MAJOR_VERSION}::SonnetUi KF${KF_MAJOR_VERSION}::SonnetCore
+    Qt6::WebEngineWidgets Qt6::Widgets Qt6::Core)
