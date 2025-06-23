@@ -77,6 +77,7 @@ if(PODOFO_BUILD_STATIC)
     set(PODOFO_TARGET podofo_static)
     set(PODOFO_LIBRARIES podofo_static podofo_private podofo_3rdparty
         CACHE INTERNAL "Which podofo library variant to depend on")
+    set(PODOFO_PACKAGE_CONFIG_LIBS "-lpodofo_private -lpodofo_3rdparty")
 endif()
 
 if(PODOFO_BUILD_SHARED)
@@ -124,13 +125,13 @@ install(TARGETS ${PODOFO_LIBRARIES}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
 
-install(EXPORT podofo-targets DESTINATION "lib/cmake/podofo" NAMESPACE podofo::)
+install(EXPORT podofo-targets DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/podofo" NAMESPACE podofo::)
 
 # See https://cmake.org/cmake/help/latest/guide/tutorial/Adding%20Export%20Configuration.html
 include(CMakePackageConfigHelpers)
 configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/podofo-config.cmake.in
   "${CMAKE_CURRENT_BINARY_DIR}/podofo-config.cmake"
-  INSTALL_DESTINATION "lib/cmake/podofo"
+  INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/podofo"
   NO_SET_AND_CHECK_MACRO
   NO_CHECK_REQUIRED_COMPONENTS_MACRO
 )
@@ -144,7 +145,7 @@ write_basic_package_version_file(
 install(FILES
   "${CMAKE_CURRENT_BINARY_DIR}/podofo-config.cmake"
   "${CMAKE_CURRENT_BINARY_DIR}/podofo-config-version.cmake"
-  DESTINATION "lib/cmake/podofo"
+  DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/podofo"
 )
 
 # Use these flags when compiling code that includes podofo headers.

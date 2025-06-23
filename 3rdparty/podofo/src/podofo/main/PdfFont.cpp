@@ -332,17 +332,21 @@ bool PdfFont::TryScanEncodedString(const PdfString& encodedStr, const PdfTextSta
     CodePointSpan codepoints;
     PdfCID cid;
     bool success = true;
-    unsigned prevOffset = 0;
     double length;
     while (!context.IsEndOfString())
     {
-        if (!context.TryScan(cid, utf8str, codepoints))
+        if (!context.TryScan(cid, utf8str, positions, codepoints))
             success = false;
 
         length = getGlyphLength(GetCIDWidth(cid.Id), state, false);
+        for (unsigned i = 1; i < codepoints.GetSize(); i++)
+        {
+            // Arbitrarily prefix 0 length positions for ligatures,
+            // for the code point span size minus one
+            lengths.push_back(0);
+        }
+
         lengths.push_back(length);
-        positions.push_back(prevOffset);
-        prevOffset = (unsigned)utf8str.length();
     }
 
     return success;
@@ -628,7 +632,11 @@ void PdfFont::initSpaceDescriptors()
     // We arbitrarily take a fraction of the read or inferred
     // char space to determine the word spacing length. The
     // factor proved to work well with a consistent tests corpus
-    constexpr int WORD_SPACING_FRACTIONAL_FACTOR = 6;
+    // NOTE: This is very different from what Adobe Acrobat does,
+    // but there's no reference heuristic to look at, every
+    // implementation does something different
+    // https://github.com/pdf-association/pdf-issues/issues/564
+    constexpr double WORD_SPACING_FRACTIONAL_FACTOR = 5.3;
     m_WordSpacingLengthRaw = m_SpaceCharLengthRaw / WORD_SPACING_FRACTIONAL_FACTOR;
 }
 

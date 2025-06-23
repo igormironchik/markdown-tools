@@ -1,28 +1,44 @@
 # PoDoFo [![build-linux](https://github.com/podofo/podofo/actions/workflows/build-linux.yml/badge.svg)](https://github.com/podofo/podofo/actions/workflows/build-linux.yml) [![build-mac](https://github.com/podofo/podofo/actions/workflows/build-mac.yml/badge.svg)](https://github.com/podofo/podofo/actions/workflows/build-mac.yml) [![build-win](https://github.com/podofo/podofo/actions/workflows/build-win.yml/badge.svg)](https://github.com/podofo/podofo/actions/workflows/build-win.yml)
 
 1.  [What is PoDoFo?](#what-is-podofo)
-2.  [Requirements](#requirements)
-3.  [Licensing](#licensing)
-4.  [Development quickstart](#development-quickstart)
-5.  [Doxygen Documentation](#doxygen-documentation)
-6.  [Software life cycle and API stability](#software-life-cycle-and-api-stability)
-7.  [String encoding and buffer conventions](#string-encoding-and-buffer-conventions)
-8.  [PoDoFo tools](#podofo-tools)
-9.  [TODO](#todo)
-10.  [FAQ](#faq)
-11.  [No warranty](#no-warranty)
-12.  [Contributions](#contributions)
-13.  [Authors](#authors)
+2.  [Features](#features)
+3.  [Requirements](#requirements)
+4.  [Licensing](#licensing)
+5.  [Development quickstart](#development-quickstart)
+6.  [Doxygen Documentation](#doxygen-documentation)
+7.  [Software life cycle and API stability](#software-life-cycle-and-api-stability)
+8.  [String encoding and buffer conventions](#string-encoding-and-buffer-conventions)
+9.  [PoDoFo tools](#podofo-tools)
+10.  [TODO](#todo)
+11.  [FAQ](#faq)
+12.  [No warranty](#no-warranty)
+13.  [Contributions](#contributions)
+14.  [Authors](#authors)
 
 ## What is PoDoFo?
 
 PoDoFo is a free portable C++ library to work with the PDF file format.
 
-PoDoFo provides classes to parse a PDF file and modify its content
-into memory. The changes can be written back to disk easily.
-Besides PDF parsing PoDoFo also provides facilities to create your
-own PDF files from scratch. It currently does not
-support rendering PDF content.
+PoDoFo provides classes to parse a PDF file and modify its content, allowing to write
+it back to disk easily. Besides PDF parsing and manipulation PoDoFo also provides
+facilities to create your own PDF files from scratch.
+
+## Features
+
+PoDoFo has a modern and user-friendly C++17 API that features:
+
+- PDF parsing with high-level entity inspection (annotations, form fields and others)
+- PDF writing with support for incremental updates
+- PDF signing with PAdES-B compliance and support for asynchronous/deferred signing
+- Text drawing with automatic CID encoding generation and font subsetting
+- Full-featured low-level Unicode text extraction
+- Advanced CJK language support (text extraction and automatic multi-byte encoding)
+- PDF/A compliance preservation (e.g., font embedding, simultaneous PDF/A and PDF/UA compliance)
+- PDF/UA compliance preservation (e.g., when adding annotations/form fields)
+- Deferred font file data embedding
+
+PoDoFo  does not support rendering PDF content yet. Text writing
+is also limited as it currently does not perform proper text shaping/kerning.
 
 ## Requirements
 
@@ -54,7 +70,7 @@ It is regularly tested with the following IDE/toolchains versions:
 * XCode 13.3
 * NDK r23b
 
-GCC 8.x support [broke](https://github.com/podofo/podofo/issues/116) recently, but it could be reinstanced.
+GCC 8.1 support [broke](https://github.com/podofo/podofo/issues/116), but it could be reinstanced.
 
 ## Licensing
 
@@ -235,7 +251,7 @@ at the [issue](https://github.com/podofo/podofo/issues) tracker.
 
 ## FAQ
 
-**Q: PoDoFo compilation requires a CMake version higher than what is present in my system, can you lower the requirement?**
+**Q: PoDoFo compilation requires a CMake version higher than what is present in my system, can you lower the requirement?<a id='faq-cmake'></a>**
 
 **A:** No, CMake 2.23 introduced a functionality that makes it very easy to create [CMake packages](https://cmake.org/cmake/help/latest/manual/cmake-packages.7.html) that
 is too conventient to ignore. In Windows it's easy to upgrade the CMake version to latest, while in MacOs it's the same thanks to the official KitWare installer or `brew`.
@@ -250,7 +266,7 @@ export CMAKE_VERSION=3.31.7 \
     && cmake --version
 ```
 
-**Q: How do I sign a document?**
+**Q: How do I sign a document?<a id='faq-sign'></a>**
 
 **A:** PoDoFo HEAD now supplies a high level signing procedure which is very powerful
 and that allows to sign a document without having to supply a *CMS* structure manually.
@@ -275,9 +291,9 @@ PoDoFo::SignDocument(doc, *inputOutput, signer, signature);
 There's also a support for external signing services and/or signing the document
 in memory buffers. See the various signing examples in the unit [tests](https://github.com/podofo/podofo/blob/master/test/unit/SignatureTest.cpp).
 
-**Q: Can I still use an event based procedure to sign the document?**
+**Q: Can I still use an event based procedure to sign the document?<a id='faq-sign-event-based'></a>**
 
-Yes, the old low level procedure hasn't changed and it's still available.
+**A:** Yes, the old low level procedure hasn't changed and it's still available.
 To describe the procedure briefly, one has to fully Implement a `PdfSigner`,
 retrieve or create a `PdfSignature` field, create an output device (see next question)
 and use `PoDoFo::SignDocument(doc, device, signer, signature)`. When signing,
@@ -295,7 +311,7 @@ is not altered) or not accordingly to the value of `PdfSigner::SkipBufferClear()
 **Q: `PdfMemDocument::SaveUpdate()` or `PoDoFo::SignDocument()` write only a
 partial file: why there's no mechanism to seamlessly handle the incremental
 update as it was in PoDoFo 0.9.x? What should be done to correctly update/sign
-the document?**
+the document?<a id='faq-manual-update'></a>**
 
 **A:** The previous mechanism in PoDoFo 0.9.x required enablement of document
 for incremental updates, which is a decision step which I believe should be
@@ -340,7 +356,7 @@ doc.SaveUpdate(*inputOutput);
 
 Signing documents can be done with same technique, read the other questions for more examples.
 
-**Q: Can I sign a document a second time?**
+**Q: Can I sign a document a second time?<a id='faq-sign-second'></a>**
 
 **A:** Yes, this is tested, but to make sure this will work you'll to re-parse the document a second time,
 as re-using the already loaded document is still untested (this may change later). For example you can
