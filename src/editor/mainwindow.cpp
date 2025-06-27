@@ -815,6 +815,16 @@ struct MainWindowPrivate {
         }
     }
 
+    template<class Func>
+    void runWhenEditorReady(Func f)
+    {
+        if (m_editor->isReady()) {
+            f();
+        } else {
+            m_funcsQueue.push_back(std::move(f));
+        }
+    }
+
     MainWindow *m_q = nullptr;
     Editor *m_editor = nullptr;
     WebView *m_preview = nullptr;
@@ -919,11 +929,7 @@ void MainWindow::onWorkingDirectoryChange(const QString &)
     m_d->m_editor->onWorkingDirectoryChange(m_d->m_workingDirectoryWidget->workingDirectory(),
                                             !m_d->m_workingDirectoryWidget->isRelative());
 
-    if (m_d->m_editor->isReady()) {
-        onEditorReady();
-    } else {
-        m_d->m_funcsQueue.push_back(std::bind(&MainWindow::onEditorReady, this));
-    }
+    m_d->runWhenEditorReady(std::bind(&MainWindow::onEditorReady, this));
 }
 
 void MainWindow::onScrollWebViewTo(const QString &id)
@@ -1119,11 +1125,7 @@ void MainWindow::onFileSave()
 
     updateWindowTitle();
 
-    if (m_d->m_editor->isReady()) {
-        onEditorReady();
-    } else {
-        m_d->m_funcsQueue.push_back(std::bind(&MainWindow::onEditorReady, this));
-    }
+    m_d->runWhenEditorReady(std::bind(&MainWindow::onEditorReady, this));
 }
 
 void MainWindow::onFileSaveAs()
@@ -1683,14 +1685,8 @@ qsizetype countOfFiles(const Node &root)
 
 }
 
-void MainWindow::loadAllLinkedFiles()
+void MainWindow::loadAllLinkedFilesImpl()
 {
-    if (!m_d->m_editor->isReady()) {
-        m_d->m_funcsQueue.push_back(std::bind(&MainWindow::loadAllLinkedFiles, this));
-
-        return;
-    }
-
     if (m_d->m_loadAllFlag) {
         m_d->m_loadAllFlag = false;
 
@@ -1800,6 +1796,11 @@ void MainWindow::loadAllLinkedFiles()
     }
 
     updateLoadAllLinkedFilesMenuText();
+}
+
+void MainWindow::loadAllLinkedFiles()
+{
+    m_d->runWhenEditorReady(std::bind(&MainWindow::loadAllLinkedFilesImpl, this));
 }
 
 void MainWindow::setWorkingDirectory(const QString &path)
@@ -1931,7 +1932,7 @@ void MainWindow::onNavigationDoubleClicked(QTreeWidgetItem *item, int)
 
         onCursorPositionChanged();
 
-        m_d->m_funcsQueue.push_back(std::bind(&MainWindow::onEditorReady, this));
+        m_d->runWhenEditorReady(std::bind(&MainWindow::onEditorReady, this));
     }
 }
 

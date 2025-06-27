@@ -92,6 +92,7 @@ private:
     void closeAllLinkedFiles();
     QString configFileName(bool inPlace) const;
     void showOrHideTabs();
+    void loadAllLinkedFilesImpl();
 
 private:
     Q_DISABLE_COPY(MainWindow)
