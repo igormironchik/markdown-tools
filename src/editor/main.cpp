@@ -63,18 +63,28 @@ int main(int argc, char **argv)
     const auto screenSize = app.primaryScreen()->availableGeometry().size();
     w.resize(qRound((double)screenSize.width() * 0.85), qRound((double)screenSize.height() * 0.85));
 
+    if (parser.isSet(view) && fileName.isEmpty()) {
+        qDebug() << QStringLiteral("File name was not specified.");
+
+        return 0;
+    }
+
+    if (parser.isSet(all) && fileName.isEmpty()) {
+        qDebug() << QStringLiteral("File name was not specified.");
+
+        return 0;
+    }
+
     if (!fileName.isEmpty()) {
         w.openFile(fileName);
     }
 
     if (parser.isSet(view)) {
-        w.openInPreviewMode(parser.isSet(all));
-    } else if (parser.isSet(all)) {
-        w.loadAllLinkedFiles();
+        w.openInPreviewMode();
     }
 
-    if (parser.isSet(view) && fileName.isEmpty()) {
-        return 0;
+    if (parser.isSet(all)) {
+        w.loadAllLinkedFiles();
     }
 
     w.show();

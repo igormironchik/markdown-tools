@@ -33,7 +33,7 @@ public:
 
 public slots:
     void openFile(const QString &path);
-    void openInPreviewMode(bool loadAllLinked);
+    void openInPreviewMode();
     void loadAllLinkedFiles();
 
 protected:

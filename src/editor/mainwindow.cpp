@@ -1005,13 +1005,9 @@ void MainWindow::openFile(const QString &path)
     setWindowModified(false);
 }
 
-void MainWindow::openInPreviewMode(bool loadAllLinked)
+void MainWindow::openInPreviewMode()
 {
     m_d->m_viewAction->setChecked(true);
-
-    if (loadAllLinked) {
-        loadAllLinkedFiles();
-    }
 }
 
 bool MainWindow::isModified() const
