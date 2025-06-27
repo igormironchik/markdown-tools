@@ -46,7 +46,6 @@ signals:
     void newData();
     void done(std::shared_ptr<MD::Document<MD::QStringTrait>>, unsigned long long int, SyntaxVisitor syntax,
               MD::details::IdsMap<MD::QStringTrait> idsMap);
-    void highlighted();
 
 public:
     DataParser()

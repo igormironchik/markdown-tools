@@ -196,7 +196,8 @@ void LicenseDialog::addLicense(const QString &title, const QString &license)
     QLabel *label = new QLabel(d->m_w);
     label->setText(license);
     label->setWordWrap(true);
-    label->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard | Qt::LinksAccessibleByMouse | Qt::LinksAccessibleByKeyboard);
+    label->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard |
+                                   Qt::LinksAccessibleByMouse | Qt::LinksAccessibleByKeyboard);
     label->setOpenExternalLinks(true);
 
     d->m_l->addWidget(label);
