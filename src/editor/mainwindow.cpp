@@ -436,6 +436,7 @@ struct MainWindowPrivate {
         m_fileTree->setHeaderHidden(true);
         m_fileTree->hide();
 
+        QObject::connect(m_fileTree, &QTreeWidget::itemDoubleClicked, m_q, &MainWindow::onNavigationDoubleClicked);
         QObject::connect(m_tocTree->header(), &QHeaderView::sectionResized, [this](int, int, int) {
             notifyTocTree(this->m_filterTocModel, this->m_delegate, QModelIndex());
         });
@@ -1778,8 +1779,6 @@ void MainWindow::loadAllLinkedFiles()
         for (auto it = root.m_children.cbegin(), last = root.m_children.cend(); it != last; ++it) {
             m_d->m_fileTree->addTopLevelItem(it->second);
         }
-
-        connect(m_d->m_fileTree, &QTreeWidget::itemDoubleClicked, this, &MainWindow::onNavigationDoubleClicked);
 
         if (!m_d->m_previewMode) {
             QMessageBox::information(this,
