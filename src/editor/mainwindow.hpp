@@ -35,6 +35,7 @@ public slots:
     void openFile(const QString &path);
     void openInPreviewMode();
     void loadAllLinkedFiles();
+    void setWorkingDirectory(const QString &path);
 
 protected:
     void resizeEvent(QResizeEvent *e) override;
@@ -77,6 +78,8 @@ private slots:
     void onWorkingDirectoryChange(const QString &);
     void onScrollWebViewTo(const QString &id);
     void onEditorReady();
+    void onSetWorkingDirectory();
+    void onProcessQueue();
 
 private:
     bool isModified() const;

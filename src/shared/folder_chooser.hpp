@@ -38,6 +38,7 @@ public:
 public slots:
     void setPath(const QString &path);
     void setPopup(bool on = true);
+    void emulateClick(int idx);
 
 private slots:
     void onClicked(int idx);

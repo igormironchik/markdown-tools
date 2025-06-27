@@ -270,9 +270,19 @@ public:
         return (isRelative() ? m_fullPath : m_currentPath);
     }
 
+    const QString &fullPath() const
+    {
+        return m_fullPath;
+    }
+
     bool isRelative() const
     {
         return !m_useWorkingDir->isChecked();
+    }
+
+    MdShared::FolderChooser *folderChooser()
+    {
+        return m_folderChooser;
     }
 
 public slots:
@@ -683,6 +693,7 @@ struct MainWindowPrivate {
         QObject::connect(m_tabs, &QTabWidget::tabBarClicked, m_q, &MainWindow::onTabClicked);
         QObject::connect(m_tocTree, &QTreeView::activated, m_q, &MainWindow::onTocClicked);
         QObject::connect(m_tocTree, &QTreeView::clicked, m_q, &MainWindow::onTocClicked);
+        QObject::connect(m_editor, &Editor::ready, m_q, &MainWindow::onProcessQueue);
 
         m_editor->setFocus();
         m_preview->setFocusPolicy(Qt::ClickFocus);
@@ -856,6 +867,7 @@ struct MainWindowPrivate {
     QString m_mdPdfExe;
     QString m_launcherExe;
     QString m_htmlContent;
+    QString m_tmpWorkingDir;
     Colors m_mdColors;
     bool m_spellingEnabled = false;
     int m_tabWidth = -1;
@@ -865,6 +877,7 @@ struct MainWindowPrivate {
     int m_settingsWindowHeight = -1;
     bool m_settingsWindowMaximized = false;
     bool m_isDefaultFile = true;
+    QVector<std::function<void()>> m_funcsQueue;
 }; // struct MainWindowPrivate
 
 //
@@ -906,7 +919,7 @@ void MainWindow::onWorkingDirectoryChange(const QString &)
     if (m_d->m_editor->isReady()) {
         onEditorReady();
     } else {
-        connect(m_d->m_editor, &Editor::ready, this, &MainWindow::onEditorReady);
+        m_d->m_funcsQueue.push_back(std::bind(&MainWindow::onEditorReady, this));
     }
 }
 
@@ -1106,7 +1119,7 @@ void MainWindow::onFileSave()
     if (m_d->m_editor->isReady()) {
         onEditorReady();
     } else {
-        connect(m_d->m_editor, &Editor::ready, this, &MainWindow::onEditorReady);
+        m_d->m_funcsQueue.push_back(std::bind(&MainWindow::onEditorReady, this));
     }
 }
 
@@ -1669,43 +1682,39 @@ qsizetype countOfFiles(const Node &root)
 
 void MainWindow::loadAllLinkedFiles()
 {
-    if(sender() == m_d->m_editor) {
-        disconnect(m_d->m_editor, &Editor::ready, this, &MainWindow::loadAllLinkedFiles);
+    if (!m_d->m_editor->isReady()) {
+        m_d->m_funcsQueue.push_back(std::bind(&MainWindow::loadAllLinkedFiles, this));
+
+        return;
+    }
+
+    if (m_d->m_loadAllFlag) {
+        m_d->m_loadAllFlag = false;
+
+        m_d->m_tabs->removeTab(1);
+        m_d->m_fileTree->hide();
+
+        m_d->m_saveAsAction->setEnabled(true);
+
+        closeAllLinkedFiles();
+
+        updateLoadAllLinkedFilesMenuText();
+
+        onTextChanged();
+
+        return;
     } else {
-        if (m_d->m_loadAllFlag) {
-            m_d->m_loadAllFlag = false;
+        if (isModified()) {
+            QMessageBox::information(this, windowTitle(), tr("You have unsaved changes. Please save document first."));
 
-            m_d->m_tabs->removeTab(1);
-            m_d->m_fileTree->hide();
-
-            m_d->m_saveAsAction->setEnabled(true);
-
-            closeAllLinkedFiles();
-
-            updateLoadAllLinkedFilesMenuText();
-
-            onTextChanged();
-
-            return;
-        } else {
-            if (isModified()) {
-                QMessageBox::information(this, windowTitle(), tr("You have unsaved changes. Please save document first."));
-
-                m_d->m_editor->setFocus();
-
-                return;
-            }
-
-            m_d->m_loadAllFlag = true;
-
-            m_d->m_saveAsAction->setEnabled(false);
-        }
-
-        if (!m_d->m_editor->isReady()) {
-            connect(m_d->m_editor, &Editor::ready, this, &MainWindow::loadAllLinkedFiles);
+            m_d->m_editor->setFocus();
 
             return;
         }
+
+        m_d->m_loadAllFlag = true;
+
+        m_d->m_saveAsAction->setEnabled(false);
     }
 
     readAllLinked();
@@ -1792,6 +1801,52 @@ void MainWindow::loadAllLinkedFiles()
     updateLoadAllLinkedFilesMenuText();
 }
 
+void MainWindow::setWorkingDirectory(const QString &path)
+{
+    m_d->m_tmpWorkingDir.clear();
+
+    QDir dir(path);
+
+    if (dir.exists()) {
+        m_d->m_tmpWorkingDir = dir.absolutePath();
+    }
+
+    if (!m_d->m_tmpWorkingDir.isEmpty()) {
+        if (m_d->m_editor->isReady()) {
+            onSetWorkingDirectory();
+        } else {
+            m_d->m_funcsQueue.push_back(std::bind(&MainWindow::onSetWorkingDirectory, this));
+        }
+    }
+}
+
+void MainWindow::onSetWorkingDirectory()
+{
+    if (!m_d->m_tmpWorkingDir.isEmpty()) {
+        if (m_d->m_tmpWorkingDir != m_d->m_workingDirectoryWidget->fullPath() &&
+            m_d->m_workingDirectoryWidget->fullPath().contains(m_d->m_tmpWorkingDir)) {
+
+            const auto idx = MdShared::FolderChooser::splitPath(m_d->m_tmpWorkingDir).size() - 1;
+
+            m_d->m_workingDirectoryWidget->folderChooser()->emulateClick(idx);
+        }
+    }
+}
+
+void MainWindow::onProcessQueue()
+{
+    while (!m_d->m_funcsQueue.isEmpty()) {
+        const auto f = m_d->m_funcsQueue.front();
+        m_d->m_funcsQueue.pop_front();
+
+        f();
+
+        if (!m_d->m_editor->isReady()) {
+            break;
+        }
+    }
+}
+
 void MainWindow::closeAllLinkedFiles()
 {
     m_d->m_loadAllFlag = false;
@@ -1875,14 +1930,12 @@ void MainWindow::onNavigationDoubleClicked(QTreeWidgetItem *item, int)
 
         onCursorPositionChanged();
 
-        connect(m_d->m_editor, &Editor::ready, this, &MainWindow::onEditorReady);
+        m_d->m_funcsQueue.push_back(std::bind(&MainWindow::onEditorReady, this));
     }
 }
 
 void MainWindow::onEditorReady()
 {
-    disconnect(m_d->m_editor, &Editor::ready, this, &MainWindow::onEditorReady);
-
     readAllLinked();
 
     m_d->initMarkdownMenu();

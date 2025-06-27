@@ -38,8 +38,13 @@ int main(int argc, char **argv)
     QCommandLineOption all(QStringList() << "a"
                                          << "all",
                            QStringLiteral("Load all linked Markdown files."));
+    QCommandLineOption workingDir(QStringList() << "w"
+                                         << "working-directory",
+                                  QStringLiteral("Use set working directory."),
+                                  QStringLiteral("dir"));
     parser.addOption(view);
     parser.addOption(all);
+    parser.addOption(workingDir);
 
     parser.process(app);
 
@@ -81,6 +86,12 @@ int main(int argc, char **argv)
 
     if (parser.isSet(view)) {
         w.openInPreviewMode();
+    }
+
+    const auto wd = parser.value(workingDir);
+
+    if (!wd.isEmpty()) {
+        w.setWorkingDirectory(wd);
     }
 
     if (parser.isSet(all)) {

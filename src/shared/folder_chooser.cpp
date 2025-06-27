@@ -292,6 +292,11 @@ void FolderChooser::setPopup(bool on)
     setWindowFlag(Qt::Popup, on);
 }
 
+void FolderChooser::emulateClick(int idx)
+{
+    onClicked(idx);
+}
+
 void FolderChooser::onClicked(int idx)
 {
     m_d->m_idx = idx;
