@@ -1814,11 +1814,7 @@ void MainWindow::setWorkingDirectory(const QString &path)
     }
 
     if (!m_d->m_tmpWorkingDir.isEmpty()) {
-        if (m_d->m_editor->isReady()) {
-            onSetWorkingDirectory();
-        } else {
-            m_d->m_funcsQueue.push_back(std::bind(&MainWindow::onSetWorkingDirectory, this));
-        }
+        m_d->runWhenEditorReady(std::bind(&MainWindow::onSetWorkingDirectory, this));
     }
 }
 
