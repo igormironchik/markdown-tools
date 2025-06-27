@@ -42,6 +42,7 @@ public slots:
 
 private slots:
     void onClicked(int idx);
+    void updateFolders();
 
 private:
     friend class FolderChooserPrivate;

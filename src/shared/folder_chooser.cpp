@@ -251,14 +251,14 @@ QString FolderChooser::currentPath() const
     QString path;
 
     for (int i = 0; i < m_d->m_folders.size(); ++i) {
-        m_d->m_folders.at(i)->setSelected(i == m_d->m_idx, false);
-
         if (i <= m_d->m_idx) {
             path.append(m_d->m_folders.at(i)->folderName());
 
             if (m_d->m_folders.at(i)->folderName() != QStringLiteral("/")) {
                 path.append(QStringLiteral("/"));
             }
+        } else {
+            break;
         }
     }
 
@@ -301,10 +301,17 @@ void FolderChooser::onClicked(int idx)
 {
     m_d->m_idx = idx;
 
-    const auto path = currentPath();
+    updateFolders();
 
-    if (!path.isEmpty()) {
-        emit pathSelected(path);
+    if (m_d->m_idx != -1) {
+        emit pathSelected(currentPath());
+    }
+}
+
+void FolderChooser::updateFolders()
+{
+    for (int i = 0; i < m_d->m_folders.size(); ++i) {
+        m_d->m_folders.at(i)->setSelected(i == m_d->m_idx, false);
     }
 }
 
