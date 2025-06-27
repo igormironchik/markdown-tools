@@ -910,6 +910,8 @@ void MainWindow::onTabActivated()
 
 void MainWindow::onWorkingDirectoryChange(const QString &)
 {
+    QDir::setCurrent(m_d->m_workingDirectoryWidget->workingDirectory());
+
     m_d->m_baseUrl = QString("file:%1/").arg(QString(QUrl::toPercentEncoding(
         m_d->m_workingDirectoryWidget->workingDirectory(), "/\\:", {})));
     m_d->m_page->setHtml(htmlContent(), m_d->m_baseUrl);
