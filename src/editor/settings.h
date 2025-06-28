@@ -35,11 +35,16 @@ public:
     SettingsDlg(const Colors &c, const QFont &f, const Margins &m, bool enableSpelling, QWidget *parent);
     ~SettingsDlg() override = default;
 
+    //! \return Colors scheme.
     const Colors &colors() const;
+    //! \return Editor's font.
     QFont currentFont() const;
+    //! \return Grayed editor's area settings.
     Margins editorMargins() const;
+    //! \return Is spelling check enabled?
     bool isSpellingEnabled() const;
 
+    //! \return Sonnet configuration widget.
     Sonnet::ConfigWidget *sonnetConfigWidget() const;
 
 private slots:

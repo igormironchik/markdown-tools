@@ -39,7 +39,7 @@ public:
     /*!
      * Constructor.
      *
-     * \a parent Parent widget.
+     * \param parent Parent widget.
      */
     ColorWidget(QWidget *parent);
     ~ColorWidget() override = default;
@@ -51,7 +51,7 @@ public:
     /*!
      * Set current color.
      *
-     * \a c Color.
+     * \param c Color.
      */
     void setColor(const QColor &c);
 

@@ -33,9 +33,11 @@ public:
     GoToLine(MainWindow *window, Editor *editor, QWidget *parent);
     ~GoToLine() override;
 
+    //! \return Line edit.
     QLineEdit *line() const;
 
 public slots:
+    //! Set focus on line edit.
     void setFocusOnLine();
 
 private slots:

@@ -15,37 +15,55 @@ namespace MdEditor
 // StringData
 //
 
+//! ToC tree view item data.
 struct UnitData {
+    //! Text.
     QString m_text;
+    //! Is it a code?
     bool m_code = false;
+    //! Is RTL?
     bool m_isRightToLeft = false;
 };
 
+//! ToC tree view full data.
 struct StringData {
     StringData(const QString &t, bool c, bool rtl);
 
+    //! Non-splitted text.
     UnitData m_data;
+    //! Already splitted text.
     QVector<QPair<QString, bool>> m_splittedText;
+    //! Rectangles for code.
     QVector<QRect> m_backgroundRects;
+    //! Text rects with corresponding data.
     QVector<QPair<QRect, UnitData>> m_textRects;
 }; // struct StringData
 
+//! Vector of string data for ToC tree view item.
 using StringDataVec = QVector<StringData>;
 
 //
 // TocData
 //
 
+//! Data for ToC item in the model.
 struct TocData {
     TocData(const StringDataVec &t, long long int l, int v, const QString &id, TocData *p = nullptr);
 
+    //! \return COncatenated text.
     QString concatenatedText() const;
 
+    //! Text data.
     StringDataVec m_text;
+    //! ID of item.
     QString m_id;
+    //! Line number.
     long long int m_line = -1;
+    //! Heading level.
     int m_level = -1;
+    //! Pointer to parent.
     TocData *m_parent = nullptr;
+    //! Children.
     std::vector<std::shared_ptr<TocData>> m_children;
 }; // struct TocData
 
@@ -55,7 +73,7 @@ struct TocData {
 
 struct TocModelPrivate;
 
-//! Model for TOC.
+//! Model for ToC.
 class TocModel final : public QAbstractItemModel
 {
 public:

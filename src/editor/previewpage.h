@@ -15,6 +15,7 @@ namespace MdEditor
 // PreviewPage
 //
 
+//! Web preview page.
 class PreviewPage : public QWebEnginePage
 {
 public:

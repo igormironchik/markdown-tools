@@ -33,9 +33,13 @@ public:
     ~MainWindow() override;
 
 public slots:
+    //! Open file.
     void openFile(const QString &path);
+    //! Reorganize UI to show only Web preview.
     void openInPreviewMode();
+    //! Load all linked files.
     void loadAllLinkedFiles();
+    //! Set working directory.
     void setWorkingDirectory(const QString &path);
 
 protected:
@@ -83,16 +87,25 @@ private slots:
     void onProcessQueue();
 
 private:
+    //! \return Is document was changed?
     bool isModified() const;
+    //! \return HTML content.
     const QString &htmlContent() const;
+    //! Save configuration.
     void saveCfg() const;
+    //! Read configuration.
     void readCfg();
+    //! Read all linked files.
     void readAllLinked();
+    //! Update window title.
     void updateWindowTitle();
+    //! Update "Load All Linked Files" action's text.
     void updateLoadAllLinkedFilesMenuText();
+    //! Switch to alone file mode.
     void closeAllLinkedFiles();
-    QString configFileName(bool inPlace) const;
+    //! Show/hide left tabbed sidebar.
     void showOrHideTabs();
+    //! Real implementation of loading all linked files.
     void loadAllLinkedFilesImpl();
 
 private:

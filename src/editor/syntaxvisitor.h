@@ -34,7 +34,7 @@ struct Colors;
 
 struct SyntaxVisitorPrivate;
 
-//! Markdown syntax highlighter.
+//! Markdown syntax highlighter, including spelling check.
 class SyntaxVisitor : public MD::PosCache<MD::QStringTrait>
 {
 public:
@@ -44,24 +44,36 @@ public:
     SyntaxVisitor(const SyntaxVisitor &other);
     SyntaxVisitor &operator=(const SyntaxVisitor &other);
 
+    //! Hyghlight syntax.
     void highlight(MD::StringListStream<MD::QStringTrait> *stream,
                    std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
                    const Colors &cols);
 
+    //! \return Colors scheme.
     const Colors &colors() const;
+    //! Set colors scheme.
     void setColors(const Colors &c);
 
+    //! Set font.
     void setFont(const QFont &f);
 
+    //! Clear highlghting.
     void clearHighlighting(QTextDocument *doc);
+    //! Apply highlighting.
     void applyFormats(QTextDocument *doc);
 
+    //! \return Is spelling check enabled?
     bool isSpellingEnabled() const;
+    //! Enable/disable spelling check.
     void spellingSettingsChanged(bool enabled);
+    //! \return Is a given word misspelled?
     bool isMisspelled(long long int line, long long int pos,
                       QPair<long long int, long long int> &wordPos) const;
+    //! \return Spell suggestions for word.
     QStringList spellSuggestions(const QString &word) const;
+    //! \return Has this document misspelled words?
     bool hasMisspelled() const;
+    //! Select next misspelled word.
     void highlightNextMisspelled(QPlainTextEdit *editor);
 
 protected:

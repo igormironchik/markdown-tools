@@ -94,7 +94,7 @@ protected:
 // TabBar
 //
 
-//! Tab bar for tabs.
+//! Tab bar for tabs in main window.
 class TabBar : public QTabBar
 {
     Q_OBJECT
@@ -113,17 +113,13 @@ public:
 protected:
     bool event(QEvent *e) override
     {
-        if (e->type() == QEvent::Shortcut) {
-            const auto res = QTabBar::event(e);
+        const auto res = QTabBar::event(e);
 
-            if (res) {
-                emit activated();
-            }
-
-            return res;
-        } else {
-            return QTabBar::event(e);
+        if (e->type() == QEvent::Shortcut && res) {
+            emit activated();
         }
+
+        return res;
     }
 }; // class TabBar
 
@@ -183,6 +179,7 @@ class TocTreeView : public QTreeView
     Q_OBJECT
 
 signals:
+    //! Scroll Web preview to a given ID.
     void scrollWebViewToRequested(const QString &id);
 
 public:
@@ -222,6 +219,7 @@ protected:
 // WorkingDirectoryWidget
 //
 
+//! Widget for working directory in a status bar of main window.
 class WorkingDirectoryWidget : public QWidget
 {
     Q_OBJECT
@@ -265,27 +263,32 @@ public:
 
     ~WorkingDirectoryWidget() override = default;
 
+    //! \return Current working directory.
     const QString &workingDirectory() const
     {
         return (isRelative() ? m_fullPath : m_currentPath);
     }
 
+    //! \return Full path available for selection in this widget.
     const QString &fullPath() const
     {
         return m_fullPath;
     }
 
+    //! Should relative path be used?
     bool isRelative() const
     {
         return !m_useWorkingDir->isChecked();
     }
 
+    //! \return Folder chooser widget.
     MdShared::FolderChooser *folderChooser()
     {
         return m_folderChooser;
     }
 
 public slots:
+    //! Set working directory.
     void setWorkingDirectory(const QString &wd, bool notify = true)
     {
         m_label->setText(tr("<b>Working Directory:</b> ") + wd);
@@ -333,11 +336,17 @@ private slots:
     }
 
 private:
+    //! Text label.
     QLabel *m_label = nullptr;
+    //! Button to show folder chooser.
     QToolButton *m_btn = nullptr;
+    //! Checkbox for enabling/disabling working directory usage.
     QCheckBox *m_useWorkingDir = nullptr;
+    //! Folder chooser widget.
     MdShared::FolderChooser *m_folderChooser = nullptr;
+    //! Currently selected path.
     QString m_currentPath;
+    //! Full available path.
     QString m_fullPath;
 }; // class WorkingDirectoryWidget
 
@@ -351,6 +360,7 @@ struct MainWindowPrivate {
     {
     }
 
+    //! Notify ToC tree to update their items' sizes.
     void notifyTocTree(QAbstractItemModel *model, WordWrapItemDelegate *delegate, const QModelIndex &parent)
     {
         for (int i = 0; i < model->rowCount(parent); ++i) {
@@ -716,6 +726,7 @@ struct MainWindowPrivate {
         m_currentTab = m_tabs->currentIndex();
     }
 
+    //! \return Data for ToC item.
     StringDataVec paragraphToMenuText(MD::Paragraph<MD::QStringTrait> *p, bool skipRtl = false)
     {
         StringDataVec res;
@@ -763,6 +774,7 @@ struct MainWindowPrivate {
         return res;
     }
 
+    //! Populate ToC tree view.
     void initMarkdownMenu()
     {
         m_initMarkdownMenuRequested = true;
@@ -815,6 +827,7 @@ struct MainWindowPrivate {
         }
     }
 
+    //! Run function when editor will be ready.
     template<class Func>
     void runWhenEditorReady(Func f)
     {

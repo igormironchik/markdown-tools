@@ -34,25 +34,41 @@ public:
     Find(MainWindow *window, Editor *editor, QWidget *parent);
     ~Find() override;
 
+    //! \return Line edit for "find".
     QLineEdit *editLine() const;
+    //! \return Line edit for "replace".
     QLineEdit *replaceLine() const;
+    //! \return Is search should be case sensitive?
     bool isCaseSensitive() const;
+    //! \return Is search should be for whole word only?
     bool isWholeWord() const;
+    //! \return QTextDocument::FindFlags of search.
     QTextDocument::FindFlags findFlags() const;
 
 public slots:
+    //! Set "find" text.
     void setFindText(const QString &text);
+    //! Set focus on "find" line edit.
     void setFocusOnFind();
+    //! Set whether search should be case sensitive.
     void setCaseSensitive(bool on = true);
+    //! Set whether search shoulb be for whole word only.
     void setWholeWord(bool on = true);
 
 private slots:
+    //! On "Find" text was changed.
     void onFindTextChanged(const QString &str);
+    //! On "Replace" button clicked.
     void onReplace();
+    //! On "Replace all" button clicked.
     void onReplaceAll();
+    //! On selection in editor was changed.
     void onSelectionChanged();
+    //! On "Close" button was clicked.
     void onClose();
+    //! On editor ready signal.
     void onEditorReady();
+    //! On search flags change.
     void onFindFlagsChanged(Qt::CheckState state);
 
 private:

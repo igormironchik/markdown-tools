@@ -16,6 +16,7 @@ namespace MdEditor
 // HtmlDocument
 //
 
+//! Bridge between C++ code and Web page preview.
 class HtmlDocument : public QObject
 {
     Q_OBJECT
@@ -28,6 +29,7 @@ public:
     explicit HtmlDocument(QObject *parent);
     ~HtmlDocument() override = default;
 
+    //! Set text, this will set content to HTML page.
     void setText(const QString &text);
 
 private:

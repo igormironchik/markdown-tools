@@ -28,11 +28,13 @@ public:
     FontDlg(const QFont &f, QWidget *parent);
     ~FontDlg() override = default;
 
+    //! \return Current font.
     QFont currentFont() const;
 
 private:
     Q_DISABLE_COPY(FontDlg)
 
+    //! UI component.
     Ui::FontDlg m_ui;
 }; // class FontDlg
 

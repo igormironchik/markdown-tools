@@ -24,7 +24,7 @@ struct FindWebPrivate;
 class MainWindow;
 class WebView;
 
-//! FindWeb/replace widget.
+//! Find on Web preview widget.
 class FindWeb : public QFrame
 {
     Q_OBJECT
@@ -33,16 +33,23 @@ public:
     FindWeb(MainWindow *window, WebView *web, QWidget *parent);
     ~FindWeb() override;
 
+    //! \return Line edit of "find" text.
     QLineEdit *line() const;
 
 public slots:
+    //! Set "find" text.
     void setFindWebText(const QString &text);
+    //! Set focus on "find" line edit.
     void setFocusOnFindWeb();
 
 private slots:
+    //! On "find" text changed.
     void onFindWebTextChanged(const QString &str);
+    //! On "Close" button clicked.
     void onClose();
+    //! On find previous.
     void onFindPrev();
+    //! ON find next.
     void onFindNext();
 
 protected:

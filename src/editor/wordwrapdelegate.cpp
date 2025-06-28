@@ -37,6 +37,7 @@ WordWrapItemDelegate::WordWrapItemDelegate(QTreeView *parent, TocModel *model, Q
 namespace /* anonymous */
 {
 
+//! Helper for correct handling RTL and LTR in tree view item delegate.
 struct LayoutDirectionHandler
 {
     LayoutDirectionHandler(bool rightToLeft, int leftX, int width, int y, int lineHeight)

@@ -19,9 +19,12 @@ namespace MdEditor
 
 //! Singleton for spelling stuff.
 struct Speller {
+    //! Speller.
     QSharedPointer<Sonnet::Speller> m_speller;
+    //! Sync mutex.
     QMutex m_mutex;
 
+    //! \return Singleton.
     static Speller &instance();
 
 private:
