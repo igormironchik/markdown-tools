@@ -4,8 +4,8 @@
 */
 
 // md-editor include.
-#include "editor.hpp"
-#include "find.hpp"
+#include "editor.h"
+#include "find.h"
 
 // Sonnet include.
 #include <Sonnet/Settings>

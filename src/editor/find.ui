@@ -233,7 +233,7 @@
   <customwidget>
    <class>MdEditor::CloseButton</class>
    <extends>QWidget</extends>
-   <header>closebutton.hpp</header>
+   <header>closebutton.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

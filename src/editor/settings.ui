@@ -153,19 +153,19 @@
   <customwidget>
    <class>MdEditor::ColorsPage</class>
    <extends>QWidget</extends>
-   <header>colors.hpp</header>
+   <header>colors.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>MdEditor::FontPage</class>
    <extends>QWidget</extends>
-   <header>font.hpp</header>
+   <header>font.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>MdEditor::SonnetConfig</class>
    <extends>QWidget</extends>
-   <header location="global">sonnetconfig.hpp</header>
+   <header location="global">sonnetconfig.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

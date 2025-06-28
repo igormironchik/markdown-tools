@@ -4,7 +4,7 @@
 */
 
 // md-editor include.
-#include "speller.hpp"
+#include "speller.h"
 
 // Qt include.
 #include <QCoreApplication>

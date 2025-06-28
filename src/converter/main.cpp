@@ -4,7 +4,7 @@
 */
 
 // md-pdf include.
-#include "main_window.hpp"
+#include "main_window.h"
 
 // Qt include.
 #include <QApplication>
@@ -12,7 +12,7 @@
 #include <QString>
 
 // shared include.
-#include "utils.hpp"
+#include "utils.h"
 
 // MicroTeX include.
 #include <latex.h>

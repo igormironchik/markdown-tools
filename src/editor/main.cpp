@@ -11,10 +11,10 @@
 #include <QWebEngineUrlScheme>
 
 // md-editor include.
-#include "mainwindow.hpp"
+#include "mainwindow.h"
 
 // shared include.
-#include "utils.hpp"
+#include "utils.h"
 
 int main(int argc, char **argv)
 {

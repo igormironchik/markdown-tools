@@ -4,7 +4,7 @@
 */
 
 // shared include.
-#include "utils.hpp"
+#include "utils.h"
 
 // Qt include.
 #include <QtResource>

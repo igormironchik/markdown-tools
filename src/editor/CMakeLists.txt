@@ -13,51 +13,51 @@ find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
 )
 
 set(LIB_SRC
-	editor.hpp
+	editor.h
 	editor.cpp
-	mainwindow.hpp
+	mainwindow.h
 	mainwindow.cpp
-	webview.hpp
+	webview.h
 	webview.cpp
-	previewpage.hpp
+	previewpage.h
 	previewpage.cpp
-	htmldocument.hpp
+	htmldocument.h
 	htmldocument.cpp
-	find.hpp
+	find.h
 	find.cpp
 	find.ui
-	findweb.hpp
+	findweb.h
 	findweb.cpp
 	findweb.ui
-	gotoline.hpp
+	gotoline.h
 	gotoline.cpp
 	gotoline.ui
-	fontdlg.hpp
+	fontdlg.h
 	fontdlg.cpp
 	fontdlg.ui
-	colorsdlg.hpp
+	colorsdlg.h
 	colorsdlg.cpp
 	colorsdlg.ui
 	syntaxvisitor.cpp
-	syntaxvisitor.hpp
-	closebutton.hpp
+	syntaxvisitor.h
+	closebutton.h
 	closebutton.cpp
-	toc.hpp
+	toc.h
 	toc.cpp
-	wordwrapdelegate.hpp
+	wordwrapdelegate.h
 	wordwrapdelegate.cpp
 	settings.ui
 	font.ui
 	colors.ui
-	colors.hpp
+	colors.h
 	colors.cpp
-	font.hpp
+	font.h
 	font.cpp
-	settings.hpp
+	settings.h
     settings.cpp
-    sonnetconfig.hpp
+    sonnetconfig.h
     sonnetconfig.cpp
-    speller.hpp
+    speller.h
     speller.cpp)
 
 set(SRC main.cpp)
@@ -68,7 +68,7 @@ if(WIN32)
     list(APPEND SRC md-editor.rc)
 endif()
 
-configure_file(version.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/version.hpp)
+configure_file(version.h.in ${CMAKE_CURRENT_BINARY_DIR}/version.h)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
 	${md4qt_INCLUDE_DIRECTORIES}

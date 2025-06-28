@@ -3,15 +3,15 @@
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 
-#include "src/converter/renderer.hpp"
-#include "src/converter/syntax.hpp"
-#include "src/converter/const.hpp"
+#include "src/converter/renderer.h"
+#include "src/converter/syntax.h"
+#include "src/converter/const.h"
 
 // md4qt include.
 #define MD4QT_QT_SUPPORT
 #include <md4qt/parser.h>
 
-#include "test_const.hpp"
+#include "test_const.h"
 
 // MicroTex include.
 #include <latex.h>

@@ -4,8 +4,8 @@
 */
 
 // md-editor include.
-#include "settings.hpp"
-#include "colors.hpp"
+#include "settings.h"
+#include "colors.h"
 
 // Qt include.
 #include <QCheckBox>

@@ -641,13 +641,13 @@
   <customwidget>
    <class>MdShared::ColorWidget</class>
    <extends>QFrame</extends>
-   <header>color_widget.hpp</header>
+   <header>color_widget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>MdShared::FolderChooser</class>
    <extends>QWidget</extends>
-   <header>folder_chooser.hpp</header>
+   <header>folder_chooser.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

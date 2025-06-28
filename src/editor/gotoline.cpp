@@ -4,9 +4,9 @@
 */
 
 // md-editor include.
-#include "gotoline.hpp"
-#include "editor.hpp"
-#include "mainwindow.hpp"
+#include "gotoline.h"
+#include "editor.h"
+#include "mainwindow.h"
 #include "ui_gotoline.h"
 
 // Qt include.

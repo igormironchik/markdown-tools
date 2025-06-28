@@ -4,10 +4,10 @@
 */
 
 // md-editor include.
-#include "syntaxvisitor.hpp"
-#include "colorsdlg.hpp"
-#include "editor.hpp"
-#include "speller.hpp"
+#include "syntaxvisitor.h"
+#include "colorsdlg.h"
+#include "editor.h"
+#include "speller.h"
 
 // Sonnet include.
 #include <Sonnet/Settings>

@@ -4,8 +4,8 @@
 */
 
 // md-editor include.
-#include "wordwrapdelegate.hpp"
-#include "toc.hpp"
+#include "wordwrapdelegate.h"
+#include "toc.h"
 
 // Qt include.
 #include <QApplication>

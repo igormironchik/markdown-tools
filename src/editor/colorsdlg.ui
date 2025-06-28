@@ -37,7 +37,7 @@
   <customwidget>
    <class>MdEditor::ColorsPage</class>
    <extends>QWidget</extends>
-   <header>colors.hpp</header>
+   <header>colors.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

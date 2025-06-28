@@ -25,16 +25,16 @@ endif(ENABLE_COVERAGE)
 
 set(GUI_SRC main.cpp
 	main_window.cpp
-	main_window.hpp
+	main_window.h
 	main_window.ui
-	podofo_paintdevice.hpp
+	podofo_paintdevice.h
 	podofo_paintdevice.cpp
-	renderer.hpp
+	renderer.h
 	renderer.cpp
-	progress.hpp
+	progress.h
 	progress.cpp
 	progress.ui
-    const.hpp)
+    const.h)
 	
 qt6_add_resources(GUI_SRC resources.qrc)
 qt6_add_resources(GUI_SRC ../../3rdparty/MicroTeX/latex.qrc)
@@ -44,7 +44,7 @@ if(WIN32)
 endif()
 
 set(LIB_SYNTAX_SRC syntax.cpp
-    syntax.hpp)
+    syntax.h)
 
 message(${CMAKE_CURRENT_BINARY_DIR})
 
@@ -59,7 +59,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
 link_directories(${CMAKE_CURRENT_BINARY_DIR}/../../3rdparty/podofo/src/podofo
     ${CMAKE_CURRENT_BINARY_DIR}/../../3rdparty/podofo/src)
 
-configure_file(version.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/version.hpp)
+configure_file(version.h.in ${CMAKE_CURRENT_BINARY_DIR}/version.h)
 
 add_definitions(-DBUILD_QT)
 

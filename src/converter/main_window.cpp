@@ -8,11 +8,11 @@
 #include <md4qt/parser.h>
 
 // md-pdf include.
-#include "const.hpp"
-#include "main_window.hpp"
-#include "progress.hpp"
-#include "renderer.hpp"
-#include "version.hpp"
+#include "const.h"
+#include "main_window.h"
+#include "progress.h"
+#include "renderer.h"
+#include "version.h"
 
 // Qt include.
 #include <QApplication>
@@ -35,7 +35,7 @@
 #include <podofo/podofo.h>
 
 // shared include.
-#include "license_dialog.hpp"
+#include "license_dialog.h"
 
 namespace MdPdf
 {

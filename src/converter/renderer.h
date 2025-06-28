@@ -6,7 +6,7 @@
 #pragma once
 
 // md-pdf include.
-#include "syntax.hpp"
+#include "syntax.h"
 
 // md4qt include.
 #define MD4QT_QT_SUPPORT

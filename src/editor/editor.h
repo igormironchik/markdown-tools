@@ -10,8 +10,8 @@
 #include <QScopedPointer>
 
 // md-editor include.
-#include "colorsdlg.hpp"
-#include "syntaxvisitor.hpp"
+#include "colorsdlg.h"
+#include "syntaxvisitor.h"
 
 // md4qt include.
 #define MD4QT_QT_SUPPORT

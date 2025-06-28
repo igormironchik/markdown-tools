@@ -4,8 +4,8 @@
 */
 
 // md-pdf include.
-#include "podofo_paintdevice.hpp"
-#include "renderer.hpp"
+#include "podofo_paintdevice.h"
+#include "renderer.h"
 
 // Qt include.
 #include <QMap>

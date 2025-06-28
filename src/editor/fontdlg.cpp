@@ -4,7 +4,7 @@
 */
 
 // md-editor include.
-#include "fontdlg.hpp"
+#include "fontdlg.h"
 
 namespace MdEditor
 {

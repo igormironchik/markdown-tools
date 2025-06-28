@@ -6,7 +6,7 @@
 #pragma once
 
 // md-pdf include.
-#include "renderer.hpp"
+#include "renderer.h"
 #include "ui_progress.h"
 
 // Qt include.

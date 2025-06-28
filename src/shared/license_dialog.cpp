@@ -4,7 +4,7 @@
 */
 
 // Widgets include.
-#include "license_dialog.hpp"
+#include "license_dialog.h"
 #include "ui_license_dialog.h"
 
 // Qt include.

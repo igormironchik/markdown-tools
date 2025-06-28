@@ -5,7 +5,7 @@
 
 // md-pdf include.
 #include "ui_main_window.h"
-#include "syntax.hpp"
+#include "syntax.h"
 
 // Qt include.
 #include <QMainWindow>

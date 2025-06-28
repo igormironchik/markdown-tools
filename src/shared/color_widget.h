@@ -8,6 +8,15 @@
 // Qt include.
 #include <QFrame>
 
+/*!
+ * \namespace MdShared
+ * \inmodule MdTools
+ * \inheaderfile shared/color_widget.h
+ *
+ * \brief Namespace for shared stuff.
+ *
+ * Namespace for shared stuff used both in Markdown editor and converter to PDF.
+ */
 namespace MdShared
 {
 
@@ -15,20 +24,38 @@ namespace MdShared
 // ColorWidget
 //
 
-//! Color widget.
+/*!
+ * \class MdShared::ColorWidget
+ * \inmodule MdTools
+ * \inheaderfile shared/color_widget.h
+ *
+ * \brief Color widget.
+ *
+ * Colored clickable rectangle - color picker.
+ */
 class ColorWidget final : public QFrame
 {
     Q_OBJECT
 
 signals:
-    //! Clicked.
+    /*!
+     * Clicked.
+     */
     void clicked();
 
 public:
     ColorWidget(QWidget *parent);
     ~ColorWidget() override = default;
 
+    /*!
+     * Returns current color.
+     */
     const QColor &color() const;
+    /*!
+     * Set current color.
+     *
+     * \a c Color.
+     */
     void setColor(const QColor &c);
 
 protected:

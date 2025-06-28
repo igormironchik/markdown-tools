@@ -4,10 +4,10 @@
 */
 
 // md-editor include.
-#include "findweb.hpp"
-#include "mainwindow.hpp"
+#include "findweb.h"
+#include "mainwindow.h"
 #include "ui_findweb.h"
-#include "webview.hpp"
+#include "webview.h"
 
 // Qt include.
 #include <QPalette>

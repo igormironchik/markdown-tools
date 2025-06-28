@@ -10,8 +10,8 @@
 #include <QFont>
 
 // md-editor include.
-#include "colorsdlg.hpp"
-#include "editor.hpp"
+#include "colorsdlg.h"
+#include "editor.h"
 #include "ui_settings.h"
 
 namespace Sonnet

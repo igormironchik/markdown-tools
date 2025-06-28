@@ -4,7 +4,7 @@
 */
 
 // md-editor include.
-#include "previewpage.hpp"
+#include "previewpage.h"
 
 // Qt include.
 #include <QDesktopServices>

@@ -4,7 +4,7 @@
 */
 
 // md-editor include.
-#include "font.hpp"
+#include "font.h"
 
 // Qt include.
 #include <QCheckBox>

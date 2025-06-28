@@ -4,21 +4,21 @@
 */
 
 // md-editor include.
-#include "mainwindow.hpp"
-#include "colorsdlg.hpp"
-#include "editor.hpp"
-#include "find.hpp"
-#include "findweb.hpp"
-#include "fontdlg.hpp"
-#include "gotoline.hpp"
-#include "htmldocument.hpp"
-#include "previewpage.hpp"
-#include "settings.hpp"
-#include "syntaxvisitor.hpp"
-#include "toc.hpp"
-#include "version.hpp"
-#include "webview.hpp"
-#include "wordwrapdelegate.hpp"
+#include "mainwindow.h"
+#include "colorsdlg.h"
+#include "editor.h"
+#include "find.h"
+#include "findweb.h"
+#include "fontdlg.h"
+#include "gotoline.h"
+#include "htmldocument.h"
+#include "previewpage.h"
+#include "settings.h"
+#include "syntaxvisitor.h"
+#include "toc.h"
+#include "version.h"
+#include "webview.h"
+#include "wordwrapdelegate.h"
 
 // Sonnet include.
 #include <Sonnet/Settings>
@@ -66,8 +66,8 @@
 #include <md4qt/parser.h>
 
 // shared include.
-#include "license_dialog.hpp"
-#include "folder_chooser.hpp"
+#include "license_dialog.h"
+#include "folder_chooser.h"
 
 namespace MdEditor
 {

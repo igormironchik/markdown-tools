@@ -12,7 +12,7 @@
 #include <QScopedPointer>
 
 // md-editor include.
-#include "colors.hpp"
+#include "colors.h"
 
 namespace MdShared
 {

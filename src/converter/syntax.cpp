@@ -4,7 +4,7 @@
 */
 
 // md-pdf include.
-#include "syntax.hpp"
+#include "syntax.h"
 
 // KF6SyntaxHighlighting include.
 #include <KSyntaxHighlighting/State>

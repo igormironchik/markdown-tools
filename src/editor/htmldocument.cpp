@@ -4,7 +4,7 @@
 */
 
 // md-editor include.
-#include "htmldocument.hpp"
+#include "htmldocument.h"
 
 namespace MdEditor
 {

@@ -4,7 +4,7 @@
 */
 
 // md-editor include.
-#include "colorsdlg.hpp"
+#include "colorsdlg.h"
 #include "ui_colorsdlg.h"
 
 // Qt include.

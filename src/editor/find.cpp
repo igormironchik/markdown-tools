@@ -4,9 +4,9 @@
 */
 
 // md-editor include.
-#include "find.hpp"
-#include "editor.hpp"
-#include "mainwindow.hpp"
+#include "find.h"
+#include "editor.h"
+#include "mainwindow.h"
 #include "ui_find.h"
 
 // Qt include.

@@ -10,14 +10,14 @@ set(CMAKE_AUTOUIC ON)
 find_package(Qt6Core REQUIRED)
 find_package(Qt6Widgets REQUIRED)
 
-set(SRC license_dialog.hpp
+set(SRC license_dialog.h
 	license_dialog.cpp
 	license_dialog.ui
 	color_widget.cpp
-	color_widget.hpp
-	utils.hpp
+	color_widget.h
+	utils.h
 	utils.cpp
-	folder_chooser.hpp
+	folder_chooser.h
     folder_chooser.cpp)
 
 qt6_add_resources(SRC qt.qrc)

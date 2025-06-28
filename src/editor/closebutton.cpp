@@ -4,7 +4,7 @@
 */
 
 // md-editor include.
-#include "closebutton.hpp"
+#include "closebutton.h"
 
 // Qt include.
 #include <QEnterEvent>

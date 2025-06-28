@@ -4,7 +4,7 @@
 */
 
 // md-editor include.
-#include "sonnetconfig.hpp"
+#include "sonnetconfig.h"
 
 namespace MdEditor
 {

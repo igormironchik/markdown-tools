@@ -4,16 +4,16 @@
 */
 
 // md-pdf include.
-#include "renderer.hpp"
-#include "const.hpp"
-#include "podofo_paintdevice.hpp"
+#include "renderer.h"
+#include "const.h"
+#include "podofo_paintdevice.h"
 
 // shared include.
-#include "utils.hpp"
+#include "utils.h"
 
 #ifdef MD_PDF_TESTING
 #include <QtTest/QtTest>
-#include <test_const.hpp>
+#include <test_const.h>
 #endif // MD_PDF_TESTING
 
 // Qt include.

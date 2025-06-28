@@ -4,7 +4,7 @@
 */
 
 // md-pdf include.
-#include "progress.hpp"
+#include "progress.h"
 
 // Qt include.
 #include <QCloseEvent>

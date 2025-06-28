@@ -4,7 +4,7 @@
 */
 
 // md-pdf include.
-#include "color_widget.hpp"
+#include "color_widget.h"
 
 // Qt include.
 #include <QMouseEvent>

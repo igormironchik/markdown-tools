@@ -4,10 +4,10 @@
 */
 
 // md-editor include.
-#include "toc.hpp"
+#include "toc.h"
 
 // shared include.
-#include "utils.hpp"
+#include "utils.h"
 
 namespace MdEditor
 {

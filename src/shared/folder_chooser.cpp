@@ -4,7 +4,7 @@
 */
 
 // Widgets include.
-#include "folder_chooser.hpp"
+#include "folder_chooser.h"
 
 // Qt include.
 #include <QBitmap>
