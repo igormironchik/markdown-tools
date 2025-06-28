@@ -39,9 +39,11 @@ public:
     explicit ColorsDialog(const Colors &cols, QWidget *parent = nullptr);
     ~ColorsDialog() override;
 
+    //! \return Current colors scheme.
     const Colors &colors() const;
 
 private slots:
+    //! On button in buttons group clicked.
     void clicked(QAbstractButton *btn);
 
 private:

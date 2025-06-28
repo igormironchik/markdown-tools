@@ -38,12 +38,15 @@ bool operator!=(const Margins &l, const Margins &r)
 // DataParser
 //
 
+//! Threaded parsing of Markdown content and syntax highlighting.
 class DataParser : public QObject
 {
     Q_OBJECT
 
 signals:
+    //! Signals about data available for parsing.
     void newData();
+    //! Parsing is done.
     void done(std::shared_ptr<MD::Document<MD::QStringTrait>>, unsigned long long int, SyntaxVisitor syntax,
               MD::details::IdsMap<MD::QStringTrait> idsMap);
 
@@ -58,6 +61,7 @@ public:
     ~DataParser() override = default;
 
 public slots:
+    //! New data arrived.
     void onData(const QString &md, const QString &path, const QString &fileName, unsigned long long int counter,
                 SyntaxVisitor syntax)
     {
@@ -72,6 +76,7 @@ public slots:
     }
 
 private slots:
+    //! Do parsing.
     void onParse()
     {
         if (!m_data.isEmpty()) {
@@ -115,9 +120,14 @@ private slots:
     }
 
 private:
+    //! \return Generated ID for a given item.
     QString generateId(MD::Item<MD::QStringTrait> *item)
     {
         if (item->type() != MD::ItemType::Heading) {
+            if (m_id == std::numeric_limits<unsigned long long int>::max()) {
+                m_id = 0;
+            }
+
             return QStringLiteral("md4qt-line-id-%1/%2/%3").arg(QString::number(++m_id), m_path, m_fileName);
         } else {
             const auto labelToId = [](const QString &label) -> QString
@@ -136,20 +146,29 @@ private:
     }
 
 private:
+    //! Queue of Markdown content.
     QStringList m_data;
+    //! Working directory.
     QString m_path;
+    //! File name.
     QString m_fileName;
+    //! ID of last requested parsing.
     unsigned long long int m_counter;
+    //! Parser of Markdown.
     MD::Parser<MD::QStringTrait> m_parser;
+    //! Syntax highlighter.
     SyntaxVisitor m_syntax;
+    //! List of type of items that should get IDs.
     QVector<MD::ItemType> m_itemTypes;
-    long long int m_id = 0;
+    //! Internal counter for IDs generation.
+    unsigned long long int m_id = 0;
 };
 
 //
 // DocumentLayoutWithRightAlignment
 //
 
+//! Layout to support right alignment of text in plain text editor.
 class DocumentLayoutWithRightAlignment : public QPlainTextDocumentLayout
 {
 public:
@@ -208,6 +227,7 @@ public:
     }
 
 private:
+    //! Editor's viewport.
     QWidget *m_viewport;
 };
 
@@ -255,6 +275,7 @@ struct EditorPrivate {
         m_parsingThread->start();
     }
 
+    //! Set highlightings in editor.
     void setExtraSelections()
     {
         QList<QTextEdit::ExtraSelection> tmp = m_syntaxHighlighting;
@@ -264,24 +285,43 @@ struct EditorPrivate {
         m_q->setExtraSelections(tmp);
     }
 
+    //! Editor.
     Editor *m_q = nullptr;
+    //! Line number area.
     LineNumberArea *m_lineNumberArea = nullptr;
+    //! Document's name.
     QString m_docName;
+    //! Is line number area shown?
     bool m_showLineNumberArea = true;
+    //! Highlightings for "find" mode.
     QList<QTextEdit::ExtraSelection> m_extraSelections;
+    //! Syntax highlightings, including spelling checks.
     QList<QTextEdit::ExtraSelection> m_syntaxHighlighting;
+    //! Current line's highlighting.
     QTextEdit::ExtraSelection m_currentLine;
+    //! Currently highlighted text in "find" mode.
     QString m_highlightedText;
+    //! Current parsed Markdown document.
     std::shared_ptr<MD::Document<MD::QStringTrait>> m_currentDoc;
+    //! Map of current itemss IDs.
     MD::details::IdsMap<MD::QStringTrait> m_idsMap;
+    //! Syntax highlighter.
     SyntaxVisitor m_syntax;
+    //! Settings for grayed area.
     Margins m_margins;
+    //! Tread for parsing.
     QThread *m_parsingThread = nullptr;
+    //! Data parser.
     DataParser *m_parser = nullptr;
+    //! "Find/replace" widget.
     Find *m_find = nullptr;
+    //! IDs of a last parsing request.
     unsigned long long int m_currentParsingCounter = 0;
+    //! Working directory.
     QString m_workingDirectory;
+    //! Should working directory be used?
     bool m_useWorkingDir = false;
+    //! Is editor ready?
     bool m_isReady = true;
 }; // struct EditorPrivate
 

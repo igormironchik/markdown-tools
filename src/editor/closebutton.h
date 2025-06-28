@@ -18,7 +18,8 @@ namespace MdEditor
 
 struct CloseButtonPrivate;
 
-//! Close button.
+//! Close button. Uses in "find" widgets,
+//! like find/replace in editor, find in Web preview.
 class CloseButton : public QAbstractButton
 {
     Q_OBJECT
