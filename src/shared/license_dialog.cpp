@@ -28,6 +28,7 @@ namespace /* anonymous */
 // Anchor
 //
 
+//! A small "flag" on left side - anchor for a license.
 class Anchor : public QWidget
 {
 public:

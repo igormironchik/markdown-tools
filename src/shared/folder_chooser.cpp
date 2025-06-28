@@ -42,15 +42,33 @@ void createMask(QBitmap &m, QPainterPath &path, int width, int height)
 // FolderWidget
 //
 
-//! One folder.
+/*!
+ * \brief One folder.
+ *
+ * One folder from the path in MdShared::FolderChooser widget.
+ */
 class FolderWidget : public QWidget
 {
     Q_OBJECT
 
 signals:
+    /*!
+     * Clicked.
+     *
+     * \param idx Index of clicked folder.
+     */
     void clicked(int idx);
 
 public:
+    /*!
+     * Constructor.
+     *
+     * \param folderName Folder name.
+     *
+     * \param idx Index.
+     *
+     * \param parent Parent widget.
+     */
     FolderWidget(const QString &folderName, int idx, QWidget *parent)
         : QWidget(parent)
         , m_folderName(folderName)
@@ -82,17 +100,30 @@ public:
         return {m_width + m_height + 2, m_height + 1};
     }
 
+    /*!
+     * Returns offset used for calculation of geometry.
+     */
     int offset() const
     {
         return m_height / 2;
     }
 
+    /*!
+     * Returns folder name.
+     */
     const QString &folderName() const
     {
         return m_folderName;
     }
 
 public slots:
+    /*!
+     * Set this folder widget as selected.
+     *
+     * \param on On/off.
+     *
+     * \param notify Indicates that MdShared::FolderWidget::clicked should be emitted if \param on is true.
+     */
     void setSelected(bool on = true, bool notify = true)
     {
         m_selected = on;
@@ -194,19 +225,12 @@ struct FolderChooserPrivate {
         m_path.clear();
     }
 
-    //! Parent.
     FolderChooser *m_q = nullptr;
-    //! Path.
     QStringList m_path;
-    //! Folder widgets.
     QVector<FolderWidget*> m_folders;
-    //! Width.
     int m_width = 0;
-    //! Height.
     int m_height = 0;
-    //! Mask.
     QBitmap m_mask;
-    //! Current index.
     int m_idx = -1;
 }; // struct FolderChooserPrivate
 

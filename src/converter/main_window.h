@@ -17,6 +17,7 @@
 // C++ include.
 #include <memory>
 
+//! Namespace for converter of Markdown to PDF.
 namespace MdPdf
 {
 
@@ -26,7 +27,7 @@ class Cfg;
 // MainWidget
 //
 
-//! Main window.
+//! Main widget.
 class MainWidget final : public QWidget
 {
     Q_OBJECT
@@ -35,8 +36,11 @@ public:
     explicit MainWidget(QWidget *parent);
     ~MainWidget() override;
 
+    //! Set Markdown file name.
     void setMarkdownFile(const QString &fileName);
+    //! Save configuration.
     void saveCfg(QSettings &cfg) const;
+    //! Apply configuration.
     void applyCfg(QSettings &cfg);
 
 private slots:
@@ -71,6 +75,7 @@ private:
 // MainWindow
 //
 
+//! Main window.
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -79,6 +84,7 @@ public:
     MainWindow();
     ~MainWindow() override = default;
 
+    //! Set Markdown file name.
     void setMarkdownFile(const QString &fileName);
 
 protected:

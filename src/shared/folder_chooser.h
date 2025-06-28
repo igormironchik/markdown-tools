@@ -17,27 +17,62 @@ namespace MdShared
 
 class FolderChooserPrivate;
 
-//! Dialog with chooser of any parent directory.
+/*!
+ * \brief Folder chooser.
+ *
+ * Dialog with chooser of any parent directory.
+ */
 class FolderChooser : public QWidget
 {
     Q_OBJECT
 
 signals:
+    /*!
+     * Path choosed.
+     */
     void pathSelected(const QString &);
 
 public:
+    /*!
+     * Constructor.
+     *
+     * \a parent Parent widget.
+     */
     explicit FolderChooser(QWidget *parent = nullptr);
     ~FolderChooser() override;
 
     QSize sizeHint() const override;
 
+    /*!
+     * Returns splitted path.
+     *
+     * \a path Path.
+     */
     static QStringList splitPath(const QString &path);
 
+    /*!
+     * Returns current selected path.
+     */
     QString currentPath() const;
 
 public slots:
+    /*!
+     * Set new path.
+     *
+     * \a path Path.
+     */
     void setPath(const QString &path);
+    /*!
+     * Set Qt::Popup flag for this widget.
+     *
+     * \a on Flag value.
+     */
     void setPopup(bool on = true);
+    /*!
+     * Emulate click on folder with the given index.
+     *
+     * \a idx Index of folder.
+     */
     void emulateClick(int idx);
 
 private slots:

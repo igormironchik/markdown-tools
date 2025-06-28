@@ -13,6 +13,7 @@ QT_BEGIN_NAMESPACE
 class QTreeWidgetItem;
 QT_END_NAMESPACE
 
+//! Namespace for Markdown editor.
 namespace MdEditor
 {
 

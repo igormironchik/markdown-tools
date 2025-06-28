@@ -9,10 +9,6 @@
 #include <QFrame>
 
 /*!
- * \namespace MdShared
- * \inmodule MdTools
- * \inheaderfile shared/color_widget.h
- *
  * \brief Namespace for shared stuff.
  *
  * Namespace for shared stuff used both in Markdown editor and converter to PDF.
@@ -25,10 +21,6 @@ namespace MdShared
 //
 
 /*!
- * \class MdShared::ColorWidget
- * \inmodule MdTools
- * \inheaderfile shared/color_widget.h
- *
  * \brief Color widget.
  *
  * Colored clickable rectangle - color picker.
@@ -44,6 +36,11 @@ signals:
     void clicked();
 
 public:
+    /*!
+     * Constructor.
+     *
+     * \a parent Parent widget.
+     */
     ColorWidget(QWidget *parent);
     ~ColorWidget() override = default;
 

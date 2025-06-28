@@ -8,6 +8,7 @@
 namespace MdPdf
 {
 
+//! How much mm in point.
 static const double s_mmInPt = 25.4 / 72.0;
 
 } /* namespace MdPdf */
