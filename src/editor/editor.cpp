@@ -25,6 +25,7 @@
 
 // md4qt include.
 #include <md4qt/algo.h>
+#include <md4qt/plugins.h>
 
 namespace MdEditor
 {
@@ -54,7 +55,14 @@ public:
     DataParser()
         : m_itemTypes({MD::ItemType::Paragraph, MD::ItemType::Blockquote,
                       MD::ItemType::List, MD::ItemType::Code, MD::ItemType::Table, MD::ItemType::Heading})
-    {                    
+    {
+        m_parser.addTextPlugin(MD::UserDefinedPluginID, MD::EmphasisPlugin::emphasisTemplatePlugin<MD::QStringTrait>,
+                               true, QStringList() << QStringLiteral("^") << QStringLiteral("8"));
+        m_parser.addTextPlugin(MD::UserDefinedPluginID + 1, MD::EmphasisPlugin::emphasisTemplatePlugin<MD::QStringTrait>,
+                               true, QStringList() << QStringLiteral("@") << QStringLiteral("16"));
+        m_parser.addTextPlugin(MD::UserDefinedPluginID + 2, MD::EmphasisPlugin::emphasisTemplatePlugin<MD::QStringTrait>,
+                               true, QStringList() << QStringLiteral("=") << QStringLiteral("32"));
+
         connect(this, &DataParser::newData, this, &DataParser::onParse, Qt::QueuedConnection);
     }
 

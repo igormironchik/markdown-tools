@@ -64,6 +64,7 @@
 #include <md4qt/algo.h>
 #include <md4qt/html.h>
 #include <md4qt/parser.h>
+#include <md4qt/plugins.h>
 
 // shared include.
 #include "license_dialog.h"
@@ -87,6 +88,74 @@ protected:
         tmp.replace(QLatin1Char('$'), QStringLiteral("<span>$</span>"));
 
         return tmp;
+    }
+
+    void openStyle(const typename MD::ItemWithOpts<MD::QStringTrait>::Styles &styles) override
+    {
+        for (const auto &s : styles) {
+            switch (s.style()) {
+            case MD::TextOption::BoldText:
+                m_html.push_back(QStringLiteral("<strong>"));
+                break;
+
+            case MD::TextOption::ItalicText:
+                m_html.push_back(QStringLiteral("<em>"));
+                break;
+
+            case MD::TextOption::StrikethroughText:
+                m_html.push_back(QStringLiteral("<del>"));
+                break;
+
+            case 8:
+                m_html.push_back(QStringLiteral("<sup>"));
+                break;
+
+            case 16:
+                m_html.push_back(QStringLiteral("<sub>"));
+                break;
+
+            case 32:
+                m_html.push_back(QStringLiteral("<mark>"));
+                break;
+
+            default:
+                break;
+            }
+        }
+    }
+
+    void closeStyle(const typename MD::ItemWithOpts<MD::QStringTrait>::Styles &styles) override
+    {
+        for (const auto &s : styles) {
+            switch (s.style()) {
+            case MD::TextOption::BoldText:
+                m_html.push_back(QStringLiteral("</strong>"));
+                break;
+
+            case MD::TextOption::ItalicText:
+                m_html.push_back(QStringLiteral("</em>"));
+                break;
+
+            case MD::TextOption::StrikethroughText:
+                m_html.push_back(QStringLiteral("</del>"));
+                break;
+
+            case 8:
+                m_html.push_back(QStringLiteral("</sup>"));
+                break;
+
+            case 16:
+                m_html.push_back(QStringLiteral("</sub>"));
+                break;
+
+            case 32:
+                m_html.push_back(QStringLiteral("</mark>"));
+                break;
+
+            default:
+                break;
+            }
+        }
     }
 };
 
@@ -1871,6 +1940,12 @@ void MainWindow::readAllLinked()
 {
     if (m_d->m_loadAllFlag) {
         MD::Parser<MD::QStringTrait> parser;
+        parser.addTextPlugin(MD::UserDefinedPluginID, MD::EmphasisPlugin::emphasisTemplatePlugin<MD::QStringTrait>,
+                             true, QStringList() << QStringLiteral("^") << QStringLiteral("8"));
+        parser.addTextPlugin(MD::UserDefinedPluginID + 1, MD::EmphasisPlugin::emphasisTemplatePlugin<MD::QStringTrait>,
+                             true, QStringList() << QStringLiteral("@") << QStringLiteral("16"));
+        parser.addTextPlugin(MD::UserDefinedPluginID + 2, MD::EmphasisPlugin::emphasisTemplatePlugin<MD::QStringTrait>,
+                               true, QStringList() << QStringLiteral("=") << QStringLiteral("32"));
 
         if (m_d->m_workingDirectoryWidget->isRelative()) {
             m_d->m_mdDoc = parser.parse(m_d->m_rootFilePath,
