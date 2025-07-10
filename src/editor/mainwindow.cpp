@@ -69,6 +69,7 @@
 // shared include.
 #include "license_dialog.h"
 #include "folder_chooser.h"
+#include "plugins_page.h"
 
 namespace MdEditor
 {
@@ -962,6 +963,7 @@ struct MainWindowPrivate {
     QString m_htmlContent;
     QString m_tmpWorkingDir;
     Colors m_mdColors;
+    MdShared::PluginsCfg m_pluginsCfg;
     bool m_spellingEnabled = false;
     int m_tabWidth = -1;
     int m_minTabWidth = -1;
@@ -1547,6 +1549,25 @@ void MainWindow::saveCfg() const
 
     Sonnet::Settings sonnet;
     sonnet.save();
+
+    s.beginGroup(QStringLiteral("plugins"));
+
+    s.beginGroup(QStringLiteral("superscript"));
+    s.setValue(QStringLiteral("delimiter"), m_d->m_pluginsCfg.m_sup.m_delimiter);
+    s.setValue(QStringLiteral("enabled"), m_d->m_pluginsCfg.m_sup.m_on);
+    s.endGroup();
+
+    s.beginGroup(QStringLiteral("subscript"));
+    s.setValue(QStringLiteral("delimiter"), m_d->m_pluginsCfg.m_sub.m_delimiter);
+    s.setValue(QStringLiteral("enabled"), m_d->m_pluginsCfg.m_sub.m_on);
+    s.endGroup();
+
+    s.beginGroup(QStringLiteral("mark"));
+    s.setValue(QStringLiteral("delimiter"), m_d->m_pluginsCfg.m_mark.m_delimiter);
+    s.setValue(QStringLiteral("enabled"), m_d->m_pluginsCfg.m_mark.m_on);
+    s.endGroup();
+
+    s.endGroup();
 }
 
 void MainWindow::readCfg()
@@ -1673,6 +1694,25 @@ void MainWindow::readCfg()
     s.endGroup();
 
     m_d->m_editor->enableSpellingCheck(m_d->m_spellingEnabled);
+
+    s.beginGroup(QStringLiteral("plugins"));
+
+    s.beginGroup(QStringLiteral("superscript"));
+    m_d->m_pluginsCfg.m_sup.m_delimiter = s.value(QStringLiteral("delimiter"), QChar()).toChar();
+    m_d->m_pluginsCfg.m_sup.m_on = s.value(QStringLiteral("enabled"), false).toBool();
+    s.endGroup();
+
+    s.beginGroup(QStringLiteral("subscript"));
+    m_d->m_pluginsCfg.m_sub.m_delimiter = s.value(QStringLiteral("delimiter"), QChar()).toChar();
+    m_d->m_pluginsCfg.m_sub.m_on = s.value(QStringLiteral("enabled"), false).toBool();
+    s.endGroup();
+
+    s.beginGroup(QStringLiteral("mark"));
+    m_d->m_pluginsCfg.m_mark.m_delimiter = s.value(QStringLiteral("delimiter"), QChar()).toChar();
+    m_d->m_pluginsCfg.m_mark.m_on = s.value(QStringLiteral("enabled"), false).toBool();
+    s.endGroup();
+
+    s.endGroup();
 }
 
 void MainWindow::onLessFontSize()
@@ -3150,7 +3190,7 @@ void MainWindow::onTabClicked(int index)
 void MainWindow::onSettings()
 {
     SettingsDlg dlg(m_d->m_mdColors, m_d->m_editor->font(), m_d->m_editor->margins(),
-                    m_d->m_spellingEnabled, this);
+                    m_d->m_spellingEnabled, m_d->m_pluginsCfg, this);
 
     if (m_d->m_settingsWindowWidth != -1 && m_d->m_settingsWindowHeight != -1) {
         dlg.resize(m_d->m_settingsWindowWidth, m_d->m_settingsWindowHeight);
@@ -3189,6 +3229,10 @@ void MainWindow::onSettings()
 
         if (spellingSettingsChanged) {
             m_d->m_editor->enableSpellingCheck(m_d->m_spellingEnabled);
+        }
+
+        if (m_d->m_pluginsCfg != dlg.pluginsCfg()) {
+            m_d->m_pluginsCfg = dlg.pluginsCfg();
         }
     }
 

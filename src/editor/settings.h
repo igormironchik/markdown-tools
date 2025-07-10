@@ -32,7 +32,8 @@ class SettingsDlg : public QDialog
     Q_OBJECT
 
 public:
-    SettingsDlg(const Colors &c, const QFont &f, const Margins &m, bool enableSpelling, QWidget *parent);
+    SettingsDlg(const Colors &c, const QFont &f, const Margins &m, bool enableSpelling,
+                MdShared::PluginsCfg &pCfg, QWidget *parent);
     ~SettingsDlg() override = default;
 
     //! \return Colors scheme.
@@ -43,6 +44,8 @@ public:
     Margins editorMargins() const;
     //! \return Is spelling check enabled?
     bool isSpellingEnabled() const;
+    //! \return Plugins configuration.
+    MdShared::PluginsCfg pluginsCfg() const;
 
     //! \return Sonnet configuration widget.
     Sonnet::ConfigWidget *sonnetConfigWidget() const;

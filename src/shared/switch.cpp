@@ -65,7 +65,7 @@ public:
     }
 
     bool isChecked() const;
-    void setState(Switch::State st);
+    void setState(Switch::State st, bool justUpdate = false);
     void init();
     void emitSignals();
     void drawText(QPainter *p,
@@ -103,9 +103,9 @@ bool SwitchPrivate::isChecked() const
     }
 }
 
-void SwitchPrivate::setState(Switch::State st)
+void SwitchPrivate::setState(Switch::State st, bool justUpdate)
 {
-    if (state != st) {
+    if (state != st || justUpdate) {
         state = st;
 
         QStyleOption opt;
@@ -113,7 +113,9 @@ void SwitchPrivate::setState(Switch::State st)
 
         initOffset(opt.rect);
 
-        emitSignals();
+        if (!justUpdate) {
+            emitSignals();
+        }
 
         q->update();
     }
@@ -437,6 +439,13 @@ void Switch::mouseMoveEvent(QMouseEvent *event)
 
         update();
     }
+
+    event->accept();
+}
+
+void Switch::resizeEvent(QResizeEvent *event)
+{
+    d->setState(d->state, true);
 
     event->accept();
 }

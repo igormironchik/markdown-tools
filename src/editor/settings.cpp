@@ -21,7 +21,8 @@ namespace MdEditor
 // SettingsDlg
 //
 
-SettingsDlg::SettingsDlg(const Colors &c, const QFont &f, const Margins &m, bool enableSpelling, QWidget *parent)
+SettingsDlg::SettingsDlg(const Colors &c, const QFont &f, const Margins &m, bool enableSpelling,
+                         MdShared::PluginsCfg &pCfg, QWidget *parent)
     : QDialog(parent)
 {
     m_ui.setupUi(this);
@@ -46,6 +47,8 @@ SettingsDlg::SettingsDlg(const Colors &c, const QFont &f, const Margins &m, bool
     m_ui.m_menu->item(3)->setIcon(QIcon::fromTheme(QStringLiteral("preferences-plugin"), QIcon(QStringLiteral(":/res/img/preferences-plugin.png"))));
 
     m_ui.m_spellingGroup->setChecked(enableSpelling);
+
+    m_ui.m_pluginsPage->setCfg(pCfg);
 }
 
 const Colors &SettingsDlg::colors() const
@@ -109,6 +112,12 @@ bool
 SettingsDlg::isSpellingEnabled() const
 {
     return m_ui.m_spellingGroup->isChecked();
+}
+
+MdShared::PluginsCfg
+SettingsDlg::pluginsCfg() const
+{
+    return m_ui.m_pluginsPage->cfg();
 }
 
 Sonnet::ConfigWidget *
