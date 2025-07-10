@@ -1717,6 +1717,7 @@ void MainWindow::readCfg()
 
     s.endGroup();
 
+    m_d->m_editor->setPluginsCfg(m_d->m_pluginsCfg);
     m_d->m_editor->doUpdate();
 }
 
