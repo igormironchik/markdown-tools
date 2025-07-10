@@ -27,6 +27,9 @@
 #include <md4qt/algo.h>
 #include <md4qt/plugins.h>
 
+// shared include.
+#include "utils.h"
+
 namespace MdEditor
 {
 
@@ -56,13 +59,6 @@ public:
         : m_itemTypes({MD::ItemType::Paragraph, MD::ItemType::Blockquote,
                       MD::ItemType::List, MD::ItemType::Code, MD::ItemType::Table, MD::ItemType::Heading})
     {
-        m_parser.addTextPlugin(MD::UserDefinedPluginID, MD::EmphasisPlugin::emphasisTemplatePlugin<MD::QStringTrait>,
-                               true, QStringList() << QStringLiteral("^") << QStringLiteral("8"));
-        m_parser.addTextPlugin(MD::UserDefinedPluginID + 1, MD::EmphasisPlugin::emphasisTemplatePlugin<MD::QStringTrait>,
-                               true, QStringList() << QStringLiteral("@") << QStringLiteral("16"));
-        m_parser.addTextPlugin(MD::UserDefinedPluginID + 2, MD::EmphasisPlugin::emphasisTemplatePlugin<MD::QStringTrait>,
-                               true, QStringList() << QStringLiteral("=") << QStringLiteral("32"));
-
         connect(this, &DataParser::newData, this, &DataParser::onParse, Qt::QueuedConnection);
     }
 
@@ -71,7 +67,7 @@ public:
 public slots:
     //! New data arrived.
     void onData(const QString &md, const QString &path, const QString &fileName, unsigned long long int counter,
-                SyntaxVisitor syntax)
+                SyntaxVisitor syntax, const MdShared::PluginsCfg &pluginsCfg)
     {
         m_data.clear();
         m_data.push_back(md);
@@ -79,6 +75,7 @@ public slots:
         m_fileName = fileName;
         m_counter = counter;
         m_syntax = syntax;
+        m_pluginsCfg = pluginsCfg;
 
         emit newData();
     }
@@ -103,6 +100,8 @@ private slots:
             stream.seek(0);
 
             MD::StringListStream<MD::QStringTrait> linesStream(data);
+
+            setPlugins(m_parser, m_pluginsCfg);
 
             const auto doc = m_parser.parse(stream, m_path, m_fileName);
 
@@ -170,6 +169,8 @@ private:
     QVector<MD::ItemType> m_itemTypes;
     //! Internal counter for IDs generation.
     unsigned long long int m_id = 0;
+    //! Plugins configuration.
+    MdShared::PluginsCfg m_pluginsCfg;
 };
 
 //
@@ -279,6 +280,7 @@ struct EditorPrivate {
         m_q->setCenterOnScroll(true);
 
         m_q->document()->setDocumentLayout(new DocumentLayoutWithRightAlignment(m_q->document(), m_q->viewport()));
+        m_q->doUpdate();
 
         m_parsingThread->start();
     }
@@ -331,6 +333,8 @@ struct EditorPrivate {
     bool m_useWorkingDir = false;
     //! Is editor ready?
     bool m_isReady = true;
+    //! Plugins configuration.
+    MdShared::PluginsCfg m_pluginsCfg;
 }; // struct EditorPrivate
 
 //
@@ -373,6 +377,13 @@ bool Editor::isReady() const
     return m_d->m_isReady;
 }
 
+void Editor::setPluginsCfg(const MdShared::PluginsCfg &cfg)
+{
+    m_d->m_pluginsCfg = cfg;
+
+    onContentChanged();
+}
+
 bool Editor::foundHighlighted() const
 {
     return !m_d->m_extraSelections.isEmpty();
@@ -399,19 +410,11 @@ bool Editor::foundSelected() const
 void Editor::applyColors(const Colors &colors)
 {
     m_d->m_syntax.setColors(colors);
-
-    onContentChanged();
-
-    viewport()->update();
 }
 
 void Editor::enableSpellingCheck(bool on)
 {
     syntaxHighlighter().spellingSettingsChanged(on);
-
-    onContentChanged();
-
-    viewport()->update();
 }
 
 std::shared_ptr<MD::Document<MD::QStringTrait>> Editor::currentDoc() const
@@ -424,8 +427,6 @@ void Editor::applyFont(const QFont &f)
     setFont(f);
 
     m_d->m_syntax.setFont(f);
-
-    onContentChanged();
 }
 
 void Editor::setDocName(const QString &name)
@@ -557,6 +558,7 @@ void Editor::contextMenuEvent(QContextMenuEvent *event)
             ignored.append(word);
             sonnet.setCurrentIgnoreList(ignored);
             this->enableSpellingCheck(this->syntaxHighlighter().isSpellingEnabled());
+            this->doUpdate();
             sonnet.save();
         });
     }
@@ -860,7 +862,7 @@ void Editor::onContentChanged()
     m_d->m_isReady = false;
 
     emit doParsing(md, (m_d->m_useWorkingDir ? m_d->m_workingDirectory : info.absolutePath()), info.fileName(),
-                   m_d->m_currentParsingCounter, m_d->m_syntax);
+                   m_d->m_currentParsingCounter, m_d->m_syntax, m_d->m_pluginsCfg);
 }
 
 void Editor::onParsingDone(std::shared_ptr<MD::Document<MD::QStringTrait>> doc, unsigned long long int counter,
@@ -933,6 +935,13 @@ void Editor::onWorkingDirectoryChange(const QString &wd, bool useWorkingDir)
     m_d->m_useWorkingDir = useWorkingDir;
 
     onContentChanged();
+}
+
+void Editor::doUpdate()
+{
+    onContentChanged();
+
+    viewport()->update();
 }
 
 void Editor::keyPressEvent(QKeyEvent *event)

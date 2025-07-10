@@ -9,6 +9,14 @@
 #include <QString>
 #include <QVector>
 
+// md4qt include.
+#define MD4QT_QT_SUPPORT
+#include <md4qt/traits.h>
+#include <md4qt/parser.h>
+
+// shared include.
+#include "plugins_page.h"
+
 //! Init shared resources, like *.qrc.
 void initSharedResources();
 
@@ -25,3 +33,6 @@ QVector<QPair<QString, bool>> splitString(const QString &str, bool skipSpaces);
 
 //! Order words for painting with Qt with RTL, LTR rules.
 void orderWords(QVector<QPair<QString, bool>> & text);
+
+//! Set plugins to parser.
+void setPlugins(MD::Parser<MD::QStringTrait> &parser, const MdShared::PluginsCfg &cfg);

@@ -30,12 +30,16 @@
       <item row="0" column="1">
        <widget class="QLineEdit" name="m_supChar">
         <property name="toolTip">
-         <string>Only punctuation characters are allowed. Only first character will be used.</string>
+         <string>Only first character will be used.</string>
         </property>
        </widget>
       </item>
       <item row="0" column="2">
-       <widget class="MdShared::Switch" name="m_supSwitch" native="true"/>
+       <widget class="MdShared::Switch" name="m_supSwitch" native="true">
+        <property name="toolTip">
+         <string>Turn on/off superscript emphasis plugin.</string>
+        </property>
+       </widget>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_2">
@@ -47,12 +51,16 @@
       <item row="1" column="1">
        <widget class="QLineEdit" name="m_subChar">
         <property name="toolTip">
-         <string>Only punctuation characters are allowed. Only first character will be used.</string>
+         <string>Only first character will be used.</string>
         </property>
        </widget>
       </item>
       <item row="1" column="2">
-       <widget class="MdShared::Switch" name="m_subSwitch" native="true"/>
+       <widget class="MdShared::Switch" name="m_subSwitch" native="true">
+        <property name="toolTip">
+         <string>Turn on/off subscript emphasis plugin.</string>
+        </property>
+       </widget>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_3">
@@ -64,12 +72,16 @@
       <item row="2" column="1">
        <widget class="QLineEdit" name="m_markChar">
         <property name="toolTip">
-         <string>Only punctuation characters are allowed. Only first character will be used.</string>
+         <string>Only first character will be used.</string>
         </property>
        </widget>
       </item>
       <item row="2" column="2">
-       <widget class="MdShared::Switch" name="m_markSwitch" native="true"/>
+       <widget class="MdShared::Switch" name="m_markSwitch" native="true">
+        <property name="toolTip">
+         <string>Turn on/off mark emphasis plugin.</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
