@@ -43,6 +43,7 @@ SettingsDlg::SettingsDlg(const Colors &c, const QFont &f, const Margins &m, bool
     m_ui.m_menu->item(1)->setIcon(
         QIcon::fromTheme(QStringLiteral("preferences-desktop-font"), QIcon(QStringLiteral(":/res/img/preferences-desktop-font.png"))));
     m_ui.m_menu->item(2)->setIcon(QIcon::fromTheme(QStringLiteral("document-properties"), QIcon(QStringLiteral(":/res/img/document-properties.png"))));
+    m_ui.m_menu->item(3)->setIcon(QIcon::fromTheme(QStringLiteral("preferences-plugin"), QIcon(QStringLiteral(":/res/img/preferences-plugin.png"))));
 
     m_ui.m_spellingGroup->setChecked(enableSpelling);
 }

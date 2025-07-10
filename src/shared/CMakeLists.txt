@@ -18,7 +18,16 @@ set(SRC license_dialog.h
 	utils.h
 	utils.cpp
 	folder_chooser.h
-    folder_chooser.cpp)
+    folder_chooser.cpp
+    plugins_page.cpp
+    plugins_page.h
+    plugins_page.ui
+    switch.cpp
+    switch.h
+    color.h
+    color.cpp
+    fingergeometry.h
+    fingergeometry.cpp)
 
 qt6_add_resources(SRC qt.qrc)
 qt6_add_resources(SRC icon.qrc)

@@ -51,6 +51,15 @@
           <normaloff>:/res/img/document-properties.png</normaloff>:/res/img/document-properties.png</iconset>
         </property>
        </item>
+       <item>
+        <property name="text">
+         <string>Plugins</string>
+        </property>
+        <property name="icon">
+         <iconset resource="resources.qrc">
+          <normaloff>:/res/img/preferences-plugin.png</normaloff>:/res/img/preferences-plugin.png</iconset>
+        </property>
+       </item>
       </widget>
      </item>
      <item>
@@ -62,7 +71,7 @@
         </sizepolicy>
        </property>
        <property name="currentIndex">
-        <number>2</number>
+        <number>3</number>
        </property>
        <widget class="MdEditor::ColorsPage" name="m_colorsPage"/>
        <widget class="MdEditor::FontPage" name="m_fontPage"/>
@@ -78,8 +87,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>456</width>
-              <height>362</height>
+              <width>272</width>
+              <height>146</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -133,6 +142,7 @@
          </item>
         </layout>
        </widget>
+       <widget class="MdShared::PluginsPage" name="m_pluginsPage"/>
       </widget>
      </item>
     </layout>
@@ -166,6 +176,12 @@
    <class>MdEditor::SonnetConfig</class>
    <extends>QWidget</extends>
    <header location="global">sonnetconfig.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MdShared::PluginsPage</class>
+   <extends>QWidget</extends>
+   <header>plugins_page.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
