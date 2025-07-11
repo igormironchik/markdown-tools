@@ -103,7 +103,7 @@ private slots:
 
             setPlugins(m_parser, m_pluginsCfg);
 
-            const auto doc = m_parser.parse(stream, m_path, m_fileName);
+            const auto doc = m_parser.parse(stream, m_path, m_fileName, false);
 
             m_data.clear();
 

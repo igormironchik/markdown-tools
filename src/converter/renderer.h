@@ -748,6 +748,16 @@ private:
                                                          double scale,
                                                          RTLFlag *rtl = nullptr,
                                                          bool inLink = false);
+
+    struct PluggedStyles {
+        bool m_sup = false;
+        bool m_sub = false;
+        bool m_mark = false;
+    }; // struct PluggedStyles
+
+    //! \return Additional options, like superscript, subscript, for text drawing.
+    PluggedStyles pluggedStyles(MD::ItemWithOpts<MD::QStringTrait> *item);
+
     //! Draw string.
     QVector<QPair<QRectF, unsigned int>> drawString(PdfAuxData &pdfData,
                                                     const QString &str,

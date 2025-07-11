@@ -464,10 +464,16 @@ void MainWidget::process()
         std::shared_ptr<MD::Document<MD::QStringTrait>> doc;
 
         if (m_ui->m_workingDirBox->isChecked()) {
-            doc = parser.parse(m_ui->m_fileName->text(), m_ui->m_workingDirectory->currentPath(),
-                               m_ui->m_recursive->isChecked());
+            doc = parser.parse(m_ui->m_fileName->text(),
+                               m_ui->m_workingDirectory->currentPath(),
+                               m_ui->m_recursive->isChecked(),
+                               QStringList() << QStringLiteral("md") << QStringLiteral("markdown"),
+                               false);
         } else {
-            doc = parser.parse(m_ui->m_fileName->text(), m_ui->m_recursive->isChecked());
+            doc = parser.parse(m_ui->m_fileName->text(),
+                               m_ui->m_recursive->isChecked(),
+                               QStringList() << QStringLiteral("md") << QStringLiteral("markdown"),
+                               false);
         }
 
         if (!doc->isEmpty()) {

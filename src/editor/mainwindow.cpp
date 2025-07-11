@@ -1994,10 +1994,12 @@ void MainWindow::readAllLinked()
 
         if (m_d->m_workingDirectoryWidget->isRelative()) {
             m_d->m_mdDoc = parser.parse(m_d->m_rootFilePath,
-                                        true, {QStringLiteral("md"), QStringLiteral("mkd"), QStringLiteral("markdown")});
+                                        true, {QStringLiteral("md"), QStringLiteral("mkd"), QStringLiteral("markdown")},
+                                        false);
         } else {
             m_d->m_mdDoc = parser.parse(m_d->m_rootFilePath, m_d->m_workingDirectoryWidget->workingDirectory(),
-                                        true, {QStringLiteral("md"), QStringLiteral("mkd"), QStringLiteral("markdown")});
+                                        true, {QStringLiteral("md"), QStringLiteral("mkd"), QStringLiteral("markdown")},
+                                        false);
         }
 
         MD::details::IdsMap<MD::QStringTrait> idsMap;
