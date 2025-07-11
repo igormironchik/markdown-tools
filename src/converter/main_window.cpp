@@ -13,6 +13,7 @@
 #include "progress.h"
 #include "renderer.h"
 #include "version.h"
+#include "settings.h"
 
 // Qt include.
 #include <QApplication>
@@ -36,6 +37,7 @@
 
 // shared include.
 #include "license_dialog.h"
+#include "utils.h"
 
 namespace MdPdf
 {
@@ -237,6 +239,25 @@ void MainWidget::saveCfg(QSettings &cfg) const
 
     cfg.endGroup();
     cfg.endGroup();
+
+    cfg.beginGroup(QStringLiteral("plugins"));
+
+    cfg.beginGroup(QStringLiteral("superscript"));
+    cfg.setValue(QStringLiteral("delimiter"), m_pluginsCfg.m_sup.m_delimiter);
+    cfg.setValue(QStringLiteral("enabled"), m_pluginsCfg.m_sup.m_on);
+    cfg.endGroup();
+
+    cfg.beginGroup(QStringLiteral("subscript"));
+    cfg.setValue(QStringLiteral("delimiter"), m_pluginsCfg.m_sub.m_delimiter);
+    cfg.setValue(QStringLiteral("enabled"), m_pluginsCfg.m_sub.m_on);
+    cfg.endGroup();
+
+    cfg.beginGroup(QStringLiteral("mark"));
+    cfg.setValue(QStringLiteral("delimiter"), m_pluginsCfg.m_mark.m_delimiter);
+    cfg.setValue(QStringLiteral("enabled"), m_pluginsCfg.m_mark.m_on);
+    cfg.endGroup();
+
+    cfg.endGroup();
 }
 
 inline int limitFontSize(int s)
@@ -348,6 +369,35 @@ void MainWidget::applyCfg(QSettings &cfg)
 
     cfg.endGroup();
     cfg.endGroup();
+
+    cfg.beginGroup(QStringLiteral("plugins"));
+
+    cfg.beginGroup(QStringLiteral("superscript"));
+    m_pluginsCfg.m_sup.m_delimiter = cfg.value(QStringLiteral("delimiter"), QChar()).toChar();
+    m_pluginsCfg.m_sup.m_on = cfg.value(QStringLiteral("enabled"), false).toBool();
+    cfg.endGroup();
+
+    cfg.beginGroup(QStringLiteral("subscript"));
+    m_pluginsCfg.m_sub.m_delimiter = cfg.value(QStringLiteral("delimiter"), QChar()).toChar();
+    m_pluginsCfg.m_sub.m_on = cfg.value(QStringLiteral("enabled"), false).toBool();
+    cfg.endGroup();
+
+    cfg.beginGroup(QStringLiteral("mark"));
+    m_pluginsCfg.m_mark.m_delimiter = cfg.value(QStringLiteral("delimiter"), QChar()).toChar();
+    m_pluginsCfg.m_mark.m_on = cfg.value(QStringLiteral("enabled"), false).toBool();
+    cfg.endGroup();
+
+    cfg.endGroup();
+}
+
+const MdShared::PluginsCfg & MainWidget::pluginsCfg() const
+{
+    return m_pluginsCfg;
+}
+
+void MainWidget::setPluginsCfg(const MdShared::PluginsCfg &cfg)
+{
+    m_pluginsCfg = cfg;
 }
 
 void MainWidget::setMarkdownFile(const QString &fileName)
@@ -409,6 +459,7 @@ void MainWidget::process()
         }
 
         MD::Parser<MD::QStringTrait> parser;
+        setPlugins(parser, m_pluginsCfg);
 
         std::shared_ptr<MD::Document<MD::QStringTrait>> doc;
 
@@ -556,6 +607,12 @@ MainWindow::MainWindow()
                     tr("&Quit"),
                     this,
                     &MainWindow::quit);
+
+    auto settings = menuBar()->addMenu(tr("&Settings"));
+    settings->addAction(QIcon::fromTheme(QStringLiteral("configure"), QIcon(QStringLiteral(":/img/configure.png"))),
+                        tr("Settings"),
+                        this,
+                        &MainWindow::settings);
 
     auto help = menuBar()->addMenu(tr("&Help"));
     help->addAction(QIcon(QStringLiteral(":/icon/icon_24x24.png")), tr("About"), this, &MainWindow::about);
@@ -1789,6 +1846,17 @@ void MainWindow::licenses()
 void MainWindow::quit()
 {
     QApplication::quit();
+}
+
+void MainWindow::settings()
+{
+    SettingsDlg dlg(ui->pluginsCfg(), this);
+
+    if (dlg.exec() == QDialog::Accepted) {
+        if (dlg.pluginsCfg() != ui->pluginsCfg()) {
+            ui->setPluginsCfg(dlg.pluginsCfg());
+        }
+    }
 }
 
 } /* namespace MdPdf */

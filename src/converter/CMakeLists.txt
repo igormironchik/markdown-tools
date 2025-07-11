@@ -34,7 +34,10 @@ set(GUI_SRC main.cpp
 	progress.h
 	progress.cpp
 	progress.ui
-    const.h)
+    const.h
+    settings.h
+    settings.cpp
+    settings.ui)
 	
 qt6_add_resources(GUI_SRC resources.qrc)
 qt6_add_resources(GUI_SRC ../../3rdparty/MicroTeX/latex.qrc)

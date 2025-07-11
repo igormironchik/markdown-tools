@@ -85,13 +85,22 @@ PluginsPage::~PluginsPage()
 
 void PluginsPage::setCfg(const PluginsCfg &cfg)
 {
-    d->m_ui.m_supChar->setText(cfg.m_sup.m_delimiter);
+    if (!cfg.m_sup.m_delimiter.isNull()) {
+        d->m_ui.m_supChar->setText(cfg.m_sup.m_delimiter);
+    }
+
     d->m_ui.m_supSwitch->setState(cfg.m_sup.m_on ? MdShared::Switch::AcceptedCheck : MdShared::Switch::AcceptedUncheck);
 
-    d->m_ui.m_subChar->setText(cfg.m_sub.m_delimiter);
+    if (!cfg.m_sub.m_delimiter.isNull()) {
+        d->m_ui.m_subChar->setText(cfg.m_sub.m_delimiter);
+    }
+
     d->m_ui.m_subSwitch->setState(cfg.m_sub.m_on ? MdShared::Switch::AcceptedCheck : MdShared::Switch::AcceptedUncheck);
 
-    d->m_ui.m_markChar->setText(cfg.m_mark.m_delimiter);
+    if (!cfg.m_mark.m_delimiter.isNull()) {
+        d->m_ui.m_markChar->setText(cfg.m_mark.m_delimiter);
+    }
+
     d->m_ui.m_markSwitch->setState(cfg.m_mark.m_on ? MdShared::Switch::AcceptedCheck : MdShared::Switch::AcceptedUncheck);
 
     d->isOk(d->m_ui.m_supChar, d->m_ui.m_supSwitch);
