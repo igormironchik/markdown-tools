@@ -721,96 +721,108 @@ private:
     //! Align line.
     void alignLine(PdfAuxData &pdfData, const CustomWidth &cw);
 
+    //! Baseline delta and scale of previous item.
+    //! Used for calculating superscript and subscript.
+    struct PrevState {
+        //! Baseline delta.
+        double m_baselineDelta = 0.0;
+        //! Scale.
+        double m_scale = 1.0;
+    }; // struct PrevState
+
     //! Draw text.
-    QVector<QPair<QRectF, unsigned int>> drawText(PdfAuxData &pdfData,
-                                                  MD::Text<MD::QStringTrait> *item,
-                                                  std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
-                                                  bool &newLine,
-                                                  Font *footnoteFont,
-                                                  double footnoteFontSize,
-                                                  double footnoteFontScale,
-                                                  MD::Item<MD::QStringTrait> *nextItem,
-                                                  int footnoteNum,
-                                                  double offset,
-                                                  bool firstInParagraph,
-                                                  CustomWidth &cw,
-                                                  double scale,
-                                                  const QColor &color = Qt::black,
-                                                  RTLFlag *rtl = nullptr);
+    QPair<QVector<QPair<QRectF,
+                        unsigned int>>,
+          PrevState>
+    drawText(PdfAuxData &pdfData,
+             MD::Text<MD::QStringTrait> *item,
+             std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+             bool &newLine,
+             Font *footnoteFont,
+             double footnoteFontSize,
+             double footnoteFontScale,
+             MD::Item<MD::QStringTrait> *nextItem,
+             int footnoteNum,
+             double offset,
+             bool firstInParagraph,
+             CustomWidth &cw,
+             double scale,
+             const QColor &color = Qt::black,
+             RTLFlag *rtl = nullptr);
     //! Draw inlined code.
-    QVector<QPair<QRectF, unsigned int>> drawInlinedCode(PdfAuxData &pdfData,
-                                                         MD::Code<MD::QStringTrait> *item,
-                                                         std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
-                                                         bool &newLine,
-                                                         double offset,
-                                                         bool firstInParagraph,
-                                                         CustomWidth &cw,
-                                                         double scale,
-                                                         RTLFlag *rtl = nullptr,
-                                                         bool inLink = false);
-
-    struct PluggedStyles {
-        bool m_sup = false;
-        bool m_sub = false;
-        bool m_mark = false;
-    }; // struct PluggedStyles
-
-    //! \return Additional options, like superscript, subscript, for text drawing.
-    PluggedStyles pluggedStyles(MD::ItemWithOpts<MD::QStringTrait> *item);
+    QPair<QVector<QPair<QRectF,
+                        unsigned int>>,
+          PrevState>
+    drawInlinedCode(PdfAuxData &pdfData,
+                    MD::Code<MD::QStringTrait> *item,
+                    std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                    bool &newLine,
+                    double offset,
+                    bool firstInParagraph,
+                    CustomWidth &cw,
+                    double scale,
+                    RTLFlag *rtl = nullptr,
+                    bool inLink = false);
 
     //! Draw string.
-    QVector<QPair<QRectF, unsigned int>> drawString(PdfAuxData &pdfData,
-                                                    const QString &str,
-                                                    Font *spaceFont,
-                                                    double spaceFontSize,
-                                                    double spaceFontScale,
-                                                    Font *font,
-                                                    double fontSize,
-                                                    double fontScale,
-                                                    double lineHeight,
-                                                    std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
-                                                    bool &newLine,
-                                                    Font *footnoteFont,
-                                                    double footnoteFontSize,
-                                                    double footnoteFontScale,
-                                                    MD::Item<MD::QStringTrait> *nextItem,
-                                                    int footnoteNum,
-                                                    double offset,
-                                                    bool firstInParagraph,
-                                                    CustomWidth &cw,
-                                                    const QColor &background,
-                                                    bool strikeout,
-                                                    long long int startLine,
-                                                    long long int startPos,
-                                                    long long int endLine,
-                                                    long long int endPos,
-                                                    const QColor &color = Qt::black,
-                                                    Font *regularSpaceFont = nullptr,
-                                                    double regularSpaceFontSize = 0.0,
-                                                    double regularSpaceFontScale = 0.0,
-                                                    RTLFlag *rtl = nullptr);
+    QPair<QVector<QPair<QRectF,
+                        unsigned int>>,
+          PrevState>
+    drawString(PdfAuxData &pdfData,
+               const QString &str,
+               Font *spaceFont,
+               double spaceFontSize,
+               double spaceFontScale,
+               Font *font,
+               double fontSize,
+               double fontScale,
+               double lineHeight,
+               std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+               bool &newLine,
+               Font *footnoteFont,
+               double footnoteFontSize,
+               double footnoteFontScale,
+               MD::Item<MD::QStringTrait> *nextItem,
+               int footnoteNum,
+               double offset,
+               bool firstInParagraph,
+               CustomWidth &cw,
+               const QColor &background,
+               bool strikeout,
+               long long int startLine,
+               long long int startPos,
+               long long int endLine,
+               long long int endPos,
+               const QColor &color = Qt::black,
+               Font *regularSpaceFont = nullptr,
+               double regularSpaceFontSize = 0.0,
+               double regularSpaceFontScale = 0.0,
+               RTLFlag *rtl = nullptr);
     //! Draw link.
-    QVector<QPair<QRectF, unsigned int>> drawLink(PdfAuxData &pdfData,
-                                                  MD::Link<MD::QStringTrait> *item,
-                                                  std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
-                                                  bool &newLine,
-                                                  Font *footnoteFont,
-                                                  double footnoteFontSize,
-                                                  double footnoteFontScale,
-                                                  MD::Item<MD::QStringTrait> *prevItem,
-                                                  MD::Item<MD::QStringTrait> *nextItem,
-                                                  int footnoteNum,
-                                                  double offset,
-                                                  double lineHeight,
-                                                  double spaceWidth,
-                                                  bool firstInParagraph,
-                                                  bool lastInParagraph,
-                                                  bool isPrevText,
-                                                  bool isNextText,
-                                                  CustomWidth &cw,
-                                                  double scale,
-                                                  bool scaleImagesToLineHeight,
-                                                  RTLFlag *rtl = nullptr);
+    QPair<QVector<QPair<QRectF,
+                        unsigned int>>,
+          PrevState>
+    drawLink(PdfAuxData &pdfData,
+             MD::Link<MD::QStringTrait> *item,
+             std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+             bool &newLine,
+             Font *footnoteFont,
+             double footnoteFontSize,
+             double footnoteFontScale,
+             MD::Item<MD::QStringTrait> *prevItem,
+             MD::Item<MD::QStringTrait> *nextItem,
+             int footnoteNum,
+             double offset,
+             double lineHeight,
+             double spaceWidth,
+             bool firstInParagraph,
+             bool lastInParagraph,
+             bool isPrevText,
+             bool isNextText,
+             CustomWidth &cw,
+             double scale,
+             bool scaleImagesToLineHeight,
+             RTLFlag *rtl = nullptr);
     //! \return Is \par it a space?
     template<class Iterator>
     inline bool isSpace(Iterator it)
@@ -997,34 +1009,40 @@ private:
                        double lineHeight,
                        bool scaleImagesToLineHeight);
     //! Draw image.
-    QPair<QRectF, unsigned int> drawImage(PdfAuxData &pdfData,
-                                          MD::Image<MD::QStringTrait> *item,
-                                          std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
-                                          bool &newLine,
-                                          double offset,
-                                          double lineHeight,
-                                          double spaceWidth,
-                                          bool firstInParagraph,
-                                          bool lastInParagraph,
-                                          bool isPrevText,
-                                          bool isNextText,
-                                          CustomWidth &cw,
-                                          double scale,
-                                          MD::Item<MD::QStringTrait> *prevItem,
-                                          ImageAlignment alignment = ImageAlignment::Unknown,
-                                          bool scaleImagesToLineHeight = false);
+    QPair<QPair<QRectF,
+                unsigned int>,
+          PrevState>
+    drawImage(PdfAuxData &pdfData,
+              MD::Image<MD::QStringTrait> *item,
+              std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+              bool &newLine,
+              double offset,
+              double lineHeight,
+              double spaceWidth,
+              bool firstInParagraph,
+              bool lastInParagraph,
+              bool isPrevText,
+              bool isNextText,
+              CustomWidth &cw,
+              double scale,
+              MD::Item<MD::QStringTrait> *prevItem,
+              ImageAlignment alignment = ImageAlignment::Unknown,
+              bool scaleImagesToLineHeight = false);
 
     //! Draw math expression.
-    QPair<QRectF, unsigned int> drawMathExpr(PdfAuxData &pdfData,
-                                             MD::Math<MD::QStringTrait> *item,
-                                             std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
-                                             MD::Item<MD::QStringTrait> *prevItem,
-                                             bool &newLine,
-                                             double offset,
-                                             bool isNextText,
-                                             bool firstInParagraph,
-                                             CustomWidth &cw,
-                                             double scale);
+    QPair<QPair<QRectF,
+                unsigned int>,
+          PrevState>
+    drawMathExpr(PdfAuxData &pdfData,
+                 MD::Math<MD::QStringTrait> *item,
+                 std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                 MD::Item<MD::QStringTrait> *prevItem,
+                 bool &newLine,
+                 double offset,
+                 bool isNextText,
+                 bool firstInParagraph,
+                 CustomWidth &cw,
+                 double scale);
 
     //! \return Height of the table's row.
     double rowHeight(PdfAuxData &pdfData,
