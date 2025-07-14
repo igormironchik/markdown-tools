@@ -723,7 +723,7 @@ private:
 
     //! Baseline delta and scale of previous item.
     //! Used for calculating superscript and subscript.
-    struct PrevState {
+    struct PrevBaselineState {
         //! Baseline delta.
         double m_baselineDelta = 0.0;
         //! Scale.
@@ -733,7 +733,7 @@ private:
     //! Draw text.
     QPair<QVector<QPair<QRectF,
                         unsigned int>>,
-          PrevState>
+          PrevBaselineState>
     drawText(PdfAuxData &pdfData,
              MD::Text<MD::QStringTrait> *item,
              std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
@@ -747,12 +747,13 @@ private:
              bool firstInParagraph,
              CustomWidth &cw,
              double scale,
+             const PrevBaselineState &previousBaseline,
              const QColor &color = Qt::black,
              RTLFlag *rtl = nullptr);
     //! Draw inlined code.
     QPair<QVector<QPair<QRectF,
                         unsigned int>>,
-          PrevState>
+          PrevBaselineState>
     drawInlinedCode(PdfAuxData &pdfData,
                     MD::Code<MD::QStringTrait> *item,
                     std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
@@ -761,13 +762,14 @@ private:
                     bool firstInParagraph,
                     CustomWidth &cw,
                     double scale,
+                    const PrevBaselineState &previousBaseline,
                     RTLFlag *rtl = nullptr,
                     bool inLink = false);
 
     //! Draw string.
     QPair<QVector<QPair<QRectF,
                         unsigned int>>,
-          PrevState>
+          PrevBaselineState>
     drawString(PdfAuxData &pdfData,
                const QString &str,
                Font *spaceFont,
@@ -793,6 +795,7 @@ private:
                long long int startPos,
                long long int endLine,
                long long int endPos,
+               const PrevBaselineState &previousBaseline,
                const QColor &color = Qt::black,
                Font *regularSpaceFont = nullptr,
                double regularSpaceFontSize = 0.0,
@@ -801,7 +804,7 @@ private:
     //! Draw link.
     QPair<QVector<QPair<QRectF,
                         unsigned int>>,
-          PrevState>
+          PrevBaselineState>
     drawLink(PdfAuxData &pdfData,
              MD::Link<MD::QStringTrait> *item,
              std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
@@ -822,6 +825,7 @@ private:
              CustomWidth &cw,
              double scale,
              bool scaleImagesToLineHeight,
+             const PrevBaselineState &previousBaseline,
              RTLFlag *rtl = nullptr);
     //! \return Is \par it a space?
     template<class Iterator>
@@ -1011,7 +1015,7 @@ private:
     //! Draw image.
     QPair<QPair<QRectF,
                 unsigned int>,
-          PrevState>
+          PrevBaselineState>
     drawImage(PdfAuxData &pdfData,
               MD::Image<MD::QStringTrait> *item,
               std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
@@ -1025,6 +1029,7 @@ private:
               bool isNextText,
               CustomWidth &cw,
               double scale,
+              const PrevBaselineState &previousBaseline,
               MD::Item<MD::QStringTrait> *prevItem,
               ImageAlignment alignment = ImageAlignment::Unknown,
               bool scaleImagesToLineHeight = false);
@@ -1032,7 +1037,7 @@ private:
     //! Draw math expression.
     QPair<QPair<QRectF,
                 unsigned int>,
-          PrevState>
+          PrevBaselineState>
     drawMathExpr(PdfAuxData &pdfData,
                  MD::Math<MD::QStringTrait> *item,
                  std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
@@ -1042,7 +1047,8 @@ private:
                  bool isNextText,
                  bool firstInParagraph,
                  CustomWidth &cw,
-                 double scale);
+                 double scale,
+                 const PrevBaselineState &previousBaseline);
 
     //! \return Height of the table's row.
     double rowHeight(PdfAuxData &pdfData,

@@ -1143,7 +1143,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawHeading(PdfAuxData &pdfD
 
 QPair<QVector<QPair<QRectF,
                     unsigned int>>,
-      PdfRenderer::PrevState>
+      PdfRenderer::PrevBaselineState>
 PdfRenderer::drawText(PdfAuxData &pdfData,
                       MD::Text<MD::QStringTrait> *item,
                       std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
@@ -1157,6 +1157,7 @@ PdfRenderer::drawText(PdfAuxData &pdfData,
                       bool firstInParagraph,
                       CustomWidth &cw,
                       double scale,
+                      const PrevBaselineState &previousBaseline,
                       const QColor &color,
                       RTLFlag *rtl)
 {
@@ -1196,6 +1197,7 @@ PdfRenderer::drawText(PdfAuxData &pdfData,
                       item->startColumn(),
                       item->endLine(),
                       item->endColumn(),
+                      previousBaseline,
                       color,
                       nullptr,
                       0.0,
@@ -1325,7 +1327,7 @@ PdfRenderer::skipRawHtmlAndSpacesBackward(MD::Block<MD::QStringTrait>::Items::co
 
 QPair<QVector<QPair<QRectF,
                     unsigned int>>,
-      PdfRenderer::PrevState>
+      PdfRenderer::PrevBaselineState>
 PdfRenderer::drawLink(PdfAuxData &pdfData,
                       MD::Link<MD::QStringTrait> *item,
                       std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
@@ -1346,10 +1348,11 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
                       CustomWidth &cw,
                       double scale,
                       bool scaleImagesToLineHeight,
+                      const PrevBaselineState &previousBaseline,
                       RTLFlag *rtl)
 {
     QVector<QPair<QRectF, unsigned int>> rects;
-    PrevState current;
+    PrevBaselineState current = previousBaseline;
 
     QString url = item->url();
 
@@ -1415,6 +1418,7 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
                                           text->startColumn(),
                                           text->endLine(),
                                           text->endColumn(),
+                                          current,
                                           m_opts.m_linkColor,
                                           nullptr,
                                           0.0,
@@ -1433,6 +1437,7 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
                                                (it == item->p()->items().begin() && firstInParagraph),
                                                cw,
                                                scale,
+                                               current,
                                                rtl,
                                                true);
                 rects.append(r.first);
@@ -1466,6 +1471,7 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
                     isTextOrOnlineAfter(it, last, pdfData, offset, lineHeight, scaleImagesToLineHeight) || isNextText,
                     cw,
                     1.0,
+                    current,
                     (prev ? prev : prevItem),
                     (pdfData.m_tableDrawing ? ImageAlignment::Unknown : m_opts.m_imageAlignment));
                 rects.append(r.first);
@@ -1507,6 +1513,7 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
                                   item->startColumn(),
                                   item->endLine(),
                                   item->endColumn(),
+                                  current,
                                   m_opts.m_linkColor,
                                   nullptr,
                                   0.0,
@@ -1530,6 +1537,7 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
                                  isNextText,
                                  cw,
                                  1.0,
+                                 current,
                                  prevItem,
                                  (pdfData.m_tableDrawing ? ImageAlignment::Unknown : m_opts.m_imageAlignment));
         rects.append(r.first);
@@ -1610,7 +1618,7 @@ void PdfRenderer::alignLine(PdfAuxData &pdfData, const CustomWidth &cw)
 
 QPair<QVector<QPair<QRectF,
                     unsigned int>>,
-      PdfRenderer::PrevState>
+      PdfRenderer::PrevBaselineState>
 PdfRenderer::drawString(PdfAuxData &pdfData,
                         const QString &str,
                         Font *spaceFont,
@@ -1636,6 +1644,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                         long long int startPos,
                         long long int endLine,
                         long long int endPos,
+                        const PrevBaselineState &previousBaseline,
                         const QColor &color,
                         Font *regularSpaceFont,
                         double regularSpaceFontSize,
@@ -1695,7 +1704,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
     };
 
     QVector<QPair<QRectF, unsigned int>> ret;
-    PrevState current;
+    PrevBaselineState current = previousBaseline;
 
     {
         QMutexLocker lock(&m_mutex);
@@ -1930,7 +1939,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
 
 QPair<QVector<QPair<QRectF,
                     unsigned int>>,
-      PdfRenderer::PrevState>
+      PdfRenderer::PrevBaselineState>
 PdfRenderer::drawInlinedCode(PdfAuxData &pdfData,
                              MD::Code<MD::QStringTrait> *item,
                              std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
@@ -1939,6 +1948,7 @@ PdfRenderer::drawInlinedCode(PdfAuxData &pdfData,
                              bool firstInParagraph,
                              CustomWidth &cw,
                              double scale,
+                             const PrevBaselineState &previousBaseline,
                              RTLFlag *rtl,
                              bool inLink)
 {
@@ -1995,6 +2005,7 @@ PdfRenderer::drawInlinedCode(PdfAuxData &pdfData,
                       item->startColumn(),
                       item->endLine(),
                       item->endColumn(),
+                      previousBaseline,
                       textColor,
                       textFont,
                       m_opts.m_textFontSize,
@@ -2181,7 +2192,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
     bool lineBreak = false;
     bool firstInParagraph = true;
 
-    PrevState previous;
+    PrevBaselineState previous;
 
     // Calculate words/lines/spaces widthes.
     for (auto it = item->items().begin(), last = item->items().end(); it != last; ++it) {
@@ -2226,6 +2237,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                                 (firstInParagraph || lineBreak),
                                 cw,
                                 scale,
+                                previous,
                                 color,
                                 rtl)
                            .second;
@@ -2242,6 +2254,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                                        (firstInParagraph || lineBreak),
                                        cw,
                                        scale,
+                                       previous,
                                        rtl)
                            .second;
             lineBreak = false;
@@ -2275,6 +2288,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                                 cw,
                                 scale,
                                 scaleImagesToLineHeight,
+                                previous,
                                 rtl)
                            .second;
             lineBreak = false;
@@ -2301,6 +2315,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                                  isTextOrOnlineAfter(it, last, pdfData, offset, lineHeight, scaleImagesToLineHeight),
                                  cw,
                                  1.0,
+                                 previous,
                                  (it != item->items().begin() ? getPrevItem(std::prev(it), item->items().begin(), last)
                                                               : nullptr),
                                  (pdfData.m_tableDrawing ? ImageAlignment::Unknown : m_opts.m_imageAlignment),
@@ -2321,7 +2336,8 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                                     isTextOrOnlineAfter(it, last, pdfData, offset, lineHeight, scaleImagesToLineHeight),
                                     (firstInParagraph || lineBreak),
                                     cw,
-                                    scale)
+                                    scale,
+                                    previous)
                            .second;
             lineBreak = false;
             firstInParagraph = false;
@@ -2362,6 +2378,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                                     (firstInParagraph || lineBreak),
                                     cw,
                                     scale,
+                                    previous,
                                     color)
                                .second;
             }
@@ -2488,6 +2505,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                                     (firstInParagraph || lineBreak),
                                     cw,
                                     scale,
+                                    previous,
                                     color,
                                     rtl);
             rects.append(r.first);
@@ -2504,7 +2522,8 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                                            offset,
                                            (firstInParagraph || lineBreak),
                                            cw,
-                                           scale);
+                                           scale,
+                                           previous);
             rects.append(r.first);
             previous = r.second;
             lineBreak = false;
@@ -2546,6 +2565,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                                     cw,
                                     scale,
                                     scaleImagesToLineHeight,
+                                    previous,
                                     rtl);
             rects.append(r.first);
             previous = r.second;
@@ -2578,6 +2598,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                 isTextOrOnlineAfter(it, last, pdfData, offset, lineHeight, scaleImagesToLineHeight),
                 cw,
                 1.0,
+                previous,
                 (it != item->items().begin() ? getPrevItem(std::prev(it), item->items().begin(), last) : nullptr),
                 (pdfData.m_tableDrawing ? ImageAlignment::Unknown : m_opts.m_imageAlignment),
                 scaleImagesToLineHeight);
@@ -2600,7 +2621,8 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                              isTextOrOnlineAfter(it, last, pdfData, offset, lineHeight, scaleImagesToLineHeight),
                              (firstInParagraph || lineBreak),
                              cw,
-                             scale);
+                             scale,
+                             previous);
             rects.append(r.first);
             previous = r.second;
             pdfData.restoreColor();
@@ -2672,6 +2694,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
                                         (firstInParagraph || lineBreak),
                                         cw,
                                         scale,
+                                        previous,
                                         color);
                 rects.append(r.first);
                 previous = r.second;
@@ -2697,7 +2720,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
 
 QPair<QPair<QRectF,
             unsigned int>,
-      PdfRenderer::PrevState>
+      PdfRenderer::PrevBaselineState>
 PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
                           MD::Math<MD::QStringTrait> *item,
                           std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
@@ -2707,14 +2730,15 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
                           bool isNextText,
                           bool firstInParagraph,
                           CustomWidth &cw,
-                          double scale)
+                          double scale,
+                          const PrevBaselineState &previousBaseline)
 {
     pdfData.m_startLine = item->startLine();
     pdfData.m_startPos = item->startColumn();
     pdfData.m_endLine = item->endLine();
     pdfData.m_endPos = item->endColumn();
 
-    PrevState current;
+    PrevBaselineState current = previousBaseline;
 
     float fontSize = (float) m_opts.m_textFontSize;
 
@@ -3333,7 +3357,7 @@ ParagraphAlignment imageToParagraphAlignment(ImageAlignment alignment)
 
 QPair<QPair<QRectF,
             unsigned int>,
-      PdfRenderer::PrevState>
+      PdfRenderer::PrevBaselineState>
 PdfRenderer::drawImage(PdfAuxData &pdfData,
                        MD::Image<MD::QStringTrait> *item,
                        std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
@@ -3347,6 +3371,7 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
                        bool isNextText,
                        CustomWidth &cw,
                        double scale,
+                       const PrevBaselineState &previousBaseline,
                        MD::Item<MD::QStringTrait> *prevItem,
                        ImageAlignment alignment,
                        bool scaleImagesToLineHeight)
@@ -3359,7 +3384,7 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
     pdfData.m_endLine = item->endLine();
     pdfData.m_endPos = item->endColumn();
 
-    PrevState current;
+    PrevBaselineState current = previousBaseline;
 
     if (!cw.isDrawing())
         draw = false;
