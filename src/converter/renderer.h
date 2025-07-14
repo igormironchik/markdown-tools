@@ -30,10 +30,10 @@
 #endif // MD_PDF_TESTING
 
 // C++ include.
+#include <functional>
 #include <memory>
 #include <string_view>
-#include <functional>
-#include <stack>
+#include <vector>
 
 // podofo include.
 #include <podofo/podofo.h>
@@ -729,26 +729,58 @@ private:
         double m_baselineDelta = 0.0;
         //! Scale.
         double m_scale = 1.0;
+        //! Line height.
+        double m_lineHeight = 0.0;
     }; // struct PrevBaselineState
 
     //! Baseline delta and scale of previous item.
     //! Used for calculating superscript and subscript.
     struct PrevBaselineStateStack {
-        PrevBaselineStateStack()
+        explicit PrevBaselineStateStack(double lineHeight)
         {
-            m_stack.push({});
+            m_stack.push_back({0.0, 1.0, lineHeight});
+        }
+
+        static const double s_scale;
+        static const double s_baselineScale;
+
+        double nextLineHeight() const
+        {
+            return m_stack.back().m_lineHeight / s_scale;
+        }
+
+        double nextBaselineDelta() const
+        {
+            return m_stack.back().m_lineHeight * s_baselineScale;
+        }
+
+        double nextScale() const
+        {
+            return m_stack.back().m_scale / s_scale;
+        }
+
+        double fullLineHeight() const
+        {
+            double ret = m_stack.front().m_lineHeight;
+
+            for (auto it = std::next(m_stack.cbegin()), last = m_stack.cend(); it != last; ++it) {
+                if (it->m_lineHeight + it->m_baselineDelta > ret) {
+                    ret = it->m_lineHeight + it->m_baselineDelta;
+                }
+            }
+
+            return ret;
         }
 
         //! Stack.
-        std::stack<PrevBaselineState> m_stack;
+        std::vector<PrevBaselineState> m_stack;
         //! Is mark style applied?
         long long int m_mark = 0;
     }; // struct PrevBaselineStateStack
 
     //! Initialize baseline with the given item.
     void initSubSupScript(MD::ItemWithOpts<MD::QStringTrait> *item,
-                          PrevBaselineStateStack &state,
-                          double lineHeight);
+                          PrevBaselineStateStack &state);
 
     //! Deinit baseline with the given item.
     void deinitSubSupScript(MD::ItemWithOpts<MD::QStringTrait> *item, PrevBaselineStateStack &state);
@@ -756,14 +788,12 @@ private:
     struct AutoSubSupScriptInit {
         AutoSubSupScriptInit(PdfRenderer *render,
                              MD::ItemWithOpts<MD::QStringTrait> *item,
-                             PrevBaselineStateStack &stack,
-                             double lineHeight)
+                             PrevBaselineStateStack &stack)
             : m_render(render)
             , m_item(item)
             , m_stack(stack)
-            , m_lineHeight(lineHeight)
         {
-            m_render->initSubSupScript(m_item, m_stack, m_lineHeight);
+            m_render->initSubSupScript(m_item, m_stack);
         }
 
         ~AutoSubSupScriptInit()
@@ -774,7 +804,6 @@ private:
         PdfRenderer *m_render;
         MD::ItemWithOpts<MD::QStringTrait> *m_item;
         PrevBaselineStateStack &m_stack;
-        double m_lineHeight;
     };
 
     //! Draw text.
@@ -842,7 +871,7 @@ private:
                long long int startPos,
                long long int endLine,
                long long int endPos,
-               const PrevBaselineStateStack &previousBaseline,
+               const PrevBaselineStateStack &currentBaseline,
                const QColor &color = Qt::black,
                Font *regularSpaceFont = nullptr,
                double regularSpaceFontSize = 0.0,
