@@ -1145,22 +1145,24 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawHeading(PdfAuxData &pdfD
 }
 
 void PdfRenderer::initSubSupScript(MD::ItemWithOpts<MD::QStringTrait> *item,
-                                   PrevBaselineStateStack &state)
+                                   PrevBaselineStateStack &state,
+                                   double lineHeight,
+                                   double descent)
 {
     for (const auto &s : item->openStyles()) {
         switch(s.style()) {
         case 8:
             state.m_stack.push_back({state.m_stack.back().m_baselineDelta + state.nextBaselineDelta(true),
                                      state.nextScale(),
-                                     state.nextLineHeight(),
-                                     state.nextDescent()});
+                                     state.nextLineHeight(lineHeight),
+                                     state.nextDescent(descent)});
             break;
 
         case 16:
             state.m_stack.push_back({state.m_stack.back().m_baselineDelta - state.nextBaselineDelta(false),
                                      state.nextScale(),
-                                     state.nextLineHeight(),
-                                     state.nextDescent()});
+                                     state.nextLineHeight(lineHeight),
+                                     state.nextDescent(descent)});
             break;
 
         case 32:
@@ -1227,7 +1229,8 @@ PdfRenderer::drawText(PdfAuxData &pdfData,
     auto current = previousBaseline;
     const auto lineHeight = pdfData.lineSpacing(font, m_opts.m_textFontSize, scale);
 
-    initSubSupScript(static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item), current);
+    initSubSupScript(static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item), current, lineHeight,
+                     -pdfData.fontDescent(font, m_opts.m_textFontSize, scale));
 
     auto ret = drawString(pdfData,
                       item->text(),
@@ -1458,7 +1461,9 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
 
                 const AutoSubSupScriptInit subSupInit(this,
                                                       static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(text),
-                                                      current);
+                                                      current,
+                                                      pdfData.lineSpacing(font, m_opts.m_textFontSize, scale),
+                                                      -pdfData.fontDescent(font, m_opts.m_textFontSize, scale));
 
                 const auto r = drawString(pdfData,
                                           text->text(),
@@ -1554,7 +1559,11 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
         auto *spaceFont = createFont(m_opts.m_textFont, false, false,
                                      m_opts.m_textFontSize, pdfData.m_doc, scale, pdfData);
 
-        const AutoSubSupScriptInit subSupInit(this, static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item), current);
+        const AutoSubSupScriptInit subSupInit(this,
+                                              static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item),
+                                              current,
+                                              pdfData.lineSpacing(font, m_opts.m_textFontSize, scale),
+                                              -pdfData.fontDescent(font, m_opts.m_textFontSize, scale));
 
         const auto r = drawString(pdfData,
                                   url,
@@ -1833,7 +1842,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                 if (background.isValid() &&!useRegularSpace) {
                     pdfData.setColor(background);
                     pdfData.drawRectangle(pdfData.m_layout.startX(width),
-                                          pdfData.m_layout.y() + cw.descent() + pdfData.fontDescent(font, fontSize, fontScale),
+                                          pdfData.m_layout.y() + cw.descent() + pdfData.fontDescent(font, fontSize, fontScale) + currentBaseline.m_stack.back().m_baselineDelta,
                                           width,
                                           pdfData.lineSpacing(font, fontSize, fontScale),
                                           PoDoFo::PdfPathDrawMode::Fill);
@@ -1924,7 +1933,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                     if (background.isValid()) {
                         pdfData.setColor(background);
                         pdfData.drawRectangle(pdfData.m_layout.startX(length),
-                                              pdfData.m_layout.y() + cw.descent() + pdfData.fontDescent(font, fontSize, fontScale),
+                                              pdfData.m_layout.y() + cw.descent() + pdfData.fontDescent(font, fontSize, fontScale) + currentBaseline.m_stack.back().m_baselineDelta,
                                               length,
                                               pdfData.lineSpacing(font, fontSize, fontScale),
                                               PoDoFo::PdfPathDrawMode::Fill);
@@ -2101,7 +2110,9 @@ PdfRenderer::drawInlinedCode(PdfAuxData &pdfData,
     auto current = previousBaseline;
     const auto lineHeight = pdfData.lineSpacing(textFont, m_opts.m_textFontSize, scale);
 
-    initSubSupScript(static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item), current);
+    initSubSupScript(static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item), current,
+                     pdfData.lineSpacing(font, m_opts.m_codeFontSize, scale),
+                     -pdfData.fontDescent(font, m_opts.m_codeFontSize, scale));
 
     auto ret = drawString(pdfData,
                       item->text(),
@@ -2128,7 +2139,7 @@ PdfRenderer::drawInlinedCode(PdfAuxData &pdfData,
                       item->startColumn(),
                       item->endLine(),
                       item->endColumn(),
-                      previousBaseline,
+                      current,
                       textColor,
                       textFont,
                       m_opts.m_textFontSize,
@@ -2878,7 +2889,6 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
 
     auto *font = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, pdfData.m_doc, scale, pdfData);
     const auto lineHeight = pdfData.lineSpacing(font, m_opts.m_textFontSize, scale);
-    const AutoSubSupScriptInit subSupInit(this, static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item), current);
 
     auto latexRender = std::unique_ptr<tex::TeXRender>(
         tex::LaTeX::parse(item->expr().toStdWString(),
@@ -2900,6 +2910,12 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
         descent = (item->isInline() ? ((1.0 - latexRender->getBaseline()) * size.height()) :
                 (-pdfData.fontDescent(font, m_opts.m_textFontSize, scale)));
     }
+
+    const AutoSubSupScriptInit subSupInit(this,
+                                          static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item),
+                                          current,
+                                          size.height(),
+                                          descent);
 
     newLine = false;
 
@@ -3013,7 +3029,7 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
         const double availableTotalWidth = pdfData.m_layout.pageWidth() - pdfData.m_layout.margins().m_left -
                 pdfData.m_layout.margins().m_right - offset;
 
-        if (size.width() - pdfData.m_layout.availableWidth() > 0.01) {
+        if (size.width() * current.currentScale() - pdfData.m_layout.availableWidth() > 0.01) {
             if (draw) {
                 cw.moveToNextLine();
 
@@ -3026,19 +3042,17 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
             auto addSpace = [&]()
             {
                 const auto spaceScale = draw ? (cw.scale() / 100.0) : 1.0;
-                const auto spaceWidth = pdfData.stringWidth(font, m_opts.m_textFontSize, scale, " ") * spaceScale;
+                const auto spaceWidth = pdfData.stringWidth(font, m_opts.m_textFontSize * current.currentScale(), scale, " ") * spaceScale;
 
                 if (pdfData.m_layout.isFit(spaceWidth)) {
                     if (draw) {
-                        const double actualLineHeight = pdfData.lineSpacing(font, m_opts.m_textFontSize, scale);
-                        const double d = -pdfData.fontDescent(font, m_opts.m_textFontSize, scale) +
-                                (lineHeight - actualLineHeight) / 2.0;
-
-                        pdfData.drawText(pdfData.m_layout.startX(spaceWidth), pdfData.m_layout.y() + d, " ",
+                        pdfData.drawText(pdfData.m_layout.startX(spaceWidth), pdfData.m_layout.y() + cw.descent() + current.m_stack.back().m_baselineDelta, " ",
                                          font, m_opts.m_textFontSize, spaceScale, false);
                     } else {
+                        const auto lineInfo = current.fullLineHeight();
+
                         cw.append({spaceWidth, lineHeight, true, false, true, " ",
-                                   -pdfData.fontDescent(font, m_opts.m_textFontSize, spaceScale)});
+                                   -pdfData.fontDescent(font, m_opts.m_textFontSize, spaceScale) + lineInfo.second});
                     }
 
                     pdfData.m_layout.addX(spaceWidth);
@@ -3122,7 +3136,7 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
                 pdfData.m_layout.startX(size.width() * imgScale),
                 pdfData.m_layout.y() + cw.descent() + (height - descent) - current.m_stack.back().m_baselineDelta,
                 size.width() * imgScale,
-                size.height() * imgScale};
+                height};
 
             pdfData.m_layout.addX(size.width() * imgScale);
             const auto idx = pdfData.m_currentPainterIdx;
@@ -3131,13 +3145,15 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
         } else {
             pdfData.m_layout.addX(size.width() * imgScale);
 
+            const auto lineInfo = current.fullLineHeight();
+
             cw.append({size.width() * imgScale,
                        size.height() * imgScale + current.m_stack.back().m_baselineDelta,
                        false,
                        false,
                        isNextText,
                        "",
-                       descent * imgScale});
+                       descent * imgScale + lineInfo.second});
         }
     }
 
@@ -3526,8 +3542,6 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
 
     PrevBaselineStateStack current = previousBaseline;
 
-    const AutoSubSupScriptInit subSupInit(this, static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item), current);
-
     if (!cw.isDrawing())
         draw = false;
 
@@ -3610,6 +3624,9 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
         const double dpiScale = (double)pdfImg->GetWidth() / iWidth;
         double dy = 0.0;
         imgScale *= scale;
+
+        const AutoSubSupScriptInit subSupInit(this, static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item), current,
+                                              iHeight * imgScale, 0.0);
 
         if (draw) {
             if (!onLine) {

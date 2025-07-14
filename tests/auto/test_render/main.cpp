@@ -7,6 +7,9 @@
 #include "src/converter/syntax.h"
 #include "src/converter/const.h"
 
+#include "src/shared/utils.h"
+#include "src/shared/plugins_page.h"
+
 // md4qt include.
 #define MD4QT_QT_SUPPORT
 #include <md4qt/parser.h>
@@ -111,6 +114,11 @@ private slots:
 
     //! Test descent calculation.
     void testDescent();
+
+    //! Test super- and subscript.
+    void testSuperSubScript();
+    //! Test super- and subscript.
+    void testSuperSubScriptBigFont();
 }; // class TestRender
 
 namespace MdPdf
@@ -135,9 +143,21 @@ struct TestRendering {
                               const QVector<DrawPrimitive> &data,
                               double textFontSize,
                               double codeFontSize,
-                              ImageAlignment align = ImageAlignment::Center)
+                              ImageAlignment align = ImageAlignment::Center,
+                              bool withPlugins = false)
     {
         MD::Parser<MD::QStringTrait> parser;
+
+        if (withPlugins) {
+            MdShared::PluginsCfg pluginsCfg;
+            pluginsCfg.m_sup.m_delimiter = QLatin1Char('^');
+            pluginsCfg.m_sup.m_on = true;
+            pluginsCfg.m_sub.m_delimiter = QLatin1Char('-');
+            pluginsCfg.m_sub.m_on = true;
+            pluginsCfg.m_mark.m_delimiter = QLatin1Char('=');
+            pluginsCfg.m_mark.m_on = true;
+            setPlugins(parser, pluginsCfg);
+        }
 
         auto doc = parser.parse(s_folder + QStringLiteral("/../../manual/") + fileName, true);
 
@@ -334,7 +354,8 @@ QVector<DrawPrimitive> loadTestData(const QString &fileName, const QString &suff
 } /* namespace MdPdf */
 
 void doTest(const QString &fileName, const QString &suffix, double textFontSize, double codeFontSize,
-            MdPdf::Render::ImageAlignment align = MdPdf::Render::ImageAlignment::Center)
+            MdPdf::Render::ImageAlignment align = MdPdf::Render::ImageAlignment::Center,
+            bool withPlugins = false)
 {
     QVector<MdPdf::Render::DrawPrimitive> data;
 
@@ -346,7 +367,7 @@ void doTest(const QString &fileName, const QString &suffix, double textFontSize,
         }
     }
 
-    MdPdf::Render::TestRendering::testRendering(fileName, suffix, data, textFontSize, codeFontSize, align);
+    MdPdf::Render::TestRendering::testRendering(fileName, suffix, data, textFontSize, codeFontSize, align, withPlugins);
 }
 
 void TestRender::initTestCase()
@@ -526,6 +547,16 @@ void TestRender::testPlacing()
 void TestRender::testDescent()
 {
     MdPdf::Render::TestRendering::testDescent();
+}
+
+void TestRender::testSuperSubScript()
+{
+    doTest(QStringLiteral("styles.md"), QString(), 8.0, 8.0, MdPdf::Render::ImageAlignment::Left, true);
+}
+
+void TestRender::testSuperSubScriptBigFont()
+{
+    doTest(QStringLiteral("styles.md"), QStringLiteral("_big"), 16.0, 14.0, MdPdf::Render::ImageAlignment::Left, true);
 }
 
 QTEST_MAIN(TestRender)

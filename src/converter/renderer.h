@@ -747,14 +747,14 @@ private:
         static const double s_scale;
         static const double s_baselineScale;
 
-        double nextLineHeight() const
+        double nextLineHeight(double lineHeight) const
         {
-            return m_stack.back().m_lineHeight / s_scale;
+            return lineHeight * nextScale();
         }
 
         double nextBaselineDelta(bool up) const
         {
-            return (up ? (m_stack.back().m_lineHeight - currentDescent()) * s_baselineScale : (currentDescent()));
+            return (up ? (m_stack.back().m_lineHeight - currentDescent()) * s_baselineScale : currentDescent());
         }
 
         double nextScale() const
@@ -762,14 +762,19 @@ private:
             return m_stack.back().m_scale / s_scale;
         }
 
+        double currentScale() const
+        {
+            return m_stack.back().m_scale;
+        }
+
         double currentDescent() const
         {
             return m_stack.back().m_descent;
         }
 
-        double nextDescent() const
+        double nextDescent(double descent) const
         {
-            return currentDescent() / s_scale;
+            return descent * nextScale();
         }
 
         // pair.first - line height, pair.second - lower part, below descent.
@@ -792,7 +797,7 @@ private:
                         }
                     }
                 } else {
-                    const double tmp = qAbs(it->m_baselineDelta + firstDescent);
+                    const double tmp = qAbs(it->m_baselineDelta + it->m_descent + firstDescent);
 
                     if (tmp > lower) {
                         lower = tmp;
@@ -811,7 +816,9 @@ private:
 
     //! Initialize baseline with the given item.
     void initSubSupScript(MD::ItemWithOpts<MD::QStringTrait> *item,
-                          PrevBaselineStateStack &state);
+                          PrevBaselineStateStack &state,
+                          double lineHeight,
+                          double descent);
 
     //! Deinit baseline with the given item.
     void deinitSubSupScript(MD::ItemWithOpts<MD::QStringTrait> *item, PrevBaselineStateStack &state);
@@ -819,12 +826,14 @@ private:
     struct AutoSubSupScriptInit {
         AutoSubSupScriptInit(PdfRenderer *render,
                              MD::ItemWithOpts<MD::QStringTrait> *item,
-                             PrevBaselineStateStack &stack)
+                             PrevBaselineStateStack &stack,
+                             double lineHeight,
+                             double descent)
             : m_render(render)
             , m_item(item)
             , m_stack(stack)
         {
-            m_render->initSubSupScript(m_item, m_stack);
+            m_render->initSubSupScript(m_item, m_stack, lineHeight, descent);
         }
 
         ~AutoSubSupScriptInit()
