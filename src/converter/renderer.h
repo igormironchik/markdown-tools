@@ -752,9 +752,9 @@ private:
             return m_stack.back().m_lineHeight / s_scale;
         }
 
-        double nextBaselineDelta() const
+        double nextBaselineDelta(bool up) const
         {
-            return (m_stack.back().m_lineHeight - currentDescent()) * s_baselineScale;
+            return (up ? (m_stack.back().m_lineHeight - currentDescent()) * s_baselineScale : (currentDescent()));
         }
 
         double nextScale() const
@@ -792,7 +792,7 @@ private:
                         }
                     }
                 } else {
-                    const double tmp = it->m_lineHeight - firstDescent;
+                    const double tmp = qAbs(it->m_baselineDelta + firstDescent);
 
                     if (tmp > lower) {
                         lower = tmp;

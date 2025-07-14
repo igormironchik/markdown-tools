@@ -1150,14 +1150,14 @@ void PdfRenderer::initSubSupScript(MD::ItemWithOpts<MD::QStringTrait> *item,
     for (const auto &s : item->openStyles()) {
         switch(s.style()) {
         case 8:
-            state.m_stack.push_back({state.m_stack.back().m_baselineDelta + state.nextBaselineDelta(),
+            state.m_stack.push_back({state.m_stack.back().m_baselineDelta + state.nextBaselineDelta(true),
                                      state.nextScale(),
                                      state.nextLineHeight(),
                                      state.nextDescent()});
             break;
 
         case 16:
-            state.m_stack.push_back({state.m_stack.back().m_baselineDelta - state.nextBaselineDelta(),
+            state.m_stack.push_back({state.m_stack.back().m_baselineDelta - state.nextBaselineDelta(false),
                                      state.nextScale(),
                                      state.nextLineHeight(),
                                      state.nextDescent()});
