@@ -1152,13 +1152,15 @@ void PdfRenderer::initSubSupScript(MD::ItemWithOpts<MD::QStringTrait> *item,
         case 8:
             state.m_stack.push_back({state.m_stack.back().m_baselineDelta + state.nextBaselineDelta(),
                                      state.nextScale(),
-                                     state.nextLineHeight()});
+                                     state.nextLineHeight(),
+                                     state.nextDescent()});
             break;
 
         case 16:
             state.m_stack.push_back({state.m_stack.back().m_baselineDelta - state.nextBaselineDelta(),
                                      state.nextScale(),
-                                     state.nextLineHeight()});
+                                     state.nextLineHeight(),
+                                     state.nextDescent()});
             break;
 
         case 32:
@@ -1849,15 +1851,18 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                                  scale / 100.0,
                                  strikeout);
             } else {
+                const auto lineInfo = currentBaseline.fullLineHeight();
+
                 cw.append({currentSpaceWidth,
-                           currentBaseline.fullLineHeight(),
+                           lineInfo.first,
                            true,
                            false,
                            true,
                            " ",
                            (useRegularSpace && regularSpaceFont
                                 ? -pdfData.fontDescent(regularSpaceFont, regularSpaceFontSize, regularSpaceFontScale)
-                                : -pdfData.fontDescent(spaceFont, spaceFontSize, spaceFontScale))});
+                                    + lineInfo.second
+                                : -pdfData.fontDescent(spaceFont, spaceFontSize, spaceFontScale) + lineInfo.second)});
             }
 
             pdfData.m_layout.addX(width);
@@ -1944,13 +1949,15 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
 
                     ret.append(qMakePair(pdfData.m_layout.currentRect(length, lineHeight), pdfData.m_currentPainterIdx));
                 } else {
+                    const auto lineInfo = currentBaseline.fullLineHeight();
+
                     cw.append({length + (it + 1 == last && footnoteAtEnd ? footnoteWidth : 0.0),
-                               currentBaseline.fullLineHeight(),
+                               lineInfo.first,
                                false,
                                false,
                                true,
                                it->first,
-                               -pdfData.fontDescent(font, fontSize, fontScale)});
+                               -pdfData.fontDescent(font, fontSize, fontScale) + lineInfo.second});
                 }
 
                 pdfData.m_layout.addX(length);
@@ -1986,13 +1993,15 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
 
                             ret.append(qMakePair(pdfData.m_layout.currentRect(w, lineHeight), pdfData.m_currentPainterIdx));
                         } else {
+                            const auto lineInfo = currentBaseline.fullLineHeight();
+
                             cw.append({w,
-                                       currentBaseline.fullLineHeight(),
+                                       lineInfo.first,
                                        false,
                                        false,
                                        true,
                                        tmp,
-                                       -pdfData.fontDescent(font, fontSize, fontScale)});
+                                       -pdfData.fontDescent(font, fontSize, fontScale) + lineInfo.second});
                         }
 
                         newLine = false;
@@ -2005,13 +2014,15 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                     }
 
                     if (!draw && it + 1 == last && footnoteAtEnd) {
+                        const auto lineInfo = currentBaseline.fullLineHeight();
+
                         cw.append({footnoteWidth,
-                                   currentBaseline.fullLineHeight(),
+                                   lineInfo.first,
                                    false,
                                    false,
                                    true,
                                    QString::number(footnoteNum),
-                                   -pdfData.fontDescent(font, fontSize, fontScale)});
+                                   -pdfData.fontDescent(font, fontSize, fontScale) + lineInfo.second});
                     }
                 }; // splitAndDraw
 
@@ -2310,7 +2321,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
     bool lineBreak = false;
     bool firstInParagraph = true;
 
-    PrevBaselineStateStack previous(lineHeight);
+    PrevBaselineStateStack previous(lineHeight, -pdfData.fontDescent(font, m_opts.m_textFontSize, scale));
 
     // Calculate words/lines/spaces widthes.
     for (auto it = item->items().begin(), last = item->items().end(); it != last; ++it) {

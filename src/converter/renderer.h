@@ -731,14 +731,17 @@ private:
         double m_scale = 1.0;
         //! Line height.
         double m_lineHeight = 0.0;
+        //! Descent.
+        double m_descent = 0.0;
     }; // struct PrevBaselineState
 
     //! Baseline delta and scale of previous item.
     //! Used for calculating superscript and subscript.
     struct PrevBaselineStateStack {
-        explicit PrevBaselineStateStack(double lineHeight)
+        explicit PrevBaselineStateStack(double lineHeight,
+                                        double descent)
         {
-            m_stack.push_back({0.0, 1.0, lineHeight});
+            m_stack.push_back({0.0, 1.0, lineHeight, descent});
         }
 
         static const double s_scale;
@@ -751,7 +754,7 @@ private:
 
         double nextBaselineDelta() const
         {
-            return m_stack.back().m_lineHeight * s_baselineScale;
+            return (m_stack.back().m_lineHeight - currentDescent()) * s_baselineScale;
         }
 
         double nextScale() const
@@ -759,17 +762,45 @@ private:
             return m_stack.back().m_scale / s_scale;
         }
 
-        double fullLineHeight() const
+        double currentDescent() const
         {
-            double ret = m_stack.front().m_lineHeight;
+            return m_stack.back().m_descent;
+        }
+
+        double nextDescent() const
+        {
+            return currentDescent() / s_scale;
+        }
+
+        // pair.first - line height, pair.second - lower part, below descent.
+        std::pair<double,
+                  double>
+        fullLineHeight() const
+        {
+            const auto firstHeight = m_stack.front().m_lineHeight;
+            const auto firstDescent = m_stack.front().m_descent;
+            double upper = 0.0;
+            double lower = 0.0;
 
             for (auto it = std::next(m_stack.cbegin()), last = m_stack.cend(); it != last; ++it) {
-                if (it->m_lineHeight + it->m_baselineDelta > ret) {
-                    ret = it->m_lineHeight + it->m_baselineDelta;
+                if (it->m_baselineDelta > 0.0) {
+                    if (it->m_lineHeight - it->m_descent + it->m_baselineDelta > firstHeight) {
+                        const double tmp = it->m_lineHeight - it->m_descent + it->m_baselineDelta - firstHeight;
+
+                        if (tmp > upper) {
+                            upper = tmp;
+                        }
+                    }
+                } else {
+                    const double tmp = it->m_lineHeight - firstDescent;
+
+                    if (tmp > lower) {
+                        lower = tmp;
+                    }
                 }
             }
 
-            return ret;
+            return {firstHeight + upper + lower, lower};
         }
 
         //! Stack.
