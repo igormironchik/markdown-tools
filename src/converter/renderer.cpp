@@ -1141,9 +1141,55 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawHeading(PdfAuxData &pdfD
     }
 }
 
+void
+PdfRenderer::initSubSupScript(MD::ItemWithOpts<MD::QStringTrait> *item, PrevBaselineStateStack &state,
+                              double lineHeight)
+{
+    for (const auto &s : item->openStyles()) {
+        switch(s.style()) {
+        case 8:
+            state.m_stack.push({state.m_stack.top().m_baselineDelta + state.m_stack.top().m_scale * lineHeight * 2.0 / 3.0,
+                               state.m_stack.top().m_scale / 3.0});
+            break;
+
+        case 16:
+            state.m_stack.push({state.m_stack.top().m_baselineDelta - state.m_stack.top().m_scale * lineHeight * 2.0 / 3.0,
+                               state.m_stack.top().m_scale / 3.0});
+            break;
+
+        case 32:
+            ++state.m_mark;
+            break;
+
+        default:
+            break;
+        }
+    }
+}
+
+void
+PdfRenderer::deinitSubSupScript(MD::ItemWithOpts<MD::QStringTrait> *item, PrevBaselineStateStack &state)
+{
+    for (const auto &s : item->closeStyles()) {
+        switch(s.style()) {
+        case 8:
+        case 16:
+            state.m_stack.pop();
+            break;
+
+        case 32:
+            --state.m_mark;
+            break;
+
+        default:
+            break;
+        }
+    }
+}
+
 QPair<QVector<QPair<QRectF,
                     unsigned int>>,
-      PdfRenderer::PrevBaselineState>
+      PdfRenderer::PrevBaselineStateStack>
 PdfRenderer::drawText(PdfAuxData &pdfData,
                       MD::Text<MD::QStringTrait> *item,
                       std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
@@ -1157,7 +1203,7 @@ PdfRenderer::drawText(PdfAuxData &pdfData,
                       bool firstInParagraph,
                       CustomWidth &cw,
                       double scale,
-                      const PrevBaselineState &previousBaseline,
+                      const PrevBaselineStateStack &previousBaseline,
                       const QColor &color,
                       RTLFlag *rtl)
 {
@@ -1172,7 +1218,12 @@ PdfRenderer::drawText(PdfAuxData &pdfData,
                             scale,
                             pdfData);
 
-    return drawString(pdfData,
+    auto current = previousBaseline;
+    const auto lineHeight = pdfData.lineSpacing(font, m_opts.m_textFontSize, scale);
+
+    initSubSupScript(static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item), current, lineHeight);
+
+    auto ret = drawString(pdfData,
                       item->text(),
                       spaceFont,
                       m_opts.m_textFontSize,
@@ -1180,7 +1231,7 @@ PdfRenderer::drawText(PdfAuxData &pdfData,
                       font,
                       m_opts.m_textFontSize,
                       scale,
-                      pdfData.lineSpacing(font, m_opts.m_textFontSize, scale),
+                      lineHeight,
                       doc,
                       newLine,
                       footnoteFont,
@@ -1197,12 +1248,18 @@ PdfRenderer::drawText(PdfAuxData &pdfData,
                       item->startColumn(),
                       item->endLine(),
                       item->endColumn(),
-                      previousBaseline,
+                      current,
                       color,
                       nullptr,
                       0.0,
                       0.0,
                       rtl);
+
+    deinitSubSupScript(static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item), current);
+
+    ret.second = current;
+
+    return ret;
 }
 
 namespace /* anonymous */
@@ -1327,7 +1384,7 @@ PdfRenderer::skipRawHtmlAndSpacesBackward(MD::Block<MD::QStringTrait>::Items::co
 
 QPair<QVector<QPair<QRectF,
                     unsigned int>>,
-      PdfRenderer::PrevBaselineState>
+      PdfRenderer::PrevBaselineStateStack>
 PdfRenderer::drawLink(PdfAuxData &pdfData,
                       MD::Link<MD::QStringTrait> *item,
                       std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
@@ -1348,11 +1405,11 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
                       CustomWidth &cw,
                       double scale,
                       bool scaleImagesToLineHeight,
-                      const PrevBaselineState &previousBaseline,
+                      const PrevBaselineStateStack &previousBaseline,
                       RTLFlag *rtl)
 {
     QVector<QPair<QRectF, unsigned int>> rects;
-    PrevBaselineState current = previousBaseline;
+    auto current = previousBaseline;
 
     QString url = item->url();
 
@@ -1393,6 +1450,8 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
                                         scale,
                                         pdfData);
 
+                initSubSupScript(static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(text), current, lineHeight);
+
                 const auto r = drawString(pdfData,
                                           text->text(),
                                           spaceFont,
@@ -1401,7 +1460,7 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
                                           font,
                                           m_opts.m_textFontSize,
                                           scale,
-                                          pdfData.lineSpacing(font, m_opts.m_textFontSize, scale),
+                                          lineHeight,
                                           doc,
                                           newLine,
                                           footnoteFont,
@@ -1425,7 +1484,8 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
                                           0.0,
                                           rtl);
                 rects.append(r.first);
-                current = r.second;
+
+                deinitSubSupScript(static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(text), current);
             } break;
 
             case MD::ItemType::Code: {
@@ -1488,6 +1548,8 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
         auto *spaceFont = createFont(m_opts.m_textFont, false, false,
                                      m_opts.m_textFontSize, pdfData.m_doc, scale, pdfData);
 
+        initSubSupScript(static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item), current, lineHeight);
+
         const auto r = drawString(pdfData,
                                   url,
                                   spaceFont,
@@ -1496,7 +1558,7 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
                                   font,
                                   m_opts.m_textFontSize,
                                   scale,
-                                  pdfData.lineSpacing(font, m_opts.m_textFontSize, scale),
+                                  lineHeight,
                                   doc,
                                   newLine,
                                   footnoteFont,
@@ -1520,7 +1582,8 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
                                   0.0,
                                   rtl);
         rects = r.first;
-        current = r.second;
+
+        deinitSubSupScript(static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item), current);
     }
     // Otherwise image link.
     else {
@@ -1618,7 +1681,7 @@ void PdfRenderer::alignLine(PdfAuxData &pdfData, const CustomWidth &cw)
 
 QPair<QVector<QPair<QRectF,
                     unsigned int>>,
-      PdfRenderer::PrevBaselineState>
+      PdfRenderer::PrevBaselineStateStack>
 PdfRenderer::drawString(PdfAuxData &pdfData,
                         const QString &str,
                         Font *spaceFont,
@@ -1644,7 +1707,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                         long long int startPos,
                         long long int endLine,
                         long long int endPos,
-                        const PrevBaselineState &previousBaseline,
+                        const PrevBaselineStateStack &previousBaseline,
                         const QColor &color,
                         Font *regularSpaceFont,
                         double regularSpaceFontSize,
@@ -1704,7 +1767,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
     };
 
     QVector<QPair<QRectF, unsigned int>> ret;
-    PrevBaselineState current = previousBaseline;
+    PrevBaselineStateStack current = previousBaseline;
 
     {
         QMutexLocker lock(&m_mutex);
@@ -1939,7 +2002,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
 
 QPair<QVector<QPair<QRectF,
                     unsigned int>>,
-      PdfRenderer::PrevBaselineState>
+      PdfRenderer::PrevBaselineStateStack>
 PdfRenderer::drawInlinedCode(PdfAuxData &pdfData,
                              MD::Code<MD::QStringTrait> *item,
                              std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
@@ -1948,7 +2011,7 @@ PdfRenderer::drawInlinedCode(PdfAuxData &pdfData,
                              bool firstInParagraph,
                              CustomWidth &cw,
                              double scale,
-                             const PrevBaselineState &previousBaseline,
+                             const PrevBaselineStateStack &previousBaseline,
                              RTLFlag *rtl,
                              bool inLink)
 {
@@ -1980,7 +2043,12 @@ PdfRenderer::drawInlinedCode(PdfAuxData &pdfData,
                          (qBlue(textColor) + qBlue(linkColor)) / 2);
     }
 
-    return drawString(pdfData,
+    auto current = previousBaseline;
+    const auto lineHeight = pdfData.lineSpacing(textFont, m_opts.m_textFontSize, scale);
+
+    initSubSupScript(static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item), current, lineHeight);
+
+    auto ret = drawString(pdfData,
                       item->text(),
                       font,
                       m_opts.m_codeFontSize,
@@ -1988,7 +2056,7 @@ PdfRenderer::drawInlinedCode(PdfAuxData &pdfData,
                       font,
                       m_opts.m_codeFontSize,
                       scale,
-                      pdfData.lineSpacing(textFont, m_opts.m_textFontSize, scale),
+                      lineHeight,
                       doc,
                       newLine,
                       nullptr,
@@ -2011,6 +2079,12 @@ PdfRenderer::drawInlinedCode(PdfAuxData &pdfData,
                       m_opts.m_textFontSize,
                       scale,
                       rtl);
+
+    deinitSubSupScript(static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item), current);
+
+    ret.second = current;
+
+    return ret;
 }
 
 void PdfRenderer::moveToNewLine(PdfAuxData &pdfData, double xOffset, double yOffset, double yOffsetMultiplier, double yOffsetOnNewPage)
@@ -2192,7 +2266,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
     bool lineBreak = false;
     bool firstInParagraph = true;
 
-    PrevBaselineState previous;
+    PrevBaselineStateStack previous;
 
     // Calculate words/lines/spaces widthes.
     for (auto it = item->items().begin(), last = item->items().end(); it != last; ++it) {
@@ -2720,7 +2794,7 @@ QPair<QVector<WhereDrawn>, WhereDrawn> PdfRenderer::drawParagraph(PdfAuxData &pd
 
 QPair<QPair<QRectF,
             unsigned int>,
-      PdfRenderer::PrevBaselineState>
+      PdfRenderer::PrevBaselineStateStack>
 PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
                           MD::Math<MD::QStringTrait> *item,
                           std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
@@ -2731,14 +2805,14 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
                           bool firstInParagraph,
                           CustomWidth &cw,
                           double scale,
-                          const PrevBaselineState &previousBaseline)
+                          const PrevBaselineStateStack &previousBaseline)
 {
     pdfData.m_startLine = item->startLine();
     pdfData.m_startPos = item->startColumn();
     pdfData.m_endLine = item->endLine();
     pdfData.m_endPos = item->endColumn();
 
-    PrevBaselineState current = previousBaseline;
+    PrevBaselineStateStack current = previousBaseline;
 
     float fontSize = (float) m_opts.m_textFontSize;
 
@@ -3357,7 +3431,7 @@ ParagraphAlignment imageToParagraphAlignment(ImageAlignment alignment)
 
 QPair<QPair<QRectF,
             unsigned int>,
-      PdfRenderer::PrevBaselineState>
+      PdfRenderer::PrevBaselineStateStack>
 PdfRenderer::drawImage(PdfAuxData &pdfData,
                        MD::Image<MD::QStringTrait> *item,
                        std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
@@ -3371,7 +3445,7 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
                        bool isNextText,
                        CustomWidth &cw,
                        double scale,
-                       const PrevBaselineState &previousBaseline,
+                       const PrevBaselineStateStack &previousBaseline,
                        MD::Item<MD::QStringTrait> *prevItem,
                        ImageAlignment alignment,
                        bool scaleImagesToLineHeight)
@@ -3384,7 +3458,7 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
     pdfData.m_endLine = item->endLine();
     pdfData.m_endPos = item->endColumn();
 
-    PrevBaselineState current = previousBaseline;
+    PrevBaselineStateStack current = previousBaseline;
 
     if (!cw.isDrawing())
         draw = false;
