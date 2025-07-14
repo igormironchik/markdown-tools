@@ -20,8 +20,8 @@
 #include <QMutex>
 #include <QNetworkReply>
 #include <QObject>
-#include <QStack>
 #include <QSharedPointer>
+#include <QStack>
 #include <QTemporaryFile>
 
 #ifdef MD_PDF_TESTING
@@ -91,7 +91,14 @@ static const double s_footnoteScale = 0.75;
 
 #ifdef MD_PDF_TESTING
 struct DrawPrimitive {
-    enum class Type { Text = 0, Line, Rectangle, Image, MultilineText, Unknown };
+    enum class Type {
+        Text = 0,
+        Line,
+        Rectangle,
+        Image,
+        MultilineText,
+        Unknown
+    };
 
     Type m_type;
     QString m_text;
@@ -107,7 +114,12 @@ struct DrawPrimitive {
 #endif // MD_PDF_TESTING
 
 //! Image alignment.
-enum class ImageAlignment { Unknown, Left, Center, Right }; // enum ImageAlignment
+enum class ImageAlignment {
+    Unknown,
+    Left,
+    Center,
+    Right
+}; // enum ImageAlignment
 
 //! Paragraph alignment.
 enum class ParagraphAlignment {
@@ -186,8 +198,10 @@ public:
     Renderer() = default;
     ~Renderer() override = default;
 
-    virtual void render(const QString &fileName, std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
-                        const RenderOpts &opts, bool testing = false) = 0;
+    virtual void render(const QString &fileName,
+                        std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                        const RenderOpts &opts,
+                        bool testing = false) = 0;
     virtual void clean() = 0;
 }; // class Renderer
 
@@ -218,45 +232,108 @@ class PdfRenderer;
 
 //! Layout direction handler.
 struct LayoutDirectionHandler {
-    double x() const { return m_coords.m_x; }
-    double y() const { return m_coords.m_y; }
-    void setRightToLeft(bool on) { m_isRightToLeft = on; }
-    bool isRightToLeft() const { return m_isRightToLeft; }
-    void setX(double value) { m_coords.m_x = value; }
-    void addX(double value) { m_coords.m_x += xIncrementDirection() * value; }
-    void moveXToBegin() { setX((isRightToLeft() ? rightBorderXWithOffset() : leftBorderXWithOffset())); }
-    void setY(double value) { m_coords.m_y = value; }
-    void addY(double value, double direction = 1.0) { m_coords.m_y -= direction * value; }
-    double leftBorderXWithOffset() const { return (m_coords.m_margins.m_left +
-                                                   (!m_offset.empty() && m_offset.back()->m_left ?
-                                                        m_offset.back()->m_value : 0.0)); }
-    double rightBorderXWithOffset() const { return (m_coords.m_pageWidth - m_coords.m_margins.m_right -
-                                                    (!m_offset.empty() && !m_offset.back()->m_left ?
-                                                         m_offset.back()->m_value : 0.0)); }
+    double x() const
+    {
+        return m_coords.m_x;
+    }
+    double y() const
+    {
+        return m_coords.m_y;
+    }
+    void setRightToLeft(bool on)
+    {
+        m_isRightToLeft = on;
+    }
+    bool isRightToLeft() const
+    {
+        return m_isRightToLeft;
+    }
+    void setX(double value)
+    {
+        m_coords.m_x = value;
+    }
+    void addX(double value)
+    {
+        m_coords.m_x += xIncrementDirection() * value;
+    }
+    void moveXToBegin()
+    {
+        setX((isRightToLeft() ? rightBorderXWithOffset() : leftBorderXWithOffset()));
+    }
+    void setY(double value)
+    {
+        m_coords.m_y = value;
+    }
+    void addY(double value,
+              double direction = 1.0)
+    {
+        m_coords.m_y -= direction * value;
+    }
+    double leftBorderXWithOffset() const
+    {
+        return (m_coords.m_margins.m_left
+                + (!m_offset.empty() && m_offset.back()->m_left ? m_offset.back()->m_value : 0.0));
+    }
+    double rightBorderXWithOffset() const
+    {
+        return (m_coords.m_pageWidth
+                - m_coords.m_margins.m_right
+                - (!m_offset.empty() && !m_offset.back()->m_left ? m_offset.back()->m_value : 0.0));
+    }
 
     bool isFit(double width) const
     {
-        return (isRightToLeft() ? (x() - width >= leftBorderXWithOffset() ||
-                                   qAbs(leftBorderXWithOffset() - x() + width) < 0.01) :
-                                  (x() + width <= rightBorderXWithOffset() ||
-                                   qAbs(x() + width - rightBorderXWithOffset()) < 0.01));
+        return (isRightToLeft()
+                    ? (x() - width >= leftBorderXWithOffset() || qAbs(leftBorderXWithOffset() - x() + width) < 0.01)
+                    : (x() + width <= rightBorderXWithOffset() || qAbs(x() + width - rightBorderXWithOffset()) < 0.01));
     }
 
-    double topY() const { return m_coords.m_pageHeight - m_coords.m_margins.m_top; }
-    const PageMargins & margins() const { return m_coords.m_margins; }
-    PageMargins & margins() { return m_coords.m_margins; }
-    double pageWidth() const { return m_coords.m_pageWidth; }
-    double pageHeight() const { return m_coords.m_pageHeight; }
-    double borderStartX() const { return (isRightToLeft() ? m_coords.m_pageWidth - m_coords.m_margins.m_right :
-                                                           m_coords.m_margins.m_left); }
-    double xIncrementDirection() const { return (isRightToLeft() ? -1.0 : 1.0); }
-    QRectF currentRect(double width, double height) const { return QRectF(startX(width), y(), width, height); }
-    double startX(double width) const { return (isRightToLeft() ? x() - width : x()); }
-    double availableWidth() const { return (isRightToLeft() ? x() - leftBorderXWithOffset() :
-                                                              rightBorderXWithOffset() - x()); }
+    double topY() const
+    {
+        return m_coords.m_pageHeight - m_coords.m_margins.m_top;
+    }
+    const PageMargins &margins() const
+    {
+        return m_coords.m_margins;
+    }
+    PageMargins &margins()
+    {
+        return m_coords.m_margins;
+    }
+    double pageWidth() const
+    {
+        return m_coords.m_pageWidth;
+    }
+    double pageHeight() const
+    {
+        return m_coords.m_pageHeight;
+    }
+    double borderStartX() const
+    {
+        return (isRightToLeft() ? m_coords.m_pageWidth - m_coords.m_margins.m_right : m_coords.m_margins.m_left);
+    }
+    double xIncrementDirection() const
+    {
+        return (isRightToLeft() ? -1.0 : 1.0);
+    }
+    QRectF currentRect(double width,
+                       double height) const
+    {
+        return QRectF(startX(width), y(), width, height);
+    }
+    double startX(double width) const
+    {
+        return (isRightToLeft() ? x() - width : x());
+    }
+    double availableWidth() const
+    {
+        return (isRightToLeft() ? x() - leftBorderXWithOffset() : rightBorderXWithOffset() - x());
+    }
 
     struct Offset {
-        Offset(std::vector<Offset*> &offsets, double value, bool left)
+        Offset(std::vector<Offset *> &offsets,
+               double value,
+               bool left)
             : m_value(value)
             , m_left(left)
             , m_offsets(offsets)
@@ -270,23 +347,27 @@ struct LayoutDirectionHandler {
         }
 
         Offset(const Offset &) = delete;
-        Offset & operator=(const Offset &) = delete;
+        Offset &operator=(const Offset &) = delete;
 
         double m_value = 0.0;
         bool m_left = true;
 
     private:
-        std::vector<Offset*> &m_offsets;
+        std::vector<Offset *> &m_offsets;
     };
 
-    Offset addOffset(double value, bool left) { return Offset(m_offset, value, left); }
+    Offset addOffset(double value,
+                     bool left)
+    {
+        return Offset(m_offset, value, left);
+    }
 
     //! Coordinates and margins.
     CoordsPageAttribs m_coords;
 
 private:
     bool m_isRightToLeft = false;
-    std::vector<Offset*> m_offset;
+    std::vector<Offset *> m_offset;
 }; // struct LayoutDirectionHandler
 
 //! Auxiliary struct for rendering.
@@ -374,15 +455,32 @@ struct PdfAuxData {
     void freeSpaceOn(int page);
 
     //! Draw text
-    void drawText(double x, double y, const char *text, Font *font, double size, double scale, bool strikeout);
+    void drawText(double x,
+                  double y,
+                  const char *text,
+                  Font *font,
+                  double size,
+                  double scale,
+                  bool strikeout);
     //! Draw image.
-    void drawImage(double x, double y, Image *img, double xScale, double yScale);
+    void drawImage(double x,
+                   double y,
+                   Image *img,
+                   double xScale,
+                   double yScale);
     //! Draw line.
-    void drawLine(double x1, double y1, double x2, double y2);
+    void drawLine(double x1,
+                  double y1,
+                  double x2,
+                  double y2);
     //! Save document.
     void save(const QString &fileName);
     //! Draw rectangle.
-    void drawRectangle(double x, double y, double width, double height, PoDoFo::PdfPathDrawMode m);
+    void drawRectangle(double x,
+                       double y,
+                       double width,
+                       double height,
+                       PoDoFo::PdfPathDrawMode m);
 
     //! Set color.
     void setColor(const QColor &c);
@@ -392,13 +490,22 @@ struct PdfAuxData {
     void repeatColor();
 
     //! \return String width.
-    double stringWidth(Font *font, double size, double scale, const String &s) const;
+    double stringWidth(Font *font,
+                       double size,
+                       double scale,
+                       const String &s) const;
     //! \return Line spacing.
-    double lineSpacing(Font *font, double size, double scale) const;
+    double lineSpacing(Font *font,
+                       double size,
+                       double scale) const;
     //! \return Font ascent.
-    double fontAscent(Font *font, double size, double scale) const;
+    double fontAscent(Font *font,
+                      double size,
+                      double scale) const;
     //! \return Font descent.
-    double fontDescent(Font *font, double size, double scale) const;
+    double fontDescent(Font *font,
+                       double size,
+                       double scale) const;
 }; // struct PdfAuxData;
 
 //! Where was the item drawn?
@@ -431,7 +538,8 @@ public:
     ~PdfRenderer() override = default;
 
     //! \return Is font can be created?
-    static bool isFontCreatable(const QString &font, bool monospace);
+    static bool isFontCreatable(const QString &font,
+                                bool monospace);
 
     //! Convert QString to UTF-8.
     static Utf8String createUtf8String(const QString &text);
@@ -446,8 +554,10 @@ public slots:
     //! Render document. \note Document can be changed during rendering.
     //! Don't reuse the same document twice.
     //! Renderer will delete himself on job finish.
-    void render(const QString &fileName, std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
-                const MdPdf::Render::RenderOpts &opts, bool testing = false) override;
+    void render(const QString &fileName,
+                std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                const MdPdf::Render::RenderOpts &opts,
+                bool testing = false) override;
     //! Terminate rendering.
     void terminate();
 
@@ -463,8 +573,13 @@ protected:
 #endif
 
     //! Create font.
-    Font *createFont(const QString &name, bool bold, bool italic, double size,
-                     Document *doc, double scale, const PdfAuxData &pdfData);
+    Font *createFont(const QString &name,
+                     bool bold,
+                     bool italic,
+                     double size,
+                     Document *doc,
+                     double scale,
+                     const PdfAuxData &pdfData);
 
 private:
     //! Create new page.
@@ -472,28 +587,28 @@ private:
 
     //! Draw empty line.
     void moveToNewLine(
-            //! Auxiliary PDF data.
-            PdfAuxData &pdfData,
-            //! Not used now.
-            double xOffset,
-            //! Offset for Y coordinate.
-            double yOffset,
-            //! Multiplier for Y coordinate. Real offset will be yOffset * yOffsetMultiplier.
-            double yOffsetMultiplier,
-            //! Y offset on new page.
-            double yOffsetOnNewPage);
+        //! Auxiliary PDF data.
+        PdfAuxData &pdfData,
+        //! Not used now.
+        double xOffset,
+        //! Offset for Y coordinate.
+        double yOffset,
+        //! Multiplier for Y coordinate. Real offset will be yOffset * yOffsetMultiplier.
+        double yOffsetMultiplier,
+        //! Y offset on new page.
+        double yOffsetOnNewPage);
     //! Load image.
     QByteArray loadImage(
-            //! Image.
-            MD::Image<MD::QStringTrait> *item,
-            //! Options for SVG rendering.
-            const ResvgOptions &opts,
-            //! Height to scale image to.
-            double height = 1.0,
-            //! Should image be scaled?
-            bool scale = false,
-            //! Store in cache loaded image data?
-            bool cache = true);
+        //! Image.
+        MD::Image<MD::QStringTrait> *item,
+        //! Options for SVG rendering.
+        const ResvgOptions &opts,
+        //! Height to scale image to.
+        double height = 1.0,
+        //! Should image be scaled?
+        bool scale = false,
+        //! Store in cache loaded image data?
+        bool cache = true);
     //! Make all links clickable.
     void resolveLinks(PdfAuxData &pdfData);
     //! Max width of numbered list bullet.
@@ -520,8 +635,14 @@ private:
         {
         }
 
-        bool isCheck() const { return m_check; }
-        bool isRightToLeft() const { return m_isOn; }
+        bool isCheck() const
+        {
+            return m_check;
+        }
+        bool isRightToLeft() const
+        {
+            return m_isOn;
+        }
 
         bool m_isOn = false;
         bool m_check = true;
@@ -543,59 +664,71 @@ private:
     }
 
     //! Draw heading.
-    QPair<QVector<WhereDrawn>, WhereDrawn> drawHeading(PdfAuxData &pdfData,
-                                                       MD::Heading<MD::QStringTrait> *item,
-                                                       std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
-                                                       double offset,
-                                                       double nextItemMinHeight,
-                                                       CalcHeightOpt heightCalcOpt,
-                                                       double scale,
-                                                       bool withNewLine = true,
-                                                       RTLFlag *rtl = nullptr);
+    QPair<QVector<WhereDrawn>,
+          WhereDrawn>
+    drawHeading(PdfAuxData &pdfData,
+                MD::Heading<MD::QStringTrait> *item,
+                std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                double offset,
+                double nextItemMinHeight,
+                CalcHeightOpt heightCalcOpt,
+                double scale,
+                bool withNewLine = true,
+                RTLFlag *rtl = nullptr);
     //! Draw paragraph.
-    QPair<QVector<WhereDrawn>, WhereDrawn> drawParagraph(PdfAuxData &pdfData,
-                                                         MD::Paragraph<MD::QStringTrait> *item,
-                                                         std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
-                                                         double offset,
-                                                         bool withNewLine,
-                                                         CalcHeightOpt heightCalcOpt,
-                                                         double scale,
-                                                         const QColor &color = Qt::black,
-                                                         bool scaleImagesToLineHeight = false,
-                                                         RTLFlag *rtl = nullptr,
-                                                         ParagraphAlignment align = ParagraphAlignment::FillWidth);
+    QPair<QVector<WhereDrawn>,
+          WhereDrawn>
+    drawParagraph(PdfAuxData &pdfData,
+                  MD::Paragraph<MD::QStringTrait> *item,
+                  std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                  double offset,
+                  bool withNewLine,
+                  CalcHeightOpt heightCalcOpt,
+                  double scale,
+                  const QColor &color = Qt::black,
+                  bool scaleImagesToLineHeight = false,
+                  RTLFlag *rtl = nullptr,
+                  ParagraphAlignment align = ParagraphAlignment::FillWidth);
     //! Draw block of code.
-    QPair<QVector<WhereDrawn>, WhereDrawn> drawCode(PdfAuxData &pdfData,
-                                                    MD::Code<MD::QStringTrait> *item,
-                                                    std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
-                                                    double offset,
-                                                    CalcHeightOpt heightCalcOpt,
-                                                    double scale);
+    QPair<QVector<WhereDrawn>,
+          WhereDrawn>
+    drawCode(PdfAuxData &pdfData,
+             MD::Code<MD::QStringTrait> *item,
+             std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+             double offset,
+             CalcHeightOpt heightCalcOpt,
+             double scale);
     //! Draw blockquote.
-    QPair<QVector<WhereDrawn>, WhereDrawn> drawBlockquote(PdfAuxData &pdfData,
-                                                          MD::Blockquote<MD::QStringTrait> *item,
-                                                          std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
-                                                          double offset,
-                                                          CalcHeightOpt heightCalcOpt,
-                                                          double scale,
-                                                          RTLFlag *rtl = nullptr);
+    QPair<QVector<WhereDrawn>,
+          WhereDrawn>
+    drawBlockquote(PdfAuxData &pdfData,
+                   MD::Blockquote<MD::QStringTrait> *item,
+                   std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                   double offset,
+                   CalcHeightOpt heightCalcOpt,
+                   double scale,
+                   RTLFlag *rtl = nullptr);
     //! Draw list.
-    QPair<QVector<WhereDrawn>, WhereDrawn> drawList(PdfAuxData &pdfData,
-                                                    MD::List<MD::QStringTrait> *item,
-                                                    std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
-                                                    int bulletWidth,
-                                                    double offset = 0.0,
-                                                    CalcHeightOpt heightCalcOpt = CalcHeightOpt::Unknown,
-                                                    double scale = 1.0,
-                                                    bool nested = false,
-                                                    RTLFlag *rtl = nullptr);
+    QPair<QVector<WhereDrawn>,
+          WhereDrawn>
+    drawList(PdfAuxData &pdfData,
+             MD::List<MD::QStringTrait> *item,
+             std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+             int bulletWidth,
+             double offset = 0.0,
+             CalcHeightOpt heightCalcOpt = CalcHeightOpt::Unknown,
+             double scale = 1.0,
+             bool nested = false,
+             RTLFlag *rtl = nullptr);
     //! Draw table.
-    QPair<QVector<WhereDrawn>, WhereDrawn> drawTable(PdfAuxData &pdfData,
-                                                     MD::Table<MD::QStringTrait> *item,
-                                                     std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
-                                                     double offset,
-                                                     CalcHeightOpt heightCalcOpt,
-                                                     double scale);
+    QPair<QVector<WhereDrawn>,
+          WhereDrawn>
+    drawTable(PdfAuxData &pdfData,
+              MD::Table<MD::QStringTrait> *item,
+              std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+              double offset,
+              CalcHeightOpt heightCalcOpt,
+              double scale);
 
     //! \return Minimum necessary height to draw item, meant at least one line.
     double minNecessaryHeight(PdfAuxData &pdfData,
@@ -639,20 +772,22 @@ private:
     }; // enum class ListItemType
 
     //! Draw list item.
-    QPair<QVector<WhereDrawn>, WhereDrawn> drawListItem(PdfAuxData &pdfData,
-                                                        MD::ListItem<MD::QStringTrait> *item,
-                                                        std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
-                                                        int &idx,
-                                                        ListItemType &prevListItemType,
-                                                        int bulletWidth,
-                                                        double offset,
-                                                        CalcHeightOpt heightCalcOpt,
-                                                        double scale,
-                                                        //! A very first item in list, even not nested first item in nested list.
-                                                        bool firstInList,
-                                                        //! Just first item in list, possibly in nested list.
-                                                        bool firstItem,
-                                                        RTLFlag *rtl = nullptr);
+    QPair<QVector<WhereDrawn>,
+          WhereDrawn>
+    drawListItem(PdfAuxData &pdfData,
+                 MD::ListItem<MD::QStringTrait> *item,
+                 std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                 int &idx,
+                 ListItemType &prevListItemType,
+                 int bulletWidth,
+                 double offset,
+                 CalcHeightOpt heightCalcOpt,
+                 double scale,
+                 //! A very first item in list, even not nested first item in nested list.
+                 bool firstInList,
+                 //! Just first item in list, possibly in nested list.
+                 bool firstItem,
+                 RTLFlag *rtl = nullptr);
 
     //! Auxiliary struct for calculation of spaces scales to shrink text to width.
     struct CustomWidth {
@@ -669,36 +804,78 @@ private:
         }; // struct Width
 
         //! Append new item.
-        void append(const Width &w) { m_width.append(w); }
+        void append(const Width &w)
+        {
+            m_width.append(w);
+        }
         //! \return Scale of space at line.
-        double scale() const { return m_scale.at(m_pos); }
+        double scale() const
+        {
+            return m_scale.at(m_pos);
+        }
         //! \return Height of the line.
-        double height() const { return m_height.at(m_pos); }
+        double height() const
+        {
+            return m_height.at(m_pos);
+        }
         //! \return Descent of the line.
-        double descent() const { return m_descent.at(m_pos); }
+        double descent() const
+        {
+            return m_descent.at(m_pos);
+        }
         //! \return Width of the line.
-        double width() const { return m_lineWidth.at(m_pos); }
+        double width() const
+        {
+            return m_lineWidth.at(m_pos);
+        }
         //! Move to next line.
-        void moveToNextLine() { ++m_pos; }
+        void moveToNextLine()
+        {
+            ++m_pos;
+        }
         //! Is drawing? This struct can be used to precalculate widthes and for actual drawing.
-        bool isDrawing() const { return m_drawing; }
+        bool isDrawing() const
+        {
+            return m_drawing;
+        }
         //! Set drawing.
-        void setDrawing(bool on = true) { m_drawing = on; }
+        void setDrawing(bool on = true)
+        {
+            m_drawing = on;
+        }
         //! \return Is last element is new line?
-        bool isNewLineAtEnd() const { return (m_width.isEmpty() ? false : m_width.back().m_isNewLine); }
+        bool isNewLineAtEnd() const
+        {
+            return (m_width.isEmpty() ? false : m_width.back().m_isNewLine);
+        }
         //! \return Begin iterator.
-        QVector<double>::ConstIterator cbegin() const { return m_height.cbegin(); }
+        QVector<double>::ConstIterator cbegin() const
+        {
+            return m_height.cbegin();
+        }
         //! \return End iterator.
-        QVector<double>::ConstIterator cend() const { return m_height.cend(); }
+        QVector<double>::ConstIterator cend() const
+        {
+            return m_height.cend();
+        }
         //! \return Height of first item.
         double firstLineHeight() const;
         //! Calculate scales.
         void calcScale(double lineWidth);
         //! \return Paragraph alignment.
-        ParagraphAlignment alignment() const { return m_alignment.at(m_pos); }
+        ParagraphAlignment alignment() const
+        {
+            return m_alignment.at(m_pos);
+        }
         //! Set paragraph alignment.
-        void setAlignment(ParagraphAlignment alignment) { std::for_each(m_alignment.begin(), m_alignment.end(),
-            [alignment](auto &a){ if (a == ParagraphAlignment::Unknown) { a = alignment; } }); }
+        void setAlignment(ParagraphAlignment alignment)
+        {
+            std::for_each(m_alignment.begin(), m_alignment.end(), [alignment](auto &a) {
+                if (a == ParagraphAlignment::Unknown) {
+                    a = alignment;
+                }
+            });
+        }
 
     private:
         //! Is drawing?
@@ -720,7 +897,8 @@ private:
     }; // struct CustomWidth
 
     //! Align line.
-    void alignLine(PdfAuxData &pdfData, const CustomWidth &cw);
+    void alignLine(PdfAuxData &pdfData,
+                   const CustomWidth &cw);
 
     //! Baseline delta and scale of previous item.
     //! Used for calculating superscript and subscript.
@@ -789,8 +967,9 @@ private:
 
             for (auto it = std::next(m_stack.cbegin()), last = m_stack.cend(); it != last; ++it) {
                 if (it->m_baselineDelta > 0.0) {
-                    if (it->m_lineHeight - it->m_descent + it->m_baselineDelta > firstHeight) {
-                        const double tmp = it->m_lineHeight - it->m_descent + it->m_baselineDelta - firstHeight;
+                    if ((it->m_lineHeight - it->m_descent + it->m_baselineDelta) > (firstHeight - firstDescent)) {
+                        const double tmp =
+                            it->m_lineHeight - it->m_descent + it->m_baselineDelta - firstHeight + firstDescent;
 
                         if (tmp > upper) {
                             upper = tmp;
@@ -821,7 +1000,8 @@ private:
                           double descent);
 
     //! Deinit baseline with the given item.
-    void deinitSubSupScript(MD::ItemWithOpts<MD::QStringTrait> *item, PrevBaselineStateStack &state);
+    void deinitSubSupScript(MD::ItemWithOpts<MD::QStringTrait> *item,
+                            PrevBaselineStateStack &state);
 
     struct AutoSubSupScriptInit {
         AutoSubSupScriptInit(PdfRenderer *render,
@@ -948,7 +1128,7 @@ private:
     inline bool isSpace(Iterator it)
     {
         if ((*it)->type() == MD::ItemType::Text) {
-            auto t = static_cast<MD::Text<MD::QStringTrait>*>(it->get());
+            auto t = static_cast<MD::Text<MD::QStringTrait> *>(it->get());
 
             if (t->text().simplified().isEmpty()) {
                 return true;
@@ -979,14 +1159,14 @@ private:
     }
     //! \return Is after \par it nothing except HTML, spaces.
     inline bool isNothingAfter(MD::Block<MD::QStringTrait>::Items::const_iterator it,
-                            MD::Block<MD::QStringTrait>::Items::const_iterator last);
+                               MD::Block<MD::QStringTrait>::Items::const_iterator last);
     //! Skip backward til \par func returns true.
-    template<class Iterator, class Func>
-    inline Iterator
-    skipBackwardWithFunc(Iterator it,
-                         Iterator begin,
-                         Iterator last,
-                         Func func)
+    template<class Iterator,
+             class Func>
+    inline Iterator skipBackwardWithFunc(Iterator it,
+                                         Iterator begin,
+                                         Iterator last,
+                                         Func func)
     {
         for (; it != begin; --it) {
             if (std::invoke(func, this, it)) {
@@ -1006,17 +1186,17 @@ private:
     }
     //! \return Previous not HTML item.
     MD::Item<MD::QStringTrait> *getPrevItem(MD::Block<MD::QStringTrait>::Items::const_iterator it,
-                                         MD::Block<MD::QStringTrait>::Items::const_iterator begin,
-                                         MD::Block<MD::QStringTrait>::Items::const_iterator last);
+                                            MD::Block<MD::QStringTrait>::Items::const_iterator begin,
+                                            MD::Block<MD::QStringTrait>::Items::const_iterator last);
     //! Skip raw HTML and spaces backward.
     inline MD::Block<MD::QStringTrait>::Items::const_iterator
     skipRawHtmlAndSpacesBackward(MD::Block<MD::QStringTrait>::Items::const_iterator it,
-                MD::Block<MD::QStringTrait>::Items::const_iterator begin,
-                MD::Block<MD::QStringTrait>::Items::const_iterator last);
+                                 MD::Block<MD::QStringTrait>::Items::const_iterator begin,
+                                 MD::Block<MD::QStringTrait>::Items::const_iterator last);
     //! Skip raw HTML and spaces.
     template<class Iterator>
-    inline Iterator
-    skipRawHtmlAndSpaces(Iterator it, Iterator last)
+    inline Iterator skipRawHtmlAndSpaces(Iterator it,
+                                         Iterator last)
     {
         for (; it != last; ++it) {
             if (isNotHtmlNorSpace(it)) {
@@ -1080,36 +1260,46 @@ private:
             return true;
 
         case MD::ItemType::Math: {
-            auto m = static_cast<MD::Math<MD::QStringTrait>*>(it->get());
+            auto m = static_cast<MD::Math<MD::QStringTrait> *>(it->get());
 
             return m->isInline();
-        }
-            break;
+        } break;
 
         case MD::ItemType::Image: {
-            return isOnlineImage(pdfData, static_cast<MD::Image<MD::QStringTrait>*>(it->get()),
-                                 offset, lineHeight, scaleImagesToLineHeight);
-        }
-            break;
+            return isOnlineImage(pdfData,
+                                 static_cast<MD::Image<MD::QStringTrait> *>(it->get()),
+                                 offset,
+                                 lineHeight,
+                                 scaleImagesToLineHeight);
+        } break;
 
         case MD::ItemType::Link: {
-            auto l = static_cast<MD::Link<MD::QStringTrait>*>(it->get());
+            auto l = static_cast<MD::Link<MD::QStringTrait> *>(it->get());
 
             if (!l->p()->isEmpty()) {
                 if (reverse) {
-                    return isTextOrOnline(l->p()->items().crbegin(), l->p()->items().crend(), reverse,
-                                          pdfData, offset, lineHeight, scaleImagesToLineHeight);
+                    return isTextOrOnline(l->p()->items().crbegin(),
+                                          l->p()->items().crend(),
+                                          reverse,
+                                          pdfData,
+                                          offset,
+                                          lineHeight,
+                                          scaleImagesToLineHeight);
                 } else {
-                    return isTextOrOnline(l->p()->items().cbegin(), l->p()->items().cend(), reverse,
-                                          pdfData, offset, lineHeight, scaleImagesToLineHeight);
+                    return isTextOrOnline(l->p()->items().cbegin(),
+                                          l->p()->items().cend(),
+                                          reverse,
+                                          pdfData,
+                                          offset,
+                                          lineHeight,
+                                          scaleImagesToLineHeight);
                 }
             } else if (l->img()->isEmpty()) {
                 return true;
             } else {
                 return isOnlineImage(pdfData, l->img().get(), offset, lineHeight, scaleImagesToLineHeight);
             }
-        }
-            break;
+        } break;
 
         default:
             return false;
@@ -1174,22 +1364,26 @@ private:
                      double scale);
 
     //! Draw table's row.
-    QPair<QVector<WhereDrawn>, WhereDrawn> drawTableRow(std::shared_ptr<MD::TableRow<MD::QStringTrait>> row,
-                                                        PdfAuxData &pdfData,
-                                                        std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
-                                                        MD::Table<MD::QStringTrait> *table,
-                                                        double offset,
-                                                        double scale,
-                                                        double columnWidth,
-                                                        bool rightToLeftTable,
-                                                        int columnsCount);
+    QPair<QVector<WhereDrawn>,
+          WhereDrawn>
+    drawTableRow(std::shared_ptr<MD::TableRow<MD::QStringTrait>> row,
+                 PdfAuxData &pdfData,
+                 std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                 MD::Table<MD::QStringTrait> *table,
+                 double offset,
+                 double scale,
+                 double columnWidth,
+                 bool rightToLeftTable,
+                 int columnsCount);
 
     //! Draw table's cell.
-    QPair<QVector<WhereDrawn>, WhereDrawn> drawTableCell(std::shared_ptr<MD::TableCell<MD::QStringTrait>> cell,
-                                                         PdfAuxData &pdfData,
-                                                         std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
-                                                         MD::Table<MD::QStringTrait>::Alignment align,
-                                                         double scale);
+    QPair<QVector<WhereDrawn>,
+          WhereDrawn>
+    drawTableCell(std::shared_ptr<MD::TableCell<MD::QStringTrait>> cell,
+                  PdfAuxData &pdfData,
+                  std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                  MD::Table<MD::QStringTrait>::Alignment align,
+                  double scale);
 
     //! Draw table border.
     void drawRowBorder(PdfAuxData &pdfData,
@@ -1205,7 +1399,8 @@ private:
     void drawHorizontalLine(PdfAuxData &pdfData);
 
     //! Handle rendering exception.
-    void handleException(PdfAuxData &pdfData, const QString &msg);
+    void handleException(PdfAuxData &pdfData,
+                         const QString &msg);
 
 private:
     //! Name of the output file.
@@ -1246,7 +1441,11 @@ signals:
     void start();
 
 public:
-    LoadImageFromNetwork(const QUrl &url, QThread *thread, const ResvgOptions &opts, double height, bool scale);
+    LoadImageFromNetwork(const QUrl &url,
+                         QThread *thread,
+                         const ResvgOptions &opts,
+                         double height,
+                         bool scale);
     ~LoadImageFromNetwork() override = default;
 
     const QImage &image() const;
