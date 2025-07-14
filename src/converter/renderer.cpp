@@ -1450,7 +1450,10 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
                                         scale,
                                         pdfData);
 
-                initSubSupScript(static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(text), current, lineHeight);
+                const AutoSubSupScriptInit subSupInit(this,
+                                                      static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(text),
+                                                      current,
+                                                      lineHeight);
 
                 const auto r = drawString(pdfData,
                                           text->text(),
@@ -1484,8 +1487,6 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
                                           0.0,
                                           rtl);
                 rects.append(r.first);
-
-                deinitSubSupScript(static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(text), current);
             } break;
 
             case MD::ItemType::Code: {
@@ -1548,7 +1549,10 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
         auto *spaceFont = createFont(m_opts.m_textFont, false, false,
                                      m_opts.m_textFontSize, pdfData.m_doc, scale, pdfData);
 
-        initSubSupScript(static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item), current, lineHeight);
+        const AutoSubSupScriptInit subSupInit(this,
+                                              static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item),
+                                              current,
+                                              lineHeight);
 
         const auto r = drawString(pdfData,
                                   url,
@@ -1582,8 +1586,6 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
                                   0.0,
                                   rtl);
         rects = r.first;
-
-        deinitSubSupScript(static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item), current);
     }
     // Otherwise image link.
     else {
@@ -2821,17 +2823,22 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
         fontSize = fontSize / 72.f * (float) pd.physicalDpiY();
     }
 
-    auto latexRender = std::unique_ptr<tex::TeXRender>(tex::LaTeX::parse(
-            item->expr().toStdWString(),
-            0,
-            fontSize,
-            fontSize / 3.f,
-            tex::black));
+    auto *font = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, pdfData.m_doc, scale, pdfData);
+    const auto lineHeight = pdfData.lineSpacing(font, m_opts.m_textFontSize, scale);
+    const AutoSubSupScriptInit subSupInit(this,
+                                          static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item),
+                                          current,
+                                          lineHeight);
+
+    auto latexRender = std::unique_ptr<tex::TeXRender>(
+        tex::LaTeX::parse(item->expr().toStdWString(),
+                          0,
+                          fontSize * (item->isInline() ? current.m_stack.top().m_scale : 1.0),
+                          fontSize / 3.f * (item->isInline() ? current.m_stack.top().m_scale : 1.0),
+                          tex::black));
 
     QSizeF pxSize = {}, size = {};
     double descent = 0.0;
-
-    auto *font = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, pdfData.m_doc, scale, pdfData);
 
     {
         PoDoFoPaintDevice pd(pdfData);
@@ -2843,8 +2850,6 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
         descent = (item->isInline() ? ((1.0 - latexRender->getBaseline()) * size.height()) :
                 (-pdfData.fontDescent(font, m_opts.m_textFontSize, scale)));
     }
-
-    const auto lineHeight = pdfData.lineSpacing(font, m_opts.m_textFontSize, scale);
 
     newLine = false;
 
@@ -3054,14 +3059,20 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
 
             tex::Graphics2D_qt g2(&p);
             latexRender->draw(g2,
-                    pdfData.m_layout.startX(size.width() * imgScale) / 72.0 * pd.physicalDpiX(),
-                                   (pdfData.m_layout.pageHeight() - pdfData.m_layout.y() - cw.descent() -
-                                    (height - descent)) / 72.0 * pd.physicalDpiY());
+                              pdfData.m_layout.startX(size.width() * imgScale) / 72.0 * pd.physicalDpiX(),
+                              (pdfData.m_layout.pageHeight()
+                               - pdfData.m_layout.y()
+                               - cw.descent()
+                               - (height - descent)
+                               + current.m_stack.top().m_baselineDelta)
+                                  / 72.0
+                                  * pd.physicalDpiY());
 
-            const QRectF r = {pdfData.m_layout.startX(size.width() * imgScale),
-                              pdfData.m_layout.y() + cw.descent() + (height - descent),
-                              size.width() * imgScale,
-                              size.height() * imgScale};
+            const QRectF r = {
+                pdfData.m_layout.startX(size.width() * imgScale),
+                pdfData.m_layout.y() + cw.descent() + (height - descent) - current.m_stack.top().m_baselineDelta,
+                size.width() * imgScale,
+                size.height() * imgScale};
 
             pdfData.m_layout.addX(size.width() * imgScale);
             const auto idx = pdfData.m_currentPainterIdx;
@@ -3070,7 +3081,12 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
         } else {
             pdfData.m_layout.addX(size.width() * imgScale);
 
-            cw.append({size.width() * imgScale, size.height() * imgScale, false, false, isNextText, "",
+            cw.append({size.width() * imgScale,
+                       size.height() * imgScale + current.m_stack.top().m_baselineDelta,
+                       false,
+                       false,
+                       isNextText,
+                       "",
                        descent * imgScale});
         }
     }
@@ -3460,6 +3476,11 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
 
     PrevBaselineStateStack current = previousBaseline;
 
+    const AutoSubSupScriptInit subSupInit(this,
+                                          static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item),
+                                          current,
+                                          lineHeight);
+
     if (!cw.isDrawing())
         draw = false;
 
@@ -3556,7 +3577,9 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
                 pdfData.m_layout.addX(spaceWidth * cw.scale() / 100.0);
             }
 
-            dy = (onLine ? (cw.height() - cw.descent() - iHeight * imgScale) / 2.0 : 0.0);
+            dy = (onLine
+                      ? (cw.height() - cw.descent() - iHeight * imgScale) / 2.0 + current.m_stack.top().m_baselineDelta
+                      : 0.0);
 
             alignLine(pdfData, cw);
 
@@ -3594,8 +3617,14 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
         }
 
         if (!draw) {
-            cw.append({iWidth * imgScale, std::max(height, lineHeight), false, !onLine, false, "", 0.0,
-                (!onLine ? imageToParagraphAlignment(alignment) : ParagraphAlignment::Unknown)});
+            cw.append({iWidth * imgScale,
+                       std::max(height, lineHeight) + current.m_stack.top().m_baselineDelta,
+                       false,
+                       !onLine,
+                       false,
+                       "",
+                       0.0,
+                       (!onLine ? imageToParagraphAlignment(alignment) : ParagraphAlignment::Unknown)});
         }
 
         return {{r, pdfData.m_currentPainterIdx}, current};

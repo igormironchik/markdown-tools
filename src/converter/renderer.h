@@ -753,6 +753,30 @@ private:
     //! Deinit baseline with the given item.
     void deinitSubSupScript(MD::ItemWithOpts<MD::QStringTrait> *item, PrevBaselineStateStack &state);
 
+    struct AutoSubSupScriptInit {
+        AutoSubSupScriptInit(PdfRenderer *render,
+                             MD::ItemWithOpts<MD::QStringTrait> *item,
+                             PrevBaselineStateStack &stack,
+                             double lineHeight)
+            : m_render(render)
+            , m_item(item)
+            , m_stack(stack)
+            , m_lineHeight(lineHeight)
+        {
+            m_render->initSubSupScript(m_item, m_stack, m_lineHeight);
+        }
+
+        ~AutoSubSupScriptInit()
+        {
+            m_render->deinitSubSupScript(m_item, m_stack);
+        }
+
+        PdfRenderer *m_render;
+        MD::ItemWithOpts<MD::QStringTrait> *m_item;
+        PrevBaselineStateStack &m_stack;
+        double m_lineHeight;
+    };
+
     //! Draw text.
     QPair<QVector<QPair<QRectF,
                         unsigned int>>,
