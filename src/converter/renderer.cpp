@@ -47,8 +47,8 @@ namespace MdPdf
 namespace Render
 {
 
-const double PdfRenderer::PrevBaselineStateStack::s_scale = 3.0;
-const double PdfRenderer::PrevBaselineStateStack::s_baselineScale = 2.0 / 3.0;
+const double PdfRenderer::PrevBaselineStateStack::s_scale = 1.5;
+const double PdfRenderer::PrevBaselineStateStack::s_baselineScale = 0.5;
 
 //
 // PdfRendererError
