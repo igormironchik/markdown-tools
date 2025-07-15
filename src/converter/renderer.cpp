@@ -1921,7 +1921,9 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
             newLine = false;
 
             if (draw) {
-                ret.append(qMakePair(pdfData.m_layout.currentRect(width, lineHeight), pdfData.m_currentPainterIdx));
+                ret.append(
+                    qMakePair(pdfData.m_layout.currentRect(width, lineHeight, currentBaseline.currentBaselineDelta()),
+                              pdfData.m_currentPainterIdx));
 
                 if (background.isValid() && !useRegularSpace) {
                     pdfData.setColor(background);
@@ -2050,8 +2052,9 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                         strikeout);
                     pdfData.restoreColor();
 
-                    ret.append(
-                        qMakePair(pdfData.m_layout.currentRect(length, lineHeight), pdfData.m_currentPainterIdx));
+                    ret.append(qMakePair(
+                        pdfData.m_layout.currentRect(length, lineHeight, currentBaseline.currentBaselineDelta()),
+                        pdfData.m_currentPainterIdx));
                 } else {
                     const auto lineInfo = currentBaseline.fullLineHeight();
 
@@ -2100,8 +2103,9 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                                 strikeout);
                             pdfData.restoreColor();
 
-                            ret.append(
-                                qMakePair(pdfData.m_layout.currentRect(w, lineHeight), pdfData.m_currentPainterIdx));
+                            ret.append(qMakePair(
+                                pdfData.m_layout.currentRect(w, lineHeight, currentBaseline.currentBaselineDelta()),
+                                pdfData.m_currentPainterIdx));
                         } else {
                             const auto lineInfo = currentBaseline.fullLineHeight();
 

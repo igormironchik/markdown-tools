@@ -317,9 +317,10 @@ struct LayoutDirectionHandler {
         return (isRightToLeft() ? -1.0 : 1.0);
     }
     QRectF currentRect(double width,
-                       double height) const
+                       double height,
+                       double baseline = 0.0) const
     {
-        return QRectF(startX(width), y(), width, height);
+        return QRectF(startX(width), y() + baseline, width, height);
     }
     double startX(double width) const
     {
@@ -933,6 +934,11 @@ private:
         double nextBaselineDelta(bool up) const
         {
             return (up ? (m_stack.back().m_lineHeight - currentDescent()) * s_baselineScale : currentDescent());
+        }
+
+        double currentBaselineDelta() const
+        {
+            return m_stack.back().m_baselineDelta;
         }
 
         double nextScale() const
