@@ -1012,6 +1012,7 @@ private:
             : m_render(render)
             , m_item(item)
             , m_stack(stack)
+            , m_count(m_stack.m_stack.size())
         {
             m_render->initSubSupScript(m_item, m_stack, lineHeight, descent);
         }
@@ -1021,15 +1022,20 @@ private:
             m_render->deinitSubSupScript(m_item, m_stack);
         }
 
+        bool wasAdded() const
+        {
+            return (m_count != m_stack.m_stack.size());
+        }
+
         PdfRenderer *m_render;
         MD::ItemWithOpts<MD::QStringTrait> *m_item;
         PrevBaselineStateStack &m_stack;
+        std::size_t m_count;
     };
 
     //! Draw text.
-    QPair<QVector<QPair<QRectF,
-                        unsigned int>>,
-          PrevBaselineStateStack>
+    QVector<QPair<QRectF,
+                  unsigned int>>
     drawText(PdfAuxData &pdfData,
              MD::Text<MD::QStringTrait> *item,
              std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
@@ -1043,13 +1049,12 @@ private:
              bool firstInParagraph,
              CustomWidth &cw,
              double scale,
-             const PrevBaselineStateStack &previousBaseline,
+             PrevBaselineStateStack &previousBaseline,
              const QColor &color = Qt::black,
              RTLFlag *rtl = nullptr);
     //! Draw inlined code.
-    QPair<QVector<QPair<QRectF,
-                        unsigned int>>,
-          PrevBaselineStateStack>
+    QVector<QPair<QRectF,
+                  unsigned int>>
     drawInlinedCode(PdfAuxData &pdfData,
                     MD::Code<MD::QStringTrait> *item,
                     std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
@@ -1058,14 +1063,13 @@ private:
                     bool firstInParagraph,
                     CustomWidth &cw,
                     double scale,
-                    const PrevBaselineStateStack &previousBaseline,
+                    PrevBaselineStateStack &previousBaseline,
                     RTLFlag *rtl = nullptr,
                     bool inLink = false);
 
     //! Draw string.
-    QPair<QVector<QPair<QRectF,
-                        unsigned int>>,
-          PrevBaselineStateStack>
+    QVector<QPair<QRectF,
+                  unsigned int>>
     drawString(PdfAuxData &pdfData,
                const QString &str,
                Font *spaceFont,
@@ -1091,16 +1095,15 @@ private:
                long long int startPos,
                long long int endLine,
                long long int endPos,
-               const PrevBaselineStateStack &currentBaseline,
+               PrevBaselineStateStack &currentBaseline,
                const QColor &color = Qt::black,
                Font *regularSpaceFont = nullptr,
                double regularSpaceFontSize = 0.0,
                double regularSpaceFontScale = 0.0,
                RTLFlag *rtl = nullptr);
     //! Draw link.
-    QPair<QVector<QPair<QRectF,
-                        unsigned int>>,
-          PrevBaselineStateStack>
+    QVector<QPair<QRectF,
+                  unsigned int>>
     drawLink(PdfAuxData &pdfData,
              MD::Link<MD::QStringTrait> *item,
              std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
@@ -1121,7 +1124,7 @@ private:
              CustomWidth &cw,
              double scale,
              bool scaleImagesToLineHeight,
-             const PrevBaselineStateStack &previousBaseline,
+             PrevBaselineStateStack &previousBaseline,
              RTLFlag *rtl = nullptr);
     //! \return Is \par it a space?
     template<class Iterator>
@@ -1319,9 +1322,8 @@ private:
                        double lineHeight,
                        bool scaleImagesToLineHeight);
     //! Draw image.
-    QPair<QPair<QRectF,
-                unsigned int>,
-          PrevBaselineStateStack>
+    QPair<QRectF,
+          unsigned int>
     drawImage(PdfAuxData &pdfData,
               MD::Image<MD::QStringTrait> *item,
               std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
@@ -1335,15 +1337,14 @@ private:
               bool isNextText,
               CustomWidth &cw,
               double scale,
-              const PrevBaselineStateStack &previousBaseline,
+              PrevBaselineStateStack &previousBaseline,
               MD::Item<MD::QStringTrait> *prevItem,
               ImageAlignment alignment = ImageAlignment::Unknown,
               bool scaleImagesToLineHeight = false);
 
     //! Draw math expression.
-    QPair<QPair<QRectF,
-                unsigned int>,
-          PrevBaselineStateStack>
+    QPair<QRectF,
+          unsigned int>
     drawMathExpr(PdfAuxData &pdfData,
                  MD::Math<MD::QStringTrait> *item,
                  std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
@@ -1354,7 +1355,7 @@ private:
                  bool firstInParagraph,
                  CustomWidth &cw,
                  double scale,
-                 const PrevBaselineStateStack &previousBaseline);
+                 PrevBaselineStateStack &previousBaseline);
 
     //! \return Height of the table's row.
     double rowHeight(PdfAuxData &pdfData,

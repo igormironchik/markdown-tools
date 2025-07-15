@@ -1274,9 +1274,8 @@ void PdfRenderer::deinitSubSupScript(MD::ItemWithOpts<MD::QStringTrait> *item,
     }
 }
 
-QPair<QVector<QPair<QRectF,
-                    unsigned int>>,
-      PdfRenderer::PrevBaselineStateStack>
+QVector<QPair<QRectF,
+              unsigned int>>
 PdfRenderer::drawText(PdfAuxData &pdfData,
                       MD::Text<MD::QStringTrait> *item,
                       std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
@@ -1290,7 +1289,7 @@ PdfRenderer::drawText(PdfAuxData &pdfData,
                       bool firstInParagraph,
                       CustomWidth &cw,
                       double scale,
-                      const PrevBaselineStateStack &previousBaseline,
+                      PrevBaselineStateStack &previousBaseline,
                       const QColor &color,
                       RTLFlag *rtl)
 {
@@ -1304,51 +1303,45 @@ PdfRenderer::drawText(PdfAuxData &pdfData,
                             scale,
                             pdfData);
 
-    auto current = previousBaseline;
     const auto lineHeight = pdfData.lineSpacing(font, m_opts.m_textFontSize, scale);
 
-    initSubSupScript(static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item),
-                     current,
-                     lineHeight,
-                     -pdfData.fontDescent(font, m_opts.m_textFontSize, scale));
+    const AutoSubSupScriptInit initSubSup(this,
+                                          static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item),
+                                          previousBaseline,
+                                          lineHeight,
+                                          -pdfData.fontDescent(font, m_opts.m_textFontSize, scale));
 
-    auto ret = drawString(pdfData,
-                          item->text(),
-                          spaceFont,
-                          m_opts.m_textFontSize,
-                          scale,
-                          font,
-                          m_opts.m_textFontSize,
-                          scale,
-                          lineHeight,
-                          doc,
-                          newLine,
-                          footnoteFont,
-                          footnoteFontSize,
-                          footnoteFontScale,
-                          nextItem,
-                          footnoteNum,
-                          offset,
-                          firstInParagraph,
-                          cw,
-                          QColor(),
-                          item->opts() & MD::TextOption::StrikethroughText,
-                          item->startLine(),
-                          item->startColumn(),
-                          item->endLine(),
-                          item->endColumn(),
-                          current,
-                          color,
-                          nullptr,
-                          0.0,
-                          0.0,
-                          rtl);
-
-    deinitSubSupScript(static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item), current);
-
-    ret.second = current;
-
-    return ret;
+    return drawString(pdfData,
+                      item->text(),
+                      spaceFont,
+                      m_opts.m_textFontSize,
+                      scale,
+                      font,
+                      m_opts.m_textFontSize,
+                      scale,
+                      lineHeight,
+                      doc,
+                      newLine,
+                      footnoteFont,
+                      footnoteFontSize,
+                      footnoteFontScale,
+                      nextItem,
+                      footnoteNum,
+                      offset,
+                      firstInParagraph,
+                      cw,
+                      QColor(),
+                      item->opts() & MD::TextOption::StrikethroughText,
+                      item->startLine(),
+                      item->startColumn(),
+                      item->endLine(),
+                      item->endColumn(),
+                      previousBaseline,
+                      color,
+                      nullptr,
+                      0.0,
+                      0.0,
+                      rtl);
 }
 
 namespace /* anonymous */
@@ -1478,9 +1471,8 @@ PdfRenderer::skipRawHtmlAndSpacesBackward(MD::Block<MD::QStringTrait>::Items::co
     return last;
 }
 
-QPair<QVector<QPair<QRectF,
-                    unsigned int>>,
-      PdfRenderer::PrevBaselineStateStack>
+QVector<QPair<QRectF,
+              unsigned int>>
 PdfRenderer::drawLink(PdfAuxData &pdfData,
                       MD::Link<MD::QStringTrait> *item,
                       std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
@@ -1501,11 +1493,10 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
                       CustomWidth &cw,
                       double scale,
                       bool scaleImagesToLineHeight,
-                      const PrevBaselineStateStack &previousBaseline,
+                      PrevBaselineStateStack &previousBaseline,
                       RTLFlag *rtl)
 {
     QVector<QPair<QRectF, unsigned int>> rects;
-    auto current = previousBaseline;
 
     QString url = item->url();
 
@@ -1548,59 +1539,55 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
 
                 const AutoSubSupScriptInit subSupInit(this,
                                                       static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(text),
-                                                      current,
+                                                      previousBaseline,
                                                       pdfData.lineSpacing(font, m_opts.m_textFontSize, scale),
                                                       -pdfData.fontDescent(font, m_opts.m_textFontSize, scale));
 
-                const auto r = drawString(pdfData,
-                                          text->text(),
-                                          spaceFont,
-                                          m_opts.m_textFontSize,
-                                          scale,
-                                          font,
-                                          m_opts.m_textFontSize,
-                                          scale,
-                                          lineHeight,
-                                          doc,
-                                          newLine,
-                                          footnoteFont,
-                                          footnoteFontSize,
-                                          footnoteFontScale,
-                                          (it == std::prev(last) ? nextItem : nullptr),
-                                          footnoteNum,
-                                          offset,
-                                          (it == item->p()->items().begin() && firstInParagraph),
-                                          cw,
-                                          QColor(),
-                                          text->opts() & MD::StrikethroughText || item->opts() & MD::StrikethroughText,
-                                          text->startLine(),
-                                          text->startColumn(),
-                                          text->endLine(),
-                                          text->endColumn(),
-                                          current,
-                                          m_opts.m_linkColor,
-                                          nullptr,
-                                          0.0,
-                                          0.0,
-                                          rtl);
-                rects.append(r.first);
+                rects.append(drawString(pdfData,
+                                        text->text(),
+                                        spaceFont,
+                                        m_opts.m_textFontSize,
+                                        scale,
+                                        font,
+                                        m_opts.m_textFontSize,
+                                        scale,
+                                        lineHeight,
+                                        doc,
+                                        newLine,
+                                        footnoteFont,
+                                        footnoteFontSize,
+                                        footnoteFontScale,
+                                        (it == std::prev(last) ? nextItem : nullptr),
+                                        footnoteNum,
+                                        offset,
+                                        (it == item->p()->items().begin() && firstInParagraph),
+                                        cw,
+                                        QColor(),
+                                        text->opts() & MD::StrikethroughText || item->opts() & MD::StrikethroughText,
+                                        text->startLine(),
+                                        text->startColumn(),
+                                        text->endLine(),
+                                        text->endColumn(),
+                                        previousBaseline,
+                                        m_opts.m_linkColor,
+                                        nullptr,
+                                        0.0,
+                                        0.0,
+                                        rtl));
             } break;
 
             case MD::ItemType::Code: {
-                const auto r = drawInlinedCode(pdfData,
-                                               static_cast<MD::Code<MD::QStringTrait> *>(it->get()),
-                                               doc,
-                                               newLine,
-                                               offset,
-                                               (it == item->p()->items().begin() && firstInParagraph),
-                                               cw,
-                                               scale,
-                                               current,
-                                               rtl,
-                                               true);
-                rects.append(r.first);
-                current = r.second;
-
+                rects.append(drawInlinedCode(pdfData,
+                                             static_cast<MD::Code<MD::QStringTrait> *>(it->get()),
+                                             doc,
+                                             newLine,
+                                             offset,
+                                             (it == item->p()->items().begin() && firstInParagraph),
+                                             cw,
+                                             scale,
+                                             previousBaseline,
+                                             rtl,
+                                             true));
                 setRTLFlagToFalseIfCheck(rtl);
             } break;
 
@@ -1608,7 +1595,7 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
                 auto prev =
                     (it != item->p()->items().begin() ? getPrevItem(std::prev(it), item->p()->items().begin(), last)
                                                       : nullptr);
-                const auto r = drawImage(
+                rects.append(drawImage(
                     pdfData,
                     static_cast<MD::Image<MD::QStringTrait> *>(it->get()),
                     doc,
@@ -1629,11 +1616,9 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
                     isTextOrOnlineAfter(it, last, pdfData, offset, lineHeight, scaleImagesToLineHeight) || isNextText,
                     cw,
                     1.0,
-                    current,
+                    previousBaseline,
                     (prev ? prev : prevItem),
-                    (pdfData.m_tableDrawing ? ImageAlignment::Unknown : m_opts.m_imageAlignment));
-                rects.append(r.first);
-                current = r.second;
+                    (pdfData.m_tableDrawing ? ImageAlignment::Unknown : m_opts.m_imageAlignment)));
 
                 setRTLFlagToFalseIfCheck(rtl);
             } break;
@@ -1648,64 +1633,60 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
 
         const AutoSubSupScriptInit subSupInit(this,
                                               static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item),
-                                              current,
+                                              previousBaseline,
                                               pdfData.lineSpacing(font, m_opts.m_textFontSize, scale),
                                               -pdfData.fontDescent(font, m_opts.m_textFontSize, scale));
 
-        const auto r = drawString(pdfData,
-                                  url,
-                                  spaceFont,
-                                  m_opts.m_textFontSize,
-                                  scale,
-                                  font,
-                                  m_opts.m_textFontSize,
-                                  scale,
-                                  lineHeight,
-                                  doc,
-                                  newLine,
-                                  footnoteFont,
-                                  footnoteFontSize,
-                                  footnoteFontScale,
-                                  nextItem,
-                                  footnoteNum,
-                                  offset,
-                                  firstInParagraph,
-                                  cw,
-                                  QColor(),
-                                  item->opts() & MD::TextOption::StrikethroughText,
-                                  item->startLine(),
-                                  item->startColumn(),
-                                  item->endLine(),
-                                  item->endColumn(),
-                                  current,
-                                  m_opts.m_linkColor,
-                                  nullptr,
-                                  0.0,
-                                  0.0,
-                                  rtl);
-        rects = r.first;
+        rects = drawString(pdfData,
+                           url,
+                           spaceFont,
+                           m_opts.m_textFontSize,
+                           scale,
+                           font,
+                           m_opts.m_textFontSize,
+                           scale,
+                           lineHeight,
+                           doc,
+                           newLine,
+                           footnoteFont,
+                           footnoteFontSize,
+                           footnoteFontScale,
+                           nextItem,
+                           footnoteNum,
+                           offset,
+                           firstInParagraph,
+                           cw,
+                           QColor(),
+                           item->opts() & MD::TextOption::StrikethroughText,
+                           item->startLine(),
+                           item->startColumn(),
+                           item->endLine(),
+                           item->endColumn(),
+                           previousBaseline,
+                           m_opts.m_linkColor,
+                           nullptr,
+                           0.0,
+                           0.0,
+                           rtl);
     }
     // Otherwise image link.
     else {
-        const auto r = drawImage(pdfData,
-                                 item->img().get(),
-                                 doc,
-                                 newLine,
-                                 offset,
-                                 lineHeight,
-                                 spaceWidth,
-                                 firstInParagraph,
-                                 true,
-                                 isPrevText,
-                                 isNextText,
-                                 cw,
-                                 1.0,
-                                 current,
-                                 prevItem,
-                                 (pdfData.m_tableDrawing ? ImageAlignment::Unknown : m_opts.m_imageAlignment));
-        rects.append(r.first);
-        current = r.second;
-
+        rects.append(drawImage(pdfData,
+                               item->img().get(),
+                               doc,
+                               newLine,
+                               offset,
+                               lineHeight,
+                               spaceWidth,
+                               firstInParagraph,
+                               true,
+                               isPrevText,
+                               isNextText,
+                               cw,
+                               1.0,
+                               previousBaseline,
+                               prevItem,
+                               (pdfData.m_tableDrawing ? ImageAlignment::Unknown : m_opts.m_imageAlignment)));
         setRTLFlagToFalseIfCheck(rtl);
     }
 
@@ -1737,7 +1718,7 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
         }
     }
 
-    return {rects, current};
+    return rects;
 }
 
 namespace /* anonymous */
@@ -1786,9 +1767,8 @@ void PdfRenderer::alignLine(PdfAuxData &pdfData,
     }
 }
 
-QPair<QVector<QPair<QRectF,
-                    unsigned int>>,
-      PdfRenderer::PrevBaselineStateStack>
+QVector<QPair<QRectF,
+              unsigned int>>
 PdfRenderer::drawString(PdfAuxData &pdfData,
                         const QString &str,
                         Font *spaceFont,
@@ -1814,7 +1794,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                         long long int startPos,
                         long long int endLine,
                         long long int endPos,
-                        const PrevBaselineStateStack &currentBaseline,
+                        PrevBaselineStateStack &currentBaseline,
                         const QColor &color,
                         Font *regularSpaceFont,
                         double regularSpaceFontSize,
@@ -1889,7 +1869,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
         QMutexLocker lock(&m_mutex);
 
         if (m_terminate) {
-            return {ret, currentBaseline};
+            return ret;
         }
     }
 
@@ -2010,7 +1990,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
             QMutexLocker lock(&m_mutex);
 
             if (m_terminate) {
-                return {ret, currentBaseline};
+                return ret;
             }
         }
 
@@ -2182,12 +2162,11 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
         }
     }
 
-    return {ret, currentBaseline};
+    return ret;
 }
 
-QPair<QVector<QPair<QRectF,
-                    unsigned int>>,
-      PdfRenderer::PrevBaselineStateStack>
+QVector<QPair<QRectF,
+              unsigned int>>
 PdfRenderer::drawInlinedCode(PdfAuxData &pdfData,
                              MD::Code<MD::QStringTrait> *item,
                              std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
@@ -2196,7 +2175,7 @@ PdfRenderer::drawInlinedCode(PdfAuxData &pdfData,
                              bool firstInParagraph,
                              CustomWidth &cw,
                              double scale,
-                             const PrevBaselineStateStack &previousBaseline,
+                             PrevBaselineStateStack &previousBaseline,
                              RTLFlag *rtl,
                              bool inLink)
 {
@@ -2227,51 +2206,45 @@ PdfRenderer::drawInlinedCode(PdfAuxData &pdfData,
                          (qBlue(textColor) + qBlue(linkColor)) / 2);
     }
 
-    auto current = previousBaseline;
     const auto lineHeight = pdfData.lineSpacing(textFont, m_opts.m_textFontSize, scale);
 
-    initSubSupScript(static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item),
-                     current,
-                     pdfData.lineSpacing(font, m_opts.m_codeFontSize, scale),
-                     -pdfData.fontDescent(font, m_opts.m_codeFontSize, scale));
+    const AutoSubSupScriptInit initSubSup(this,
+                                          static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item),
+                                          previousBaseline,
+                                          pdfData.lineSpacing(font, m_opts.m_codeFontSize, scale),
+                                          -pdfData.fontDescent(font, m_opts.m_codeFontSize, scale));
 
-    auto ret = drawString(pdfData,
-                          item->text(),
-                          font,
-                          m_opts.m_codeFontSize,
-                          scale,
-                          font,
-                          m_opts.m_codeFontSize,
-                          scale,
-                          lineHeight,
-                          doc,
-                          newLine,
-                          nullptr,
-                          0.0,
-                          0.0,
-                          nullptr,
-                          pdfData.m_footnoteNum,
-                          offset,
-                          firstInParagraph,
-                          cw,
-                          backgroundColor,
-                          item->opts() & MD::TextOption::StrikethroughText,
-                          item->startLine(),
-                          item->startColumn(),
-                          item->endLine(),
-                          item->endColumn(),
-                          current,
-                          textColor,
-                          textFont,
-                          m_opts.m_textFontSize,
-                          scale,
-                          rtl);
-
-    deinitSubSupScript(static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item), current);
-
-    ret.second = current;
-
-    return ret;
+    return drawString(pdfData,
+                      item->text(),
+                      font,
+                      m_opts.m_codeFontSize,
+                      scale,
+                      font,
+                      m_opts.m_codeFontSize,
+                      scale,
+                      lineHeight,
+                      doc,
+                      newLine,
+                      nullptr,
+                      0.0,
+                      0.0,
+                      nullptr,
+                      pdfData.m_footnoteNum,
+                      offset,
+                      firstInParagraph,
+                      cw,
+                      backgroundColor,
+                      item->opts() & MD::TextOption::StrikethroughText,
+                      item->startLine(),
+                      item->startColumn(),
+                      item->endLine(),
+                      item->endColumn(),
+                      previousBaseline,
+                      textColor,
+                      textFont,
+                      m_opts.m_textFontSize,
+                      scale,
+                      rtl);
 }
 
 void PdfRenderer::moveToNewLine(PdfAuxData &pdfData,
@@ -2496,121 +2469,115 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
         case MD::ItemType::Text: {
             auto text = static_cast<MD::Text<MD::QStringTrait> *>(it->get());
 
-            previous = drawText(pdfData,
-                                text,
-                                doc,
-                                newLine,
-                                footnoteFont,
-                                m_opts.m_textFontSize * scale,
-                                s_footnoteScale,
-                                (it + 1 != last ? (it + 1)->get() : nullptr),
-                                nextFootnoteNum,
-                                offset,
-                                (firstInParagraph || lineBreak),
-                                cw,
-                                scale,
-                                previous,
-                                color,
-                                rtl)
-                           .second;
+            drawText(pdfData,
+                     text,
+                     doc,
+                     newLine,
+                     footnoteFont,
+                     m_opts.m_textFontSize * scale,
+                     s_footnoteScale,
+                     (it + 1 != last ? (it + 1)->get() : nullptr),
+                     nextFootnoteNum,
+                     offset,
+                     (firstInParagraph || lineBreak),
+                     cw,
+                     scale,
+                     previous,
+                     color,
+                     rtl);
             lineBreak = false;
             firstInParagraph = false;
         } break;
 
         case MD::ItemType::Code:
-            previous = drawInlinedCode(pdfData,
-                                       static_cast<MD::Code<MD::QStringTrait> *>(it->get()),
-                                       doc,
-                                       newLine,
-                                       offset,
-                                       (firstInParagraph || lineBreak),
-                                       cw,
-                                       scale,
-                                       previous,
-                                       rtl)
-                           .second;
+            drawInlinedCode(pdfData,
+                            static_cast<MD::Code<MD::QStringTrait> *>(it->get()),
+                            doc,
+                            newLine,
+                            offset,
+                            (firstInParagraph || lineBreak),
+                            cw,
+                            scale,
+                            previous,
+                            rtl);
             lineBreak = false;
             firstInParagraph = false;
             break;
 
         case MD::ItemType::Link:
-            previous = drawLink(pdfData,
-                                static_cast<MD::Link<MD::QStringTrait> *>(it->get()),
-                                doc,
-                                newLine,
-                                footnoteFont,
-                                m_opts.m_textFontSize * scale,
-                                s_footnoteScale,
-                                (it != item->items().begin() ? std::prev(it)->get() : nullptr),
-                                (std::next(it) != last ? std::next(it)->get() : nullptr),
-                                nextFootnoteNum,
-                                offset,
-                                lineHeight,
-                                spaceWidth,
-                                (firstInParagraph || lineBreak),
-                                isLastInParagraph(it, last),
-                                isTextOrOnlineBefore(it,
-                                                     item->items().begin(),
-                                                     last,
-                                                     pdfData,
-                                                     offset,
-                                                     lineHeight,
-                                                     scaleImagesToLineHeight),
-                                isTextOrOnlineAfter(it, last, pdfData, offset, lineHeight, scaleImagesToLineHeight),
-                                cw,
-                                scale,
-                                scaleImagesToLineHeight,
-                                previous,
-                                rtl)
-                           .second;
+            drawLink(pdfData,
+                     static_cast<MD::Link<MD::QStringTrait> *>(it->get()),
+                     doc,
+                     newLine,
+                     footnoteFont,
+                     m_opts.m_textFontSize * scale,
+                     s_footnoteScale,
+                     (it != item->items().begin() ? std::prev(it)->get() : nullptr),
+                     (std::next(it) != last ? std::next(it)->get() : nullptr),
+                     nextFootnoteNum,
+                     offset,
+                     lineHeight,
+                     spaceWidth,
+                     (firstInParagraph || lineBreak),
+                     isLastInParagraph(it, last),
+                     isTextOrOnlineBefore(it,
+                                          item->items().begin(),
+                                          last,
+                                          pdfData,
+                                          offset,
+                                          lineHeight,
+                                          scaleImagesToLineHeight),
+                     isTextOrOnlineAfter(it, last, pdfData, offset, lineHeight, scaleImagesToLineHeight),
+                     cw,
+                     scale,
+                     scaleImagesToLineHeight,
+                     previous,
+                     rtl);
             lineBreak = false;
             firstInParagraph = false;
             break;
 
         case MD::ItemType::Image:
-            previous = drawImage(pdfData,
-                                 static_cast<MD::Image<MD::QStringTrait> *>(it->get()),
-                                 doc,
-                                 newLine,
-                                 offset,
-                                 lineHeight,
-                                 spaceWidth,
-                                 (firstInParagraph || lineBreak),
-                                 isLastInParagraph(it, last),
-                                 isTextOrOnlineBefore(it,
-                                                      item->items().begin(),
-                                                      last,
-                                                      pdfData,
-                                                      offset,
-                                                      lineHeight,
-                                                      scaleImagesToLineHeight),
-                                 isTextOrOnlineAfter(it, last, pdfData, offset, lineHeight, scaleImagesToLineHeight),
-                                 cw,
-                                 1.0,
-                                 previous,
-                                 (it != item->items().begin() ? getPrevItem(std::prev(it), item->items().begin(), last)
-                                                              : nullptr),
-                                 (pdfData.m_tableDrawing ? ImageAlignment::Unknown : m_opts.m_imageAlignment),
-                                 scaleImagesToLineHeight)
-                           .second;
+            drawImage(pdfData,
+                      static_cast<MD::Image<MD::QStringTrait> *>(it->get()),
+                      doc,
+                      newLine,
+                      offset,
+                      lineHeight,
+                      spaceWidth,
+                      (firstInParagraph || lineBreak),
+                      isLastInParagraph(it, last),
+                      isTextOrOnlineBefore(it,
+                                           item->items().begin(),
+                                           last,
+                                           pdfData,
+                                           offset,
+                                           lineHeight,
+                                           scaleImagesToLineHeight),
+                      isTextOrOnlineAfter(it, last, pdfData, offset, lineHeight, scaleImagesToLineHeight),
+                      cw,
+                      1.0,
+                      previous,
+                      (it != item->items().begin() ? getPrevItem(std::prev(it), item->items().begin(), last) : nullptr),
+                      (pdfData.m_tableDrawing ? ImageAlignment::Unknown : m_opts.m_imageAlignment),
+                      scaleImagesToLineHeight);
             lineBreak = false;
             firstInParagraph = false;
             setRTLFlagToFalseIfCheck(rtl);
             break;
 
         case MD::ItemType::Math:
-            previous = drawMathExpr(pdfData,
-                                    static_cast<MD::Math<MD::QStringTrait> *>(it->get()),
-                                    doc,
-                                    (it != item->items().begin() ? std::prev(it)->get() : nullptr),
-                                    newLine,
-                                    offset,
-                                    isTextOrOnlineAfter(it, last, pdfData, offset, lineHeight, scaleImagesToLineHeight),
-                                    (firstInParagraph || lineBreak),
-                                    cw,
-                                    scale,
-                                    previous)
-                           .second;
+            drawMathExpr(pdfData,
+                         static_cast<MD::Math<MD::QStringTrait> *>(it->get()),
+                         doc,
+                         (it != item->items().begin() ? std::prev(it)->get() : nullptr),
+                         newLine,
+                         offset,
+                         isTextOrOnlineAfter(it, last, pdfData, offset, lineHeight, scaleImagesToLineHeight),
+                         (firstInParagraph || lineBreak),
+                         cw,
+                         scale,
+                         previous);
             lineBreak = false;
             firstInParagraph = false;
             setRTLFlagToFalseIfCheck(rtl);
@@ -2637,22 +2604,21 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
             } else {
                 auto text = static_cast<MD::Text<MD::QStringTrait> *>(it->get());
 
-                previous = drawText(pdfData,
-                                    text,
-                                    doc,
-                                    newLine,
-                                    footnoteFont,
-                                    m_opts.m_textFontSize * scale,
-                                    s_footnoteScale,
-                                    (it + 1 != last ? (it + 1)->get() : nullptr),
-                                    nextFootnoteNum,
-                                    offset,
-                                    (firstInParagraph || lineBreak),
-                                    cw,
-                                    scale,
-                                    previous,
-                                    color)
-                               .second;
+                drawText(pdfData,
+                         text,
+                         doc,
+                         newLine,
+                         footnoteFont,
+                         m_opts.m_textFontSize * scale,
+                         s_footnoteScale,
+                         (it + 1 != last ? (it + 1)->get() : nullptr),
+                         nextFootnoteNum,
+                         offset,
+                         (firstInParagraph || lineBreak),
+                         cw,
+                         scale,
+                         previous,
+                         color);
             }
 
             lineBreak = false;
@@ -2767,40 +2733,36 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
         case MD::ItemType::Text: {
             auto text = static_cast<MD::Text<MD::QStringTrait> *>(it->get());
 
-            const auto r = drawText(pdfData,
-                                    text,
-                                    doc,
-                                    newLine,
-                                    nullptr,
-                                    0.0,
-                                    1.0,
-                                    nullptr,
-                                    nextFootnoteNum,
-                                    offset,
-                                    (firstInParagraph || lineBreak),
-                                    cw,
-                                    scale,
-                                    previous,
-                                    color,
-                                    rtl);
-            rects.append(r.first);
-            previous = r.second;
+            rects.append(drawText(pdfData,
+                                  text,
+                                  doc,
+                                  newLine,
+                                  nullptr,
+                                  0.0,
+                                  1.0,
+                                  nullptr,
+                                  nextFootnoteNum,
+                                  offset,
+                                  (firstInParagraph || lineBreak),
+                                  cw,
+                                  scale,
+                                  previous,
+                                  color,
+                                  rtl));
             lineBreak = false;
             firstInParagraph = false;
         } break;
 
         case MD::ItemType::Code: {
-            const auto r = drawInlinedCode(pdfData,
-                                           static_cast<MD::Code<MD::QStringTrait> *>(it->get()),
-                                           doc,
-                                           newLine,
-                                           offset,
-                                           (firstInParagraph || lineBreak),
-                                           cw,
-                                           scale,
-                                           previous);
-            rects.append(r.first);
-            previous = r.second;
+            rects.append(drawInlinedCode(pdfData,
+                                         static_cast<MD::Code<MD::QStringTrait> *>(it->get()),
+                                         doc,
+                                         newLine,
+                                         offset,
+                                         (firstInParagraph || lineBreak),
+                                         cw,
+                                         scale,
+                                         previous));
             lineBreak = false;
             firstInParagraph = false;
             setRTLFlagToFalseIfCheck(rtl);
@@ -2816,36 +2778,34 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
                 pdfData.m_layout.addY(cw.height(), -1.0);
             }
 
-            const auto r = drawLink(pdfData,
-                                    static_cast<MD::Link<MD::QStringTrait> *>(it->get()),
-                                    doc,
-                                    newLine,
-                                    footnoteFont,
-                                    m_opts.m_textFontSize * scale,
-                                    s_footnoteScale,
-                                    (it != item->items().begin() ? std::prev(it)->get() : nullptr),
-                                    (std::next(it) != last ? std::next(it)->get() : nullptr),
-                                    nextFootnoteNum,
-                                    offset,
-                                    lineHeight,
-                                    spaceWidth,
-                                    (firstInParagraph || lineBreak),
-                                    isLastInParagraph(it, last),
-                                    isTextOrOnlineBefore(it,
-                                                         item->items().begin(),
-                                                         last,
-                                                         pdfData,
-                                                         offset,
-                                                         lineHeight,
-                                                         scaleImagesToLineHeight),
-                                    isTextOrOnlineAfter(it, last, pdfData, offset, lineHeight, scaleImagesToLineHeight),
-                                    cw,
-                                    scale,
-                                    scaleImagesToLineHeight,
-                                    previous,
-                                    rtl);
-            rects.append(r.first);
-            previous = r.second;
+            rects.append(drawLink(pdfData,
+                                  static_cast<MD::Link<MD::QStringTrait> *>(it->get()),
+                                  doc,
+                                  newLine,
+                                  footnoteFont,
+                                  m_opts.m_textFontSize * scale,
+                                  s_footnoteScale,
+                                  (it != item->items().begin() ? std::prev(it)->get() : nullptr),
+                                  (std::next(it) != last ? std::next(it)->get() : nullptr),
+                                  nextFootnoteNum,
+                                  offset,
+                                  lineHeight,
+                                  spaceWidth,
+                                  (firstInParagraph || lineBreak),
+                                  isLastInParagraph(it, last),
+                                  isTextOrOnlineBefore(it,
+                                                       item->items().begin(),
+                                                       last,
+                                                       pdfData,
+                                                       offset,
+                                                       lineHeight,
+                                                       scaleImagesToLineHeight),
+                                  isTextOrOnlineAfter(it, last, pdfData, offset, lineHeight, scaleImagesToLineHeight),
+                                  cw,
+                                  scale,
+                                  scaleImagesToLineHeight,
+                                  previous,
+                                  rtl));
             lineBreak = false;
             firstInParagraph = false;
         } break;
@@ -2855,7 +2815,7 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
                 pdfData.m_layout.addY(cw.height(), -1.0);
             }
 
-            const auto r = drawImage(
+            rects.append(drawImage(
                 pdfData,
                 static_cast<MD::Image<MD::QStringTrait> *>(it->get()),
                 doc,
@@ -2878,9 +2838,7 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
                 previous,
                 (it != item->items().begin() ? getPrevItem(std::prev(it), item->items().begin(), last) : nullptr),
                 (pdfData.m_tableDrawing ? ImageAlignment::Unknown : m_opts.m_imageAlignment),
-                scaleImagesToLineHeight);
-            rects.append(r.first);
-            previous = r.second;
+                scaleImagesToLineHeight));
             lineBreak = false;
             firstInParagraph = false;
             setRTLFlagToFalseIfCheck(rtl);
@@ -2888,7 +2846,7 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
 
         case MD::ItemType::Math: {
             pdfData.setColor(color);
-            const auto r =
+            rects.append(
                 drawMathExpr(pdfData,
                              static_cast<MD::Math<MD::QStringTrait> *>(it->get()),
                              doc,
@@ -2899,9 +2857,7 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
                              (firstInParagraph || lineBreak),
                              cw,
                              scale,
-                             previous);
-            rects.append(r.first);
-            previous = r.second;
+                             previous));
             pdfData.restoreColor();
             lineBreak = false;
             firstInParagraph = false;
@@ -2961,23 +2917,21 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
             } else {
                 auto text = static_cast<MD::Text<MD::QStringTrait> *>(it->get());
 
-                const auto r = drawText(pdfData,
-                                        text,
-                                        doc,
-                                        newLine,
-                                        nullptr,
-                                        0.0,
-                                        1.0,
-                                        nullptr,
-                                        nextFootnoteNum,
-                                        offset,
-                                        (firstInParagraph || lineBreak),
-                                        cw,
-                                        scale,
-                                        previous,
-                                        color);
-                rects.append(r.first);
-                previous = r.second;
+                rects.append(drawText(pdfData,
+                                      text,
+                                      doc,
+                                      newLine,
+                                      nullptr,
+                                      0.0,
+                                      1.0,
+                                      nullptr,
+                                      nextFootnoteNum,
+                                      offset,
+                                      (firstInParagraph || lineBreak),
+                                      cw,
+                                      scale,
+                                      previous,
+                                      color));
             }
 
             firstInParagraph = false;
@@ -2998,9 +2952,8 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
     return {where, {firstLinePageIdx, firstLineY, firstLineHeight}};
 }
 
-QPair<QPair<QRectF,
-            unsigned int>,
-      PdfRenderer::PrevBaselineStateStack>
+QPair<QRectF,
+      unsigned int>
 PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
                           MD::Math<MD::QStringTrait> *item,
                           std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
@@ -3011,14 +2964,12 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
                           bool firstInParagraph,
                           CustomWidth &cw,
                           double scale,
-                          const PrevBaselineStateStack &previousBaseline)
+                          PrevBaselineStateStack &previousBaseline)
 {
     pdfData.m_startLine = item->startLine();
     pdfData.m_startPos = item->startColumn();
     pdfData.m_endLine = item->endLine();
     pdfData.m_endPos = item->endColumn();
-
-    PrevBaselineStateStack current = previousBaseline;
 
     float fontSize = (float)m_opts.m_textFontSize;
 
@@ -3030,32 +2981,40 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
     auto *font = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, pdfData.m_doc, scale, pdfData);
     const auto lineHeight = pdfData.lineSpacing(font, m_opts.m_textFontSize, scale);
 
-    auto latexRender = std::unique_ptr<tex::TeXRender>(
-        tex::LaTeX::parse(item->expr().toStdWString(),
-                          0,
-                          fontSize * (item->isInline() ? current.m_stack.back().m_scale : 1.0),
-                          fontSize / 3.f * (item->isInline() ? current.m_stack.back().m_scale : 1.0),
-                          tex::black));
+    const auto latexRender = [&fontSize, &item](double inlineScale) -> std::unique_ptr<tex::TeXRender> {
+        return std::unique_ptr<tex::TeXRender>(
+            tex::LaTeX::parse(item->expr().toStdWString(),
+                              0,
+                              fontSize * (item->isInline() ? inlineScale : 1.0),
+                              fontSize / 3.f * (item->isInline() ? inlineScale : 1.0),
+                              tex::black));
+    };
 
     QSizeF pxSize = {}, size = {};
     double descent = 0.0;
+    auto render = latexRender(1.0);
 
-    {
+    const auto calculateSize = [&]() {
         PoDoFoPaintDevice pd(pdfData);
         QPainter p(&pd);
         tex::Graphics2D_qt g2(&p);
-        latexRender->draw(g2, 0, 0);
-        pxSize = {(qreal)latexRender->getWidth(), (qreal)latexRender->getHeight()};
+        render->draw(g2, 0, 0);
+        pxSize = {(qreal)render->getWidth(), (qreal)render->getHeight()};
         size = {pxSize.width() / (qreal)pd.physicalDpiX() * 72.0, pxSize.height() / (qreal)pd.physicalDpiY() * 72.0};
-        descent = (item->isInline() ? ((1.0 - latexRender->getBaseline()) * size.height())
+        descent = (item->isInline() ? ((1.0 - render->getBaseline()) * size.height())
                                     : (-pdfData.fontDescent(font, m_opts.m_textFontSize, scale)));
-    }
+    };
+
+    calculateSize();
 
     const AutoSubSupScriptInit subSupInit(this,
                                           static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item),
-                                          current,
+                                          previousBaseline,
                                           size.height(),
                                           descent);
+
+    render = latexRender(previousBaseline.currentScale());
+    calculateSize();
 
     newLine = false;
 
@@ -3137,7 +3096,7 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
 
             // y - is a top of a line.
             tex::Graphics2D_qt g2(&p);
-            latexRender->draw(
+            render->draw(
                 g2,
                 pdfData.m_layout.startX(size.width() * imgScale) / 72.0 * pd.physicalDpiX(),
                 (pdfData.m_layout.pageHeight() - pdfData.m_layout.y() + descent * imgScale) / 72.0 * pd.physicalDpiY());
@@ -3155,7 +3114,7 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
             if (isNextText)
                 moveToNewLine(pdfData, offset, lineHeight + cw.height(), 1.0, cw.height());
 
-            return {{r, idx}, current};
+            return {r, idx};
         } else {
             calculatedHeight += size.height() * imgScale + descent * imgScale;
 
@@ -3174,7 +3133,7 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
             - pdfData.m_layout.margins().m_right
             - offset;
 
-        if (size.width() * current.currentScale() - pdfData.m_layout.availableWidth() > 0.01) {
+        if (size.width() * previousBaseline.currentScale() - pdfData.m_layout.availableWidth() > 0.01) {
             if (draw) {
                 cw.moveToNextLine();
 
@@ -3187,19 +3146,21 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
             auto addSpace = [&]() {
                 const auto spaceScale = draw ? (cw.scale() / 100.0) : 1.0;
                 const auto spaceWidth =
-                    pdfData.stringWidth(font, m_opts.m_textFontSize * current.currentScale(), scale, " ") * spaceScale;
+                    pdfData.stringWidth(font, m_opts.m_textFontSize * previousBaseline.currentScale(), scale, " ")
+                    * spaceScale;
 
                 if (pdfData.m_layout.isFit(spaceWidth)) {
                     if (draw) {
-                        pdfData.drawText(pdfData.m_layout.startX(spaceWidth),
-                                         pdfData.m_layout.y() + cw.descent() + current.m_stack.back().m_baselineDelta,
-                                         " ",
-                                         font,
-                                         m_opts.m_textFontSize,
-                                         spaceScale,
-                                         false);
+                        pdfData.drawText(
+                            pdfData.m_layout.startX(spaceWidth),
+                            pdfData.m_layout.y() + cw.descent() + previousBaseline.m_stack.back().m_baselineDelta,
+                            " ",
+                            font,
+                            m_opts.m_textFontSize,
+                            spaceScale,
+                            false);
                     } else {
-                        const auto lineInfo = current.fullLineHeight();
+                        const auto lineInfo = previousBaseline.fullLineHeight();
 
                         cw.append({spaceWidth,
                                    lineHeight,
@@ -3275,42 +3236,44 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
             const auto height = size.height() * imgScale;
 
             tex::Graphics2D_qt g2(&p);
-            latexRender->draw(g2,
-                              pdfData.m_layout.startX(size.width() * imgScale) / 72.0 * pd.physicalDpiX(),
-                              (pdfData.m_layout.pageHeight()
-                               - pdfData.m_layout.y()
-                               - cw.descent()
-                               - (height - descent)
-                               + current.m_stack.back().m_baselineDelta)
-                                  / 72.0
-                                  * pd.physicalDpiY());
+            render->draw(g2,
+                         pdfData.m_layout.startX(size.width() * imgScale) / 72.0 * pd.physicalDpiX(),
+                         (pdfData.m_layout.pageHeight()
+                          - pdfData.m_layout.y()
+                          - cw.descent()
+                          - (height - descent) * imgScale
+                          - previousBaseline.m_stack.back().m_baselineDelta * imgScale)
+                             / 72.0
+                             * pd.physicalDpiY());
 
-            const QRectF r = {
-                pdfData.m_layout.startX(size.width() * imgScale),
-                pdfData.m_layout.y() + cw.descent() + (height - descent) - current.m_stack.back().m_baselineDelta,
-                size.width() * imgScale,
-                height};
+            const QRectF r = {pdfData.m_layout.startX(size.width() * imgScale),
+                              pdfData.m_layout.y()
+                                  + cw.descent()
+                                  + (height - descent) * imgScale
+                                  + previousBaseline.m_stack.back().m_baselineDelta * imgScale,
+                              size.width() * imgScale,
+                              height};
 
             pdfData.m_layout.addX(size.width() * imgScale);
             const auto idx = pdfData.m_currentPainterIdx;
 
-            return {{r, idx}, current};
+            return {r, idx};
         } else {
             pdfData.m_layout.addX(size.width() * imgScale);
 
-            const auto lineInfo = current.fullLineHeight();
+            const auto lineInfo = previousBaseline.fullLineHeight();
 
             cw.append({size.width() * imgScale,
-                       size.height() * imgScale + current.m_stack.back().m_baselineDelta,
+                       subSupInit.wasAdded() ? lineInfo.first * imgScale : size.height() * imgScale,
                        false,
                        false,
                        isNextText,
                        "",
-                       descent * imgScale + lineInfo.second});
+                       (descent + (subSupInit.wasAdded() ? lineInfo.second : 0.0)) * imgScale});
         }
     }
 
-    return {{}, current};
+    return {};
 }
 
 void PdfRenderer::reserveSpaceForFootnote(PdfAuxData &pdfData,
@@ -3686,9 +3649,8 @@ ParagraphAlignment imageToParagraphAlignment(ImageAlignment alignment)
     }
 }
 
-QPair<QPair<QRectF,
-            unsigned int>,
-      PdfRenderer::PrevBaselineStateStack>
+QPair<QRectF,
+      unsigned int>
 PdfRenderer::drawImage(PdfAuxData &pdfData,
                        MD::Image<MD::QStringTrait> *item,
                        std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
@@ -3702,7 +3664,7 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
                        bool isNextText,
                        CustomWidth &cw,
                        double scale,
-                       const PrevBaselineStateStack &previousBaseline,
+                       PrevBaselineStateStack &previousBaseline,
                        MD::Item<MD::QStringTrait> *prevItem,
                        ImageAlignment alignment,
                        bool scaleImagesToLineHeight)
@@ -3714,8 +3676,6 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
     pdfData.m_startPos = item->startColumn();
     pdfData.m_endLine = item->endLine();
     pdfData.m_endPos = item->endColumn();
-
-    PrevBaselineStateStack current = previousBaseline;
 
     if (!cw.isDrawing())
         draw = false;
@@ -3809,7 +3769,7 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
 
         const AutoSubSupScriptInit subSupInit(this,
                                               static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item),
-                                              current,
+                                              previousBaseline,
                                               iHeight * imgScale,
                                               0.0);
 
@@ -3826,9 +3786,9 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
                 pdfData.m_layout.addX(spaceWidth * cw.scale() / 100.0);
             }
 
-            dy = (onLine
-                      ? (cw.height() - cw.descent() - iHeight * imgScale) / 2.0 + current.m_stack.back().m_baselineDelta
-                      : 0.0);
+            dy = (onLine ? (cw.height() - cw.descent() - iHeight * imgScale) / 2.0
+                          + previousBaseline.m_stack.back().m_baselineDelta
+                         : 0.0);
 
             alignLine(pdfData, cw);
 
@@ -3872,7 +3832,7 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
 
         if (!draw) {
             cw.append({iWidth * imgScale,
-                       std::max(height, lineHeight) + current.m_stack.back().m_baselineDelta,
+                       std::max(height, lineHeight) + previousBaseline.m_stack.back().m_baselineDelta,
                        false,
                        !onLine,
                        false,
@@ -3881,7 +3841,7 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
                        (!onLine ? imageToParagraphAlignment(alignment) : ParagraphAlignment::Unknown)});
         }
 
-        return {{r, pdfData.m_currentPainterIdx}, current};
+        return {r, pdfData.m_currentPainterIdx};
     } else {
         throw PdfRendererError(tr("Unable to load image: %1.\n\n"
                                   "If this image is in Web, please be sure you are connected to the Internet. I'm "
