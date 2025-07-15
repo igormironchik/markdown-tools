@@ -1520,6 +1520,12 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
                             scale,
                             pdfData);
 
+    const AutoSubSupScriptInit subSupInit(this,
+                                          static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item),
+                                          previousBaseline,
+                                          pdfData.lineSpacing(font, m_opts.m_textFontSize, scale),
+                                          -pdfData.fontDescent(font, m_opts.m_textFontSize, scale));
+
     if (!item->p()->isEmpty()) {
         for (auto it = item->p()->items().cbegin(), last = item->p()->items().cend(); it != last; ++it) {
             switch ((*it)->type()) {
