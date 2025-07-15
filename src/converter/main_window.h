@@ -7,6 +7,9 @@
 #include "ui_main_window.h"
 #include "syntax.h"
 
+// shared include.
+#include "plugins_page.h"
+
 // Qt include.
 #include <QMainWindow>
 #include <QScopedPointer>
@@ -42,6 +45,14 @@ public:
     void saveCfg(QSettings &cfg) const;
     //! Apply configuration.
     void applyCfg(QSettings &cfg);
+    //! \return Plugins configuration.
+    const MdShared::PluginsCfg &pluginsCfg() const;
+    //! Set plugins configuration.
+    void setPluginsCfg(const MdShared::PluginsCfg &cfg);
+    //! \return Mark color.
+    const QColor &markColor() const;
+    //! Set mark color.
+    void setMarkColor(const QColor &c);
 
 private slots:
     void changeLinkColor();
@@ -67,6 +78,8 @@ private:
     bool m_codeFontOk;
     std::shared_ptr<Syntax> m_syntax;
     bool m_alreadyShown = false;
+    MdShared::PluginsCfg m_pluginsCfg;
+    QColor m_markColor;
 
     Q_DISABLE_COPY(MainWidget)
 }; // class MainWindow
@@ -100,6 +113,8 @@ private slots:
     void licenses();
     //! Quit.
     void quit();
+    //! Settings.
+    void settings();
 
 private:
     QString configFileName(bool inPlace) const;

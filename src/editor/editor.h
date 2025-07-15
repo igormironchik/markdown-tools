@@ -18,6 +18,9 @@
 #include <md4qt/parser.h>
 #include <md4qt/html.h>
 
+// shared include.
+#include "plugins_page.h"
+
 namespace MdEditor
 {
 
@@ -62,7 +65,7 @@ signals:
     void misspelled(bool found);
     //! Request for parsing of Markdon on thread.
     void doParsing(const QString &md, const QString &path, const QString &fileName, unsigned long long int counter,
-                   SyntaxVisitor syntax);
+                   SyntaxVisitor syntax, const MdShared::PluginsCfg &pluginsCfg);
 
 public:
     explicit Editor(QWidget *parent);
@@ -99,6 +102,8 @@ public:
     const MD::details::IdsMap<MD::QStringTrait> &idsMap() const;
     //! \return Is document ready?
     bool isReady() const;
+    //! Set plugins configuration.
+    void setPluginsCfg(const MdShared::PluginsCfg &cfg);
 
 public slots:
     //! Enable/disable showing of unprintable characters.
@@ -125,6 +130,8 @@ public slots:
     void onNextMisspelled();
     //! Set working directory.
     void onWorkingDirectoryChange(const QString &wd, bool useWorkingDir);
+    //! Update editor.
+    void doUpdate();
 
 private slots:
     //! Calculate and change line number area width.

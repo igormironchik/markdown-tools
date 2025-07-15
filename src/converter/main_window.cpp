@@ -13,6 +13,7 @@
 #include "progress.h"
 #include "renderer.h"
 #include "version.h"
+#include "settings.h"
 
 // Qt include.
 #include <QApplication>
@@ -36,6 +37,7 @@
 
 // shared include.
 #include "license_dialog.h"
+#include "utils.h"
 
 namespace MdPdf
 {
@@ -216,6 +218,7 @@ void MainWidget::saveCfg(QSettings &cfg) const
     cfg.endGroup();
 
     cfg.setValue(QStringLiteral("linkColor"), m_ui->m_linkColor->color());
+    cfg.setValue(QStringLiteral("markColor"), m_markColor);
     cfg.setValue(QStringLiteral("borderColor"), m_ui->m_borderColor->color());
     cfg.setValue(QStringLiteral("codeTheme"), m_ui->m_codeTheme->currentText());
     cfg.setValue(QStringLiteral("dpi"), m_ui->m_dpi->value());
@@ -236,6 +239,25 @@ void MainWidget::saveCfg(QSettings &cfg) const
     cfg.setValue(QStringLiteral("bottom"), m_ui->m_bottom->value());
 
     cfg.endGroup();
+    cfg.endGroup();
+
+    cfg.beginGroup(QStringLiteral("plugins"));
+
+    cfg.beginGroup(QStringLiteral("superscript"));
+    cfg.setValue(QStringLiteral("delimiter"), m_pluginsCfg.m_sup.m_delimiter);
+    cfg.setValue(QStringLiteral("enabled"), m_pluginsCfg.m_sup.m_on);
+    cfg.endGroup();
+
+    cfg.beginGroup(QStringLiteral("subscript"));
+    cfg.setValue(QStringLiteral("delimiter"), m_pluginsCfg.m_sub.m_delimiter);
+    cfg.setValue(QStringLiteral("enabled"), m_pluginsCfg.m_sub.m_on);
+    cfg.endGroup();
+
+    cfg.beginGroup(QStringLiteral("mark"));
+    cfg.setValue(QStringLiteral("delimiter"), m_pluginsCfg.m_mark.m_delimiter);
+    cfg.setValue(QStringLiteral("enabled"), m_pluginsCfg.m_mark.m_on);
+    cfg.endGroup();
+
     cfg.endGroup();
 }
 
@@ -300,6 +322,11 @@ void MainWidget::applyCfg(QSettings &cfg)
         m_ui->m_borderColor->setColor(borderColor);
     }
 
+    const auto markColor = cfg.value(QStringLiteral("markColor"), QColor(255, 255, 0, 75)).value<QColor>();
+    if (markColor.isValid()) {
+        m_markColor = markColor;
+    }
+
     const auto codeTheme = cfg.value(QStringLiteral("codeTheme")).toString();
     if (!codeTheme.isEmpty()) {
         m_ui->m_codeTheme->setCurrentText(codeTheme);
@@ -348,6 +375,45 @@ void MainWidget::applyCfg(QSettings &cfg)
 
     cfg.endGroup();
     cfg.endGroup();
+
+    cfg.beginGroup(QStringLiteral("plugins"));
+
+    cfg.beginGroup(QStringLiteral("superscript"));
+    m_pluginsCfg.m_sup.m_delimiter = cfg.value(QStringLiteral("delimiter"), QChar()).toChar();
+    m_pluginsCfg.m_sup.m_on = cfg.value(QStringLiteral("enabled"), false).toBool();
+    cfg.endGroup();
+
+    cfg.beginGroup(QStringLiteral("subscript"));
+    m_pluginsCfg.m_sub.m_delimiter = cfg.value(QStringLiteral("delimiter"), QChar()).toChar();
+    m_pluginsCfg.m_sub.m_on = cfg.value(QStringLiteral("enabled"), false).toBool();
+    cfg.endGroup();
+
+    cfg.beginGroup(QStringLiteral("mark"));
+    m_pluginsCfg.m_mark.m_delimiter = cfg.value(QStringLiteral("delimiter"), QChar()).toChar();
+    m_pluginsCfg.m_mark.m_on = cfg.value(QStringLiteral("enabled"), false).toBool();
+    cfg.endGroup();
+
+    cfg.endGroup();
+}
+
+const MdShared::PluginsCfg & MainWidget::pluginsCfg() const
+{
+    return m_pluginsCfg;
+}
+
+void MainWidget::setPluginsCfg(const MdShared::PluginsCfg &cfg)
+{
+    m_pluginsCfg = cfg;
+}
+
+const QColor &MainWidget::markColor() const
+{
+    return m_markColor;
+}
+
+void MainWidget::setMarkColor(const QColor &c)
+{
+    m_markColor = c;
 }
 
 void MainWidget::setMarkdownFile(const QString &fileName)
@@ -409,14 +475,21 @@ void MainWidget::process()
         }
 
         MD::Parser<MD::QStringTrait> parser;
+        setPlugins(parser, m_pluginsCfg);
 
         std::shared_ptr<MD::Document<MD::QStringTrait>> doc;
 
         if (m_ui->m_workingDirBox->isChecked()) {
-            doc = parser.parse(m_ui->m_fileName->text(), m_ui->m_workingDirectory->currentPath(),
-                               m_ui->m_recursive->isChecked());
+            doc = parser.parse(m_ui->m_fileName->text(),
+                               m_ui->m_workingDirectory->currentPath(),
+                               m_ui->m_recursive->isChecked(),
+                               QStringList() << QStringLiteral("md") << QStringLiteral("markdown"),
+                               false);
         } else {
-            doc = parser.parse(m_ui->m_fileName->text(), m_ui->m_recursive->isChecked());
+            doc = parser.parse(m_ui->m_fileName->text(),
+                               m_ui->m_recursive->isChecked(),
+                               QStringList() << QStringLiteral("md") << QStringLiteral("markdown"),
+                               false);
         }
 
         if (!doc->isEmpty()) {
@@ -431,6 +504,7 @@ void MainWidget::process()
             opts.m_codeFontSize = m_ui->m_codeFontSize->value();
             opts.m_linkColor = m_ui->m_linkColor->color();
             opts.m_borderColor = m_ui->m_borderColor->color();
+            opts.m_markColor = m_markColor;
             opts.m_left = (m_ui->m_pt->isChecked() ? m_ui->m_left->value() : m_ui->m_left->value() / s_mmInPt);
             opts.m_right = (m_ui->m_pt->isChecked() ? m_ui->m_right->value() : m_ui->m_right->value() / s_mmInPt);
             opts.m_top = (m_ui->m_pt->isChecked() ? m_ui->m_top->value() : m_ui->m_top->value() / s_mmInPt);
@@ -556,6 +630,12 @@ MainWindow::MainWindow()
                     tr("&Quit"),
                     this,
                     &MainWindow::quit);
+
+    auto settings = menuBar()->addMenu(tr("&Settings"));
+    settings->addAction(QIcon::fromTheme(QStringLiteral("configure"), QIcon(QStringLiteral(":/img/configure.png"))),
+                        tr("Settings"),
+                        this,
+                        &MainWindow::settings);
 
     auto help = menuBar()->addMenu(tr("&Help"));
     help->addAction(QIcon(QStringLiteral(":/icon/icon_24x24.png")), tr("About"), this, &MainWindow::about);
@@ -1789,6 +1869,21 @@ void MainWindow::licenses()
 void MainWindow::quit()
 {
     QApplication::quit();
+}
+
+void MainWindow::settings()
+{
+    SettingsDlg dlg(ui->pluginsCfg(), ui->markColor(), this);
+
+    if (dlg.exec() == QDialog::Accepted) {
+        if (dlg.pluginsCfg() != ui->pluginsCfg()) {
+            ui->setPluginsCfg(dlg.pluginsCfg());
+        }
+
+        if (dlg.markColor() != ui->markColor()) {
+            ui->setMarkColor(dlg.markColor());
+        }
+    }
 }
 
 } /* namespace MdPdf */

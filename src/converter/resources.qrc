@@ -7,5 +7,6 @@
         <file>svg/note.svg</file>
         <file>svg/tip.svg</file>
         <file>svg/warning.svg</file>
+        <file>img/configure.png</file>
     </qresource>
 </RCC>

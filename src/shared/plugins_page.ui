@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PluginsPage</class>
+ <widget class="QWidget" name="PluginsPage">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>696</width>
+    <height>162</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Additional emphasises</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Delimiter for superscript emphasis</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="m_supChar">
+        <property name="toolTip">
+         <string>Only first character will be used.</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="MdShared::Switch" name="m_supSwitch" native="true">
+        <property name="toolTip">
+         <string>Turn on/off superscript emphasis plugin.</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Delimiter for subscript emphasis</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="m_subChar">
+        <property name="toolTip">
+         <string>Only first character will be used.</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="MdShared::Switch" name="m_subSwitch" native="true">
+        <property name="toolTip">
+         <string>Turn on/off subscript emphasis plugin.</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Delimiter for mark emphasis</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="m_markChar">
+        <property name="toolTip">
+         <string>Only first character will be used.</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="MdShared::Switch" name="m_markSwitch" native="true">
+        <property name="toolTip">
+         <string>Turn on/off mark emphasis plugin.</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MdShared::Switch</class>
+   <extends>QWidget</extends>
+   <header>switch.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

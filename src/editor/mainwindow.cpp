@@ -64,10 +64,13 @@
 #include <md4qt/algo.h>
 #include <md4qt/html.h>
 #include <md4qt/parser.h>
+#include <md4qt/plugins.h>
 
 // shared include.
 #include "license_dialog.h"
 #include "folder_chooser.h"
+#include "plugins_page.h"
+#include "utils.h"
 
 namespace MdEditor
 {
@@ -87,6 +90,74 @@ protected:
         tmp.replace(QLatin1Char('$'), QStringLiteral("<span>$</span>"));
 
         return tmp;
+    }
+
+    void openStyle(const typename MD::ItemWithOpts<MD::QStringTrait>::Styles &styles) override
+    {
+        for (const auto &s : styles) {
+            switch (s.style()) {
+            case MD::TextOption::BoldText:
+                m_html.push_back(QStringLiteral("<strong>"));
+                break;
+
+            case MD::TextOption::ItalicText:
+                m_html.push_back(QStringLiteral("<em>"));
+                break;
+
+            case MD::TextOption::StrikethroughText:
+                m_html.push_back(QStringLiteral("<del>"));
+                break;
+
+            case 8:
+                m_html.push_back(QStringLiteral("<sup>"));
+                break;
+
+            case 16:
+                m_html.push_back(QStringLiteral("<sub>"));
+                break;
+
+            case 32:
+                m_html.push_back(QStringLiteral("<mark>"));
+                break;
+
+            default:
+                break;
+            }
+        }
+    }
+
+    void closeStyle(const typename MD::ItemWithOpts<MD::QStringTrait>::Styles &styles) override
+    {
+        for (const auto &s : styles) {
+            switch (s.style()) {
+            case MD::TextOption::BoldText:
+                m_html.push_back(QStringLiteral("</strong>"));
+                break;
+
+            case MD::TextOption::ItalicText:
+                m_html.push_back(QStringLiteral("</em>"));
+                break;
+
+            case MD::TextOption::StrikethroughText:
+                m_html.push_back(QStringLiteral("</del>"));
+                break;
+
+            case 8:
+                m_html.push_back(QStringLiteral("</sup>"));
+                break;
+
+            case 16:
+                m_html.push_back(QStringLiteral("</sub>"));
+                break;
+
+            case 32:
+                m_html.push_back(QStringLiteral("</mark>"));
+                break;
+
+            default:
+                break;
+            }
+        }
     }
 };
 
@@ -893,6 +964,7 @@ struct MainWindowPrivate {
     QString m_htmlContent;
     QString m_tmpWorkingDir;
     Colors m_mdColors;
+    MdShared::PluginsCfg m_pluginsCfg;
     bool m_spellingEnabled = false;
     int m_tabWidth = -1;
     int m_minTabWidth = -1;
@@ -1421,6 +1493,8 @@ void MainWindow::onChooseFont()
     if (dlg.exec() == QDialog::Accepted) {
         m_d->m_editor->applyFont(dlg.currentFont());
 
+        m_d->m_editor->doUpdate();
+
         saveCfg();
     }
 }
@@ -1478,6 +1552,25 @@ void MainWindow::saveCfg() const
 
     Sonnet::Settings sonnet;
     sonnet.save();
+
+    s.beginGroup(QStringLiteral("plugins"));
+
+    s.beginGroup(QStringLiteral("superscript"));
+    s.setValue(QStringLiteral("delimiter"), m_d->m_pluginsCfg.m_sup.m_delimiter);
+    s.setValue(QStringLiteral("enabled"), m_d->m_pluginsCfg.m_sup.m_on);
+    s.endGroup();
+
+    s.beginGroup(QStringLiteral("subscript"));
+    s.setValue(QStringLiteral("delimiter"), m_d->m_pluginsCfg.m_sub.m_delimiter);
+    s.setValue(QStringLiteral("enabled"), m_d->m_pluginsCfg.m_sub.m_on);
+    s.endGroup();
+
+    s.beginGroup(QStringLiteral("mark"));
+    s.setValue(QStringLiteral("delimiter"), m_d->m_pluginsCfg.m_mark.m_delimiter);
+    s.setValue(QStringLiteral("enabled"), m_d->m_pluginsCfg.m_mark.m_on);
+    s.endGroup();
+
+    s.endGroup();
 }
 
 void MainWindow::readCfg()
@@ -1604,6 +1697,28 @@ void MainWindow::readCfg()
     s.endGroup();
 
     m_d->m_editor->enableSpellingCheck(m_d->m_spellingEnabled);
+
+    s.beginGroup(QStringLiteral("plugins"));
+
+    s.beginGroup(QStringLiteral("superscript"));
+    m_d->m_pluginsCfg.m_sup.m_delimiter = s.value(QStringLiteral("delimiter"), QChar()).toChar();
+    m_d->m_pluginsCfg.m_sup.m_on = s.value(QStringLiteral("enabled"), false).toBool();
+    s.endGroup();
+
+    s.beginGroup(QStringLiteral("subscript"));
+    m_d->m_pluginsCfg.m_sub.m_delimiter = s.value(QStringLiteral("delimiter"), QChar()).toChar();
+    m_d->m_pluginsCfg.m_sub.m_on = s.value(QStringLiteral("enabled"), false).toBool();
+    s.endGroup();
+
+    s.beginGroup(QStringLiteral("mark"));
+    m_d->m_pluginsCfg.m_mark.m_delimiter = s.value(QStringLiteral("delimiter"), QChar()).toChar();
+    m_d->m_pluginsCfg.m_mark.m_on = s.value(QStringLiteral("enabled"), false).toBool();
+    s.endGroup();
+
+    s.endGroup();
+
+    m_d->m_editor->setPluginsCfg(m_d->m_pluginsCfg);
+    m_d->m_editor->doUpdate();
 }
 
 void MainWindow::onLessFontSize()
@@ -1614,6 +1729,8 @@ void MainWindow::onLessFontSize()
         f.setPointSize(f.pointSize() - 1);
 
         m_d->m_editor->applyFont(f);
+
+        m_d->m_editor->doUpdate();
 
         saveCfg();
     }
@@ -1627,6 +1744,8 @@ void MainWindow::onMoreFontSize()
         f.setPointSize(f.pointSize() + 1);
 
         m_d->m_editor->applyFont(f);
+
+        m_d->m_editor->doUpdate();
 
         saveCfg();
     }
@@ -1871,13 +1990,16 @@ void MainWindow::readAllLinked()
 {
     if (m_d->m_loadAllFlag) {
         MD::Parser<MD::QStringTrait> parser;
+        setPlugins(parser, m_d->m_pluginsCfg);
 
         if (m_d->m_workingDirectoryWidget->isRelative()) {
             m_d->m_mdDoc = parser.parse(m_d->m_rootFilePath,
-                                        true, {QStringLiteral("md"), QStringLiteral("mkd"), QStringLiteral("markdown")});
+                                        true, {QStringLiteral("md"), QStringLiteral("mkd"), QStringLiteral("markdown")},
+                                        false);
         } else {
             m_d->m_mdDoc = parser.parse(m_d->m_rootFilePath, m_d->m_workingDirectoryWidget->workingDirectory(),
-                                        true, {QStringLiteral("md"), QStringLiteral("mkd"), QStringLiteral("markdown")});
+                                        true, {QStringLiteral("md"), QStringLiteral("mkd"), QStringLiteral("markdown")},
+                                        false);
         }
 
         MD::details::IdsMap<MD::QStringTrait> idsMap;
@@ -3010,6 +3132,8 @@ void MainWindow::onChangeColors()
 
             m_d->m_editor->applyColors(m_d->m_mdColors);
 
+            m_d->m_editor->doUpdate();
+
             saveCfg();
         }
     }
@@ -3075,7 +3199,7 @@ void MainWindow::onTabClicked(int index)
 void MainWindow::onSettings()
 {
     SettingsDlg dlg(m_d->m_mdColors, m_d->m_editor->font(), m_d->m_editor->margins(),
-                    m_d->m_spellingEnabled, this);
+                    m_d->m_spellingEnabled, m_d->m_pluginsCfg, this);
 
     if (m_d->m_settingsWindowWidth != -1 && m_d->m_settingsWindowHeight != -1) {
         dlg.resize(m_d->m_settingsWindowWidth, m_d->m_settingsWindowHeight);
@@ -3092,18 +3216,26 @@ void MainWindow::onSettings()
 
     if (dlg.exec() == QDialog::Accepted) {
 
+        bool updateEditor = false;
+
         if (dlg.colors() != m_d->m_mdColors) {
             m_d->m_mdColors = dlg.colors();
 
             m_d->m_editor->applyColors(m_d->m_mdColors);
+
+            updateEditor = true;
         }
 
         if (dlg.currentFont() != m_d->m_editor->font()) {
             m_d->m_editor->applyFont(dlg.currentFont());
+
+            updateEditor = true;
         }
 
         if (dlg.editorMargins() != m_d->m_editor->margins()) {
             m_d->m_editor->margins() = dlg.editorMargins();
+
+            updateEditor = true;
         }
 
         if (m_d->m_spellingEnabled != dlg.isSpellingEnabled()) {
@@ -3114,6 +3246,19 @@ void MainWindow::onSettings()
 
         if (spellingSettingsChanged) {
             m_d->m_editor->enableSpellingCheck(m_d->m_spellingEnabled);
+
+            updateEditor = true;
+        }
+
+        if (updateEditor) {
+            m_d->m_editor->doUpdate();
+        }
+
+        if (m_d->m_pluginsCfg != dlg.pluginsCfg()) {
+            m_d->m_pluginsCfg = dlg.pluginsCfg();
+            m_d->m_editor->setPluginsCfg(m_d->m_pluginsCfg);
+
+            onEditorReady();
         }
     }
 

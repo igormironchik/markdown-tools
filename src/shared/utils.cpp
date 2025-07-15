@@ -9,6 +9,9 @@
 // Qt include.
 #include <QtResource>
 
+// md4qt include.
+#include <md4qt/plugins.h>
+
 void initSharedResources()
 {
     Q_INIT_RESOURCE(qt);
@@ -106,4 +109,28 @@ void orderWords(QVector<QPair<QString, bool>> & text)
     }
 
     reverseItems(start, end, text);
+}
+
+void setPlugins(MD::Parser<MD::QStringTrait> &parser, const MdShared::PluginsCfg &cfg)
+{
+    if (cfg.m_sup.m_on) {
+        parser.addTextPlugin(MD::UserDefinedPluginID, MD::EmphasisPlugin::emphasisTemplatePlugin<MD::QStringTrait>,
+                             true, QStringList() << cfg.m_sup.m_delimiter << QStringLiteral("8"));
+    } else {
+        parser.removeTextPlugin(MD::UserDefinedPluginID);
+    }
+
+    if (cfg.m_sub.m_on) {
+        parser.addTextPlugin(MD::UserDefinedPluginID + 1, MD::EmphasisPlugin::emphasisTemplatePlugin<MD::QStringTrait>,
+                             true, QStringList() << cfg.m_sub.m_delimiter << QStringLiteral("16"));
+    } else {
+        parser.removeTextPlugin(MD::UserDefinedPluginID + 1);
+    }
+
+    if (cfg.m_mark.m_on) {
+        parser.addTextPlugin(MD::UserDefinedPluginID + 2, MD::EmphasisPlugin::emphasisTemplatePlugin<MD::QStringTrait>,
+                             true, QStringList() << cfg.m_mark.m_delimiter << QStringLiteral("32"));
+    } else {
+        parser.removeTextPlugin(MD::UserDefinedPluginID + 2);
+    }
 }
