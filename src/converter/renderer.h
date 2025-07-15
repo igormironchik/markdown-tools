@@ -153,6 +153,8 @@ struct RenderOpts {
     QColor m_linkColor;
     //! Borders color.
     QColor m_borderColor;
+    //! Mark color.
+    QColor m_markColor;
     //! Left margin.
     double m_left;
     //! Right margin.
@@ -961,6 +963,11 @@ private:
             return descent * nextScale();
         }
 
+        bool isMarkColorEnabled() const
+        {
+            return (m_mark > 0);
+        }
+
         // pair.first - line height, pair.second - lower part, below descent.
         std::pair<double,
                   double>
@@ -1095,7 +1102,7 @@ private:
                double offset,
                bool firstInParagraph,
                CustomWidth &cw,
-               const QColor &background,
+               QColor background,
                bool strikeout,
                long long int startLine,
                long long int startPos,

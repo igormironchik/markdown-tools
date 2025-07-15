@@ -218,6 +218,7 @@ void MainWidget::saveCfg(QSettings &cfg) const
     cfg.endGroup();
 
     cfg.setValue(QStringLiteral("linkColor"), m_ui->m_linkColor->color());
+    cfg.setValue(QStringLiteral("markColor"), m_markColor);
     cfg.setValue(QStringLiteral("borderColor"), m_ui->m_borderColor->color());
     cfg.setValue(QStringLiteral("codeTheme"), m_ui->m_codeTheme->currentText());
     cfg.setValue(QStringLiteral("dpi"), m_ui->m_dpi->value());
@@ -321,6 +322,11 @@ void MainWidget::applyCfg(QSettings &cfg)
         m_ui->m_borderColor->setColor(borderColor);
     }
 
+    const auto markColor = cfg.value(QStringLiteral("markColor"), QColor(255, 255, 0, 75)).value<QColor>();
+    if (markColor.isValid()) {
+        m_markColor = markColor;
+    }
+
     const auto codeTheme = cfg.value(QStringLiteral("codeTheme")).toString();
     if (!codeTheme.isEmpty()) {
         m_ui->m_codeTheme->setCurrentText(codeTheme);
@@ -398,6 +404,16 @@ const MdShared::PluginsCfg & MainWidget::pluginsCfg() const
 void MainWidget::setPluginsCfg(const MdShared::PluginsCfg &cfg)
 {
     m_pluginsCfg = cfg;
+}
+
+const QColor &MainWidget::markColor() const
+{
+    return m_markColor;
+}
+
+void MainWidget::setMarkColor(const QColor &c)
+{
+    m_markColor = c;
 }
 
 void MainWidget::setMarkdownFile(const QString &fileName)
@@ -488,6 +504,7 @@ void MainWidget::process()
             opts.m_codeFontSize = m_ui->m_codeFontSize->value();
             opts.m_linkColor = m_ui->m_linkColor->color();
             opts.m_borderColor = m_ui->m_borderColor->color();
+            opts.m_markColor = m_markColor;
             opts.m_left = (m_ui->m_pt->isChecked() ? m_ui->m_left->value() : m_ui->m_left->value() / s_mmInPt);
             opts.m_right = (m_ui->m_pt->isChecked() ? m_ui->m_right->value() : m_ui->m_right->value() / s_mmInPt);
             opts.m_top = (m_ui->m_pt->isChecked() ? m_ui->m_top->value() : m_ui->m_top->value() / s_mmInPt);
@@ -1856,11 +1873,15 @@ void MainWindow::quit()
 
 void MainWindow::settings()
 {
-    SettingsDlg dlg(ui->pluginsCfg(), this);
+    SettingsDlg dlg(ui->pluginsCfg(), ui->markColor(), this);
 
     if (dlg.exec() == QDialog::Accepted) {
         if (dlg.pluginsCfg() != ui->pluginsCfg()) {
             ui->setPluginsCfg(dlg.pluginsCfg());
+        }
+
+        if (dlg.markColor() != ui->markColor()) {
+            ui->setMarkColor(dlg.markColor());
         }
     }
 }

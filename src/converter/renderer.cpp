@@ -1794,7 +1794,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                         double offset,
                         bool firstInParagraph,
                         CustomWidth &cw,
-                        const QColor &background,
+                        QColor background,
                         bool strikeout,
                         long long int startLine,
                         long long int startPos,
@@ -1812,6 +1812,10 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
     footnoteFontSize *= currentBaseline.m_stack.back().m_scale;
     regularSpaceFontSize *= currentBaseline.m_stack.back().m_scale;
     lineHeight = currentBaseline.m_stack.back().m_lineHeight;
+
+    if (!background.isValid() && currentBaseline.isMarkColorEnabled()) {
+        background = m_opts.m_markColor;
+    }
 
     Q_UNUSED(doc)
     Q_UNUSED(m_opts)
@@ -3106,6 +3110,7 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
 
             // y - is a top of a line.
             tex::Graphics2D_qt g2(&p);
+
             render->draw(
                 g2,
                 pdfData.m_layout.startX(size.width() * imgScale) / 72.0 * pd.physicalDpiX(),

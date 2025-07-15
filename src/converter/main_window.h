@@ -49,6 +49,10 @@ public:
     const MdShared::PluginsCfg &pluginsCfg() const;
     //! Set plugins configuration.
     void setPluginsCfg(const MdShared::PluginsCfg &cfg);
+    //! \return Mark color.
+    const QColor &markColor() const;
+    //! Set mark color.
+    void setMarkColor(const QColor &c);
 
 private slots:
     void changeLinkColor();
@@ -75,6 +79,7 @@ private:
     std::shared_ptr<Syntax> m_syntax;
     bool m_alreadyShown = false;
     MdShared::PluginsCfg m_pluginsCfg;
+    QColor m_markColor;
 
     Q_DISABLE_COPY(MainWidget)
 }; // class MainWindow
