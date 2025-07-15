@@ -3765,13 +3765,14 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
 
         const double dpiScale = (double)pdfImg->GetWidth() / iWidth;
         double dy = 0.0;
-        imgScale *= scale;
 
         const AutoSubSupScriptInit subSupInit(this,
                                               static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item),
                                               previousBaseline,
                                               iHeight * imgScale,
                                               0.0);
+
+        imgScale *= scale * previousBaseline.currentScale();
 
         if (draw) {
             if (!onLine) {
@@ -3830,14 +3831,16 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
             moveToNewLine(pdfData, offset, lineHeight + cw.height(), 1.0, cw.height());
         }
 
+        const auto lineInfo = previousBaseline.fullLineHeight();
+
         if (!draw) {
             cw.append({iWidth * imgScale,
-                       std::max(height, lineHeight) + previousBaseline.m_stack.back().m_baselineDelta,
+                       (subSupInit.wasAdded() ? lineInfo.first : std::max(height, lineHeight)),
                        false,
                        !onLine,
                        false,
                        "",
-                       0.0,
+                       (subSupInit.wasAdded() ? lineInfo.second : 0.0),
                        (!onLine ? imageToParagraphAlignment(alignment) : ParagraphAlignment::Unknown)});
         }
 
