@@ -605,38 +605,30 @@ void PdfRenderer::renderImpl()
                             QColor c;
                             bool highlight = false;
                             QString url;
-                            QString text;
+                            QString text = t->text().trimmed().toLower();
 
-                            if (t->text() == QStringLiteral("[!NOTE]")) {
-                                if (isAloneMark(p)) {
+                            if (isAloneMark(p)) {
+                                if (text == QStringLiteral("[!note]")) {
                                     c = QColor::fromString(QStringLiteral("#1f6feb"));
                                     highlight = true;
                                     url = QStringLiteral("qrc:/svg/note.svg");
                                     text = QStringLiteral(" Note");
-                                }
-                            } else if (t->text() == QStringLiteral("[!TIP]")) {
-                                if (isAloneMark(p)) {
+                                } else if (text == QStringLiteral("[!tip]")) {
                                     c = QColor::fromString(QStringLiteral("#238636"));
                                     highlight = true;
                                     url = QStringLiteral("qrc:/svg/tip.svg");
                                     text = QStringLiteral(" Tip");
-                                }
-                            } else if (t->text() == QStringLiteral("[!WARNING]")) {
-                                if (isAloneMark(p)) {
+                                } else if (text == QStringLiteral("[!warning]")) {
                                     c = QColor::fromString(QStringLiteral("#9e6a03"));
                                     highlight = true;
                                     url = QStringLiteral("qrc:/svg/warning.svg");
                                     text = QStringLiteral(" Warning");
-                                }
-                            } else if (t->text() == QStringLiteral("[!CAUTION]")) {
-                                if (isAloneMark(p)) {
+                                } else if (text == QStringLiteral("[!caution]")) {
                                     c = QColor::fromString(QStringLiteral("#da3633"));
                                     highlight = true;
                                     url = QStringLiteral("qrc:/svg/caution.svg");
                                     text = QStringLiteral(" Caution");
-                                }
-                            } else if (t->text() == QStringLiteral("[!IMPORTANT]")) {
-                                if (isAloneMark(p)) {
+                                } else if (text == QStringLiteral("[!important]")) {
                                     c = QColor::fromString(QStringLiteral("#8250df"));
                                     highlight = true;
                                     url = QStringLiteral("qrc:/svg/important.svg");

@@ -2,11 +2,11 @@
 >
 > Text
 
-> [!TIP]
+> [!TiP]
 >
 > Text
 
-> [!WARNING]
+> [!warning]
 >
 > Text
 
