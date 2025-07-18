@@ -34,24 +34,19 @@ preview viewer, converter to `PDF`.
 
 # Cherries
 
-1. You can scroll Web preview to corresponding line from context menu in left side
-   panel with ToC or from context menu of line number area.
-2. You can scroll editor to corresponding heading by clicking item in left side panel
-   with ToC.
-3. You can load all linked Markdown files recursively and see a full Web preview of all
-   of them at place.
-4. You can choose working directory for the current Markdown document to process
-   images and recursive links from that directory.
-5. This editor and converter can handle RTL and LTR languages.
-6. You can setup and opt in additional style plugins for Markdown processing, like
-   subscript, superscript, marking of text. This feature implemented both in editor
-   and converter to PDF.
-7. You can generate GitHub flavoured ToC in Markdown in one click from menu.
-8. Spell checking can be configured to handle more than one language in the Markdown
-   document.
-9. You can find a text both in editor and in Web preview.
-10. You can use this editor like Web browser only for Markdown documents (preview mode).
-11. Maybe the author did forget something? Thanks for using. Enjoy.
+| Description | Screenshots |
+|---|---|
+| You can scroll Web preview to corresponding line from context menu in left side panel with ToC or from context menu of line number area | ![](./doc/scroll_from_toc.png) ![](./doc/scroll_from_line.png) |
+| You can scroll editor to corresponding heading by clicking item in left side panel with ToC | |
+| You can load all linked Markdown files recursively and see a full Web preview of all of them at place | ![](./doc/load_all.png) |
+| You can choose working directory for the current Markdown document to process images and recursive links from that directory | ![](./doc/wd.png) |
+| This editor and converter can handle RTL and LTR languages | |
+| You can setup and opt in additional style plugins for Markdown processing, like subscript, superscript, marking of text. This feature implemented both in editor and converter to PDF | ![](./doc/options.png) |
+| You can generate GitHub flavoured ToC in Markdown in one click from menu | ![](./doc/add_toc.png) |
+| Spell checking can be configured to handle more than one language in the Markdown document |  ![](./doc/spelling.png) |
+| You can find a text both in editor and in Web preview | ![](./doc/find_in_editor.png) ![](./doc/find_in_web.png) |
+| You can use this editor like Web browser only for Markdown documents (preview mode) | |
+| Maybe the author did forget something? Thanks for using. Enjoy | |
 
 # Installers
 
