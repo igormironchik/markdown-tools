@@ -1570,6 +1570,8 @@ void MainWindow::saveCfg() const
     s.setValue(QStringLiteral("enabled"), m_d->m_pluginsCfg.m_mark.m_on);
     s.endGroup();
 
+    s.setValue(QStringLiteral("yaml"), m_d->m_pluginsCfg.m_yamlEnabled);
+
     s.endGroup();
 }
 
@@ -1714,6 +1716,8 @@ void MainWindow::readCfg()
     m_d->m_pluginsCfg.m_mark.m_delimiter = s.value(QStringLiteral("delimiter"), QChar()).toChar();
     m_d->m_pluginsCfg.m_mark.m_on = s.value(QStringLiteral("enabled"), false).toBool();
     s.endGroup();
+
+    m_d->m_pluginsCfg.m_yamlEnabled = s.value(QStringLiteral("yaml"), false).toBool();
 
     s.endGroup();
 

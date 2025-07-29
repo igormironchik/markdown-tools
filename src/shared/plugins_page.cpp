@@ -35,6 +35,8 @@ public:
                          &PluginsPage::onButtonStateChanged);
         QObject::connect(m_ui.m_markSwitch, &MdShared::Switch::stateChanged, q,
                          &PluginsPage::onButtonStateChanged);
+        QObject::connect(m_ui.m_yamlSwitch, &MdShared::Switch::stateChanged, q,
+                         &PluginsPage::onButtonStateChanged);
         QObject::connect(m_ui.m_supChar, &QLineEdit::textChanged, q,
                          &PluginsPage::onSupDelimChanged);
         QObject::connect(m_ui.m_subChar, &QLineEdit::textChanged, q,
@@ -103,6 +105,8 @@ void PluginsPage::setCfg(const PluginsCfg &cfg)
 
     d->m_ui.m_markSwitch->setState(cfg.m_mark.m_on ? MdShared::Switch::AcceptedCheck : MdShared::Switch::AcceptedUncheck);
 
+    d->m_ui.m_yamlSwitch->setState(cfg.m_yamlEnabled ? MdShared::Switch::AcceptedCheck : MdShared::Switch::AcceptedUncheck);
+
     d->isOk(d->m_ui.m_supChar, d->m_ui.m_supSwitch);
     d->isOk(d->m_ui.m_subChar, d->m_ui.m_subSwitch);
     d->isOk(d->m_ui.m_markChar, d->m_ui.m_markSwitch);
@@ -145,6 +149,8 @@ PluginsCfg PluginsPage::cfg() const
         c.m_mark.m_delimiter = QChar();
         c.m_mark.m_on = false;
     }
+
+    c.m_yamlEnabled = d->m_ui.m_yamlSwitch->isChecked();
 
     return c;
 }

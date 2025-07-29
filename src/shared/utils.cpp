@@ -114,23 +114,32 @@ void orderWords(QVector<QPair<QString, bool>> & text)
 void setPlugins(MD::Parser<MD::QStringTrait> &parser, const MdShared::PluginsCfg &cfg)
 {
     if (cfg.m_sup.m_on) {
-        parser.addTextPlugin(MD::UserDefinedPluginID, MD::EmphasisPlugin::emphasisTemplatePlugin<MD::QStringTrait>,
+        parser.addTextPlugin(MD::TextPlugin::UserDefined, MD::EmphasisPlugin::emphasisTemplatePlugin<MD::QStringTrait>,
                              true, QStringList() << cfg.m_sup.m_delimiter << QStringLiteral("8"));
     } else {
-        parser.removeTextPlugin(MD::UserDefinedPluginID);
+        parser.removeTextPlugin(MD::TextPlugin::UserDefined);
     }
 
     if (cfg.m_sub.m_on) {
-        parser.addTextPlugin(MD::UserDefinedPluginID + 1, MD::EmphasisPlugin::emphasisTemplatePlugin<MD::QStringTrait>,
+        parser.addTextPlugin(static_cast<MD::TextPlugin>(static_cast<int>(MD::TextPlugin::UserDefined) + 1),
+                             MD::EmphasisPlugin::emphasisTemplatePlugin<MD::QStringTrait>,
                              true, QStringList() << cfg.m_sub.m_delimiter << QStringLiteral("16"));
     } else {
-        parser.removeTextPlugin(MD::UserDefinedPluginID + 1);
+        parser.removeTextPlugin(static_cast<MD::TextPlugin>(static_cast<int>(MD::TextPlugin::UserDefined) + 1));
     }
 
     if (cfg.m_mark.m_on) {
-        parser.addTextPlugin(MD::UserDefinedPluginID + 2, MD::EmphasisPlugin::emphasisTemplatePlugin<MD::QStringTrait>,
+        parser.addTextPlugin(static_cast<MD::TextPlugin>(static_cast<int>(MD::TextPlugin::UserDefined) + 2),
+                             MD::EmphasisPlugin::emphasisTemplatePlugin<MD::QStringTrait>,
                              true, QStringList() << cfg.m_mark.m_delimiter << QStringLiteral("32"));
     } else {
-        parser.removeTextPlugin(MD::UserDefinedPluginID + 2);
+        parser.removeTextPlugin(static_cast<MD::TextPlugin>(static_cast<int>(MD::TextPlugin::UserDefined) + 2));
+    }
+
+    if (cfg.m_yamlEnabled) {
+        parser.addBlockPlugin(std::make_shared<MD::YAMLBlockPlugin<MD::QStringTrait>>());
+    } else {
+        auto yaml = std::make_shared<MD::YAMLBlockPlugin<MD::QStringTrait>>();
+        parser.removeBlockPlugin(yaml->id());
     }
 }
