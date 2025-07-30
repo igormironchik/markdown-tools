@@ -77,6 +77,7 @@ public:
     void highlightNextMisspelled(QPlainTextEdit *editor);
 
 protected:
+    void onUserDefined(MD::Item<MD::QStringTrait> *i) override;
     void onReferenceLink(MD::Link<MD::QStringTrait> *l) override;
     void onText(MD::Text<MD::QStringTrait> *t) override;
     void onMath(MD::Math<MD::QStringTrait> *m) override;

@@ -24,6 +24,9 @@
 // C++ include.
 #include <algorithm>
 
+// md4qt include.
+#include <md4qt/plugins.h>
+
 namespace MdEditor
 {
 
@@ -335,6 +338,30 @@ void SyntaxVisitor::onItemWithOpts(MD::ItemWithOpts<MD::QStringTrait> *i)
             m_d->setFormat(special, s);
         }
     }
+}
+
+void SyntaxVisitor::onUserDefined(MD::Item<MD::QStringTrait> *i)
+{
+    if (m_d->m_colors.m_enabled) {
+        if (i->type() == static_cast<MD::ItemType>(static_cast<int>(MD::ItemType::UserDefined) + 1)) {
+            auto yaml = static_cast<MD::YAMLHeader<MD::QStringTrait> *>(i);
+
+            QTextCharFormat format;
+            format.setForeground(m_d->m_colors.m_codeColor);
+            format.setFont(m_d->styleFont(m_d->m_additionalStyle));
+
+            m_d->setFormat(format, yaml->startLine(), yaml->startColumn(), yaml->endLine(), yaml->endColumn());
+
+            QTextCharFormat special;
+            special.setForeground(m_d->m_colors.m_specialColor);
+            special.setFont(m_d->styleFont(m_d->m_additionalStyle));
+
+            m_d->setFormat(special, yaml->startDelim());
+            m_d->setFormat(special, yaml->endDelim());
+        }
+    }
+
+    MD::PosCache<MD::QStringTrait>::onUserDefined(i);
 }
 
 void SyntaxVisitor::onReferenceLink(MD::Link<MD::QStringTrait> *l)

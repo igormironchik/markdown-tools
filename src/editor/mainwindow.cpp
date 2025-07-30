@@ -1400,6 +1400,9 @@ inline QString itemType(MD::ItemType t, bool alone)
     case MD::ItemType::Math:
         return MainWindow::tr("LaTeX Math Expression");
 
+    case static_cast<MD::ItemType>(static_cast<int>(MD::ItemType::UserDefined) + 1):
+        return MainWindow::tr("YAML Header");
+
     default:
         return {};
     }
