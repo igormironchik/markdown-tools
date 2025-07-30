@@ -258,6 +258,8 @@ void MainWidget::saveCfg(QSettings &cfg) const
     cfg.setValue(QStringLiteral("enabled"), m_pluginsCfg.m_mark.m_on);
     cfg.endGroup();
 
+    cfg.setValue(QStringLiteral("yaml"), m_pluginsCfg.m_yamlEnabled);
+
     cfg.endGroup();
 }
 
@@ -392,6 +394,8 @@ void MainWidget::applyCfg(QSettings &cfg)
     m_pluginsCfg.m_mark.m_delimiter = cfg.value(QStringLiteral("delimiter"), QChar()).toChar();
     m_pluginsCfg.m_mark.m_on = cfg.value(QStringLiteral("enabled"), false).toBool();
     cfg.endGroup();
+
+    m_pluginsCfg.m_yamlEnabled = cfg.value(QStringLiteral("yaml"), false).toBool();
 
     cfg.endGroup();
 }
