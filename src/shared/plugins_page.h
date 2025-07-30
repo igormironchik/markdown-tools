@@ -42,11 +42,14 @@ struct PluginsCfg
     EmphasisPluginCfg m_sub;
     //! Configuration of mark plugin.
     EmphasisPluginCfg m_mark;
+    //! YAML header ON/OFF.
+    bool m_yamlEnabled = false;
 }; // struct PluginsCfg
 
 inline bool operator != (const PluginsCfg &c1, const PluginsCfg &c2)
 {
-    return (c1.m_sup != c2.m_sup || c1.m_sub != c2.m_sub || c1.m_mark != c2.m_mark);
+    return (c1.m_sup != c2.m_sup || c1.m_sub != c2.m_sub || c1.m_mark != c2.m_mark
+            || c1.m_yamlEnabled != c2.m_yamlEnabled);
 }
 
 //
