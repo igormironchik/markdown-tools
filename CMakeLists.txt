@@ -5,12 +5,14 @@ cmake_minimum_required(VERSION 3.19)
 
 project(markdown-tools)
 
-option(BUILD_MDPDF_TESTS "Build tests? Default ON." OFF)
+option(BUILD_MDPDF_TESTS "Build tests? Default OFF." OFF)
+option(BUILD_WITH_SYSTEM_LIBS "Build with system's libraries? Default OFF." OFF)
 
 set(ENV{PKG_CONFIG_PATH} "${CMAKE_CURRENT_BINARY_DIR}")
 
 list(PREPEND CMAKE_PREFIX_PATH ${CMAKE_CURRENT_BINARY_DIR})
 list(PREPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_BINARY_DIR})
+list(PREPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 set(KF_MIN_VERSION "6")
 set(KF_MAJOR_VERSION "6")
@@ -31,7 +33,7 @@ execute_process(COMMAND git rev-parse --short HEAD
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-set(MD_TOOLS_VERSION_NUMBER "0.15.0")
+set(MD_TOOLS_VERSION_NUMBER "0.15.1")
 set(HomeDir "@HomeDir@")
 string(TIMESTAMP MD_CURRENT_DATE "%Y-%m-%d")
 
@@ -78,8 +80,14 @@ if(NOT DEFINED _DISABLE_INSTALLATION)
 endif()
 
 set(_DISABLE_INSTALLATION TRUE)
-set(PODOFO_BUILD_LIB_ONLY ON CACHE INTERNAL "" FORCE)
-add_subdirectory(3rdparty/podofo)
+
+if(NOT BUILD_WITH_SYSTEM_LIBS)
+    set(PODOFO_BUILD_LIB_ONLY ON CACHE INTERNAL "" FORCE)
+    add_subdirectory(3rdparty/podofo)
+else()
+    find_package(podofo REQUIRED)
+    add_library(podofo_shared ALIAS podofo::podofo_shared)
+endif()
 
 add_subdirectory(3rdparty/MicroTeX)
 
@@ -90,42 +98,46 @@ include_directories(${md4qt_INCLUDE_DIRECTORIES})
 
 set(_DISABLE_INSTALLATION FALSE)
 
-install(TARGETS podofo_shared)
+if (NOT BUILD_WITH_SYSTEM_LIBS)
+    install(TARGETS podofo_shared)
 
-file(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg.version RESVG_VERSION)
-file(ARCHIVE_EXTRACT
-    INPUT ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg-${RESVG_VERSION}.tar.xz
-    DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty)
+    file(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg.version RESVG_VERSION)
+    file(ARCHIVE_EXTRACT
+        INPUT ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg-${RESVG_VERSION}.tar.xz
+        DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty)
 
-add_library(resvg UNKNOWN IMPORTED)
-add_custom_target(build_resvg ALL
-	COMMAND cargo build --release
-    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg-${RESVG_VERSION}/crates/c-api"
-    BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg-${RESVG_VERSION}/target/release/${CMAKE_STATIC_LIBRARY_PREFIX}resvg${CMAKE_SHARED_LIBRARY_SUFFIX}${CMAKE_STATIC_LIBRARY_SUFFIX})
+    add_library(resvg UNKNOWN IMPORTED)
+    add_custom_target(build_resvg ALL
+        COMMAND cargo build --release
+        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg-${RESVG_VERSION}/crates/c-api"
+        BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg-${RESVG_VERSION}/target/release/${CMAKE_STATIC_LIBRARY_PREFIX}resvg${CMAKE_SHARED_LIBRARY_SUFFIX}${CMAKE_STATIC_LIBRARY_SUFFIX})
 
-if(UNIX AND NOT APPLE)
-	add_custom_command(TARGET build_resvg POST_BUILD
-		COMMAND patchelf --set-soname libresvg.so libresvg.so
-        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg-${RESVG_VERSION}/target/release")
-endif()
+    if(UNIX AND NOT APPLE)
+        add_custom_command(TARGET build_resvg POST_BUILD
+            COMMAND patchelf --set-soname libresvg.so libresvg.so
+            WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg-${RESVG_VERSION}/target/release")
+    endif()
 
-if(WIN32)
-	set_target_properties(resvg PROPERTIES
-        IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg-${RESVG_VERSION}/target/release/${CMAKE_STATIC_LIBRARY_PREFIX}resvg${CMAKE_SHARED_LIBRARY_SUFFIX}${CMAKE_STATIC_LIBRARY_SUFFIX})
+    if(WIN32)
+        set_target_properties(resvg PROPERTIES
+            IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg-${RESVG_VERSION}/target/release/${CMAKE_STATIC_LIBRARY_PREFIX}resvg${CMAKE_SHARED_LIBRARY_SUFFIX}${CMAKE_STATIC_LIBRARY_SUFFIX})
 
-    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg-${RESVG_VERSION}/target/release/${CMAKE_STATIC_LIBRARY_PREFIX}resvg${CMAKE_SHARED_LIBRARY_SUFFIX}
-		TYPE BIN)
+        install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg-${RESVG_VERSION}/target/release/${CMAKE_STATIC_LIBRARY_PREFIX}resvg${CMAKE_SHARED_LIBRARY_SUFFIX}
+            TYPE BIN)
+    else()
+        set_target_properties(resvg PROPERTIES
+            IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg-${RESVG_VERSION}/target/release/${CMAKE_STATIC_LIBRARY_PREFIX}resvg${CMAKE_SHARED_LIBRARY_SUFFIX})
+
+        install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg-${RESVG_VERSION}/target/release/${CMAKE_STATIC_LIBRARY_PREFIX}resvg${CMAKE_SHARED_LIBRARY_SUFFIX}
+            TYPE LIB)
+    endif()
+
+    set_target_properties(resvg PROPERTIES
+        INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg-${RESVG_VERSION}/crates/c-api)
+    add_dependencies(resvg build_resvg)
 else()
-	set_target_properties(resvg PROPERTIES
-        IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg-${RESVG_VERSION}/target/release/${CMAKE_STATIC_LIBRARY_PREFIX}resvg${CMAKE_SHARED_LIBRARY_SUFFIX})
-
-    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg-${RESVG_VERSION}/target/release/${CMAKE_STATIC_LIBRARY_PREFIX}resvg${CMAKE_SHARED_LIBRARY_SUFFIX}
-		TYPE LIB)
+    find_package(resvg REQUIRED)
 endif()
-
-set_target_properties(resvg PROPERTIES
-    INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/resvg-${RESVG_VERSION}/crates/c-api)
-add_dependencies(resvg build_resvg)
 
 add_subdirectory(src)
 
