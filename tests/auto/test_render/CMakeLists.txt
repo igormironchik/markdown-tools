@@ -28,18 +28,21 @@ add_definitions(-DMD_PDF_TESTING -DBUILD_QT)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/../../..
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/podofo/src
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/MicroTeX/src
-	${CMAKE_CURRENT_BINARY_DIR}/../../../3rdparty/podofo/src/podofo
-    ${CMAKE_CURRENT_BINARY_DIR}/../../../3rdparty/podofo/src/podofo/podofo/auxiliary
 	${md4qt_INCLUDE_DIRECTORIES}
 	${CMAKE_CURRENT_BINARY_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/ksyntaxhighlighting/lib
-    ${CMAKE_CURRENT_BINARY_DIR}/../../../3rdparty/ksyntaxhighlighting/lib
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/shared)
 
-link_directories(${CMAKE_CURRENT_BINARY_DIR}/../../../3rdparty/podofo/src/podofo)
-link_directories(${CMAKE_CURRENT_BINARY_DIR}/../../../3rdparty/podofo/src)
+if(NOT BUILD_WITH_SYSTEM_LIBS)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/podofo/src
+        ${CMAKE_CURRENT_BINARY_DIR}/../../../3rdparty/podofo/src/podofo
+        ${CMAKE_CURRENT_BINARY_DIR}/../../../3rdparty/podofo/src/podofo/podofo/auxiliary
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/ksyntaxhighlighting/lib
+        ${CMAKE_CURRENT_BINARY_DIR}/../../../3rdparty/ksyntaxhighlighting/lib)
+
+    link_directories(${CMAKE_CURRENT_BINARY_DIR}/../../../3rdparty/podofo/src/podofo)
+    link_directories(${CMAKE_CURRENT_BINARY_DIR}/../../../3rdparty/podofo/src)
+endif()
 
 set(NORMAL_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../fonts/DroidSerif/droid_serif.ttf)
 set(ITALIC_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../fonts/DroidSerif/droid_serif_italic.ttf)

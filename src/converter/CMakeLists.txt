@@ -52,15 +52,18 @@ set(LIB_SYNTAX_SRC syntax.cpp
 message(${CMAKE_CURRENT_BINARY_DIR})
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/podofo/src
     ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/MicroTeX/src
-	${CMAKE_CURRENT_BINARY_DIR}/../../3rdparty/podofo/src/podofo
-    ${CMAKE_CURRENT_BINARY_DIR}/../../3rdparty/podofo/src/podofo/podofo/auxiliary
 	${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../shared)
 
-link_directories(${CMAKE_CURRENT_BINARY_DIR}/../../3rdparty/podofo/src/podofo
-    ${CMAKE_CURRENT_BINARY_DIR}/../../3rdparty/podofo/src)
+if(NOT BUILD_WITH_SYSTEM_LIBS)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/podofo/src
+        ${CMAKE_CURRENT_BINARY_DIR}/../../3rdparty/podofo/src/podofo
+        ${CMAKE_CURRENT_BINARY_DIR}/../../3rdparty/podofo/src/podofo/podofo/auxiliary)
+
+    link_directories(${CMAKE_CURRENT_BINARY_DIR}/../../3rdparty/podofo/src/podofo
+        ${CMAKE_CURRENT_BINARY_DIR}/../../3rdparty/podofo/src)
+endif()
 
 configure_file(version.h.in ${CMAKE_CURRENT_BINARY_DIR}/version.h)
 
@@ -82,4 +85,4 @@ install(TARGETS md-launcher)
 target_link_libraries(md-pdf-gui syntax markdown-widgets
     KF${KF_MAJOR_VERSION}::SyntaxHighlighting LaTeX
 	Qt6::Widgets Qt6::Network Qt6::Core
-    podofo::podofo resvg)
+    podofo_shared resvg)
