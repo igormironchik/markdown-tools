@@ -8,6 +8,10 @@ find_package(Qt6Gui 6.5.0 REQUIRED)
 find_package(Qt6Widgets 6.5.0 REQUIRED)
 find_package(Qt6Network 6.5.0 REQUIRED)
 
+find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
+    SyntaxHighlighting
+)
+
 add_definitions(-DPODOFO_SHARED)
 
 set(CMAKE_AUTOMOC ON)
@@ -36,9 +40,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
 if(NOT BUILD_WITH_SYSTEM_LIBS)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/podofo/src
         ${CMAKE_CURRENT_BINARY_DIR}/../../../3rdparty/podofo/src/podofo
-        ${CMAKE_CURRENT_BINARY_DIR}/../../../3rdparty/podofo/src/podofo/podofo/auxiliary
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/ksyntaxhighlighting/lib
-        ${CMAKE_CURRENT_BINARY_DIR}/../../../3rdparty/ksyntaxhighlighting/lib)
+        ${CMAKE_CURRENT_BINARY_DIR}/../../../3rdparty/podofo/src/podofo/podofo/auxiliary)
 
     link_directories(${CMAKE_CURRENT_BINARY_DIR}/../../../3rdparty/podofo/src/podofo)
     link_directories(${CMAKE_CURRENT_BINARY_DIR}/../../../3rdparty/podofo/src)
@@ -64,7 +66,7 @@ qt6_add_resources(SRC ../../../3rdparty/MicroTeX/latex.qrc)
 add_executable(test.render ${SRC})
 
 target_link_libraries(test.render syntax podofo_shared markdown-widgets LaTeX
-	Qt6::Widgets Qt6::Gui Qt6::Network Qt6::Test Qt6::Core resvg)
+	KF${KF_MAJOR_VERSION}::SyntaxHighlighting Qt6::Widgets Qt6::Gui Qt6::Network Qt6::Test Qt6::Core resvg)
 
 add_test(NAME test.render
 	COMMAND ${CMAKE_CURRENT_BINARY_DIR}/../../../bin/md-launcher${CMAKE_EXECUTABLE_SUFFIX} --exe test.render${CMAKE_EXECUTABLE_SUFFIX}
