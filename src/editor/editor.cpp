@@ -17,6 +17,7 @@
 #include <QThread>
 #include <QTextLayout>
 #include <QMenu>
+#include <QMimeData>
 
 // C++ include.
 #include <functional>
@@ -575,6 +576,16 @@ void Editor::contextMenuEvent(QContextMenuEvent *event)
     event->accept();
 
     menu->deleteLater();
+}
+
+bool Editor::canInsertFromMimeData(const QMimeData *source) const
+{
+    return source->hasText();
+}
+
+void Editor::insertFromMimeData(const QMimeData *source)
+{
+    insertPlainText(source->text());
 }
 
 void Editor::highlightCurrentLine()
