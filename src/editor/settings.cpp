@@ -22,7 +22,8 @@ namespace MdEditor
 //
 
 SettingsDlg::SettingsDlg(const Colors &c, const QFont &f, const Margins &m, bool enableSpelling,
-                         MdShared::PluginsCfg &pCfg, QWidget *parent)
+                         MdShared::PluginsCfg &pCfg, Editor::IndentMode indentMode,
+                         int indentSpacesCount, QWidget *parent)
     : QDialog(parent)
 {
     m_ui.setupUi(this);
@@ -34,11 +35,15 @@ SettingsDlg::SettingsDlg(const Colors &c, const QFont &f, const Margins &m, bool
     m_ui.m_rightMarginValue->setValue(m.m_length);
     m_ui.m_rightMarginValue->setEnabled(m.m_enable);
     m_ui.m_rightMargin->setChecked(m.m_enable);
+    m_ui.m_tabsMode->setCurrentIndex(indentMode == Editor::IndentMode::Tabs ? 0 : 1);
+    m_ui.m_spacesAmount->setValue(indentSpacesCount);
+    m_ui.m_spacesAmount->setEnabled(indentMode != Editor::IndentMode::Tabs);
 
     connect(m_ui.buttonBox, &QDialogButtonBox::clicked, this, &SettingsDlg::onButtonclicked);
     connect(m_ui.m_menu, &QListWidget::currentRowChanged, this, &SettingsDlg::onMenu);
     connect(m_ui.m_stack, &QStackedWidget::currentChanged, this, &SettingsDlg::onPageChanged);
     connect(m_ui.m_rightMargin, &QCheckBox::checkStateChanged, this, &SettingsDlg::onEnableRightMargin);
+    connect(m_ui.m_tabsMode, &QComboBox::currentIndexChanged, this, &SettingsDlg::onIndentModeChanged);
 
     m_ui.m_menu->item(0)->setIcon(QIcon::fromTheme(QStringLiteral("fill-color"), QIcon(QStringLiteral(":/res/img/fill-color.png"))));
     m_ui.m_menu->item(1)->setIcon(
@@ -120,6 +125,17 @@ SettingsDlg::pluginsCfg() const
     return m_ui.m_pluginsPage->cfg();
 }
 
+Editor::IndentMode SettingsDlg::indentMode() const
+{
+    return (m_ui.m_tabsMode->currentIndex() == 0 ? Editor::IndentMode::Tabs :
+                                                   Editor::IndentMode::Spaces);
+}
+
+int SettingsDlg::indentSpacesCount() const
+{
+    return m_ui.m_spacesAmount->value();
+}
+
 Sonnet::ConfigWidget *
 SettingsDlg::sonnetConfigWidget() const
 {
@@ -129,6 +145,11 @@ SettingsDlg::sonnetConfigWidget() const
 void SettingsDlg::onEnableRightMargin(Qt::CheckState st)
 {
     m_ui.m_rightMarginValue->setEnabled(st == Qt::Checked);
+}
+
+void SettingsDlg::onIndentModeChanged(int index)
+{
+    m_ui.m_spacesAmount->setEnabled(index != 0);
 }
 
 } /* namespace MdEditor */

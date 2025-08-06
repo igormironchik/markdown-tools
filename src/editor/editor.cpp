@@ -296,6 +296,13 @@ struct EditorPrivate {
         m_q->setExtraSelections(tmp);
     }
 
+    //! \return New indent.
+    QString makeIndent() const
+    {
+        return (m_indentMode == Editor::IndentMode::Tabs ? QStringLiteral("\t") :
+                                                           QString(m_indentSpacesCount, QLatin1Char(' ')));
+    }
+
     //! Editor.
     Editor *m_q = nullptr;
     //! Line number area.
@@ -336,6 +343,10 @@ struct EditorPrivate {
     bool m_isReady = true;
     //! Plugins configuration.
     MdShared::PluginsCfg m_pluginsCfg;
+    //! Indent mode.
+    Editor::IndentMode m_indentMode = Editor::IndentMode::Tabs;
+    //! Amount of spaces in indent.
+    int m_indentSpacesCount = 2;
 }; // struct EditorPrivate
 
 //
@@ -383,6 +394,26 @@ void Editor::setPluginsCfg(const MdShared::PluginsCfg &cfg)
     m_d->m_pluginsCfg = cfg;
 
     onContentChanged();
+}
+
+void Editor::setIndentMode(IndentMode mode)
+{
+    m_d->m_indentMode = mode;
+}
+
+Editor::IndentMode Editor::indentMode() const
+{
+    return m_d->m_indentMode;
+}
+
+void Editor::setIndentSpacesCount(int s)
+{
+    m_d->m_indentSpacesCount = s;
+}
+
+int Editor::indentSpacesCount() const
+{
+    return m_d->m_indentSpacesCount;
 }
 
 bool Editor::foundHighlighted() const
@@ -969,11 +1000,13 @@ void Editor::keyPressEvent(QKeyEvent *event)
             c.setPosition(se, QTextCursor::KeepAnchor);
             const auto end = c.blockNumber();
 
+            const auto indent = m_d->makeIndent();
+
             c.beginEditBlock();
 
             for (auto i = start; i <= end; ++i) {
                 QTextCursor add(document()->findBlockByNumber(i));
-                add.insertText(QStringLiteral("\t"));
+                add.insertText(indent);
             }
 
             c.endEditBlock();
@@ -987,12 +1020,18 @@ void Editor::keyPressEvent(QKeyEvent *event)
             c.setPosition(se, QTextCursor::KeepAnchor);
             const auto end = c.blockNumber();
 
+            const auto indent = m_d->makeIndent();
+
             c.beginEditBlock();
 
             for (auto i = start; i <= end; ++i) {
                 QTextCursor del(document()->findBlockByNumber(i));
 
-                if (del.block().text().startsWith(QStringLiteral("\t"))) {
+                if (del.block().text().startsWith(indent)) {
+                    if (m_d->m_indentMode == Editor::IndentMode::Spaces) {
+                        del.setPosition(del.position() + m_d->m_indentSpacesCount, QTextCursor::KeepAnchor);
+                    }
+
                     del.deleteChar();
                 }
             }

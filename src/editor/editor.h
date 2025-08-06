@@ -105,6 +105,24 @@ public:
     //! Set plugins configuration.
     void setPluginsCfg(const MdShared::PluginsCfg &cfg);
 
+    //! Indent mode.
+    enum class IndentMode {
+        //! Use tabs.
+        Tabs = 0,
+        //! Use spaces.
+        Spaces = 1
+    };
+
+    //! Set indent mode.
+    void setIndentMode(IndentMode mode);
+    //! \return Indent mode.
+    IndentMode indentMode() const;
+
+    //! Set amount of spaces in indent.
+    void setIndentSpacesCount(int s);
+    //! \return Amount of spaces in indent.
+    int indentSpacesCount() const;
+
 public slots:
     //! Enable/disable showing of unprintable characters.
     void showUnprintableCharacters(bool on);

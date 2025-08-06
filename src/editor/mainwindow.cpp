@@ -1529,6 +1529,12 @@ void MainWindow::saveCfg() const
     s.setValue(QStringLiteral("enableColors"), m_d->m_mdColors.m_enabled);
     s.setValue(QStringLiteral("sidebarWidth"), m_d->m_tabWidth);
 
+    s.beginGroup(QStringLiteral("indent"));
+    s.setValue(QStringLiteral("mode"), m_d->m_editor->indentMode() == Editor::IndentMode::Tabs ?
+                   QStringLiteral("tabs") : QStringLiteral("spaces"));
+    s.setValue(QStringLiteral("spacesCount"), m_d->m_editor->indentSpacesCount());
+    s.endGroup();
+
     s.setValue(QStringLiteral("findCaseSensitive"), m_d->m_find->isCaseSensitive());
     s.setValue(QStringLiteral("findWholeWord"), m_d->m_find->isWholeWord());
     s.endGroup();
@@ -1666,6 +1672,23 @@ void MainWindow::readCfg()
     if (sidebarWidth > 0) {
         m_d->m_tabWidth = sidebarWidth;
     }
+
+    s.beginGroup(QStringLiteral("indent"));
+
+    const auto mode = s.value(QStringLiteral("mode"), QStringLiteral("tabs")).toString();
+    if (mode == QStringLiteral("tabs")) {
+        m_d->m_editor->setIndentMode(Editor::IndentMode::Tabs);
+    } else {
+        m_d->m_editor->setIndentMode(Editor::IndentMode::Spaces);
+    }
+
+    const auto spacesCount = s.value(QStringLiteral("spacesCount"), 2).toInt();
+
+    if (spacesCount > 0) {
+        m_d->m_editor->setIndentSpacesCount(spacesCount);
+    }
+
+    s.endGroup();
 
     s.endGroup();
 
@@ -3206,7 +3229,8 @@ void MainWindow::onTabClicked(int index)
 void MainWindow::onSettings()
 {
     SettingsDlg dlg(m_d->m_mdColors, m_d->m_editor->font(), m_d->m_editor->margins(),
-                    m_d->m_spellingEnabled, m_d->m_pluginsCfg, this);
+                    m_d->m_spellingEnabled, m_d->m_pluginsCfg, m_d->m_editor->indentMode(),
+                    m_d->m_editor->indentSpacesCount(), this);
 
     if (m_d->m_settingsWindowWidth != -1 && m_d->m_settingsWindowHeight != -1) {
         dlg.resize(m_d->m_settingsWindowWidth, m_d->m_settingsWindowHeight);
@@ -3266,6 +3290,14 @@ void MainWindow::onSettings()
             m_d->m_editor->setPluginsCfg(m_d->m_pluginsCfg);
 
             onEditorReady();
+        }
+
+        if (m_d->m_editor->indentMode() != dlg.indentMode()) {
+            m_d->m_editor->setIndentMode(dlg.indentMode());
+        }
+
+        if (m_d->m_editor->indentSpacesCount() != dlg.indentSpacesCount()) {
+            m_d->m_editor->setIndentSpacesCount(dlg.indentSpacesCount());
         }
     }
 

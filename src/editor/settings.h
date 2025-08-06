@@ -33,7 +33,8 @@ class SettingsDlg : public QDialog
 
 public:
     SettingsDlg(const Colors &c, const QFont &f, const Margins &m, bool enableSpelling,
-                MdShared::PluginsCfg &pCfg, QWidget *parent);
+                MdShared::PluginsCfg &pCfg, Editor::IndentMode indentMode,
+                int indentSpacesCount, QWidget *parent);
     ~SettingsDlg() override = default;
 
     //! \return Colors scheme.
@@ -46,6 +47,10 @@ public:
     bool isSpellingEnabled() const;
     //! \return Plugins configuration.
     MdShared::PluginsCfg pluginsCfg() const;
+    //! \return Indent mode.
+    Editor::IndentMode indentMode() const;
+    //! \return Indent spaces count.
+    int indentSpacesCount() const;
 
     //! \return Sonnet configuration widget.
     Sonnet::ConfigWidget *sonnetConfigWidget() const;
@@ -55,6 +60,7 @@ private slots:
     void onButtonclicked(QAbstractButton *btn);
     void onMenu(int idx);
     void onEnableRightMargin(Qt::CheckState st);
+    void onIndentModeChanged(int index);
 
 private:
     Q_DISABLE_COPY(SettingsDlg)
