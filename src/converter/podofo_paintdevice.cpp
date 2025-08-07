@@ -8,11 +8,11 @@
 #include "renderer.h"
 
 // Qt include.
+#include <QFile>
 #include <QMap>
 #include <QPainterPath>
 #include <QTextItem>
 #include <QTransform>
-#include <QFile>
 
 // MicroTeX include.
 #include <fonts/font_info.h>
@@ -28,7 +28,8 @@ namespace MdPdf
 //
 
 struct PoDoFoPaintDevicePrivate {
-    PoDoFoPaintDevicePrivate(PoDoFoPaintDevice *parent, Render::PdfAuxData &pdfData)
+    PoDoFoPaintDevicePrivate(PoDoFoPaintDevice *parent,
+                             Render::PdfAuxData &pdfData)
         : m_q(parent)
         , m_engine(pdfData)
     {
@@ -45,7 +46,8 @@ struct PoDoFoPaintDevicePrivate {
 //
 
 PoDoFoPaintDevice::PoDoFoPaintDevice(Render::PdfAuxData &pdfData)
-    : d(new PoDoFoPaintDevicePrivate(this, pdfData))
+    : d(new PoDoFoPaintDevicePrivate(this,
+                                     pdfData))
 {
 }
 
@@ -67,20 +69,24 @@ int PoDoFoPaintDevice::metric(QPaintDevice::PaintDeviceMetric metric) const
 {
     switch (metric) {
     case PdmWidth:
-        return qRound(d->m_engine.pdfPainter() ?
-                          d->m_engine.pdfPainter()->GetCanvas()->GetRectRaw().GetWidth() / 72.0 * 1200.0 : 100);
+        return qRound(d->m_engine.pdfPainter()
+                          ? d->m_engine.pdfPainter()->GetCanvas()->GetRectRaw().GetWidth() / 72.0 * 1200.0
+                          : 100);
 
     case PdmHeight:
-        return qRound(d->m_engine.pdfPainter() ?
-                          d->m_engine.pdfPainter()->GetCanvas()->GetRectRaw().GetHeight() / 72.0 * 1200.0 : 100);
+        return qRound(d->m_engine.pdfPainter()
+                          ? d->m_engine.pdfPainter()->GetCanvas()->GetRectRaw().GetHeight() / 72.0 * 1200.0
+                          : 100);
 
     case PdmWidthMM:
-        return qRound(d->m_engine.pdfPainter() ?
-                          d->m_engine.pdfPainter()->GetCanvas()->GetRectRaw().GetWidth() / 72.0 * 25.4 : 100.0 / 1200.0 * 25.4);
+        return qRound(d->m_engine.pdfPainter()
+                          ? d->m_engine.pdfPainter()->GetCanvas()->GetRectRaw().GetWidth() / 72.0 * 25.4
+                          : 100.0 / 1200.0 * 25.4);
 
     case PdmHeightMM:
-        return qRound(d->m_engine.pdfPainter() ?
-                          d->m_engine.pdfPainter()->GetCanvas()->GetRectRaw().GetHeight() / 72.0 * 25.4 : 100.0 / 1200.0 * 25.4);
+        return qRound(d->m_engine.pdfPainter()
+                          ? d->m_engine.pdfPainter()->GetCanvas()->GetRectRaw().GetHeight() / 72.0 * 25.4
+                          : 100.0 / 1200.0 * 25.4);
 
     case PdmNumColors:
         return INT_MAX;
@@ -110,7 +116,8 @@ int PoDoFoPaintDevice::metric(QPaintDevice::PaintDeviceMetric metric) const
 //
 
 struct PoDoFoPaintEnginePrivate {
-    PoDoFoPaintEnginePrivate(PoDoFoPaintEngine *parent, Render::PdfAuxData &pdfData)
+    PoDoFoPaintEnginePrivate(PoDoFoPaintEngine *parent,
+                             Render::PdfAuxData &pdfData)
         : m_q(parent)
         , m_pdfData(pdfData)
     {
@@ -123,7 +130,7 @@ struct PoDoFoPaintEnginePrivate {
     //! Transformation.
     QTransform m_transform;
     //! PDF auxiliary data.
-    Render::PdfAuxData & m_pdfData;
+    Render::PdfAuxData &m_pdfData;
 }; // struct PoDoFoPaintEnginePrivate
 
 //
@@ -132,7 +139,8 @@ struct PoDoFoPaintEnginePrivate {
 
 PoDoFoPaintEngine::PoDoFoPaintEngine(Render::PdfAuxData &pdfData)
     : QPaintEngine(QPaintEngine::AllFeatures)
-    , d(new PoDoFoPaintEnginePrivate(this, pdfData))
+    , d(new PoDoFoPaintEnginePrivate(this,
+                                     pdfData))
 {
     pdfPainter()->Save();
 }
@@ -142,14 +150,12 @@ PoDoFoPaintEngine::~PoDoFoPaintEngine()
     pdfPainter()->Restore();
 }
 
-void
-PoDoFoPaintEngine::enableDrawing(bool on)
+void PoDoFoPaintEngine::enableDrawing(bool on)
 {
     d->m_isDrawing = on;
 }
 
-PoDoFo::PdfPainter *
-PoDoFoPaintEngine::pdfPainter() const
+PoDoFo::PdfPainter *PoDoFoPaintEngine::pdfPainter() const
 {
     return (*d->m_pdfData.m_painters)[d->m_pdfData.m_currentPainterIdx].get();
 }
@@ -167,7 +173,10 @@ void PoDoFoPaintEngine::drawEllipse(const QRect &)
 {
 }
 
-void PoDoFoPaintEngine::drawImage(const QRectF &, const QImage &, const QRectF &, Qt::ImageConversionFlags)
+void PoDoFoPaintEngine::drawImage(const QRectF &,
+                                  const QImage &,
+                                  const QRectF &,
+                                  Qt::ImageConversionFlags)
 {
 }
 
@@ -181,7 +190,8 @@ double PoDoFoPaintEngine::qYtoPoDoFo(double y)
     return (paintDevice()->height() - y) / paintDevice()->physicalDpiY() * 72.0;
 }
 
-void PoDoFoPaintEngine::drawLines(const QLineF *lines, int lineCount)
+void PoDoFoPaintEngine::drawLines(const QLineF *lines,
+                                  int lineCount)
 {
     if (d->m_isDrawing) {
         for (int i = 0; i < lineCount; ++i) {
@@ -192,7 +202,8 @@ void PoDoFoPaintEngine::drawLines(const QLineF *lines, int lineCount)
     }
 }
 
-void PoDoFoPaintEngine::drawLines(const QLine *lines, int lineCount)
+void PoDoFoPaintEngine::drawLines(const QLine *lines,
+                                  int lineCount)
 {
     if (d->m_isDrawing) {
         for (int i = 0; i < lineCount; ++i) {
@@ -242,8 +253,12 @@ void PoDoFoPaintEngine::drawPath(const QPainterPath &path)
 
                 end = {pp.x(), pp.y()};
 
-                p.AddCubicBezierTo(qXtoPoDoFo(pp.x()), qYtoPoDoFo(pp.y()), qXtoPoDoFo(pp1.x()),
-                                   qYtoPoDoFo(pp1.y()), qXtoPoDoFo(pp2.x()), qYtoPoDoFo(pp2.y()));
+                p.AddCubicBezierTo(qXtoPoDoFo(pp.x()),
+                                   qYtoPoDoFo(pp.y()),
+                                   qXtoPoDoFo(pp1.x()),
+                                   qYtoPoDoFo(pp1.y()),
+                                   qXtoPoDoFo(pp2.x()),
+                                   qYtoPoDoFo(pp2.y()));
 
                 i += 2;
             } break;
@@ -257,23 +272,31 @@ void PoDoFoPaintEngine::drawPath(const QPainterPath &path)
     }
 }
 
-void PoDoFoPaintEngine::drawPixmap(const QRectF &, const QPixmap &, const QRectF &)
+void PoDoFoPaintEngine::drawPixmap(const QRectF &,
+                                   const QPixmap &,
+                                   const QRectF &)
 {
 }
 
-void PoDoFoPaintEngine::drawPoints(const QPointF *, int)
+void PoDoFoPaintEngine::drawPoints(const QPointF *,
+                                   int)
 {
 }
 
-void PoDoFoPaintEngine::drawPoints(const QPoint *, int)
+void PoDoFoPaintEngine::drawPoints(const QPoint *,
+                                   int)
 {
 }
 
-void PoDoFoPaintEngine::drawPolygon(const QPointF *, int, QPaintEngine::PolygonDrawMode)
+void PoDoFoPaintEngine::drawPolygon(const QPointF *,
+                                    int,
+                                    QPaintEngine::PolygonDrawMode)
 {
 }
 
-void PoDoFoPaintEngine::drawPolygon(const QPoint *, int, QPaintEngine::PolygonDrawMode)
+void PoDoFoPaintEngine::drawPolygon(const QPoint *,
+                                    int,
+                                    QPaintEngine::PolygonDrawMode)
 {
 }
 
@@ -289,10 +312,14 @@ double PoDoFoPaintEngine::qHtoPoDoFo(double h)
 
 PoDoFo::Rect PoDoFoPaintEngine::qRectFtoPoDoFo(const QRectF &r)
 {
-    return PoDoFo::Rect(qXtoPoDoFo(r.x()), qYtoPoDoFo(r.y() + r.height()), qWtoPoDoFo(r.width()), qHtoPoDoFo(r.height()));
+    return PoDoFo::Rect(qXtoPoDoFo(r.x()),
+                        qYtoPoDoFo(r.y() + r.height()),
+                        qWtoPoDoFo(r.width()),
+                        qHtoPoDoFo(r.height()));
 }
 
-void PoDoFoPaintEngine::drawRects(const QRectF *rects, int rectCount)
+void PoDoFoPaintEngine::drawRects(const QRectF *rects,
+                                  int rectCount)
 {
     if (d->m_isDrawing) {
         for (int i = 0; i < rectCount; ++i) {
@@ -301,7 +328,8 @@ void PoDoFoPaintEngine::drawRects(const QRectF *rects, int rectCount)
     }
 }
 
-void PoDoFoPaintEngine::drawRects(const QRect *rects, int rectCount)
+void PoDoFoPaintEngine::drawRects(const QRect *rects,
+                                  int rectCount)
 {
     if (d->m_isDrawing) {
         for (int i = 0; i < rectCount; ++i) {
@@ -310,7 +338,8 @@ void PoDoFoPaintEngine::drawRects(const QRect *rects, int rectCount)
     }
 }
 
-void PoDoFoPaintEngine::drawTextItem(const QPointF &p, const QTextItem &textItem)
+void PoDoFoPaintEngine::drawTextItem(const QPointF &p,
+                                     const QTextItem &textItem)
 {
     if (d->m_isDrawing) {
         const auto f = qFontToPoDoFo(textItem.font());
@@ -321,7 +350,9 @@ void PoDoFoPaintEngine::drawTextItem(const QPointF &p, const QTextItem &textItem
     }
 }
 
-void PoDoFoPaintEngine::drawTiledPixmap(const QRectF &, const QPixmap &, const QPointF &)
+void PoDoFoPaintEngine::drawTiledPixmap(const QRectF &,
+                                        const QPixmap &,
+                                        const QPointF &)
 {
 }
 
@@ -378,9 +409,12 @@ inline double scaleOfTransform(const QTransform &t)
     return std::sqrt(bv * bv + dv * dv);
 }
 
-QPair<PoDoFo::PdfFont *, double> PoDoFoPaintEngine::qFontToPoDoFo(const QFont &f)
+QPair<PoDoFo::PdfFont *,
+      double>
+PoDoFoPaintEngine::qFontToPoDoFo(const QFont &f)
 {
-    //const double size = (f.pointSizeF() > 0.0 ? f.pointSizeF() : f.pixelSize() / paintDevice()->physicalDpiY() * 72.0);
+    // const double size = (f.pointSizeF() > 0.0 ? f.pointSizeF() : f.pixelSize() / paintDevice()->physicalDpiY()
+    // * 72.0);
 
     // This code is for MicroTeX, the author do things not right with font sizes.
     const auto scale = scaleOfTransform(d->m_transform);
@@ -409,17 +443,17 @@ QPair<PoDoFo::PdfFont *, double> PoDoFoPaintEngine::qFontToPoDoFo(const QFont &f
 
                     d->m_pdfData.m_doc->GetFonts().GetOrCreateFont(tmp->fileName().toLocal8Bit().constData());
                 } else {
-                    throw std::runtime_error("Unable to load font from file: \":/" +
-                                             tex::FontInfo::__get(id)->getPath() +
-                                             "\". Failed to create temporary file.");
+                    throw std::runtime_error("Unable to load font from file: \":/"
+                                             + tex::FontInfo::__get(id)->getPath()
+                                             + "\". Failed to create temporary file.");
                 }
             } else {
-                throw std::runtime_error("Unable to load font from file: \":/" +
-                                         tex::FontInfo::__get(id)->getPath() + "\".");
+                throw std::runtime_error(
+                    "Unable to load font from file: \":/" + tex::FontInfo::__get(id)->getPath() + "\".");
             }
         }
 
-        const auto fileName  = d->m_pdfData.m_fontsCache[path]->fileName();
+        const auto fileName = d->m_pdfData.m_fontsCache[path]->fileName();
 
         auto &font = d->m_pdfData.m_doc->GetFonts().GetOrCreateFont(fileName.toLocal8Bit().constData());
 

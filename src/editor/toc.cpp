@@ -12,9 +12,14 @@
 namespace MdEditor
 {
 
-StringData::StringData(const QString &t, bool c, bool rtl)
-    : m_data({t, c, rtl})
-    , m_splittedText(splitString(m_data.m_text, true))
+StringData::StringData(const QString &t,
+                       bool c,
+                       bool rtl)
+    : m_data({t,
+              c,
+              rtl})
+    , m_splittedText(splitString(m_data.m_text,
+                                 true))
 {
     if (m_data.m_isRightToLeft) {
         orderWords(m_splittedText);
@@ -25,7 +30,11 @@ StringData::StringData(const QString &t, bool c, bool rtl)
 // TocData
 //
 
-TocData::TocData(const StringDataVec &t, long long int l, int v, const QString &id, TocData *p)
+TocData::TocData(const StringDataVec &t,
+                 long long int l,
+                 int v,
+                 const QString &id,
+                 TocData *p)
     : m_text(t)
     , m_id(id)
     , m_line(l)
@@ -93,14 +102,20 @@ TocModel::~TocModel()
 {
 }
 
-void TocModel::addTopLevelItem(const StringDataVec &text, long long int line, int level, const QString &label)
+void TocModel::addTopLevelItem(const StringDataVec &text,
+                               long long int line,
+                               int level,
+                               const QString &label)
 {
     beginInsertRows(QModelIndex(), m_d->m_data.size(), m_d->m_data.size());
     m_d->m_data.push_back(std::make_shared<TocData>(text, line, level, m_d->labelToId(label)));
     endInsertRows();
 }
 
-void TocModel::addChildItem(const QModelIndex &parent, const StringDataVec &text, long long int line, int level,
+void TocModel::addChildItem(const QModelIndex &parent,
+                            const StringDataVec &text,
+                            long long int line,
+                            int level,
                             const QString &label)
 {
     auto data = static_cast<TocData *>(parent.internalPointer());
@@ -148,7 +163,8 @@ int TocModel::columnCount(const QModelIndex &parent) const
     return 1;
 }
 
-QVariant TocModel::data(const QModelIndex &index, int role) const
+QVariant TocModel::data(const QModelIndex &index,
+                        int role) const
 {
     if (role == Qt::DisplayRole) {
         return static_cast<TocData *>(index.internalPointer())->concatenatedText();
@@ -157,7 +173,9 @@ QVariant TocModel::data(const QModelIndex &index, int role) const
     }
 }
 
-bool TocModel::setData(const QModelIndex &index, const QVariant &value, int role)
+bool TocModel::setData(const QModelIndex &index,
+                       const QVariant &value,
+                       int role)
 {
     Q_UNUSED(index)
     Q_UNUSED(value)
@@ -171,7 +189,9 @@ Qt::ItemFlags TocModel::flags(const QModelIndex &index) const
     return (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 }
 
-QVariant TocModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant TocModel::headerData(int section,
+                              Qt::Orientation orientation,
+                              int role) const
 {
     Q_UNUSED(section)
     Q_UNUSED(orientation)
@@ -180,7 +200,9 @@ QVariant TocModel::headerData(int section, Qt::Orientation orientation, int role
     return {};
 }
 
-QModelIndex TocModel::index(int row, int column, const QModelIndex &parent) const
+QModelIndex TocModel::index(int row,
+                            int column,
+                            const QModelIndex &parent) const
 {
     if (!parent.isValid()) {
         return createIndex(row, column, m_d->m_data[row].get());
@@ -200,15 +222,16 @@ QModelIndex TocModel::parent(const QModelIndex &index) const
 
         if (data->m_parent->m_parent) {
             row = std::distance(data->m_parent->m_parent->m_children.cbegin(),
-                                std::find_if(data->m_parent->m_parent->m_children.cbegin(), data->m_parent->m_parent->m_children.cend(),
-                                            [data](const auto &dd) {
-                                                return (data->m_parent->m_line == dd->m_line);
-                                            }));
+                                std::find_if(data->m_parent->m_parent->m_children.cbegin(),
+                                             data->m_parent->m_parent->m_children.cend(),
+                                             [data](const auto &dd) {
+                                                 return (data->m_parent->m_line == dd->m_line);
+                                             }));
         } else {
-            row = std::distance(m_d->m_data.cbegin(), std::find_if(m_d->m_data.cbegin(), m_d->m_data.cend(),
-                                            [data](const auto &dd) {
-                                                return (data->m_parent->m_line == dd->m_line);
-                                            }));
+            row = std::distance(m_d->m_data.cbegin(),
+                                std::find_if(m_d->m_data.cbegin(), m_d->m_data.cend(), [data](const auto &dd) {
+                                    return (data->m_parent->m_line == dd->m_line);
+                                }));
         }
 
         return createIndex(row, 0, data->m_parent);

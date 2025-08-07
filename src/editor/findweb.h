@@ -30,7 +30,9 @@ class FindWeb : public QFrame
     Q_OBJECT
 
 public:
-    FindWeb(MainWindow *window, WebView *web, QWidget *parent);
+    FindWeb(MainWindow *window,
+            WebView *web,
+            QWidget *parent);
     ~FindWeb() override;
 
     //! \return Line edit of "find" text.

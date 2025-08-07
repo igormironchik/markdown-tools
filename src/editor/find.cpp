@@ -20,7 +20,9 @@ namespace MdEditor
 //
 
 struct FindPrivate {
-    FindPrivate(MainWindow *w, Editor *e, Find *parent)
+    FindPrivate(MainWindow *w,
+                Editor *e,
+                Find *parent)
         : m_q(parent)
         , m_editor(e)
         , m_window(w)
@@ -99,9 +101,13 @@ struct FindPrivate {
 // Find
 //
 
-Find::Find(MainWindow *window, Editor *editor, QWidget *parent)
+Find::Find(MainWindow *window,
+           Editor *editor,
+           QWidget *parent)
     : QFrame(parent)
-    , m_d(new FindPrivate(window, editor, this))
+    , m_d(new FindPrivate(window,
+                          editor,
+                          this))
 {
     m_d->initUi();
 }

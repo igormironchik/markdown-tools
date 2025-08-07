@@ -20,7 +20,9 @@ PreviewPage::PreviewPage(QObject *parent)
     settings()->setAttribute(QWebEngineSettings::LinksIncludedInFocusChain, false);
 }
 
-bool PreviewPage::acceptNavigationRequest(const QUrl &url, QWebEnginePage::NavigationType /*type*/, bool /*isMainFrame*/)
+bool PreviewPage::acceptNavigationRequest(const QUrl &url,
+                                          QWebEnginePage::NavigationType /*type*/,
+                                          bool /*isMainFrame*/)
 {
     if (url.scheme() == QStringLiteral("qrc") || url.scheme() == QStringLiteral("data")) {
         return true;

@@ -46,7 +46,9 @@ public:
     //! Vector of colored text auxiliary structs.
     using Colors = QVector<Color>;
 
-    void applyFormat(int offset, int length, const KSyntaxHighlighting::Format &format) override;
+    void applyFormat(int offset,
+                     int length,
+                     const KSyntaxHighlighting::Format &format) override;
 
     //! \return Vector of colored text auxiliary structs.
     Colors prepare(const QStringList &lines);

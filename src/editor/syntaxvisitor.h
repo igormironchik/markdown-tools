@@ -7,9 +7,9 @@
 
 // md4qt include.
 #define MD4QT_QT_SUPPORT
+#include <md4qt/parser.h>
 #include <md4qt/poscache.h>
 #include <md4qt/traits.h>
-#include <md4qt/parser.h>
 
 // Qt include.
 #include <QScopedPointer>
@@ -67,8 +67,10 @@ public:
     //! Enable/disable spelling check.
     void spellingSettingsChanged(bool enabled);
     //! \return Is a given word misspelled?
-    bool isMisspelled(long long int line, long long int pos,
-                      QPair<long long int, long long int> &wordPos) const;
+    bool isMisspelled(long long int line,
+                      long long int pos,
+                      QPair<long long int,
+                            long long int> &wordPos) const;
     //! \return Spell suggestions for word.
     QStringList spellSuggestions(const QString &word) const;
     //! \return Has this document misspelled words?
@@ -92,7 +94,9 @@ protected:
     void onImage(MD::Image<MD::QStringTrait> *i) override;
     void onFootnoteRef(MD::FootnoteRef<MD::QStringTrait> *ref) override;
     void onFootnote(MD::Footnote<MD::QStringTrait> *f) override;
-    void onListItem(MD::ListItem<MD::QStringTrait> *l, bool first, bool skipOpeningWrap = false) override;
+    void onListItem(MD::ListItem<MD::QStringTrait> *l,
+                    bool first,
+                    bool skipOpeningWrap = false) override;
 
 private:
     void onItemWithOpts(MD::ItemWithOpts<MD::QStringTrait> *i);

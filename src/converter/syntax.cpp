@@ -69,7 +69,9 @@ KSyntaxHighlighting::Theme Syntax::themeForName(const QString &name) const
         return defaultTheme;
 }
 
-void Syntax::applyFormat(int offset, int length, const KSyntaxHighlighting::Format &format)
+void Syntax::applyFormat(int offset,
+                         int length,
+                         const KSyntaxHighlighting::Format &format)
 {
     m_currentColors.push_back({m_currentLineNumber, offset, offset + length - 1, format});
 }

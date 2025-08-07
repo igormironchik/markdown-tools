@@ -7,8 +7,8 @@
 #include <Sonnet/Speller>
 
 // Qt include.
-#include <QSharedPointer>
 #include <QMutex>
+#include <QSharedPointer>
 
 namespace MdEditor
 {

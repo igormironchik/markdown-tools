@@ -29,23 +29,17 @@ public:
         m_ui.m_subChar->setText(QStringLiteral("-"));
         m_ui.m_markChar->setText(QStringLiteral("="));
 
-        QObject::connect(m_ui.m_supSwitch, &MdShared::Switch::stateChanged, q,
-                         &PluginsPage::onButtonStateChanged);
-        QObject::connect(m_ui.m_subSwitch, &MdShared::Switch::stateChanged, q,
-                         &PluginsPage::onButtonStateChanged);
-        QObject::connect(m_ui.m_markSwitch, &MdShared::Switch::stateChanged, q,
-                         &PluginsPage::onButtonStateChanged);
-        QObject::connect(m_ui.m_yamlSwitch, &MdShared::Switch::stateChanged, q,
-                         &PluginsPage::onButtonStateChanged);
-        QObject::connect(m_ui.m_supChar, &QLineEdit::textChanged, q,
-                         &PluginsPage::onSupDelimChanged);
-        QObject::connect(m_ui.m_subChar, &QLineEdit::textChanged, q,
-                         &PluginsPage::onSubDelimChanged);
-        QObject::connect(m_ui.m_markChar, &QLineEdit::textChanged, q,
-                         &PluginsPage::onMarkDelimChanged);
+        QObject::connect(m_ui.m_supSwitch, &MdShared::Switch::stateChanged, q, &PluginsPage::onButtonStateChanged);
+        QObject::connect(m_ui.m_subSwitch, &MdShared::Switch::stateChanged, q, &PluginsPage::onButtonStateChanged);
+        QObject::connect(m_ui.m_markSwitch, &MdShared::Switch::stateChanged, q, &PluginsPage::onButtonStateChanged);
+        QObject::connect(m_ui.m_yamlSwitch, &MdShared::Switch::stateChanged, q, &PluginsPage::onButtonStateChanged);
+        QObject::connect(m_ui.m_supChar, &QLineEdit::textChanged, q, &PluginsPage::onSupDelimChanged);
+        QObject::connect(m_ui.m_subChar, &QLineEdit::textChanged, q, &PluginsPage::onSubDelimChanged);
+        QObject::connect(m_ui.m_markChar, &QLineEdit::textChanged, q, &PluginsPage::onMarkDelimChanged);
     }
 
-    bool isOk(QLineEdit *e, MdShared::Switch *s = nullptr)
+    bool isOk(QLineEdit *e,
+              MdShared::Switch *s = nullptr)
     {
         const auto text = e->text().simplified();
         bool ok = true;
@@ -103,9 +97,11 @@ void PluginsPage::setCfg(const PluginsCfg &cfg)
         d->m_ui.m_markChar->setText(cfg.m_mark.m_delimiter);
     }
 
-    d->m_ui.m_markSwitch->setState(cfg.m_mark.m_on ? MdShared::Switch::AcceptedCheck : MdShared::Switch::AcceptedUncheck);
+    d->m_ui.m_markSwitch->setState(cfg.m_mark.m_on ? MdShared::Switch::AcceptedCheck
+                                                   : MdShared::Switch::AcceptedUncheck);
 
-    d->m_ui.m_yamlSwitch->setState(cfg.m_yamlEnabled ? MdShared::Switch::AcceptedCheck : MdShared::Switch::AcceptedUncheck);
+    d->m_ui.m_yamlSwitch->setState(cfg.m_yamlEnabled ? MdShared::Switch::AcceptedCheck
+                                                     : MdShared::Switch::AcceptedUncheck);
 
     d->isOk(d->m_ui.m_supChar, d->m_ui.m_supSwitch);
     d->isOk(d->m_ui.m_subChar, d->m_ui.m_subSwitch);

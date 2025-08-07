@@ -11,13 +11,13 @@
 #include <Sonnet/Settings>
 
 // Qt include.
+#include <QMenu>
+#include <QMimeData>
 #include <QPainter>
 #include <QTextBlock>
 #include <QTextDocument>
-#include <QThread>
 #include <QTextLayout>
-#include <QMenu>
-#include <QMimeData>
+#include <QThread>
 
 // C++ include.
 #include <functional>
@@ -34,7 +34,8 @@
 namespace MdEditor
 {
 
-bool operator!=(const Margins &l, const Margins &r)
+bool operator!=(const Margins &l,
+                const Margins &r)
 {
     return (l.m_enable != r.m_enable || l.m_length != r.m_length);
 }
@@ -52,13 +53,19 @@ signals:
     //! Signals about data available for parsing.
     void newData();
     //! Parsing is done.
-    void done(std::shared_ptr<MD::Document<MD::QStringTrait>>, unsigned long long int, SyntaxVisitor syntax,
+    void done(std::shared_ptr<MD::Document<MD::QStringTrait>>,
+              unsigned long long int,
+              SyntaxVisitor syntax,
               MD::details::IdsMap<MD::QStringTrait> idsMap);
 
 public:
     DataParser()
-        : m_itemTypes({MD::ItemType::Paragraph, MD::ItemType::Blockquote,
-                      MD::ItemType::List, MD::ItemType::Code, MD::ItemType::Table, MD::ItemType::Heading})
+        : m_itemTypes({MD::ItemType::Paragraph,
+                       MD::ItemType::Blockquote,
+                       MD::ItemType::List,
+                       MD::ItemType::Code,
+                       MD::ItemType::Table,
+                       MD::ItemType::Heading})
     {
         connect(this, &DataParser::newData, this, &DataParser::onParse, Qt::QueuedConnection);
     }
@@ -67,8 +74,12 @@ public:
 
 public slots:
     //! New data arrived.
-    void onData(const QString &md, const QString &path, const QString &fileName, unsigned long long int counter,
-                SyntaxVisitor syntax, const MdShared::PluginsCfg &pluginsCfg)
+    void onData(const QString &md,
+                const QString &path,
+                const QString &fileName,
+                unsigned long long int counter,
+                SyntaxVisitor syntax,
+                const MdShared::PluginsCfg &pluginsCfg)
     {
         m_data.clear();
         m_data.push_back(md);
@@ -114,14 +125,17 @@ private slots:
 
             m_id = 0;
 
-            MD::forEach<MD::QStringTrait>(m_itemTypes, doc,
+            MD::forEach<MD::QStringTrait>(
+                m_itemTypes,
+                doc,
                 [&idsMap, this](MD::Item<MD::QStringTrait> *item) {
                     const auto id = this->generateId(item);
 
                     if (!id.isEmpty()) {
                         idsMap.insert({item, id});
                     }
-                }, 1);
+                },
+                1);
 
             emit done(doc, m_counter, m_syntax, idsMap);
         }
@@ -138,8 +152,7 @@ private:
 
             return QStringLiteral("md4qt-line-id-%1/%2/%3").arg(QString::number(++m_id), m_path, m_fileName);
         } else {
-            const auto labelToId = [](const QString &label) -> QString
-            {
+            const auto labelToId = [](const QString &label) -> QString {
                 auto id = label;
 
                 if (id.startsWith(QStringLiteral("#"))) {
@@ -149,7 +162,7 @@ private:
                 return id;
             };
 
-            return labelToId(static_cast<MD::Heading<MD::QStringTrait>*>(item)->label());
+            return labelToId(static_cast<MD::Heading<MD::QStringTrait> *>(item)->label());
         }
     }
 
@@ -182,7 +195,8 @@ private:
 class DocumentLayoutWithRightAlignment : public QPlainTextDocumentLayout
 {
 public:
-    DocumentLayoutWithRightAlignment(QTextDocument *doc, QWidget *viewport)
+    DocumentLayoutWithRightAlignment(QTextDocument *doc,
+                                     QWidget *viewport)
         : QPlainTextDocumentLayout(doc)
         , m_viewport(viewport)
     {
@@ -224,7 +238,7 @@ public:
                 if (availableWidth <= 0) {
                     availableWidth = qreal(INT_MAX);
                 }
-                availableWidth -= 2*margin + extraMargin;
+                availableWidth -= 2 * margin + extraMargin;
 
                 for (int i = 0; i < tl->lineCount(); ++i) {
                     auto line = tl->lineAt(i);
@@ -269,8 +283,10 @@ struct EditorPrivate {
 
         QObject::connect(m_q, &Editor::cursorPositionChanged, m_q, &Editor::highlightCurrentLine);
         QObject::connect(m_q, &QPlainTextEdit::textChanged, m_q, &Editor::onContentChanged);
-        QObject::connect(m_lineNumberArea, &LineNumberArea::lineNumberContextMenuRequested,
-                         m_q, &Editor::lineNumberContextMenuRequested);
+        QObject::connect(m_lineNumberArea,
+                         &LineNumberArea::lineNumberContextMenuRequested,
+                         m_q,
+                         &Editor::lineNumberContextMenuRequested);
 
         m_q->showLineNumbers(true);
         m_q->applyFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
@@ -299,8 +315,8 @@ struct EditorPrivate {
     //! \return New indent.
     QString makeIndent() const
     {
-        return (m_indentMode == Editor::IndentMode::Tabs ? QStringLiteral("\t") :
-                                                           QString(m_indentSpacesCount, QLatin1Char(' ')));
+        return (m_indentMode == Editor::IndentMode::Tabs ? QStringLiteral("\t")
+                                                         : QString(m_indentSpacesCount, QLatin1Char(' ')));
     }
 
     //! Editor.
@@ -427,7 +443,8 @@ bool Editor::foundSelected() const
 
     for (const auto &s : std::as_const(m_d->m_extraSelections)) {
         if (c.position() == s.cursor.position()) {
-            if (c.hasSelection() && c.selectionStart() == s.cursor.selectionStart()
+            if (c.hasSelection()
+                && c.selectionStart() == s.cursor.selectionStart()
                 && c.selectionEnd() == s.cursor.selectionEnd()) {
                 return true;
             } else {
@@ -503,7 +520,8 @@ void Editor::updateLineNumberAreaWidth(int /* newBlockCount */)
     }
 }
 
-void Editor::updateLineNumberArea(const QRect &rect, int dy)
+void Editor::updateLineNumberArea(const QRect &rect,
+                                  int dy)
 {
     if (dy) {
         m_d->m_lineNumberArea->scroll(0, dy);
@@ -525,8 +543,8 @@ void Editor::resizeEvent(QResizeEvent *e)
     if (layoutDirection() == Qt::LeftToRight) {
         m_d->m_lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
     } else {
-        m_d->m_lineNumberArea->setGeometry(QRect(cr.left() + cr.width() - lineNumberAreaWidth(), cr.top(),
-                                                 lineNumberAreaWidth(), cr.height()));
+        m_d->m_lineNumberArea->setGeometry(
+            QRect(cr.left() + cr.width() - lineNumberAreaWidth(), cr.top(), lineNumberAreaWidth(), cr.height()));
     }
 }
 
@@ -540,8 +558,8 @@ void Editor::paintEvent(QPaintEvent *event)
         if (layoutDirection() == Qt::LeftToRight) {
             r.setX(document()->documentMargin() + qRound(fm.averageCharWidth() * m_d->m_margins.m_length));
         } else {
-            r.setWidth(r.width() - qRound(fm.averageCharWidth() * m_d->m_margins.m_length)
-                       - document()->documentMargin());
+            r.setWidth(
+                r.width() - qRound(fm.averageCharWidth() * m_d->m_margins.m_length) - document()->documentMargin());
         }
 
         painter.setBrush(QColor(239, 239, 239));
@@ -561,7 +579,7 @@ void Editor::contextMenuEvent(QContextMenuEvent *event)
     const auto pos = c.position() - c.block().position();
 
     QPair<long long int, long long int> wordPos;
-    QMap<QAction*, QString> suggested;
+    QMap<QAction *, QString> suggested;
 
     if (syntaxHighlighter().isMisspelled(line, pos, wordPos)) {
         c.setPosition(c.block().position() + wordPos.first);
@@ -757,8 +775,13 @@ void Editor::showLineNumbers(bool on)
 namespace /* anonymous */
 {
 
-template<class Iterator, class C = std::less<>>
-bool markSelection(Iterator first, Iterator last, QTextCursor c, Editor *e, C cmp = C{})
+template<class Iterator,
+         class C = std::less<>>
+bool markSelection(Iterator first,
+                   Iterator last,
+                   QTextCursor c,
+                   Editor *e,
+                   C cmp = C{})
 {
     for (; first != last; ++first) {
         if (cmp(c.position(), first->cursor.position())) {
@@ -775,7 +798,9 @@ bool markSelection(Iterator first, Iterator last, QTextCursor c, Editor *e, C cm
 
 } /* namespace anonymous */
 
-void Editor::highlight(const QString &text, bool initCursor, QTextDocument::FindFlags findFlags)
+void Editor::highlight(const QString &text,
+                       bool initCursor,
+                       QTextDocument::FindFlags findFlags)
 {
     m_d->m_highlightedText = text;
 
@@ -803,10 +828,15 @@ void Editor::highlight(const QString &text, bool initCursor, QTextDocument::Find
     m_d->setExtraSelections();
 
     if (!m_d->m_extraSelections.isEmpty() && initCursor) {
-        if (!markSelection(m_d->m_extraSelections.cbegin(), m_d->m_extraSelections.cend(),
-                           QTextCursor(firstVisibleBlock()), this)) {
-            markSelection(m_d->m_extraSelections.crbegin(), m_d->m_extraSelections.crend(),
-                          QTextCursor(firstVisibleBlock()), this, std::greater<>{});
+        if (!markSelection(m_d->m_extraSelections.cbegin(),
+                           m_d->m_extraSelections.cend(),
+                           QTextCursor(firstVisibleBlock()),
+                           this)) {
+            markSelection(m_d->m_extraSelections.crbegin(),
+                          m_d->m_extraSelections.crend(),
+                          QTextCursor(firstVisibleBlock()),
+                          this,
+                          std::greater<>{});
         }
     }
 }
@@ -827,8 +857,11 @@ void Editor::onFindNext()
 void Editor::onFindPrev()
 {
     if (!m_d->m_extraSelections.isEmpty()) {
-        if (!markSelection(m_d->m_extraSelections.crbegin(), m_d->m_extraSelections.crend(),
-                           textCursor(), this, std::greater<>{})) {
+        if (!markSelection(m_d->m_extraSelections.crbegin(),
+                           m_d->m_extraSelections.crend(),
+                           textCursor(),
+                           this,
+                           std::greater<>{})) {
             auto s = m_d->m_extraSelections.at(m_d->m_extraSelections.size() - 1).cursor;
             auto c = textCursor();
             c.setPosition(s.selectionStart());
@@ -903,12 +936,18 @@ void Editor::onContentChanged()
 
     m_d->m_isReady = false;
 
-    emit doParsing(md, (m_d->m_useWorkingDir ? m_d->m_workingDirectory : info.absolutePath()), info.fileName(),
-                   m_d->m_currentParsingCounter, m_d->m_syntax, m_d->m_pluginsCfg);
+    emit doParsing(md,
+                   (m_d->m_useWorkingDir ? m_d->m_workingDirectory : info.absolutePath()),
+                   info.fileName(),
+                   m_d->m_currentParsingCounter,
+                   m_d->m_syntax,
+                   m_d->m_pluginsCfg);
 }
 
-void Editor::onParsingDone(std::shared_ptr<MD::Document<MD::QStringTrait>> doc, unsigned long long int counter,
-                           SyntaxVisitor syntax, MD::details::IdsMap<MD::QStringTrait> idsMap)
+void Editor::onParsingDone(std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                           unsigned long long int counter,
+                           SyntaxVisitor syntax,
+                           MD::details::IdsMap<MD::QStringTrait> idsMap)
 {
     if (m_d->m_currentParsingCounter == counter) {
         m_d->m_currentDoc = doc;
@@ -971,7 +1010,8 @@ void Editor::onNextMisspelled()
     syntaxHighlighter().highlightNextMisspelled(this);
 }
 
-void Editor::onWorkingDirectoryChange(const QString &wd, bool useWorkingDir)
+void Editor::onWorkingDirectoryChange(const QString &wd,
+                                      bool useWorkingDir)
 {
     m_d->m_workingDirectory = wd;
     m_d->m_useWorkingDir = useWorkingDir;

@@ -25,7 +25,8 @@ class ProgressDlg final : public QDialog
     Q_OBJECT
 
 public:
-    ProgressDlg(Render::PdfRenderer *render, QWidget *parent);
+    ProgressDlg(Render::PdfRenderer *render,
+                QWidget *parent);
     ~ProgressDlg() override = default;
 
     const QString &errorMsg() const;

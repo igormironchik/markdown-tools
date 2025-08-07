@@ -17,7 +17,8 @@
 #include <openssl/opensslconf.h>
 #endif // Q_OS_WIN
 
-int main(int argc, char **argv)
+int main(int argc,
+         char **argv)
 {
     QCoreApplication app(argc, argv);
 
@@ -25,7 +26,9 @@ int main(int argc, char **argv)
     parser.setApplicationDescription(QStringLiteral("Launcher of application required OpenSSL."));
     parser.addHelpOption();
 
-    QCommandLineOption executable(QStringLiteral("exe"), QStringLiteral("Executable to launch."), QStringLiteral("exe"));
+    QCommandLineOption executable(QStringLiteral("exe"),
+                                  QStringLiteral("Executable to launch."),
+                                  QStringLiteral("exe"));
     parser.addOption(executable);
 
     QCommandLineOption mode(QStringLiteral("mode"),
@@ -34,7 +37,8 @@ int main(int argc, char **argv)
                             QStringLiteral("notdetached"));
     parser.addOption(mode);
 
-    QCommandLineOption arg(QStringLiteral("arg"), QStringLiteral("Argument to pass to launced process."),
+    QCommandLineOption arg(QStringLiteral("arg"),
+                           QStringLiteral("Argument to pass to launced process."),
                            QStringLiteral("arg"));
     parser.addOption(arg);
 

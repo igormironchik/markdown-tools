@@ -15,8 +15,8 @@
 
 // md4qt include.
 #define MD4QT_QT_SUPPORT
-#include <md4qt/parser.h>
 #include <md4qt/html.h>
+#include <md4qt/parser.h>
 
 // shared include.
 #include "plugins_page.h"
@@ -37,7 +37,8 @@ struct Margins {
 }; // struct Margins
 
 //! Not-equality operator for settings of grayed space (margin).
-bool operator!=(const Margins &l, const Margins &r);
+bool operator!=(const Margins &l,
+                const Margins &r);
 
 //
 // Editor
@@ -54,9 +55,11 @@ class Editor : public QPlainTextEdit
 
 signals:
     //! Line number hovered.
-    void lineHovered(int lineNumber, const QPoint &pos);
+    void lineHovered(int lineNumber,
+                     const QPoint &pos);
     //! Context menu on line number was requested.
-    void lineNumberContextMenuRequested(int lineNumber, const QPoint &pos);
+    void lineNumberContextMenuRequested(int lineNumber,
+                                        const QPoint &pos);
     //! Hover leaved from line number.
     void hoverLeaved();
     //! Editor is ready, there are no pending threaded parsings of content.
@@ -64,8 +67,12 @@ signals:
     //! After parsing was found at least one misspelled word.
     void misspelled(bool found);
     //! Request for parsing of Markdon on thread.
-    void doParsing(const QString &md, const QString &path, const QString &fileName, unsigned long long int counter,
-                   SyntaxVisitor syntax, const MdShared::PluginsCfg &pluginsCfg);
+    void doParsing(const QString &md,
+                   const QString &path,
+                   const QString &fileName,
+                   unsigned long long int counter,
+                   SyntaxVisitor syntax,
+                   const MdShared::PluginsCfg &pluginsCfg);
 
 public:
     explicit Editor(QWidget *parent);
@@ -129,7 +136,9 @@ public slots:
     //! Enable/disable showing of line number area.
     void showLineNumbers(bool on);
     //! Highlight a given text in editor.
-    void highlight(const QString &text, bool initCursor, QTextDocument::FindFlags findFlags);
+    void highlight(const QString &text,
+                   bool initCursor,
+                   QTextDocument::FindFlags findFlags);
     //! Clear highlighting of any text in editor.
     void clearExtraSelections();
     //! Replace current selected text with a given text.
@@ -147,7 +156,8 @@ public slots:
     //! Highlight next misspelled word.
     void onNextMisspelled();
     //! Set working directory.
-    void onWorkingDirectoryChange(const QString &wd, bool useWorkingDir);
+    void onWorkingDirectoryChange(const QString &wd,
+                                  bool useWorkingDir);
     //! Update editor.
     void doUpdate();
 
@@ -157,7 +167,8 @@ private slots:
     //! Highlight current line (line on which cursor is positioned).
     void highlightCurrentLine();
     //! Update line number area (repaint).
-    void updateLineNumberArea(const QRect &rect, int dy);
+    void updateLineNumberArea(const QRect &rect,
+                              int dy);
     //! Highlight next.
     void onFindNext();
     //! Highlight previous.
@@ -165,8 +176,10 @@ private slots:
     //! Process content's change.
     void onContentChanged();
     //! Process finish of Markdown content parsing on a thread.
-    void onParsingDone(std::shared_ptr<MD::Document<MD::QStringTrait>> doc, unsigned long long int counter,
-                       SyntaxVisitor syntax, MD::details::IdsMap<MD::QStringTrait> idsMap);
+    void onParsingDone(std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                       unsigned long long int counter,
+                       SyntaxVisitor syntax,
+                       MD::details::IdsMap<MD::QStringTrait> idsMap);
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
@@ -201,11 +214,13 @@ class LineNumberArea : public QWidget
 
 signals:
     //! Line number hovered.
-    void lineHovered(int lineNumber, const QPoint &pos);
+    void lineHovered(int lineNumber,
+                     const QPoint &pos);
     //! Hover leaved a line number.
     void hoverLeaved();
     //! COntext menu requested on line number.
-    void lineNumberContextMenuRequested(int lineNumber, const QPoint &pos);
+    void lineNumberContextMenuRequested(int lineNumber,
+                                        const QPoint &pos);
 
 public:
     LineNumberArea(Editor *editor)

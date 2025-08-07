@@ -12,13 +12,19 @@
 namespace MdEditor
 {
 
-bool operator!=(const Colors &c1, const Colors &c2)
+bool operator!=(const Colors &c1,
+                const Colors &c2)
 {
-    return (c1.m_enabled != c2.m_enabled || c1.m_inlineColor != c2.m_inlineColor
-            || c1.m_linkColor != c2.m_linkColor || c1.m_textColor != c2.m_textColor
-            || c1.m_htmlColor != c2.m_htmlColor || c1.m_tableColor != c2.m_tableColor
-            || c1.m_codeColor != c2.m_codeColor || c1.m_enabled != c2.m_enabled
-            || c1.m_mathColor != c2.m_mathColor || c1.m_referenceColor != c2.m_referenceColor
+    return (c1.m_enabled != c2.m_enabled
+            || c1.m_inlineColor != c2.m_inlineColor
+            || c1.m_linkColor != c2.m_linkColor
+            || c1.m_textColor != c2.m_textColor
+            || c1.m_htmlColor != c2.m_htmlColor
+            || c1.m_tableColor != c2.m_tableColor
+            || c1.m_codeColor != c2.m_codeColor
+            || c1.m_enabled != c2.m_enabled
+            || c1.m_mathColor != c2.m_mathColor
+            || c1.m_referenceColor != c2.m_referenceColor
             || c1.m_specialColor != c2.m_specialColor);
 }
 
@@ -75,7 +81,8 @@ void ColorsPage::applyColors()
     m_ui.specialColor->setColor(m_colors.m_specialColor);
 }
 
-void ColorsPage::chooseColor(MdShared::ColorWidget *w, QColor &c)
+void ColorsPage::chooseColor(MdShared::ColorWidget *w,
+                             QColor &c)
 {
     QColorDialog dlg(c, this);
 

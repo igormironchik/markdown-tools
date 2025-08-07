@@ -21,7 +21,10 @@
 namespace MdShared
 {
 
-void createMask(QBitmap &m, QPainterPath &path, int width, int height)
+void createMask(QBitmap &m,
+                QPainterPath &path,
+                int width,
+                int height)
 {
     m.fill(Qt::color0);
     QPainter p(&m);
@@ -69,7 +72,9 @@ public:
      *
      * \param parent Parent widget.
      */
-    FolderWidget(const QString &folderName, int idx, QWidget *parent)
+    FolderWidget(const QString &folderName,
+                 int idx,
+                 QWidget *parent)
         : QWidget(parent)
         , m_folderName(folderName)
         , m_idx(idx)
@@ -124,7 +129,8 @@ public slots:
      *
      * \param notify Indicates that MdShared::FolderWidget::clicked should be emitted if \param on is true.
      */
-    void setSelected(bool on = true, bool notify = true)
+    void setSelected(bool on = true,
+                     bool notify = true)
     {
         m_selected = on;
 
@@ -227,7 +233,7 @@ struct FolderChooserPrivate {
 
     FolderChooser *m_q = nullptr;
     QStringList m_path;
-    QVector<FolderWidget*> m_folders;
+    QVector<FolderWidget *> m_folders;
     int m_width = 0;
     int m_height = 0;
     QBitmap m_mask;

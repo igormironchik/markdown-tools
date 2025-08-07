@@ -31,7 +31,9 @@ class Find : public QFrame
     Q_OBJECT
 
 public:
-    Find(MainWindow *window, Editor *editor, QWidget *parent);
+    Find(MainWindow *window,
+         Editor *editor,
+         QWidget *parent);
     ~Find() override;
 
     //! \return Line edit for "find".

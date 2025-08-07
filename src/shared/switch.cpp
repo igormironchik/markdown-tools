@@ -65,7 +65,8 @@ public:
     }
 
     bool isChecked() const;
-    void setState(Switch::State st, bool justUpdate = false);
+    void setState(Switch::State st,
+                  bool justUpdate = false);
     void init();
     void emitSignals();
     void drawText(QPainter *p,
@@ -103,7 +104,8 @@ bool SwitchPrivate::isChecked() const
     }
 }
 
-void SwitchPrivate::setState(Switch::State st, bool justUpdate)
+void SwitchPrivate::setState(Switch::State st,
+                             bool justUpdate)
 {
     if (state != st || justUpdate) {
         state = st;

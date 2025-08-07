@@ -16,7 +16,9 @@ namespace MdPdf
 // SettingsDlg
 //
 
-SettingsDlg::SettingsDlg(const MdShared::PluginsCfg &pluginsCfg, const QColor &markColor, QWidget *parent)
+SettingsDlg::SettingsDlg(const MdShared::PluginsCfg &pluginsCfg,
+                         const QColor &markColor,
+                         QWidget *parent)
     : QDialog(parent)
 {
     m_ui.setupUi(this);

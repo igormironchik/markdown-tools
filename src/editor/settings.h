@@ -32,9 +32,14 @@ class SettingsDlg : public QDialog
     Q_OBJECT
 
 public:
-    SettingsDlg(const Colors &c, const QFont &f, const Margins &m, bool enableSpelling,
-                MdShared::PluginsCfg &pCfg, Editor::IndentMode indentMode,
-                int indentSpacesCount, QWidget *parent);
+    SettingsDlg(const Colors &c,
+                const QFont &f,
+                const Margins &m,
+                bool enableSpelling,
+                MdShared::PluginsCfg &pCfg,
+                Editor::IndentMode indentMode,
+                int indentSpacesCount,
+                QWidget *parent);
     ~SettingsDlg() override = default;
 
     //! \return Colors scheme.

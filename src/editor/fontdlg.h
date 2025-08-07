@@ -25,7 +25,8 @@ class FontDlg : public QDialog
     Q_OBJECT
 
 public:
-    FontDlg(const QFont &f, QWidget *parent);
+    FontDlg(const QFont &f,
+            QWidget *parent);
     ~FontDlg() override = default;
 
     //! \return Current font.

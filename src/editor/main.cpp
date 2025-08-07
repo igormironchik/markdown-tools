@@ -16,7 +16,8 @@
 // shared include.
 #include "utils.h"
 
-int main(int argc, char **argv)
+int main(int argc,
+         char **argv)
 {
     QWebEngineUrlScheme qrc("qrc");
     qrc.setFlags(QWebEngineUrlScheme::CorsEnabled);
@@ -32,14 +33,17 @@ int main(int argc, char **argv)
     parser.setApplicationDescription(QStringLiteral("Markdown editor and viewer."));
     parser.addHelpOption();
     parser.addPositionalArgument(QStringLiteral("markdown"), QStringLiteral("Markdown file to open."));
-    QCommandLineOption view(QStringList() << "v"
-                                          << "view",
+    QCommandLineOption view(QStringList()
+                                << "v"
+                                << "view",
                             QStringLiteral("Open Markdown file in view (HTML preview) mode."));
-    QCommandLineOption all(QStringList() << "a"
-                                         << "all",
+    QCommandLineOption all(QStringList()
+                               << "a"
+                               << "all",
                            QStringLiteral("Load all linked Markdown files."));
-    QCommandLineOption workingDir(QStringList() << "w"
-                                         << "working-directory",
+    QCommandLineOption workingDir(QStringList()
+                                      << "w"
+                                      << "working-directory",
                                   QStringLiteral("Use set working directory."),
                                   QStringLiteral("dir"));
     parser.addOption(view);

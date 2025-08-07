@@ -22,13 +22,19 @@ class TocModel;
 class WordWrapItemDelegate final : public QStyledItemDelegate
 {
 public:
-    WordWrapItemDelegate(QTreeView *parent, TocModel *model, QSortFilterProxyModel *sortModel);
+    WordWrapItemDelegate(QTreeView *parent,
+                         TocModel *model,
+                         QSortFilterProxyModel *sortModel);
 
-    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;
-    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+    QSize sizeHint(const QStyleOptionViewItem &option,
+                   const QModelIndex &index) const override;
+    void paint(QPainter *painter,
+               const QStyleOptionViewItem &option,
+               const QModelIndex &index) const override;
 
 protected:
-    void initStyleOption(QStyleOptionViewItem *option, const QModelIndex &index) const override;
+    void initStyleOption(QStyleOptionViewItem *option,
+                         const QModelIndex &index) const override;
 
 private:
     QTreeView *m_parent;

@@ -26,7 +26,8 @@ struct ColorsDialogPrivate {
 // ColorsDialog
 //
 
-ColorsDialog::ColorsDialog(const Colors &cols, QWidget *parent)
+ColorsDialog::ColorsDialog(const Colors &cols,
+                           QWidget *parent)
     : QDialog(parent)
     , m_d(new ColorsDialogPrivate)
 {

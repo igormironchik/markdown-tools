@@ -23,7 +23,9 @@ public:
     ~PreviewPage() override = default;
 
 protected:
-    bool acceptNavigationRequest(const QUrl &url, NavigationType type, bool isMainFrame) override;
+    bool acceptNavigationRequest(const QUrl &url,
+                                 NavigationType type,
+                                 bool isMainFrame) override;
 }; // class PreviewPage
 
 } /* namespace MdEditor */

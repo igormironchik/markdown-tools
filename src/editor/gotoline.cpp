@@ -20,7 +20,9 @@ namespace MdEditor
 //
 
 struct GoToLinePrivate {
-    GoToLinePrivate(MainWindow *w, Editor *e, GoToLine *parent)
+    GoToLinePrivate(MainWindow *w,
+                    Editor *e,
+                    GoToLine *parent)
         : m_q(parent)
         , m_editor(e)
         , m_window(w)
@@ -49,9 +51,13 @@ struct GoToLinePrivate {
 // GoToLine
 //
 
-GoToLine::GoToLine(MainWindow *window, Editor *editor, QWidget *parent)
+GoToLine::GoToLine(MainWindow *window,
+                   Editor *editor,
+                   QWidget *parent)
     : QFrame(parent)
-    , m_d(new GoToLinePrivate(window, editor, this))
+    , m_d(new GoToLinePrivate(window,
+                              editor,
+                              this))
 {
     m_d->initUi();
 }

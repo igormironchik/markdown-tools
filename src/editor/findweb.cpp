@@ -21,7 +21,9 @@ namespace MdEditor
 //
 
 struct FindWebPrivate {
-    FindWebPrivate(MainWindow *w, WebView *wb, FindWeb *parent)
+    FindWebPrivate(MainWindow *w,
+                   WebView *wb,
+                   FindWeb *parent)
         : m_q(parent)
         , m_web(wb)
         , m_window(w)
@@ -66,9 +68,13 @@ struct FindWebPrivate {
 // FindWeb
 //
 
-FindWeb::FindWeb(MainWindow *window, WebView *web, QWidget *parent)
+FindWeb::FindWeb(MainWindow *window,
+                 WebView *web,
+                 QWidget *parent)
     : QFrame(parent)
-    , m_d(new FindWebPrivate(window, web, this))
+    , m_d(new FindWebPrivate(window,
+                             web,
+                             this))
 {
     m_d->initUi();
 }
@@ -131,7 +137,8 @@ void FindWeb::onFindNext()
 
 void FindWeb::onFindPrev()
 {
-    m_d->m_web->findText(m_d->m_ui.findEdit->text(), QWebEnginePage::FindBackward | QWebEnginePage::FindCaseSensitively);
+    m_d->m_web->findText(m_d->m_ui.findEdit->text(),
+                         QWebEnginePage::FindBackward | QWebEnginePage::FindCaseSensitively);
 }
 
 void FindWeb::hideEvent(QHideEvent *event)

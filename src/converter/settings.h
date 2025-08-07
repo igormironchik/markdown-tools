@@ -26,7 +26,9 @@ class SettingsDlg : public QDialog
     Q_OBJECT
 
 public:
-    explicit SettingsDlg(const MdShared::PluginsCfg &pluginsCfg, const QColor &markColor, QWidget *parent = nullptr);
+    explicit SettingsDlg(const MdShared::PluginsCfg &pluginsCfg,
+                         const QColor &markColor,
+                         QWidget *parent = nullptr);
     ~SettingsDlg() override;
 
     MdShared::PluginsCfg pluginsCfg() const;

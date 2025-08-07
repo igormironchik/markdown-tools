@@ -16,15 +16,15 @@ namespace MdShared
 //
 
 //! Configuration of emphasis plugin
-struct EmphasisPluginCfg
-{
+struct EmphasisPluginCfg {
     //! Delimiter.
     QChar m_delimiter;
     //! Is on?
     bool m_on = false;
 }; // struct EmphasisPluginCfg
 
-inline bool operator != (const EmphasisPluginCfg &c1, const EmphasisPluginCfg &c2)
+inline bool operator!=(const EmphasisPluginCfg &c1,
+                       const EmphasisPluginCfg &c2)
 {
     return (c1.m_delimiter != c2.m_delimiter || c1.m_on != c2.m_on);
 }
@@ -34,8 +34,7 @@ inline bool operator != (const EmphasisPluginCfg &c1, const EmphasisPluginCfg &c
 //
 
 //! Configuration of plugins.
-struct PluginsCfg
-{
+struct PluginsCfg {
     //! Configuration of superscript plugin.
     EmphasisPluginCfg m_sup;
     //! Configuration of subscrip plugin.
@@ -46,10 +45,11 @@ struct PluginsCfg
     bool m_yamlEnabled = false;
 }; // struct PluginsCfg
 
-inline bool operator != (const PluginsCfg &c1, const PluginsCfg &c2)
+inline bool operator!=(const PluginsCfg &c1,
+                       const PluginsCfg &c2)
 {
-    return (c1.m_sup != c2.m_sup || c1.m_sub != c2.m_sub || c1.m_mark != c2.m_mark
-            || c1.m_yamlEnabled != c2.m_yamlEnabled);
+    return (
+        c1.m_sup != c2.m_sup || c1.m_sub != c2.m_sub || c1.m_mark != c2.m_mark || c1.m_yamlEnabled != c2.m_yamlEnabled);
 }
 
 //

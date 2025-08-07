@@ -13,7 +13,8 @@ namespace MdEditor
 // FontDlg
 //
 
-FontDlg::FontDlg(const QFont &f, QWidget *parent)
+FontDlg::FontDlg(const QFont &f,
+                 QWidget *parent)
     : QDialog(parent)
 {
     m_ui.setupUi(this);

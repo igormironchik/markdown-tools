@@ -43,7 +43,8 @@ struct Colors {
 }; // struct Colors
 
 //! Not-equal operator for color schemes.
-bool operator!=(const Colors &c1, const Colors &c2);
+bool operator!=(const Colors &c1,
+                const Colors &c2);
 
 //
 // ColorsPage
@@ -91,7 +92,8 @@ public slots:
 
 private:
     //! Base implementation of color choosing.
-    void chooseColor(MdShared::ColorWidget *w, QColor &c);
+    void chooseColor(MdShared::ColorWidget *w,
+                     QColor &c);
 
 private:
     Q_DISABLE_COPY(ColorsPage)

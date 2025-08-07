@@ -13,13 +13,13 @@
 #include <Sonnet/Settings>
 
 // Qt include.
+#include <QHash>
+#include <QMutexLocker>
 #include <QScopedValueRollback>
 #include <QTextBlock>
 #include <QTextCharFormat>
 #include <QTextCursor>
 #include <QTextEdit>
-#include <QHash>
-#include <QMutexLocker>
 
 // C++ include.
 #include <algorithm>
@@ -55,13 +55,17 @@ struct SyntaxVisitorPrivate {
         m_formats.clear();
     }
 
-    void setFormat(const QTextCharFormat &format, const MD::WithPosition &pos)
+    void setFormat(const QTextCharFormat &format,
+                   const MD::WithPosition &pos)
     {
         setFormat(format, pos.startLine(), pos.startColumn(), pos.endLine(), pos.endColumn());
     }
 
-    void setFormat(const QTextCharFormat &format, long long int startLine, long long int startColumn,
-                   long long int endLine, long long int endColumn)
+    void setFormat(const QTextCharFormat &format,
+                   long long int startLine,
+                   long long int startColumn,
+                   long long int endLine,
+                   long long int endColumn)
     {
         for (auto i = startLine; i <= endLine; ++i) {
             if (m_stream) {
@@ -70,8 +74,9 @@ struct SyntaxVisitorPrivate {
                 QTextLayout::FormatRange r;
                 r.format = format;
                 r.start = (i == startLine ? startColumn : 0);
-                r.length = (i == startLine ? (i == endLine ? endColumn - startColumn + 1 : block.length() - 1 - startColumn)
-                                           : (i == endLine ? endColumn + 1 : block.length() - 1));
+                r.length =
+                    (i == startLine ? (i == endLine ? endColumn - startColumn + 1 : block.length() - 1 - startColumn)
+                                    : (i == endLine ? endColumn + 1 : block.length() - 1));
 
                 m_formats[i].m_format.push_back(r);
             }
@@ -231,8 +236,10 @@ void SyntaxVisitor::spellingSettingsChanged(bool enabled)
     m_d->m_correctWords.clear();
 }
 
-bool SyntaxVisitor::isMisspelled(long long int line, long long int pos,
-                                 QPair<long long int, long long int> &wordPos) const
+bool SyntaxVisitor::isMisspelled(long long int line,
+                                 long long int pos,
+                                 QPair<long long int,
+                                       long long int> &wordPos) const
 {
     if (m_d->m_misspelledPos.contains(line)) {
         for (const auto &p : std::as_const(m_d->m_misspelledPos[line])) {
@@ -255,7 +262,7 @@ QStringList SyntaxVisitor::spellSuggestions(const QString &word) const
     auto &speller = Speller::instance();
     QMutexLocker lock(&speller.m_mutex);
 
-    for (const auto & lang : std::as_const(m_d->m_preferredLanguages)) {
+    for (const auto &lang : std::as_const(m_d->m_preferredLanguages)) {
         speller.m_speller->setLanguage(lang);
         ret.append(speller.m_speller->suggest(word));
     }
@@ -276,15 +283,16 @@ void SyntaxVisitor::highlightNextMisspelled(QPlainTextEdit *editor)
         if (m_d->m_currentHighlightedMisspelled.first == -1) {
             m_d->m_currentHighlightedMisspelled = {m_d->m_misspelledPos.firstKey(), 0};
         } else {
-            if (m_d->m_currentHighlightedMisspelled.first == m_d->m_misspelledPos.lastKey() &&
-                m_d->m_currentHighlightedMisspelled.second == m_d->m_misspelledPos.last().size() - 1) {
+            if (m_d->m_currentHighlightedMisspelled.first == m_d->m_misspelledPos.lastKey()
+                && m_d->m_currentHighlightedMisspelled.second == m_d->m_misspelledPos.last().size() - 1) {
                 m_d->m_currentHighlightedMisspelled = {m_d->m_misspelledPos.firstKey(), 0};
             } else {
                 ++m_d->m_currentHighlightedMisspelled.second;
 
-                if (m_d->m_currentHighlightedMisspelled.second >= m_d->m_misspelledPos[m_d->m_currentHighlightedMisspelled.first].size()) {
-                    m_d->m_currentHighlightedMisspelled.first = std::next(m_d->m_misspelledPos.find(
-                                                                              m_d->m_currentHighlightedMisspelled.first)).key();
+                if (m_d->m_currentHighlightedMisspelled.second
+                    >= m_d->m_misspelledPos[m_d->m_currentHighlightedMisspelled.first].size()) {
+                    m_d->m_currentHighlightedMisspelled.first =
+                        std::next(m_d->m_misspelledPos.find(m_d->m_currentHighlightedMisspelled.first)).key();
                     m_d->m_currentHighlightedMisspelled.second = 0;
                 }
             }
@@ -292,7 +300,8 @@ void SyntaxVisitor::highlightNextMisspelled(QPlainTextEdit *editor)
 
         const auto b = editor->document()->findBlockByNumber(m_d->m_currentHighlightedMisspelled.first);
         auto c = QTextCursor(b);
-        const auto p = m_d->m_misspelledPos[m_d->m_currentHighlightedMisspelled.first][m_d->m_currentHighlightedMisspelled.second];
+        const auto p =
+            m_d->m_misspelledPos[m_d->m_currentHighlightedMisspelled.first][m_d->m_currentHighlightedMisspelled.second];
         c.setPosition(b.position() + p.first);
         c.setPosition(b.position() + p.second + 1, QTextCursor::KeepAnchor);
         editor->setTextCursor(c);
@@ -377,12 +386,15 @@ void SyntaxVisitor::onReferenceLink(MD::Link<MD::QStringTrait> *l)
     MD::PosCache<MD::QStringTrait>::onReferenceLink(l);
 }
 
-namespace /* anonymous */ {
+namespace /* anonymous */
+{
 
 template<class String>
-QString
-readWord(const String &str, long long int &pos, long long int lastPos,
-         QVector<long long int> &puncts, bool &allUpper)
+QString readWord(const String &str,
+                 long long int &pos,
+                 long long int lastPos,
+                 QVector<long long int> &puncts,
+                 bool &allUpper)
 {
     QString word;
     const auto startPos = pos;
@@ -436,7 +448,9 @@ void SyntaxVisitor::onText(MD::Text<MD::QStringTrait> *t)
         format.setFontUnderline(true);
         format.setUnderlineStyle(QTextCharFormat::WaveUnderline);
 
-        pos = MD::skipIf(pos, block, [](const QChar &ch) { return (ch.isPunct() || ch.isSpace()); });
+        pos = MD::skipIf(pos, block, [](const QChar &ch) {
+            return (ch.isPunct() || ch.isSpace());
+        });
 
         while (pos <= t->endColumn()) {
             const auto startPos = pos;
@@ -475,7 +489,9 @@ void SyntaxVisitor::onText(MD::Text<MD::QStringTrait> *t)
                 break;
             }
 
-            pos = MD::skipIf(++pos, block, [](const QChar &ch) { return (ch.isPunct() || ch.isSpace()); });
+            pos = MD::skipIf(++pos, block, [](const QChar &ch) {
+                return (ch.isPunct() || ch.isSpace());
+            });
         }
     }
 
@@ -611,7 +627,9 @@ void SyntaxVisitor::onBlockquote(MD::Blockquote<MD::QStringTrait> *b)
     }
 }
 
-void SyntaxVisitor::onListItem(MD::ListItem<MD::QStringTrait> *l, bool first, bool)
+void SyntaxVisitor::onListItem(MD::ListItem<MD::QStringTrait> *l,
+                               bool first,
+                               bool)
 {
     MD::PosCache<MD::QStringTrait>::onListItem(l, first);
 

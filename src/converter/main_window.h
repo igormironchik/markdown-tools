@@ -4,8 +4,8 @@
 */
 
 // md-pdf include.
-#include "ui_main_window.h"
 #include "syntax.h"
+#include "ui_main_window.h"
 
 // shared include.
 #include "plugins_page.h"
@@ -13,9 +13,9 @@
 // Qt include.
 #include <QMainWindow>
 #include <QScopedPointer>
+#include <QSettings>
 #include <QThread>
 #include <QWidget>
-#include <QSettings>
 
 // C++ include.
 #include <memory>

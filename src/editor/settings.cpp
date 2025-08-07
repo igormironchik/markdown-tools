@@ -21,9 +21,14 @@ namespace MdEditor
 // SettingsDlg
 //
 
-SettingsDlg::SettingsDlg(const Colors &c, const QFont &f, const Margins &m, bool enableSpelling,
-                         MdShared::PluginsCfg &pCfg, Editor::IndentMode indentMode,
-                         int indentSpacesCount, QWidget *parent)
+SettingsDlg::SettingsDlg(const Colors &c,
+                         const QFont &f,
+                         const Margins &m,
+                         bool enableSpelling,
+                         MdShared::PluginsCfg &pCfg,
+                         Editor::IndentMode indentMode,
+                         int indentSpacesCount,
+                         QWidget *parent)
     : QDialog(parent)
 {
     m_ui.setupUi(this);
@@ -45,11 +50,14 @@ SettingsDlg::SettingsDlg(const Colors &c, const QFont &f, const Margins &m, bool
     connect(m_ui.m_rightMargin, &QCheckBox::checkStateChanged, this, &SettingsDlg::onEnableRightMargin);
     connect(m_ui.m_tabsMode, &QComboBox::currentIndexChanged, this, &SettingsDlg::onIndentModeChanged);
 
-    m_ui.m_menu->item(0)->setIcon(QIcon::fromTheme(QStringLiteral("fill-color"), QIcon(QStringLiteral(":/res/img/fill-color.png"))));
-    m_ui.m_menu->item(1)->setIcon(
-        QIcon::fromTheme(QStringLiteral("preferences-desktop-font"), QIcon(QStringLiteral(":/res/img/preferences-desktop-font.png"))));
-    m_ui.m_menu->item(2)->setIcon(QIcon::fromTheme(QStringLiteral("document-properties"), QIcon(QStringLiteral(":/res/img/document-properties.png"))));
-    m_ui.m_menu->item(3)->setIcon(QIcon::fromTheme(QStringLiteral("preferences-plugin"), QIcon(QStringLiteral(":/res/img/preferences-plugin.png"))));
+    m_ui.m_menu->item(0)->setIcon(
+        QIcon::fromTheme(QStringLiteral("fill-color"), QIcon(QStringLiteral(":/res/img/fill-color.png"))));
+    m_ui.m_menu->item(1)->setIcon(QIcon::fromTheme(QStringLiteral("preferences-desktop-font"),
+                                                   QIcon(QStringLiteral(":/res/img/preferences-desktop-font.png"))));
+    m_ui.m_menu->item(2)->setIcon(QIcon::fromTheme(QStringLiteral("document-properties"),
+                                                   QIcon(QStringLiteral(":/res/img/document-properties.png"))));
+    m_ui.m_menu->item(3)->setIcon(QIcon::fromTheme(QStringLiteral("preferences-plugin"),
+                                                   QIcon(QStringLiteral(":/res/img/preferences-plugin.png"))));
 
     m_ui.m_spellingGroup->setChecked(enableSpelling);
 
@@ -113,22 +121,19 @@ Margins SettingsDlg::editorMargins() const
     return m;
 }
 
-bool
-SettingsDlg::isSpellingEnabled() const
+bool SettingsDlg::isSpellingEnabled() const
 {
     return m_ui.m_spellingGroup->isChecked();
 }
 
-MdShared::PluginsCfg
-SettingsDlg::pluginsCfg() const
+MdShared::PluginsCfg SettingsDlg::pluginsCfg() const
 {
     return m_ui.m_pluginsPage->cfg();
 }
 
 Editor::IndentMode SettingsDlg::indentMode() const
 {
-    return (m_ui.m_tabsMode->currentIndex() == 0 ? Editor::IndentMode::Tabs :
-                                                   Editor::IndentMode::Spaces);
+    return (m_ui.m_tabsMode->currentIndex() == 0 ? Editor::IndentMode::Tabs : Editor::IndentMode::Spaces);
 }
 
 int SettingsDlg::indentSpacesCount() const
@@ -136,8 +141,7 @@ int SettingsDlg::indentSpacesCount() const
     return m_ui.m_spacesAmount->value();
 }
 
-Sonnet::ConfigWidget *
-SettingsDlg::sonnetConfigWidget() const
+Sonnet::ConfigWidget *SettingsDlg::sonnetConfigWidget() const
 {
     return m_ui.m_spellingConfig;
 }

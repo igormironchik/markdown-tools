@@ -17,7 +17,8 @@ namespace MdPdf
 // ProgressDlg
 //
 
-ProgressDlg::ProgressDlg(Render::PdfRenderer *render, QWidget *parent)
+ProgressDlg::ProgressDlg(Render::PdfRenderer *render,
+                         QWidget *parent)
     : QDialog(parent)
     , m_render(render)
     , m_ui(new Ui::ProgressDlg())
@@ -60,7 +61,8 @@ void ProgressDlg::finished(bool terminated)
 
 void ProgressDlg::cancel()
 {
-    const auto answer = QMessageBox::question(this, tr("Cancel rendering?"), tr("Do you really want to terminate rendering?"));
+    const auto answer =
+        QMessageBox::question(this, tr("Cancel rendering?"), tr("Do you really want to terminate rendering?"));
 
     if (answer == QMessageBox::Yes) {
         m_render->terminate();

@@ -31,14 +31,17 @@ bool isRightToLeft(const QChar &ch)
     }
 }
 
-QVector<QPair<QString, bool>> splitString(const QString &str, bool skipSpaces)
+QVector<QPair<QString,
+              bool>>
+splitString(const QString &str,
+            bool skipSpaces)
 {
     QVector<QPair<QString, bool>> res;
     qsizetype first = 0;
     bool space = false;
     bool previousRTL = false;
 
-    for(qsizetype i = 0; i < str.length(); ++i) {
+    for (qsizetype i = 0; i < str.length(); ++i) {
         if (str[i].isSpace() && !space) {
             if (first < i) {
                 const auto word = str.sliced(first, i - first);
@@ -75,12 +78,13 @@ QVector<QPair<QString, bool>> splitString(const QString &str, bool skipSpaces)
     return res;
 }
 
-void orderWords(QVector<QPair<QString, bool>> & text)
+void orderWords(QVector<QPair<QString,
+                              bool>> &text)
 {
     qsizetype start = -1;
     qsizetype end = -1;
 
-    auto reverseItems = [] (qsizetype start, qsizetype end, QVector<QPair<QString, bool>> & data) {
+    auto reverseItems = [](qsizetype start, qsizetype end, QVector<QPair<QString, bool>> &data) {
         if (start > -1 && end > start) {
             while (end - start > 0) {
                 data.swapItemsAt(start, end);
@@ -93,7 +97,7 @@ void orderWords(QVector<QPair<QString, bool>> & text)
     for (qsizetype i = 0; i < text.size(); ++i) {
         if (text[i].first != QStringLiteral(" ")) {
             if (!text[i].second) {
-                if (start == -1 ) {
+                if (start == -1) {
                     start = i;
                     end = i;
                 } else {
@@ -111,11 +115,14 @@ void orderWords(QVector<QPair<QString, bool>> & text)
     reverseItems(start, end, text);
 }
 
-void setPlugins(MD::Parser<MD::QStringTrait> &parser, const MdShared::PluginsCfg &cfg)
+void setPlugins(MD::Parser<MD::QStringTrait> &parser,
+                const MdShared::PluginsCfg &cfg)
 {
     if (cfg.m_sup.m_on) {
-        parser.addTextPlugin(MD::TextPlugin::UserDefined, MD::EmphasisPlugin::emphasisTemplatePlugin<MD::QStringTrait>,
-                             true, QStringList() << cfg.m_sup.m_delimiter << QStringLiteral("8"));
+        parser.addTextPlugin(MD::TextPlugin::UserDefined,
+                             MD::EmphasisPlugin::emphasisTemplatePlugin<MD::QStringTrait>,
+                             true,
+                             QStringList() << cfg.m_sup.m_delimiter << QStringLiteral("8"));
     } else {
         parser.removeTextPlugin(MD::TextPlugin::UserDefined);
     }
@@ -123,7 +130,8 @@ void setPlugins(MD::Parser<MD::QStringTrait> &parser, const MdShared::PluginsCfg
     if (cfg.m_sub.m_on) {
         parser.addTextPlugin(static_cast<MD::TextPlugin>(static_cast<int>(MD::TextPlugin::UserDefined) + 1),
                              MD::EmphasisPlugin::emphasisTemplatePlugin<MD::QStringTrait>,
-                             true, QStringList() << cfg.m_sub.m_delimiter << QStringLiteral("16"));
+                             true,
+                             QStringList() << cfg.m_sub.m_delimiter << QStringLiteral("16"));
     } else {
         parser.removeTextPlugin(static_cast<MD::TextPlugin>(static_cast<int>(MD::TextPlugin::UserDefined) + 1));
     }
@@ -131,7 +139,8 @@ void setPlugins(MD::Parser<MD::QStringTrait> &parser, const MdShared::PluginsCfg
     if (cfg.m_mark.m_on) {
         parser.addTextPlugin(static_cast<MD::TextPlugin>(static_cast<int>(MD::TextPlugin::UserDefined) + 2),
                              MD::EmphasisPlugin::emphasisTemplatePlugin<MD::QStringTrait>,
-                             true, QStringList() << cfg.m_mark.m_delimiter << QStringLiteral("32"));
+                             true,
+                             QStringList() << cfg.m_mark.m_delimiter << QStringLiteral("32"));
     } else {
         parser.removeTextPlugin(static_cast<MD::TextPlugin>(static_cast<int>(MD::TextPlugin::UserDefined) + 2));
     }

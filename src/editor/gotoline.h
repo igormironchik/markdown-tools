@@ -30,7 +30,9 @@ class GoToLine : public QFrame
     Q_OBJECT
 
 public:
-    GoToLine(MainWindow *window, Editor *editor, QWidget *parent);
+    GoToLine(MainWindow *window,
+             Editor *editor,
+             QWidget *parent);
     ~GoToLine() override;
 
     //! \return Line edit.

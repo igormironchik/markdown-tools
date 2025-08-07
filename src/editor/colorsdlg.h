@@ -36,7 +36,8 @@ class ColorsDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit ColorsDialog(const Colors &cols, QWidget *parent = nullptr);
+    explicit ColorsDialog(const Colors &cols,
+                          QWidget *parent = nullptr);
     ~ColorsDialog() override;
 
     //! \return Current colors scheme.

@@ -27,7 +27,9 @@ struct UnitData {
 
 //! ToC tree view full data.
 struct StringData {
-    StringData(const QString &t, bool c, bool rtl);
+    StringData(const QString &t,
+               bool c,
+               bool rtl);
 
     //! Non-splitted text.
     UnitData m_data;
@@ -48,7 +50,11 @@ using StringDataVec = QVector<StringData>;
 
 //! Data for ToC item in the model.
 struct TocData {
-    TocData(const StringDataVec &t, long long int l, int v, const QString &id, TocData *p = nullptr);
+    TocData(const StringDataVec &t,
+            long long int l,
+            int v,
+            const QString &id,
+            TocData *p = nullptr);
 
     //! \return COncatenated text.
     QString concatenatedText() const;
@@ -81,10 +87,15 @@ public:
     ~TocModel() override;
 
     //! Add top-level item.
-    void addTopLevelItem(const StringDataVec &text, long long int line, int level,
+    void addTopLevelItem(const StringDataVec &text,
+                         long long int line,
+                         int level,
                          const QString &label);
     //! Add child item.
-    void addChildItem(const QModelIndex &parent, const StringDataVec &text, long long int line, int level,
+    void addChildItem(const QModelIndex &parent,
+                      const StringDataVec &text,
+                      long long int line,
+                      int level,
                       const QString &label);
     //! Clear.
     void clear();
@@ -100,15 +111,22 @@ public:
     //! \return Count of the columns.
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
     //! \return Data by the given index and role.
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    QVariant data(const QModelIndex &index,
+                  int role = Qt::DisplayRole) const override;
     //! Set data.
-    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
+    bool setData(const QModelIndex &index,
+                 const QVariant &value,
+                 int role = Qt::EditRole) override;
     //! \return Flags.
     Qt::ItemFlags flags(const QModelIndex &index) const override;
     //! \return Header data.
-    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
+    QVariant headerData(int section,
+                        Qt::Orientation orientation,
+                        int role = Qt::DisplayRole) const override;
     //! \return Index.
-    QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
+    QModelIndex index(int row,
+                      int column,
+                      const QModelIndex &parent = QModelIndex()) const override;
     //! \return Parent index.
     QModelIndex parent(const QModelIndex &index) const override;
 

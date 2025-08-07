@@ -56,8 +56,10 @@ private slots:
     void onTextChanged();
     void onAbout();
     void onAboutQt();
-    void onLineHovered(int lineNumber, const QPoint &pos);
-    void onLineNumberContextMenuRequested(int lineNumber, const QPoint &pos);
+    void onLineHovered(int lineNumber,
+                       const QPoint &pos);
+    void onLineNumberContextMenuRequested(int lineNumber,
+                                          const QPoint &pos);
     void onFind(bool on);
     void onFindWeb(bool on);
     void onGoToLine(bool on);
@@ -69,7 +71,8 @@ private slots:
     void onToolHide();
     void onCursorPositionChanged();
     void onEditMenuActionTriggered(QAction *action);
-    void onNavigationDoubleClicked(QTreeWidgetItem *item, int column);
+    void onNavigationDoubleClicked(QTreeWidgetItem *item,
+                                   int column);
     void onTogglePreviewAction(bool checked);
     void onToggleLivePreviewAction(bool checked);
     void onShowLicenses();

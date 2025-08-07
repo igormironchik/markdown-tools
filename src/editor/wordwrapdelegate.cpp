@@ -26,7 +26,9 @@ static const QColor s_codeBackgroundColor = QColor(239, 239, 239);
 // WordWrapItemDelegate
 //
 
-WordWrapItemDelegate::WordWrapItemDelegate(QTreeView *parent, TocModel *model, QSortFilterProxyModel *sortModel)
+WordWrapItemDelegate::WordWrapItemDelegate(QTreeView *parent,
+                                           TocModel *model,
+                                           QSortFilterProxyModel *sortModel)
     : QStyledItemDelegate(parent)
     , m_parent(parent)
     , m_model(model)
@@ -38,9 +40,12 @@ namespace /* anonymous */
 {
 
 //! Helper for correct handling RTL and LTR in tree view item delegate.
-struct LayoutDirectionHandler
-{
-    LayoutDirectionHandler(bool rightToLeft, int leftX, int width, int y, int lineHeight)
+struct LayoutDirectionHandler {
+    LayoutDirectionHandler(bool rightToLeft,
+                           int leftX,
+                           int width,
+                           int y,
+                           int lineHeight)
         : m_rightToLeft(rightToLeft)
         , m_leftX(leftX)
         , m_width(width)
@@ -50,20 +55,28 @@ struct LayoutDirectionHandler
     {
     }
 
-    bool isRightToLeft() const { return m_rightToLeft; }
+    bool isRightToLeft() const
+    {
+        return m_rightToLeft;
+    }
 
     bool isFit(int width) const
     {
-        return (isRightToLeft() ? m_x - width >= m_leftX : m_x + width <= m_leftX + m_width );
+        return (isRightToLeft() ? m_x - width >= m_leftX : m_x + width <= m_leftX + m_width);
     }
 
-    QRect codeRect(int startCodeX, int startCodeY, int codeWidth) const
+    QRect codeRect(int startCodeX,
+                   int startCodeY,
+                   int codeWidth) const
     {
-        return (isRightToLeft() ? QRect{startCodeX - codeWidth, startCodeY, codeWidth, m_lineHeight} :
-                                  QRect{startCodeX, startCodeY, codeWidth, m_lineHeight});
+        return (isRightToLeft() ? QRect{startCodeX - codeWidth, startCodeY, codeWidth, m_lineHeight}
+                                : QRect{startCodeX, startCodeY, codeWidth, m_lineHeight});
     }
 
-    bool isWider(int width) const { return width > m_width; }
+    bool isWider(int width) const
+    {
+        return width > m_width;
+    }
 
     void moveToNewLine()
     {
@@ -91,11 +104,13 @@ struct LayoutDirectionHandler
 
     QRect rect(int width) const
     {
-        return (isRightToLeft() ? QRect{m_x - width, m_y, width, m_lineHeight} :
-                                  QRect{m_x, m_y, width, m_lineHeight});
+        return (isRightToLeft() ? QRect{m_x - width, m_y, width, m_lineHeight} : QRect{m_x, m_y, width, m_lineHeight});
     }
 
-    int startX() const { return (isRightToLeft() ? m_leftX + m_width : m_leftX); }
+    int startX() const
+    {
+        return (isRightToLeft() ? m_leftX + m_width : m_leftX);
+    }
 
     void moveXBy(int delta)
     {
@@ -106,9 +121,15 @@ struct LayoutDirectionHandler
         }
     }
 
-    int x() const { return m_x; }
+    int x() const
+    {
+        return m_x;
+    }
 
-    int y() const { return m_y; }
+    int y() const
+    {
+        return m_y;
+    }
 
     bool m_rightToLeft;
     int m_leftX;
@@ -121,7 +142,8 @@ struct LayoutDirectionHandler
 
 } /* namespace anonymous */
 
-QSize WordWrapItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
+QSize WordWrapItemDelegate::sizeHint(const QStyleOptionViewItem &option,
+                                     const QModelIndex &index) const
 {
     const auto w = QApplication::style()->pixelMetric(QStyle::PM_TreeViewIndentation);
 
@@ -143,8 +165,7 @@ QSize WordWrapItemDelegate::sizeHint(const QStyleOptionViewItem &option, const Q
     const auto width = m_parent->header()->sectionSize(index.column()) - w * level;
 
     int startCodeX, startCodeY, codeWidth;
-    LayoutDirectionHandler layout(data.first().m_data.m_text.isRightToLeft(), 0, width, 0,
-                                  option.fontMetrics.height());
+    LayoutDirectionHandler layout(data.first().m_data.m_text.isRightToLeft(), 0, width, 0, option.fontMetrics.height());
 
     for (auto it = data.begin(), last = data.end(); it != last; ++it) {
         it->m_backgroundRects.clear();
@@ -180,8 +201,8 @@ QSize WordWrapItemDelegate::sizeHint(const QStyleOptionViewItem &option, const Q
                             w = option.fontMetrics.horizontalAdvance(tmpStr);
                         }
 
-                        it->m_textRects.append(std::make_pair(layout.rect(w),
-                                                              UnitData{tmpStr, it->m_data.m_code, tt.second}));
+                        it->m_textRects.append(
+                            std::make_pair(layout.rect(w), UnitData{tmpStr, it->m_data.m_code, tt.second}));
 
                         if (it->m_data.m_code) {
                             it->m_backgroundRects.append(layout.rect(w));
@@ -227,7 +248,9 @@ QSize WordWrapItemDelegate::sizeHint(const QStyleOptionViewItem &option, const Q
     return {layout.width(), layout.height()};
 }
 
-void WordWrapItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+void WordWrapItemDelegate::paint(QPainter *painter,
+                                 const QStyleOptionViewItem &option,
+                                 const QModelIndex &index) const
 {
     QStyledItemDelegate::paint(painter, option, index);
 
@@ -274,7 +297,8 @@ void WordWrapItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &
     }
 }
 
-void WordWrapItemDelegate::initStyleOption(QStyleOptionViewItem *option, const QModelIndex &index) const
+void WordWrapItemDelegate::initStyleOption(QStyleOptionViewItem *option,
+                                           const QModelIndex &index) const
 {
     QStyledItemDelegate::initStyleOption(option, index);
     option->text = QString();
