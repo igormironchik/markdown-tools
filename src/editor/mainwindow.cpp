@@ -1502,84 +1502,125 @@ void MainWindow::onChooseFont()
     }
 }
 
+const QString s_ui = QStringLiteral("ui");
+const QString s_font = QStringLiteral("font");
+const QString s_family = QStringLiteral("family");
+const QString s_size = QStringLiteral("size");
+const QString s_linkColor = QStringLiteral("linkColor");
+const QString s_textColor = QStringLiteral("textColor");
+const QString s_inlineColor = QStringLiteral("inlineColor");
+const QString s_htmlColor = QStringLiteral("htmlColor");
+const QString s_tableColor = QStringLiteral("tableColor");
+const QString s_codeColor = QStringLiteral("codeColor");
+const QString s_mathColor = QStringLiteral("mathColor");
+const QString s_referenceColor = QStringLiteral("referenceColor");
+const QString s_specialColor = QStringLiteral("specialColor");
+const QString s_enableMargin = QStringLiteral("enableMargin");
+const QString s_margin = QStringLiteral("margin");
+const QString s_enableColors = QStringLiteral("enableColors");
+const QString s_sidebarWidth = QStringLiteral("sidebarWidth");
+const QString s_indent = QStringLiteral("indent");
+const QString s_mode = QStringLiteral("mode");
+const QString s_tabs = QStringLiteral("tabs");
+const QString s_spaces = QStringLiteral("spaces");
+const QString s_spacesCount = QStringLiteral("spacesCount");
+const QString s_findCaseSensitive = QStringLiteral("findCaseSensitive");
+const QString s_findWholeWord = QStringLiteral("findWholeWord");
+const QString s_window = QStringLiteral("window");
+const QString s_width = QStringLiteral("width");
+const QString s_height = QStringLiteral("height");
+const QString s_x = QStringLiteral("x");
+const QString s_y = QStringLiteral("y");
+const QString s_maximized = QStringLiteral("maximized");
+const QString s_settingsWindow = QStringLiteral("settings_window");
+const QString s_spelling = QStringLiteral("spelling");
+const QString s_enabled = QStringLiteral("enabled");
+const QString s_plugins = QStringLiteral("plugins");
+const QString s_superscript = QStringLiteral("superscript");
+const QString s_delimiter = QStringLiteral("delimiter");
+const QString s_subscript = QStringLiteral("subscript");
+const QString s_mark = QStringLiteral("mark");
+const QString s_yaml = QStringLiteral("yaml");
+
+
 void MainWindow::saveCfg() const
 {
     const auto f = m_d->m_editor->font();
 
     QSettings s;
 
-    s.beginGroup(QStringLiteral("ui"));
+    s.beginGroup(s_ui);
 
-    s.beginGroup(QStringLiteral("font"));
-    s.setValue(QStringLiteral("family"), f.family());
-    s.setValue(QStringLiteral("size"), f.pointSize());
+    s.beginGroup(s_font);
+    s.setValue(s_family, f.family());
+    s.setValue(s_size, f.pointSize());
     s.endGroup();
 
-    s.setValue(QStringLiteral("linkColor"), m_d->m_mdColors.m_linkColor);
-    s.setValue(QStringLiteral("textColor"), m_d->m_mdColors.m_textColor);
-    s.setValue(QStringLiteral("inlineColor"), m_d->m_mdColors.m_inlineColor);
-    s.setValue(QStringLiteral("htmlColor"), m_d->m_mdColors.m_htmlColor);
-    s.setValue(QStringLiteral("tableColor"), m_d->m_mdColors.m_tableColor);
-    s.setValue(QStringLiteral("codeColor"), m_d->m_mdColors.m_codeColor);
-    s.setValue(QStringLiteral("mathColor"), m_d->m_mdColors.m_mathColor);
-    s.setValue(QStringLiteral("referenceColor"), m_d->m_mdColors.m_referenceColor);
-    s.setValue(QStringLiteral("specialColor"), m_d->m_mdColors.m_specialColor);
-    s.setValue(QStringLiteral("enableMargin"), m_d->m_editor->margins().m_enable);
-    s.setValue(QStringLiteral("margin"), m_d->m_editor->margins().m_length);
-    s.setValue(QStringLiteral("enableColors"), m_d->m_mdColors.m_enabled);
-    s.setValue(QStringLiteral("sidebarWidth"), m_d->m_tabWidth);
+    s.setValue(s_linkColor, m_d->m_mdColors.m_linkColor);
+    s.setValue(s_textColor, m_d->m_mdColors.m_textColor);
+    s.setValue(s_inlineColor, m_d->m_mdColors.m_inlineColor);
+    s.setValue(s_htmlColor, m_d->m_mdColors.m_htmlColor);
+    s.setValue(s_tableColor, m_d->m_mdColors.m_tableColor);
+    s.setValue(s_codeColor, m_d->m_mdColors.m_codeColor);
+    s.setValue(s_mathColor, m_d->m_mdColors.m_mathColor);
+    s.setValue(s_referenceColor, m_d->m_mdColors.m_referenceColor);
+    s.setValue(s_specialColor, m_d->m_mdColors.m_specialColor);
+    s.setValue(s_enableMargin, m_d->m_editor->margins().m_enable);
+    s.setValue(s_margin, m_d->m_editor->margins().m_length);
+    s.setValue(s_enableColors, m_d->m_mdColors.m_enabled);
+    s.setValue(s_sidebarWidth, m_d->m_tabWidth);
 
-    s.beginGroup(QStringLiteral("indent"));
-    s.setValue(QStringLiteral("mode"), m_d->m_editor->indentMode() == Editor::IndentMode::Tabs ?
-                   QStringLiteral("tabs") : QStringLiteral("spaces"));
-    s.setValue(QStringLiteral("spacesCount"), m_d->m_editor->indentSpacesCount());
+    s.beginGroup(s_indent);
+    s.setValue(s_mode, m_d->m_editor->indentMode() == Editor::IndentMode::Tabs ?
+                   s_tabs : s_spaces);
+    s.setValue(s_spacesCount, m_d->m_editor->indentSpacesCount());
     s.endGroup();
 
-    s.setValue(QStringLiteral("findCaseSensitive"), m_d->m_find->isCaseSensitive());
-    s.setValue(QStringLiteral("findWholeWord"), m_d->m_find->isWholeWord());
+    s.setValue(s_findCaseSensitive, m_d->m_find->isCaseSensitive());
+    s.setValue(s_findWholeWord, m_d->m_find->isWholeWord());
     s.endGroup();
 
-    s.beginGroup(QStringLiteral("window"));
+    s.beginGroup(s_window);
 
-    s.setValue(QStringLiteral("width"), width());
-    s.setValue(QStringLiteral("height"), height());
-    s.setValue(QStringLiteral("x"), windowHandle()->x());
-    s.setValue(QStringLiteral("y"), windowHandle()->y());
-    s.setValue(QStringLiteral("maximized"), isMaximized());
+    s.setValue(s_width, width());
+    s.setValue(s_height, height());
+    s.setValue(s_x, windowHandle()->x());
+    s.setValue(s_y, windowHandle()->y());
+    s.setValue(s_maximized, isMaximized());
 
     s.endGroup();
 
-    s.beginGroup(QStringLiteral("settings_window"));
-    s.setValue(QStringLiteral("width"), m_d->m_settingsWindowWidth);
-    s.setValue(QStringLiteral("height"), m_d->m_settingsWindowHeight);
-    s.setValue(QStringLiteral("maximized"), m_d->m_settingsWindowMaximized);
+    s.beginGroup(s_settingsWindow);
+    s.setValue(s_width, m_d->m_settingsWindowWidth);
+    s.setValue(s_height, m_d->m_settingsWindowHeight);
+    s.setValue(s_maximized, m_d->m_settingsWindowMaximized);
     s.endGroup();
 
-    s.beginGroup(QStringLiteral("spelling"));
-    s.setValue(QStringLiteral("enabled"), m_d->m_spellingEnabled);
+    s.beginGroup(s_spelling);
+    s.setValue(s_enabled, m_d->m_spellingEnabled);
     s.endGroup();
 
     Sonnet::Settings sonnet;
     sonnet.save();
 
-    s.beginGroup(QStringLiteral("plugins"));
+    s.beginGroup(s_plugins);
 
-    s.beginGroup(QStringLiteral("superscript"));
-    s.setValue(QStringLiteral("delimiter"), m_d->m_pluginsCfg.m_sup.m_delimiter);
-    s.setValue(QStringLiteral("enabled"), m_d->m_pluginsCfg.m_sup.m_on);
+    s.beginGroup(s_superscript);
+    s.setValue(s_delimiter, m_d->m_pluginsCfg.m_sup.m_delimiter);
+    s.setValue(s_enabled, m_d->m_pluginsCfg.m_sup.m_on);
     s.endGroup();
 
-    s.beginGroup(QStringLiteral("subscript"));
-    s.setValue(QStringLiteral("delimiter"), m_d->m_pluginsCfg.m_sub.m_delimiter);
-    s.setValue(QStringLiteral("enabled"), m_d->m_pluginsCfg.m_sub.m_on);
+    s.beginGroup(s_subscript);
+    s.setValue(s_delimiter, m_d->m_pluginsCfg.m_sub.m_delimiter);
+    s.setValue(s_enabled, m_d->m_pluginsCfg.m_sub.m_on);
     s.endGroup();
 
-    s.beginGroup(QStringLiteral("mark"));
-    s.setValue(QStringLiteral("delimiter"), m_d->m_pluginsCfg.m_mark.m_delimiter);
-    s.setValue(QStringLiteral("enabled"), m_d->m_pluginsCfg.m_mark.m_on);
+    s.beginGroup(s_mark);
+    s.setValue(s_delimiter, m_d->m_pluginsCfg.m_mark.m_delimiter);
+    s.setValue(s_enabled, m_d->m_pluginsCfg.m_mark.m_on);
     s.endGroup();
 
-    s.setValue(QStringLiteral("yaml"), m_d->m_pluginsCfg.m_yamlEnabled);
+    s.setValue(s_yaml, m_d->m_pluginsCfg.m_yamlEnabled);
 
     s.endGroup();
 }
@@ -1588,15 +1629,15 @@ void MainWindow::readCfg()
 {
     QSettings s;
 
-    s.beginGroup(QStringLiteral("ui"));
+    s.beginGroup(s_ui);
 
-    s.beginGroup(QStringLiteral("font"));
+    s.beginGroup(s_font);
 
     {
-        const auto fontName = s.value(QStringLiteral("family")).toString();
+        const auto fontName = s.value(s_family).toString();
 
         if (!fontName.isEmpty()) {
-            auto fs = s.value(QStringLiteral("size")).toInt();
+            auto fs = s.value(s_size).toInt();
 
             const QFont f(fontName, fs);
 
@@ -1606,83 +1647,83 @@ void MainWindow::readCfg()
 
     s.endGroup();
 
-    const auto isFindCaseSensitive = s.value(QStringLiteral("findCaseSensitive"), true).toBool();
+    const auto isFindCaseSensitive = s.value(s_findCaseSensitive, true).toBool();
     m_d->m_find->setCaseSensitive(isFindCaseSensitive);
 
-    const auto isFindWholeWord = s.value(QStringLiteral("findWholeWord"), true).toBool();
+    const auto isFindWholeWord = s.value(s_findWholeWord, true).toBool();
     m_d->m_find->setWholeWord(isFindWholeWord);
 
-    const auto linkColor = s.value(QStringLiteral("linkColor"), m_d->m_mdColors.m_linkColor).value<QColor>();
+    const auto linkColor = s.value(s_linkColor, m_d->m_mdColors.m_linkColor).value<QColor>();
     if (linkColor.isValid()) {
         m_d->m_mdColors.m_linkColor = linkColor;
     }
 
-    const auto textColor = s.value(QStringLiteral("textColor"), m_d->m_mdColors.m_textColor).value<QColor>();
+    const auto textColor = s.value(s_textColor, m_d->m_mdColors.m_textColor).value<QColor>();
     if (textColor.isValid()) {
         m_d->m_mdColors.m_textColor = textColor;
     }
 
-    const auto inlineColor = s.value(QStringLiteral("inlineColor"), m_d->m_mdColors.m_inlineColor).value<QColor>();
+    const auto inlineColor = s.value(s_inlineColor, m_d->m_mdColors.m_inlineColor).value<QColor>();
     if (inlineColor.isValid()) {
         m_d->m_mdColors.m_inlineColor = inlineColor;
     }
 
-    const auto htmlColor = s.value(QStringLiteral("htmlColor"), m_d->m_mdColors.m_htmlColor).value<QColor>();
+    const auto htmlColor = s.value(s_htmlColor, m_d->m_mdColors.m_htmlColor).value<QColor>();
     if (htmlColor.isValid()) {
         m_d->m_mdColors.m_htmlColor = htmlColor;
     }
 
-    const auto tableColor = s.value(QStringLiteral("tableColor"), m_d->m_mdColors.m_tableColor).value<QColor>();
+    const auto tableColor = s.value(s_tableColor, m_d->m_mdColors.m_tableColor).value<QColor>();
     if (tableColor.isValid()) {
         m_d->m_mdColors.m_tableColor = tableColor;
     }
 
-    const auto codeColor = s.value(QStringLiteral("codeColor"), m_d->m_mdColors.m_codeColor).value<QColor>();
+    const auto codeColor = s.value(s_codeColor, m_d->m_mdColors.m_codeColor).value<QColor>();
     if (codeColor.isValid()) {
         m_d->m_mdColors.m_codeColor = codeColor;
     }
 
-    const auto mathColor = s.value(QStringLiteral("mathColor"), m_d->m_mdColors.m_mathColor).value<QColor>();
+    const auto mathColor = s.value(s_mathColor, m_d->m_mdColors.m_mathColor).value<QColor>();
     if (mathColor.isValid()) {
         m_d->m_mdColors.m_mathColor = mathColor;
     }
 
-    const auto refColor = s.value(QStringLiteral("referenceColor"), m_d->m_mdColors.m_referenceColor).value<QColor>();
+    const auto refColor = s.value(s_referenceColor, m_d->m_mdColors.m_referenceColor).value<QColor>();
     if (refColor.isValid()) {
         m_d->m_mdColors.m_referenceColor = refColor;
     }
 
-    const auto specialColor = s.value(QStringLiteral("specialColor"), m_d->m_mdColors.m_specialColor).value<QColor>();
+    const auto specialColor = s.value(s_specialColor, m_d->m_mdColors.m_specialColor).value<QColor>();
     if (specialColor.isValid()) {
         m_d->m_mdColors.m_specialColor = specialColor;
     }
 
-    const auto enableMargin = s.value(QStringLiteral("enableMargin")).toBool();
+    const auto enableMargin = s.value(s_enableMargin).toBool();
     m_d->m_editor->margins().m_enable = enableMargin;
 
-    const auto margin = s.value(QStringLiteral("margin")).toInt();
+    const auto margin = s.value(s_margin).toInt();
     m_d->m_editor->margins().m_length = margin;
 
-    const auto enableColors = s.value(QStringLiteral("enableColors")).toBool();
+    const auto enableColors = s.value(s_enableColors).toBool();
     m_d->m_mdColors.m_enabled = enableColors;
 
     m_d->m_editor->applyColors(m_d->m_mdColors);
 
-    const auto sidebarWidth = s.value(QStringLiteral("sidebarWidth")).toInt();
+    const auto sidebarWidth = s.value(s_sidebarWidth).toInt();
     if (sidebarWidth > 0) {
         m_d->m_tabWidth = sidebarWidth;
     }
 
-    s.beginGroup(QStringLiteral("indent"));
+    s.beginGroup(s_indent);
 
-    const auto mode = s.value(QStringLiteral("mode"), QStringLiteral("tabs")).toString();
-    if (mode == QStringLiteral("tabs")) {
+    const auto mode = s.value(s_mode, s_tabs).toString();
+    if (mode == s_tabs) {
         m_d->m_editor->setIndentMode(Editor::IndentMode::Tabs);
     } else {
         m_d->m_editor->setIndentMode(Editor::IndentMode::Spaces);
     }
 
-    const auto spacesCount = s.value(QStringLiteral("spacesCount"), 2).toInt();
+    const auto spacesCount = s.value(s_spacesCount, 2).toInt();
 
     if (spacesCount > 0) {
         m_d->m_editor->setIndentSpacesCount(spacesCount);
@@ -1692,21 +1733,21 @@ void MainWindow::readCfg()
 
     s.endGroup();
 
-    s.beginGroup(QStringLiteral("window"));
+    s.beginGroup(s_window);
 
-    const auto width = s.value(QStringLiteral("width")).toInt();
-    const auto height = s.value(QStringLiteral("height")).toInt();
+    const auto width = s.value(s_width).toInt();
+    const auto height = s.value(s_height).toInt();
 
     if (width > 0 && height > 0) {
         resize(width, height);
 
-        const auto x = s.value(QStringLiteral("x")).toInt();
-        const auto y = s.value(QStringLiteral("y")).toInt();
+        const auto x = s.value(s_x).toInt();
+        const auto y = s.value(s_y).toInt();
 
         windowHandle()->setX(x);
         windowHandle()->setY(y);
 
-        const auto maximized = s.value(QStringLiteral("maximized")).toBool();
+        const auto maximized = s.value(s_maximized).toBool();
         if (maximized) {
             showMaximized();
         }
@@ -1714,36 +1755,36 @@ void MainWindow::readCfg()
 
     s.endGroup();
 
-    s.beginGroup(QStringLiteral("settings_window"));
-    m_d->m_settingsWindowWidth = s.value(QStringLiteral("width"), -1).toInt();
-    m_d->m_settingsWindowHeight = s.value(QStringLiteral("height"), -1).toInt();
-    m_d->m_settingsWindowMaximized = s.value(QStringLiteral("maximized")).toBool();
+    s.beginGroup(s_settingsWindow);
+    m_d->m_settingsWindowWidth = s.value(s_width, -1).toInt();
+    m_d->m_settingsWindowHeight = s.value(s_height, -1).toInt();
+    m_d->m_settingsWindowMaximized = s.value(s_maximized).toBool();
     s.endGroup();
 
-    s.beginGroup(QStringLiteral("spelling"));
-    m_d->m_spellingEnabled = s.value(QStringLiteral("enabled")).toBool();
+    s.beginGroup(s_spelling);
+    m_d->m_spellingEnabled = s.value(s_enabled).toBool();
     s.endGroup();
 
     m_d->m_editor->enableSpellingCheck(m_d->m_spellingEnabled);
 
-    s.beginGroup(QStringLiteral("plugins"));
+    s.beginGroup(s_plugins);
 
-    s.beginGroup(QStringLiteral("superscript"));
-    m_d->m_pluginsCfg.m_sup.m_delimiter = s.value(QStringLiteral("delimiter"), QChar()).toChar();
-    m_d->m_pluginsCfg.m_sup.m_on = s.value(QStringLiteral("enabled"), false).toBool();
+    s.beginGroup(s_superscript);
+    m_d->m_pluginsCfg.m_sup.m_delimiter = s.value(s_delimiter, QChar()).toChar();
+    m_d->m_pluginsCfg.m_sup.m_on = s.value(s_enabled, false).toBool();
     s.endGroup();
 
-    s.beginGroup(QStringLiteral("subscript"));
-    m_d->m_pluginsCfg.m_sub.m_delimiter = s.value(QStringLiteral("delimiter"), QChar()).toChar();
-    m_d->m_pluginsCfg.m_sub.m_on = s.value(QStringLiteral("enabled"), false).toBool();
+    s.beginGroup(s_subscript);
+    m_d->m_pluginsCfg.m_sub.m_delimiter = s.value(s_delimiter, QChar()).toChar();
+    m_d->m_pluginsCfg.m_sub.m_on = s.value(s_enabled, false).toBool();
     s.endGroup();
 
-    s.beginGroup(QStringLiteral("mark"));
-    m_d->m_pluginsCfg.m_mark.m_delimiter = s.value(QStringLiteral("delimiter"), QChar()).toChar();
-    m_d->m_pluginsCfg.m_mark.m_on = s.value(QStringLiteral("enabled"), false).toBool();
+    s.beginGroup(s_mark);
+    m_d->m_pluginsCfg.m_mark.m_delimiter = s.value(s_delimiter, QChar()).toChar();
+    m_d->m_pluginsCfg.m_mark.m_on = s.value(s_enabled, false).toBool();
     s.endGroup();
 
-    m_d->m_pluginsCfg.m_yamlEnabled = s.value(QStringLiteral("yaml"), false).toBool();
+    m_d->m_pluginsCfg.m_yamlEnabled = s.value(s_yaml, false).toBool();
 
     s.endGroup();
 
