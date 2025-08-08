@@ -75,8 +75,8 @@ struct SyntaxVisitorPrivate {
                 r.format = format;
                 r.start = (i == startLine ? startColumn : 0);
                 r.length =
-                    (i == startLine ? (i == endLine ? endColumn - startColumn + 1 : block.length() - 1 - startColumn)
-                                    : (i == endLine ? endColumn + 1 : block.length() - 1));
+                    (i == startLine ? (i == endLine ? endColumn - startColumn + 1 : block.length() - startColumn)
+                                    : (i == endLine ? endColumn + 1 : block.length()));
 
                 m_formats[i].m_format.push_back(r);
             }
