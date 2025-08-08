@@ -84,23 +84,16 @@ int main(int argc,
         return 0;
     }
 
-    if (!fileName.isEmpty()) {
-        w.openFile(fileName);
-    }
-
     if (parser.isSet(view)) {
         w.openInPreviewMode();
     }
 
-    const auto wd = parser.value(workingDir);
+    MdEditor::StartupState state;
+    state.m_fileName = fileName;
+    state.m_workingDir = parser.value(workingDir);
+    state.m_loadAllLinked = parser.isSet(all);
 
-    if (!wd.isEmpty()) {
-        w.setWorkingDirectory(wd);
-    }
-
-    if (parser.isSet(all)) {
-        w.loadAllLinkedFiles();
-    }
+    w.setStartupState(state);
 
     w.show();
 

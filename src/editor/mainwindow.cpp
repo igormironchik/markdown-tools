@@ -50,6 +50,7 @@
 #include <QTabWidget>
 #include <QTextBlock>
 #include <QTextDocumentFragment>
+#include <QTimer>
 #include <QToolButton>
 #include <QToolTip>
 #include <QTreeView>
@@ -1032,6 +1033,7 @@ struct MainWindowPrivate {
     bool m_settingsWindowMaximized = false;
     bool m_isDefaultFile = true;
     QVector<std::function<void()>> m_funcsQueue;
+    StartupState m_startupState;
 }; // struct MainWindowPrivate
 
 //
@@ -1130,7 +1132,7 @@ void MainWindow::showEvent(QShowEvent *e)
     if (!m_d->m_shownAlready) {
         m_d->m_shownAlready = true;
 
-        readCfg();
+        QTimer::singleShot(0, this, &MainWindow::onFirstTimeShown);
     }
 
     e->accept();
@@ -2098,6 +2100,11 @@ void MainWindow::setWorkingDirectory(const QString &path)
     }
 }
 
+void MainWindow::setStartupState(const StartupState &st)
+{
+    m_d->m_startupState = st;
+}
+
 void MainWindow::onSetWorkingDirectory()
 {
     if (!m_d->m_tmpWorkingDir.isEmpty()) {
@@ -2121,6 +2128,23 @@ void MainWindow::onProcessQueue()
         if (!m_d->m_editor->isReady()) {
             break;
         }
+    }
+}
+
+void MainWindow::onFirstTimeShown()
+{
+    readCfg();
+
+    if (!m_d->m_startupState.m_fileName.isEmpty()) {
+        openFile(m_d->m_startupState.m_fileName);
+    }
+
+    if (!m_d->m_startupState.m_workingDir.isEmpty()) {
+        setWorkingDirectory(m_d->m_startupState.m_workingDir);
+    }
+
+    if (m_d->m_startupState.m_loadAllLinked) {
+        loadAllLinkedFiles();
     }
 }
 

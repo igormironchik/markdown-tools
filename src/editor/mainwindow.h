@@ -18,6 +18,20 @@ namespace MdEditor
 {
 
 //
+// StartupState
+//
+
+//! Startup state of the application.
+struct StartupState {
+    //! File name to open on startup.
+    QString m_fileName;
+    //! Working directory to set on startup.
+    QString m_workingDir;
+    //! Should all linked files be loaded on startup?
+    bool m_loadAllLinked;
+}; // strucy StartupState
+
+//
 // MainWindow
 //
 
@@ -41,6 +55,8 @@ public slots:
     void loadAllLinkedFiles();
     //! Set working directory.
     void setWorkingDirectory(const QString &path);
+    //! Set startup state.
+    void setStartupState(const StartupState &st);
 
 protected:
     void resizeEvent(QResizeEvent *e) override;
@@ -88,6 +104,7 @@ private slots:
     void onEditorReady();
     void onSetWorkingDirectory();
     void onProcessQueue();
+    void onFirstTimeShown();
 
 private:
     //! \return Is document was changed?
