@@ -57,7 +57,7 @@ for artifact at `deploy_win` latest workflow run.
 For `Linux`, especially for `KDE`, I'd recommend to use your own build with system's
 `Qt`, in this case you won't have issues with platform integration in `KDE`.
 
-For `openSUSE` I have a repository https://download.opensuse.org/repositories/home:/imironchik/my/
+For `openSUSE Tumbleweed` I have a repository https://download.opensuse.org/repositories/home:/imironchik/my/
 where you can get a `markdown-tools` package.
 
 # Building
