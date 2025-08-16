@@ -1030,6 +1030,59 @@ void Editor::keyPressEvent(QKeyEvent *event)
 {
     auto c = textCursor();
 
+    if (event->key() == Qt::Key_Return) {
+        const auto lineNumber = c.block().blockNumber();
+        const auto lineLength = c.block().length();
+
+        const auto items = syntaxHighlighter().findFirstInCache({0, lineNumber, lineLength, lineNumber});
+
+        if (!items.isEmpty()) {
+            for (auto it = items.crbegin(), last = items.crend(); it != last; ++it) {
+                if ((*it)->type() == MD::ItemType::ListItem) {
+                    auto l = static_cast<MD::ListItem<MD::QStringTrait> *>(*it);
+
+                    c.setPosition(c.block().position());
+
+                    if (l->items().isEmpty()) {
+                        c.setPosition(c.position() + lineLength - 1, QTextCursor::KeepAnchor);
+                        c.deleteChar();
+                    } else {
+                        QPlainTextEdit::keyPressEvent(event);
+
+                        if (l->delim().startColumn()) {
+                            c.setPosition(c.block().position() + l->delim().startColumn(), QTextCursor::KeepAnchor);
+                            textCursor().insertText(c.selectedText());
+                        }
+
+                        c.setPosition(c.block().position() + l->delim().startColumn());
+                        c.setPosition(c.block().position() + l->delim().endColumn() + 1, QTextCursor::KeepAnchor);
+
+                        if (l->listType() == MD::ListItem<MD::QStringTrait>::Unordered) {
+                            textCursor().insertText(c.selectedText());
+                        } else {
+                            const auto delim = c.selectedText();
+                            const auto number = delim.sliced(0, delim.length() - 1).toInt();
+                            textCursor().insertText(QString::number(number + 1));
+                            textCursor().insertText(delim.back());
+                        }
+
+                        textCursor().insertText(QString(1, QLatin1Char(' ')));
+
+                        if (l->isTaskList()) {
+                            textCursor().insertText(QStringLiteral("[ ] "));
+                        }
+                    }
+
+                    return;
+                }
+            }
+        }
+
+        QPlainTextEdit::keyPressEvent(event);
+
+        return;
+    }
+
     if (c.hasSelection()) {
         switch (event->key()) {
         case Qt::Key_Tab: {
