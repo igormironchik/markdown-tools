@@ -1042,6 +1042,7 @@ void Editor::keyPressEvent(QKeyEvent *event)
                     auto l = static_cast<MD::ListItem<MD::QStringTrait> *>(*it);
 
                     c.setPosition(c.block().position());
+                    textCursor().beginEditBlock();
 
                     if (l->items().isEmpty()) {
                         c.setPosition(c.position() + lineLength - 1, QTextCursor::KeepAnchor);
@@ -1072,6 +1073,8 @@ void Editor::keyPressEvent(QKeyEvent *event)
                             textCursor().insertText(QStringLiteral("[ ] "));
                         }
                     }
+
+                    textCursor().endEditBlock();
 
                     return;
                 }
