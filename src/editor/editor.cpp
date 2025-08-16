@@ -1026,6 +1026,8 @@ void Editor::doUpdate()
     viewport()->update();
 }
 
+static const int s_autoAddedListItem = 1;
+
 void Editor::keyPressEvent(QKeyEvent *event)
 {
     auto c = textCursor();
@@ -1042,12 +1044,15 @@ void Editor::keyPressEvent(QKeyEvent *event)
                     auto l = static_cast<MD::ListItem<MD::QStringTrait> *>(*it);
 
                     c.setPosition(c.block().position());
-                    textCursor().beginEditBlock();
 
-                    if (l->items().isEmpty()) {
+                    if (l->items().isEmpty() && c.block().userState() == s_autoAddedListItem) {
+                        textCursor().beginEditBlock();
                         c.setPosition(c.position() + lineLength - 1, QTextCursor::KeepAnchor);
                         c.deleteChar();
+                        textCursor().endEditBlock();
                     } else {
+                        textCursor().beginEditBlock();
+
                         QPlainTextEdit::keyPressEvent(event);
 
                         if (l->delim().startColumn()) {
@@ -1072,9 +1077,11 @@ void Editor::keyPressEvent(QKeyEvent *event)
                         if (l->isTaskList()) {
                             textCursor().insertText(QStringLiteral("[ ] "));
                         }
-                    }
 
-                    textCursor().endEditBlock();
+                        textCursor().block().setUserState(s_autoAddedListItem);
+
+                        textCursor().endEditBlock();
+                    }
 
                     return;
                 }
