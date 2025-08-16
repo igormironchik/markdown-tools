@@ -1026,6 +1026,18 @@ void Editor::doUpdate()
     viewport()->update();
 }
 
+static const int s_unknownUserState = -1;
+
+void Editor::clearUserStateOnAllBlocks()
+{
+    auto block = document()->firstBlock();
+
+    while (block.isValid()) {
+        block.setUserState(s_unknownUserState);
+        block = block.next();
+    }
+}
+
 static const int s_autoAddedListItem = 1;
 
 void Editor::keyPressEvent(QKeyEvent *event)
@@ -1049,6 +1061,7 @@ void Editor::keyPressEvent(QKeyEvent *event)
                         textCursor().beginEditBlock();
                         c.setPosition(c.position() + lineLength - 1, QTextCursor::KeepAnchor);
                         c.deleteChar();
+                        c.block().setUserState(s_unknownUserState);
                         textCursor().endEditBlock();
                     } else {
                         textCursor().beginEditBlock();

@@ -1273,6 +1273,7 @@ void MainWindow::onFileSave()
     f.close();
 
     m_d->m_editor->document()->setModified(false);
+    m_d->m_editor->clearUserStateOnAllBlocks();
 
     updateWindowTitle();
 

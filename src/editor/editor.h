@@ -160,6 +160,8 @@ public slots:
                                   bool useWorkingDir);
     //! Update editor.
     void doUpdate();
+    //! Clear user state on all blocks.
+    void clearUserStateOnAllBlocks();
 
 private slots:
     //! Calculate and change line number area width.
