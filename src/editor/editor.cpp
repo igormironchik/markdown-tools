@@ -363,6 +363,8 @@ struct EditorPrivate {
     Editor::IndentMode m_indentMode = Editor::IndentMode::Tabs;
     //! Amount of spaces in indent.
     int m_indentSpacesCount = 2;
+    //! Is auto lists enabled?
+    bool m_isAutoListsEnabled = true;
 }; // struct EditorPrivate
 
 //
@@ -410,6 +412,16 @@ void Editor::setPluginsCfg(const MdShared::PluginsCfg &cfg)
     m_d->m_pluginsCfg = cfg;
 
     onContentChanged();
+}
+
+bool Editor::isAutoListsEnabled() const
+{
+    return m_d->m_isAutoListsEnabled;
+}
+
+void Editor::enableAutoLists(bool on)
+{
+    m_d->m_isAutoListsEnabled = on;
 }
 
 void Editor::setIndentMode(IndentMode mode)
@@ -1026,9 +1038,87 @@ void Editor::doUpdate()
     viewport()->update();
 }
 
+static const int s_unknownUserState = -1;
+
+void Editor::clearUserStateOnAllBlocks()
+{
+    auto block = document()->firstBlock();
+
+    while (block.isValid()) {
+        block.setUserState(s_unknownUserState);
+        block = block.next();
+    }
+}
+
+static const int s_autoAddedListItem = 1;
+
 void Editor::keyPressEvent(QKeyEvent *event)
 {
     auto c = textCursor();
+
+    if (m_d->m_isAutoListsEnabled) {
+        if (event->key() == Qt::Key_Return) {
+            const auto lineNumber = c.block().blockNumber();
+            const auto lineLength = c.block().length();
+
+            const auto items = syntaxHighlighter().findFirstInCache({0, lineNumber, lineLength, lineNumber});
+
+            if (!items.isEmpty()) {
+                for (auto it = items.crbegin(), last = items.crend(); it != last; ++it) {
+                    if ((*it)->type() == MD::ItemType::ListItem) {
+                        auto l = static_cast<MD::ListItem<MD::QStringTrait> *>(*it);
+
+                        c.setPosition(c.block().position());
+
+                        if (l->items().isEmpty() && c.block().userState() == s_autoAddedListItem) {
+                            textCursor().beginEditBlock();
+                            c.setPosition(c.position() + lineLength - 1, QTextCursor::KeepAnchor);
+                            c.deleteChar();
+                            c.block().setUserState(s_unknownUserState);
+                            textCursor().endEditBlock();
+                        } else {
+                            textCursor().beginEditBlock();
+
+                            QPlainTextEdit::keyPressEvent(event);
+
+                            if (l->delim().startColumn()) {
+                                c.setPosition(c.block().position() + l->delim().startColumn(), QTextCursor::KeepAnchor);
+                                textCursor().insertText(c.selectedText());
+                            }
+
+                            c.setPosition(c.block().position() + l->delim().startColumn());
+                            c.setPosition(c.block().position() + l->delim().endColumn() + 1, QTextCursor::KeepAnchor);
+
+                            if (l->listType() == MD::ListItem<MD::QStringTrait>::Unordered) {
+                                textCursor().insertText(c.selectedText());
+                            } else {
+                                const auto delim = c.selectedText();
+                                const auto number = delim.sliced(0, delim.length() - 1).toInt();
+                                textCursor().insertText(QString::number(number + 1));
+                                textCursor().insertText(delim.back());
+                            }
+
+                            textCursor().insertText(QString(1, QLatin1Char(' ')));
+
+                            if (l->isTaskList()) {
+                                textCursor().insertText(QStringLiteral("[ ] "));
+                            }
+
+                            textCursor().block().setUserState(s_autoAddedListItem);
+
+                            textCursor().endEditBlock();
+                        }
+
+                        return;
+                    }
+                }
+            }
+
+            QPlainTextEdit::keyPressEvent(event);
+
+            return;
+        }
+    }
 
     if (c.hasSelection()) {
         switch (event->key()) {

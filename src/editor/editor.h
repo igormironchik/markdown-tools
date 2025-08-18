@@ -111,6 +111,10 @@ public:
     bool isReady() const;
     //! Set plugins configuration.
     void setPluginsCfg(const MdShared::PluginsCfg &cfg);
+    //! \return Is auto-lists enabled?
+    bool isAutoListsEnabled() const;
+    //! Enable/disable auto-lists.
+    void enableAutoLists(bool on = true);
 
     //! Indent mode.
     enum class IndentMode {
@@ -160,6 +164,8 @@ public slots:
                                   bool useWorkingDir);
     //! Update editor.
     void doUpdate();
+    //! Clear user state on all blocks.
+    void clearUserStateOnAllBlocks();
 
 private slots:
     //! Calculate and change line number area width.

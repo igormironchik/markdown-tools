@@ -28,6 +28,7 @@ SettingsDlg::SettingsDlg(const Colors &c,
                          MdShared::PluginsCfg &pCfg,
                          Editor::IndentMode indentMode,
                          int indentSpacesCount,
+                         bool isAutoListsEnabled,
                          QWidget *parent)
     : QDialog(parent)
 {
@@ -43,6 +44,7 @@ SettingsDlg::SettingsDlg(const Colors &c,
     m_ui.m_tabsMode->setCurrentIndex(indentMode == Editor::IndentMode::Tabs ? 0 : 1);
     m_ui.m_spacesAmount->setValue(indentSpacesCount);
     m_ui.m_spacesAmount->setEnabled(indentMode != Editor::IndentMode::Tabs);
+    m_ui.m_autoListCheckBox->setChecked(isAutoListsEnabled);
 
     connect(m_ui.buttonBox, &QDialogButtonBox::clicked, this, &SettingsDlg::onButtonclicked);
     connect(m_ui.m_menu, &QListWidget::currentRowChanged, this, &SettingsDlg::onMenu);
@@ -139,6 +141,11 @@ Editor::IndentMode SettingsDlg::indentMode() const
 int SettingsDlg::indentSpacesCount() const
 {
     return m_ui.m_spacesAmount->value();
+}
+
+bool SettingsDlg::isAutoListsEnabled() const
+{
+    return m_ui.m_autoListCheckBox->isChecked();
 }
 
 Sonnet::ConfigWidget *SettingsDlg::sonnetConfigWidget() const
