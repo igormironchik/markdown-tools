@@ -1618,6 +1618,7 @@ const QString s_delimiter = QStringLiteral("delimiter");
 const QString s_subscript = QStringLiteral("subscript");
 const QString s_mark = QStringLiteral("mark");
 const QString s_yaml = QStringLiteral("yaml");
+const QString s_autoLists = QStringLiteral("autoLists");
 
 void MainWindow::saveCfg() const
 {
@@ -1650,6 +1651,8 @@ void MainWindow::saveCfg() const
     s.setValue(s_mode, m_d->m_editor->indentMode() == Editor::IndentMode::Tabs ? s_tabs : s_spaces);
     s.setValue(s_spacesCount, m_d->m_editor->indentSpacesCount());
     s.endGroup();
+
+    s.setValue(s_autoLists, m_d->m_editor->isAutoListsEnabled());
 
     s.setValue(s_findCaseSensitive, m_d->m_find->isCaseSensitive());
     s.setValue(s_findWholeWord, m_d->m_find->isWholeWord());
@@ -1772,6 +1775,8 @@ void MainWindow::readCfg()
     if (specialColor.isValid()) {
         m_d->m_mdColors.m_specialColor = specialColor;
     }
+
+    m_d->m_editor->enableAutoLists(s.value(s_autoLists, true).toBool());
 
     const auto enableMargin = s.value(s_enableMargin).toBool();
     m_d->m_editor->margins().m_enable = enableMargin;
@@ -3397,6 +3402,7 @@ void MainWindow::onSettings()
                     m_d->m_pluginsCfg,
                     m_d->m_editor->indentMode(),
                     m_d->m_editor->indentSpacesCount(),
+                    m_d->m_editor->isAutoListsEnabled(),
                     this);
 
     if (m_d->m_settingsWindowWidth != -1 && m_d->m_settingsWindowHeight != -1) {
@@ -3446,6 +3452,10 @@ void MainWindow::onSettings()
             m_d->m_editor->enableSpellingCheck(m_d->m_spellingEnabled);
 
             updateEditor = true;
+        }
+
+        if (dlg.isAutoListsEnabled() != m_d->m_editor->isAutoListsEnabled()) {
+            m_d->m_editor->enableAutoLists(dlg.isAutoListsEnabled());
         }
 
         if (updateEditor) {

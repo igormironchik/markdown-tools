@@ -39,6 +39,7 @@ public:
                 MdShared::PluginsCfg &pCfg,
                 Editor::IndentMode indentMode,
                 int indentSpacesCount,
+                bool isAutoListsEnabled,
                 QWidget *parent);
     ~SettingsDlg() override = default;
 
@@ -56,6 +57,8 @@ public:
     Editor::IndentMode indentMode() const;
     //! \return Indent spaces count.
     int indentSpacesCount() const;
+    //! \return Is auto-lists enabled?
+    bool isAutoListsEnabled() const;
 
     //! \return Sonnet configuration widget.
     Sonnet::ConfigWidget *sonnetConfigWidget() const;
