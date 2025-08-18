@@ -1384,7 +1384,7 @@ void MainWindow::onTextChanged()
         if (m_d->m_livePreviewVisible && m_d->m_mdDoc) {
             m_d->m_html->setText(MD::toHtml<MD::QStringTrait, HtmlVisitor>(m_d->m_mdDoc,
                                                                            false,
-                                                                           QStringLiteral("qrc:/res/img/go-jump.png"),
+                                                                           QStringLiteral("<img src=\"qrc:/res/img/go-jump.png\" />"),
                                                                            true,
                                                                            &m_d->m_editor->idsMap()));
         }
@@ -2207,7 +2207,7 @@ void MainWindow::readAllLinked()
         if (m_d->m_livePreviewVisible) {
             m_d->m_html->setText(MD::toHtml<MD::QStringTrait, HtmlVisitor>(m_d->m_mdDoc,
                                                                            false,
-                                                                           QStringLiteral("qrc:/res/img/go-jump.png"),
+                                                                           QStringLiteral("<img src=\"qrc:/res/img/go-jump.png\" />"),
                                                                            true,
                                                                            &idsMap));
         }
@@ -2365,7 +2365,7 @@ void MainWindow::onToggleLivePreviewAction(bool checked)
         if (m_d->m_mdDoc) {
             m_d->m_html->setText(MD::toHtml<MD::QStringTrait, HtmlVisitor>(m_d->m_mdDoc,
                                                                            false,
-                                                                           QStringLiteral("qrc:/res/img/go-jump.png"),
+                                                                           QStringLiteral("<img src=\"qrc:/res/img/go-jump.png\" />"),
                                                                            true,
                                                                            &m_d->m_editor->idsMap()));
         } else {
