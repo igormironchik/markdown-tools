@@ -3422,7 +3422,7 @@ void MainWindow::onSettings()
             m_d->m_editor->applyFont(settings.m_font);
             m_d->m_editor->applyMargins(settings.m_margins);
 
-            if (m_d->m_editor->settings().m_enableSpelling != settings.m_enableSpelling) {
+            if (m_d->m_editor->settings().m_enableSpelling != settings.m_enableSpelling || spellingSettingsChanged) {
                 m_d->m_editor->enableSpellingCheck(settings.m_enableSpelling);
             }
 
