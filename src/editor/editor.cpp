@@ -1068,7 +1068,7 @@ void Editor::keyPressEvent(QKeyEvent *event)
                     if ((*it)->type() == MD::ItemType::ListItem) {
                         auto l = static_cast<MD::ListItem<MD::QStringTrait> *>(*it);
 
-                        c.setPosition(document()->findBlockByLineNumber(l->startLine()).position());
+                        c.setPosition(document()->findBlockByNumber(l->startLine()).position());
 
                         if (l->items().isEmpty() && c.block().userState() == s_autoAddedListItem) {
                             textCursor().beginEditBlock();
