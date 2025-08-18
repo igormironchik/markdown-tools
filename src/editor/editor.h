@@ -24,6 +24,8 @@
 namespace MdEditor
 {
 
+struct Settings;
+
 //
 // Margins
 //
@@ -93,6 +95,8 @@ public:
     bool foundSelected() const;
     //! Apply colors scheme.
     void applyColors(const Colors &colors);
+    //! Apply margin.
+    void applyMargins(const Margins &m);
     //! Enable/disable spelling check.
     void enableSpellingCheck(bool on);
     //! Current Mardown AST (parsed document).
@@ -101,8 +105,6 @@ public:
     void applyFont(const QFont &f);
     //! \return Syntax highlighter.
     SyntaxVisitor &syntaxHighlighter() const;
-    //! \return Setting for grayed area in editor.
-    Margins &margins();
     //! Set "find" widget for editor.
     void setFindWidget(Find *findWidget);
     //! \return Map if IDs of the current parsed Markdown document.
@@ -111,8 +113,6 @@ public:
     bool isReady() const;
     //! Set plugins configuration.
     void setPluginsCfg(const MdShared::PluginsCfg &cfg);
-    //! \return Is auto-lists enabled?
-    bool isAutoListsEnabled() const;
     //! Enable/disable auto-lists.
     void enableAutoLists(bool on = true);
 
@@ -126,13 +126,12 @@ public:
 
     //! Set indent mode.
     void setIndentMode(IndentMode mode);
-    //! \return Indent mode.
-    IndentMode indentMode() const;
 
     //! Set amount of spaces in indent.
     void setIndentSpacesCount(int s);
-    //! \return Amount of spaces in indent.
-    int indentSpacesCount() const;
+
+    //! \return Settings.
+    const Settings &settings() const;
 
 public slots:
     //! Enable/disable showing of unprintable characters.

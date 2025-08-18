@@ -23,6 +23,33 @@ namespace MdEditor
 {
 
 //
+// Settings
+//
+
+//! Settings of the editor application.
+struct Settings {
+    //! Highlighting colors.
+    Colors m_colors;
+    //! Editor's font.
+    QFont m_font;
+    //! Grayed area in editor settings.
+    Margins m_margins;
+    //! Is pelling enabled?
+    bool m_enableSpelling = true;
+    //! Configuration of plugins.
+    MdShared::PluginsCfg m_pluginsCfg;
+    //! Indent mode of the editor.
+    Editor::IndentMode m_indentMode = Editor::IndentMode::Tabs;
+    //! Count of spaces for indent in editor.
+    int m_indentSpacesCount = 2;
+    //! Is auto-list continuation enabled?
+    bool m_isAutoListsEnabled = true;
+}; // struct Settings
+
+bool operator!=(const Settings &s1,
+                const Settings &s2);
+
+//
 // SettingsDlg
 //
 
@@ -32,33 +59,12 @@ class SettingsDlg : public QDialog
     Q_OBJECT
 
 public:
-    SettingsDlg(const Colors &c,
-                const QFont &f,
-                const Margins &m,
-                bool enableSpelling,
-                MdShared::PluginsCfg &pCfg,
-                Editor::IndentMode indentMode,
-                int indentSpacesCount,
-                bool isAutoListsEnabled,
+    SettingsDlg(const Settings &s,
                 QWidget *parent);
     ~SettingsDlg() override = default;
 
-    //! \return Colors scheme.
-    const Colors &colors() const;
-    //! \return Editor's font.
-    QFont currentFont() const;
-    //! \return Grayed editor's area settings.
-    Margins editorMargins() const;
-    //! \return Is spelling check enabled?
-    bool isSpellingEnabled() const;
-    //! \return Plugins configuration.
-    MdShared::PluginsCfg pluginsCfg() const;
-    //! \return Indent mode.
-    Editor::IndentMode indentMode() const;
-    //! \return Indent spaces count.
-    int indentSpacesCount() const;
-    //! \return Is auto-lists enabled?
-    bool isAutoListsEnabled() const;
+    //! \return Settings.
+    Settings settings() const;
 
     //! \return Sonnet configuration widget.
     Sonnet::ConfigWidget *sonnetConfigWidget() const;

@@ -17,34 +17,40 @@
 namespace MdEditor
 {
 
+bool operator!=(const Settings &s1,
+                const Settings &s2)
+{
+    return (s1.m_colors != s2.m_colors
+            || s1.m_font != s2.m_font
+            || s1.m_margins != s2.m_margins
+            || s1.m_enableSpelling != s2.m_enableSpelling
+            || s1.m_pluginsCfg != s2.m_pluginsCfg
+            || s1.m_indentMode != s2.m_indentMode
+            || s1.m_indentSpacesCount != s2.m_indentSpacesCount
+            || s1.m_isAutoListsEnabled != s2.m_isAutoListsEnabled);
+}
+
 //
 // SettingsDlg
 //
 
-SettingsDlg::SettingsDlg(const Colors &c,
-                         const QFont &f,
-                         const Margins &m,
-                         bool enableSpelling,
-                         MdShared::PluginsCfg &pCfg,
-                         Editor::IndentMode indentMode,
-                         int indentSpacesCount,
-                         bool isAutoListsEnabled,
+SettingsDlg::SettingsDlg(const Settings &s,
                          QWidget *parent)
     : QDialog(parent)
 {
     m_ui.setupUi(this);
 
-    m_ui.m_colorsPage->colors() = c;
+    m_ui.m_colorsPage->colors() = s.m_colors;
     m_ui.m_colorsPage->applyColors();
-    m_ui.m_fontPage->initWithFont(f);
+    m_ui.m_fontPage->initWithFont(s.m_font);
 
-    m_ui.m_rightMarginValue->setValue(m.m_length);
-    m_ui.m_rightMarginValue->setEnabled(m.m_enable);
-    m_ui.m_rightMargin->setChecked(m.m_enable);
-    m_ui.m_tabsMode->setCurrentIndex(indentMode == Editor::IndentMode::Tabs ? 0 : 1);
-    m_ui.m_spacesAmount->setValue(indentSpacesCount);
-    m_ui.m_spacesAmount->setEnabled(indentMode != Editor::IndentMode::Tabs);
-    m_ui.m_autoListCheckBox->setChecked(isAutoListsEnabled);
+    m_ui.m_rightMarginValue->setValue(s.m_margins.m_length);
+    m_ui.m_rightMarginValue->setEnabled(s.m_margins.m_enable);
+    m_ui.m_rightMargin->setChecked(s.m_margins.m_enable);
+    m_ui.m_tabsMode->setCurrentIndex(s.m_indentMode == Editor::IndentMode::Tabs ? 0 : 1);
+    m_ui.m_spacesAmount->setValue(s.m_indentSpacesCount);
+    m_ui.m_spacesAmount->setEnabled(s.m_indentMode != Editor::IndentMode::Tabs);
+    m_ui.m_autoListCheckBox->setChecked(s.m_isAutoListsEnabled);
 
     connect(m_ui.buttonBox, &QDialogButtonBox::clicked, this, &SettingsDlg::onButtonclicked);
     connect(m_ui.m_menu, &QListWidget::currentRowChanged, this, &SettingsDlg::onMenu);
@@ -61,19 +67,26 @@ SettingsDlg::SettingsDlg(const Colors &c,
     m_ui.m_menu->item(3)->setIcon(QIcon::fromTheme(QStringLiteral("preferences-plugin"),
                                                    QIcon(QStringLiteral(":/res/img/preferences-plugin.png"))));
 
-    m_ui.m_spellingGroup->setChecked(enableSpelling);
+    m_ui.m_spellingGroup->setChecked(s.m_enableSpelling);
 
-    m_ui.m_pluginsPage->setCfg(pCfg);
+    m_ui.m_pluginsPage->setCfg(s.m_pluginsCfg);
 }
 
-const Colors &SettingsDlg::colors() const
+Settings SettingsDlg::settings() const
 {
-    return m_ui.m_colorsPage->colors();
-}
+    Settings s;
 
-QFont SettingsDlg::currentFont() const
-{
-    return m_ui.m_fontPage->currentFont();
+    s.m_colors = m_ui.m_colorsPage->colors();
+    s.m_font = m_ui.m_fontPage->currentFont();
+    s.m_margins.m_enable = m_ui.m_rightMargin->isChecked();
+    s.m_margins.m_length = m_ui.m_rightMarginValue->value();
+    s.m_enableSpelling = m_ui.m_spellingGroup->isChecked();
+    s.m_pluginsCfg = m_ui.m_pluginsPage->cfg();
+    s.m_indentMode = (m_ui.m_tabsMode->currentIndex() == 0 ? Editor::IndentMode::Tabs : Editor::IndentMode::Spaces);
+    s.m_indentSpacesCount = m_ui.m_spacesAmount->value();
+    s.m_isAutoListsEnabled = m_ui.m_autoListCheckBox->isChecked();
+
+    return s;
 }
 
 void SettingsDlg::onPageChanged(int idx)
@@ -112,40 +125,6 @@ void SettingsDlg::onMenu(int idx)
     if (idx != -1) {
         m_ui.m_stack->setCurrentIndex(idx);
     }
-}
-
-Margins SettingsDlg::editorMargins() const
-{
-    Margins m;
-    m.m_enable = m_ui.m_rightMargin->isChecked();
-    m.m_length = m_ui.m_rightMarginValue->value();
-
-    return m;
-}
-
-bool SettingsDlg::isSpellingEnabled() const
-{
-    return m_ui.m_spellingGroup->isChecked();
-}
-
-MdShared::PluginsCfg SettingsDlg::pluginsCfg() const
-{
-    return m_ui.m_pluginsPage->cfg();
-}
-
-Editor::IndentMode SettingsDlg::indentMode() const
-{
-    return (m_ui.m_tabsMode->currentIndex() == 0 ? Editor::IndentMode::Tabs : Editor::IndentMode::Spaces);
-}
-
-int SettingsDlg::indentSpacesCount() const
-{
-    return m_ui.m_spacesAmount->value();
-}
-
-bool SettingsDlg::isAutoListsEnabled() const
-{
-    return m_ui.m_autoListCheckBox->isChecked();
 }
 
 Sonnet::ConfigWidget *SettingsDlg::sonnetConfigWidget() const

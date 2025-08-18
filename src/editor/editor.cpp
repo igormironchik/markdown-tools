@@ -6,6 +6,7 @@
 // md-editor include.
 #include "editor.h"
 #include "find.h"
+#include "settings.h"
 
 // Sonnet include.
 #include <Sonnet/Settings>
@@ -315,8 +316,9 @@ struct EditorPrivate {
     //! \return New indent.
     QString makeIndent() const
     {
-        return (m_indentMode == Editor::IndentMode::Tabs ? QStringLiteral("\t")
-                                                         : QString(m_indentSpacesCount, QLatin1Char(' ')));
+        return (m_settings.m_indentMode == Editor::IndentMode::Tabs
+                    ? QStringLiteral("\t")
+                    : QString(m_settings.m_indentSpacesCount, QLatin1Char(' ')));
     }
 
     //! Editor.
@@ -341,8 +343,6 @@ struct EditorPrivate {
     MD::details::IdsMap<MD::QStringTrait> m_idsMap;
     //! Syntax highlighter.
     SyntaxVisitor m_syntax;
-    //! Settings for grayed area.
-    Margins m_margins;
     //! Tread for parsing.
     QThread *m_parsingThread = nullptr;
     //! Data parser.
@@ -357,14 +357,8 @@ struct EditorPrivate {
     bool m_useWorkingDir = false;
     //! Is editor ready?
     bool m_isReady = true;
-    //! Plugins configuration.
-    MdShared::PluginsCfg m_pluginsCfg;
-    //! Indent mode.
-    Editor::IndentMode m_indentMode = Editor::IndentMode::Tabs;
-    //! Amount of spaces in indent.
-    int m_indentSpacesCount = 2;
-    //! Is auto lists enabled?
-    bool m_isAutoListsEnabled = true;
+    //! Settings.
+    Settings m_settings;
 }; // struct EditorPrivate
 
 //
@@ -387,11 +381,6 @@ SyntaxVisitor &Editor::syntaxHighlighter() const
     return m_d->m_syntax;
 }
 
-Margins &Editor::margins()
-{
-    return m_d->m_margins;
-}
-
 void Editor::setFindWidget(Find *findWidget)
 {
     m_d->m_find = findWidget;
@@ -409,39 +398,29 @@ bool Editor::isReady() const
 
 void Editor::setPluginsCfg(const MdShared::PluginsCfg &cfg)
 {
-    m_d->m_pluginsCfg = cfg;
+    m_d->m_settings.m_pluginsCfg = cfg;
 
     onContentChanged();
 }
 
-bool Editor::isAutoListsEnabled() const
-{
-    return m_d->m_isAutoListsEnabled;
-}
-
 void Editor::enableAutoLists(bool on)
 {
-    m_d->m_isAutoListsEnabled = on;
+    m_d->m_settings.m_isAutoListsEnabled = on;
 }
 
 void Editor::setIndentMode(IndentMode mode)
 {
-    m_d->m_indentMode = mode;
-}
-
-Editor::IndentMode Editor::indentMode() const
-{
-    return m_d->m_indentMode;
+    m_d->m_settings.m_indentMode = mode;
 }
 
 void Editor::setIndentSpacesCount(int s)
 {
-    m_d->m_indentSpacesCount = s;
+    m_d->m_settings.m_indentSpacesCount = s;
 }
 
-int Editor::indentSpacesCount() const
+const Settings &Editor::settings() const
 {
-    return m_d->m_indentSpacesCount;
+    return m_d->m_settings;
 }
 
 bool Editor::foundHighlighted() const
@@ -470,11 +449,22 @@ bool Editor::foundSelected() const
 
 void Editor::applyColors(const Colors &colors)
 {
+    m_d->m_settings.m_colors = colors;
+
     m_d->m_syntax.setColors(colors);
+}
+
+void Editor::applyMargins(const Margins &m)
+{
+    m_d->m_settings.m_margins = m;
+
+    viewport()->update();
 }
 
 void Editor::enableSpellingCheck(bool on)
 {
+    m_d->m_settings.m_enableSpelling = on;
+
     syntaxHighlighter().spellingSettingsChanged(on);
 }
 
@@ -485,6 +475,8 @@ std::shared_ptr<MD::Document<MD::QStringTrait>> Editor::currentDoc() const
 
 void Editor::applyFont(const QFont &f)
 {
+    m_d->m_settings.m_font = f;
+
     setFont(f);
 
     m_d->m_syntax.setFont(f);
@@ -562,16 +554,17 @@ void Editor::resizeEvent(QResizeEvent *e)
 
 void Editor::paintEvent(QPaintEvent *event)
 {
-    if (m_d->m_margins.m_enable) {
+    if (m_d->m_settings.m_margins.m_enable) {
         QPainter painter(viewport());
         QRect r = viewport()->rect();
         QFontMetricsF fm(font());
 
         if (layoutDirection() == Qt::LeftToRight) {
-            r.setX(document()->documentMargin() + qRound(fm.averageCharWidth() * m_d->m_margins.m_length));
+            r.setX(document()->documentMargin() + qRound(fm.averageCharWidth() * m_d->m_settings.m_margins.m_length));
         } else {
-            r.setWidth(
-                r.width() - qRound(fm.averageCharWidth() * m_d->m_margins.m_length) - document()->documentMargin());
+            r.setWidth(r.width()
+                       - qRound(fm.averageCharWidth() * m_d->m_settings.m_margins.m_length)
+                       - document()->documentMargin());
         }
 
         painter.setBrush(QColor(239, 239, 239));
@@ -953,7 +946,7 @@ void Editor::onContentChanged()
                    info.fileName(),
                    m_d->m_currentParsingCounter,
                    m_d->m_syntax,
-                   m_d->m_pluginsCfg);
+                   m_d->m_settings.m_pluginsCfg);
 }
 
 void Editor::onParsingDone(std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
@@ -1056,7 +1049,7 @@ void Editor::keyPressEvent(QKeyEvent *event)
 {
     auto c = textCursor();
 
-    if (m_d->m_isAutoListsEnabled) {
+    if (m_d->m_settings.m_isAutoListsEnabled) {
         if (event->key() == Qt::Key_Return) {
             const auto lineNumber = c.block().blockNumber();
             const auto lineLength = c.block().length();
@@ -1158,8 +1151,8 @@ void Editor::keyPressEvent(QKeyEvent *event)
                 QTextCursor del(document()->findBlockByNumber(i));
 
                 if (del.block().text().startsWith(indent)) {
-                    if (m_d->m_indentMode == Editor::IndentMode::Spaces) {
-                        del.setPosition(del.position() + m_d->m_indentSpacesCount, QTextCursor::KeepAnchor);
+                    if (m_d->m_settings.m_indentMode == Editor::IndentMode::Spaces) {
+                        del.setPosition(del.position() + m_d->m_settings.m_indentSpacesCount, QTextCursor::KeepAnchor);
                     }
 
                     del.deleteChar();

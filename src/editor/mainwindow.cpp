@@ -828,7 +828,7 @@ struct MainWindowPrivate {
 
         m_editor->setFocus();
         m_preview->setFocusPolicy(Qt::ClickFocus);
-        m_editor->applyColors(m_mdColors);
+        m_editor->applyColors(m_editor->settings().m_colors);
 
         m_q->setTabOrder(m_gotoline->line(), m_find->editLine());
         m_q->setTabOrder(m_find->editLine(), m_find->replaceLine());
@@ -1022,9 +1022,6 @@ struct MainWindowPrivate {
     QString m_launcherExe;
     QString m_htmlContent;
     QString m_tmpWorkingDir;
-    Colors m_mdColors;
-    MdShared::PluginsCfg m_pluginsCfg;
-    bool m_spellingEnabled = false;
     int m_tabWidth = -1;
     int m_minTabWidth = -1;
     int m_currentTab = 0;
@@ -1633,26 +1630,26 @@ void MainWindow::saveCfg() const
     s.setValue(s_size, f.pointSize());
     s.endGroup();
 
-    s.setValue(s_linkColor, m_d->m_mdColors.m_linkColor);
-    s.setValue(s_textColor, m_d->m_mdColors.m_textColor);
-    s.setValue(s_inlineColor, m_d->m_mdColors.m_inlineColor);
-    s.setValue(s_htmlColor, m_d->m_mdColors.m_htmlColor);
-    s.setValue(s_tableColor, m_d->m_mdColors.m_tableColor);
-    s.setValue(s_codeColor, m_d->m_mdColors.m_codeColor);
-    s.setValue(s_mathColor, m_d->m_mdColors.m_mathColor);
-    s.setValue(s_referenceColor, m_d->m_mdColors.m_referenceColor);
-    s.setValue(s_specialColor, m_d->m_mdColors.m_specialColor);
-    s.setValue(s_enableMargin, m_d->m_editor->margins().m_enable);
-    s.setValue(s_margin, m_d->m_editor->margins().m_length);
-    s.setValue(s_enableColors, m_d->m_mdColors.m_enabled);
+    s.setValue(s_linkColor, m_d->m_editor->settings().m_colors.m_linkColor);
+    s.setValue(s_textColor, m_d->m_editor->settings().m_colors.m_textColor);
+    s.setValue(s_inlineColor, m_d->m_editor->settings().m_colors.m_inlineColor);
+    s.setValue(s_htmlColor, m_d->m_editor->settings().m_colors.m_htmlColor);
+    s.setValue(s_tableColor, m_d->m_editor->settings().m_colors.m_tableColor);
+    s.setValue(s_codeColor, m_d->m_editor->settings().m_colors.m_codeColor);
+    s.setValue(s_mathColor, m_d->m_editor->settings().m_colors.m_mathColor);
+    s.setValue(s_referenceColor, m_d->m_editor->settings().m_colors.m_referenceColor);
+    s.setValue(s_specialColor, m_d->m_editor->settings().m_colors.m_specialColor);
+    s.setValue(s_enableMargin, m_d->m_editor->settings().m_margins.m_enable);
+    s.setValue(s_margin, m_d->m_editor->settings().m_margins.m_length);
+    s.setValue(s_enableColors, m_d->m_editor->settings().m_colors.m_enabled);
     s.setValue(s_sidebarWidth, m_d->m_tabWidth);
 
     s.beginGroup(s_indent);
-    s.setValue(s_mode, m_d->m_editor->indentMode() == Editor::IndentMode::Tabs ? s_tabs : s_spaces);
-    s.setValue(s_spacesCount, m_d->m_editor->indentSpacesCount());
+    s.setValue(s_mode, m_d->m_editor->settings().m_indentMode == Editor::IndentMode::Tabs ? s_tabs : s_spaces);
+    s.setValue(s_spacesCount, m_d->m_editor->settings().m_indentSpacesCount);
     s.endGroup();
 
-    s.setValue(s_autoLists, m_d->m_editor->isAutoListsEnabled());
+    s.setValue(s_autoLists, m_d->m_editor->settings().m_isAutoListsEnabled);
 
     s.setValue(s_findCaseSensitive, m_d->m_find->isCaseSensitive());
     s.setValue(s_findWholeWord, m_d->m_find->isWholeWord());
@@ -1675,7 +1672,7 @@ void MainWindow::saveCfg() const
     s.endGroup();
 
     s.beginGroup(s_spelling);
-    s.setValue(s_enabled, m_d->m_spellingEnabled);
+    s.setValue(s_enabled, m_d->m_editor->settings().m_enableSpelling);
     s.endGroup();
 
     Sonnet::Settings sonnet;
@@ -1684,21 +1681,21 @@ void MainWindow::saveCfg() const
     s.beginGroup(s_plugins);
 
     s.beginGroup(s_superscript);
-    s.setValue(s_delimiter, m_d->m_pluginsCfg.m_sup.m_delimiter);
-    s.setValue(s_enabled, m_d->m_pluginsCfg.m_sup.m_on);
+    s.setValue(s_delimiter, m_d->m_editor->settings().m_pluginsCfg.m_sup.m_delimiter);
+    s.setValue(s_enabled, m_d->m_editor->settings().m_pluginsCfg.m_sup.m_on);
     s.endGroup();
 
     s.beginGroup(s_subscript);
-    s.setValue(s_delimiter, m_d->m_pluginsCfg.m_sub.m_delimiter);
-    s.setValue(s_enabled, m_d->m_pluginsCfg.m_sub.m_on);
+    s.setValue(s_delimiter, m_d->m_editor->settings().m_pluginsCfg.m_sub.m_delimiter);
+    s.setValue(s_enabled, m_d->m_editor->settings().m_pluginsCfg.m_sub.m_on);
     s.endGroup();
 
     s.beginGroup(s_mark);
-    s.setValue(s_delimiter, m_d->m_pluginsCfg.m_mark.m_delimiter);
-    s.setValue(s_enabled, m_d->m_pluginsCfg.m_mark.m_on);
+    s.setValue(s_delimiter, m_d->m_editor->settings().m_pluginsCfg.m_mark.m_delimiter);
+    s.setValue(s_enabled, m_d->m_editor->settings().m_pluginsCfg.m_mark.m_on);
     s.endGroup();
 
-    s.setValue(s_yaml, m_d->m_pluginsCfg.m_yamlEnabled);
+    s.setValue(s_yaml, m_d->m_editor->settings().m_pluginsCfg.m_yamlEnabled);
 
     s.endGroup();
 }
@@ -1731,63 +1728,71 @@ void MainWindow::readCfg()
     const auto isFindWholeWord = s.value(s_findWholeWord, true).toBool();
     m_d->m_find->setWholeWord(isFindWholeWord);
 
-    const auto linkColor = s.value(s_linkColor, m_d->m_mdColors.m_linkColor).value<QColor>();
+    Colors colors = m_d->m_editor->settings().m_colors;
+
+    const auto linkColor = s.value(s_linkColor, m_d->m_editor->settings().m_colors.m_linkColor).value<QColor>();
     if (linkColor.isValid()) {
-        m_d->m_mdColors.m_linkColor = linkColor;
+        colors.m_linkColor = linkColor;
     }
 
-    const auto textColor = s.value(s_textColor, m_d->m_mdColors.m_textColor).value<QColor>();
+    const auto textColor = s.value(s_textColor, m_d->m_editor->settings().m_colors.m_textColor).value<QColor>();
     if (textColor.isValid()) {
-        m_d->m_mdColors.m_textColor = textColor;
+        colors.m_textColor = textColor;
     }
 
-    const auto inlineColor = s.value(s_inlineColor, m_d->m_mdColors.m_inlineColor).value<QColor>();
+    const auto inlineColor = s.value(s_inlineColor, m_d->m_editor->settings().m_colors.m_inlineColor).value<QColor>();
     if (inlineColor.isValid()) {
-        m_d->m_mdColors.m_inlineColor = inlineColor;
+        colors.m_inlineColor = inlineColor;
     }
 
-    const auto htmlColor = s.value(s_htmlColor, m_d->m_mdColors.m_htmlColor).value<QColor>();
+    const auto htmlColor = s.value(s_htmlColor, m_d->m_editor->settings().m_colors.m_htmlColor).value<QColor>();
     if (htmlColor.isValid()) {
-        m_d->m_mdColors.m_htmlColor = htmlColor;
+        colors.m_htmlColor = htmlColor;
     }
 
-    const auto tableColor = s.value(s_tableColor, m_d->m_mdColors.m_tableColor).value<QColor>();
+    const auto tableColor = s.value(s_tableColor, m_d->m_editor->settings().m_colors.m_tableColor).value<QColor>();
     if (tableColor.isValid()) {
-        m_d->m_mdColors.m_tableColor = tableColor;
+        colors.m_tableColor = tableColor;
     }
 
-    const auto codeColor = s.value(s_codeColor, m_d->m_mdColors.m_codeColor).value<QColor>();
+    const auto codeColor = s.value(s_codeColor, m_d->m_editor->settings().m_colors.m_codeColor).value<QColor>();
     if (codeColor.isValid()) {
-        m_d->m_mdColors.m_codeColor = codeColor;
+        colors.m_codeColor = codeColor;
     }
 
-    const auto mathColor = s.value(s_mathColor, m_d->m_mdColors.m_mathColor).value<QColor>();
+    const auto mathColor = s.value(s_mathColor, m_d->m_editor->settings().m_colors.m_mathColor).value<QColor>();
     if (mathColor.isValid()) {
-        m_d->m_mdColors.m_mathColor = mathColor;
+        colors.m_mathColor = mathColor;
     }
 
-    const auto refColor = s.value(s_referenceColor, m_d->m_mdColors.m_referenceColor).value<QColor>();
+    const auto refColor =
+        s.value(s_referenceColor, m_d->m_editor->settings().m_colors.m_referenceColor).value<QColor>();
     if (refColor.isValid()) {
-        m_d->m_mdColors.m_referenceColor = refColor;
+        colors.m_referenceColor = refColor;
     }
 
-    const auto specialColor = s.value(s_specialColor, m_d->m_mdColors.m_specialColor).value<QColor>();
+    const auto specialColor =
+        s.value(s_specialColor, m_d->m_editor->settings().m_colors.m_specialColor).value<QColor>();
     if (specialColor.isValid()) {
-        m_d->m_mdColors.m_specialColor = specialColor;
+        colors.m_specialColor = specialColor;
     }
 
     m_d->m_editor->enableAutoLists(s.value(s_autoLists, true).toBool());
 
+    Margins margins = m_d->m_editor->settings().m_margins;
+
     const auto enableMargin = s.value(s_enableMargin).toBool();
-    m_d->m_editor->margins().m_enable = enableMargin;
+    margins.m_enable = enableMargin;
 
     const auto margin = s.value(s_margin).toInt();
-    m_d->m_editor->margins().m_length = margin;
+    margins.m_length = margin;
+
+    m_d->m_editor->applyMargins(margins);
 
     const auto enableColors = s.value(s_enableColors).toBool();
-    m_d->m_mdColors.m_enabled = enableColors;
+    colors.m_enabled = enableColors;
 
-    m_d->m_editor->applyColors(m_d->m_mdColors);
+    m_d->m_editor->applyColors(colors);
 
     const auto sidebarWidth = s.value(s_sidebarWidth).toInt();
     if (sidebarWidth > 0) {
@@ -1842,33 +1847,33 @@ void MainWindow::readCfg()
     s.endGroup();
 
     s.beginGroup(s_spelling);
-    m_d->m_spellingEnabled = s.value(s_enabled).toBool();
+    m_d->m_editor->enableSpellingCheck(s.value(s_enabled).toBool());
     s.endGroup();
 
-    m_d->m_editor->enableSpellingCheck(m_d->m_spellingEnabled);
+    MdShared::PluginsCfg pluginsCfg;
 
     s.beginGroup(s_plugins);
 
     s.beginGroup(s_superscript);
-    m_d->m_pluginsCfg.m_sup.m_delimiter = s.value(s_delimiter, QChar()).toChar();
-    m_d->m_pluginsCfg.m_sup.m_on = s.value(s_enabled, false).toBool();
+    pluginsCfg.m_sup.m_delimiter = s.value(s_delimiter, QChar()).toChar();
+    pluginsCfg.m_sup.m_on = s.value(s_enabled, false).toBool();
     s.endGroup();
 
     s.beginGroup(s_subscript);
-    m_d->m_pluginsCfg.m_sub.m_delimiter = s.value(s_delimiter, QChar()).toChar();
-    m_d->m_pluginsCfg.m_sub.m_on = s.value(s_enabled, false).toBool();
+    pluginsCfg.m_sub.m_delimiter = s.value(s_delimiter, QChar()).toChar();
+    pluginsCfg.m_sub.m_on = s.value(s_enabled, false).toBool();
     s.endGroup();
 
     s.beginGroup(s_mark);
-    m_d->m_pluginsCfg.m_mark.m_delimiter = s.value(s_delimiter, QChar()).toChar();
-    m_d->m_pluginsCfg.m_mark.m_on = s.value(s_enabled, false).toBool();
+    pluginsCfg.m_mark.m_delimiter = s.value(s_delimiter, QChar()).toChar();
+    pluginsCfg.m_mark.m_on = s.value(s_enabled, false).toBool();
     s.endGroup();
 
-    m_d->m_pluginsCfg.m_yamlEnabled = s.value(s_yaml, false).toBool();
+    pluginsCfg.m_yamlEnabled = s.value(s_yaml, false).toBool();
 
     s.endGroup();
 
-    m_d->m_editor->setPluginsCfg(m_d->m_pluginsCfg);
+    m_d->m_editor->setPluginsCfg(pluginsCfg);
     m_d->m_editor->doUpdate();
 }
 
@@ -2167,7 +2172,7 @@ void MainWindow::readAllLinked()
 {
     if (m_d->m_loadAllFlag) {
         MD::Parser<MD::QStringTrait> parser;
-        setPlugins(parser, m_d->m_pluginsCfg);
+        setPlugins(parser, m_d->m_editor->settings().m_pluginsCfg);
 
         if (m_d->m_workingDirectoryWidget->isRelative()) {
             m_d->m_mdDoc = parser.parse(m_d->m_rootFilePath,
@@ -3320,13 +3325,11 @@ void MainWindow::onShowLicenses()
 
 void MainWindow::onChangeColors()
 {
-    ColorsDialog dlg(m_d->m_mdColors, this);
+    ColorsDialog dlg(m_d->m_editor->settings().m_colors, this);
 
     if (dlg.exec() == QDialog::Accepted) {
-        if (m_d->m_mdColors != dlg.colors()) {
-            m_d->m_mdColors = dlg.colors();
-
-            m_d->m_editor->applyColors(m_d->m_mdColors);
+        if (m_d->m_editor->settings().m_colors != dlg.colors()) {
+            m_d->m_editor->applyColors(dlg.colors());
 
             m_d->m_editor->doUpdate();
 
@@ -3395,15 +3398,7 @@ void MainWindow::onTabClicked(int index)
 
 void MainWindow::onSettings()
 {
-    SettingsDlg dlg(m_d->m_mdColors,
-                    m_d->m_editor->font(),
-                    m_d->m_editor->margins(),
-                    m_d->m_spellingEnabled,
-                    m_d->m_pluginsCfg,
-                    m_d->m_editor->indentMode(),
-                    m_d->m_editor->indentSpacesCount(),
-                    m_d->m_editor->isAutoListsEnabled(),
-                    this);
+    SettingsDlg dlg(m_d->m_editor->settings(), this);
 
     if (m_d->m_settingsWindowWidth != -1 && m_d->m_settingsWindowHeight != -1) {
         dlg.resize(m_d->m_settingsWindowWidth, m_d->m_settingsWindowHeight);
@@ -3420,61 +3415,29 @@ void MainWindow::onSettings()
     });
 
     if (dlg.exec() == QDialog::Accepted) {
-        bool updateEditor = false;
+        if (dlg.settings() != m_d->m_editor->settings()) {
+            const auto settings = dlg.settings();
 
-        if (dlg.colors() != m_d->m_mdColors) {
-            m_d->m_mdColors = dlg.colors();
+            m_d->m_editor->applyColors(settings.m_colors);
+            m_d->m_editor->applyFont(settings.m_font);
+            m_d->m_editor->applyMargins(settings.m_margins);
 
-            m_d->m_editor->applyColors(m_d->m_mdColors);
+            if (m_d->m_editor->settings().m_enableSpelling != settings.m_enableSpelling) {
+                m_d->m_editor->enableSpellingCheck(settings.m_enableSpelling);
+            }
 
-            updateEditor = true;
-        }
+            m_d->m_editor->enableAutoLists(settings.m_isAutoListsEnabled);
 
-        if (dlg.currentFont() != m_d->m_editor->font()) {
-            m_d->m_editor->applyFont(dlg.currentFont());
-
-            updateEditor = true;
-        }
-
-        if (dlg.editorMargins() != m_d->m_editor->margins()) {
-            m_d->m_editor->margins() = dlg.editorMargins();
-
-            updateEditor = true;
-        }
-
-        if (m_d->m_spellingEnabled != dlg.isSpellingEnabled()) {
-            m_d->m_spellingEnabled = dlg.isSpellingEnabled();
-
-            spellingSettingsChanged = true;
-        }
-
-        if (spellingSettingsChanged) {
-            m_d->m_editor->enableSpellingCheck(m_d->m_spellingEnabled);
-
-            updateEditor = true;
-        }
-
-        if (dlg.isAutoListsEnabled() != m_d->m_editor->isAutoListsEnabled()) {
-            m_d->m_editor->enableAutoLists(dlg.isAutoListsEnabled());
-        }
-
-        if (updateEditor) {
             m_d->m_editor->doUpdate();
-        }
 
-        if (m_d->m_pluginsCfg != dlg.pluginsCfg()) {
-            m_d->m_pluginsCfg = dlg.pluginsCfg();
-            m_d->m_editor->setPluginsCfg(m_d->m_pluginsCfg);
+            if (m_d->m_editor->settings().m_pluginsCfg != settings.m_pluginsCfg) {
+                m_d->m_editor->setPluginsCfg(settings.m_pluginsCfg);
 
-            onEditorReady();
-        }
+                onEditorReady();
+            }
 
-        if (m_d->m_editor->indentMode() != dlg.indentMode()) {
-            m_d->m_editor->setIndentMode(dlg.indentMode());
-        }
-
-        if (m_d->m_editor->indentSpacesCount() != dlg.indentSpacesCount()) {
-            m_d->m_editor->setIndentSpacesCount(dlg.indentSpacesCount());
+            m_d->m_editor->setIndentMode(settings.m_indentMode);
+            m_d->m_editor->setIndentSpacesCount(settings.m_indentSpacesCount);
         }
     }
 
