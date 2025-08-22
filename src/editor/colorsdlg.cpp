@@ -27,6 +27,7 @@ struct ColorsDialogPrivate {
 //
 
 ColorsDialog::ColorsDialog(const Colors &cols,
+                           std::shared_ptr<MdShared::Syntax> syntax,
                            QWidget *parent)
     : QDialog(parent)
     , m_d(new ColorsDialogPrivate)
@@ -34,6 +35,8 @@ ColorsDialog::ColorsDialog(const Colors &cols,
     m_d->m_ui.setupUi(this);
 
     m_d->m_ui.m_page->colors() = cols;
+
+    m_d->m_ui.m_page->initCodeThemes(syntax);
 
     m_d->m_ui.m_page->applyColors();
 

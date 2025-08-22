@@ -18,11 +18,15 @@
 namespace MdShared
 {
 
+KSyntaxHighlighting::Repository Syntax::m_repository;
+QMap<QString, KSyntaxHighlighting::Definition> Syntax::m_definitions;
+QMap<QString, KSyntaxHighlighting::Theme> Syntax::m_themes;
+
 //
 // Syntax
 //
 
-Syntax::Syntax()
+void Syntax::init()
 {
     const auto defs = m_repository.definitions();
 
@@ -42,6 +46,10 @@ Syntax::Syntax()
 
     for (const auto &t : th)
         m_themes.insert(t.name(), t);
+}
+
+Syntax::Syntax()
+{
 }
 
 const KSyntaxHighlighting::Repository &Syntax::repository() const

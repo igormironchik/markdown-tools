@@ -35,11 +35,13 @@ bool operator!=(const Settings &s1,
 //
 
 SettingsDlg::SettingsDlg(const Settings &s,
+                         std::shared_ptr<MdShared::Syntax> syntax,
                          QWidget *parent)
     : QDialog(parent)
 {
     m_ui.setupUi(this);
 
+    m_ui.m_colorsPage->initCodeThemes(syntax);
     m_ui.m_colorsPage->colors() = s.m_colors;
     m_ui.m_colorsPage->applyColors();
     m_ui.m_fontPage->initWithFont(s.m_font);

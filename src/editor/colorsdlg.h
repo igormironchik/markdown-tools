@@ -14,6 +14,9 @@
 // md-editor include.
 #include "colors.h"
 
+// shared include.
+#include "syntax.h"
+
 namespace MdShared
 {
 
@@ -36,8 +39,9 @@ class ColorsDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit ColorsDialog(const Colors &cols,
-                          QWidget *parent = nullptr);
+    ColorsDialog(const Colors &cols,
+                 std::shared_ptr<MdShared::Syntax> syntax,
+                 QWidget *parent = nullptr);
     ~ColorsDialog() override;
 
     //! \return Current colors scheme.

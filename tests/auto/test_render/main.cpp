@@ -382,6 +382,8 @@ void TestRender::initTestCase()
     QFontDatabase::addApplicationFont(s_monoBoldItalicFont);
 
     tex::LaTeX::init(":/res");
+
+    initSharedResources();
 }
 
 void TestRender::testFootnotes()

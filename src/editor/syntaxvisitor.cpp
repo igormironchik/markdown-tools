@@ -38,10 +38,37 @@ namespace MdEditor
 //
 
 struct SyntaxVisitorPrivate {
-    SyntaxVisitorPrivate()
+    SyntaxVisitorPrivate(std::shared_ptr<MdShared::Syntax> syntax)
         : m_codeSyntax(new MdShared::Syntax)
     {
-        m_codeSyntax->setTheme(m_codeSyntax->themeForName(QStringLiteral("GitHub Light")));
+        if (syntax) {
+            m_codeSyntax->setTheme(syntax->theme());
+        }
+    }
+
+    SyntaxVisitorPrivate &operator=(const SyntaxVisitorPrivate &other)
+    {
+        if (this != &other) {
+            m_colors = other.m_colors;
+            m_formats = other.m_formats;
+            m_font = other.m_font;
+            m_stream = other.m_stream;
+            m_additionalStyle = other.m_additionalStyle;
+            m_spellingEnabled = other.m_spellingEnabled;
+            m_skipAllUppercase = other.m_skipAllUppercase;
+            m_autodetectLanguage = other.m_autodetectLanguage;
+            m_skipRunTogether = other.m_skipRunTogether;
+            m_ignoredWords = other.m_ignoredWords;
+            m_defaultLanguage = other.m_defaultLanguage;
+            m_preferredLanguages = other.m_preferredLanguages;
+            m_misspelledPos = other.m_misspelledPos;
+            m_currentHighlightedMisspelled = other.m_currentHighlightedMisspelled;
+            m_correctWords = other.m_correctWords;
+            m_codeSyntax = std::make_shared<MdShared::Syntax>();
+            m_codeSyntax->setTheme(other.m_codeSyntax->theme());
+        }
+
+        return *this;
     }
 
     void clearFormats(QTextDocument *doc)
@@ -178,14 +205,19 @@ struct SyntaxVisitorPrivate {
 //
 
 SyntaxVisitor::SyntaxVisitor()
-    : m_d(new SyntaxVisitorPrivate)
+    : m_d(new SyntaxVisitorPrivate(nullptr))
+{
+}
+
+SyntaxVisitor::SyntaxVisitor(std::shared_ptr<MdShared::Syntax> syntax)
+    : m_d(new SyntaxVisitorPrivate(syntax))
 {
 }
 
 SyntaxVisitor::~SyntaxVisitor() = default;
 
 SyntaxVisitor::SyntaxVisitor(const SyntaxVisitor &other)
-    : m_d(new SyntaxVisitorPrivate)
+    : m_d(new SyntaxVisitorPrivate(nullptr))
 {
     *this = other;
 }
@@ -288,6 +320,11 @@ bool SyntaxVisitor::hasMisspelled() const
     return !m_d->m_misspelledPos.isEmpty();
 }
 
+std::shared_ptr<MdShared::Syntax> SyntaxVisitor::codeBlockSyntaxHighlighter()
+{
+    return m_d->m_codeSyntax;
+}
+
 void SyntaxVisitor::highlightNextMisspelled(QPlainTextEdit *editor)
 {
     if (!m_d->m_misspelledPos.isEmpty()) {
@@ -340,6 +377,7 @@ const Colors &SyntaxVisitor::colors() const
 
 void SyntaxVisitor::setColors(const Colors &c)
 {
+    m_d->m_codeSyntax->setTheme(m_d->m_codeSyntax->themeForName(c.m_codeTheme));
     m_d->m_colors = c;
 }
 
@@ -576,7 +614,7 @@ void SyntaxVisitor::onCode(MD::Code<MD::QStringTrait> *c)
             m_d->setFormat(format, c->startLine(), c->startColumn(), c->endLine(), c->endColumn());
         }
 
-        if (m_d->m_stream) {
+        if (m_d->m_colors.m_codeThemeEnabled && m_d->m_stream && !m_d->m_colors.m_codeTheme.isEmpty()) {
             m_d->m_codeSyntax->setDefinition(m_d->m_codeSyntax->definitionForName(c->syntax().toLower()));
 
             const auto lines = c->text().split(QLatin1Char('\n'));

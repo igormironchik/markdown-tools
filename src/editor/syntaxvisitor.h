@@ -11,6 +11,9 @@
 #include <md4qt/poscache.h>
 #include <md4qt/traits.h>
 
+// shared include.
+#include "syntax.h"
+
 // Qt include.
 #include <QScopedPointer>
 
@@ -39,6 +42,7 @@ class SyntaxVisitor : public MD::PosCache<MD::QStringTrait>
 {
 public:
     SyntaxVisitor();
+    explicit SyntaxVisitor(std::shared_ptr<MdShared::Syntax> syntax);
     ~SyntaxVisitor() override;
 
     SyntaxVisitor(const SyntaxVisitor &other);
@@ -70,13 +74,15 @@ public:
     bool isMisspelled(long long int line,
                       long long int pos,
                       QPair<long long int,
-                            long long int> &wordPos) const;
+                      long long int> &wordPos) const;
     //! \return Spell suggestions for word.
     QStringList spellSuggestions(const QString &word) const;
     //! \return Has this document misspelled words?
     bool hasMisspelled() const;
     //! Select next misspelled word.
     void highlightNextMisspelled(QPlainTextEdit *editor);
+    //! \return Code blocks syntax highlighter.
+    std::shared_ptr<MdShared::Syntax> codeBlockSyntaxHighlighter();
 
 protected:
     void onUserDefined(MD::Item<MD::QStringTrait> *i) override;

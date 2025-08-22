@@ -14,6 +14,9 @@
 #include "editor.h"
 #include "ui_settings.h"
 
+// shared include.
+#include "syntax.h"
+
 namespace Sonnet
 {
 class ConfigWidget;
@@ -60,6 +63,7 @@ class SettingsDlg : public QDialog
 
 public:
     SettingsDlg(const Settings &s,
+                std::shared_ptr<MdShared::Syntax> syntax,
                 QWidget *parent);
     ~SettingsDlg() override = default;
 

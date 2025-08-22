@@ -58,12 +58,14 @@ public:
 
     const KSyntaxHighlighting::Repository &repository() const;
 
+    static void init();
+
 private:
     int m_currentLineNumber = 0;
     Colors m_currentColors;
-    KSyntaxHighlighting::Repository m_repository;
-    QMap<QString, KSyntaxHighlighting::Definition> m_definitions;
-    QMap<QString, KSyntaxHighlighting::Theme> m_themes;
+    static KSyntaxHighlighting::Repository m_repository;
+    static QMap<QString, KSyntaxHighlighting::Definition> m_definitions;
+    static QMap<QString, KSyntaxHighlighting::Theme> m_themes;
 }; // class Syntax
 
 } /* namespace MdShared */

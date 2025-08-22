@@ -1616,6 +1616,8 @@ const QString s_subscript = QStringLiteral("subscript");
 const QString s_mark = QStringLiteral("mark");
 const QString s_yaml = QStringLiteral("yaml");
 const QString s_autoLists = QStringLiteral("autoLists");
+const QString s_enableCodeBlockTheme = QStringLiteral("enableCodeBlockTheme");
+const QString s_codeBlockTheme = QStringLiteral("codeBlockTheme");
 
 void MainWindow::saveCfg() const
 {
@@ -1642,6 +1644,8 @@ void MainWindow::saveCfg() const
     s.setValue(s_enableMargin, m_d->m_editor->settings().m_margins.m_enable);
     s.setValue(s_margin, m_d->m_editor->settings().m_margins.m_length);
     s.setValue(s_enableColors, m_d->m_editor->settings().m_colors.m_enabled);
+    s.setValue(s_enableCodeBlockTheme, m_d->m_editor->settings().m_colors.m_codeThemeEnabled);
+    s.setValue(s_codeBlockTheme, m_d->m_editor->settings().m_colors.m_codeTheme);
     s.setValue(s_sidebarWidth, m_d->m_tabWidth);
 
     s.beginGroup(s_indent);
@@ -1777,6 +1781,9 @@ void MainWindow::readCfg()
         colors.m_specialColor = specialColor;
     }
 
+    colors.m_codeThemeEnabled = s.value(s_enableCodeBlockTheme, true).toBool();
+    colors.m_codeTheme = s.value(s_codeBlockTheme, QStringLiteral("GitHub Light")).toString();
+
     m_d->m_editor->enableAutoLists(s.value(s_autoLists, true).toBool());
 
     Margins margins = m_d->m_editor->settings().m_margins;
@@ -1789,7 +1796,7 @@ void MainWindow::readCfg()
 
     m_d->m_editor->applyMargins(margins);
 
-    const auto enableColors = s.value(s_enableColors).toBool();
+    const auto enableColors = s.value(s_enableColors, true).toBool();
     colors.m_enabled = enableColors;
 
     m_d->m_editor->applyColors(colors);
@@ -3325,7 +3332,8 @@ void MainWindow::onShowLicenses()
 
 void MainWindow::onChangeColors()
 {
-    ColorsDialog dlg(m_d->m_editor->settings().m_colors, this);
+    ColorsDialog dlg(m_d->m_editor->settings().m_colors,
+                     m_d->m_editor->syntaxHighlighter().codeBlockSyntaxHighlighter(), this);
 
     if (dlg.exec() == QDialog::Accepted) {
         if (m_d->m_editor->settings().m_colors != dlg.colors()) {
@@ -3398,7 +3406,7 @@ void MainWindow::onTabClicked(int index)
 
 void MainWindow::onSettings()
 {
-    SettingsDlg dlg(m_d->m_editor->settings(), this);
+    SettingsDlg dlg(m_d->m_editor->settings(), m_d->m_editor->syntaxHighlighter().codeBlockSyntaxHighlighter(), this);
 
     if (m_d->m_settingsWindowWidth != -1 && m_d->m_settingsWindowHeight != -1) {
         dlg.resize(m_d->m_settingsWindowWidth, m_d->m_settingsWindowHeight);
