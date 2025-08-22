@@ -74,7 +74,7 @@ public:
     bool isMisspelled(long long int line,
                       long long int pos,
                       QPair<long long int,
-                      long long int> &wordPos) const;
+                            long long int> &wordPos) const;
     //! \return Spell suggestions for word.
     QStringList spellSuggestions(const QString &word) const;
     //! \return Has this document misspelled words?

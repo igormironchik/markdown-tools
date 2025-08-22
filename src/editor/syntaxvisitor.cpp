@@ -110,9 +110,8 @@ struct SyntaxVisitorPrivate {
                 QTextLayout::FormatRange r;
                 r.format = format;
                 r.start = (i == startLine ? startColumn : 0);
-                r.length =
-                    (i == startLine ? (i == endLine ? endColumn - startColumn + 1 : block.length() - startColumn)
-                                    : (i == endLine ? endColumn + 1 : block.length()));
+                r.length = (i == startLine ? (i == endLine ? endColumn - startColumn + 1 : block.length() - startColumn)
+                                           : (i == endLine ? endColumn + 1 : block.length()));
 
                 m_formats[i].m_format.push_back(r);
             }
@@ -620,27 +619,43 @@ void SyntaxVisitor::onCode(MD::Code<MD::QStringTrait> *c)
             const auto lines = c->text().split(QLatin1Char('\n'));
             const auto colored = m_d->m_codeSyntax->prepare(lines);
 
-            for (auto i = 0; i < colored.size(); ++i) {
-                const auto block = m_d->m_stream->lineAt(c->startLine() + colored[i].line);
-                auto lineWithSpaces = block;
-                MD::replaceTabs<MD::QStringTrait>(lineWithSpaces);
-                const auto codeLine = lines[colored[i].line].trimmed();
-                const auto index = block.indexOf(codeLine);
-                const auto ns = MD::skipSpaces(0, lines[colored[i].line]);
+            qsizetype line = -1;
+            long long int startColumn = 0;
 
-                const auto startColumn = index - ns;
-                const auto color = colored[i].format.textColor(m_d->m_codeSyntax->theme());
-                const auto italic = colored[i].format.isItalic(m_d->m_codeSyntax->theme());
-                const auto bold = colored[i].format.isBold(m_d->m_codeSyntax->theme());
+            for (auto i = 0; i < colored.size(); ++i) {
+                if (line != colored[i].line) {
+                    line = colored[i].line;
+
+                    const auto block = m_d->m_stream->lineAt(c->startLine() + line);
+                    auto lineWithSpaces = block;
+                    MD::replaceTabs<MD::QStringTrait>(lineWithSpaces);
+                    const auto codeLine = lines[line].trimmed();
+                    const auto index = block.indexOf(codeLine);
+                    const auto ns = MD::skipSpaces(0, lines[line]);
+
+                    startColumn = index - ns;
+                }
+
+                const auto theme = m_d->m_codeSyntax->theme();
+
+                const auto color = colored[i].format.textColor(theme);
+                const auto italic = colored[i].format.isItalic(theme);
+                const auto bold = colored[i].format.isBold(theme);
 
                 QTextCharFormat format;
                 format.setForeground(color);
 
-                QScopedValueRollback style(m_d->m_additionalStyle, m_d->m_additionalStyle | (bold ? MD::BoldText : MD::TextWithoutFormat) |
-                                           (italic ? MD::ItalicText : MD::TextWithoutFormat));
+                QScopedValueRollback style(m_d->m_additionalStyle,
+                                           m_d->m_additionalStyle
+                                               | (bold ? MD::BoldText : MD::TextWithoutFormat)
+                                               | (italic ? MD::ItalicText : MD::TextWithoutFormat));
                 format.setFont(m_d->styleFont(m_d->m_additionalStyle));
 
-                m_d->setFormat(format, c->startLine() + colored[i].line, colored[i].startPos + startColumn, c->startLine() + colored[i].line, colored[i].endPos + startColumn);
+                m_d->setFormat(format,
+                               c->startLine() + line,
+                               colored[i].startPos + startColumn,
+                               c->startLine() + line,
+                               colored[i].endPos + startColumn);
             }
         }
 
