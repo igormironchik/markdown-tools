@@ -613,7 +613,10 @@ void SyntaxVisitor::onCode(MD::Code<MD::QStringTrait> *c)
             m_d->setFormat(format, c->startLine(), c->startColumn(), c->endLine(), c->endColumn());
         }
 
-        if (m_d->m_colors.m_codeThemeEnabled && m_d->m_stream && !m_d->m_colors.m_codeTheme.isEmpty()) {
+        if (m_d->m_colors.m_codeThemeEnabled
+            && m_d->m_stream
+            && !m_d->m_colors.m_codeTheme.isEmpty()
+            && !c->syntax().isEmpty()) {
             m_d->m_codeSyntax->setDefinition(m_d->m_codeSyntax->definitionForName(c->syntax().toLower()));
 
             const auto lines = c->text().split(QLatin1Char('\n'));
