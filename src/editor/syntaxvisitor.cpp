@@ -9,6 +9,9 @@
 #include "editor.h"
 #include "speller.h"
 
+// shared include.
+#include "syntax.h"
+
 // Sonnet include.
 #include <Sonnet/Settings>
 
@@ -35,6 +38,12 @@ namespace MdEditor
 //
 
 struct SyntaxVisitorPrivate {
+    SyntaxVisitorPrivate()
+        : m_codeSyntax(new MdShared::Syntax)
+    {
+        m_codeSyntax->setTheme(m_codeSyntax->themeForName(QStringLiteral("GitHub Light")));
+    }
+
     void clearFormats(QTextDocument *doc)
     {
         auto b = doc->firstBlock();
@@ -160,6 +169,8 @@ struct SyntaxVisitorPrivate {
     QPair<long long int, long long int> m_currentHighlightedMisspelled = {-1, -1};
     //! Cache of correct words.
     QSet<QString> m_correctWords;
+    //! Code syntax highlighter.
+    std::shared_ptr<MdShared::Syntax> m_codeSyntax;
 }; // struct SyntaxVisitorPrivate
 
 //
@@ -557,11 +568,43 @@ void SyntaxVisitor::onHeading(MD::Heading<MD::QStringTrait> *h)
 void SyntaxVisitor::onCode(MD::Code<MD::QStringTrait> *c)
 {
     if (m_d->m_colors.m_enabled) {
-        QTextCharFormat format;
-        format.setForeground(m_d->m_colors.m_codeColor);
-        format.setFont(m_d->styleFont(m_d->m_additionalStyle));
+        {
+            QTextCharFormat format;
+            format.setForeground(m_d->m_colors.m_codeColor);
+            format.setFont(m_d->styleFont(m_d->m_additionalStyle));
 
-        m_d->setFormat(format, c->startLine(), c->startColumn(), c->endLine(), c->endColumn());
+            m_d->setFormat(format, c->startLine(), c->startColumn(), c->endLine(), c->endColumn());
+        }
+
+        if (m_d->m_stream) {
+            m_d->m_codeSyntax->setDefinition(m_d->m_codeSyntax->definitionForName(c->syntax().toLower()));
+
+            const auto lines = c->text().split(QLatin1Char('\n'));
+            const auto colored = m_d->m_codeSyntax->prepare(lines);
+
+            for (auto i = 0; i < colored.size(); ++i) {
+                const auto block = m_d->m_stream->lineAt(c->startLine() + colored[i].line);
+                auto lineWithSpaces = block;
+                MD::replaceTabs<MD::QStringTrait>(lineWithSpaces);
+                const auto codeLine = lines[colored[i].line].trimmed();
+                const auto index = block.indexOf(codeLine);
+                const auto ns = MD::skipSpaces(0, lines[colored[i].line]);
+
+                const auto startColumn = index - ns;
+                const auto color = colored[i].format.textColor(m_d->m_codeSyntax->theme());
+                const auto italic = colored[i].format.isItalic(m_d->m_codeSyntax->theme());
+                const auto bold = colored[i].format.isBold(m_d->m_codeSyntax->theme());
+
+                QTextCharFormat format;
+                format.setForeground(color);
+
+                QScopedValueRollback style(m_d->m_additionalStyle, m_d->m_additionalStyle | (bold ? MD::BoldText : MD::TextWithoutFormat) |
+                                           (italic ? MD::ItalicText : MD::TextWithoutFormat));
+                format.setFont(m_d->styleFont(m_d->m_additionalStyle));
+
+                m_d->setFormat(format, c->startLine() + colored[i].line, colored[i].startPos + startColumn, c->startLine() + colored[i].line, colored[i].endPos + startColumn);
+            }
+        }
 
         QTextCharFormat special;
         special.setForeground(m_d->m_colors.m_specialColor);

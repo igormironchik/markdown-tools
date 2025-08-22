@@ -9,6 +9,9 @@ set(CMAKE_AUTOUIC ON)
 
 find_package(Qt6Core REQUIRED)
 find_package(Qt6Widgets REQUIRED)
+find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
+    SyntaxHighlighting
+)
 
 set(SRC license_dialog.h
 	license_dialog.cpp
@@ -27,7 +30,9 @@ set(SRC license_dialog.h
     color.h
     color.cpp
     fingergeometry.h
-    fingergeometry.cpp)
+    fingergeometry.cpp
+    syntax.h
+    syntax.cpp)
 
 qt6_add_resources(SRC qt.qrc)
 qt6_add_resources(SRC icon.qrc)
@@ -36,7 +41,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_library(markdown-widgets STATIC ${SRC})
 
-target_link_libraries(markdown-widgets Qt6::Widgets Qt6::Core)
+target_link_libraries(markdown-widgets KF${KF_MAJOR_VERSION}::SyntaxHighlighting Qt6::Widgets Qt6::Core)
 
 set_property(TARGET markdown-widgets PROPERTY CXX_STANDARD 17)
 
