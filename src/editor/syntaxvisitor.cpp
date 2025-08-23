@@ -691,7 +691,9 @@ void SyntaxVisitor::onCode(MD::Code<MD::QStringTrait> *c)
                                colored[i].endPos + startColumn);
             }
 
-            m_d->m_codeRects.push_back(rect);
+            if (rect.m_startColumn != -1) {
+                m_d->m_codeRects.push_back(rect);
+            }
         }
 
         QTextCharFormat special;
