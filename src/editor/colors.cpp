@@ -28,7 +28,8 @@ bool operator!=(const Colors &c1,
             || c1.m_referenceColor != c2.m_referenceColor
             || c1.m_specialColor != c2.m_specialColor
             || c1.m_codeTheme != c2.m_codeTheme
-            || c1.m_codeThemeEnabled != c2.m_codeThemeEnabled);
+            || c1.m_codeThemeEnabled != c2.m_codeThemeEnabled
+            || c1.m_drawCodeBackground != c2.m_drawCodeBackground);
 }
 
 //
@@ -61,6 +62,7 @@ Colors &ColorsPage::colors()
 {
     m_colors.m_codeTheme = m_ui.m_codeTheme->currentText();
     m_colors.m_codeThemeEnabled = m_ui.m_codeThemeGroupBox->isChecked();
+    m_colors.m_drawCodeBackground = m_ui.m_drawCodeBackground->isChecked();
 
     return m_colors;
 }

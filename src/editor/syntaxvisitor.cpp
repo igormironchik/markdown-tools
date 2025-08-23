@@ -66,6 +66,7 @@ struct SyntaxVisitorPrivate {
             m_correctWords = other.m_correctWords;
             m_codeSyntax = std::make_shared<MdShared::Syntax>();
             m_codeSyntax->setTheme(other.m_codeSyntax->theme());
+            m_codeRects = other.m_codeRects;
         }
 
         return *this;
@@ -197,6 +198,8 @@ struct SyntaxVisitorPrivate {
     QSet<QString> m_correctWords;
     //! Code syntax highlighter.
     std::shared_ptr<MdShared::Syntax> m_codeSyntax;
+    //! Rectangles of code blocks that were highlighted.
+    QVector<SyntaxVisitor::CodeRect> m_codeRects;
 }; // struct SyntaxVisitorPrivate
 
 //
@@ -324,6 +327,11 @@ std::shared_ptr<MdShared::Syntax> SyntaxVisitor::codeBlockSyntaxHighlighter()
     return m_d->m_codeSyntax;
 }
 
+const QVector<SyntaxVisitor::CodeRect> &SyntaxVisitor::highlightedCodeRects() const
+{
+    return m_d->m_codeRects;
+}
+
 void SyntaxVisitor::highlightNextMisspelled(QPlainTextEdit *editor)
 {
     if (!m_d->m_misspelledPos.isEmpty()) {
@@ -360,6 +368,7 @@ void SyntaxVisitor::highlight(MD::StringListStream<MD::QStringTrait> *stream,
                               const Colors &cols)
 {
     m_d->m_misspelledPos.clear();
+    m_d->m_codeRects.clear();
     m_d->m_currentHighlightedMisspelled = {-1, -1};
     m_d->m_colors = cols;
     m_d->m_stream = stream;
@@ -625,6 +634,10 @@ void SyntaxVisitor::onCode(MD::Code<MD::QStringTrait> *c)
             qsizetype line = -1;
             long long int startColumn = 0;
 
+            CodeRect rect;
+            rect.m_startLine = c->startLine();
+            rect.m_endLine = c->endLine();
+
             for (auto i = 0; i < colored.size(); ++i) {
                 if (line != colored[i].line) {
                     line = colored[i].line;
@@ -633,10 +646,21 @@ void SyntaxVisitor::onCode(MD::Code<MD::QStringTrait> *c)
                     auto lineWithSpaces = block;
                     MD::replaceTabs<MD::QStringTrait>(lineWithSpaces);
                     const auto codeLine = lines[line].trimmed();
-                    const auto index = block.indexOf(codeLine);
-                    const auto ns = MD::skipSpaces(0, lines[line]);
+                    auto index = block.indexOf(codeLine);
+                    auto ns = MD::skipSpaces(0, lines[line]);
 
                     startColumn = index - ns;
+
+                    for (; index - 1 >= 0 && ns - 1 >= 0; --index, --ns) {
+                        if (block[index - 1] != lines[line][ns - 1]) {
+                            break;
+                        }
+                    }
+
+                    if (rect.m_startColumn == -1 || startColumn < (rect.m_startColumn - rect.m_spacesBefore)) {
+                        rect.m_startColumn = index;
+                        rect.m_spacesBefore = ns;
+                    }
                 }
 
                 const auto theme = m_d->m_codeSyntax->theme();
@@ -660,6 +684,8 @@ void SyntaxVisitor::onCode(MD::Code<MD::QStringTrait> *c)
                                c->startLine() + line,
                                colored[i].endPos + startColumn);
             }
+
+            m_d->m_codeRects.push_back(rect);
         }
 
         QTextCharFormat special;

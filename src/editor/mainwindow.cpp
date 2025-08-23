@@ -1619,6 +1619,7 @@ const QString s_yaml = QStringLiteral("yaml");
 const QString s_autoLists = QStringLiteral("autoLists");
 const QString s_enableCodeBlockTheme = QStringLiteral("enableCodeBlockTheme");
 const QString s_codeBlockTheme = QStringLiteral("codeBlockTheme");
+const QString s_drawCodeBackground = QStringLiteral("drawCodeBackground");
 
 void MainWindow::saveCfg() const
 {
@@ -1647,6 +1648,7 @@ void MainWindow::saveCfg() const
     s.setValue(s_enableColors, m_d->m_editor->settings().m_colors.m_enabled);
     s.setValue(s_enableCodeBlockTheme, m_d->m_editor->settings().m_colors.m_codeThemeEnabled);
     s.setValue(s_codeBlockTheme, m_d->m_editor->settings().m_colors.m_codeTheme);
+    s.setValue(s_drawCodeBackground, m_d->m_editor->settings().m_colors.m_drawCodeBackground);
     s.setValue(s_sidebarWidth, m_d->m_tabWidth);
 
     s.beginGroup(s_indent);
@@ -1782,27 +1784,28 @@ void MainWindow::readCfg()
         colors.m_specialColor = specialColor;
     }
 
-    colors.m_codeThemeEnabled = s.value(s_enableCodeBlockTheme, true).toBool();
+    colors.m_codeThemeEnabled =
+        s.value(s_enableCodeBlockTheme, m_d->m_editor->settings().m_colors.m_codeThemeEnabled).toBool();
     colors.m_codeTheme = s.value(s_codeBlockTheme, QStringLiteral("GitHub Light")).toString();
 
-    m_d->m_editor->enableAutoLists(s.value(s_autoLists, true).toBool());
+    m_d->m_editor->enableAutoLists(s.value(s_autoLists, m_d->m_editor->settings().m_isAutoListsEnabled).toBool());
 
     Margins margins = m_d->m_editor->settings().m_margins;
 
-    const auto enableMargin = s.value(s_enableMargin).toBool();
+    const auto enableMargin = s.value(s_enableMargin, margins.m_enable).toBool();
     margins.m_enable = enableMargin;
 
-    const auto margin = s.value(s_margin).toInt();
+    const auto margin = s.value(s_margin, margins.m_length).toInt();
     margins.m_length = margin;
 
     m_d->m_editor->applyMargins(margins);
 
-    const auto enableColors = s.value(s_enableColors, true).toBool();
+    const auto enableColors = s.value(s_enableColors, m_d->m_editor->settings().m_colors.m_enabled).toBool();
     colors.m_enabled = enableColors;
 
     m_d->m_editor->applyColors(colors);
 
-    const auto sidebarWidth = s.value(s_sidebarWidth).toInt();
+    const auto sidebarWidth = s.value(s_sidebarWidth, 0).toInt();
     if (sidebarWidth > 0) {
         m_d->m_tabWidth = sidebarWidth;
     }
@@ -1816,7 +1819,7 @@ void MainWindow::readCfg()
         m_d->m_editor->setIndentMode(Editor::IndentMode::Spaces);
     }
 
-    const auto spacesCount = s.value(s_spacesCount, 2).toInt();
+    const auto spacesCount = s.value(s_spacesCount, m_d->m_editor->settings().m_indentSpacesCount).toInt();
 
     if (spacesCount > 0) {
         m_d->m_editor->setIndentSpacesCount(spacesCount);
@@ -1828,19 +1831,19 @@ void MainWindow::readCfg()
 
     s.beginGroup(s_window);
 
-    const auto width = s.value(s_width).toInt();
-    const auto height = s.value(s_height).toInt();
+    const auto width = s.value(s_width, -1).toInt();
+    const auto height = s.value(s_height, -1).toInt();
 
     if (width > 0 && height > 0) {
         resize(width, height);
 
-        const auto x = s.value(s_x).toInt();
-        const auto y = s.value(s_y).toInt();
+        const auto x = s.value(s_x, 0).toInt();
+        const auto y = s.value(s_y, 0).toInt();
 
         windowHandle()->setX(x);
         windowHandle()->setY(y);
 
-        const auto maximized = s.value(s_maximized).toBool();
+        const auto maximized = s.value(s_maximized, false).toBool();
         if (maximized) {
             showMaximized();
         }
@@ -1851,11 +1854,11 @@ void MainWindow::readCfg()
     s.beginGroup(s_settingsWindow);
     m_d->m_settingsWindowWidth = s.value(s_width, -1).toInt();
     m_d->m_settingsWindowHeight = s.value(s_height, -1).toInt();
-    m_d->m_settingsWindowMaximized = s.value(s_maximized).toBool();
+    m_d->m_settingsWindowMaximized = s.value(s_maximized, false).toBool();
     s.endGroup();
 
     s.beginGroup(s_spelling);
-    m_d->m_editor->enableSpellingCheck(s.value(s_enabled).toBool());
+    m_d->m_editor->enableSpellingCheck(s.value(s_enabled, m_d->m_editor->settings().m_enableSpelling).toBool());
     s.endGroup();
 
     MdShared::PluginsCfg pluginsCfg;
@@ -1864,20 +1867,20 @@ void MainWindow::readCfg()
 
     s.beginGroup(s_superscript);
     pluginsCfg.m_sup.m_delimiter = s.value(s_delimiter, QChar()).toChar();
-    pluginsCfg.m_sup.m_on = s.value(s_enabled, false).toBool();
+    pluginsCfg.m_sup.m_on = s.value(s_enabled, m_d->m_editor->settings().m_pluginsCfg.m_sup.m_on).toBool();
     s.endGroup();
 
     s.beginGroup(s_subscript);
     pluginsCfg.m_sub.m_delimiter = s.value(s_delimiter, QChar()).toChar();
-    pluginsCfg.m_sub.m_on = s.value(s_enabled, false).toBool();
+    pluginsCfg.m_sub.m_on = s.value(s_enabled, m_d->m_editor->settings().m_pluginsCfg.m_sub.m_on).toBool();
     s.endGroup();
 
     s.beginGroup(s_mark);
     pluginsCfg.m_mark.m_delimiter = s.value(s_delimiter, QChar()).toChar();
-    pluginsCfg.m_mark.m_on = s.value(s_enabled, false).toBool();
+    pluginsCfg.m_mark.m_on = s.value(s_enabled, m_d->m_editor->settings().m_pluginsCfg.m_mark.m_on).toBool();
     s.endGroup();
 
-    pluginsCfg.m_yamlEnabled = s.value(s_yaml, false).toBool();
+    pluginsCfg.m_yamlEnabled = s.value(s_yaml, m_d->m_editor->settings().m_pluginsCfg.m_yamlEnabled).toBool();
 
     s.endGroup();
 

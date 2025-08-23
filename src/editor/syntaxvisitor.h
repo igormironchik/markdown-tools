@@ -84,6 +84,17 @@ public:
     //! \return Code blocks syntax highlighter.
     std::shared_ptr<MdShared::Syntax> codeBlockSyntaxHighlighter();
 
+    //! Rectangle of highlighted code block.
+    struct CodeRect {
+        long long int m_startColumn = -1;
+        long long int m_spacesBefore = -1;
+        long long int m_startLine = -1;
+        long long int m_endLine = -1;
+    }; // struct CodeRect
+
+    //! \return Rectangles of highlighted code blocks.
+    const QVector<CodeRect> &highlightedCodeRects() const;
+
 protected:
     void onUserDefined(MD::Item<MD::QStringTrait> *i) override;
     void onReferenceLink(MD::Link<MD::QStringTrait> *l) override;

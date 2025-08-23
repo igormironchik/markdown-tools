@@ -47,6 +47,8 @@ struct Colors {
     bool m_enabled = true;
     //! Is theme for code blocks enabled?
     bool m_codeThemeEnabled = true;
+    //! Should code blocks background be drawn?
+    bool m_drawCodeBackground = true;
 }; // struct Colors
 
 //! Not-equal operator for color schemes.
