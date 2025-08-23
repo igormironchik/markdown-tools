@@ -552,21 +552,36 @@ void Editor::resizeEvent(QResizeEvent *e)
     }
 }
 
+struct CodeBlockBackgroundData : public QTextBlockUserData {
+    explicit CodeBlockBackgroundData(qsizetype x)
+        : m_x(x)
+    {
+    }
+
+    ~CodeBlockBackgroundData() override = default;
+
+    qsizetype m_x;
+}; // struct CodeBlockBackgroundData
+
 void Editor::drawCodeBlocksBackground(QPainter &p)
 {
-    if (isReady()) {
-        p.setBrush(m_d->m_syntax.codeBlockSyntaxHighlighter()->theme().editorColor(KSyntaxHighlighting::Theme::CodeFolding));
-        p.setPen(Qt::NoPen);
+    p.setBrush(
+        m_d->m_syntax.codeBlockSyntaxHighlighter()->theme().editorColor(KSyntaxHighlighting::Theme::CodeFolding));
+    p.setPen(Qt::NoPen);
 
-        const auto visibleBlock = firstVisibleBlock();
+    auto visibleBlock = firstVisibleBlock();
+    const qsizetype bottom = viewport()->rect().bottom();
+
+    if (isReady()) {
         qsizetype top = viewport()->rect().y();
-        const qsizetype bottom = viewport()->rect().bottom();
         qsizetype x = -1;
         qsizetype h = 0;
 
         for (const auto &rect : std::as_const(m_d->m_syntax.highlightedCodeRects())) {
             if (rect.m_endLine >= visibleBlock.blockNumber()) {
-                const auto startY = qRound(blockBoundingGeometry(document()->findBlockByNumber(rect.m_startLine)).translated(contentOffset()).top());
+                const auto startY = qRound(blockBoundingGeometry(document()->findBlockByNumber(rect.m_startLine))
+                                               .translated(contentOffset())
+                                               .top());
 
                 if (startY > bottom) {
                     break;
@@ -578,11 +593,7 @@ void Editor::drawCodeBlocksBackground(QPainter &p)
                     const auto block = document()->findBlockByNumber(line);
                     const auto geometry = blockBoundingGeometry(block).translated(contentOffset());
 
-                    if (qRound(geometry.bottom()) < top) {
-                        continue;
-                    }
-
-                    if (first) {
+                    if (qRound(geometry.bottom()) > top && first) {
                         top = qRound(geometry.top());
 
                         first = false;
@@ -593,10 +604,18 @@ void Editor::drawCodeBlocksBackground(QPainter &p)
                     }
 
                     if (line == rect.m_startColumnLine && x != 0) {
-                        x = fontMetrics().horizontalAdvance(block.text().sliced(0, rect.m_startColumn), block.layout()->textOption()) - fontMetrics().horizontalAdvance(QLatin1Char(' ')) * rect.m_spacesBefore;
+                        x = fontMetrics().horizontalAdvance(block.text().sliced(0, rect.m_startColumn),
+                                                            block.layout()->textOption())
+                            - fontMetrics().horizontalAdvance(QLatin1Char(' ')) * rect.m_spacesBefore;
                     }
 
-                    h += qRound(geometry.height());
+                    if (qRound(geometry.bottom()) > top) {
+                        h += qRound(geometry.height());
+                    }
+                }
+
+                for (auto line = rect.m_startLine; line <= rect.m_endLine; ++line) {
+                    document()->findBlockByNumber(line).setUserData(new CodeBlockBackgroundData(x));
                 }
 
                 p.drawRect(x + document()->documentMargin(), top, viewport()->rect().width() - x, h);
@@ -604,6 +623,25 @@ void Editor::drawCodeBlocksBackground(QPainter &p)
                 x = -1;
                 h = 0;
             }
+        }
+    } else {
+        while (visibleBlock.isValid()) {
+            const auto geometry = blockBoundingGeometry(visibleBlock).translated(contentOffset());
+
+            if (bottom < qRound(geometry.top())) {
+                break;
+            }
+
+            if (visibleBlock.userData()) {
+                const auto x = static_cast<CodeBlockBackgroundData *>(visibleBlock.userData())->m_x;
+
+                p.drawRect(x + document()->documentMargin(),
+                           qRound(geometry.top()),
+                           viewport()->rect().width() - x,
+                           qRound(geometry.height()));
+            }
+
+            visibleBlock = visibleBlock.next();
         }
     }
 }
