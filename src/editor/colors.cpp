@@ -90,6 +90,7 @@ void ColorsPage::applyColors()
 
     m_ui.m_codeThemeGroupBox->setChecked(m_colors.m_codeThemeEnabled);
     m_ui.m_codeTheme->setCurrentText(m_colors.m_codeTheme);
+    m_ui.m_drawCodeBackground->setChecked(m_colors.m_drawCodeBackground);
 }
 
 void ColorsPage::chooseColor(MdShared::ColorWidget *w,

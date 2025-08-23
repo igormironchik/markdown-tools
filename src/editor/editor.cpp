@@ -552,10 +552,71 @@ void Editor::resizeEvent(QResizeEvent *e)
     }
 }
 
+void Editor::drawCodeBlocksBackground(QPainter &p)
+{
+    if (isReady()) {
+        p.setBrush(m_d->m_syntax.codeBlockSyntaxHighlighter()->theme().editorColor(KSyntaxHighlighting::Theme::CodeFolding));
+        p.setPen(Qt::NoPen);
+
+        const auto visibleBlock = firstVisibleBlock();
+        qsizetype top = viewport()->rect().y();
+        const qsizetype bottom = viewport()->rect().bottom();
+        qsizetype x = -1;
+        qsizetype h = 0;
+
+        for (const auto &rect : std::as_const(m_d->m_syntax.highlightedCodeRects())) {
+            if (rect.m_endLine >= visibleBlock.blockNumber()) {
+                const auto startY = qRound(blockBoundingGeometry(document()->findBlockByNumber(rect.m_startLine)).translated(contentOffset()).top());
+
+                if (startY > bottom) {
+                    break;
+                }
+
+                bool first = true;
+
+                for (auto line = rect.m_startLine; line <= rect.m_endLine; ++line) {
+                    const auto block = document()->findBlockByNumber(line);
+                    const auto geometry = blockBoundingGeometry(block).translated(contentOffset());
+
+                    if (qRound(geometry.bottom()) < top) {
+                        continue;
+                    }
+
+                    if (first) {
+                        top = qRound(geometry.top());
+
+                        first = false;
+                    }
+
+                    if (block.lineCount() > 1) {
+                        x = 0;
+                    }
+
+                    if (line == rect.m_startColumnLine && x != 0) {
+                        x = fontMetrics().horizontalAdvance(block.text().sliced(0, rect.m_startColumn), block.layout()->textOption()) - fontMetrics().horizontalAdvance(QLatin1Char(' ')) * rect.m_spacesBefore;
+                    }
+
+                    h += qRound(geometry.height());
+                }
+
+                p.drawRect(x + document()->documentMargin(), top, viewport()->rect().width() - x, h);
+
+                x = -1;
+                h = 0;
+            }
+        }
+    }
+}
+
 void Editor::paintEvent(QPaintEvent *event)
 {
+    QPainter painter(viewport());
+
+    if (m_d->m_settings.m_colors.m_codeThemeEnabled && m_d->m_settings.m_colors.m_drawCodeBackground) {
+        drawCodeBlocksBackground(painter);
+    }
+
     if (m_d->m_settings.m_margins.m_enable) {
-        QPainter painter(viewport());
         QRect r = viewport()->rect();
         QFontMetricsF fm(font());
 

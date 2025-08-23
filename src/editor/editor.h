@@ -197,6 +197,8 @@ protected:
 protected:
     //! \return Line number for a given point.
     int lineNumber(const QPoint &p);
+    //! Draw code blocks background.
+    void drawCodeBlocksBackground(QPainter &p);
 
 private:
     friend struct EditorPrivate;

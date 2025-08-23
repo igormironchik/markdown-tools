@@ -646,20 +646,26 @@ void SyntaxVisitor::onCode(MD::Code<MD::QStringTrait> *c)
                     auto lineWithSpaces = block;
                     MD::replaceTabs<MD::QStringTrait>(lineWithSpaces);
                     const auto codeLine = lines[line].trimmed();
-                    auto index = block.indexOf(codeLine);
-                    auto ns = MD::skipSpaces(0, lines[line]);
 
-                    startColumn = index - ns;
+                    if (!codeLine.isEmpty()) {
+                        auto index = block.indexOf(codeLine);
+                        auto ns = MD::skipSpaces(0, lines[line]);
 
-                    for (; index - 1 >= 0 && ns - 1 >= 0; --index, --ns) {
-                        if (block[index - 1] != lines[line][ns - 1]) {
-                            break;
+                        if (index >= 0) {
+                            startColumn = index - ns;
+
+                            for (; index - 1 >= 0 && ns - 1 >= 0; --index, --ns) {
+                                if (block[index - 1] != lines[line][ns - 1]) {
+                                    break;
+                                }
+                            }
+
+                            if (rect.m_startColumn == -1 || startColumn < (rect.m_startColumn - rect.m_spacesBefore)) {
+                                rect.m_startColumn = index;
+                                rect.m_spacesBefore = ns;
+                                rect.m_startColumnLine = c->startLine() + line;
+                            }
                         }
-                    }
-
-                    if (rect.m_startColumn == -1 || startColumn < (rect.m_startColumn - rect.m_spacesBefore)) {
-                        rect.m_startColumn = index;
-                        rect.m_spacesBefore = ns;
                     }
                 }
 

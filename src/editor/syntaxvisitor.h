@@ -88,6 +88,7 @@ public:
     struct CodeRect {
         long long int m_startColumn = -1;
         long long int m_spacesBefore = -1;
+        long long int m_startColumnLine = -1;
         long long int m_startLine = -1;
         long long int m_endLine = -1;
     }; // struct CodeRect
