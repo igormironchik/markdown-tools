@@ -768,8 +768,11 @@ void Editor::highlightCurrentLine()
 {
     static const QColor lineColor = QColor(255, 255, 0, 75);
 
-    if (textCursor().block().userData() && m_d->m_settings.m_colors.m_codeThemeEnabled && m_d->m_settings.m_colors.m_drawCodeBackground) {
-        m_d->m_currentLine.format.setBackground(QColor(m_d->m_syntax.codeBlockSyntaxHighlighter()->theme().editorColor(KSyntaxHighlighting::Theme::CurrentLine)));
+    if (textCursor().block().userData()
+        && m_d->m_settings.m_colors.m_codeThemeEnabled
+        && m_d->m_settings.m_colors.m_drawCodeBackground) {
+        m_d->m_currentLine.format.setBackground(QColor(
+            m_d->m_syntax.codeBlockSyntaxHighlighter()->theme().editorColor(KSyntaxHighlighting::Theme::CurrentLine)));
     } else {
         m_d->m_currentLine.format.setBackground(lineColor);
     }
@@ -1181,16 +1184,20 @@ void Editor::clearUserStateOnAllBlocks()
 
 static const int s_autoAddedListItem = 1;
 
-bool Editor::handleReturnKeyForCode(QKeyEvent *event, const MD::PosCache<MD::QStringTrait>::Items &items, bool inList)
+bool Editor::handleReturnKeyForCode(QKeyEvent *event,
+                                    const MD::PosCache<MD::QStringTrait>::Items &items,
+                                    bool inList)
 {
     if (m_d->m_settings.m_isAutoCodeBlocksEnabled && !items.isEmpty() && items.back()->type() == MD::ItemType::Code) {
-        if(inList && !m_d->m_settings.m_dontUseAutoListInCodeBlock) {
+        if (inList && !m_d->m_settings.m_dontUseAutoListInCodeBlock) {
             return false;
         }
 
         auto code = static_cast<MD::Code<MD::QStringTrait> *>(items.back());
 
-        if (!code->isInline() && (code->endLine() > textCursor().block().blockNumber() || (code->isFensedCode() && code->endDelim().startLine() == -1))) {
+        if (!code->isInline()
+            && (code->endLine() > textCursor().block().blockNumber()
+                || (code->isFensedCode() && code->endDelim().startLine() == -1))) {
             QPlainTextEdit::keyPressEvent(event);
 
             if (code->isFensedCode()) {
@@ -1199,7 +1206,8 @@ bool Editor::handleReturnKeyForCode(QKeyEvent *event, const MD::PosCache<MD::QSt
                 textCursor().insertText(first);
 
                 if (!code->syntax().isEmpty()) {
-                    textCursor().block().setUserData(new CodeBlockBackgroundData(fontMetrics().horizontalAdvance(first, block.layout()->textOption())));
+                    textCursor().block().setUserData(new CodeBlockBackgroundData(
+                        fontMetrics().horizontalAdvance(first, block.layout()->textOption())));
                 }
             } else {
                 const auto block = document()->findBlockByNumber(code->startLine());
@@ -1251,12 +1259,14 @@ void Editor::keyPressEvent(QKeyEvent *event)
                                 QPlainTextEdit::keyPressEvent(event);
 
                                 if (l->delim().startColumn()) {
-                                    c.setPosition(c.block().position() + l->delim().startColumn(), QTextCursor::KeepAnchor);
+                                    c.setPosition(c.block().position() + l->delim().startColumn(),
+                                                  QTextCursor::KeepAnchor);
                                     textCursor().insertText(c.selectedText());
                                 }
 
                                 c.setPosition(c.block().position() + l->delim().startColumn());
-                                c.setPosition(c.block().position() + l->delim().endColumn() + 1, QTextCursor::KeepAnchor);
+                                c.setPosition(c.block().position() + l->delim().endColumn() + 1,
+                                              QTextCursor::KeepAnchor);
 
                                 if (l->listType() == MD::ListItem<MD::QStringTrait>::Unordered) {
                                     textCursor().insertText(c.selectedText());

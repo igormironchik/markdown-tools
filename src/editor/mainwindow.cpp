@@ -1794,12 +1794,16 @@ void MainWindow::readCfg()
     colors.m_codeThemeEnabled =
         s.value(s_enableCodeBlockTheme, m_d->m_editor->settings().m_colors.m_codeThemeEnabled).toBool();
     colors.m_codeTheme = s.value(s_codeBlockTheme, QStringLiteral("GitHub Light")).toString();
-    colors.m_drawCodeBackground = s.value(s_drawCodeBackground, m_d->m_editor->settings().m_colors.m_drawCodeBackground).toBool();
+    colors.m_drawCodeBackground =
+        s.value(s_drawCodeBackground, m_d->m_editor->settings().m_colors.m_drawCodeBackground).toBool();
 
     m_d->m_editor->enableAutoLists(s.value(s_autoLists, m_d->m_editor->settings().m_isAutoListsEnabled).toBool());
-    m_d->m_editor->enableGithubBehaviour(s.value(s_githubBehaviour, m_d->m_editor->settings().m_githubBehaviour).toBool());
-    m_d->m_editor->enableAutoListInCodeBlock(!s.value(s_dontUseAutoListInCodeBlock, !m_d->m_editor->settings().m_dontUseAutoListInCodeBlock).toBool());
-    m_d->m_editor->enableAutoCodeBlocks(s.value(s_autoCodeBlocks, m_d->m_editor->settings().m_isAutoCodeBlocksEnabled).toBool());
+    m_d->m_editor->enableGithubBehaviour(
+        s.value(s_githubBehaviour, m_d->m_editor->settings().m_githubBehaviour).toBool());
+    m_d->m_editor->enableAutoListInCodeBlock(
+        !s.value(s_dontUseAutoListInCodeBlock, !m_d->m_editor->settings().m_dontUseAutoListInCodeBlock).toBool());
+    m_d->m_editor->enableAutoCodeBlocks(
+        s.value(s_autoCodeBlocks, m_d->m_editor->settings().m_isAutoCodeBlocksEnabled).toBool());
 
     Margins margins = m_d->m_editor->settings().m_margins;
 
