@@ -462,6 +462,8 @@ void Editor::applyColors(const Colors &colors)
     m_d->m_settings.m_colors = colors;
 
     m_d->m_syntax.setColors(colors);
+
+    highlightCurrentLine();
 }
 
 void Editor::applyMargins(const Margins &m)
@@ -678,7 +680,7 @@ void Editor::paintEvent(QPaintEvent *event)
                        - document()->documentMargin());
         }
 
-        painter.setBrush(QColor(239, 239, 239));
+        painter.setBrush(QColor(239, 239, 239, 200));
         painter.setPen(Qt::NoPen);
         painter.drawRect(r);
     }
@@ -1163,6 +1165,69 @@ static const int s_autoAddedListItem = 1;
 
 void Editor::keyPressEvent(QKeyEvent *event)
 {
+    auto handleCode = [&event, this](MD::PosCache<MD::QStringTrait>::Items::const_reverse_iterator it, MD::PosCache<MD::QStringTrait>::Items::const_reverse_iterator last) -> bool {
+        if (it != last && (*it)->type() == MD::ItemType::Code && m_d->m_settings.m_dontUseAutoListInCodeBlock) {
+            QPlainTextEdit::keyPressEvent(event);
+
+            const auto line = textCursor().block().blockNumber();
+
+            auto code = static_cast<MD::Code<MD::QStringTrait> *>(*it);
+
+            if (!code->isInline()) {
+                if (code->isFensedCode()) {
+                    for (const auto rect : std::as_const(m_d->m_syntax.highlightedCodeRects())) {
+                        if (rect.m_startLine >= line && line <= rect.m_endLine) {
+                            auto block = document()->findBlockByNumber(code->startLine());
+                            const auto codeLines = code->text().split(QLatin1Char('\n'));
+
+                            if (!codeLines.isEmpty()) {
+                                auto spaces = block.text().sliced(0, block.text().indexOf(codeLines.first().trimmed()));
+                                auto ns = MD::skipSpaces(0, codeLines.first());
+
+                                while (ns > 0) {
+                                    if (spaces.back() != codeLines.first()[ns - 1]) {
+                                        break;
+                                    } else {
+                                        --ns;
+                                    }
+                                }
+
+                                MD::QStringTrait::InternalString tmp(spaces);
+                                MD::replaceTabs<MD::QStringTrait>(tmp);
+                                spaces = tmp.toString();
+                                spaces.slice(0, spaces.size() - ns);
+
+                                textCursor().insertText(spaces);
+                                textCursor().block().setUserData(new CodeBlockBackgroundData(fontMetrics().horizontalAdvance(spaces)));
+                            } else {
+                                const auto block = document()->findBlockByNumber(code->startDelim().startLine());
+                                const auto spaces = block.text().sliced(0, code->startDelim().startColumn());
+                                textCursor().insertText(spaces);
+
+                                if (!code->syntax().isEmpty()) {
+                                    textCursor().block().setUserData(new CodeBlockBackgroundData(fontMetrics().horizontalAdvance(spaces, block.layout()->textOption())));
+                                }
+                            }
+
+                            highlightCurrentLine();
+
+                            return true;
+                        }
+                    }
+                } else {
+                    const auto spaces = document()->findBlockByNumber(code->startLine()).text().sliced(0, code->startColumn());
+                    textCursor().insertText(spaces);
+
+                    highlightCurrentLine();
+
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    };
+
     auto c = textCursor();
 
     if (m_d->m_settings.m_isAutoListsEnabled) {
@@ -1176,6 +1241,10 @@ void Editor::keyPressEvent(QKeyEvent *event)
                 for (auto it = items.crbegin(), last = items.crend(); it != last; ++it) {
                     if ((*it)->type() == MD::ItemType::ListItem) {
                         auto l = static_cast<MD::ListItem<MD::QStringTrait> *>(*it);
+
+                        if (handleCode(std::prev(it), last)) {
+                            return;
+                        }
 
                         if (!m_d->m_settings.m_githubBehaviour || l->items().size() <= 1) {
                             c.setPosition(document()->findBlockByNumber(l->startLine()).position());
