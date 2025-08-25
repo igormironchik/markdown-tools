@@ -203,6 +203,8 @@ protected:
     int lineNumber(const QPoint &p);
     //! Draw code blocks background.
     void drawCodeBlocksBackground(QPainter &p);
+    //! Handle "Return: key for code.
+    bool handleReturnKeyForCode(QKeyEvent *event, const MD::PosCache<MD::QStringTrait>::Items &items, bool inList);
 
 private:
     friend struct EditorPrivate;
