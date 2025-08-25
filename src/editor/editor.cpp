@@ -1081,6 +1081,8 @@ void Editor::onParsingDone(std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
 
         highlightCurrent();
 
+        textCursor().block().setUserData(nullptr);
+
         viewport()->update();
 
         m_d->m_isReady = true;
