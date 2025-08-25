@@ -1622,6 +1622,7 @@ const QString s_codeBlockTheme = QStringLiteral("codeBlockTheme");
 const QString s_drawCodeBackground = QStringLiteral("drawCodeBackground");
 const QString s_githubBehaviour = QStringLiteral("githubBehaviour");
 const QString s_dontUseAutoListInCodeBlock = QStringLiteral("dontUseAutoListInCodeBlock");
+const QString s_autoCodeBlocks = QStringLiteral("autoCodeBlocks");
 
 void MainWindow::saveCfg() const
 {
@@ -1661,6 +1662,8 @@ void MainWindow::saveCfg() const
     s.setValue(s_autoLists, m_d->m_editor->settings().m_isAutoListsEnabled);
     s.setValue(s_githubBehaviour, m_d->m_editor->settings().m_githubBehaviour);
     s.setValue(s_dontUseAutoListInCodeBlock, m_d->m_editor->settings().m_dontUseAutoListInCodeBlock);
+
+    s.setValue(s_autoCodeBlocks, m_d->m_editor->settings().m_isAutoCodeBlocksEnabled);
 
     s.setValue(s_findCaseSensitive, m_d->m_find->isCaseSensitive());
     s.setValue(s_findWholeWord, m_d->m_find->isWholeWord());
@@ -1796,6 +1799,7 @@ void MainWindow::readCfg()
     m_d->m_editor->enableAutoLists(s.value(s_autoLists, m_d->m_editor->settings().m_isAutoListsEnabled).toBool());
     m_d->m_editor->enableGithubBehaviour(s.value(s_githubBehaviour, m_d->m_editor->settings().m_githubBehaviour).toBool());
     m_d->m_editor->enableAutoListInCodeBlock(!s.value(s_dontUseAutoListInCodeBlock, !m_d->m_editor->settings().m_dontUseAutoListInCodeBlock).toBool());
+    m_d->m_editor->enableAutoCodeBlocks(s.value(s_autoCodeBlocks, m_d->m_editor->settings().m_isAutoCodeBlocksEnabled).toBool());
 
     Margins margins = m_d->m_editor->settings().m_margins;
 
@@ -3451,6 +3455,7 @@ void MainWindow::onSettings()
             m_d->m_editor->enableAutoLists(settings.m_isAutoListsEnabled);
             m_d->m_editor->enableGithubBehaviour(settings.m_githubBehaviour);
             m_d->m_editor->enableAutoListInCodeBlock(!settings.m_dontUseAutoListInCodeBlock);
+            m_d->m_editor->enableAutoCodeBlocks(settings.m_isAutoCodeBlocksEnabled);
 
             m_d->m_editor->doUpdate();
 

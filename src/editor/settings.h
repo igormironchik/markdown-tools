@@ -51,6 +51,8 @@ struct Settings {
     bool m_githubBehaviour = false;
     //! Don't auto add list in code block in list item.
     bool m_dontUseAutoListInCodeBlock = true;
+    //! Auto continue code blocks.
+    bool m_isAutoCodeBlocksEnabled = true;
 }; // struct Settings
 
 bool operator!=(const Settings &s1,

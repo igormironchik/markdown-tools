@@ -29,7 +29,8 @@ bool operator!=(const Settings &s1,
             || s1.m_indentSpacesCount != s2.m_indentSpacesCount
             || s1.m_isAutoListsEnabled != s2.m_isAutoListsEnabled
             || s1.m_githubBehaviour != s2.m_githubBehaviour
-            || s1.m_dontUseAutoListInCodeBlock != s2.m_dontUseAutoListInCodeBlock);
+            || s1.m_dontUseAutoListInCodeBlock != s2.m_dontUseAutoListInCodeBlock
+            || s1.m_isAutoCodeBlocksEnabled != s2.m_isAutoCodeBlocksEnabled);
 }
 
 //
@@ -57,6 +58,7 @@ SettingsDlg::SettingsDlg(const Settings &s,
     m_ui.m_autoListGroupBox->setChecked(s.m_isAutoListsEnabled);
     m_ui.m_dontUseAutoListInCodeBlock->setChecked(s.m_dontUseAutoListInCodeBlock);
     m_ui.m_githubBehaviour->setChecked(s.m_githubBehaviour);
+    m_ui.m_autoFormatCodeBlocks->setChecked(s.m_isAutoCodeBlocksEnabled);
 
     connect(m_ui.buttonBox, &QDialogButtonBox::clicked, this, &SettingsDlg::onButtonclicked);
     connect(m_ui.m_menu, &QListWidget::currentRowChanged, this, &SettingsDlg::onMenu);
@@ -93,6 +95,7 @@ Settings SettingsDlg::settings() const
     s.m_isAutoListsEnabled = m_ui.m_autoListGroupBox->isChecked();
     s.m_githubBehaviour = m_ui.m_githubBehaviour->isChecked();
     s.m_dontUseAutoListInCodeBlock = m_ui.m_dontUseAutoListInCodeBlock->isChecked();
+    s.m_isAutoCodeBlocksEnabled = m_ui.m_autoFormatCodeBlocks->isChecked();
 
     return s;
 }

@@ -119,6 +119,8 @@ public:
     void enableGithubBehaviour(bool on = true);
     //! Enable auto add list in code block in list item.
     void enableAutoListInCodeBlock(bool on = true);
+    //! Enable auto continue of code blocks.
+    void enableAutoCodeBlocks(bool on = true);
 
     //! Indent mode.
     enum class IndentMode {

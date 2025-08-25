@@ -418,6 +418,11 @@ void Editor::enableAutoListInCodeBlock(bool on)
     m_d->m_settings.m_dontUseAutoListInCodeBlock = !on;
 }
 
+void Editor::enableAutoCodeBlocks(bool on)
+{
+    m_d->m_settings.m_isAutoCodeBlocksEnabled = on;
+}
+
 void Editor::setIndentMode(IndentMode mode)
 {
     m_d->m_settings.m_indentMode = mode;
@@ -1178,7 +1183,7 @@ static const int s_autoAddedListItem = 1;
 
 bool Editor::handleReturnKeyForCode(QKeyEvent *event, const MD::PosCache<MD::QStringTrait>::Items &items, bool inList)
 {
-    if (!items.isEmpty() && items.back()->type() == MD::ItemType::Code) {
+    if (m_d->m_settings.m_isAutoCodeBlocksEnabled && !items.isEmpty() && items.back()->type() == MD::ItemType::Code) {
         if(inList && !m_d->m_settings.m_dontUseAutoListInCodeBlock) {
             return false;
         }
