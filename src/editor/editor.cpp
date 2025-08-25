@@ -603,7 +603,11 @@ void Editor::drawCodeBlocksBackground(QPainter &p)
 
                 for (auto line = rect.m_startLine; line <= rect.m_endLine; ++line) {
                     const auto block = document()->findBlockByNumber(line);
-                    const auto geometry = blockBoundingGeometry(block).translated(contentOffset());
+                    auto geometry = blockBoundingGeometry(block).translated(contentOffset());
+
+                    if (!block.next().isValid()) {
+                        geometry.adjust(0., 0., 0., -document()->documentMargin());
+                    }
 
                     if (qRound(geometry.bottom()) > top && first) {
                         top = qRound(geometry.top());
@@ -630,7 +634,7 @@ void Editor::drawCodeBlocksBackground(QPainter &p)
                     document()->findBlockByNumber(line).setUserData(new CodeBlockBackgroundData(x));
                 }
 
-                p.drawRect(x + document()->documentMargin(), top, viewport()->rect().width() - x, h);
+                p.drawRect(x + document()->documentMargin(), top, viewport()->rect().width(), h);
 
                 x = -1;
                 h = 0;
@@ -1086,6 +1090,13 @@ void Editor::onParsingDone(std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
         viewport()->update();
 
         m_d->m_isReady = true;
+
+        auto block = document()->firstBlock();
+
+        while (block.isValid()) {
+            block.setUserData(nullptr);
+            block = block.next();
+        }
 
         emit misspelled(syntaxHighlighter().hasMisspelled());
         emit ready();
