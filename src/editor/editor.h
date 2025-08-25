@@ -115,6 +115,10 @@ public:
     void setPluginsCfg(const MdShared::PluginsCfg &cfg);
     //! Enable/disable auto-lists.
     void enableAutoLists(bool on = true);
+    //! Enable auto add list after non-first block of list item (like on GitHub).
+    void enableGithubBehaviour(bool on = true);
+    //! Enable auto add list in code block in list item.
+    void enableAutoListInCodeBlock(bool on = true);
 
     //! Indent mode.
     enum class IndentMode {

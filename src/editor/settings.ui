@@ -170,18 +170,25 @@
               </widget>
              </item>
              <item>
-              <widget class="QGroupBox" name="groupBox_2">
+              <widget class="QGroupBox" name="m_autoListGroupBox">
                <property name="title">
                 <string>Auto Lists</string>
                </property>
-               <layout class="QHBoxLayout" name="horizontalLayout">
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_6">
                 <item>
-                 <widget class="QCheckBox" name="m_autoListCheckBox">
+                 <widget class="QCheckBox" name="m_githubBehaviour">
                   <property name="text">
-                   <string>Enable auto continuation of lists</string>
+                   <string>Don't auto add list after non-first block of list item (like on GitHub)</string>
                   </property>
-                  <property name="checked">
-                   <bool>true</bool>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="m_dontUseAutoListInCodeBlock">
+                  <property name="text">
+                   <string>Don't auto add list in code block in list item</string>
                   </property>
                  </widget>
                 </item>

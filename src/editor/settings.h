@@ -47,6 +47,10 @@ struct Settings {
     int m_indentSpacesCount = 2;
     //! Is auto-list continuation enabled?
     bool m_isAutoListsEnabled = true;
+    //! Don't auto add list after non-first block of list item (like on GitHub).
+    bool m_githubBehaviour = false;
+    //! Don't auto add list in code block in list item.
+    bool m_dontUseAutoListInCodeBlock = true;
 }; // struct Settings
 
 bool operator!=(const Settings &s1,

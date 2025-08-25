@@ -408,6 +408,16 @@ void Editor::enableAutoLists(bool on)
     m_d->m_settings.m_isAutoListsEnabled = on;
 }
 
+void Editor::enableGithubBehaviour(bool on)
+{
+    m_d->m_settings.m_githubBehaviour = on;
+}
+
+void Editor::enableAutoListInCodeBlock(bool on)
+{
+    m_d->m_settings.m_dontUseAutoListInCodeBlock = !on;
+}
+
 void Editor::setIndentMode(IndentMode mode)
 {
     m_d->m_settings.m_indentMode = mode;
@@ -624,6 +634,8 @@ void Editor::drawCodeBlocksBackground(QPainter &p)
                 h = 0;
             }
         }
+
+        highlightCurrentLine();
     } else {
         while (visibleBlock.isValid()) {
             const auto geometry = blockBoundingGeometry(visibleBlock).translated(contentOffset());
@@ -745,7 +757,12 @@ void Editor::highlightCurrentLine()
 {
     static const QColor lineColor = QColor(255, 255, 0, 75);
 
-    m_d->m_currentLine.format.setBackground(lineColor);
+    if (textCursor().block().userData() && m_d->m_settings.m_colors.m_codeThemeEnabled && m_d->m_settings.m_colors.m_drawCodeBackground) {
+        m_d->m_currentLine.format.setBackground(QColor(m_d->m_syntax.codeBlockSyntaxHighlighter()->theme().editorColor(KSyntaxHighlighting::Theme::CurrentLine)));
+    } else {
+        m_d->m_currentLine.format.setBackground(lineColor);
+    }
+
     m_d->m_currentLine.format.setProperty(QTextFormat::FullWidthSelection, true);
     m_d->m_currentLine.cursor = textCursor();
     m_d->m_currentLine.cursor.clearSelection();
@@ -1160,48 +1177,52 @@ void Editor::keyPressEvent(QKeyEvent *event)
                     if ((*it)->type() == MD::ItemType::ListItem) {
                         auto l = static_cast<MD::ListItem<MD::QStringTrait> *>(*it);
 
-                        c.setPosition(document()->findBlockByNumber(l->startLine()).position());
+                        if (!m_d->m_settings.m_githubBehaviour || l->items().size() <= 1) {
+                            c.setPosition(document()->findBlockByNumber(l->startLine()).position());
 
-                        if (l->items().isEmpty() && c.block().userState() == s_autoAddedListItem) {
-                            textCursor().beginEditBlock();
-                            c.setPosition(c.position() + lineLength - 1, QTextCursor::KeepAnchor);
-                            c.deleteChar();
-                            c.block().setUserState(s_unknownUserState);
-                            textCursor().endEditBlock();
-                        } else {
-                            textCursor().beginEditBlock();
-
-                            QPlainTextEdit::keyPressEvent(event);
-
-                            if (l->delim().startColumn()) {
-                                c.setPosition(c.block().position() + l->delim().startColumn(), QTextCursor::KeepAnchor);
-                                textCursor().insertText(c.selectedText());
-                            }
-
-                            c.setPosition(c.block().position() + l->delim().startColumn());
-                            c.setPosition(c.block().position() + l->delim().endColumn() + 1, QTextCursor::KeepAnchor);
-
-                            if (l->listType() == MD::ListItem<MD::QStringTrait>::Unordered) {
-                                textCursor().insertText(c.selectedText());
+                            if (l->items().isEmpty() && c.block().userState() == s_autoAddedListItem) {
+                                textCursor().beginEditBlock();
+                                c.setPosition(c.position() + lineLength - 1, QTextCursor::KeepAnchor);
+                                c.deleteChar();
+                                c.block().setUserState(s_unknownUserState);
+                                textCursor().endEditBlock();
                             } else {
-                                const auto delim = c.selectedText();
-                                const auto number = delim.sliced(0, delim.length() - 1).toInt();
-                                textCursor().insertText(QString::number(number + 1));
-                                textCursor().insertText(delim.back());
+                                textCursor().beginEditBlock();
+
+                                QPlainTextEdit::keyPressEvent(event);
+
+                                if (l->delim().startColumn()) {
+                                    c.setPosition(c.block().position() + l->delim().startColumn(), QTextCursor::KeepAnchor);
+                                    textCursor().insertText(c.selectedText());
+                                }
+
+                                c.setPosition(c.block().position() + l->delim().startColumn());
+                                c.setPosition(c.block().position() + l->delim().endColumn() + 1, QTextCursor::KeepAnchor);
+
+                                if (l->listType() == MD::ListItem<MD::QStringTrait>::Unordered) {
+                                    textCursor().insertText(c.selectedText());
+                                } else {
+                                    const auto delim = c.selectedText();
+                                    const auto number = delim.sliced(0, delim.length() - 1).toInt();
+                                    textCursor().insertText(QString::number(number + 1));
+                                    textCursor().insertText(delim.back());
+                                }
+
+                                textCursor().insertText(QString(1, QLatin1Char(' ')));
+
+                                if (l->isTaskList()) {
+                                    textCursor().insertText(QStringLiteral("[ ] "));
+                                }
+
+                                textCursor().block().setUserState(s_autoAddedListItem);
+
+                                textCursor().endEditBlock();
                             }
 
-                            textCursor().insertText(QString(1, QLatin1Char(' ')));
-
-                            if (l->isTaskList()) {
-                                textCursor().insertText(QStringLiteral("[ ] "));
-                            }
-
-                            textCursor().block().setUserState(s_autoAddedListItem);
-
-                            textCursor().endEditBlock();
+                            return;
+                        } else {
+                            break;
                         }
-
-                        return;
                     }
                 }
             }
