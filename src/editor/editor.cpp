@@ -308,7 +308,6 @@ struct EditorPrivate {
     {
         QList<QTextEdit::ExtraSelection> tmp = m_syntaxHighlighting;
         tmp << m_extraSelections;
-        tmp.prepend(m_currentLine);
 
         m_q->setExtraSelections(tmp);
     }
@@ -333,8 +332,17 @@ struct EditorPrivate {
     QList<QTextEdit::ExtraSelection> m_extraSelections;
     //! Syntax highlightings, including spelling checks.
     QList<QTextEdit::ExtraSelection> m_syntaxHighlighting;
+
+    //! Current line format.
+    struct CurrentLineFormat {
+        //! X.
+        int m_x;
+        //! Color.
+        QColor m_color;
+    }; // struct CurrentLineFormat
+
     //! Current line's highlighting.
-    QTextEdit::ExtraSelection m_currentLine;
+    CurrentLineFormat m_currentLine;
     //! Currently highlighted text in "find" mode.
     QString m_highlightedText;
     //! Current parsed Markdown document.
@@ -627,7 +635,8 @@ void Editor::drawCodeBlocksBackground(QPainter &p)
                     if (line == rect.m_startColumnLine && x != 0) {
                         x = fontMetrics().horizontalAdvance(block.text().sliced(0, rect.m_startColumn),
                                                             block.layout()->textOption())
-                            - fontMetrics().horizontalAdvance(QLatin1Char(' ')) * rect.m_spacesBefore;
+                            - fontMetrics().horizontalAdvance(QLatin1Char(' ')) * rect.m_spacesBefore
+                            + qRound(document()->documentMargin());
                     }
 
                     if (qRound(geometry.bottom()) > top) {
@@ -639,7 +648,7 @@ void Editor::drawCodeBlocksBackground(QPainter &p)
                     document()->findBlockByNumber(line).setUserData(new CodeBlockBackgroundData(x));
                 }
 
-                p.drawRect(x + document()->documentMargin(), top, viewport()->rect().width(), h);
+                p.drawRect(x, top, viewport()->rect().width() - x - qRound(document()->documentMargin()), h);
 
                 x = -1;
                 h = 0;
@@ -693,6 +702,14 @@ void Editor::paintEvent(QPaintEvent *event)
         painter.setPen(Qt::NoPen);
         painter.drawRect(r);
     }
+
+    painter.setBrush(m_d->m_currentLine.m_color);
+    painter.setPen(Qt::NoPen);
+    const auto cr = cursorRect();
+    painter.drawRect(m_d->m_currentLine.m_x,
+                     cr.top(),
+                     viewport()->rect().width() - qRound(document()->documentMargin()) - m_d->m_currentLine.m_x,
+                     cr.height());
 
     QPlainTextEdit::paintEvent(event);
 }
@@ -771,17 +788,15 @@ void Editor::highlightCurrentLine()
     if (textCursor().block().userData()
         && m_d->m_settings.m_colors.m_codeThemeEnabled
         && m_d->m_settings.m_colors.m_drawCodeBackground) {
-        m_d->m_currentLine.format.setBackground(QColor(
-            m_d->m_syntax.codeBlockSyntaxHighlighter()->theme().editorColor(KSyntaxHighlighting::Theme::CurrentLine)));
+        m_d->m_currentLine.m_color = QColor(
+            m_d->m_syntax.codeBlockSyntaxHighlighter()->theme().editorColor(KSyntaxHighlighting::Theme::CurrentLine));
+        m_d->m_currentLine.m_x = static_cast<CodeBlockBackgroundData *>(textCursor().block().userData())->m_x;
     } else {
-        m_d->m_currentLine.format.setBackground(lineColor);
+        m_d->m_currentLine.m_color = lineColor;
+        m_d->m_currentLine.m_x = document()->documentMargin();
     }
 
-    m_d->m_currentLine.format.setProperty(QTextFormat::FullWidthSelection, true);
-    m_d->m_currentLine.cursor = textCursor();
-    m_d->m_currentLine.cursor.clearSelection();
-
-    m_d->setExtraSelections();
+    viewport()->update();
 }
 
 void Editor::lineNumberAreaPaintEvent(QPaintEvent *event)
