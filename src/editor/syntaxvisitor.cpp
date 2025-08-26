@@ -628,17 +628,14 @@ void SyntaxVisitor::onCode(MD::Code<MD::QStringTrait> *c)
             && !c->syntax().isEmpty()) {
             m_d->m_codeSyntax->setDefinition(m_d->m_codeSyntax->definitionForName(c->syntax().toLower()));
 
-            const auto lines = c->text().split(QLatin1Char('\n'));
-            const auto colored = m_d->m_codeSyntax->prepare(lines);
-
-            qsizetype line = -1;
-            long long int startColumn = 0;
-
             CodeRect rect;
             rect.m_startLine = c->startLine();
             rect.m_endLine = c->endLine();
 
-            auto calculateLine = [&](qsizetype line) {
+            QStringList lines;
+            long long int startColumn = 0;
+
+            auto calculateLine = [&](qsizetype line, bool calcInAnyCase = false) {
                 const auto block = m_d->m_stream->lineAt(c->startLine() + line);
                 auto lineWithSpaces = block;
                 MD::replaceTabs<MD::QStringTrait>(lineWithSpaces);
@@ -663,40 +660,52 @@ void SyntaxVisitor::onCode(MD::Code<MD::QStringTrait> *c)
                             rect.m_startColumnLine = c->startLine() + line;
                         }
                     }
+                } else if (calcInAnyCase) {
+                    rect.m_startColumn = block.length() ? block.length() - 1 : 0;
+                    rect.m_spacesBefore = 0;
+                    rect.m_startColumnLine = c->startColumn() + line;
                 }
             };
 
-            for (auto i = 0; i < colored.size(); ++i) {
-                if (line != colored[i].line) {
-                    line = colored[i].line;
+            if (!c->text().isEmpty()) {
+                lines = c->text().split(QLatin1Char('\n'));
+                const auto colored = m_d->m_codeSyntax->prepare(lines);
 
-                    calculateLine(line);
+                qsizetype line = -1;
+
+                for (auto i = 0; i < colored.size(); ++i) {
+                    if (line != colored[i].line) {
+                        line = colored[i].line;
+
+                        calculateLine(line);
+                    }
+
+                    const auto theme = m_d->m_codeSyntax->theme();
+
+                    const auto color = colored[i].format.textColor(theme);
+                    const auto italic = colored[i].format.isItalic(theme);
+                    const auto bold = colored[i].format.isBold(theme);
+
+                    QTextCharFormat format;
+                    format.setForeground(color);
+
+                    QScopedValueRollback style(m_d->m_additionalStyle,
+                                               m_d->m_additionalStyle
+                                                   | (bold ? MD::BoldText : MD::TextWithoutFormat)
+                                                   | (italic ? MD::ItalicText : MD::TextWithoutFormat));
+                    format.setFont(m_d->styleFont(m_d->m_additionalStyle));
+
+                    m_d->setFormat(format,
+                                   c->startLine() + line,
+                                   colored[i].startPos + startColumn,
+                                   c->startLine() + line,
+                                   colored[i].endPos + startColumn);
                 }
-
-                const auto theme = m_d->m_codeSyntax->theme();
-
-                const auto color = colored[i].format.textColor(theme);
-                const auto italic = colored[i].format.isItalic(theme);
-                const auto bold = colored[i].format.isBold(theme);
-
-                QTextCharFormat format;
-                format.setForeground(color);
-
-                QScopedValueRollback style(m_d->m_additionalStyle,
-                                           m_d->m_additionalStyle
-                                               | (bold ? MD::BoldText : MD::TextWithoutFormat)
-                                               | (italic ? MD::ItalicText : MD::TextWithoutFormat));
-                format.setFont(m_d->styleFont(m_d->m_additionalStyle));
-
-                m_d->setFormat(format,
-                               c->startLine() + line,
-                               colored[i].startPos + startColumn,
-                               c->startLine() + line,
-                               colored[i].endPos + startColumn);
             }
 
-            if (rect.m_startColumn == -1 && c->startColumn() != c->startDelim().startColumn()) {
-                calculateLine(0);
+            if (rect.m_startColumn == -1 && c->startLine() != c->startDelim().startLine()) {
+                lines.append(QString());
+                calculateLine(0, true);
             }
 
             if (rect.m_startColumn != -1) {
