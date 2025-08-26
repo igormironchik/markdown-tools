@@ -1213,7 +1213,7 @@ bool Editor::handleReturnKeyForCode(QKeyEvent *event,
         auto code = static_cast<MD::Code<MD::QStringTrait> *>(items.back());
 
         if (!code->isInline()
-            && (code->endLine() > textCursor().block().blockNumber()
+            && (code->endLine() >= textCursor().block().blockNumber()
                 || (code->isFensedCode() && code->endDelim().startLine() == -1))) {
             QPlainTextEdit::keyPressEvent(event);
 
