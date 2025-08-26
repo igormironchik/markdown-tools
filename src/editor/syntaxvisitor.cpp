@@ -638,35 +638,39 @@ void SyntaxVisitor::onCode(MD::Code<MD::QStringTrait> *c)
             rect.m_startLine = c->startLine();
             rect.m_endLine = c->endLine();
 
+            auto calculateLine = [&](qsizetype line) {
+                const auto block = m_d->m_stream->lineAt(c->startLine() + line);
+                auto lineWithSpaces = block;
+                MD::replaceTabs<MD::QStringTrait>(lineWithSpaces);
+                const auto codeLine = lines[line].trimmed();
+
+                if (!codeLine.isEmpty()) {
+                    auto index = block.indexOf(codeLine);
+                    auto ns = MD::skipSpaces(0, lines[line]);
+
+                    if (index >= 0) {
+                        startColumn = index - ns;
+
+                        for (; index - 1 >= 0 && ns - 1 >= 0; --index, --ns) {
+                            if (block[index - 1] != lines[line][ns - 1]) {
+                                break;
+                            }
+                        }
+
+                        if (rect.m_startColumn == -1 || startColumn < (rect.m_startColumn - rect.m_spacesBefore)) {
+                            rect.m_startColumn = index;
+                            rect.m_spacesBefore = ns;
+                            rect.m_startColumnLine = c->startLine() + line;
+                        }
+                    }
+                }
+            };
+
             for (auto i = 0; i < colored.size(); ++i) {
                 if (line != colored[i].line) {
                     line = colored[i].line;
 
-                    const auto block = m_d->m_stream->lineAt(c->startLine() + line);
-                    auto lineWithSpaces = block;
-                    MD::replaceTabs<MD::QStringTrait>(lineWithSpaces);
-                    const auto codeLine = lines[line].trimmed();
-
-                    if (!codeLine.isEmpty()) {
-                        auto index = block.indexOf(codeLine);
-                        auto ns = MD::skipSpaces(0, lines[line]);
-
-                        if (index >= 0) {
-                            startColumn = index - ns;
-
-                            for (; index - 1 >= 0 && ns - 1 >= 0; --index, --ns) {
-                                if (block[index - 1] != lines[line][ns - 1]) {
-                                    break;
-                                }
-                            }
-
-                            if (rect.m_startColumn == -1 || startColumn < (rect.m_startColumn - rect.m_spacesBefore)) {
-                                rect.m_startColumn = index;
-                                rect.m_spacesBefore = ns;
-                                rect.m_startColumnLine = c->startLine() + line;
-                            }
-                        }
-                    }
+                    calculateLine(line);
                 }
 
                 const auto theme = m_d->m_codeSyntax->theme();
@@ -689,6 +693,10 @@ void SyntaxVisitor::onCode(MD::Code<MD::QStringTrait> *c)
                                colored[i].startPos + startColumn,
                                c->startLine() + line,
                                colored[i].endPos + startColumn);
+            }
+
+            if (rect.m_startColumn == -1 && c->startColumn() != c->startDelim().startColumn()) {
+                calculateLine(0);
             }
 
             if (rect.m_startColumn != -1) {

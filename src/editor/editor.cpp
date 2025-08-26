@@ -658,7 +658,11 @@ void Editor::drawCodeBlocksBackground(QPainter &p)
         highlightCurrentLine();
     } else {
         while (visibleBlock.isValid()) {
-            const auto geometry = blockBoundingGeometry(visibleBlock).translated(contentOffset());
+            auto geometry = blockBoundingGeometry(visibleBlock).translated(contentOffset());
+
+            if (!visibleBlock.next().isValid()) {
+                geometry.adjust(0., 0., 0., -document()->documentMargin());
+            }
 
             if (bottom < qRound(geometry.top())) {
                 break;
@@ -667,9 +671,9 @@ void Editor::drawCodeBlocksBackground(QPainter &p)
             if (visibleBlock.userData()) {
                 const auto x = static_cast<CodeBlockBackgroundData *>(visibleBlock.userData())->m_x;
 
-                p.drawRect(x + document()->documentMargin(),
+                p.drawRect(x,
                            qRound(geometry.top()),
-                           viewport()->rect().width() - x,
+                           viewport()->rect().width() - x - qRound(document()->documentMargin()),
                            qRound(geometry.height()));
             }
 
@@ -1108,8 +1112,6 @@ void Editor::onParsingDone(std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
 
         highlightCurrent();
 
-        textCursor().block().setUserData(nullptr);
-
         viewport()->update();
 
         m_d->m_isReady = true;
@@ -1222,7 +1224,7 @@ bool Editor::handleReturnKeyForCode(QKeyEvent *event,
 
                 if (!code->syntax().isEmpty()) {
                     textCursor().block().setUserData(new CodeBlockBackgroundData(
-                        fontMetrics().horizontalAdvance(first, block.layout()->textOption())));
+                        fontMetrics().horizontalAdvance(first, block.layout()->textOption()) + document()->documentMargin()));
                 }
             } else {
                 const auto block = document()->findBlockByNumber(code->startLine());
