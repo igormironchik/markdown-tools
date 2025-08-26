@@ -1222,9 +1222,13 @@ bool Editor::handleReturnKeyForCode(QKeyEvent *event,
                 const auto first = block.text().sliced(0, code->startDelim().startColumn());
                 textCursor().insertText(first);
 
-                if (!code->syntax().isEmpty()) {
-                    textCursor().block().setUserData(new CodeBlockBackgroundData(
-                        fontMetrics().horizontalAdvance(first, block.layout()->textOption()) + document()->documentMargin()));
+                if (!code->syntax().isEmpty()
+                    && !(inList
+                         && code->endDelim().startLine() == -1
+                         && textCursor().block().blockNumber() - 1 == code->endLine())) {
+                    textCursor().block().setUserData(
+                        new CodeBlockBackgroundData(fontMetrics().horizontalAdvance(first, block.layout()->textOption())
+                                                    + document()->documentMargin()));
                 }
             } else {
                 const auto block = document()->findBlockByNumber(code->startLine());
