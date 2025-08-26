@@ -661,9 +661,9 @@ void SyntaxVisitor::onCode(MD::Code<MD::QStringTrait> *c)
                         }
                     }
                 } else if (calcInAnyCase) {
-                    rect.m_startColumn = block.length() ? block.length() - 1 : 0;
+                    rect.m_startColumn = block.length();
                     rect.m_spacesBefore = 0;
-                    rect.m_startColumnLine = c->startColumn() + line;
+                    rect.m_startColumnLine = c->startLine() + line;
                 }
             };
 
