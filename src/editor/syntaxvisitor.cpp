@@ -636,11 +636,11 @@ void SyntaxVisitor::onCode(MD::Code<MD::QStringTrait> *c)
             long long int startColumn = 0;
 
             auto calculateLine = [&](qsizetype line, bool calcInAnyCase = false) {
-                const auto block = m_d->m_stream->lineAt(c->startLine() + line);
+                const auto block = m_d->m_stream->lineAt(c->startLine() + line).toString();
                 const auto codeLine = lines[line].trimmed();
 
                 if (!codeLine.isEmpty()) {
-                    auto index = block.indexOf(codeLine);
+                    auto index = block.lastIndexOf(codeLine);
                     auto ns = MD::skipSpaces(0, lines[line]);
 
                     if (index >= 0) {
