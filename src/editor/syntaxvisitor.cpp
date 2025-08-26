@@ -637,8 +637,6 @@ void SyntaxVisitor::onCode(MD::Code<MD::QStringTrait> *c)
 
             auto calculateLine = [&](qsizetype line, bool calcInAnyCase = false) {
                 const auto block = m_d->m_stream->lineAt(c->startLine() + line);
-                auto lineWithSpaces = block;
-                MD::replaceTabs<MD::QStringTrait>(lineWithSpaces);
                 const auto codeLine = lines[line].trimmed();
 
                 if (!codeLine.isEmpty()) {
