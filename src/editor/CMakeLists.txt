@@ -9,7 +9,7 @@ find_package(Qt6Core REQUIRED)
 find_package(Qt6Widgets REQUIRED)
 find_package(Qt6WebEngineWidgets REQUIRED)
 find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
-    Sonnet
+    Sonnet SyntaxHighlighting
 )
 
 set(LIB_SRC
@@ -78,7 +78,9 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
 
 add_library(md-editor-lib STATIC ${LIB_SRC})
 
-target_link_libraries(md-editor-lib markdown-widgets KF${KF_MAJOR_VERSION}::SonnetUi KF${KF_MAJOR_VERSION}::SonnetCore
+target_link_libraries(md-editor-lib markdown-widgets
+    KF${KF_MAJOR_VERSION}::SyntaxHighlighting
+    KF${KF_MAJOR_VERSION}::SonnetUi KF${KF_MAJOR_VERSION}::SonnetCore
     Qt6::WebEngineWidgets Qt6::Widgets Qt6::Core)
 
 add_executable(md-editor WIN32 ${SRC})

@@ -5,7 +5,7 @@
 
 #pragma once
 
-// md-pdf include.
+// shared include.
 #include "syntax.h"
 
 // md4qt include.
@@ -166,7 +166,7 @@ struct RenderOpts {
     //! DPI.
     quint16 m_dpi;
     //! Syntax highlighter.
-    std::shared_ptr<Syntax> m_syntax;
+    std::shared_ptr<MdShared::Syntax> m_syntax;
     //! Image alignment.
     ImageAlignment m_imageAlignment;
 

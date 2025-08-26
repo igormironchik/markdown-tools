@@ -13,9 +13,9 @@
   <property name="windowTitle">
    <string>Settings</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_4">
+  <layout class="QVBoxLayout" name="verticalLayout_7">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_4">
+    <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QListWidget" name="m_menu">
        <property name="sizePolicy">
@@ -76,7 +76,7 @@
        <widget class="MdEditor::ColorsPage" name="m_colorsPage"/>
        <widget class="MdEditor::FontPage" name="m_fontPage"/>
        <widget class="QWidget" name="m_editorPage">
-        <layout class="QVBoxLayout" name="verticalLayout_3">
+        <layout class="QVBoxLayout" name="verticalLayout_6">
          <property name="leftMargin">
           <number>0</number>
          </property>
@@ -103,7 +103,7 @@
               <height>460</height>
              </rect>
             </property>
-            <layout class="QVBoxLayout" name="verticalLayout_2">
+            <layout class="QVBoxLayout" name="verticalLayout_4">
              <property name="leftMargin">
               <number>0</number>
              </property>
@@ -172,16 +172,39 @@
              <item>
               <widget class="QGroupBox" name="groupBox_2">
                <property name="title">
-                <string>Auto Lists</string>
+                <string>Auto formatting</string>
                </property>
-               <layout class="QHBoxLayout" name="horizontalLayout">
+               <layout class="QVBoxLayout" name="verticalLayout_3">
                 <item>
-                 <widget class="QCheckBox" name="m_autoListCheckBox">
-                  <property name="text">
-                   <string>Enable auto continuation of lists</string>
+                 <widget class="QGroupBox" name="m_autoListGroupBox">
+                  <property name="title">
+                   <string>Auto continue lists</string>
                   </property>
-                  <property name="checked">
+                  <property name="checkable">
                    <bool>true</bool>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_2">
+                   <item>
+                    <widget class="QCheckBox" name="m_githubBehaviour">
+                     <property name="text">
+                      <string>Don't auto add list after non-first block of list item (like on GitHub)</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QCheckBox" name="m_dontUseAutoListInCodeBlock">
+                     <property name="text">
+                      <string>Don't auto add list in code block in list item</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="m_autoFormatCodeBlocks">
+                  <property name="text">
+                   <string>Auto continue code blocks</string>
                   </property>
                  </widget>
                 </item>

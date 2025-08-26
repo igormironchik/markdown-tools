@@ -14,6 +14,9 @@
 #include "editor.h"
 #include "ui_settings.h"
 
+// shared include.
+#include "syntax.h"
+
 namespace Sonnet
 {
 class ConfigWidget;
@@ -44,6 +47,12 @@ struct Settings {
     int m_indentSpacesCount = 2;
     //! Is auto-list continuation enabled?
     bool m_isAutoListsEnabled = true;
+    //! Don't auto add list after non-first block of list item (like on GitHub).
+    bool m_githubBehaviour = false;
+    //! Don't auto add list in code block in list item.
+    bool m_dontUseAutoListInCodeBlock = true;
+    //! Auto continue code blocks.
+    bool m_isAutoCodeBlocksEnabled = true;
 }; // struct Settings
 
 bool operator!=(const Settings &s1,
@@ -60,6 +69,7 @@ class SettingsDlg : public QDialog
 
 public:
     SettingsDlg(const Settings &s,
+                std::shared_ptr<MdShared::Syntax> syntax,
                 QWidget *parent);
     ~SettingsDlg() override = default;
 

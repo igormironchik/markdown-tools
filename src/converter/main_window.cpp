@@ -52,7 +52,7 @@ MainWidget::MainWidget(QWidget *parent)
     , m_thread(new QThread(this))
     , m_textFontOk(false)
     , m_codeFontOk(false)
-    , m_syntax(new Syntax)
+    , m_syntax(new MdShared::Syntax)
 {
     m_ui->setupUi(this);
 

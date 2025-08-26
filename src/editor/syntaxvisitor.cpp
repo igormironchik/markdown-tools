@@ -9,6 +9,9 @@
 #include "editor.h"
 #include "speller.h"
 
+// shared include.
+#include "syntax.h"
+
 // Sonnet include.
 #include <Sonnet/Settings>
 
@@ -35,6 +38,40 @@ namespace MdEditor
 //
 
 struct SyntaxVisitorPrivate {
+    SyntaxVisitorPrivate(std::shared_ptr<MdShared::Syntax> syntax)
+        : m_codeSyntax(new MdShared::Syntax)
+    {
+        if (syntax) {
+            m_codeSyntax->setTheme(syntax->theme());
+        }
+    }
+
+    SyntaxVisitorPrivate &operator=(const SyntaxVisitorPrivate &other)
+    {
+        if (this != &other) {
+            m_colors = other.m_colors;
+            m_formats = other.m_formats;
+            m_font = other.m_font;
+            m_stream = other.m_stream;
+            m_additionalStyle = other.m_additionalStyle;
+            m_spellingEnabled = other.m_spellingEnabled;
+            m_skipAllUppercase = other.m_skipAllUppercase;
+            m_autodetectLanguage = other.m_autodetectLanguage;
+            m_skipRunTogether = other.m_skipRunTogether;
+            m_ignoredWords = other.m_ignoredWords;
+            m_defaultLanguage = other.m_defaultLanguage;
+            m_preferredLanguages = other.m_preferredLanguages;
+            m_misspelledPos = other.m_misspelledPos;
+            m_currentHighlightedMisspelled = other.m_currentHighlightedMisspelled;
+            m_correctWords = other.m_correctWords;
+            m_codeSyntax = std::make_shared<MdShared::Syntax>();
+            m_codeSyntax->setTheme(other.m_codeSyntax->theme());
+            m_codeRects = other.m_codeRects;
+        }
+
+        return *this;
+    }
+
     void clearFormats(QTextDocument *doc)
     {
         auto b = doc->firstBlock();
@@ -74,9 +111,8 @@ struct SyntaxVisitorPrivate {
                 QTextLayout::FormatRange r;
                 r.format = format;
                 r.start = (i == startLine ? startColumn : 0);
-                r.length =
-                    (i == startLine ? (i == endLine ? endColumn - startColumn + 1 : block.length() - startColumn)
-                                    : (i == endLine ? endColumn + 1 : block.length()));
+                r.length = (i == startLine ? (i == endLine ? endColumn - startColumn + 1 : block.length() - startColumn)
+                                           : (i == endLine ? endColumn + 1 : block.length()));
 
                 m_formats[i].m_format.push_back(r);
             }
@@ -160,6 +196,10 @@ struct SyntaxVisitorPrivate {
     QPair<long long int, long long int> m_currentHighlightedMisspelled = {-1, -1};
     //! Cache of correct words.
     QSet<QString> m_correctWords;
+    //! Code syntax highlighter.
+    std::shared_ptr<MdShared::Syntax> m_codeSyntax;
+    //! Rectangles of code blocks that were highlighted.
+    QVector<SyntaxVisitor::CodeRect> m_codeRects;
 }; // struct SyntaxVisitorPrivate
 
 //
@@ -167,14 +207,19 @@ struct SyntaxVisitorPrivate {
 //
 
 SyntaxVisitor::SyntaxVisitor()
-    : m_d(new SyntaxVisitorPrivate)
+    : m_d(new SyntaxVisitorPrivate(nullptr))
+{
+}
+
+SyntaxVisitor::SyntaxVisitor(std::shared_ptr<MdShared::Syntax> syntax)
+    : m_d(new SyntaxVisitorPrivate(syntax))
 {
 }
 
 SyntaxVisitor::~SyntaxVisitor() = default;
 
 SyntaxVisitor::SyntaxVisitor(const SyntaxVisitor &other)
-    : m_d(new SyntaxVisitorPrivate)
+    : m_d(new SyntaxVisitorPrivate(nullptr))
 {
     *this = other;
 }
@@ -277,6 +322,16 @@ bool SyntaxVisitor::hasMisspelled() const
     return !m_d->m_misspelledPos.isEmpty();
 }
 
+std::shared_ptr<MdShared::Syntax> SyntaxVisitor::codeBlockSyntaxHighlighter()
+{
+    return m_d->m_codeSyntax;
+}
+
+const QVector<SyntaxVisitor::CodeRect> &SyntaxVisitor::highlightedCodeRects() const
+{
+    return m_d->m_codeRects;
+}
+
 void SyntaxVisitor::highlightNextMisspelled(QPlainTextEdit *editor)
 {
     if (!m_d->m_misspelledPos.isEmpty()) {
@@ -313,6 +368,7 @@ void SyntaxVisitor::highlight(MD::StringListStream<MD::QStringTrait> *stream,
                               const Colors &cols)
 {
     m_d->m_misspelledPos.clear();
+    m_d->m_codeRects.clear();
     m_d->m_currentHighlightedMisspelled = {-1, -1};
     m_d->m_colors = cols;
     m_d->m_stream = stream;
@@ -329,6 +385,7 @@ const Colors &SyntaxVisitor::colors() const
 
 void SyntaxVisitor::setColors(const Colors &c)
 {
+    m_d->m_codeSyntax->setTheme(m_d->m_codeSyntax->themeForName(c.m_codeTheme));
     m_d->m_colors = c;
 }
 
@@ -557,11 +614,102 @@ void SyntaxVisitor::onHeading(MD::Heading<MD::QStringTrait> *h)
 void SyntaxVisitor::onCode(MD::Code<MD::QStringTrait> *c)
 {
     if (m_d->m_colors.m_enabled) {
-        QTextCharFormat format;
-        format.setForeground(m_d->m_colors.m_codeColor);
-        format.setFont(m_d->styleFont(m_d->m_additionalStyle));
+        {
+            QTextCharFormat format;
+            format.setForeground(m_d->m_colors.m_codeColor);
+            format.setFont(m_d->styleFont(m_d->m_additionalStyle));
 
-        m_d->setFormat(format, c->startLine(), c->startColumn(), c->endLine(), c->endColumn());
+            m_d->setFormat(format, c->startLine(), c->startColumn(), c->endLine(), c->endColumn());
+        }
+
+        if (m_d->m_colors.m_codeThemeEnabled
+            && m_d->m_stream
+            && !m_d->m_colors.m_codeTheme.isEmpty()
+            && !c->syntax().isEmpty()) {
+            m_d->m_codeSyntax->setDefinition(m_d->m_codeSyntax->definitionForName(c->syntax().toLower()));
+
+            CodeRect rect;
+            rect.m_startLine = c->startLine();
+            rect.m_endLine = c->endLine();
+
+            QStringList lines;
+            long long int startColumn = 0;
+
+            auto calculateLine = [&](qsizetype line, bool calcInAnyCase = false) {
+                const auto block = m_d->m_stream->lineAt(c->startLine() + line).toString();
+                const auto codeLine = lines[line].trimmed();
+
+                if (!codeLine.isEmpty()) {
+                    auto index = block.lastIndexOf(codeLine);
+                    auto ns = MD::skipSpaces(0, lines[line]);
+
+                    if (index >= 0) {
+                        startColumn = index - ns;
+
+                        for (; index - 1 >= 0 && ns - 1 >= 0; --index, --ns) {
+                            if (block[index - 1] != lines[line][ns - 1]) {
+                                break;
+                            }
+                        }
+
+                        if (rect.m_startColumn == -1 || startColumn < (rect.m_startColumn - rect.m_spacesBefore)) {
+                            rect.m_startColumn = index;
+                            rect.m_spacesBefore = ns;
+                            rect.m_startColumnLine = c->startLine() + line;
+                        }
+                    }
+                } else if (calcInAnyCase) {
+                    rect.m_startColumn = block.length();
+                    rect.m_spacesBefore = 0;
+                    rect.m_startColumnLine = c->startLine() + line;
+                }
+            };
+
+            if (!c->text().isEmpty()) {
+                lines = c->text().split(QLatin1Char('\n'));
+                const auto colored = m_d->m_codeSyntax->prepare(lines);
+
+                qsizetype line = -1;
+
+                for (auto i = 0; i < colored.size(); ++i) {
+                    if (line != colored[i].line) {
+                        line = colored[i].line;
+
+                        calculateLine(line);
+                    }
+
+                    const auto theme = m_d->m_codeSyntax->theme();
+
+                    const auto color = colored[i].format.textColor(theme);
+                    const auto italic = colored[i].format.isItalic(theme);
+                    const auto bold = colored[i].format.isBold(theme);
+
+                    QTextCharFormat format;
+                    format.setForeground(color);
+
+                    QScopedValueRollback style(m_d->m_additionalStyle,
+                                               m_d->m_additionalStyle
+                                                   | (bold ? MD::BoldText : MD::TextWithoutFormat)
+                                                   | (italic ? MD::ItalicText : MD::TextWithoutFormat));
+                    format.setFont(m_d->styleFont(m_d->m_additionalStyle));
+
+                    m_d->setFormat(format,
+                                   c->startLine() + line,
+                                   colored[i].startPos + startColumn,
+                                   c->startLine() + line,
+                                   colored[i].endPos + startColumn);
+                }
+            }
+
+            if (rect.m_startColumn == -1 && c->startLine() != c->startDelim().startLine()) {
+                lines.append(QString());
+                calculateLine(0, true);
+            }
+
+            if (rect.m_startColumn != -1) {
+                m_d->m_codeRects.push_back(rect);
+            }
+        }
 
         QTextCharFormat special;
         special.setForeground(m_d->m_colors.m_specialColor);

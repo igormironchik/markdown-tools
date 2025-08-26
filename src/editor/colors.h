@@ -11,6 +11,9 @@
 // md-editor include.
 #include "ui_colors.h"
 
+// shared include.
+#include "syntax.h"
+
 namespace MdEditor
 {
 
@@ -38,8 +41,14 @@ struct Colors {
     QColor m_referenceColor = QColor(128, 0, 0);
     //! Color for special symbols - delimiters...
     QColor m_specialColor = QColor(128, 0, 0);
+    //! Theme for code blocks.
+    QString m_codeTheme = QStringLiteral("GitHub Light");
     //! Is color scheme enabled?
     bool m_enabled = true;
+    //! Is theme for code blocks enabled?
+    bool m_codeThemeEnabled = true;
+    //! Should code blocks background be drawn?
+    bool m_drawCodeBackground = true;
 }; // struct Colors
 
 //! Not-equal operator for color schemes.
@@ -89,6 +98,8 @@ public slots:
     void chooseSpecialColor();
     //! Enable/disable colors scheme.
     void colorsToggled(bool on);
+    //! Init code themes combo box.
+    void initCodeThemes(std::shared_ptr<MdShared::Syntax> syntax);
 
 private:
     //! Base implementation of color choosing.

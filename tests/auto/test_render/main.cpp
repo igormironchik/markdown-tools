@@ -4,11 +4,11 @@
 */
 
 #include "src/converter/renderer.h"
-#include "src/converter/syntax.h"
 #include "src/converter/const.h"
 
 #include "src/shared/utils.h"
 #include "src/shared/plugins_page.h"
+#include "src/shared/syntax.h"
 
 // md4qt include.
 #define MD4QT_QT_SUPPORT
@@ -165,7 +165,7 @@ struct TestRendering {
         opts.m_borderColor = QColor(81, 81, 81);
         opts.m_linkColor = QColor(33, 122, 255);
         opts.m_bottom = mmInPt(20.0);
-        opts.m_syntax = std::make_shared<Syntax>();
+        opts.m_syntax = std::make_shared<MdShared::Syntax>();
         opts.m_syntax->setTheme(opts.m_syntax->themeForName(QStringLiteral("GitHub Light")));
         opts.m_codeFont = QStringLiteral("Space Mono");
         opts.m_codeFontSize = codeFontSize;
@@ -382,6 +382,8 @@ void TestRender::initTestCase()
     QFontDatabase::addApplicationFont(s_monoBoldItalicFont);
 
     tex::LaTeX::init(":/res");
+
+    initSharedResources();
 }
 
 void TestRender::testFootnotes()

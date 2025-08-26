@@ -308,7 +308,6 @@ struct EditorPrivate {
     {
         QList<QTextEdit::ExtraSelection> tmp = m_syntaxHighlighting;
         tmp << m_extraSelections;
-        tmp.prepend(m_currentLine);
 
         m_q->setExtraSelections(tmp);
     }
@@ -333,8 +332,17 @@ struct EditorPrivate {
     QList<QTextEdit::ExtraSelection> m_extraSelections;
     //! Syntax highlightings, including spelling checks.
     QList<QTextEdit::ExtraSelection> m_syntaxHighlighting;
+
+    //! Current line format.
+    struct CurrentLineFormat {
+        //! X.
+        int m_x;
+        //! Color.
+        QColor m_color;
+    }; // struct CurrentLineFormat
+
     //! Current line's highlighting.
-    QTextEdit::ExtraSelection m_currentLine;
+    CurrentLineFormat m_currentLine;
     //! Currently highlighted text in "find" mode.
     QString m_highlightedText;
     //! Current parsed Markdown document.
@@ -408,6 +416,21 @@ void Editor::enableAutoLists(bool on)
     m_d->m_settings.m_isAutoListsEnabled = on;
 }
 
+void Editor::enableGithubBehaviour(bool on)
+{
+    m_d->m_settings.m_githubBehaviour = on;
+}
+
+void Editor::enableAutoListInCodeBlock(bool on)
+{
+    m_d->m_settings.m_dontUseAutoListInCodeBlock = !on;
+}
+
+void Editor::enableAutoCodeBlocks(bool on)
+{
+    m_d->m_settings.m_isAutoCodeBlocksEnabled = on;
+}
+
 void Editor::setIndentMode(IndentMode mode)
 {
     m_d->m_settings.m_indentMode = mode;
@@ -452,6 +475,8 @@ void Editor::applyColors(const Colors &colors)
     m_d->m_settings.m_colors = colors;
 
     m_d->m_syntax.setColors(colors);
+
+    highlightCurrentLine();
 }
 
 void Editor::applyMargins(const Margins &m)
@@ -552,10 +577,120 @@ void Editor::resizeEvent(QResizeEvent *e)
     }
 }
 
+struct CodeBlockBackgroundData : public QTextBlockUserData {
+    explicit CodeBlockBackgroundData(qsizetype x)
+        : m_x(x)
+    {
+    }
+
+    ~CodeBlockBackgroundData() override = default;
+
+    qsizetype m_x;
+}; // struct CodeBlockBackgroundData
+
+void Editor::drawCodeBlocksBackground(QPainter &p)
+{
+    p.setBrush(
+        m_d->m_syntax.codeBlockSyntaxHighlighter()->theme().editorColor(KSyntaxHighlighting::Theme::CodeFolding));
+    p.setPen(Qt::NoPen);
+
+    auto visibleBlock = firstVisibleBlock();
+    const qsizetype bottom = viewport()->rect().bottom();
+
+    if (isReady()) {
+        qsizetype top = viewport()->rect().y();
+        qsizetype x = -1;
+        qsizetype h = 0;
+
+        for (const auto &rect : std::as_const(m_d->m_syntax.highlightedCodeRects())) {
+            if (rect.m_endLine >= visibleBlock.blockNumber()) {
+                const auto startY = qRound(blockBoundingGeometry(document()->findBlockByNumber(rect.m_startLine))
+                                               .translated(contentOffset())
+                                               .top());
+
+                if (startY > bottom) {
+                    break;
+                }
+
+                bool first = true;
+
+                for (auto line = rect.m_startLine; line <= rect.m_endLine; ++line) {
+                    const auto block = document()->findBlockByNumber(line);
+                    auto geometry = blockBoundingGeometry(block).translated(contentOffset());
+
+                    if (!block.next().isValid()) {
+                        geometry.adjust(0., 0., 0., -document()->documentMargin());
+                    }
+
+                    if (qRound(geometry.bottom()) > top && first) {
+                        top = qRound(geometry.top());
+
+                        first = false;
+                    }
+
+                    if (block.lineCount() > 1) {
+                        x = 0;
+                    }
+
+                    if (line == rect.m_startColumnLine && x != 0) {
+                        x = fontMetrics().horizontalAdvance(block.text().sliced(0, rect.m_startColumn),
+                                                            block.layout()->textOption())
+                            - fontMetrics().horizontalAdvance(QLatin1Char(' ')) * rect.m_spacesBefore
+                            + qRound(document()->documentMargin());
+                    }
+
+                    if (qRound(geometry.bottom()) > top) {
+                        h += qRound(geometry.height());
+                    }
+                }
+
+                for (auto line = rect.m_startLine; line <= rect.m_endLine; ++line) {
+                    document()->findBlockByNumber(line).setUserData(new CodeBlockBackgroundData(x));
+                }
+
+                p.drawRect(x, top, viewport()->rect().width() - x - qRound(document()->documentMargin()), h);
+
+                x = -1;
+                h = 0;
+            }
+        }
+
+        highlightCurrentLine();
+    } else {
+        while (visibleBlock.isValid()) {
+            auto geometry = blockBoundingGeometry(visibleBlock).translated(contentOffset());
+
+            if (!visibleBlock.next().isValid()) {
+                geometry.adjust(0., 0., 0., -document()->documentMargin());
+            }
+
+            if (bottom < qRound(geometry.top())) {
+                break;
+            }
+
+            if (visibleBlock.userData()) {
+                const auto x = static_cast<CodeBlockBackgroundData *>(visibleBlock.userData())->m_x;
+
+                p.drawRect(x,
+                           qRound(geometry.top()),
+                           viewport()->rect().width() - x - qRound(document()->documentMargin()),
+                           qRound(geometry.height()));
+            }
+
+            visibleBlock = visibleBlock.next();
+        }
+    }
+}
+
 void Editor::paintEvent(QPaintEvent *event)
 {
+    QPainter painter(viewport());
+
+    if (m_d->m_settings.m_colors.m_codeThemeEnabled && m_d->m_settings.m_colors.m_drawCodeBackground) {
+        drawCodeBlocksBackground(painter);
+    }
+
     if (m_d->m_settings.m_margins.m_enable) {
-        QPainter painter(viewport());
         QRect r = viewport()->rect();
         QFontMetricsF fm(font());
 
@@ -567,10 +702,18 @@ void Editor::paintEvent(QPaintEvent *event)
                        - document()->documentMargin());
         }
 
-        painter.setBrush(QColor(239, 239, 239));
+        painter.setBrush(QColor(239, 239, 239, 200));
         painter.setPen(Qt::NoPen);
         painter.drawRect(r);
     }
+
+    painter.setBrush(m_d->m_currentLine.m_color);
+    painter.setPen(Qt::NoPen);
+    const auto cr = cursorRect();
+    painter.drawRect(m_d->m_currentLine.m_x,
+                     cr.top(),
+                     viewport()->rect().width() - qRound(document()->documentMargin()) - m_d->m_currentLine.m_x,
+                     cr.height());
 
     QPlainTextEdit::paintEvent(event);
 }
@@ -646,12 +789,18 @@ void Editor::highlightCurrentLine()
 {
     static const QColor lineColor = QColor(255, 255, 0, 75);
 
-    m_d->m_currentLine.format.setBackground(lineColor);
-    m_d->m_currentLine.format.setProperty(QTextFormat::FullWidthSelection, true);
-    m_d->m_currentLine.cursor = textCursor();
-    m_d->m_currentLine.cursor.clearSelection();
+    if (textCursor().block().userData()
+        && m_d->m_settings.m_colors.m_codeThemeEnabled
+        && m_d->m_settings.m_colors.m_drawCodeBackground) {
+        m_d->m_currentLine.m_color = QColor(
+            m_d->m_syntax.codeBlockSyntaxHighlighter()->theme().editorColor(KSyntaxHighlighting::Theme::CurrentLine));
+        m_d->m_currentLine.m_x = static_cast<CodeBlockBackgroundData *>(textCursor().block().userData())->m_x;
+    } else {
+        m_d->m_currentLine.m_color = lineColor;
+        m_d->m_currentLine.m_x = document()->documentMargin();
+    }
 
-    m_d->setExtraSelections();
+    viewport()->update();
 }
 
 void Editor::lineNumberAreaPaintEvent(QPaintEvent *event)
@@ -967,6 +1116,13 @@ void Editor::onParsingDone(std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
 
         m_d->m_isReady = true;
 
+        auto block = document()->firstBlock();
+
+        while (block.isValid()) {
+            block.setUserData(nullptr);
+            block = block.next();
+        }
+
         emit misspelled(syntaxHighlighter().hasMisspelled());
         emit ready();
     }
@@ -1045,72 +1201,128 @@ void Editor::clearUserStateOnAllBlocks()
 
 static const int s_autoAddedListItem = 1;
 
+bool Editor::handleReturnKeyForCode(QKeyEvent *event,
+                                    const MD::PosCache<MD::QStringTrait>::Items &items,
+                                    bool inList)
+{
+    if (m_d->m_settings.m_isAutoCodeBlocksEnabled && !items.isEmpty() && items.back()->type() == MD::ItemType::Code) {
+        if (inList && !m_d->m_settings.m_dontUseAutoListInCodeBlock) {
+            return false;
+        }
+
+        auto code = static_cast<MD::Code<MD::QStringTrait> *>(items.back());
+
+        if (!code->isInline()
+            && (code->endLine() >= textCursor().block().blockNumber()
+                || (code->isFensedCode() && code->endDelim().startLine() == -1))) {
+            QPlainTextEdit::keyPressEvent(event);
+
+            if (code->isFensedCode()) {
+                const auto block = document()->findBlockByNumber(code->startDelim().startLine());
+                const auto first = block.text().sliced(0, code->startDelim().startColumn());
+                textCursor().insertText(first);
+
+                if (!code->syntax().isEmpty()
+                    && !(inList
+                         && code->endDelim().startLine() == -1
+                         && textCursor().block().blockNumber() - 1 == code->endLine())) {
+                    textCursor().block().setUserData(
+                        new CodeBlockBackgroundData(fontMetrics().horizontalAdvance(first, block.layout()->textOption())
+                                                    + document()->documentMargin()));
+                }
+            } else {
+                const auto block = document()->findBlockByNumber(code->startLine());
+                const auto first = block.text().sliced(0, code->startColumn());
+                textCursor().insertText(first);
+            }
+
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void Editor::keyPressEvent(QKeyEvent *event)
 {
     auto c = textCursor();
 
-    if (m_d->m_settings.m_isAutoListsEnabled) {
-        if (event->key() == Qt::Key_Return) {
-            const auto lineNumber = c.block().blockNumber();
-            const auto lineLength = c.block().length();
+    if (event->key() == Qt::Key_Return) {
+        event->accept();
 
-            const auto items = syntaxHighlighter().findFirstInCache({0, lineNumber, lineLength, lineNumber});
+        const auto lineNumber = c.block().blockNumber();
+        const auto lineLength = c.block().length();
 
+        const auto items = syntaxHighlighter().findFirstInCache({0, lineNumber, lineLength, lineNumber});
+
+        if (m_d->m_settings.m_isAutoListsEnabled) {
             if (!items.isEmpty()) {
                 for (auto it = items.crbegin(), last = items.crend(); it != last; ++it) {
                     if ((*it)->type() == MD::ItemType::ListItem) {
                         auto l = static_cast<MD::ListItem<MD::QStringTrait> *>(*it);
 
-                        c.setPosition(document()->findBlockByNumber(l->startLine()).position());
-
-                        if (l->items().isEmpty() && c.block().userState() == s_autoAddedListItem) {
-                            textCursor().beginEditBlock();
-                            c.setPosition(c.position() + lineLength - 1, QTextCursor::KeepAnchor);
-                            c.deleteChar();
-                            c.block().setUserState(s_unknownUserState);
-                            textCursor().endEditBlock();
-                        } else {
-                            textCursor().beginEditBlock();
-
-                            QPlainTextEdit::keyPressEvent(event);
-
-                            if (l->delim().startColumn()) {
-                                c.setPosition(c.block().position() + l->delim().startColumn(), QTextCursor::KeepAnchor);
-                                textCursor().insertText(c.selectedText());
-                            }
-
-                            c.setPosition(c.block().position() + l->delim().startColumn());
-                            c.setPosition(c.block().position() + l->delim().endColumn() + 1, QTextCursor::KeepAnchor);
-
-                            if (l->listType() == MD::ListItem<MD::QStringTrait>::Unordered) {
-                                textCursor().insertText(c.selectedText());
-                            } else {
-                                const auto delim = c.selectedText();
-                                const auto number = delim.sliced(0, delim.length() - 1).toInt();
-                                textCursor().insertText(QString::number(number + 1));
-                                textCursor().insertText(delim.back());
-                            }
-
-                            textCursor().insertText(QString(1, QLatin1Char(' ')));
-
-                            if (l->isTaskList()) {
-                                textCursor().insertText(QStringLiteral("[ ] "));
-                            }
-
-                            textCursor().block().setUserState(s_autoAddedListItem);
-
-                            textCursor().endEditBlock();
+                        if (handleReturnKeyForCode(event, items, true)) {
+                            return;
                         }
 
-                        return;
+                        if (!m_d->m_settings.m_githubBehaviour || l->items().size() <= 1) {
+                            c.setPosition(document()->findBlockByNumber(l->startLine()).position());
+
+                            if (l->items().isEmpty() && c.block().userState() == s_autoAddedListItem) {
+                                textCursor().beginEditBlock();
+                                c.setPosition(c.position() + lineLength - 1, QTextCursor::KeepAnchor);
+                                c.deleteChar();
+                                c.block().setUserState(s_unknownUserState);
+                                textCursor().endEditBlock();
+                            } else {
+                                textCursor().beginEditBlock();
+
+                                QPlainTextEdit::keyPressEvent(event);
+
+                                if (l->delim().startColumn()) {
+                                    c.setPosition(c.block().position() + l->delim().startColumn(),
+                                                  QTextCursor::KeepAnchor);
+                                    textCursor().insertText(c.selectedText());
+                                }
+
+                                c.setPosition(c.block().position() + l->delim().startColumn());
+                                c.setPosition(c.block().position() + l->delim().endColumn() + 1,
+                                              QTextCursor::KeepAnchor);
+
+                                if (l->listType() == MD::ListItem<MD::QStringTrait>::Unordered) {
+                                    textCursor().insertText(c.selectedText());
+                                } else {
+                                    const auto delim = c.selectedText();
+                                    const auto number = delim.sliced(0, delim.length() - 1).toInt();
+                                    textCursor().insertText(QString::number(number + 1));
+                                    textCursor().insertText(delim.back());
+                                }
+
+                                textCursor().insertText(QString(1, QLatin1Char(' ')));
+
+                                if (l->isTaskList()) {
+                                    textCursor().insertText(QStringLiteral("[ ] "));
+                                }
+
+                                textCursor().block().setUserState(s_autoAddedListItem);
+
+                                textCursor().endEditBlock();
+                            }
+
+                            return;
+                        } else {
+                            break;
+                        }
                     }
                 }
             }
-
-            QPlainTextEdit::keyPressEvent(event);
-
-            return;
         }
+
+        if (!handleReturnKeyForCode(event, items, false)) {
+            QPlainTextEdit::keyPressEvent(event);
+        }
+
+        return;
     }
 
     if (c.hasSelection()) {

@@ -7,10 +7,6 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
-    SyntaxHighlighting
-)
-
 find_package(Qt6Widgets 6.5.0 REQUIRED)
 find_package(Qt6Network 6.5.0 REQUIRED)
 find_package(Qt6Svg 6.5.0 REQUIRED)
@@ -46,9 +42,6 @@ if(WIN32)
     list(APPEND GUI_SRC md-pdf.rc)
 endif()
 
-set(LIB_SYNTAX_SRC syntax.cpp
-    syntax.h)
-
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/MicroTeX/src
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -67,10 +60,6 @@ configure_file(version.h.in ${CMAKE_CURRENT_BINARY_DIR}/version.h)
 
 add_definitions(-DBUILD_QT)
 
-add_library(syntax STATIC ${LIB_SYNTAX_SRC})
-
-target_link_libraries(syntax KF${KF_MAJOR_VERSION}::SyntaxHighlighting Qt6::Gui Qt6::Network Qt6::Core)
-
 add_executable(md-pdf-gui WIN32 ${GUI_SRC})
 
 add_executable(md-launcher launcher.cpp)
@@ -80,7 +69,6 @@ target_link_libraries(md-launcher Qt6::Core OpenSSL::SSL)
 install(TARGETS md-pdf-gui)
 install(TARGETS md-launcher)
 
-target_link_libraries(md-pdf-gui syntax markdown-widgets
-    KF${KF_MAJOR_VERSION}::SyntaxHighlighting LaTeX
+target_link_libraries(md-pdf-gui markdown-widgets LaTeX
 	Qt6::Widgets Qt6::Network Qt6::Core
     podofo_shared resvg)

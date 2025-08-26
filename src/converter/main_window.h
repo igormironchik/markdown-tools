@@ -4,11 +4,11 @@
 */
 
 // md-pdf include.
-#include "syntax.h"
 #include "ui_main_window.h"
 
 // shared include.
 #include "plugins_page.h"
+#include "syntax.h"
 
 // Qt include.
 #include <QMainWindow>
@@ -76,7 +76,7 @@ private:
     QThread *m_thread;
     bool m_textFontOk;
     bool m_codeFontOk;
-    std::shared_ptr<Syntax> m_syntax;
+    std::shared_ptr<MdShared::Syntax> m_syntax;
     bool m_alreadyShown = false;
     MdShared::PluginsCfg m_pluginsCfg;
     QColor m_markColor;

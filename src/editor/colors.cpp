@@ -8,6 +8,7 @@
 
 // Qt include.
 #include <QColorDialog>
+#include <QComboBox>
 
 namespace MdEditor
 {
@@ -25,7 +26,10 @@ bool operator!=(const Colors &c1,
             || c1.m_enabled != c2.m_enabled
             || c1.m_mathColor != c2.m_mathColor
             || c1.m_referenceColor != c2.m_referenceColor
-            || c1.m_specialColor != c2.m_specialColor);
+            || c1.m_specialColor != c2.m_specialColor
+            || c1.m_codeTheme != c2.m_codeTheme
+            || c1.m_codeThemeEnabled != c2.m_codeThemeEnabled
+            || c1.m_drawCodeBackground != c2.m_drawCodeBackground);
 }
 
 //
@@ -56,6 +60,10 @@ Ui::ColorsPage &ColorsPage::ui()
 
 Colors &ColorsPage::colors()
 {
+    m_colors.m_codeTheme = m_ui.m_codeTheme->currentText();
+    m_colors.m_codeThemeEnabled = m_ui.m_codeThemeGroupBox->isChecked();
+    m_colors.m_drawCodeBackground = m_ui.m_drawCodeBackground->isChecked();
+
     return m_colors;
 }
 
@@ -79,6 +87,10 @@ void ColorsPage::applyColors()
     m_ui.mathColor->setColor(m_colors.m_mathColor);
     m_ui.referenceColor->setColor(m_colors.m_referenceColor);
     m_ui.specialColor->setColor(m_colors.m_specialColor);
+
+    m_ui.m_codeThemeGroupBox->setChecked(m_colors.m_codeThemeEnabled);
+    m_ui.m_codeTheme->setCurrentText(m_colors.m_codeTheme);
+    m_ui.m_drawCodeBackground->setChecked(m_colors.m_drawCodeBackground);
 }
 
 void ColorsPage::chooseColor(MdShared::ColorWidget *w,
@@ -140,6 +152,21 @@ void ColorsPage::chooseSpecialColor()
 void ColorsPage::colorsToggled(bool on)
 {
     m_colors.m_enabled = on;
+}
+
+void ColorsPage::initCodeThemes(std::shared_ptr<MdShared::Syntax> syntax)
+{
+    QStringList themeNames;
+    const auto themes = syntax->repository().themes();
+
+    for (const auto &t : themes) {
+        themeNames.push_back(t.name());
+    }
+
+    themeNames.sort(Qt::CaseInsensitive);
+
+    m_ui.m_codeTheme->addItems(themeNames);
+    m_ui.m_codeTheme->setCurrentText(QStringLiteral("GitHub Light"));
 }
 
 } /* namespace MdEditor */

@@ -115,6 +115,12 @@ public:
     void setPluginsCfg(const MdShared::PluginsCfg &cfg);
     //! Enable/disable auto-lists.
     void enableAutoLists(bool on = true);
+    //! Enable auto add list after non-first block of list item (like on GitHub).
+    void enableGithubBehaviour(bool on = true);
+    //! Enable auto add list in code block in list item.
+    void enableAutoListInCodeBlock(bool on = true);
+    //! Enable auto continue of code blocks.
+    void enableAutoCodeBlocks(bool on = true);
 
     //! Indent mode.
     enum class IndentMode {
@@ -197,6 +203,12 @@ protected:
 protected:
     //! \return Line number for a given point.
     int lineNumber(const QPoint &p);
+    //! Draw code blocks background.
+    void drawCodeBlocksBackground(QPainter &p);
+    //! Handle "Return: key for code.
+    bool handleReturnKeyForCode(QKeyEvent *event,
+                                const MD::PosCache<MD::QStringTrait>::Items &items,
+                                bool inList);
 
 private:
     friend struct EditorPrivate;

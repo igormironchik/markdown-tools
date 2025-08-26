@@ -5,6 +5,7 @@
 
 // shared include.
 #include "utils.h"
+#include "syntax.h"
 
 // Qt include.
 #include <QtResource>
@@ -16,6 +17,7 @@ void initSharedResources()
 {
     Q_INIT_RESOURCE(qt);
     Q_INIT_RESOURCE(icon);
+    MdShared::Syntax::init();
 }
 
 bool isRightToLeft(const QChar &ch)
