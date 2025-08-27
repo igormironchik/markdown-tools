@@ -15,12 +15,14 @@ namespace MdEditor
 
 FontDlg::FontDlg(const QFont &f,
                  QWidget *parent)
-    : QDialog(parent)
+    : MdShared::DlgWheelFilter(parent)
 {
     m_ui.setupUi(this);
     m_ui.m_page->initWithFont(f);
 
     adjustSize();
+
+    installFilterForChildren(this);
 }
 
 QFont FontDlg::currentFont() const

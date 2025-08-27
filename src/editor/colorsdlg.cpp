@@ -29,7 +29,7 @@ struct ColorsDialogPrivate {
 ColorsDialog::ColorsDialog(const Colors &cols,
                            std::shared_ptr<MdShared::Syntax> syntax,
                            QWidget *parent)
-    : QDialog(parent)
+    : MdShared::DlgWheelFilter(parent)
     , m_d(new ColorsDialogPrivate)
 {
     m_d->m_ui.setupUi(this);
@@ -41,6 +41,8 @@ ColorsDialog::ColorsDialog(const Colors &cols,
     m_d->m_ui.m_page->applyColors();
 
     connect(m_d->m_ui.buttonBox, &QDialogButtonBox::clicked, this, &ColorsDialog::clicked);
+
+    installFilterForChildren(this);
 }
 
 ColorsDialog::~ColorsDialog()

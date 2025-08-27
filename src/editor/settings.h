@@ -6,7 +6,6 @@
 #pragma once
 
 // Qt include.
-#include <QDialog>
 #include <QFont>
 
 // md-editor include.
@@ -16,6 +15,7 @@
 
 // shared include.
 #include "syntax.h"
+#include "dlg_filter_wheel.h"
 
 namespace Sonnet
 {
@@ -63,7 +63,7 @@ bool operator!=(const Settings &s1,
 //
 
 //! Settings dialog.
-class SettingsDlg : public QDialog
+class SettingsDlg : public MdShared::DlgWheelFilter
 {
     Q_OBJECT
 

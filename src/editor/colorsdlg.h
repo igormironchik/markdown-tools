@@ -8,7 +8,6 @@
 // Qt include.
 #include <QAbstractButton>
 #include <QColor>
-#include <QDialog>
 #include <QScopedPointer>
 
 // md-editor include.
@@ -16,6 +15,7 @@
 
 // shared include.
 #include "syntax.h"
+#include "dlg_filter_wheel.h"
 
 namespace MdShared
 {
@@ -34,7 +34,7 @@ namespace MdEditor
 struct ColorsDialogPrivate;
 
 //! Colors dialog.
-class ColorsDialog : public QDialog
+class ColorsDialog : public MdShared::DlgWheelFilter
 {
     Q_OBJECT
 

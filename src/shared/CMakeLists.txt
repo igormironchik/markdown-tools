@@ -32,7 +32,9 @@ set(SRC license_dialog.h
     fingergeometry.h
     fingergeometry.cpp
     syntax.h
-    syntax.cpp)
+    syntax.cpp
+    dlg_filter_wheel.cpp
+    dlg_filter_wheel.h)
 
 qt6_add_resources(SRC qt.qrc)
 qt6_add_resources(SRC icon.qrc)

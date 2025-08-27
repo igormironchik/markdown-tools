@@ -40,7 +40,7 @@ bool operator!=(const Settings &s1,
 SettingsDlg::SettingsDlg(const Settings &s,
                          std::shared_ptr<MdShared::Syntax> syntax,
                          QWidget *parent)
-    : QDialog(parent)
+    : MdShared::DlgWheelFilter(parent)
 {
     m_ui.setupUi(this);
 
@@ -78,6 +78,8 @@ SettingsDlg::SettingsDlg(const Settings &s,
     m_ui.m_spellingGroup->setChecked(s.m_enableSpelling);
 
     m_ui.m_pluginsPage->setCfg(s.m_pluginsCfg);
+
+    installFilterForChildren(this);
 }
 
 Settings SettingsDlg::settings() const

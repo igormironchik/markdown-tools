@@ -6,11 +6,13 @@
 #pragma once
 
 // Qt include.
-#include <QDialog>
 #include <QFont>
 #include <QScopedPointer>
 
 #include "ui_fontdlg.h"
+
+// shared include.
+#include "dlg_filter_wheel.h"
 
 namespace MdEditor
 {
@@ -20,7 +22,7 @@ namespace MdEditor
 //
 
 //! Font dialog.
-class FontDlg : public QDialog
+class FontDlg : public MdShared::DlgWheelFilter
 {
     Q_OBJECT
 
