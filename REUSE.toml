@@ -16,6 +16,12 @@ SPDX-FileCopyrightText = "2020 Christoph Cullmann <cullmann@kde.org>"
 SPDX-License-Identifier = "MIT"
 
 [[annotations]]
+path = ["3rdparty/KDE/syntax-highlighting/autotests/folding/test.opsiscript.fold", "3rdparty/KDE/syntax-highlighting/autotests/input/test.opsiscript","3rdparty/KDE/syntax-highlighting/data/syntax/opsiscript.xml"]
+precedence = "override"
+SPDX-FileCopyrightText = "2024 Stefan Staeglich <sstaeglich@kdemail.net>"
+SPDX-License-Identifier = "LicenseRef-LGPL"
+
+[[annotations]]
 path = "3rdparty/KDE/sonnet/**"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2004 Zack Rusin <zack@kde.org>, 2009 Jakub Stachowski <qbast@go2.pl>"
