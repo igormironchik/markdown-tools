@@ -46,7 +46,8 @@ preview viewer, converter to `PDF`.
 | Spell checking can be configured to handle more than one language in the Markdown document |  ![](./doc/spelling.png) |
 | You can find a text both in editor and in Web preview | ![](./doc/find_in_editor.png) ![](./doc/find_in_web.png) |
 | You can use this editor like Web browser only for Markdown documents (preview mode) | |
-| Editor can be a little bit smart to auto continue list on `Return` key press, like on GitHub, but even better | ![](./doc/auto-list.gif) |
+| Editor can be a little bit smart to auto continue list and fenced code blocks on `Return` key press, like on GitHub, but even better. Have a look at `Settings->Editor->Auto formatting` settings | ![](./doc/auto-list.gif) |
+| Fenced code blocks may be highlighted with corresponding syntax in editor. Look at `Settings->Colors` settings | ![](./doc/code_highlighting.png) |
 | Maybe the author did forget something? Thanks for using. Enjoy | |
 
 # Installers
