@@ -22,7 +22,6 @@ using namespace PoDoFo;
 PdfFontConfigWrapper::PdfFontConfigWrapper(const string_view& configStr)
     : m_FcConfig(FcConfigCreate())
 {
-    m_FcConfig = FcConfigCreate();
     if (m_FcConfig == nullptr)
         PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidHandle, "Could not allocate font config");
 
@@ -33,6 +32,9 @@ PdfFontConfigWrapper::PdfFontConfigWrapper(const string_view& configStr)
     if (!FcConfigBuildFonts(m_FcConfig))
         PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidFontData, "Could not parse font config");
 }
+
+PdfFontConfigWrapper::PdfFontConfigWrapper()
+    : PdfFontConfigWrapper((FcConfig*)nullptr) { }
 
 PdfFontConfigWrapper::PdfFontConfigWrapper(FcConfig* fcConfig)
     : m_FcConfig(fcConfig)
