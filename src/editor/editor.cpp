@@ -891,14 +891,15 @@ void LineNumberArea::onHover(const QPoint &p)
 
 void Editor::showUnprintableCharacters(bool on)
 {
-    if (on) {
-        QTextOption opt;
-        opt.setFlags(QTextOption::ShowTabsAndSpaces);
+    QTextOption opts = document()->defaultTextOption();
 
-        document()->setDefaultTextOption(opt);
+    if (on) {
+        opts.setFlags(opts.flags() | QTextOption::ShowTabsAndSpaces);
     } else {
-        document()->setDefaultTextOption({});
+        opts.setFlags(opts.flags() & ~QTextOption::ShowTabsAndSpaces);
     }
+
+    document()->setDefaultTextOption(opts);
 
     setTabStopDistance(fontMetrics().horizontalAdvance(QLatin1Char(' ')) * 4);
 }
