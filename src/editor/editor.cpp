@@ -282,7 +282,7 @@ struct EditorPrivate {
     {
         m_lineNumberArea = new LineNumberArea(m_q);
 
-        QObject::connect(m_q, &Editor::cursorPositionChanged, m_q, &Editor::highlightCurrentLine);
+        QObject::connect(m_q, &Editor::cursorPositionChanged, m_q->viewport(), qOverload<>(&QWidget::update));
         QObject::connect(m_q, &QPlainTextEdit::textChanged, m_q, &Editor::onContentChanged);
         QObject::connect(m_lineNumberArea,
                          &LineNumberArea::lineNumberContextMenuRequested,
@@ -292,7 +292,6 @@ struct EditorPrivate {
         m_q->showLineNumbers(true);
         m_q->applyFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
         m_q->updateLineNumberAreaWidth(0);
-        m_q->highlightCurrentLine();
         m_q->showUnprintableCharacters(true);
         m_q->setFocusPolicy(Qt::ClickFocus);
         m_q->setCenterOnScroll(true);
@@ -476,7 +475,7 @@ void Editor::applyColors(const Colors &colors)
 
     m_d->m_syntax.setColors(colors);
 
-    highlightCurrentLine();
+    viewport()->update();
 }
 
 void Editor::applyMargins(const Margins &m)
@@ -654,8 +653,6 @@ void Editor::drawCodeBlocksBackground(QPainter &p)
                 h = 0;
             }
         }
-
-        highlightCurrentLine();
     } else {
         while (visibleBlock.isValid()) {
             auto geometry = blockBoundingGeometry(visibleBlock).translated(contentOffset());
@@ -706,6 +703,8 @@ void Editor::paintEvent(QPaintEvent *event)
         painter.setPen(Qt::NoPen);
         painter.drawRect(r);
     }
+
+    highlightCurrentLine();
 
     painter.setBrush(m_d->m_currentLine.m_color);
     painter.setPen(Qt::NoPen);
@@ -799,8 +798,6 @@ void Editor::highlightCurrentLine()
         m_d->m_currentLine.m_color = lineColor;
         m_d->m_currentLine.m_x = document()->documentMargin();
     }
-
-    viewport()->update();
 }
 
 void Editor::lineNumberAreaPaintEvent(QPaintEvent *event)
