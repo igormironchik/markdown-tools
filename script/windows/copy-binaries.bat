@@ -6,8 +6,6 @@ echo "Copying binaries..."
 
 rmdir /S /Q installer\packages\mironchik.igor.markdown\data\bin
 
-rmdir /S /Q installer\packages\mironchik.igor.markdown\data\lib
-
 rmdir /S /Q installer\packages\mironchik.igor.markdown\data\plugins
 
 rmdir /S /Q installer\packages\mironchik.igor.markdown\data\libexec
@@ -35,12 +33,6 @@ IF %ERRORLEVEL% NEQ 0 (
 )
 
 mkdir installer\packages\mironchik.igor.markdown\data\translations
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
-mkdir installer\packages\mironchik.igor.markdown\data\lib
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
@@ -168,24 +160,6 @@ IF %ERRORLEVEL% NEQ 0 (
 )
 
 copy %CD%\..\KDE\bin\KF6SonnetUi.dll installer\packages\mironchik.igor.markdown\data\bin\KF6SonnetUi.dll
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
-xcopy build-markdown-tools\lib installer\packages\mironchik.igor.markdown\data\lib /S /Y
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
-del /Q installer\packages\mironchik.igor.markdown\data\lib\*.lib
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
-rmdir /S /Q installer\packages\mironchik.igor.markdown\data\lib\Release
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
