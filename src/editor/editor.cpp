@@ -1213,7 +1213,9 @@ bool Editor::handleReturnKeyForCode(QKeyEvent *event,
         if (!code->isInline()
             && (code->endLine() >= textCursor().block().blockNumber()
                 || (code->isFensedCode() && code->endDelim().startLine() == -1))) {
-            QPlainTextEdit::keyPressEvent(event);
+            textCursor().beginEditBlock();
+            textCursor().insertBlock();
+            textCursor().endEditBlock();
 
             if (code->isFensedCode()) {
                 const auto block = document()->findBlockByNumber(code->startDelim().startLine());
@@ -1245,7 +1247,7 @@ void Editor::keyPressEvent(QKeyEvent *event)
 {
     auto c = textCursor();
 
-    if (event->key() == Qt::Key_Return) {
+    if (event == QKeySequence::InsertParagraphSeparator) {
         event->accept();
 
         const auto lineNumber = c.block().blockNumber();
@@ -1274,8 +1276,7 @@ void Editor::keyPressEvent(QKeyEvent *event)
                                 textCursor().endEditBlock();
                             } else {
                                 textCursor().beginEditBlock();
-
-                                QPlainTextEdit::keyPressEvent(event);
+                                textCursor().insertBlock();
 
                                 if (l->delim().startColumn()) {
                                     c.setPosition(c.block().position() + l->delim().startColumn(),
@@ -1317,7 +1318,9 @@ void Editor::keyPressEvent(QKeyEvent *event)
         }
 
         if (!handleReturnKeyForCode(event, items, false)) {
-            QPlainTextEdit::keyPressEvent(event);
+            textCursor().beginEditBlock();
+            textCursor().insertBlock();
+            textCursor().endEditBlock();
         }
 
         return;
