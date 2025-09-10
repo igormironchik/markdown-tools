@@ -3330,7 +3330,7 @@ void MainWindow::onShowLicenses()
             "<p><b>md4qt</b>\n\n</p>"
             "<p>The MIT License (MIT)</p>\n"
             "\n"
-            "<p>Copyright © 2022-2024 Igor Mironchik</p>\n"
+            "<p>Copyright © 2025 Igor Mironchik</p>\n"
             "\n"
             "<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this "
             "software and associated documentation files (the \"Software\"), to deal in the Software "
