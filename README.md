@@ -45,6 +45,7 @@ preview viewer, converter to `PDF`.
 | You can use this editor like Web browser only for Markdown documents (preview mode) | |
 | Editor can be a little bit smart to auto continue list and fenced code blocks on `Return` key press, like on GitHub, but even better. Have a look at `Settings->Editor->Auto formatting` settings | ![](./doc/auto-list.gif) |
 | Fenced code blocks may be highlighted with corresponding syntax in editor. Look at `Settings->Colors` settings | ![](./doc/code_highlighting.png) |
+| Links in editor can be clicked with "Control" key for navigation | |
 | Maybe the author did forget something? Thanks for using. Enjoy | |
 
 # Installers
