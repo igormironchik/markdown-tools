@@ -199,6 +199,8 @@ protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
     bool canInsertFromMimeData(const QMimeData *source) const override;
     void insertFromMimeData(const QMimeData *source) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void keyReleaseEvent(QKeyEvent *event) override;
 
 protected:
     //! \return Line number for a given point.

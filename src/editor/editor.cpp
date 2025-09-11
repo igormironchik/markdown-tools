@@ -12,6 +12,8 @@
 #include <Sonnet/Settings>
 
 // Qt include.
+#include <QApplication>
+#include <QCursor>
 #include <QMenu>
 #include <QMimeData>
 #include <QPainter>
@@ -267,6 +269,7 @@ struct EditorPrivate {
         , m_parser(new DataParser)
     {
         m_parser->moveToThread(m_parsingThread);
+        m_q->setMouseTracking(true);
 
         QObject::connect(m_q, &Editor::doParsing, m_parser, &DataParser::onData, Qt::QueuedConnection);
         QObject::connect(m_parser, &DataParser::done, m_q, &Editor::onParsingDone, Qt::QueuedConnection);
@@ -319,6 +322,97 @@ struct EditorPrivate {
                     : QString(m_settings.m_indentSpacesCount, QLatin1Char(' ')));
     }
 
+    //! Check for link hovering.
+    void checkForLinkHovering(bool ctrlModifier, const QPoint &pos)
+    {
+        const auto restore = [this]() {
+            if (this->m_linkHovered) {
+                QApplication::restoreOverrideCursor();
+                this->m_linkHovered = false;
+
+                if (this->m_underlinedLink.m_startLine != -1) {
+                    for (auto i = this->m_underlinedLink.m_startLine; i <= this->m_underlinedLink.m_endLine; ++i) {
+                        const auto block = m_q->document()->findBlockByNumber(i);
+
+                        auto formats = block.layout()->formats();
+
+                        if (!formats.isEmpty()) {
+                            formats.pop_back();
+                            block.layout()->setFormats(formats);
+                        }
+                    }
+
+                    this->m_underlinedLink = {};
+
+                    this->m_q->viewport()->update();
+                }
+            }
+        };
+
+        const auto isLink = [](const MD::PosCache<MD::QStringTrait>::Items &items) -> MD::Item<MD::QStringTrait> * {
+            if (!items.isEmpty()) {
+                for (const auto &i : std::as_const(items)) {
+                    if (i->type() == MD::ItemType::Link) {
+                        return i;
+                    }
+                }
+            }
+
+            return nullptr;
+        };
+
+        const auto underline =
+            [this](long long int startLine, long long int startColumn, long long int endLine, long long int endColumn) {
+                for (auto i = startLine; i <= endLine; ++i) {
+                    QTextCharFormat fmt;
+                    fmt.setFontUnderline(true);
+
+                    const auto block = m_q->document()->findBlockByNumber(i);
+
+                    QTextLayout::FormatRange r;
+                    r.format = fmt;
+                    r.start = (i == startLine ? startColumn : 0);
+                    r.length =
+                        (i == startLine ? (i == endLine ? endColumn - startColumn + 1 : block.length() - startColumn)
+                                        : (i == endLine ? endColumn + 1 : block.length()));
+
+                    auto formats = block.layout()->formats();
+                    formats.push_back(r);
+                    block.layout()->setFormats(formats);
+                }
+            };
+
+        if (ctrlModifier) {
+            const auto cursor = m_q->cursorForPosition(pos);
+
+            const auto lineNumber = cursor.block().blockNumber();
+            const auto pos = cursor.position() - cursor.block().position();
+
+            const auto link = isLink(m_syntax.findFirstInCache({pos, lineNumber, pos, lineNumber}));
+
+            if (link) {
+                UnderlinedLink u = {link->startLine(), link->startColumn(), link->endLine(), link->endColumn()};
+
+                if (m_underlinedLink != u) {
+                    restore();
+
+                    m_linkHovered = true;
+                    m_underlinedLink = u;
+
+                    QApplication::setOverrideCursor(Qt::PointingHandCursor);
+
+                    underline(link->startLine(), link->startColumn(), link->endLine(), link->endColumn());
+
+                    m_q->viewport()->update();
+                }
+            } else {
+                restore();
+            }
+        } else {
+            restore();
+        }
+    }
+
     //! Editor.
     Editor *m_q = nullptr;
     //! Line number area.
@@ -346,7 +440,7 @@ struct EditorPrivate {
     QString m_highlightedText;
     //! Current parsed Markdown document.
     std::shared_ptr<MD::Document<MD::QStringTrait>> m_currentDoc;
-    //! Map of current itemss IDs.
+    //! Map of current items IDs.
     MD::details::IdsMap<MD::QStringTrait> m_idsMap;
     //! Syntax highlighter.
     SyntaxVisitor m_syntax;
@@ -364,8 +458,28 @@ struct EditorPrivate {
     bool m_useWorkingDir = false;
     //! Is editor ready?
     bool m_isReady = true;
+    //! Is link hovered?
+    bool m_linkHovered = false;
     //! Settings.
     Settings m_settings;
+
+    //! Underlined link.
+    struct UnderlinedLink {
+        long long int m_startLine = -1;
+        long long int m_startColumn = -1;
+        long long int m_endLine = -1;
+        long long int m_endColumn = -1;
+
+        bool operator!=(const UnderlinedLink &other)
+        {
+            return (m_startLine != other.m_startLine
+                    || m_startColumn != other.m_startColumn
+                    || m_endLine != other.m_endLine
+                    || m_endColumn != other.m_endColumn);
+        }
+    }; // struct UnderlinedLink
+
+    UnderlinedLink m_underlinedLink;
 }; // struct EditorPrivate
 
 //
@@ -782,6 +896,22 @@ bool Editor::canInsertFromMimeData(const QMimeData *source) const
 void Editor::insertFromMimeData(const QMimeData *source)
 {
     insertPlainText(source->text());
+}
+
+void Editor::mouseMoveEvent(QMouseEvent *event)
+{
+    m_d->checkForLinkHovering(event->modifiers().testFlag(Qt::ControlModifier), event->pos());
+
+    QPlainTextEdit::mouseMoveEvent(event);
+}
+
+void Editor::keyReleaseEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Control) {
+        m_d->checkForLinkHovering(event->modifiers().testFlag(Qt::ControlModifier), mapFromGlobal(QCursor::pos()));
+    }
+
+    QPlainTextEdit::keyReleaseEvent(event);
 }
 
 void Editor::highlightCurrentLine()

@@ -14,8 +14,8 @@
 #include "colors.h"
 
 // shared include.
-#include "syntax.h"
 #include "dlg_filter_wheel.h"
+#include "syntax.h"
 
 namespace MdShared
 {
