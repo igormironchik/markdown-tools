@@ -27,7 +27,8 @@ public:
     ~DlgWheelFilter() override = default;
 
 protected:
-    bool eventFilter(QObject *watched, QEvent *event) override;
+    bool eventFilter(QObject *watched,
+                     QEvent *event) override;
 
 protected:
     virtual bool isFilteredType(QObject *o);
@@ -35,4 +36,3 @@ protected:
 }; // class ScrollFilter
 
 } /* namespace MdShared */
-

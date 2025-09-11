@@ -7,10 +7,10 @@
 #include "dlg_filter_wheel.h"
 
 // Qt include.
-#include <QEvent>
-#include <QComboBox>
-#include <QSpinBox>
 #include <QChildEvent>
+#include <QComboBox>
+#include <QEvent>
+#include <QSpinBox>
 
 namespace MdShared
 {
@@ -20,7 +20,8 @@ DlgWheelFilter::DlgWheelFilter(QWidget *parent)
 {
 }
 
-bool DlgWheelFilter::eventFilter(QObject *watched, QEvent *event)
+bool DlgWheelFilter::eventFilter(QObject *watched,
+                                 QEvent *event)
 {
     if (event->type() == QEvent::Wheel) {
         event->ignore();
@@ -48,4 +49,3 @@ bool DlgWheelFilter::isFilteredType(QObject *o)
 }
 
 } /* namespace MdShared */
-

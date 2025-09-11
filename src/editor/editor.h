@@ -80,7 +80,8 @@ signals:
     void linkClicked(const QString &url);
 
 public:
-    Editor(QWidget *parent, MainWindow *mainWindow);
+    Editor(QWidget *parent,
+           MainWindow *mainWindow);
     ~Editor() override;
 
     //! Set document file name.

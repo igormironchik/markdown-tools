@@ -265,7 +265,8 @@ private:
 //
 
 struct EditorPrivate {
-    explicit EditorPrivate(Editor *parent, MainWindow *mainWindow)
+    explicit EditorPrivate(Editor *parent,
+                           MainWindow *mainWindow)
         : m_q(parent)
         , m_mainWindow(mainWindow)
         , m_parsingThread(new QThread(m_q))
@@ -510,9 +511,11 @@ struct EditorPrivate {
 // Editor
 //
 
-Editor::Editor(QWidget *parent, MainWindow *mainWindow)
+Editor::Editor(QWidget *parent,
+               MainWindow *mainWindow)
     : QPlainTextEdit(parent)
-    , m_d(new EditorPrivate(this, mainWindow))
+    , m_d(new EditorPrivate(this,
+                            mainWindow))
 {
     m_d->initUi();
 }
