@@ -14,6 +14,7 @@
 // Qt include.
 #include <QApplication>
 #include <QCursor>
+#include <QDesktopServices>
 #include <QMenu>
 #include <QMimeData>
 #include <QPainter>
@@ -1288,7 +1289,28 @@ void Editor::onParsingDone(std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
 
 void Editor::onLinkClicked(const QString &url)
 {
-    qDebug() << url;
+    auto place = url;
+
+    auto lit = m_d->m_currentDoc->labeledLinks().find(url);
+
+    if (lit != m_d->m_currentDoc->labeledLinks().cend()) {
+        place = lit->second->url();
+    }
+
+    if (place.startsWith(QLatin1Char('#'))) {
+        auto hit = m_d->m_currentDoc->labeledHeadings().find(place);
+
+        if (hit != m_d->m_currentDoc->labeledHeadings().cend()) {
+            auto c = textCursor();
+            c.setPosition(document()->findBlockByNumber(hit->second->startLine()).position());
+
+            setTextCursor(c);
+
+            ensureCursorVisible();
+        }
+    } else {
+        QDesktopServices::openUrl(QUrl(place));
+    }
 }
 
 void Editor::highlightCurrent()
