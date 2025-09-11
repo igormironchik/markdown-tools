@@ -49,6 +49,7 @@ bool operator!=(const Margins &l,
 struct EditorPrivate;
 class SyntaxVisitor;
 class Find;
+class MainWindow;
 
 //! Markdown text editor. Actual text editor where user can type...
 class Editor : public QPlainTextEdit
@@ -79,7 +80,7 @@ signals:
     void linkClicked(const QString &url);
 
 public:
-    explicit Editor(QWidget *parent);
+    Editor(QWidget *parent, MainWindow *mainWindow);
     ~Editor() override;
 
     //! Set document file name.

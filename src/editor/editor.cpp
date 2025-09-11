@@ -6,6 +6,7 @@
 // md-editor include.
 #include "editor.h"
 #include "find.h"
+#include "mainwindow.h"
 #include "settings.h"
 
 // Sonnet include.
@@ -264,8 +265,9 @@ private:
 //
 
 struct EditorPrivate {
-    explicit EditorPrivate(Editor *parent)
+    explicit EditorPrivate(Editor *parent, MainWindow *mainWindow)
         : m_q(parent)
+        , m_mainWindow(mainWindow)
         , m_parsingThread(new QThread(m_q))
         , m_parser(new DataParser)
     {
@@ -338,13 +340,22 @@ struct EditorPrivate {
         return nullptr;
     }
 
+    //! Restore cursor.
+    void restoreCursor()
+    {
+        if (m_cursorOverriden) {
+            QApplication::restoreOverrideCursor();
+            m_cursorOverriden = false;
+        }
+    }
+
     //! Check for link hovering.
     void checkForLinkHovering(bool ctrlModifier,
                               const QPoint &pos)
     {
         const auto restore = [this]() {
-            if (this->m_underlinedLink.m_startLine != -1) {
-                QApplication::restoreOverrideCursor();
+            if (this->m_underlinedLink.isValid()) {
+                this->restoreCursor();
 
                 for (auto i = this->m_underlinedLink.m_startLine; i <= this->m_underlinedLink.m_endLine; ++i) {
                     const auto block = m_q->document()->findBlockByNumber(i);
@@ -402,6 +413,8 @@ struct EditorPrivate {
 
                     QApplication::setOverrideCursor(Qt::PointingHandCursor);
 
+                    m_cursorOverriden = true;
+
                     underline(link->startLine(), link->startColumn(), link->endLine(), link->endColumn());
 
                     m_q->viewport()->update();
@@ -416,6 +429,8 @@ struct EditorPrivate {
 
     //! Editor.
     Editor *m_q = nullptr;
+    //! Main window.
+    MainWindow *m_mainWindow = nullptr;
     //! Line number area.
     LineNumberArea *m_lineNumberArea = nullptr;
     //! Document's name.
@@ -478,18 +493,26 @@ struct EditorPrivate {
                     || m_endLine != other.m_endLine
                     || m_endColumn != other.m_endColumn);
         }
+
+        bool isValid() const
+        {
+            return (m_startLine != -1 && m_startColumn != -1 && m_endLine != -1 && m_endColumn != -1);
+        }
     }; // struct UnderlinedLink
 
+    //! Underlined link coordinates.
     UnderlinedLink m_underlinedLink;
+    //! Is cursor overriden?
+    bool m_cursorOverriden = false;
 }; // struct EditorPrivate
 
 //
 // Editor
 //
 
-Editor::Editor(QWidget *parent)
+Editor::Editor(QWidget *parent, MainWindow *mainWindow)
     : QPlainTextEdit(parent)
-    , m_d(new EditorPrivate(this))
+    , m_d(new EditorPrivate(this, mainWindow))
 {
     m_d->initUi();
 }
@@ -911,7 +934,7 @@ void Editor::mousePressEvent(QMouseEvent *event)
 void Editor::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
-        if (m_d->m_underlinedLink.m_startLine != -1 && m_d->m_leftMouseBtnPressed) {
+        if (m_d->m_underlinedLink.isValid() && m_d->m_leftMouseBtnPressed) {
             const auto link = m_d->isLink(m_d->m_syntax.findFirstInCache({m_d->m_underlinedLink.m_startColumn,
                                                                           m_d->m_underlinedLink.m_startLine,
                                                                           m_d->m_underlinedLink.m_startColumn,
@@ -1267,6 +1290,7 @@ void Editor::onParsingDone(std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
         m_d->m_syntax = syntax;
 
         m_d->m_underlinedLink = {};
+        m_d->restoreCursor();
         m_d->m_syntax.applyFormats(document());
 
         highlightCurrent();
@@ -1309,7 +1333,9 @@ void Editor::onLinkClicked(const QString &url)
             ensureCursorVisible();
         }
     } else {
-        QDesktopServices::openUrl(QUrl(place));
+        if (!m_d->m_mainWindow->tryToNavigate(place)) {
+            QDesktopServices::openUrl(QUrl(place));
+        }
     }
 }
 
@@ -1348,6 +1374,9 @@ void Editor::goToLine(int l)
 
 void Editor::setText(const QString &t)
 {
+    m_d->m_underlinedLink = {};
+    m_d->restoreCursor();
+
     setPlainText(t);
 }
 
