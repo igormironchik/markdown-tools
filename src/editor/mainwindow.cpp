@@ -40,6 +40,7 @@
 #include <QMessageBox>
 #include <QProcess>
 #include <QResizeEvent>
+#include <QSet>
 #include <QSettings>
 #include <QSortFilterProxyModel>
 #include <QSplitter>
@@ -545,7 +546,7 @@ struct MainWindowPrivate {
         auto v = new QVBoxLayout(editorPanel);
         v->setContentsMargins(0, 0, 0, 0);
         v->setSpacing(0);
-        m_editor = new Editor(editorPanel);
+        m_editor = new Editor(editorPanel, m_q);
         m_find = new Find(m_q, m_editor, editorPanel);
         m_editor->setFindWidget(m_find);
         m_gotoline = new GoToLine(m_q, m_editor, editorPanel);
@@ -1031,6 +1032,8 @@ struct MainWindowPrivate {
     bool m_isDefaultFile = true;
     QVector<std::function<void()>> m_funcsQueue;
     StartupState m_startupState;
+    //! Names of files available in navigation toolbar.
+    QSet<QString> m_fullFileNames;
 }; // struct MainWindowPrivate
 
 //
@@ -1050,6 +1053,19 @@ MainWindow::~MainWindow()
     }
 
     m_d->m_standardEditMenu = nullptr;
+}
+
+bool MainWindow::tryToNavigate(const QString &fileName)
+{
+    if (m_d->m_loadAllFlag) {
+        if (m_d->m_fullFileNames.contains(fileName)) {
+            openFileFromNavigationToolbar(fileName);
+
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void MainWindow::onTabActivated()
@@ -2063,6 +2079,7 @@ void MainWindow::loadAllLinkedFilesImpl()
                             auto item = new QTreeWidgetItem(current->m_self);
                             item->setIcon(0, QIcon(":/icon/icon_16x16.png"));
                             item->setData(0, Qt::UserRole, fullFileName);
+                            m_d->m_fullFileNames.insert(fullFileName);
                             tmp->m_self = item;
                             item->setText(0, f);
                             current->m_children.push_back({tmp, item});
@@ -2189,6 +2206,8 @@ void MainWindow::closeAllLinkedFiles()
 {
     m_d->m_loadAllFlag = false;
 
+    m_d->m_fullFileNames.clear();
+
     m_d->m_editor->setFocus();
 
     onTextChanged();
@@ -2249,8 +2268,11 @@ void MainWindow::readAllLinked()
 void MainWindow::onNavigationDoubleClicked(QTreeWidgetItem *item,
                                            int)
 {
-    const auto path = item->data(0, Qt::UserRole).toString();
+    openFileFromNavigationToolbar(item->data(0, Qt::UserRole).toString());
+}
 
+void MainWindow::openFileFromNavigationToolbar(const QString &path)
+{
     if (!path.isEmpty()) {
         if (isModified()) {
             QMessageBox::information(this, windowTitle(), tr("You have unsaved changes. Please save document first."));

@@ -6,12 +6,16 @@
 // md-editor include.
 #include "editor.h"
 #include "find.h"
+#include "mainwindow.h"
 #include "settings.h"
 
 // Sonnet include.
 #include <Sonnet/Settings>
 
 // Qt include.
+#include <QApplication>
+#include <QCursor>
+#include <QDesktopServices>
 #include <QMenu>
 #include <QMimeData>
 #include <QPainter>
@@ -261,15 +265,18 @@ private:
 //
 
 struct EditorPrivate {
-    explicit EditorPrivate(Editor *parent)
+    explicit EditorPrivate(Editor *parent, MainWindow *mainWindow)
         : m_q(parent)
+        , m_mainWindow(mainWindow)
         , m_parsingThread(new QThread(m_q))
         , m_parser(new DataParser)
     {
         m_parser->moveToThread(m_parsingThread);
+        m_q->setMouseTracking(true);
 
         QObject::connect(m_q, &Editor::doParsing, m_parser, &DataParser::onData, Qt::QueuedConnection);
         QObject::connect(m_parser, &DataParser::done, m_q, &Editor::onParsingDone, Qt::QueuedConnection);
+        QObject::connect(m_q, &Editor::linkClicked, m_q, &Editor::onLinkClicked);
     }
 
     ~EditorPrivate()
@@ -319,8 +326,111 @@ struct EditorPrivate {
                     : QString(m_settings.m_indentSpacesCount, QLatin1Char(' ')));
     }
 
+    //! \return Link if it's there...
+    MD::Link<MD::QStringTrait> *isLink(const MD::PosCache<MD::QStringTrait>::Items &items)
+    {
+        if (!items.isEmpty()) {
+            for (const auto &i : std::as_const(items)) {
+                if (i->type() == MD::ItemType::Link) {
+                    return static_cast<MD::Link<MD::QStringTrait> *>(i);
+                }
+            }
+        }
+
+        return nullptr;
+    }
+
+    //! Restore cursor.
+    void restoreCursor()
+    {
+        if (m_cursorOverriden) {
+            QApplication::restoreOverrideCursor();
+            m_cursorOverriden = false;
+        }
+    }
+
+    //! Check for link hovering.
+    void checkForLinkHovering(bool ctrlModifier,
+                              const QPoint &pos)
+    {
+        const auto restore = [this]() {
+            if (this->m_underlinedLink.isValid()) {
+                this->restoreCursor();
+
+                for (auto i = this->m_underlinedLink.m_startLine; i <= this->m_underlinedLink.m_endLine; ++i) {
+                    const auto block = m_q->document()->findBlockByNumber(i);
+
+                    auto formats = block.layout()->formats();
+
+                    if (!formats.isEmpty()) {
+                        formats.pop_back();
+                        block.layout()->setFormats(formats);
+                    }
+                }
+
+                this->m_underlinedLink = {};
+
+                this->m_q->viewport()->update();
+            }
+        };
+
+        const auto underline =
+            [this](long long int startLine, long long int startColumn, long long int endLine, long long int endColumn) {
+                for (auto i = startLine; i <= endLine; ++i) {
+                    QTextCharFormat fmt;
+                    fmt.setFontUnderline(true);
+
+                    const auto block = m_q->document()->findBlockByNumber(i);
+
+                    QTextLayout::FormatRange r;
+                    r.format = fmt;
+                    r.start = (i == startLine ? startColumn : 0);
+                    r.length =
+                        (i == startLine ? (i == endLine ? endColumn - startColumn + 1 : block.length() - startColumn)
+                                        : (i == endLine ? endColumn + 1 : block.length()));
+
+                    auto formats = block.layout()->formats();
+                    formats.push_back(r);
+                    block.layout()->setFormats(formats);
+                }
+            };
+
+        if (ctrlModifier) {
+            const auto cursor = m_q->cursorForPosition(pos);
+
+            const auto lineNumber = cursor.block().blockNumber();
+            const auto pos = cursor.position() - cursor.block().position();
+
+            const auto link = isLink(m_syntax.findFirstInCache({pos, lineNumber, pos, lineNumber}));
+
+            if (link) {
+                UnderlinedLink u = {link->startLine(), link->startColumn(), link->endLine(), link->endColumn()};
+
+                if (m_underlinedLink != u) {
+                    restore();
+
+                    m_underlinedLink = u;
+
+                    QApplication::setOverrideCursor(Qt::PointingHandCursor);
+
+                    m_cursorOverriden = true;
+
+                    underline(link->startLine(), link->startColumn(), link->endLine(), link->endColumn());
+
+                    m_q->viewport()->update();
+                }
+            } else {
+                restore();
+            }
+        } else {
+            restore();
+        }
+    }
+
     //! Editor.
     Editor *m_q = nullptr;
+    //! Main window.
+    MainWindow *m_mainWindow = nullptr;
     //! Line number area.
     LineNumberArea *m_lineNumberArea = nullptr;
     //! Document's name.
@@ -346,7 +456,7 @@ struct EditorPrivate {
     QString m_highlightedText;
     //! Current parsed Markdown document.
     std::shared_ptr<MD::Document<MD::QStringTrait>> m_currentDoc;
-    //! Map of current itemss IDs.
+    //! Map of current items IDs.
     MD::details::IdsMap<MD::QStringTrait> m_idsMap;
     //! Syntax highlighter.
     SyntaxVisitor m_syntax;
@@ -364,17 +474,45 @@ struct EditorPrivate {
     bool m_useWorkingDir = false;
     //! Is editor ready?
     bool m_isReady = true;
+    //! Is left mouse button pressed?
+    bool m_leftMouseBtnPressed = false;
     //! Settings.
     Settings m_settings;
+
+    //! Underlined link.
+    struct UnderlinedLink {
+        long long int m_startLine = -1;
+        long long int m_startColumn = -1;
+        long long int m_endLine = -1;
+        long long int m_endColumn = -1;
+
+        bool operator!=(const UnderlinedLink &other)
+        {
+            return (m_startLine != other.m_startLine
+                    || m_startColumn != other.m_startColumn
+                    || m_endLine != other.m_endLine
+                    || m_endColumn != other.m_endColumn);
+        }
+
+        bool isValid() const
+        {
+            return (m_startLine != -1 && m_startColumn != -1 && m_endLine != -1 && m_endColumn != -1);
+        }
+    }; // struct UnderlinedLink
+
+    //! Underlined link coordinates.
+    UnderlinedLink m_underlinedLink;
+    //! Is cursor overriden?
+    bool m_cursorOverriden = false;
 }; // struct EditorPrivate
 
 //
 // Editor
 //
 
-Editor::Editor(QWidget *parent)
+Editor::Editor(QWidget *parent, MainWindow *mainWindow)
     : QPlainTextEdit(parent)
-    , m_d(new EditorPrivate(this))
+    , m_d(new EditorPrivate(this, mainWindow))
 {
     m_d->initUi();
 }
@@ -784,6 +922,51 @@ void Editor::insertFromMimeData(const QMimeData *source)
     insertPlainText(source->text());
 }
 
+void Editor::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton) {
+        m_d->m_leftMouseBtnPressed = true;
+    }
+
+    QPlainTextEdit::mousePressEvent(event);
+}
+
+void Editor::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton) {
+        if (m_d->m_underlinedLink.isValid() && m_d->m_leftMouseBtnPressed) {
+            const auto link = m_d->isLink(m_d->m_syntax.findFirstInCache({m_d->m_underlinedLink.m_startColumn,
+                                                                          m_d->m_underlinedLink.m_startLine,
+                                                                          m_d->m_underlinedLink.m_startColumn,
+                                                                          m_d->m_underlinedLink.m_startLine}));
+
+            if (link) {
+                emit linkClicked(link->url());
+            }
+        }
+
+        m_d->m_leftMouseBtnPressed = false;
+    }
+
+    QPlainTextEdit::mouseReleaseEvent(event);
+}
+
+void Editor::mouseMoveEvent(QMouseEvent *event)
+{
+    m_d->checkForLinkHovering(event->modifiers().testFlag(Qt::ControlModifier), event->pos());
+
+    QPlainTextEdit::mouseMoveEvent(event);
+}
+
+void Editor::keyReleaseEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Control) {
+        m_d->checkForLinkHovering(event->modifiers().testFlag(Qt::ControlModifier), mapFromGlobal(QCursor::pos()));
+    }
+
+    QPlainTextEdit::keyReleaseEvent(event);
+}
+
 void Editor::highlightCurrentLine()
 {
     static const QColor lineColor = QColor(255, 255, 0, 75);
@@ -1106,6 +1289,8 @@ void Editor::onParsingDone(std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
         m_d->m_idsMap = idsMap;
         m_d->m_syntax = syntax;
 
+        m_d->m_underlinedLink = {};
+        m_d->restoreCursor();
         m_d->m_syntax.applyFormats(document());
 
         highlightCurrent();
@@ -1123,6 +1308,34 @@ void Editor::onParsingDone(std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
 
         emit misspelled(syntaxHighlighter().hasMisspelled());
         emit ready();
+    }
+}
+
+void Editor::onLinkClicked(const QString &url)
+{
+    auto place = url;
+
+    auto lit = m_d->m_currentDoc->labeledLinks().find(url);
+
+    if (lit != m_d->m_currentDoc->labeledLinks().cend()) {
+        place = lit->second->url();
+    }
+
+    if (place.startsWith(QLatin1Char('#'))) {
+        auto hit = m_d->m_currentDoc->labeledHeadings().find(place);
+
+        if (hit != m_d->m_currentDoc->labeledHeadings().cend()) {
+            auto c = textCursor();
+            c.setPosition(document()->findBlockByNumber(hit->second->startLine()).position());
+
+            setTextCursor(c);
+
+            ensureCursorVisible();
+        }
+    } else {
+        if (!m_d->m_mainWindow->tryToNavigate(place)) {
+            QDesktopServices::openUrl(QUrl(place));
+        }
     }
 }
 
@@ -1161,6 +1374,9 @@ void Editor::goToLine(int l)
 
 void Editor::setText(const QString &t)
 {
+    m_d->m_underlinedLink = {};
+    m_d->restoreCursor();
+
     setPlainText(t);
 }
 

@@ -46,6 +46,9 @@ public:
     MainWindow();
     ~MainWindow() override;
 
+    //! Try to navigate to file.
+    bool tryToNavigate(const QString &fileName);
+
 public slots:
     //! Open file.
     void openFile(const QString &path);
@@ -127,6 +130,8 @@ private:
     void showOrHideTabs();
     //! Real implementation of loading all linked files.
     void loadAllLinkedFilesImpl();
+    //! Open a file from navigation toolbar.
+    void openFileFromNavigationToolbar(const QString &path);
 
 private:
     Q_DISABLE_COPY(MainWindow)
