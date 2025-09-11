@@ -322,8 +322,23 @@ struct EditorPrivate {
                     : QString(m_settings.m_indentSpacesCount, QLatin1Char(' ')));
     }
 
+    //! \return Link if it's there...
+    MD::Link<MD::QStringTrait> *isLink(const MD::PosCache<MD::QStringTrait>::Items &items)
+    {
+        if (!items.isEmpty()) {
+            for (const auto &i : std::as_const(items)) {
+                if (i->type() == MD::ItemType::Link) {
+                    return static_cast<MD::Link<MD::QStringTrait> *>(i);
+                }
+            }
+        }
+
+        return nullptr;
+    }
+
     //! Check for link hovering.
-    void checkForLinkHovering(bool ctrlModifier, const QPoint &pos)
+    void checkForLinkHovering(bool ctrlModifier,
+                              const QPoint &pos)
     {
         const auto restore = [this]() {
             if (this->m_linkHovered) {
@@ -347,18 +362,6 @@ struct EditorPrivate {
                     this->m_q->viewport()->update();
                 }
             }
-        };
-
-        const auto isLink = [](const MD::PosCache<MD::QStringTrait>::Items &items) -> MD::Item<MD::QStringTrait> * {
-            if (!items.isEmpty()) {
-                for (const auto &i : std::as_const(items)) {
-                    if (i->type() == MD::ItemType::Link) {
-                        return i;
-                    }
-                }
-            }
-
-            return nullptr;
         };
 
         const auto underline =
@@ -460,6 +463,8 @@ struct EditorPrivate {
     bool m_isReady = true;
     //! Is link hovered?
     bool m_linkHovered = false;
+    //! Is left mouse button pressed?
+    bool m_leftMouseBtnPressed = false;
     //! Settings.
     Settings m_settings;
 
@@ -898,6 +903,35 @@ void Editor::insertFromMimeData(const QMimeData *source)
     insertPlainText(source->text());
 }
 
+void Editor::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton) {
+        m_d->m_leftMouseBtnPressed = true;
+    }
+
+    QPlainTextEdit::mousePressEvent(event);
+}
+
+void Editor::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton) {
+        if (m_d->m_underlinedLink.m_startLine != -1 && m_d->m_leftMouseBtnPressed) {
+            const auto link = m_d->isLink(m_d->m_syntax.findFirstInCache({m_d->m_underlinedLink.m_startColumn,
+                                                                          m_d->m_underlinedLink.m_startLine,
+                                                                          m_d->m_underlinedLink.m_startColumn,
+                                                                          m_d->m_underlinedLink.m_startLine}));
+
+            if (link) {
+                emit linkClicked(link->url());
+            }
+        }
+
+        m_d->m_leftMouseBtnPressed = false;
+    }
+
+    QPlainTextEdit::mouseReleaseEvent(event);
+}
+
 void Editor::mouseMoveEvent(QMouseEvent *event)
 {
     m_d->checkForLinkHovering(event->modifiers().testFlag(Qt::ControlModifier), event->pos());
@@ -1236,6 +1270,7 @@ void Editor::onParsingDone(std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
         m_d->m_idsMap = idsMap;
         m_d->m_syntax = syntax;
 
+        m_d->m_underlinedLink = {};
         m_d->m_syntax.applyFormats(document());
 
         highlightCurrent();

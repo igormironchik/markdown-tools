@@ -75,6 +75,8 @@ signals:
                    unsigned long long int counter,
                    SyntaxVisitor syntax,
                    const MdShared::PluginsCfg &pluginsCfg);
+    //! Link clicked.
+    void linkClicked(const QString &url);
 
 public:
     explicit Editor(QWidget *parent);
@@ -199,6 +201,8 @@ protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
     bool canInsertFromMimeData(const QMimeData *source) const override;
     void insertFromMimeData(const QMimeData *source) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
 
