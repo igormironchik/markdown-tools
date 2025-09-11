@@ -273,6 +273,7 @@ struct EditorPrivate {
 
         QObject::connect(m_q, &Editor::doParsing, m_parser, &DataParser::onData, Qt::QueuedConnection);
         QObject::connect(m_parser, &DataParser::done, m_q, &Editor::onParsingDone, Qt::QueuedConnection);
+        QObject::connect(m_q, &Editor::linkClicked, m_q, &Editor::onLinkClicked);
     }
 
     ~EditorPrivate()
@@ -341,26 +342,23 @@ struct EditorPrivate {
                               const QPoint &pos)
     {
         const auto restore = [this]() {
-            if (this->m_linkHovered) {
+            if (this->m_underlinedLink.m_startLine != -1) {
                 QApplication::restoreOverrideCursor();
-                this->m_linkHovered = false;
 
-                if (this->m_underlinedLink.m_startLine != -1) {
-                    for (auto i = this->m_underlinedLink.m_startLine; i <= this->m_underlinedLink.m_endLine; ++i) {
-                        const auto block = m_q->document()->findBlockByNumber(i);
+                for (auto i = this->m_underlinedLink.m_startLine; i <= this->m_underlinedLink.m_endLine; ++i) {
+                    const auto block = m_q->document()->findBlockByNumber(i);
 
-                        auto formats = block.layout()->formats();
+                    auto formats = block.layout()->formats();
 
-                        if (!formats.isEmpty()) {
-                            formats.pop_back();
-                            block.layout()->setFormats(formats);
-                        }
+                    if (!formats.isEmpty()) {
+                        formats.pop_back();
+                        block.layout()->setFormats(formats);
                     }
-
-                    this->m_underlinedLink = {};
-
-                    this->m_q->viewport()->update();
                 }
+
+                this->m_underlinedLink = {};
+
+                this->m_q->viewport()->update();
             }
         };
 
@@ -399,7 +397,6 @@ struct EditorPrivate {
                 if (m_underlinedLink != u) {
                     restore();
 
-                    m_linkHovered = true;
                     m_underlinedLink = u;
 
                     QApplication::setOverrideCursor(Qt::PointingHandCursor);
@@ -461,8 +458,6 @@ struct EditorPrivate {
     bool m_useWorkingDir = false;
     //! Is editor ready?
     bool m_isReady = true;
-    //! Is link hovered?
-    bool m_linkHovered = false;
     //! Is left mouse button pressed?
     bool m_leftMouseBtnPressed = false;
     //! Settings.
@@ -1289,6 +1284,11 @@ void Editor::onParsingDone(std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
         emit misspelled(syntaxHighlighter().hasMisspelled());
         emit ready();
     }
+}
+
+void Editor::onLinkClicked(const QString &url)
+{
+    qDebug() << url;
 }
 
 void Editor::highlightCurrent()

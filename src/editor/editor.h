@@ -193,6 +193,8 @@ private slots:
                        unsigned long long int counter,
                        SyntaxVisitor syntax,
                        MD::details::IdsMap<MD::QStringTrait> idsMap);
+    //! Link clicked.
+    void onLinkClicked(const QString &url);
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
