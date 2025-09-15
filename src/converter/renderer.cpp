@@ -673,6 +673,53 @@ void PdfRenderer::renderImpl()
             },
             1);
 
+        std::map<MD::Footnote<MD::QStringTrait> *, int> processedFootnotes;
+
+        MD::forEach<MD::QStringTrait>(
+            {MD::ItemType::FootnoteRef},
+            m_doc,
+            [&pdfData, &processedFootnotes, this](MD::Item<MD::QStringTrait> *i) {
+                auto ref = static_cast<MD::FootnoteRef<MD::QStringTrait> *>(i);
+                auto fit = this->m_doc->footnotesMap().find(ref->id());
+
+                if (fit != this->m_doc->footnotesMap().cend()) {
+                    auto pfit = processedFootnotes.find(fit->second.get());
+
+                    if (pfit == processedFootnotes.cend()) {
+                        pfit = processedFootnotes.insert({fit->second.get(), 0}).first;
+
+                        if (!fit->second->items().isEmpty()
+                            && fit->second->items().back()->type() == MD::ItemType::Paragraph) {
+                            auto p = static_cast<MD::Paragraph<MD::QStringTrait> *>(fit->second->items().back().get());
+
+                            if (!p->isEmpty()) {
+                                if (p->items().back()->type() == MD::ItemType::Text) {
+                                    auto t = static_cast<MD::Text<MD::QStringTrait> *>(p->items().back().get());
+
+                                    if (!t->text().endsWith(QLatin1Char(' '))) {
+                                        t->setText(t->text() + QLatin1Char(' '));
+                                    }
+                                } else {
+                                    auto t = std::make_shared<MD::Text<MD::QStringTrait>>();
+                                    t->setText(QString(QLatin1Char(' ')));
+                                    p->appendItem(t);
+                                }
+                            }
+                        } else {
+                            auto p = std::make_shared<MD::Paragraph<MD::QStringTrait>>();
+                            fit->second->appendItem(p);
+                        }
+                    }
+
+                    auto p = static_cast<MD::Paragraph<MD::QStringTrait> *>(fit->second->items().back().get());
+                    auto link = std::make_shared<MD::Link<MD::QStringTrait>>();
+                    link->img()->setUrl(QStringLiteral("qrc:/img/go-jump.png"));
+                    link->p()->appendItem(link->img());
+                    link->setUrl(ref->id() + QStringLiteral("-%1").arg(QString::number(++pfit->second)));
+                    p->appendItem(link);
+                }
+            });
+
         int itemIdx = 0;
 
         pdfData.m_lineHeight = pdfData.lineSpacing(
@@ -1693,7 +1740,8 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
     if (draw) {
         // If Web URL.
         if (!pdfData.m_anchors.contains(url)
-            && pdfData.m_md->labeledHeadings().find(url) == pdfData.m_md->labeledHeadings().cend()) {
+            && pdfData.m_md->labeledHeadings().find(url) == pdfData.m_md->labeledHeadings().cend()
+            && !m_dests.contains(url)) {
             for (const auto &r : std::as_const(rects)) {
                 auto &annot = static_cast<PoDoFo::PdfAnnotationLink &>(
                     pdfData.m_doc->GetPages()
@@ -2891,15 +2939,34 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
                     num = anchorIt->second;
                 }
 
+                auto fcit = pdfData.m_footnoteRefCount.find(fit->second.get());
+
+                if (fcit != pdfData.m_footnoteRefCount.cend()) {
+                    ++fcit.value();
+                } else {
+                    fcit = pdfData.m_footnoteRefCount.insert(fit->second.get(), 1);
+                }
+
                 const auto str = createUtf8String(QString::number(num));
 
                 const auto w = pdfData.stringWidth(footnoteFont, m_opts.m_textFontSize * s_footnoteScale, scale, str);
 
-                rects.append(qMakePair(pdfData.m_layout.currentRect(w, lineHeight), pdfData.m_currentPainterIdx));
+                const auto rect = pdfData.m_layout.currentRect(w, lineHeight);
 
-                m_unresolvedFootnotesLinks.insert(
-                    ref->id(),
-                    qMakePair(pdfData.m_layout.currentRect(w, lineHeight), pdfData.m_currentPainterIdx));
+                rects.append(qMakePair(rect, pdfData.m_currentPainterIdx));
+
+                m_unresolvedFootnotesLinks.insert(ref->id(), qMakePair(rect, pdfData.m_currentPainterIdx));
+
+                auto tmpDest = pdfData.m_doc->CreateDestination();
+                tmpDest->SetDestination(
+                    pdfData.m_doc->GetPages().GetPageAt(static_cast<unsigned int>(pdfData.m_currentPainterIdx)),
+                    rect.x(),
+                    rect.y() + rect.height(),
+                    0.0);
+
+                auto dest = std::shared_ptr<Destination>(std::move(tmpDest));
+
+                m_dests.insert(ref->id() + QStringLiteral("-%1").arg(QString::number(fcit.value())), dest);
 
                 pdfData.setColor(m_opts.m_linkColor);
 

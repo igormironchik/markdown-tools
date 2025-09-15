@@ -423,6 +423,8 @@ struct PdfAuxData {
     QString m_currentFile;
     //! Footnotes map to map anchors.
     QMap<MD::Footnote<MD::QStringTrait> *, QPair<QString, int>> m_footnotesAnchorsMap;
+    //! Map of footnotes references to its counter (uses for back links from footnote).
+    QMap<MD::Footnote<MD::QStringTrait> *, int> m_footnoteRefCount;
     //! Resvg options.
     QSharedPointer<ResvgOptions> m_resvgOpts;
     //! Special blockquotes that should be highlighted.
