@@ -1471,6 +1471,7 @@ void Editor::keyPressEvent(QKeyEvent *event)
 
         const auto lineNumber = c.block().blockNumber();
         const auto lineLength = c.block().length();
+        const auto pos = c.position() - c.block().position();
 
         const auto items = syntaxHighlighter().findFirstInCache({0, lineNumber, lineLength, lineNumber});
 
@@ -1496,6 +1497,12 @@ void Editor::keyPressEvent(QKeyEvent *event)
                             } else {
                                 textCursor().beginEditBlock();
                                 textCursor().insertBlock();
+
+                                if (pos <= l->delim().endColumn()) {
+                                    textCursor().endEditBlock();
+
+                                    return;
+                                }
 
                                 if (l->delim().startColumn()) {
                                     c.setPosition(c.block().position() + l->delim().startColumn(),
