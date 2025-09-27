@@ -2161,13 +2161,6 @@ void MainWindow::loadAllLinkedFilesImpl()
             m_d->m_fileTree->addTopLevelItem(it->second);
         }
 
-        if (!m_d->m_previewMode) {
-            QMessageBox::information(this,
-                                     windowTitle(),
-                                     tr("HTML preview is ready. Modifications in files will not update "
-                                        "HTML preview till you save changes."));
-        }
-
         m_d->m_navigationStack.clear();
         m_d->m_navigationStack.push_back(m_d->m_rootFilePath);
         m_d->m_navigationStackIdx = 0;
@@ -2175,7 +2168,17 @@ void MainWindow::loadAllLinkedFilesImpl()
         m_d->m_fwdBtn->setEnabled(false);
         m_d->m_goBackAction->setEnabled(false);
         m_d->m_goFwdAction->setEnabled(false);
-        m_d->m_actionMenu->menuAction()->setVisible(true);
+
+        if (!m_d->m_previewMode) {
+            m_d->m_actionMenu->menuAction()->setVisible(false);
+
+            QMessageBox::information(this,
+                                     windowTitle(),
+                                     tr("HTML preview is ready. Modifications in files will not update "
+                                        "HTML preview till you save changes."));
+        } else {
+            m_d->m_actionMenu->menuAction()->setVisible(true);
+        }
     } else {
         closeAllLinkedFiles();
 
