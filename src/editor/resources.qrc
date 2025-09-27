@@ -1,7 +1,11 @@
 <RCC>
     <qresource prefix="/">
-		<file>res/index.html</file>
+        <file>res/index.html</file>
         <file>res/img/preferences-desktop-font.png</file>
+        <file>res/img/go-previous.png</file>
+        <file>res/img/go-next.png</file>
+        <file>res/img/go-previous-16.png</file>
+        <file>res/img/go-next-16.png</file>
         <file>res/img/fill-color.png</file>
         <file>res/img/folder-yellow.png</file>
         <file>res/img/dialog-close.png</file>

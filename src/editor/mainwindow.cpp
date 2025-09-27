@@ -525,9 +525,30 @@ struct MainWindowPrivate {
         tpv->addWidget(m_tocTree);
         m_tabs->addTab(m_tocPanel, MainWindow::tr("To&C"));
 
+
+        m_filePanel = new QWidget(m_tabs);
+        auto fpv = new QVBoxLayout(m_filePanel);
+        fpv->setContentsMargins(3, 3, 3, 3);
+        fpv->setSpacing(3);
+        m_backBtn = new QToolButton(m_filePanel);
+        m_backBtn->setIcon(QIcon::fromTheme(QStringLiteral("go-previous"), QIcon(QStringLiteral(":/res/img/go-previous-16.png"))));
+        m_backBtn->setToolTip(MainWindow::tr("Go Back"));
+        m_fwdBtn = new QToolButton(m_filePanel);
+        m_fwdBtn->setIcon(QIcon::fromTheme(QStringLiteral("go-next"), QIcon(QStringLiteral(":/res/img/go-next-16.png"))));
+        m_fwdBtn->setToolTip(MainWindow::tr("Go Forward"));
+        m_backBtn->setEnabled(false);
+        m_fwdBtn->setEnabled(false);
+        auto fph = new QHBoxLayout;
+        fph->setContentsMargins(0, 0, 0, 0);
+        fph->setSpacing(3);
+        fph->addWidget(m_backBtn);
+        fph->addWidget(m_fwdBtn);
+        fph->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Fixed));
+        fpv->addLayout(fph);
         m_fileTree = new QTreeWidget(m_tabs);
         m_fileTree->setHeaderHidden(true);
-        m_fileTree->hide();
+        fpv->addWidget(m_fileTree);
+        m_filePanel->hide();
 
         QObject::connect(m_fileTree, &QTreeWidget::itemDoubleClicked, m_q, &MainWindow::onNavigationDoubleClicked);
         QObject::connect(m_tocTree->header(), &QHeaderView::sectionResized, [this](int, int, int) {
@@ -538,6 +559,8 @@ struct MainWindowPrivate {
         QObject::connect(m_tocFilterLine, &QLineEdit::textChanged, [this](const QString &text) {
             this->m_filterTocModel->setFilterFixedString(text);
         });
+        QObject::connect(m_backBtn, &QToolButton::clicked, m_q, &MainWindow::onGoBack);
+        QObject::connect(m_fwdBtn, &QToolButton::clicked, m_q, &MainWindow::onGoForward);
 
         m_tocPanel->hide();
 
@@ -695,6 +718,24 @@ struct MainWindowPrivate {
             qApp->postEvent(this->m_editor, new QKeyEvent(QEvent::KeyPress, Qt::Key_Backtab, Qt::NoModifier));
         });
         formatMenu->addAction(m_backtabAction);
+
+        m_actionMenu = m_q->menuBar()->addMenu(MainWindow::tr("&Action"));
+        m_goBackAction = new QAction(QIcon::fromTheme(QStringLiteral("go-previous"), QIcon(QStringLiteral(":/res/img/go-previous.png"))),
+                                     MainWindow::tr("Go Back"), m_q);
+        m_goBackAction->setShortcut(QKeySequence(Qt::ControlModifier | Qt::AltModifier | Qt::Key_Left));
+        m_goBackAction->setShortcutContext(Qt::ApplicationShortcut);
+        m_actionMenu->addAction(m_goBackAction);
+        m_goBackAction->setEnabled(false);
+        m_goFwdAction = new QAction(QIcon::fromTheme(QStringLiteral("go-next"), QIcon(QStringLiteral(":/res/img/go-next.png"))),
+                                     MainWindow::tr("Go Forward"), m_q);
+        m_goFwdAction->setShortcut(QKeySequence(Qt::ControlModifier | Qt::AltModifier | Qt::Key_Right));
+        m_goFwdAction->setShortcutContext(Qt::ApplicationShortcut);
+        m_actionMenu->addAction(m_goFwdAction);
+        m_goFwdAction->setEnabled(false);
+        m_actionMenu->menuAction()->setVisible(false);
+
+        QObject::connect(m_goBackAction, &QAction::triggered, m_q, &MainWindow::onGoBack);
+        QObject::connect(m_goFwdAction, &QAction::triggered, m_q, &MainWindow::onGoForward);
 
         auto viewMenu = m_q->menuBar()->addMenu(MainWindow::tr("&View"));
         m_viewAction = new QAction(
@@ -997,8 +1038,14 @@ struct MainWindowPrivate {
     QAction *m_nextMisspelled = nullptr;
     QAction *m_tabAction = nullptr;
     QAction *m_backtabAction = nullptr;
+    QAction *m_goBackAction = nullptr;
+    QAction *m_goFwdAction = nullptr;
+    QMenu *m_actionMenu = nullptr;
     QMenu *m_standardEditMenu = nullptr;
     QMenu *m_settingsMenu = nullptr;
+    QToolButton *m_backBtn = nullptr;
+    QToolButton *m_fwdBtn = nullptr;
+    QWidget *m_filePanel = nullptr;
     QTreeWidget *m_fileTree = nullptr;
     QWidget *m_tocPanel = nullptr;
     WorkingDirectoryWidget *m_workingDirectoryWidget = nullptr;
@@ -1031,6 +1078,8 @@ struct MainWindowPrivate {
     bool m_settingsWindowMaximized = false;
     bool m_isDefaultFile = true;
     QVector<std::function<void()>> m_funcsQueue;
+    QStringList m_navigationStack;
+    int m_navigationStackIdx = -1;
     StartupState m_startupState;
     //! Names of files available in navigation toolbar.
     QSet<QString> m_fullFileNames;
@@ -2023,8 +2072,8 @@ void MainWindow::loadAllLinkedFilesImpl()
         m_d->m_loadAllFlag = false;
 
         m_d->m_tabs->removeTab(1);
-        m_d->m_fileTree->hide();
-
+        m_d->m_filePanel->hide();
+        m_d->m_actionMenu->menuAction()->setVisible(false);
         m_d->m_saveAsAction->setEnabled(true);
 
         closeAllLinkedFiles();
@@ -2048,11 +2097,11 @@ void MainWindow::loadAllLinkedFilesImpl()
         m_d->m_saveAsAction->setEnabled(false);
     }
 
-    readAllLinked();
+    readAllLinked(true);
 
     m_d->m_fileTree->clear();
-    m_d->m_fileTree->show();
-    m_d->m_tabs->addTab(m_d->m_fileTree, tr("&Navigation"));
+    m_d->m_filePanel->show();
+    m_d->m_tabs->addTab(m_d->m_filePanel, tr("&Navigation"));
 
     const auto rootFolder = m_d->m_workingDirectoryWidget->workingDirectory() + QStringLiteral("/");
 
@@ -2118,11 +2167,21 @@ void MainWindow::loadAllLinkedFilesImpl()
                                      tr("HTML preview is ready. Modifications in files will not update "
                                         "HTML preview till you save changes."));
         }
+
+        m_d->m_navigationStack.clear();
+        m_d->m_navigationStack.push_back(m_d->m_rootFilePath);
+        m_d->m_navigationStackIdx = 0;
+        m_d->m_backBtn->setEnabled(false);
+        m_d->m_fwdBtn->setEnabled(false);
+        m_d->m_goBackAction->setEnabled(false);
+        m_d->m_goFwdAction->setEnabled(false);
+        m_d->m_actionMenu->menuAction()->setVisible(true);
     } else {
         closeAllLinkedFiles();
 
         m_d->m_tabs->removeTab(1);
-        m_d->m_fileTree->hide();
+        m_d->m_filePanel->hide();
+        m_d->m_actionMenu->menuAction()->setVisible(false);
 
         QMessageBox::information(this, windowTitle(), tr("This document doesn't have linked documents."));
     }
@@ -2202,6 +2261,24 @@ void MainWindow::onFirstTimeShown()
     }
 }
 
+void MainWindow::onGoBack()
+{
+    if (m_d->m_navigationStackIdx > 0) {
+        --m_d->m_navigationStackIdx;
+
+        openFileFromNavigationToolbar(m_d->m_navigationStack[m_d->m_navigationStackIdx], false);
+    }
+}
+
+void MainWindow::onGoForward()
+{
+    if (m_d->m_navigationStackIdx + 1 < m_d->m_navigationStack.size()) {
+        ++m_d->m_navigationStackIdx;
+
+        openFileFromNavigationToolbar(m_d->m_navigationStack[m_d->m_navigationStackIdx], false);
+    }
+}
+
 void MainWindow::closeAllLinkedFiles()
 {
     m_d->m_loadAllFlag = false;
@@ -2213,9 +2290,13 @@ void MainWindow::closeAllLinkedFiles()
     onTextChanged();
 }
 
-void MainWindow::readAllLinked()
+void MainWindow::readAllLinked(bool updateRootFileName)
 {
     if (m_d->m_loadAllFlag) {
+        if (updateRootFileName) {
+            m_d->m_rootFilePath = m_d->m_editor->docName();
+        }
+
         MD::Parser<MD::QStringTrait> parser;
         setPlugins(parser, m_d->m_editor->settings().m_pluginsCfg);
 
@@ -2271,7 +2352,7 @@ void MainWindow::onNavigationDoubleClicked(QTreeWidgetItem *item,
     openFileFromNavigationToolbar(item->data(0, Qt::UserRole).toString());
 }
 
-void MainWindow::openFileFromNavigationToolbar(const QString &path)
+void MainWindow::openFileFromNavigationToolbar(const QString &path, bool modifyStack)
 {
     if (!path.isEmpty()) {
         if (isModified()) {
@@ -2298,6 +2379,20 @@ void MainWindow::openFileFromNavigationToolbar(const QString &path)
 
         m_d->m_editor->document()->clearUndoRedoStacks();
         m_d->m_editor->setFocus();
+
+        if (modifyStack) {
+            if (m_d->m_navigationStackIdx >= 0) {
+                m_d->m_navigationStack.remove(m_d->m_navigationStackIdx + 1, m_d->m_navigationStack.size() - m_d->m_navigationStackIdx - 1);
+            }
+
+            m_d->m_navigationStack.push_back(path);
+            m_d->m_navigationStackIdx = m_d->m_navigationStack.size() - 1;
+        }
+
+        m_d->m_backBtn->setEnabled(m_d->m_navigationStackIdx > 0);
+        m_d->m_fwdBtn->setEnabled(m_d->m_navigationStackIdx + 1 < m_d->m_navigationStack.size());
+        m_d->m_goBackAction->setEnabled(m_d->m_navigationStackIdx > 0);
+        m_d->m_goFwdAction->setEnabled(m_d->m_navigationStackIdx + 1 < m_d->m_navigationStack.size());
 
         onCursorPositionChanged();
 
@@ -2358,6 +2453,8 @@ void MainWindow::onTogglePreviewAction(bool checked)
         }
 
         m_d->m_splitter->setSizes({0, 0, centralWidget()->width()});
+
+        m_d->m_actionMenu->menuAction()->setVisible(false);
     } else {
         m_d->m_settingsMenu->menuAction()->setVisible(true);
         m_d->m_editMenuAction->setVisible(true);
@@ -2387,6 +2484,10 @@ void MainWindow::onTogglePreviewAction(bool checked)
         if (!m_d->m_livePreviewVisible) {
             s[1] += s[2];
             s[2] = 0;
+        }
+
+        if (m_d->m_loadAllFlag) {
+            m_d->m_actionMenu->menuAction()->setVisible(true);
         }
 
         m_d->m_splitter->setSizes(s);

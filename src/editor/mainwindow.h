@@ -108,6 +108,8 @@ private slots:
     void onSetWorkingDirectory();
     void onProcessQueue();
     void onFirstTimeShown();
+    void onGoBack();
+    void onGoForward();
 
 private:
     //! \return Is document was changed?
@@ -119,7 +121,7 @@ private:
     //! Read configuration.
     void readCfg();
     //! Read all linked files.
-    void readAllLinked();
+    void readAllLinked(bool updateRootFileName = false);
     //! Update window title.
     void updateWindowTitle();
     //! Update "Load All Linked Files" action's text.
@@ -131,7 +133,7 @@ private:
     //! Real implementation of loading all linked files.
     void loadAllLinkedFilesImpl();
     //! Open a file from navigation toolbar.
-    void openFileFromNavigationToolbar(const QString &path);
+    void openFileFromNavigationToolbar(const QString &path, bool modifyStack = true);
 
 private:
     Q_DISABLE_COPY(MainWindow)
