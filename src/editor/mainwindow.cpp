@@ -545,7 +545,7 @@ struct MainWindowPrivate {
         fph->addWidget(m_fwdBtn);
         fph->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Fixed));
         fpv->addLayout(fph);
-        m_fileTree = new QTreeWidget(m_tabs);
+        m_fileTree = new QTreeWidget(m_filePanel);
         m_fileTree->setHeaderHidden(true);
         fpv->addWidget(m_fileTree);
         m_filePanel->hide();
@@ -2170,14 +2170,14 @@ void MainWindow::loadAllLinkedFilesImpl()
         m_d->m_goFwdAction->setEnabled(false);
 
         if (!m_d->m_previewMode) {
-            m_d->m_actionMenu->menuAction()->setVisible(false);
+            m_d->m_actionMenu->menuAction()->setVisible(true);
 
             QMessageBox::information(this,
                                      windowTitle(),
                                      tr("HTML preview is ready. Modifications in files will not update "
                                         "HTML preview till you save changes."));
         } else {
-            m_d->m_actionMenu->menuAction()->setVisible(true);
+            m_d->m_actionMenu->menuAction()->setVisible(false);
         }
     } else {
         closeAllLinkedFiles();
