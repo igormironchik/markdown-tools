@@ -1314,6 +1314,38 @@ void Editor::onParsingDone(std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
     }
 }
 
+void Editor::tryToNavigate(const QString &ref)
+{
+    auto place = ref;
+
+    if (ref.startsWith(QLatin1Char('#'))) {
+        if (!place.endsWith(m_d->m_docName)) {
+            place.append(QStringLiteral("/"));
+            place.append(m_d->m_docName);
+        }
+    }
+
+    navigate(place);
+}
+
+bool Editor::navigate(const QString &place)
+{
+    auto hit = m_d->m_currentDoc->labeledHeadings().find(place);
+
+    if (hit != m_d->m_currentDoc->labeledHeadings().cend()) {
+        auto c = textCursor();
+        c.setPosition(document()->findBlockByNumber(hit->second->startLine()).position());
+
+        setTextCursor(c);
+
+        ensureCursorVisible();
+
+        return true;
+    }
+
+    return false;
+}
+
 void Editor::onLinkClicked(const QString &url)
 {
     auto place = url;
@@ -1325,20 +1357,13 @@ void Editor::onLinkClicked(const QString &url)
     }
 
     if (place.startsWith(QLatin1Char('#'))) {
-        auto hit = m_d->m_currentDoc->labeledHeadings().find(place);
-
-        if (hit != m_d->m_currentDoc->labeledHeadings().cend()) {
-            auto c = textCursor();
-            c.setPosition(document()->findBlockByNumber(hit->second->startLine()).position());
-
-            setTextCursor(c);
-
-            ensureCursorVisible();
+        if (navigate(place)) {
+            return;
         }
-    } else {
-        if (!m_d->m_mainWindow->tryToNavigate(place)) {
-            QDesktopServices::openUrl(QUrl(place));
-        }
+    }
+
+    if (!m_d->m_mainWindow->tryToNavigate(place)) {
+        QDesktopServices::openUrl(QUrl(place));
     }
 }
 

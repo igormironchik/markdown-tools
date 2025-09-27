@@ -1070,6 +1070,7 @@ struct MainWindowPrivate {
     QString m_launcherExe;
     QString m_htmlContent;
     QString m_tmpWorkingDir;
+    QString m_requestedRef;
     int m_tabWidth = -1;
     int m_minTabWidth = -1;
     int m_currentTab = 0;
@@ -1111,6 +1112,21 @@ bool MainWindow::tryToNavigate(const QString &fileName)
             openFileFromNavigationToolbar(fileName);
 
             return true;
+        } else if (fileName.startsWith(QLatin1Char('#'))) {
+            const auto idx = fileName.indexOf(QLatin1Char('/'), 0);
+
+            if (idx != -1 && idx + 1 < fileName.size()) {
+                m_d->m_requestedRef = fileName.sliced(0, idx);
+                const auto fn = fileName.sliced(idx + 1, fileName.size() - idx - 1);
+
+                if (m_d->m_fullFileNames.contains(fn)) {
+                    openFileFromNavigationToolbar(fn);
+
+                    m_d->runWhenEditorReady(std::bind(&MainWindow::onOpenRequestedRef, this));
+
+                    return true;
+                }
+            }
         }
     }
 
@@ -2408,6 +2424,13 @@ void MainWindow::onEditorReady()
     readAllLinked();
 
     m_d->initMarkdownMenu();
+}
+
+void MainWindow::onOpenRequestedRef()
+{
+    if (!m_d->m_requestedRef.isEmpty()) {
+        m_d->m_editor->tryToNavigate(m_d->m_requestedRef);
+    }
 }
 
 void MainWindow::updateWindowTitle()

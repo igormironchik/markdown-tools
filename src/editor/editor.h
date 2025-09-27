@@ -175,6 +175,8 @@ public slots:
     void doUpdate();
     //! Clear user state on all blocks.
     void clearUserStateOnAllBlocks();
+    //! Try to navigate to reference.
+    void tryToNavigate(const QString &ref);
 
 private slots:
     //! Calculate and change line number area width.
@@ -197,6 +199,10 @@ private slots:
                        MD::details::IdsMap<MD::QStringTrait> idsMap);
     //! Link clicked.
     void onLinkClicked(const QString &url);
+
+private:
+    //! Navigate to reference.
+    bool navigate(const QString &place);
 
 protected:
     void resizeEvent(QResizeEvent *event) override;

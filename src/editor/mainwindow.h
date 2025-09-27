@@ -110,6 +110,7 @@ private slots:
     void onFirstTimeShown();
     void onGoBack();
     void onGoForward();
+    void onOpenRequestedRef();
 
 private:
     //! \return Is document was changed?
