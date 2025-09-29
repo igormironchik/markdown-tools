@@ -41,6 +41,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.xml.in ${CMAKE_CURRENT_SOURCE_
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/package.xml.in ${CMAKE_CURRENT_SOURCE_DIR}/installer/packages/mironchik.igor.markdown/meta/package.xml @ONLY)
 
 set(MD_TOOLS_VERSION "${MD_TOOLS_VERSION_NUMBER} build ${MARKDOWN_TOOLS_VERSION_MINOR}")
+set(MD_TOOLS_COMMIT "${MARKDOWN_TOOLS_VERSION_MINOR}")
 
 set(MDPDF_VERSION ${MD_TOOLS_VERSION})
 set(MDEDITOR_VERSION ${MD_TOOLS_VERSION})

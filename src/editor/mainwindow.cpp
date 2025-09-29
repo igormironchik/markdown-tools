@@ -525,16 +525,17 @@ struct MainWindowPrivate {
         tpv->addWidget(m_tocTree);
         m_tabs->addTab(m_tocPanel, MainWindow::tr("To&C"));
 
-
         m_filePanel = new QWidget(m_tabs);
         auto fpv = new QVBoxLayout(m_filePanel);
         fpv->setContentsMargins(3, 3, 3, 3);
         fpv->setSpacing(3);
         m_backBtn = new QToolButton(m_filePanel);
-        m_backBtn->setIcon(QIcon::fromTheme(QStringLiteral("go-previous"), QIcon(QStringLiteral(":/res/img/go-previous-16.png"))));
+        m_backBtn->setIcon(
+            QIcon::fromTheme(QStringLiteral("go-previous"), QIcon(QStringLiteral(":/res/img/go-previous-16.png"))));
         m_backBtn->setToolTip(MainWindow::tr("Go Back"));
         m_fwdBtn = new QToolButton(m_filePanel);
-        m_fwdBtn->setIcon(QIcon::fromTheme(QStringLiteral("go-next"), QIcon(QStringLiteral(":/res/img/go-next-16.png"))));
+        m_fwdBtn->setIcon(
+            QIcon::fromTheme(QStringLiteral("go-next"), QIcon(QStringLiteral(":/res/img/go-next-16.png"))));
         m_fwdBtn->setToolTip(MainWindow::tr("Go Forward"));
         m_backBtn->setEnabled(false);
         m_fwdBtn->setEnabled(false);
@@ -720,14 +721,18 @@ struct MainWindowPrivate {
         formatMenu->addAction(m_backtabAction);
 
         m_actionMenu = m_q->menuBar()->addMenu(MainWindow::tr("&Action"));
-        m_goBackAction = new QAction(QIcon::fromTheme(QStringLiteral("go-previous"), QIcon(QStringLiteral(":/res/img/go-previous.png"))),
-                                     MainWindow::tr("Go Back"), m_q);
+        m_goBackAction = new QAction(
+            QIcon::fromTheme(QStringLiteral("go-previous"), QIcon(QStringLiteral(":/res/img/go-previous.png"))),
+            MainWindow::tr("Go Back"),
+            m_q);
         m_goBackAction->setShortcut(QKeySequence(Qt::ControlModifier | Qt::AltModifier | Qt::Key_Left));
         m_goBackAction->setShortcutContext(Qt::ApplicationShortcut);
         m_actionMenu->addAction(m_goBackAction);
         m_goBackAction->setEnabled(false);
-        m_goFwdAction = new QAction(QIcon::fromTheme(QStringLiteral("go-next"), QIcon(QStringLiteral(":/res/img/go-next.png"))),
-                                     MainWindow::tr("Go Forward"), m_q);
+        m_goFwdAction =
+            new QAction(QIcon::fromTheme(QStringLiteral("go-next"), QIcon(QStringLiteral(":/res/img/go-next.png"))),
+                        MainWindow::tr("Go Forward"),
+                        m_q);
         m_goFwdAction->setShortcut(QKeySequence(Qt::ControlModifier | Qt::AltModifier | Qt::Key_Right));
         m_goFwdAction->setShortcutContext(Qt::ApplicationShortcut);
         m_actionMenu->addAction(m_goFwdAction);
@@ -1481,15 +1486,24 @@ void MainWindow::onTextChanged()
 
 void MainWindow::onAbout()
 {
-    QMessageBox::about(this,
-                       tr("About Markdown Editor"),
-                       tr("Markdown Editor.\n\n"
-                          "Version %1\n\n"
-                          "md4qt version %2\n\n"
-                          "Author - Igor Mironchik (igor.mironchik at gmail dot com).\n\n"
-                          "Copyright (c) 2025 Igor Mironchik.\n\n"
-                          "Licensed under GNU GPL 3.0.")
-                           .arg(c_version, c_md4qtVersion));
+    QMessageBox dlg(
+        QMessageBox::Information,
+        tr("About Markdown Editor"),
+        tr("Markdown Editor.<br /><br />"
+           "Version <a href=\"https://github.com/igormironchik/markdown-tools/commit/%3\">%1</a><br /><br />"
+           "md4qt version %2<br /><br />"
+           "Author - Igor Mironchik (<a href=\"mailto:igor.mironchik@gmail.com\">igor.mironchik at gmail dot "
+           "com</a>).<br /><br />"
+           "Copyright (c) 2025 Igor Mironchik.<br /><br />"
+           "Licensed under GNU GPL 3.0.")
+            .arg(c_version, c_md4qtVersion, c_commit),
+        QMessageBox::NoButton,
+        this);
+    QIcon icon = dlg.windowIcon();
+    dlg.setIconPixmap(icon.pixmap(QSize(64, 64), dlg.devicePixelRatio()));
+    dlg.setTextFormat(Qt::RichText);
+
+    dlg.exec();
 }
 
 void MainWindow::onAboutQt()
@@ -2371,7 +2385,8 @@ void MainWindow::onNavigationDoubleClicked(QTreeWidgetItem *item,
     openFileFromNavigationToolbar(item->data(0, Qt::UserRole).toString());
 }
 
-void MainWindow::openFileFromNavigationToolbar(const QString &path, bool modifyStack)
+void MainWindow::openFileFromNavigationToolbar(const QString &path,
+                                               bool modifyStack)
 {
     if (!path.isEmpty()) {
         if (isModified()) {
@@ -2401,7 +2416,8 @@ void MainWindow::openFileFromNavigationToolbar(const QString &path, bool modifyS
 
         if (modifyStack) {
             if (m_d->m_navigationStackIdx >= 0) {
-                m_d->m_navigationStack.remove(m_d->m_navigationStackIdx + 1, m_d->m_navigationStack.size() - m_d->m_navigationStackIdx - 1);
+                m_d->m_navigationStack.remove(m_d->m_navigationStackIdx + 1,
+                                              m_d->m_navigationStack.size() - m_d->m_navigationStackIdx - 1);
             }
 
             m_d->m_navigationStack.push_back(path);

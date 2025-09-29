@@ -731,15 +731,24 @@ void MainWindow::setMarkdownFile(const QString &fileName)
 
 void MainWindow::about()
 {
-    QMessageBox::about(this,
-                       tr("About MD-PDF Converter"),
-                       tr("MD-PDF Converter.\n\n"
-                          "Version %1\n\n"
-                          "md4qt version %2\n\n"
-                          "Author - Igor Mironchik (igor.mironchik at gmail dot com).\n\n"
-                          "Copyright (c) 2025 Igor Mironchik.\n\n"
-                          "Licensed under GNU GPL 3.0.")
-                           .arg(c_version, c_md4qtVersion));
+    QMessageBox dlg(
+        QMessageBox::Information,
+        tr("About MD-PDF Converter"),
+        tr("MD-PDF Converter.<br /><br />"
+           "Version <a href=\"https://github.com/igormironchik/markdown-tools/commit/%3\">%1</a><br /><br />"
+           "md4qt version %2<br /><br />"
+           "Author - Igor Mironchik (<a href=\"mailto:igor.mironchik@gmail.com\">igor.mironchik at gmail dot "
+           "com</a>).<br /><br />"
+           "Copyright (c) 2025 Igor Mironchik.<br /><br />"
+           "Licensed under GNU GPL 3.0.")
+            .arg(c_version, c_md4qtVersion, c_commit),
+        QMessageBox::NoButton,
+        this);
+    QIcon icon = dlg.windowIcon();
+    dlg.setIconPixmap(icon.pixmap(QSize(64, 64), dlg.devicePixelRatio()));
+    dlg.setTextFormat(Qt::RichText);
+
+    dlg.exec();
 }
 
 void MainWindow::aboutQt()
