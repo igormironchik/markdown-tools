@@ -1,1 +1,0 @@
-sdk.dir=@ANDROID_SDK_ROOT@

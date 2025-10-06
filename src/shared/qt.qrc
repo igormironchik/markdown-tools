@@ -1,9 +1,0 @@
-<!--
-    SPDX-FileCopyrightText: none
-    SPDX-License-Identifier: GPL-3.0-or-later
--->
-<RCC>
-    <qresource prefix="/">
-        <file>img/Qt-logo-neon-transparent.png</file>
-    </qresource>
-</RCC>
