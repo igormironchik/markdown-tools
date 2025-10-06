@@ -1,7 +1,7 @@
 version = 1
 SPDX-PackageName = "markdown-tools-page"
 SPDX-PackageSupplier = "Igor Mironchik <igor.mironchik@gmail.com>"
-SPDX-PackageDownloadLocation = ""
+SPDX-PackageDownloadLocation = "https://igormironchik.github.io/markdown-tools/"
 
 [[annotations]]
 path = ["css/**", "js/**"]
