@@ -19,7 +19,7 @@ SPDX-License-Identifier = "MIT"
 path = ["3rdparty/KDE/syntax-highlighting/autotests/folding/test.opsiscript.fold", "3rdparty/KDE/syntax-highlighting/autotests/input/test.opsiscript","3rdparty/KDE/syntax-highlighting/data/syntax/opsiscript.xml"]
 precedence = "override"
 SPDX-FileCopyrightText = "2024 Stefan Staeglich <sstaeglich@kdemail.net>"
-SPDX-License-Identifier = "LicenseRef-LGPL"
+SPDX-License-Identifier = "LGPL-2.1-or-later"
 
 [[annotations]]
 path = "3rdparty/KDE/sonnet/**"
