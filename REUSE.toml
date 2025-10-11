@@ -4,9 +4,18 @@ SPDX-PackageSupplier = "Igor Mironchik <igor.mironchik@gmail.com>"
 SPDX-PackageDownloadLocation = "https://igormironchik.github.io/markdown-tools/"
 
 [[annotations]]
-path = ["css/**", "js/**"]
+path = ["js/**"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2013-present Jędrzej Chałubek"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = ["css/**"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = [
+    "2013-present Jędrzej Chałubek",
+    "2025 Igor Mironchik <igor.mironchik@gmail.com>"
+    ]
 SPDX-License-Identifier = "MIT"
 
 [[annotations]]
