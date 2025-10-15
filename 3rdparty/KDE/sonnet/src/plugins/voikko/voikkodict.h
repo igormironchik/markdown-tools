@@ -21,7 +21,7 @@ class VoikkoDictPrivate;
 class VoikkoDict : public Sonnet::SpellerPlugin
 {
 public:
-    /**
+    /*!
      * Declare VoikkoClient as friend so we can use the protected constructor.
      */
     friend class VoikkoClient;
@@ -35,13 +35,13 @@ public:
     bool addToPersonal(const QString &word) override;
     bool addToSession(const QString &word) override;
 
-    /**
-     * @returns true if initializing Voikko backend failed.
+    /*!
+     * Returns true if initializing Voikko backend failed.
      */
     bool initFailed() const Q_DECL_NOEXCEPT;
 
 protected:
-    /**
+    /*!
      * Constructor is protected so that only spellers created
      * and validated through VoikkoClient can be used.
      */

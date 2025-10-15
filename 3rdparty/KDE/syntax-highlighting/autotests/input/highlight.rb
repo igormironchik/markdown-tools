@@ -403,10 +403,13 @@ total/count/2   # both division
 total/(count/2) # both division
 
 @foo/10         # division
-@foo /10        # division
+@foo /10/       # reregexp
 
 "hello"/10      # division
 "hello" / 10    # division
+
+"a".match/10    # division
+"a".match /10/  # reg
 
 /regexp//10     # division
 /regexp/ / 10   # division
@@ -511,6 +514,8 @@ grep test }
 %s<one two three \n#{123} [<({nested})>]>
 %s[one two three \n#{123} [<({nested})>]]
 
+string_in_array = [%(#{x} test)]
+
 # number
 # binary
 0b001
@@ -579,6 +584,8 @@ end
 
 # "member access"
 POP::Session.COUNT.attribute.calc_with(2){ |arg| puts arg }
+raise Module::Class
+Module::Class
 
 # snippet from Net::SMTP
 # This breaks the code folding. I think we would need to
@@ -659,6 +666,8 @@ foo?(?a ? 1 : :a) # or
 foo??a?1: :a
 foo?(?a ? 1 : 2) # or
 foo??a?1: 2
+
+data = @hash.slice :key_one, :key_two
 
 "#{{a:}}"
 # break substitution

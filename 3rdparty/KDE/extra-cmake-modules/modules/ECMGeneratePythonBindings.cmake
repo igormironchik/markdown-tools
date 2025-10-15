@@ -19,6 +19,7 @@ Generate Python bindings using Shiboken.
                                VERSION <version>
                                WRAPPED_HEADER <filename>
                                TYPESYSTEM <filename>
+                               [EXPORT_TYPESYSTEM]
                                GENERATED_SOURCES <filename> [<filename> [...]]
                                DEPENDENCIES <target> [<target> [...]]
                                QT_VERSION <version>
@@ -35,6 +36,9 @@ Generate Python bindings using Shiboken.
 for the library.
 
 ``TYPESYSTEM`` is the XML file where the bindings are defined.
+
+``EXPORT_TYPESYSTEM`` specifies that the typesystem XML file and the
+generated header are exported and can be used by other typesystem XML files.
 
 ``GENERATED_SOURCES`` is the list of generated C++ source files by Shiboken
 that will be used to build the shared library.
@@ -57,15 +61,31 @@ description on the Python Package Index.
 set(MODULES_DIR ${CMAKE_CURRENT_LIST_DIR})
 
 function(ecm_generate_python_bindings)
-    set(options )
+    set(options EXPORT_TYPESYSTEM)
     set(oneValueArgs PACKAGE_NAME WRAPPED_HEADER TYPESYSTEM VERSION QT_VERSION HOMEPAGE_URL ISSUES_URL AUTHOR README)
     set(multiValueArgs GENERATED_SOURCES DEPENDENCIES)
 
     cmake_parse_arguments(PB "${options}" "${oneValueArgs}" "${multiValueArgs}"  ${ARGN})
 
+    if (NOT Python3_EXECUTABLE)
+        message(FATAL_ERROR "Python3_EXECUTABLE not set. Make sure find_package(Python3) is called before including ECMGeneratePythonBindings")
+    endif()
+
+    execute_process(COMMAND ${Python3_EXECUTABLE} -Esc "import build" RESULT_VARIABLE PYTHON_BUILD_CHECK_EXIT_CODE OUTPUT_QUIET ERROR_QUIET)
+
+    if (PYTHON_BUILD_CHECK_EXIT_CODE)
+        message(FATAL_ERROR "The 'build' Python module is needed for ECMGeneratePythonBindings")
+    endif()
+
     # Ugly hacks because PySide6::pyside6 only includes /usr/includes/PySide6 and none of the sub directory
     # Qt bugreport: PYSIDE-2882
     get_property(PYSIDE_INCLUDE_DIRS TARGET "PySide6::pyside6" PROPERTY INTERFACE_INCLUDE_DIRECTORIES)
+    if(NOT PYSIDE_INCLUDE_DIR)
+        set(PYSIDE_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include/PySide${QT_MAJOR_VERSION}")
+    endif()
+    if(NOT PYSIDE_INCLUDE_DIR IN_LIST PYSIDE_INCLUDE_DIRS)
+        list(APPEND PYSIDE_INCLUDE_DIRS "${PYSIDE_INCLUDE_DIR}")
+    endif()
     foreach(PYSIDE_INCLUDE_DIR ${PYSIDE_INCLUDE_DIRS})
         file(GLOB PYSIDE_SUBDIRS LIST_DIRECTORIES true "${PYSIDE_INCLUDE_DIR}/*")
         foreach (PYSIDE_SUBDIR ${PYSIDE_SUBDIRS})
@@ -108,6 +128,7 @@ function(ecm_generate_python_bindings)
         ${INCLUDES}
         --include-paths=${CMAKE_SOURCE_DIR}
         --typesystem-paths=${CMAKE_SOURCE_DIR}
+        --typesystem-paths="${CMAKE_INSTALL_PREFIX}/share/PySide${QT_MAJOR_VERSION}/typesystems"
         --typesystem-paths=${PYSIDE_TYPESYSTEMS}
         --output-directory=${CMAKE_CURRENT_BINARY_DIR})
 
@@ -131,6 +152,12 @@ function(ecm_generate_python_bindings)
     set_property(DIRECTORY ${CMAKE_SOURCE_DIR} PROPERTY COMPILE_DEFINITIONS ${_defs})
     get_property(_defs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY COMPILE_DEFINITIONS)
     list(FILTER _defs EXCLUDE REGEX [[^QT_DISABLE_DEPRECATED_BEFORE=]])
+    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY COMPILE_DEFINITIONS ${_defs})
+    get_property(_defs DIRECTORY ${CMAKE_SOURCE_DIR} PROPERTY COMPILE_DEFINITIONS)
+    list(FILTER _defs EXCLUDE REGEX [[^QT_DISABLE_DEPRECATED_UP_TO=]])
+    set_property(DIRECTORY ${CMAKE_SOURCE_DIR} PROPERTY COMPILE_DEFINITIONS ${_defs})
+    get_property(_defs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY COMPILE_DEFINITIONS)
+    list(FILTER _defs EXCLUDE REGEX [[^QT_DISABLE_DEPRECATED_UP_TO=]])
     set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY COMPILE_DEFINITIONS ${_defs})
 
     # Define and build the bindings library.
@@ -170,5 +197,13 @@ function(ecm_generate_python_bindings)
         WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${PB_PACKAGE_NAME}"
         COMMENT "Building Python Wheel"
     )
+
+    # Export the header and the typesystem XML file
+    if (PB_EXPORT_TYPESYSTEM)
+        string(TOLOWER ${PB_PACKAGE_NAME} lower_package_name)
+        install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PB_PACKAGE_NAME}/${lower_package_name}_python.h
+                DESTINATION "${PYSIDE_INCLUDE_DIR}/${PB_PACKAGE_NAME}/")
+        install(FILES "${PB_TYPESYSTEM}" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/PySide${QT_MAJOR_VERSION}/typesystems/")
+    endif()
 
 endfunction()

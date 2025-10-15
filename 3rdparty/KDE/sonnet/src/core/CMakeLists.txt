@@ -76,6 +76,8 @@ ecm_generate_headers(SonnetCore_CamelCase_HEADERS
   REQUIRED_HEADERS SonnetCore_HEADERS
 )
 
+ecm_generate_qdoc(KF6SonnetCore sonnetcore.qdocconf)
+
 target_link_libraries(KF6SonnetCore PUBLIC Qt6::Core)
 
 target_include_directories(KF6SonnetCore
@@ -94,28 +96,3 @@ install(FILES
    ${SonnetCore_HEADERS}
    ${CMAKE_CURRENT_BINARY_DIR}/sonnetcore_export.h
    DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF}/SonnetCore/sonnet COMPONENT Devel)
-
-if (BUILD_QCH)
-    ecm_add_qch(
-        KF6SonnetCore_QCH
-        NAME SonnetCore
-        BASE_NAME KF6SonnetCore
-        VERSION ${KF_VERSION}
-        ORG_DOMAIN org.kde
-        SOURCES # using only public headers, to cover only public API
-            ${SonnetCore_HEADERS}
-        LINK_QCHS
-            Qt6Core_QCH
-        INCLUDE_DIRS
-            ${CMAKE_CURRENT_BINARY_DIR}
-        BLANK_MACROS
-            SONNETCORE_EXPORT
-            SONNETCORE_DEPRECATED_EXPORT
-            SONNETCORE_DEPRECATED
-            "SONNETCORE_DEPRECATED_VERSION(x, y, t)"
-        TAGFILE_INSTALL_DESTINATION ${KDE_INSTALL_QTQCHDIR}
-        QCH_INSTALL_DESTINATION ${KDE_INSTALL_QTQCHDIR}
-        COMPONENT Devel
-    )
-endif()
-

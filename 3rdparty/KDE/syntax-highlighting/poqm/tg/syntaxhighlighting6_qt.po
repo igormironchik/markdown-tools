@@ -32,6 +32,17 @@ msgctxt "Language|"
 msgid "ABC"
 msgstr "ABC"
 
+#, fuzzy
+#| msgctxt "Language|"
+#| msgid "E Language"
+msgctxt "Language|"
+msgid "ACPI Source Language"
+msgstr "E Language"
+
+msgctxt "Language|"
+msgid "ACPI DSL"
+msgstr ""
+
 msgctxt "Language|"
 msgid "ActionScript 2.0"
 msgstr "ActionScript 2.0"
@@ -148,6 +159,10 @@ msgstr "Boo"
 
 msgctxt "Language|"
 msgid "Cabal"
+msgstr ""
+
+msgctxt "Language|"
+msgid "Cap'n Proto"
 msgstr ""
 
 msgctxt "Language|"
@@ -317,8 +332,16 @@ msgid "DTD"
 msgstr "DTD"
 
 msgctxt "Language|"
+msgid "Devicetree Source (DTS)"
+msgstr ""
+
+msgctxt "Language|"
 msgid "D"
 msgstr "D"
+
+msgctxt "Language|"
+msgid "FreeFEM"
+msgstr ""
 
 msgctxt "Language|"
 msgid "Eiffel"
@@ -592,6 +615,13 @@ msgctxt "Language|"
 msgid "Jira"
 msgstr "Jira"
 
+#, fuzzy
+#| msgctxt "Language|"
+#| msgid "JSON"
+msgctxt "Language|"
+msgid "JSON5"
+msgstr "JSON"
+
 msgctxt "Language|"
 msgid "Jsonnet"
 msgstr ""
@@ -646,6 +676,12 @@ msgctxt "Language|"
 msgid "k"
 msgstr "k"
 
+#, fuzzy
+#| msgid "Save File"
+msgctxt "Language|"
+msgid "LaTeX Log File"
+msgstr "Нигоҳ доштани файл"
+
 msgctxt "Language|"
 msgid "LaTeX"
 msgstr "LaTeX"
@@ -687,8 +723,17 @@ msgid "Logcat"
 msgstr "Logcat"
 
 msgctxt "Language|"
+msgid "Log File (advanced) Selector"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Log File (advanced)"
 msgstr ""
+
+#, fuzzy
+msgctxt "Language|"
+msgid "Log File (simplified) Selector"
+msgstr "Фосила"
 
 #, fuzzy
 msgctxt "Language|"
@@ -853,6 +898,10 @@ msgstr "Nemerle"
 msgctxt "Language|"
 msgid "nesC"
 msgstr "nesC"
+
+msgctxt "Language|"
+msgid "NFTables"
+msgstr ""
 
 #, fuzzy
 #| msgctxt "Language Section|"
@@ -1029,6 +1078,10 @@ msgid "QML"
 msgstr "QML"
 
 msgctxt "Language|"
+msgid "Quarto"
+msgstr ""
+
+msgctxt "Language|"
 msgid "q"
 msgstr "q"
 
@@ -1173,11 +1226,19 @@ msgid "SML"
 msgstr "SML"
 
 msgctxt "Language|"
+msgid "Snakemake"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Snort/Suricata"
 msgstr ""
 
 msgctxt "Language|"
 msgid "Solidity"
+msgstr ""
+
+msgctxt "Language|"
+msgid "SPARQL"
 msgstr ""
 
 msgctxt "Language|"
@@ -1366,6 +1427,10 @@ msgid "Wayland Trace"
 msgstr "Пайгирии Wayland"
 
 msgctxt "Language|"
+msgid "Web Video Text Tracks"
+msgstr ""
+
+msgctxt "Language|"
 msgid "WINE Config"
 msgstr "Танзимоти WINE"
 
@@ -1376,6 +1441,13 @@ msgstr "Забони қайдҳои Wesnoth"
 msgctxt "Language|"
 msgid "xHarbour"
 msgstr "xHarbour"
+
+#, fuzzy
+#| msgctxt "Language|"
+#| msgid "HTML"
+msgctxt "Language|"
+msgid "XHTML"
+msgstr "HTML"
 
 msgctxt "Language|"
 msgid "XML (Debug)"
@@ -1392,10 +1464,6 @@ msgstr "Нақши Xonotic"
 msgctxt "Language|"
 msgid "x.org Configuration"
 msgstr "Танзимоти x.org"
-
-msgctxt "Language|"
-msgid "xslt"
-msgstr "xslt"
 
 msgctxt "Language|"
 msgid "XUL"
@@ -1763,6 +1831,10 @@ msgstr "Дар ҳоли боргирии таърифи наҳви нав бар
 msgctxt "QObject|@info"
 msgid "Updating syntax definition for '%1' to version %2…"
 msgstr "Дар ҳоли навсозии таърифи наҳв барои '%1' то нашри %2..."
+
+#~ msgctxt "Language|"
+#~ msgid "xslt"
+#~ msgstr "xslt"
 
 #~ msgctxt "SyntaxHighlightingCLI|"
 #~ msgid "The source file to highlight."
@@ -2946,9 +3018,6 @@ msgstr "Дар ҳоли навсозии таърифи наҳв барои '%1'
 #~ msgid ""
 #~ "Do you really want to continue to close this file? Data loss may occur."
 #~ msgstr "Оё мехоҳед ин файлро бипӯшед? Мумкин ин пинҳонии додашудаҳо бошад."
-
-#~ msgid "Save File"
-#~ msgstr "Нигоҳ доштани файл"
 
 #~ msgid "Save failed"
 #~ msgstr "Нигоҳ доштан вайрон шуд"

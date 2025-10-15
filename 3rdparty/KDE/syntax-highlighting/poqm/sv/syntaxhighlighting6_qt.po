@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2025-02-17 18:16+0100\n"
+"PO-Revision-Date: 2025-09-26 13:51+0200\n"
 "Last-Translator: Stefan Asserhäll <stefan.asserhall@gmail.com>\n"
 "Language-Team: Swedish <kde-i18n-doc@kde.org>\n"
 "Language: sv\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Qt-Contexts: true\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 24.12.0\n"
+"X-Generator: Lokalize 25.08.0\n"
 
 msgctxt "Language|"
 msgid "4DOS BatchToMemory"
@@ -24,6 +24,14 @@ msgstr "ABAP"
 msgctxt "Language|"
 msgid "ABC"
 msgstr "ABC"
+
+msgctxt "Language|"
+msgid "ACPI Source Language"
+msgstr "ACPI källkodsspråk"
+
+msgctxt "Language|"
+msgid "ACPI DSL"
+msgstr "ACPI DSL"
 
 msgctxt "Language|"
 msgid "ActionScript 2.0"
@@ -136,6 +144,10 @@ msgstr "Boo"
 msgctxt "Language|"
 msgid "Cabal"
 msgstr "Cabal"
+
+msgctxt "Language|"
+msgid "Cap'n Proto"
+msgstr "Cap'n Proto"
 
 msgctxt "Language|"
 msgid "CartoCSS MML"
@@ -298,8 +310,16 @@ msgid "DTD"
 msgstr "DTD"
 
 msgctxt "Language|"
+msgid "Devicetree Source (DTS)"
+msgstr "Devicetree-källkod (DTS)"
+
+msgctxt "Language|"
 msgid "D"
 msgstr "D"
+
+msgctxt "Language|"
+msgid "FreeFEM"
+msgstr "FreeFEM"
 
 msgctxt "Language|"
 msgid "Eiffel"
@@ -570,6 +590,10 @@ msgid "Jira"
 msgstr "Jira"
 
 msgctxt "Language|"
+msgid "JSON5"
+msgstr "JSON5"
+
+msgctxt "Language|"
 msgid "Jsonnet"
 msgstr "Jsonnet"
 
@@ -618,6 +642,10 @@ msgid "k"
 msgstr "k"
 
 msgctxt "Language|"
+msgid "LaTeX Log File"
+msgstr "Latex-loggfil"
+
+msgctxt "Language|"
 msgid "LaTeX"
 msgstr "Latex"
 
@@ -658,8 +686,16 @@ msgid "Logcat"
 msgstr "Logcat"
 
 msgctxt "Language|"
+msgid "Log File (advanced) Selector"
+msgstr "Loggfilväljare (avancerat)"
+
+msgctxt "Language|"
 msgid "Log File (advanced)"
 msgstr "Loggfil (avancerat)"
+
+msgctxt "Language|"
+msgid "Log File (simplified) Selector"
+msgstr "Loggfilväljare (förenklat)"
 
 msgctxt "Language|"
 msgid "Log File (simplified)"
@@ -822,6 +858,10 @@ msgid "nesC"
 msgstr "nesC"
 
 msgctxt "Language|"
+msgid "NFTables"
+msgstr "NFTables"
+
+msgctxt "Language|"
 msgid "nginx Configuration"
 msgstr "nginx konfiguration"
 
@@ -982,6 +1022,10 @@ msgid "QML"
 msgstr "QML"
 
 msgctxt "Language|"
+msgid "Quarto"
+msgstr ""
+
+msgctxt "Language|"
 msgid "q"
 msgstr "q"
 
@@ -1126,12 +1170,20 @@ msgid "SML"
 msgstr "SML"
 
 msgctxt "Language|"
+msgid "Snakemake"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Snort/Suricata"
 msgstr "Snort/Suricata"
 
 msgctxt "Language|"
 msgid "Solidity"
 msgstr "Solidity"
+
+msgctxt "Language|"
+msgid "SPARQL"
+msgstr "SPARQL"
 
 msgctxt "Language|"
 msgid "Spice"
@@ -1310,6 +1362,10 @@ msgid "Wayland Trace"
 msgstr "Wayland Trace"
 
 msgctxt "Language|"
+msgid "Web Video Text Tracks"
+msgstr "Webbvideo-textspår"
+
+msgctxt "Language|"
 msgid "WINE Config"
 msgstr "WINE-konfiguration"
 
@@ -1320,6 +1376,10 @@ msgstr "Wesnoth taggspråk"
 msgctxt "Language|"
 msgid "xHarbour"
 msgstr "xHarbour"
+
+msgctxt "Language|"
+msgid "XHTML"
+msgstr "XHTML"
 
 msgctxt "Language|"
 msgid "XML (Debug)"
@@ -1336,10 +1396,6 @@ msgstr "Xonotic-skript"
 msgctxt "Language|"
 msgid "x.org Configuration"
 msgstr "X.org-inställning"
-
-msgctxt "Language|"
-msgid "xslt"
-msgstr "xslt"
 
 msgctxt "Language|"
 msgid "XUL"
@@ -1687,6 +1743,10 @@ msgstr "Laddar ner ny syntaxdefinition för '%1'…"
 msgctxt "QObject|@info"
 msgid "Updating syntax definition for '%1' to version %2…"
 msgstr "Uppdaterar syntaxdefinition för '%1' till version %2…"
+
+#~ msgctxt "Language|"
+#~ msgid "xslt"
+#~ msgstr "xslt"
 
 #~ msgctxt "SyntaxHighlightingCLI|"
 #~ msgid "The source file to highlight."

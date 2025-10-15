@@ -1,4 +1,4 @@
-/**
+/*
  * SPDX-FileCopyrightText: 2007 Zack Rusin <zack@kde.org>
  *
  * SPDX-License-Identifier: LGPL-2.1-or-later

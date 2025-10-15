@@ -232,7 +232,6 @@
        <item>fopen</item>
        <item>fprintf</item>
        <item>freadb</item>
-       <item>freadb</item>
        <item>freadh</item>
        <item>freadstr</item>
        <item>get_bind</item>
@@ -384,8 +383,6 @@
        <item>push_back</item>
        <item>push_front</item>
        <item>putc</item>
-       <item>query</item>
-       <item>query_str</item>
        <item>rand_mode</item>
        <item>randomize</item>
        <item>reserve</item>
@@ -410,14 +407,9 @@
        <item>unpack</item>
        <!-- empty methods -->
        <item>new</item>
-       <item>object_compare</item>
        <item>post_boundary</item>
-       <item>post_pack</item>
-       <item>post_randomize</item>
-       <item>post_unpack</item>
        <item>pre-randomize</item>
        <item>pre_boundary</item>
-       <item>pre_pack</item>
        <item>pre_unpack</item>
        <!-- vera-constants -->
        <item>ALL</item>

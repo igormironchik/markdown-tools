@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.16)
 
-set(KF_VERSION "6.12.0")
+set(KF_VERSION "6.19.0")
 project(KSyntaxHighlighting VERSION ${KF_VERSION})
 
-find_package(ECM 6.12.0 REQUIRED NO_MODULE)
+find_package(ECM 6.19.0 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 
 include(KDEInstallDirs)
@@ -19,11 +19,11 @@ include(CMakePackageConfigHelpers)
 include(ECMPoQmTools)
 include(ECMQtDeclareLoggingCategory)
 include(ECMMarkNonGuiExecutable)
-include(ECMAddQch)
 include(ECMOptionalAddSubdirectory)
 include(ECMGenerateExportHeader)
 include(ECMDeprecationSettings)
 include(ECMQmlModule)
+include(ECMGenerateQDoc)
 
 set(ksyntaxhighlighting_version_header "${CMAKE_CURRENT_BINARY_DIR}/src/lib/ksyntaxhighlighting_version.h")
 ecm_setup_version(PROJECT
@@ -38,7 +38,7 @@ set(EXCLUDE_DEPRECATED_BEFORE_AND_AT 0 CACHE STRING "Control the range of deprec
 #
 # Dependencies
 #
-set(REQUIRED_QT_VERSION 6.6.0)
+set(REQUIRED_QT_VERSION 6.7.0)
 find_package(Qt6 ${REQUIRED_QT_VERSION} NO_MODULE REQUIRED COMPONENTS Core Network Test)
 option(KSYNTAXHIGHLIGHTING_USE_GUI "Build components depending on QtGui" ON)
 if(KSYNTAXHIGHLIGHTING_USE_GUI)
@@ -70,12 +70,6 @@ option(NO_STANDARD_PATHS "Skip lookup of syntax and theme definitions in QStanda
 add_feature_info(FEATURE_NO_STANDARD_PATHS ${NO_STANDARD_PATHS} "Skip lookup of syntax and theme definitions in QStandardPaths locations")
 
 #
-# API documentation
-#
-option(BUILD_QCH "Build API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)" OFF)
-add_feature_info(QCH ${BUILD_QCH} "API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)")
-
-#
 # Translations
 #
 ecm_install_po_files_as_qm(poqm)
@@ -91,7 +85,7 @@ if (NO_STANDARD_PATHS)
 endif()
 
 ecm_set_disabled_deprecation_versions(
-    QT 6.8.0
+    QT 6.10.0
 )
 
 #
@@ -111,16 +105,6 @@ endif()
 # CMake package config file generation
 #
 set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KF6SyntaxHighlighting")
-
-if (BUILD_QCH)
-    ecm_install_qch_export(
-        TARGETS KF6SyntaxHighlighting_QCH
-        FILE KF6SyntaxHighlightingQchTargets.cmake
-        DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
-        COMPONENT Devel
-    )
-    set(PACKAGE_INCLUDE_QCHTARGETS "include(\"\${CMAKE_CURRENT_LIST_DIR}/KF6SyntaxHighlightingQchTargets.cmake\")")
-endif()
 
 configure_package_config_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/KF6SyntaxHighlightingConfig.cmake.in"
@@ -146,7 +130,7 @@ install(FILES "${ksyntaxhighlighting_version_header}"
         COMPONENT Devel)
 
 include(ECMFeatureSummary)
-ecm_feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
+ecm_feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
 
 # add target to update kate-editor.org syntax page + update site
 add_custom_target(update_kate_editor_org

@@ -53,6 +53,12 @@ none of the above variables will be modified.
 
 The following CMake C++ standard default variables are set:
 
+For ``KDE_COMPILERSETTINGS_LEVEL`` >= 6.13:
+
+- ``CMAKE_CXX_STANDARD``: ``20``
+- ``CMAKE_CXX_STANDARD_REQUIRED``: ``TRUE``
+- ``CMAKE_CXX_EXTENSIONS``: ``OFF``
+
 For ``KDE_COMPILERSETTINGS_LEVEL`` >= 5.85:
 
 - ``CMAKE_CXX_STANDARD``: ``17``
@@ -386,7 +392,10 @@ if (NOT CMAKE_C_STANDARD)
     endif()
 endif()
 if (NOT CMAKE_CXX_STANDARD)
-    if (KDE_INTERNAL_COMPILERSETTINGS_LEVEL VERSION_GREATER_EQUAL 5.85.0)
+    if (KDE_INTERNAL_COMPILERSETTINGS_LEVEL VERSION_GREATER_EQUAL 6.13.0)
+        set(CMAKE_CXX_STANDARD 20)
+        set(CMAKE_CXX_EXTENSIONS OFF)
+    elseif (KDE_INTERNAL_COMPILERSETTINGS_LEVEL VERSION_GREATER_EQUAL 5.85.0)
         set(CMAKE_CXX_STANDARD 17)
         set(CMAKE_CXX_EXTENSIONS OFF)
     else()
@@ -635,6 +644,11 @@ if (MSVC)
     # C4661: 'identifier' : no suitable definition provided for explicit
     #         template instantiation request
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4661")
+    # Enable warnings:
+    # C5249: 'bitfield' of type 'enumeration_name' has named enumerators
+    # with values that cannot be represented in the given bit field width
+    # of 'bitfield_width'.
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /w35249")
 
     if (CMAKE_CXX_STANDARD GREATER_EQUAL 11)
         # Ensure __cplusplus is correct, otherwise it defaults to 199711L which isn't true

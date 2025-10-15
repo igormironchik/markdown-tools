@@ -16,49 +16,70 @@ namespace Sonnet
 {
 class ConfigWidgetPrivate;
 
-/// The sonnet ConfigWidget
+/*!
+ * \class Sonnet::ConfigWidget
+ * \inheaderfile Sonnet/ConfigWidget
+ * \inmodule SonnetUi
+ *
+ * \brief The sonnet ConfigWidget.
+ */
 class SONNETUI_EXPORT ConfigWidget : public QWidget
 {
     Q_OBJECT
 public:
+    /*!
+     */
     explicit ConfigWidget(QWidget *parent);
     ~ConfigWidget() override;
 
+    /*!
+     */
     bool backgroundCheckingButtonShown() const;
 
-    /**
+    /*!
      * Sets the language/dictionary that will be selected by default
      * in this config widget.
      * This overrides the setting in the config file.
      *
-     * @param language the language which will be selected by default.
-     * @since 4.1
+     * \a language the language which will be selected by default.
+     * \since 4.1
      */
     void setLanguage(const QString &language);
 
-    /**
+    /*!
      * Get the currently selected language for spell checking.  Returns an empty string if
      * Sonnet was built without any spellchecking plugins.
-     * @return the language currently selected in the language combobox
-     * @since 4.1
+     *
+     * Returns the language currently selected in the language combobox
+     * \since 4.1
      */
     QString language() const;
 
 public Q_SLOTS:
+    /*!
+     */
     void save();
+    /*!
+     */
     void setBackgroundCheckingButtonShown(bool);
+    /*!
+     */
     void slotDefault();
 protected Q_SLOTS:
+    /*!
+     */
     void slotIgnoreWordRemoved();
+    /*!
+     */
     void slotIgnoreWordAdded();
 private Q_SLOTS:
     SONNETUI_NO_EXPORT void slotUpdateButton(const QString &text);
     SONNETUI_NO_EXPORT void slotSelectionChanged();
 
 Q_SIGNALS:
-    /**
+    /*!
      * Signal sends when config was changed
-     * @since 4.1
+     * \since 4.1
      */
     void configChanged();
 

@@ -19,15 +19,15 @@ msgstr ""
 "Project-Id-Version: katepart4\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2016-09-08 07:30+0000\n"
-"PO-Revision-Date: 2025-02-17 11:08+0300\n"
-"Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
+"PO-Revision-Date: 2025-10-04 19:57+0300\n"
+"Last-Translator: Emir SARI <emir_sari@îcloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 25.03.70\n"
+"X-Generator: Lokalize 25.08.1\n"
 "X-Qt-Contexts: true\n"
 
 msgctxt "Language|"
@@ -41,6 +41,14 @@ msgstr "ABAP"
 msgctxt "Language|"
 msgid "ABC"
 msgstr "ABC"
+
+msgctxt "Language|"
+msgid "ACPI Source Language"
+msgstr "ACPI Kaynak Dili"
+
+msgctxt "Language|"
+msgid "ACPI DSL"
+msgstr "ACPI DSL"
 
 msgctxt "Language|"
 msgid "ActionScript 2.0"
@@ -153,6 +161,10 @@ msgstr "Boo"
 msgctxt "Language|"
 msgid "Cabal"
 msgstr "Cabal"
+
+msgctxt "Language|"
+msgid "Cap'n Proto"
+msgstr "Cap'n Proto"
 
 msgctxt "Language|"
 msgid "CartoCSS MML"
@@ -315,8 +327,16 @@ msgid "DTD"
 msgstr "DTD"
 
 msgctxt "Language|"
+msgid "Devicetree Source (DTS)"
+msgstr "Devicetree Kaynağı (DTS)"
+
+msgctxt "Language|"
 msgid "D"
 msgstr "D"
+
+msgctxt "Language|"
+msgid "FreeFEM"
+msgstr "FreeFEM"
 
 msgctxt "Language|"
 msgid "Eiffel"
@@ -587,6 +607,10 @@ msgid "Jira"
 msgstr "Jira"
 
 msgctxt "Language|"
+msgid "JSON5"
+msgstr "JSON5"
+
+msgctxt "Language|"
 msgid "Jsonnet"
 msgstr "Jsonnet"
 
@@ -635,6 +659,10 @@ msgid "k"
 msgstr "k"
 
 msgctxt "Language|"
+msgid "LaTeX Log File"
+msgstr "LaTeX Günlük Dosyası"
+
+msgctxt "Language|"
 msgid "LaTeX"
 msgstr "LaTeX"
 
@@ -675,8 +703,16 @@ msgid "Logcat"
 msgstr "Logcat"
 
 msgctxt "Language|"
+msgid "Log File (advanced) Selector"
+msgstr "Günlük Dosyası (Gelişmiş) Seçicisi"
+
+msgctxt "Language|"
 msgid "Log File (advanced)"
 msgstr "Günlük Dosyası (Gelişmiş)"
+
+msgctxt "Language|"
+msgid "Log File (simplified) Selector"
+msgstr "Günlük Dosyası (Yalın) Seçicisi"
 
 msgctxt "Language|"
 msgid "Log File (simplified)"
@@ -839,6 +875,10 @@ msgid "nesC"
 msgstr "nesC"
 
 msgctxt "Language|"
+msgid "NFTables"
+msgstr "NFTables"
+
+msgctxt "Language|"
 msgid "nginx Configuration"
 msgstr "ngix Yapılandırması"
 
@@ -999,6 +1039,10 @@ msgid "QML"
 msgstr "QML"
 
 msgctxt "Language|"
+msgid "Quarto"
+msgstr "Quarto"
+
+msgctxt "Language|"
 msgid "q"
 msgstr "q"
 
@@ -1143,12 +1187,20 @@ msgid "SML"
 msgstr "SML"
 
 msgctxt "Language|"
+msgid "Snakemake"
+msgstr "Snakemake"
+
+msgctxt "Language|"
 msgid "Snort/Suricata"
 msgstr "Snort/Suricata"
 
 msgctxt "Language|"
 msgid "Solidity"
 msgstr "Solidity"
+
+msgctxt "Language|"
+msgid "SPARQL"
+msgstr "SPARQL"
 
 msgctxt "Language|"
 msgid "Spice"
@@ -1327,6 +1379,10 @@ msgid "Wayland Trace"
 msgstr "Wayland İzi"
 
 msgctxt "Language|"
+msgid "Web Video Text Tracks"
+msgstr "Web Video Sınama İzleri"
+
+msgctxt "Language|"
 msgid "WINE Config"
 msgstr "WINE Yapılandırması"
 
@@ -1337,6 +1393,10 @@ msgstr "Wesnoth İşaretleme Dili"
 msgctxt "Language|"
 msgid "xHarbour"
 msgstr "xHarbour"
+
+msgctxt "Language|"
+msgid "XHTML"
+msgstr "XHTML"
 
 msgctxt "Language|"
 msgid "XML (Debug)"
@@ -1353,10 +1413,6 @@ msgstr "Xonotic Betiği"
 msgctxt "Language|"
 msgid "x.org Configuration"
 msgstr "x.org Yapılandırması"
-
-msgctxt "Language|"
-msgid "xslt"
-msgstr "xslt"
 
 msgctxt "Language|"
 msgid "XUL"
@@ -1704,6 +1760,10 @@ msgstr "“%1” için yeni sözdizim tanımları indiriliyor…"
 msgctxt "QObject|@info"
 msgid "Updating syntax definition for '%1' to version %2…"
 msgstr "“%1” sözdizim tanımları %2 sürümüne güncelleniyor…"
+
+#~ msgctxt "Language|"
+#~ msgid "xslt"
+#~ msgstr "xslt"
 
 #~ msgctxt "SyntaxHighlightingCLI|"
 #~ msgid "The source file to highlight."

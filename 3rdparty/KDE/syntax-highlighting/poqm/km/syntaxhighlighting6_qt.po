@@ -42,6 +42,17 @@ msgstr "ABC"
 
 #, fuzzy
 #| msgctxt "Language"
+#| msgid "E Language"
+msgctxt "Language|"
+msgid "ACPI Source Language"
+msgstr "E Language"
+
+msgctxt "Language|"
+msgid "ACPI DSL"
+msgstr ""
+
+#, fuzzy
+#| msgctxt "Language"
 #| msgid "ActionScript 2.0"
 msgctxt "Language|"
 msgid "ActionScript 2.0"
@@ -216,6 +227,10 @@ msgstr "Boo"
 
 msgctxt "Language|"
 msgid "Cabal"
+msgstr ""
+
+msgctxt "Language|"
+msgid "Cap'n Proto"
 msgstr ""
 
 msgctxt "Language|"
@@ -465,12 +480,20 @@ msgctxt "Language|"
 msgid "DTD"
 msgstr "DTD"
 
+msgctxt "Language|"
+msgid "Devicetree Source (DTS)"
+msgstr ""
+
 #, fuzzy
 #| msgctxt "Language"
 #| msgid "D"
 msgctxt "Language|"
 msgid "D"
 msgstr "D"
+
+msgctxt "Language|"
+msgid "FreeFEM"
+msgstr ""
 
 #, fuzzy
 #| msgctxt "Language"
@@ -854,6 +877,13 @@ msgctxt "Language|"
 msgid "Jira"
 msgstr ""
 
+#, fuzzy
+#| msgctxt "Language"
+#| msgid "JSON"
+msgctxt "Language|"
+msgid "JSON5"
+msgstr "JSON"
+
 msgctxt "Language|"
 msgid "Jsonnet"
 msgstr ""
@@ -917,6 +947,12 @@ msgstr ""
 msgctxt "Language|"
 msgid "k"
 msgstr ""
+
+#, fuzzy
+#| msgid "Save File"
+msgctxt "Language|"
+msgid "LaTeX Log File"
+msgstr "រក្សាទុក​ឯកសារ"
 
 #, fuzzy
 #| msgctxt "Language"
@@ -983,8 +1019,18 @@ msgid "Logcat"
 msgstr ""
 
 msgctxt "Language|"
+msgid "Log File (advanced) Selector"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Log File (advanced)"
 msgstr ""
+
+#, fuzzy
+#| msgid "Name unspecified"
+msgctxt "Language|"
+msgid "Log File (simplified) Selector"
+msgstr "ឈ្មោះ​ដែល​មិន​បាន​បញ្ជាក់​"
 
 #, fuzzy
 #| msgid "Name unspecified"
@@ -1231,6 +1277,10 @@ msgstr "Nemerle"
 msgctxt "Language|"
 msgid "nesC"
 msgstr "nesC"
+
+msgctxt "Language|"
+msgid "NFTables"
+msgstr ""
 
 #, fuzzy
 #| msgctxt "Language Section"
@@ -1482,6 +1532,10 @@ msgid "QML"
 msgstr "QML"
 
 msgctxt "Language|"
+msgid "Quarto"
+msgstr ""
+
+msgctxt "Language|"
 msgid "q"
 msgstr ""
 
@@ -1695,11 +1749,19 @@ msgid "SML"
 msgstr "SML"
 
 msgctxt "Language|"
+msgid "Snakemake"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Snort/Suricata"
 msgstr ""
 
 msgctxt "Language|"
 msgid "Solidity"
+msgstr ""
+
+msgctxt "Language|"
+msgid "SPARQL"
 msgstr ""
 
 #, fuzzy
@@ -1968,6 +2030,10 @@ msgctxt "Language|"
 msgid "Wayland Trace"
 msgstr ""
 
+msgctxt "Language|"
+msgid "Web Video Text Tracks"
+msgstr ""
+
 #, fuzzy
 #| msgctxt "Language"
 #| msgid "WINE Config"
@@ -1988,6 +2054,13 @@ msgstr "ភាសា Wesnoth Markup"
 msgctxt "Language|"
 msgid "xHarbour"
 msgstr "xHarbour"
+
+#, fuzzy
+#| msgctxt "Language"
+#| msgid "HTML"
+msgctxt "Language|"
+msgid "XHTML"
+msgstr "HTML"
 
 #, fuzzy
 #| msgctxt "Language"
@@ -2016,13 +2089,6 @@ msgstr "PostScript"
 msgctxt "Language|"
 msgid "x.org Configuration"
 msgstr "x.org Configuration"
-
-#, fuzzy
-#| msgctxt "Language"
-#| msgid "xslt"
-msgctxt "Language|"
-msgid "xslt"
-msgstr "xslt"
 
 #, fuzzy
 #| msgctxt "Language"
@@ -2431,6 +2497,13 @@ msgstr ""
 msgctxt "QObject|@info"
 msgid "Updating syntax definition for '%1' to version %2…"
 msgstr ""
+
+#, fuzzy
+#~| msgctxt "Language"
+#~| msgid "xslt"
+#~ msgctxt "Language|"
+#~ msgid "xslt"
+#~ msgstr "xslt"
 
 #, fuzzy
 #~| msgctxt "short translation please"
@@ -3906,9 +3979,6 @@ msgstr ""
 
 #~ msgid "Close Nevertheless"
 #~ msgstr "បិទ ទោះ​យ៉ាងណា​ក៏ដោយ"
-
-#~ msgid "Save File"
-#~ msgstr "រក្សាទុក​ឯកសារ"
 
 #~ msgid "Save failed"
 #~ msgstr "បាន​បរាជ័យ​ក្នុង​ការ​រក្សាទុក"

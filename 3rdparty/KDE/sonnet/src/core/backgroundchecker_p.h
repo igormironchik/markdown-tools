@@ -22,6 +22,8 @@ class BackgroundCheckerPrivate : public QObject
 {
     Q_OBJECT
 public:
+    /*!
+     */
     BackgroundCheckerPrivate()
         : mainTokenizer(new SentenceTokenizer)
         , sentenceOffset(-1)
@@ -29,7 +31,11 @@ public:
         autoDetectLanguageDisabled = false;
     }
 
+    /*!
+     */
     void start();
+    /*!
+     */
     void continueChecking();
 
     LanguageFilter mainTokenizer;
@@ -40,9 +46,15 @@ public:
     bool autoDetectLanguageDisabled;
 
 private Q_SLOTS:
+    /*!
+     */
     void checkNext();
 Q_SIGNALS:
+    /*!
+     */
     void misspelling(const QString &, int);
+    /*!
+     */
     void done();
 };
 

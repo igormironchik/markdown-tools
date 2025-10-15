@@ -46,6 +46,17 @@ msgstr "ABC"
 
 #, fuzzy
 #| msgctxt "Language"
+#| msgid "E Language"
+msgctxt "Language|"
+msgid "ACPI Source Language"
+msgstr "E kalba"
+
+msgctxt "Language|"
+msgid "ACPI DSL"
+msgstr ""
+
+#, fuzzy
+#| msgctxt "Language"
 #| msgid "ActionScript 2.0"
 msgctxt "Language|"
 msgid "ActionScript 2.0"
@@ -220,6 +231,10 @@ msgstr "Boo"
 
 msgctxt "Language|"
 msgid "Cabal"
+msgstr ""
+
+msgctxt "Language|"
+msgid "Cap'n Proto"
 msgstr ""
 
 msgctxt "Language|"
@@ -472,12 +487,20 @@ msgctxt "Language|"
 msgid "DTD"
 msgstr "DTD"
 
+msgctxt "Language|"
+msgid "Devicetree Source (DTS)"
+msgstr ""
+
 #, fuzzy
 #| msgctxt "Language"
 #| msgid "D"
 msgctxt "Language|"
 msgid "D"
 msgstr "D"
+
+msgctxt "Language|"
+msgid "FreeFEM"
+msgstr ""
 
 #, fuzzy
 #| msgctxt "Language"
@@ -870,6 +893,13 @@ msgctxt "Language|"
 msgid "Jira"
 msgstr "Jira"
 
+#, fuzzy
+#| msgctxt "Language"
+#| msgid "JSON"
+msgctxt "Language|"
+msgid "JSON5"
+msgstr "JSON"
+
 msgctxt "Language|"
 msgid "Jsonnet"
 msgstr ""
@@ -941,6 +971,12 @@ msgid "k"
 msgstr "k"
 
 #, fuzzy
+#| msgid "Save File"
+msgctxt "Language|"
+msgid "LaTeX Log File"
+msgstr "Įrašyti failą"
+
+#, fuzzy
 #| msgctxt "Language"
 #| msgid "LaTeX"
 msgctxt "Language|"
@@ -1005,7 +1041,15 @@ msgid "Logcat"
 msgstr ""
 
 msgctxt "Language|"
+msgid "Log File (advanced) Selector"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Log File (advanced)"
+msgstr ""
+
+msgctxt "Language|"
+msgid "Log File (simplified) Selector"
 msgstr ""
 
 msgctxt "Language|"
@@ -1254,6 +1298,10 @@ msgstr "Nemerle"
 msgctxt "Language|"
 msgid "nesC"
 msgstr "nesC"
+
+msgctxt "Language|"
+msgid "NFTables"
+msgstr ""
 
 #, fuzzy
 #| msgctxt "Language Section"
@@ -1513,6 +1561,10 @@ msgctxt "Language|"
 msgid "QML"
 msgstr "QML"
 
+msgctxt "Language|"
+msgid "Quarto"
+msgstr ""
+
 #, fuzzy
 #| msgctxt "Language"
 #| msgid "q"
@@ -1731,11 +1783,19 @@ msgid "SML"
 msgstr "SML"
 
 msgctxt "Language|"
+msgid "Snakemake"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Snort/Suricata"
 msgstr ""
 
 msgctxt "Language|"
 msgid "Solidity"
+msgstr ""
+
+msgctxt "Language|"
+msgid "SPARQL"
 msgstr ""
 
 #, fuzzy
@@ -2004,6 +2064,10 @@ msgctxt "Language|"
 msgid "Wayland Trace"
 msgstr ""
 
+msgctxt "Language|"
+msgid "Web Video Text Tracks"
+msgstr ""
+
 #, fuzzy
 #| msgctxt "Language"
 #| msgid "WINE Config"
@@ -2024,6 +2088,13 @@ msgstr "Wesnoth ženklinimo kalba"
 msgctxt "Language|"
 msgid "xHarbour"
 msgstr "xHarbour"
+
+#, fuzzy
+#| msgctxt "Language"
+#| msgid "HTML"
+msgctxt "Language|"
+msgid "XHTML"
+msgstr "HTML"
 
 #, fuzzy
 #| msgctxt "Language"
@@ -2052,13 +2123,6 @@ msgstr "PostScript"
 msgctxt "Language|"
 msgid "x.org Configuration"
 msgstr "x.org konfigūracija"
-
-#, fuzzy
-#| msgctxt "Language"
-#| msgid "xslt"
-msgctxt "Language|"
-msgid "xslt"
-msgstr "xslt"
 
 #, fuzzy
 #| msgctxt "Language"
@@ -2467,6 +2531,13 @@ msgstr ""
 msgctxt "QObject|@info"
 msgid "Updating syntax definition for '%1' to version %2…"
 msgstr ""
+
+#, fuzzy
+#~| msgctxt "Language"
+#~| msgid "xslt"
+#~ msgctxt "Language|"
+#~ msgid "xslt"
+#~ msgstr "xslt"
 
 #, fuzzy
 #~| msgctxt "short translation please"
@@ -3947,9 +4018,6 @@ msgstr ""
 
 #~ msgid "Close Nevertheless"
 #~ msgstr "Vis tiek užverti"
-
-#~ msgid "Save File"
-#~ msgstr "Įrašyti failą"
 
 #~ msgid "Save failed"
 #~ msgstr "Įrašymas nepavyko"

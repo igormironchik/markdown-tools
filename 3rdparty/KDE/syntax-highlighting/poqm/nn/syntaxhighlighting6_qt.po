@@ -9,14 +9,14 @@ msgstr ""
 "Project-Id-Version: katepart4\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2016-09-05 07:08+0000\n"
-"PO-Revision-Date: 2024-10-27 14:46+0100\n"
+"PO-Revision-Date: 2025-06-01 15:08+0200\n"
 "Last-Translator: Karl Ove Hufthammer <karl@huftis.org>\n"
 "Language-Team: Norwegian Nynorsk <l10n-no@lister.huftis.org>\n"
 "Language: nn\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 24.11.70\n"
+"X-Generator: Lokalize 25.07.70\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Environment: kde\n"
 "X-Accelerator-Marker: &\n"
@@ -34,6 +34,15 @@ msgstr "ABAP"
 msgctxt "Language|"
 msgid "ABC"
 msgstr "ABC"
+
+#, fuzzy
+msgctxt "Language|"
+msgid "ACPI Source Language"
+msgstr "E-språket"
+
+msgctxt "Language|"
+msgid "ACPI DSL"
+msgstr ""
 
 msgctxt "Language|"
 msgid "ActionScript 2.0"
@@ -147,6 +156,10 @@ msgstr "Boo"
 msgctxt "Language|"
 msgid "Cabal"
 msgstr "Cabal"
+
+msgctxt "Language|"
+msgid "Cap'n Proto"
+msgstr ""
 
 msgctxt "Language|"
 msgid "CartoCSS MML"
@@ -309,8 +322,16 @@ msgid "DTD"
 msgstr "DTD"
 
 msgctxt "Language|"
+msgid "Devicetree Source (DTS)"
+msgstr ""
+
+msgctxt "Language|"
 msgid "D"
 msgstr "D"
+
+msgctxt "Language|"
+msgid "FreeFEM"
+msgstr "FreeFEM"
 
 msgctxt "Language|"
 msgid "Eiffel"
@@ -502,7 +523,7 @@ msgstr "Haxe"
 
 msgctxt "Language|"
 msgid "Hjson"
-msgstr ""
+msgstr "Hjson"
 
 msgctxt "Language|"
 msgid "HTML"
@@ -580,6 +601,11 @@ msgctxt "Language|"
 msgid "Jira"
 msgstr "Jira"
 
+#, fuzzy
+msgctxt "Language|"
+msgid "JSON5"
+msgstr "JSON"
+
 msgctxt "Language|"
 msgid "Jsonnet"
 msgstr "Jsonnet"
@@ -631,6 +657,10 @@ msgid "k"
 msgstr "k"
 
 msgctxt "Language|"
+msgid "LaTeX Log File"
+msgstr ""
+
+msgctxt "Language|"
 msgid "LaTeX"
 msgstr "LaTeX"
 
@@ -670,9 +700,19 @@ msgctxt "Language|"
 msgid "Logcat"
 msgstr "Logcat"
 
+#, fuzzy
+msgctxt "Language|"
+msgid "Log File (advanced) Selector"
+msgstr "Loggfil (avansert)"
+
 msgctxt "Language|"
 msgid "Log File (advanced)"
 msgstr "Loggfil (avansert)"
+
+#, fuzzy
+msgctxt "Language|"
+msgid "Log File (simplified) Selector"
+msgstr "Loggfil (forenkla)"
 
 msgctxt "Language|"
 msgid "Log File (simplified)"
@@ -833,6 +873,10 @@ msgstr "Nemerle"
 msgctxt "Language|"
 msgid "nesC"
 msgstr "nesC"
+
+msgctxt "Language|"
+msgid "NFTables"
+msgstr ""
 
 msgctxt "Language|"
 msgid "nginx Configuration"
@@ -996,6 +1040,10 @@ msgid "QML"
 msgstr "QML"
 
 msgctxt "Language|"
+msgid "Quarto"
+msgstr ""
+
+msgctxt "Language|"
 msgid "q"
 msgstr "q"
 
@@ -1140,12 +1188,20 @@ msgid "SML"
 msgstr "SML"
 
 msgctxt "Language|"
+msgid "Snakemake"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Snort/Suricata"
 msgstr "Snort/Suricata"
 
 msgctxt "Language|"
 msgid "Solidity"
 msgstr "Solidity"
+
+msgctxt "Language|"
+msgid "SPARQL"
+msgstr ""
 
 msgctxt "Language|"
 msgid "Spice"
@@ -1324,6 +1380,10 @@ msgid "Wayland Trace"
 msgstr "Wayland-spor"
 
 msgctxt "Language|"
+msgid "Web Video Text Tracks"
+msgstr ""
+
+msgctxt "Language|"
 msgid "WINE Config"
 msgstr "WINE-oppsett"
 
@@ -1334,6 +1394,11 @@ msgstr "Wesnoth Markup Language"
 msgctxt "Language|"
 msgid "xHarbour"
 msgstr "xHarbour"
+
+#, fuzzy
+msgctxt "Language|"
+msgid "XHTML"
+msgstr "HTML"
 
 msgctxt "Language|"
 msgid "XML (Debug)"
@@ -1350,10 +1415,6 @@ msgstr "Xonotic-skript"
 msgctxt "Language|"
 msgid "x.org Configuration"
 msgstr "X.Org-oppsett"
-
-msgctxt "Language|"
-msgid "xslt"
-msgstr "XSLT"
 
 msgctxt "Language|"
 msgid "XUL"

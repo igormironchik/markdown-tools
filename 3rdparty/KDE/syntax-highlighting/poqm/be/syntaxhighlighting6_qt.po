@@ -37,6 +37,17 @@ msgctxt "Language|"
 msgid "ABC"
 msgstr "ABC"
 
+#, fuzzy
+#| msgctxt "Language|"
+#| msgid "E Language"
+msgctxt "Language|"
+msgid "ACPI Source Language"
+msgstr "E Language"
+
+msgctxt "Language|"
+msgid "ACPI DSL"
+msgstr ""
+
 msgctxt "Language|"
 msgid "ActionScript 2.0"
 msgstr "ActionScript 2.0"
@@ -151,6 +162,10 @@ msgstr "Boo"
 msgctxt "Language|"
 msgid "Cabal"
 msgstr "Cabal"
+
+msgctxt "Language|"
+msgid "Cap'n Proto"
+msgstr ""
 
 msgctxt "Language|"
 msgid "CartoCSS MML"
@@ -313,8 +328,16 @@ msgid "DTD"
 msgstr "DTD"
 
 msgctxt "Language|"
+msgid "Devicetree Source (DTS)"
+msgstr ""
+
+msgctxt "Language|"
 msgid "D"
 msgstr "D"
+
+msgctxt "Language|"
+msgid "FreeFEM"
+msgstr ""
 
 msgctxt "Language|"
 msgid "Eiffel"
@@ -584,6 +607,13 @@ msgctxt "Language|"
 msgid "Jira"
 msgstr "Jira"
 
+#, fuzzy
+#| msgctxt "Language|"
+#| msgid "JSON"
+msgctxt "Language|"
+msgid "JSON5"
+msgstr "JSON"
+
 msgctxt "Language|"
 msgid "Jsonnet"
 msgstr "Jsonnet"
@@ -635,6 +665,12 @@ msgctxt "Language|"
 msgid "k"
 msgstr "k"
 
+#, fuzzy
+#| msgid "Save File"
+msgctxt "Language|"
+msgid "LaTeX Log File"
+msgstr "Запісаць файл"
+
 msgctxt "Language|"
 msgid "LaTeX"
 msgstr "LaTeX"
@@ -675,9 +711,23 @@ msgctxt "Language|"
 msgid "Logcat"
 msgstr "Logcat"
 
+#, fuzzy
+#| msgctxt "Language|"
+#| msgid "Log File (advanced)"
+msgctxt "Language|"
+msgid "Log File (advanced) Selector"
+msgstr "Файл журнала (пашыраны)"
+
 msgctxt "Language|"
 msgid "Log File (advanced)"
 msgstr "Файл журнала (пашыраны)"
+
+#, fuzzy
+#| msgctxt "Language|"
+#| msgid "Log File (simplified)"
+msgctxt "Language|"
+msgid "Log File (simplified) Selector"
+msgstr "Файл журнала (спрошчаны)"
 
 msgctxt "Language|"
 msgid "Log File (simplified)"
@@ -840,6 +890,10 @@ msgid "nesC"
 msgstr "nesC"
 
 msgctxt "Language|"
+msgid "NFTables"
+msgstr ""
+
+msgctxt "Language|"
 msgid "nginx Configuration"
 msgstr "Канфігурацыя nginx"
 
@@ -1000,6 +1054,10 @@ msgid "QML"
 msgstr "QML"
 
 msgctxt "Language|"
+msgid "Quarto"
+msgstr ""
+
+msgctxt "Language|"
 msgid "q"
 msgstr "q"
 
@@ -1144,12 +1202,20 @@ msgid "SML"
 msgstr "SML"
 
 msgctxt "Language|"
+msgid "Snakemake"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Snort/Suricata"
 msgstr "Snort/Suricata"
 
 msgctxt "Language|"
 msgid "Solidity"
 msgstr "Solidity"
+
+msgctxt "Language|"
+msgid "SPARQL"
+msgstr ""
 
 msgctxt "Language|"
 msgid "Spice"
@@ -1328,6 +1394,10 @@ msgid "Wayland Trace"
 msgstr "Wayland Trace"
 
 msgctxt "Language|"
+msgid "Web Video Text Tracks"
+msgstr ""
+
+msgctxt "Language|"
 msgid "WINE Config"
 msgstr "Канфігурацыя WINE"
 
@@ -1338,6 +1408,13 @@ msgstr "Мова разметкі Wesnoth"
 msgctxt "Language|"
 msgid "xHarbour"
 msgstr "xHarbour"
+
+#, fuzzy
+#| msgctxt "Language|"
+#| msgid "HTML"
+msgctxt "Language|"
+msgid "XHTML"
+msgstr "HTML"
 
 msgctxt "Language|"
 msgid "XML (Debug)"
@@ -1354,10 +1431,6 @@ msgstr "Xonotic Script"
 msgctxt "Language|"
 msgid "x.org Configuration"
 msgstr "Канфігурацыя x.org"
-
-msgctxt "Language|"
-msgid "xslt"
-msgstr "xslt"
 
 msgctxt "Language|"
 msgid "XUL"
@@ -1724,6 +1797,10 @@ msgstr "Спампоўванне новага азначэння сінтакс�
 msgctxt "QObject|@info"
 msgid "Updating syntax definition for '%1' to version %2…"
 msgstr "Абнаўленне азначэння сінтаксісу для \"%1\" да версіі %2…"
+
+#~ msgctxt "Language|"
+#~ msgid "xslt"
+#~ msgstr "xslt"
 
 #, fuzzy
 #~| msgctxt "Language"
@@ -2630,9 +2707,6 @@ msgstr "Абнаўленне азначэння сінтаксісу для \"%1
 
 #~ msgid "Close Nevertheless"
 #~ msgstr "Усё роўна закрыць!"
-
-#~ msgid "Save File"
-#~ msgstr "Запісаць файл"
 
 #~ msgid "Save failed"
 #~ msgstr "Немагчыма запісаць"

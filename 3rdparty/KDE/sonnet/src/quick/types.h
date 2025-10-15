@@ -7,6 +7,11 @@
 
 #include <Sonnet/Settings>
 
+/*!
+ * \qmltype Settings
+ * \inqmlmodule org.kde.sonnet
+ * \nativetype Sonnet::Settings
+ */
 struct SettingsForeign {
     Q_GADGET
     QML_ELEMENT

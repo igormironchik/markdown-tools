@@ -84,29 +84,4 @@ if(BUILD_DESIGNERPLUGIN)
     add_subdirectory(designer)
 endif()
 
-if (BUILD_QCH)
-    ecm_add_qch(
-        KF6SonnetUi_QCH
-        NAME SonnetUi
-        BASE_NAME KF6SonnetUi
-        VERSION ${KF_VERSION}
-        ORG_DOMAIN org.kde
-        SOURCES # using only public headers, to cover only public API
-            ${SonnetUi_HEADERS}
-        LINK_QCHS
-            Qt6Core_QCH
-            Qt6Gui_QCH
-            Qt6Widgets_QCH
-        INCLUDE_DIRS
-            ${CMAKE_CURRENT_BINARY_DIR}
-        BLANK_MACROS
-            SONNETUI_EXPORT
-            SONNETUI_DEPRECATED_EXPORT
-            SONNETUI_DEPRECATED
-            "SONNETUI_DEPRECATED_VERSION(x, y, t)"
-        TAGFILE_INSTALL_DESTINATION ${KDE_INSTALL_QTQCHDIR}
-        QCH_INSTALL_DESTINATION ${KDE_INSTALL_QTQCHDIR}
-        COMPONENT Devel
-    )
-endif()
-
+ecm_generate_qdoc(KF6SonnetUi sonnetui.qdocconf)

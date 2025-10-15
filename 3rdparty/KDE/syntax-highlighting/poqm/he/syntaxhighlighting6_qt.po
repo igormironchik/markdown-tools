@@ -19,14 +19,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2025-02-18 08:06+0200\n"
+"PO-Revision-Date: 2025-10-04 10:52+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 24.12.1\n"
+"X-Generator: Lokalize 25.08.1\n"
 "Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
 "n % 10 == 0) ? 2 : 3));\n"
 "X-Qt-Contexts: true\n"
@@ -42,6 +42,14 @@ msgstr "ABAP"
 msgctxt "Language|"
 msgid "ABC"
 msgstr "ABC"
+
+msgctxt "Language|"
+msgid "ACPI Source Language"
+msgstr "שפת מקור ACPI"
+
+msgctxt "Language|"
+msgid "ACPI DSL"
+msgstr "ACPI DSL"
 
 msgctxt "Language|"
 msgid "ActionScript 2.0"
@@ -156,6 +164,10 @@ msgid "Cabal"
 msgstr "Cabal"
 
 msgctxt "Language|"
+msgid "Cap'n Proto"
+msgstr "Cap'n Proto"
+
+msgctxt "Language|"
 msgid "CartoCSS MML"
 msgstr "CartoCSS MML"
 
@@ -237,7 +249,7 @@ msgstr "CSS"
 
 msgctxt "Language|"
 msgid "CSV (pipe)"
-msgstr "CSV (קו אופקי)"
+msgstr "CSV (קו אנכי)"
 
 msgctxt "Language|"
 msgid "CSV (semicolon)"
@@ -316,8 +328,16 @@ msgid "DTD"
 msgstr "DTD"
 
 msgctxt "Language|"
+msgid "Devicetree Source (DTS)"
+msgstr "מקור עץ התקן (DTS)"
+
+msgctxt "Language|"
 msgid "D"
 msgstr "D"
+
+msgctxt "Language|"
+msgid "FreeFEM"
+msgstr "FreeFEM"
 
 msgctxt "Language|"
 msgid "Eiffel"
@@ -588,6 +608,10 @@ msgid "Jira"
 msgstr "Jira"
 
 msgctxt "Language|"
+msgid "JSON5"
+msgstr "JSON5"
+
+msgctxt "Language|"
 msgid "Jsonnet"
 msgstr "Jsonnet"
 
@@ -636,6 +660,10 @@ msgid "k"
 msgstr "k"
 
 msgctxt "Language|"
+msgid "LaTeX Log File"
+msgstr "קובץ יומן LaTeX"
+
+msgctxt "Language|"
 msgid "LaTeX"
 msgstr "LaTeX (לאטך)"
 
@@ -676,8 +704,16 @@ msgid "Logcat"
 msgstr "Logcat"
 
 msgctxt "Language|"
+msgid "Log File (advanced) Selector"
+msgstr "בורר קובצי יומן (מתקדם)"
+
+msgctxt "Language|"
 msgid "Log File (advanced)"
 msgstr "קובץ יומן (מתקדם)"
+
+msgctxt "Language|"
+msgid "Log File (simplified) Selector"
+msgstr "בורר קובצי יומן (מפושט)"
 
 msgctxt "Language|"
 msgid "Log File (simplified)"
@@ -840,6 +876,10 @@ msgid "nesC"
 msgstr "nesC"
 
 msgctxt "Language|"
+msgid "NFTables"
+msgstr "NFTables"
+
+msgctxt "Language|"
 msgid "nginx Configuration"
 msgstr "הגדרות nginx"
 
@@ -1000,6 +1040,10 @@ msgid "QML"
 msgstr "QML"
 
 msgctxt "Language|"
+msgid "Quarto"
+msgstr "Quarto"
+
+msgctxt "Language|"
 msgid "q"
 msgstr "q"
 
@@ -1144,12 +1188,20 @@ msgid "SML"
 msgstr "SML"
 
 msgctxt "Language|"
+msgid "Snakemake"
+msgstr "Snakemake"
+
+msgctxt "Language|"
 msgid "Snort/Suricata"
 msgstr "Snort/Suricata"
 
 msgctxt "Language|"
 msgid "Solidity"
 msgstr "Solidity"
+
+msgctxt "Language|"
+msgid "SPARQL"
+msgstr "SPARQL"
 
 msgctxt "Language|"
 msgid "Spice"
@@ -1328,6 +1380,10 @@ msgid "Wayland Trace"
 msgstr "מעקב קריאות של Wayland"
 
 msgctxt "Language|"
+msgid "Web Video Text Tracks"
+msgstr "רצועות טקסט לסרטוני רשת"
+
+msgctxt "Language|"
 msgid "WINE Config"
 msgstr "הגדרות של WINE"
 
@@ -1338,6 +1394,10 @@ msgstr "שפת הסימון Wesnoth"
 msgctxt "Language|"
 msgid "xHarbour"
 msgstr "xHarbour"
+
+msgctxt "Language|"
+msgid "XHTML"
+msgstr "XHTML"
 
 msgctxt "Language|"
 msgid "XML (Debug)"
@@ -1354,10 +1414,6 @@ msgstr "סקריפט Xonotic"
 msgctxt "Language|"
 msgid "x.org Configuration"
 msgstr "הגדרות x.org"
-
-msgctxt "Language|"
-msgid "xslt"
-msgstr "xslt"
 
 msgctxt "Language|"
 msgid "XUL"
@@ -1555,7 +1611,8 @@ msgstr "VSCodium כהה"
 msgctxt "SyntaxHighlightingCLI|"
 msgid ""
 "Command line syntax highlighter using KSyntaxHighlighting syntax definitions."
-msgstr "מדגיש תחביר בשורת הפקודה באמצעות הגדרות התחביר של KSyntaxHighlighting."
+msgstr ""
+"מדגיש תחביר בשורת הפקודות באמצעות הגדרות התחביר של KSyntaxHighlighting."
 
 #: cli/ksyntaxhighlighter.cpp:69
 msgctxt "SyntaxHighlightingCLI|"
@@ -1700,6 +1757,10 @@ msgstr "נמשכת הגדרת תחביר חדשה עבור ‚%1’…"
 msgctxt "QObject|@info"
 msgid "Updating syntax definition for '%1' to version %2…"
 msgstr "גרסת התחביר של ‚%1’ מתעדכנת לגרסה %2…"
+
+#~ msgctxt "Language|"
+#~ msgid "xslt"
+#~ msgstr "xslt"
 
 #, fuzzy
 #~ msgctxt "SyntaxHighlightingCLI|"

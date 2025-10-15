@@ -31,6 +31,17 @@ msgid "ABC"
 msgstr "ABC"
 
 #, fuzzy
+#| msgctxt "Language"
+#| msgid "E Language"
+msgctxt "Language|"
+msgid "ACPI Source Language"
+msgstr "Yezh E"
+
+msgctxt "Language|"
+msgid "ACPI DSL"
+msgstr ""
+
+#, fuzzy
 msgctxt "Language|"
 msgid "ActionScript 2.0"
 msgstr "Urzhiaouegoù"
@@ -176,6 +187,10 @@ msgstr ""
 
 msgctxt "Language|"
 msgid "Cabal"
+msgstr ""
+
+msgctxt "Language|"
+msgid "Cap'n Proto"
 msgstr ""
 
 msgctxt "Language|"
@@ -402,12 +417,20 @@ msgctxt "Language|"
 msgid "DTD"
 msgstr ""
 
+msgctxt "Language|"
+msgid "Devicetree Source (DTS)"
+msgstr ""
+
 #, fuzzy
 #| msgctxt "Language"
 #| msgid "D"
 msgctxt "Language|"
 msgid "D"
 msgstr "D"
+
+msgctxt "Language|"
+msgid "FreeFEM"
+msgstr ""
 
 #, fuzzy
 #| msgctxt "Language"
@@ -764,6 +787,10 @@ msgid "Jira"
 msgstr ""
 
 msgctxt "Language|"
+msgid "JSON5"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Jsonnet"
 msgstr ""
 
@@ -820,6 +847,12 @@ msgstr ""
 msgctxt "Language|"
 msgid "k"
 msgstr ""
+
+#, fuzzy
+#| msgid "Save File"
+msgctxt "Language|"
+msgid "LaTeX Log File"
+msgstr "Enrollañ ar restr"
 
 #, fuzzy
 #| msgctxt "Language"
@@ -883,8 +916,17 @@ msgid "Logcat"
 msgstr ""
 
 msgctxt "Language|"
+msgid "Log File (advanced) Selector"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Log File (advanced)"
 msgstr ""
+
+#, fuzzy
+msgctxt "Language|"
+msgid "Log File (simplified) Selector"
+msgstr "War-gil"
 
 #, fuzzy
 msgctxt "Language|"
@@ -1095,6 +1137,10 @@ msgstr ""
 
 msgctxt "Language|"
 msgid "nesC"
+msgstr ""
+
+msgctxt "Language|"
+msgid "NFTables"
 msgstr ""
 
 #, fuzzy
@@ -1328,6 +1374,10 @@ msgid "QML"
 msgstr "SML"
 
 msgctxt "Language|"
+msgid "Quarto"
+msgstr ""
+
+msgctxt "Language|"
 msgid "q"
 msgstr ""
 
@@ -1516,11 +1566,19 @@ msgid "SML"
 msgstr "SML"
 
 msgctxt "Language|"
+msgid "Snakemake"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Snort/Suricata"
 msgstr ""
 
 msgctxt "Language|"
 msgid "Solidity"
+msgstr ""
+
+msgctxt "Language|"
+msgid "SPARQL"
 msgstr ""
 
 #, fuzzy
@@ -1766,6 +1824,10 @@ msgctxt "Language|"
 msgid "Wayland Trace"
 msgstr ""
 
+msgctxt "Language|"
+msgid "Web Video Text Tracks"
+msgstr ""
+
 #, fuzzy
 #| msgctxt "Language"
 #| msgid "WINE Config"
@@ -1783,6 +1845,13 @@ msgstr ""
 msgctxt "Language|"
 msgid "xHarbour"
 msgstr "xHarbour"
+
+#, fuzzy
+#| msgctxt "Language"
+#| msgid "HTML"
+msgctxt "Language|"
+msgid "XHTML"
+msgstr "HTML"
 
 msgctxt "Language|"
 msgid "XML (Debug)"
@@ -1806,13 +1875,6 @@ msgstr "PostScript"
 msgctxt "Language|"
 msgid "x.org Configuration"
 msgstr "Kefluniadur"
-
-#, fuzzy
-#| msgctxt "Language"
-#| msgid "xslt"
-msgctxt "Language|"
-msgid "xslt"
-msgstr "xslt"
 
 #, fuzzy
 msgctxt "Language|"
@@ -2201,6 +2263,13 @@ msgstr ""
 msgctxt "QObject|@info"
 msgid "Updating syntax definition for '%1' to version %2…"
 msgstr ""
+
+#, fuzzy
+#~| msgctxt "Language"
+#~| msgid "xslt"
+#~ msgctxt "Language|"
+#~ msgid "xslt"
+#~ msgstr "xslt"
 
 #, fuzzy
 #~| msgctxt "Language"
@@ -2926,9 +2995,6 @@ msgstr ""
 #~ msgctxt "short translation, user created new file"
 #~ msgid "New file"
 #~ msgstr "Rizh nevez ar restr"
-
-#~ msgid "Save File"
-#~ msgstr "Enrollañ ar restr"
 
 #~ msgid "Save failed"
 #~ msgstr "Enrollañ sac'het"

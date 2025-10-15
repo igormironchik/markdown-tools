@@ -21,7 +21,7 @@ namespace Sonnet
 {
 class SpellerPlugin;
 
-/**
+/*!
  * \internal
  * Client
  */
@@ -29,32 +29,34 @@ class SONNETCORE_EXPORT Client : public QObject
 {
     Q_OBJECT
 public:
+    /*!
+     */
     explicit Client(QObject *parent = nullptr);
 
-    /**
-     * @returns how reliable the answer is (higher is better).
+    /*!
+     * Returns how reliable the answer is (higher is better).
      */
     virtual int reliability() const = 0;
 
-    /**
+    /*!
      * Returns a dictionary for the given language.
      *
-     * @param language specifies the language of the dictionary. If an
+     * \a language specifies the language of the dictionary. If an
      *        empty string is passed the default language will be
      *        used. Has to be one of the values returned by
      *        languages()
      *
-     * @returns a dictionary for the language or 0 if there was an error.
+     * Returns a dictionary for the language or 0 if there was an error.
      */
     virtual SpellerPlugin *createSpeller(const QString &language) = 0;
 
-    /**
-     * @returns a list of supported languages.
+    /*!
+     * Returns a list of supported languages.
      */
     virtual QStringList languages() const = 0;
 
-    /**
-     * @returns the name of the implementing class.
+    /*!
+     * Returns the name of the implementing class.
      */
     virtual QString name() const = 0;
 };

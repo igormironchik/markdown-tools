@@ -293,7 +293,6 @@ QStringList Settings::defaultIgnoreList()
     l.append(QStringLiteral("KMix"));
     l.append(QStringLiteral("Amarok"));
     l.append(QStringLiteral("KDevelop"));
-    l.append(QStringLiteral("Nepomuk"));
     return l;
 }
 

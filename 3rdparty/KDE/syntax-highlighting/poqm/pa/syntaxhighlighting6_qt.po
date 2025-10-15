@@ -34,6 +34,17 @@ msgctxt "Language|"
 msgid "ABC"
 msgstr "ABC"
 
+#, fuzzy
+#| msgctxt "Language"
+#| msgid "E Language"
+msgctxt "Language|"
+msgid "ACPI Source Language"
+msgstr "E Language"
+
+msgctxt "Language|"
+msgid "ACPI DSL"
+msgstr ""
+
 msgctxt "Language|"
 msgid "ActionScript 2.0"
 msgstr "ActionScript 2.0"
@@ -168,6 +179,10 @@ msgstr "Boo"
 
 msgctxt "Language|"
 msgid "Cabal"
+msgstr ""
+
+msgctxt "Language|"
+msgid "Cap'n Proto"
 msgstr ""
 
 msgctxt "Language|"
@@ -361,8 +376,16 @@ msgid "DTD"
 msgstr "DTD"
 
 msgctxt "Language|"
+msgid "Devicetree Source (DTS)"
+msgstr ""
+
+msgctxt "Language|"
 msgid "D"
 msgstr "D"
+
+msgctxt "Language|"
+msgid "FreeFEM"
+msgstr ""
 
 #, fuzzy
 #| msgctxt "Language"
@@ -676,6 +699,13 @@ msgctxt "Language|"
 msgid "Jira"
 msgstr "ਜ਼ੀਰਾ"
 
+#, fuzzy
+#| msgctxt "Language|"
+#| msgid "JSON"
+msgctxt "Language|"
+msgid "JSON5"
+msgstr "JSON"
+
 msgctxt "Language|"
 msgid "Jsonnet"
 msgstr ""
@@ -731,6 +761,12 @@ msgstr ""
 msgctxt "Language|"
 msgid "k"
 msgstr "k"
+
+#, fuzzy
+#| msgid "Save File"
+msgctxt "Language|"
+msgid "LaTeX Log File"
+msgstr "ਫਾਈਲ ਸੰਭਾਲੋ"
 
 msgctxt "Language|"
 msgid "LaTeX"
@@ -790,9 +826,23 @@ msgctxt "Language|"
 msgid "Logcat"
 msgstr ""
 
+#, fuzzy
+#| msgctxt "Language|"
+#| msgid "Log File (advanced)"
+msgctxt "Language|"
+msgid "Log File (advanced) Selector"
+msgstr "ਲਾਗ ਫਾਇਲ (ਤਕਨੀਕੀ)"
+
 msgctxt "Language|"
 msgid "Log File (advanced)"
 msgstr "ਲਾਗ ਫਾਇਲ (ਤਕਨੀਕੀ)"
+
+#, fuzzy
+#| msgctxt "Language|"
+#| msgid "Log File (simplified)"
+msgctxt "Language|"
+msgid "Log File (simplified) Selector"
+msgstr "ਲਾਗ ਫਾਇਲ (ਸਰਲ)"
 
 msgctxt "Language|"
 msgid "Log File (simplified)"
@@ -1005,6 +1055,10 @@ msgctxt "Language|"
 msgid "nesC"
 msgstr "nesC"
 
+msgctxt "Language|"
+msgid "NFTables"
+msgstr ""
+
 #, fuzzy
 #| msgctxt "Language Section"
 #| msgid "Configuration"
@@ -1209,6 +1263,10 @@ msgid "QML"
 msgstr "QML"
 
 msgctxt "Language|"
+msgid "Quarto"
+msgstr ""
+
+msgctxt "Language|"
 msgid "q"
 msgstr "q"
 
@@ -1390,11 +1448,19 @@ msgid "SML"
 msgstr "SML"
 
 msgctxt "Language|"
+msgid "Snakemake"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Snort/Suricata"
 msgstr ""
 
 msgctxt "Language|"
 msgid "Solidity"
+msgstr ""
+
+msgctxt "Language|"
+msgid "SPARQL"
 msgstr ""
 
 #, fuzzy
@@ -1615,6 +1681,10 @@ msgid "Wayland Trace"
 msgstr "ਵੇਅਲੈਂਡ ਟਰੇਸ"
 
 msgctxt "Language|"
+msgid "Web Video Text Tracks"
+msgstr ""
+
+msgctxt "Language|"
 msgid "WINE Config"
 msgstr "WINE ਸੰਰਚਨਾ"
 
@@ -1625,6 +1695,13 @@ msgstr ""
 msgctxt "Language|"
 msgid "xHarbour"
 msgstr "xHarbour"
+
+#, fuzzy
+#| msgctxt "Language|"
+#| msgid "HTML"
+msgctxt "Language|"
+msgid "XHTML"
+msgstr "HTML"
 
 msgctxt "Language|"
 msgid "XML (Debug)"
@@ -1644,10 +1721,6 @@ msgstr "PostScript"
 msgctxt "Language|"
 msgid "x.org Configuration"
 msgstr "x.org ਸੰਰਚਨਾ"
-
-msgctxt "Language|"
-msgid "xslt"
-msgstr "xslt"
 
 msgctxt "Language|"
 msgid "XUL"
@@ -1996,6 +2069,10 @@ msgstr ""
 msgctxt "QObject|@info"
 msgid "Updating syntax definition for '%1' to version %2…"
 msgstr ""
+
+#~ msgctxt "Language|"
+#~ msgid "xslt"
+#~ msgstr "xslt"
 
 #, fuzzy
 #~| msgid "Select the color scheme to use for the print."
@@ -3055,9 +3132,6 @@ msgstr ""
 
 #~ msgid "Close Nevertheless"
 #~ msgstr "ਕਿੰਝ ਵੀ ਬੰਦ ਕਰੋ"
-
-#~ msgid "Save File"
-#~ msgstr "ਫਾਈਲ ਸੰਭਾਲੋ"
 
 #~ msgid "Save failed"
 #~ msgstr "ਸੰਭਾਲਣਾ ਫੇਲ੍ਹ"

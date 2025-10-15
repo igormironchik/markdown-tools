@@ -32,12 +32,15 @@ public:
         settings = loader->settings();
 
         language = lang;
-        updateDict();
+        m_dict.reset();
     }
 
-    void updateDict()
+    QSharedPointer<SpellerPlugin> dict() const
     {
-        dict = Loader::openLoader()->cachedSpeller(language);
+        if (!m_dict) {
+            m_dict = Loader::openLoader()->cachedSpeller(language);
+        }
+        return m_dict;
     }
 
     bool isValid()
@@ -46,16 +49,16 @@ public:
             recreateDict();
             settings->setModified(false);
         }
-        return !dict.isNull();
+        return !dict().isNull();
     }
 
     void recreateDict()
     {
         Loader::openLoader()->clearSpellerCache();
-        updateDict();
+        m_dict.reset(); // created next time dict() is called.
     }
 
-    QSharedPointer<SpellerPlugin> dict;
+    mutable QSharedPointer<SpellerPlugin> m_dict;
     SettingsImpl *settings = nullptr;
     QString language;
 };
@@ -81,7 +84,7 @@ Speller::Speller(const Speller &speller)
 Speller &Speller::operator=(const Speller &speller)
 {
     d->language = speller.language();
-    d->updateDict();
+    d->m_dict.reset();
     return *this;
 }
 
@@ -90,7 +93,7 @@ bool Speller::isCorrect(const QString &word) const
     if (!d->isValid()) {
         return true;
     }
-    return d->dict->isCorrect(word);
+    return d->dict()->isCorrect(word);
 }
 
 bool Speller::isMisspelled(const QString &word) const
@@ -98,7 +101,7 @@ bool Speller::isMisspelled(const QString &word) const
     if (!d->isValid()) {
         return false;
     }
-    return d->dict->isMisspelled(word);
+    return d->dict()->isMisspelled(word);
 }
 
 QStringList Speller::suggest(const QString &word) const
@@ -106,7 +109,7 @@ QStringList Speller::suggest(const QString &word) const
     if (!d->isValid()) {
         return QStringList();
     }
-    return d->dict->suggest(word);
+    return d->dict()->suggest(word);
 }
 
 bool Speller::checkAndSuggest(const QString &word, QStringList &suggestions) const
@@ -114,7 +117,7 @@ bool Speller::checkAndSuggest(const QString &word, QStringList &suggestions) con
     if (!d->isValid()) {
         return true;
     }
-    return d->dict->checkAndSuggest(word, suggestions);
+    return d->dict()->checkAndSuggest(word, suggestions);
 }
 
 bool Speller::storeReplacement(const QString &bad, const QString &good)
@@ -122,7 +125,7 @@ bool Speller::storeReplacement(const QString &bad, const QString &good)
     if (!d->isValid()) {
         return false;
     }
-    return d->dict->storeReplacement(bad, good);
+    return d->dict()->storeReplacement(bad, good);
 }
 
 bool Speller::addToPersonal(const QString &word)
@@ -130,7 +133,7 @@ bool Speller::addToPersonal(const QString &word)
     if (!d->isValid()) {
         return false;
     }
-    return d->dict->addToPersonal(word);
+    return d->dict()->addToPersonal(word);
 }
 
 bool Speller::addToSession(const QString &word)
@@ -138,7 +141,7 @@ bool Speller::addToSession(const QString &word)
     if (!d->isValid()) {
         return false;
     }
-    return d->dict->addToSession(word);
+    return d->dict()->addToSession(word);
 }
 
 QString Speller::language() const
@@ -146,7 +149,7 @@ QString Speller::language() const
     if (!d->isValid()) {
         return QString();
     }
-    return d->dict->language();
+    return d->dict()->language();
 }
 
 void Speller::save()
@@ -237,13 +240,13 @@ bool Speller::testAttribute(Attribute attr) const
 
 bool Speller::isValid() const
 {
-    return !d->dict.isNull();
+    return !d->dict().isNull();
 }
 
 void Speller::setLanguage(const QString &lang)
 {
     d->language = lang;
-    d->updateDict();
+    d->m_dict.reset();
 }
 
 QMap<QString, QString> Sonnet::Speller::availableDictionaries() const

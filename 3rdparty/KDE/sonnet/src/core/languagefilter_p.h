@@ -19,32 +19,33 @@ namespace Sonnet
 {
 class LanguageFilterPrivate;
 
-/**
-@short Deternmines language for fragments of text
-
-This class takes fragments produced by supplied tokenizer and provides additional information:
-language used in each fragment and if there is spell and grammar checker suitable for the fragment.
-
-*/
+/*!
+ * \brief Deternmines language for fragments of text.
+ *
+ * This class takes fragments produced by supplied tokenizer and provides additional information:
+ * language used in each fragment and if there is spell and grammar checker suitable for the fragment.
+ *
+ * \internal
+ */
 class SONNETCORE_EXPORT LanguageFilter : public AbstractTokenizer
 {
 public:
-    /** Creates language filter for given tokenizer. LanguageFilter takes complete ownership of given tokenizer.
+    /*! Creates language filter for given tokenizer. LanguageFilter takes complete ownership of given tokenizer.
     This means that no source's methods should be called anymore.
     */
     LanguageFilter(AbstractTokenizer *source);
+    /*!
+     */
     LanguageFilter(const LanguageFilter &other);
 
     ~LanguageFilter() override;
 
-    /** Language for token last returned by next() */
+    /*! Language for token last returned by next() */
     QString language() const;
 
-    /** Returns true if there is spellchecker installed for last token's language  */
+    /*! Returns true if there is spellchecker installed for last token's language  */
     bool isSpellcheckable() const;
 
-    /** Returns true if there is grammar checker installed for last token's language */
-    //  bool isGrammarCheckable() const;
     void setBuffer(const QString &buffer) override;
     bool hasNext() const override;
     Token next() override;

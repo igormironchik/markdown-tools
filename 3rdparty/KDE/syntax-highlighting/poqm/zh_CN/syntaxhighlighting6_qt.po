@@ -29,6 +29,14 @@ msgid "ABC"
 msgstr "ABC"
 
 msgctxt "Language|"
+msgid "ACPI Source Language"
+msgstr "ACPI 源语言"
+
+msgctxt "Language|"
+msgid "ACPI DSL"
+msgstr "ACPI DSL"
+
+msgctxt "Language|"
 msgid "ActionScript 2.0"
 msgstr "ActionScript 2.0"
 
@@ -139,6 +147,10 @@ msgstr "Boo"
 msgctxt "Language|"
 msgid "Cabal"
 msgstr "Cabal"
+
+msgctxt "Language|"
+msgid "Cap'n Proto"
+msgstr "Cap'n Proto"
 
 msgctxt "Language|"
 msgid "CartoCSS MML"
@@ -301,8 +313,16 @@ msgid "DTD"
 msgstr "DTD"
 
 msgctxt "Language|"
+msgid "Devicetree Source (DTS)"
+msgstr "Devicetree Source (DTS)"
+
+msgctxt "Language|"
 msgid "D"
 msgstr "D"
+
+msgctxt "Language|"
+msgid "FreeFEM"
+msgstr "FreeFEM"
 
 msgctxt "Language|"
 msgid "Eiffel"
@@ -573,6 +593,10 @@ msgid "Jira"
 msgstr "Jira"
 
 msgctxt "Language|"
+msgid "JSON5"
+msgstr "JSON5"
+
+msgctxt "Language|"
 msgid "Jsonnet"
 msgstr "Jsonnet"
 
@@ -621,6 +645,10 @@ msgid "k"
 msgstr "k"
 
 msgctxt "Language|"
+msgid "LaTeX Log File"
+msgstr "LaTeX Log File"
+
+msgctxt "Language|"
 msgid "LaTeX"
 msgstr "LaTeX"
 
@@ -661,8 +689,16 @@ msgid "Logcat"
 msgstr "Logcat"
 
 msgctxt "Language|"
+msgid "Log File (advanced) Selector"
+msgstr "Log File (advanced) Selector"
+
+msgctxt "Language|"
 msgid "Log File (advanced)"
 msgstr "日志文件 (高级)"
+
+msgctxt "Language|"
+msgid "Log File (simplified) Selector"
+msgstr "Log File (simplified) Selector"
 
 msgctxt "Language|"
 msgid "Log File (simplified)"
@@ -825,6 +861,10 @@ msgid "nesC"
 msgstr "nesC"
 
 msgctxt "Language|"
+msgid "NFTables"
+msgstr "NFTables"
+
+msgctxt "Language|"
 msgid "nginx Configuration"
 msgstr "nginx 配置"
 
@@ -985,6 +1025,10 @@ msgid "QML"
 msgstr "QML"
 
 msgctxt "Language|"
+msgid "Quarto"
+msgstr ""
+
+msgctxt "Language|"
 msgid "q"
 msgstr "q"
 
@@ -1129,12 +1173,20 @@ msgid "SML"
 msgstr "SML"
 
 msgctxt "Language|"
+msgid "Snakemake"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Snort/Suricata"
 msgstr "Snort/Suricata"
 
 msgctxt "Language|"
 msgid "Solidity"
 msgstr "Solidity"
+
+msgctxt "Language|"
+msgid "SPARQL"
+msgstr "SPARQL"
 
 msgctxt "Language|"
 msgid "Spice"
@@ -1313,6 +1365,10 @@ msgid "Wayland Trace"
 msgstr "Wayland 追踪回溯"
 
 msgctxt "Language|"
+msgid "Web Video Text Tracks"
+msgstr "Web Video Text Tracks"
+
+msgctxt "Language|"
 msgid "WINE Config"
 msgstr "WINE 配置"
 
@@ -1323,6 +1379,10 @@ msgstr "Wesnoth 标记语言"
 msgctxt "Language|"
 msgid "xHarbour"
 msgstr "xHarbour"
+
+msgctxt "Language|"
+msgid "XHTML"
+msgstr "XHTML"
 
 msgctxt "Language|"
 msgid "XML (Debug)"
@@ -1339,10 +1399,6 @@ msgstr "Xonotic 脚本"
 msgctxt "Language|"
 msgid "x.org Configuration"
 msgstr "x.org 配置"
-
-msgctxt "Language|"
-msgid "xslt"
-msgstr "xslt"
 
 msgctxt "Language|"
 msgid "XUL"

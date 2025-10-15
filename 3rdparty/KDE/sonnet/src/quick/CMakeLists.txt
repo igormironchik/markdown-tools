@@ -19,3 +19,5 @@ target_link_libraries(sonnetquickplugin
 )
 
 ecm_finalize_qml_module(sonnetquickplugin DESTINATION ${KDE_INSTALL_QMLDIR})
+
+ecm_generate_qdoc(sonnetquickplugin sonnetquick.qdocconf)

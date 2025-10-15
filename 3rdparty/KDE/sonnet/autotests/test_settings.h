@@ -1,4 +1,4 @@
-/**
+/*
  * SPDX-FileCopyrightText: 2015 Kåre Särs <kare.sars@iki.fi>
  *
  * SPDX-License-Identifier: LGPL-2.1-or-later

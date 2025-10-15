@@ -12,7 +12,7 @@
 
 <beginfold id='5'><</beginfold id='5'>element attr1="a1" attr2="2.03" attr3="&entity;">
     <beginfold id='5'><</beginfold id='5'>sub-element<endfold id='5'>/></endfold id='5'>
-</element<endfold id='5'>></endfold id='5'>
+<endfold id='5'></</endfold id='5'>element>
 
 This is a pseudo XML file to test Kate's XML syntax highlighting.
 
@@ -30,7 +30,7 @@ Comments:
 	using more than one line <endfold id='4'>--></endfold id='4'>
 
 Comment inside element:
-	<beginfold id='5'><</beginfold id='5'>element attr="foobar">content<beginfold id='4'><!--</beginfold id='4'> comment <endfold id='4'>--></endfold id='4'></element<endfold id='5'>></endfold id='5'>
+	<beginfold id='5'><</beginfold id='5'>element attr="foobar">content<beginfold id='4'><!--</beginfold id='4'> comment <endfold id='4'>--></endfold id='4'><endfold id='5'></</endfold id='5'>element>
 
 Markup inside comment:
 	<beginfold id='4'><!--</beginfold id='4'>
@@ -38,18 +38,36 @@ Markup inside comment:
 	<element inside_comment />
 	<endfold id='4'>--></endfold id='4'>
 
+Double hyphen within comment:
+<beginfold id='4'><!--</beginfold id='4'>
+    -
+    error: --
+    error: ---
+<endfold id='4'>--></endfold id='4'>
+<beginfold id='4'><!--</beginfold id='4'> 1 '-' as error -<endfold id='4'>--></endfold id='4'>
+<beginfold id='4'><!--</beginfold id='4'> 2 '-' as error --<endfold id='4'>--></endfold id='4'>
+<beginfold id='4'><!--</beginfold id='4'> 3 '-' as error ---<endfold id='4'>--></endfold id='4'>
+<beginfold id='4'><!--</beginfold id='4'> 4 '-' as error ----<endfold id='4'>--></endfold id='4'>
+
+CDATA:
+  <beginfold id='6'><![</beginfold id='6'>CDATA[ <![CDATA[ ]]&lt; >
+    bla bla <element/>
+  <endfold id='6'>]]></endfold id='6'>
+  ]]> <beginfold id='4'><!--</beginfold id='4'> error <endfold id='4'>--></endfold id='4'>
+
 Empty element:
 	<beginfold id='5'><</beginfold id='5'>empty<endfold id='5'>/></endfold id='5'>
 	<beginfold id='5'><</beginfold id='5'>empty  <endfold id='5'>/></endfold id='5'>
 
 Simple element plus content:
-	<beginfold id='5'><</beginfold id='5'>element>some content</element<endfold id='5'>></endfold id='5'>
+	<beginfold id='5'><</beginfold id='5'>element>some content<endfold id='5'></</endfold id='5'>element>
 	<beginfold id='5'><</beginfold id='5'>element attr="foobar">some
-		content</element<endfold id='5'>></endfold id='5'>
+		content<endfold id='5'></</endfold id='5'>element>
+	<beginfold id='5'><</beginfold id='5'>element>some content<endfold id='5'></</endfold id='5'>element oups="value">
 
 Namespace for elements and attributes:
-	<beginfold id='5'><</beginfold id='5'>ns:element>content</ns:element<endfold id='5'>></endfold id='5'>
-	<beginfold id='5'><</beginfold id='5'>element ns:attr="content content">content</element<endfold id='5'>></endfold id='5'>
+	<beginfold id='5'><</beginfold id='5'>ns:element>content<endfold id='5'></</endfold id='5'>ns:element>
+	<beginfold id='5'><</beginfold id='5'>element ns:attr="content content">content<endfold id='5'></</endfold id='5'>element>
 
 Elements containing allowed characters:
 	<beginfold id='5'><</beginfold id='5'>element-dash foo="test"<endfold id='5'>/></endfold id='5'>
@@ -60,11 +78,11 @@ Elements containing allowed start characters:
 	<beginfold id='5'><</beginfold id='5'>_element foo="test"<endfold id='5'>/></endfold id='5'>
 
 Single quotes (the same as double quotes):
-	<beginfold id='5'><</beginfold id='5'>element attr='content &nbsp; content'>content</element<endfold id='5'>></endfold id='5'>
+	<beginfold id='5'><</beginfold id='5'>element attr='content &nbsp; content'>content<endfold id='5'></</endfold id='5'>element>
 
 Allowed Whitespace:
 	<beginfold id='5'><</beginfold id='5'>element     attr   =   "test"  >
-		content</element<endfold id='5'>></endfold id='5'>
+		content<endfold id='5'></</endfold id='5'>element>
 
 Entities:
 	&nbsp;
@@ -80,3 +98,55 @@ Illegal XML, should not be highlighted:
 	<-foo> -- no dash as first character
 
 <beginfold id='5'><</beginfold id='5'>wrong<very wrong>>
+<beginfold id='5'><</beginfold id='5'>tag attr="abc"<endfold id='5'>/></endfold id='5'>
+
+<beginfold id='5'><</beginfold id='5'>wrong<beginfold id='4'><!--</beginfold id='4'>very wrong<endfold id='4'>--></endfold id='4'>>
+<beginfold id='5'><</beginfold id='5'>tag attr="abc"<endfold id='5'>/></endfold id='5'>
+
+<beginfold id='5'><</beginfold id='5'>wrong<beginfold id='6'><![CDATA[</beginfold id='6'>very wrong<endfold id='6'>]]></endfold id='6'>
+<beginfold id='5'><</beginfold id='5'>tag attr="abc"<endfold id='5'>/></endfold id='5'>
+
+<beginfold id='4'><!--</beginfold id='4'> missing > <endfold id='4'>--></endfold id='4'>
+
+<beginfold id='5'><</beginfold id='5'>wrong<tag attr="abc"<endfold id='5'>/></endfold id='5'>
+<beginfold id='5'><</beginfold id='5'>wrong<beginfold id='4'><!--</beginfold id='4'>bla bla<endfold id='4'>--></endfold id='4'><beginfold id='5'><</beginfold id='5'>tag attr="abc"<endfold id='5'>/></endfold id='5'>
+<beginfold id='5'><</beginfold id='5'>wrong<beginfold id='6'><![CDATA[</beginfold id='6'>bla bla<endfold id='6'>]]></endfold id='6'><beginfold id='5'><</beginfold id='5'>tag attr="abc"<endfold id='5'>/></endfold id='5'>
+
+<beginfold id='4'><!--</beginfold id='4'> / without > <endfold id='4'>--></endfold id='4'>
+
+<beginfold id='5'><</beginfold id='5'>wrong<endfold id='5'>/</endfold id='5'><beginfold id='5'><</beginfold id='5'>tag attr="abc"<endfold id='5'>/></endfold id='5'>
+<beginfold id='5'><</beginfold id='5'>wrong<endfold id='5'>/</endfold id='5'><beginfold id='4'><!--</beginfold id='4'>bla bla<endfold id='4'>--></endfold id='4'><beginfold id='5'><</beginfold id='5'>tag attr="abc"<endfold id='5'>/></endfold id='5'>
+<beginfold id='5'><</beginfold id='5'>wrong<endfold id='5'>/</endfold id='5'><beginfold id='6'><![</beginfold id='6'>CDATA[bla bla<endfold id='6'>]]></endfold id='6'><beginfold id='5'><</beginfold id='5'>tag attr="abc"<endfold id='5'>/></endfold id='5'>
+
+<beginfold id='4'><!--</beginfold id='4'> mising attribute name <endfold id='4'>--></endfold id='4'>
+
+<beginfold id='5'><</beginfold id='5'>wrong ="abc"<endfold id='5'>/></endfold id='5'><beginfold id='5'><</beginfold id='5'>tag attr="abc"<endfold id='5'>/></endfold id='5'>
+<beginfold id='5'><</beginfold id='5'>wrong ="abc"<endfold id='5'>/></endfold id='5'><beginfold id='4'><!--</beginfold id='4'>bla bla<endfold id='4'>--></endfold id='4'>
+<beginfold id='5'><</beginfold id='5'>wrong ="abc"<endfold id='5'>/></endfold id='5'><beginfold id='6'><![</beginfold id='6'>CDATA[bla bla<endfold id='6'>]]></endfold id='6'>
+
+<beginfold id='4'><!--</beginfold id='4'> invalid attribute name (missing space) <endfold id='4'>--></endfold id='4'>
+
+<beginfold id='5'><</beginfold id='5'>wrong attr="abc"attr="abc"<endfold id='5'>/></endfold id='5'><beginfold id='5'><</beginfold id='5'>tag attr="abc"<endfold id='5'>/></endfold id='5'>
+<beginfold id='5'><</beginfold id='5'>wrong attr="abc"attr="abc"<endfold id='5'>/></endfold id='5'><beginfold id='4'><!--</beginfold id='4'>bla bla<endfold id='4'>--></endfold id='4'>
+<beginfold id='5'><</beginfold id='5'>wrong attr="abc"attr="abc"<endfold id='5'>/></endfold id='5'><beginfold id='6'><![</beginfold id='6'>CDATA[bla bla<endfold id='6'>]]></endfold id='6'>
+
+<beginfold id='4'><!--</beginfold id='4'> mising value attribute <endfold id='4'>--></endfold id='4'>
+
+<beginfold id='5'><</beginfold id='5'>wrong attr<endfold id='5'>/></endfold id='5'><beginfold id='5'><</beginfold id='5'>tag attr="abc"<endfold id='5'>/></endfold id='5'>
+<beginfold id='5'><</beginfold id='5'>wrong attr<endfold id='5'>/></endfold id='5'><beginfold id='4'><!--</beginfold id='4'>bla bla<endfold id='4'>--></endfold id='4'><beginfold id='5'><</beginfold id='5'>tag attr="abc"<endfold id='5'>/></endfold id='5'>
+<beginfold id='5'><</beginfold id='5'>wrong attr<endfold id='5'>/></endfold id='5'><beginfold id='6'><![</beginfold id='6'>CDATA[bla bla<endfold id='6'>]]></endfold id='6'><beginfold id='5'><</beginfold id='5'>tag attr="abc"<endfold id='5'>/></endfold id='5'>
+
+<beginfold id='5'><</beginfold id='5'>wrong attr=<endfold id='5'>/></endfold id='5'><beginfold id='5'><</beginfold id='5'>tag attr="abc"<endfold id='5'>/></endfold id='5'>
+<beginfold id='5'><</beginfold id='5'>wrong attr=<endfold id='5'>/></endfold id='5'><beginfold id='4'><!--</beginfold id='4'>bla bla<endfold id='4'>--></endfold id='4'><beginfold id='5'><</beginfold id='5'>tag attr="abc"<endfold id='5'>/></endfold id='5'>
+<beginfold id='5'><</beginfold id='5'>wrong attr=<endfold id='5'>/></endfold id='5'><beginfold id='6'><![</beginfold id='6'>CDATA[bla bla<endfold id='6'>]]></endfold id='6'><beginfold id='5'><</beginfold id='5'>tag attr="abc"<endfold id='5'>/></endfold id='5'>
+
+<beginfold id='4'><!--</beginfold id='4'> error followed by text <endfold id='4'>--></endfold id='4'>
+
+<beginfold id='5'><</beginfold id='5'>wrong at
+  bla bla bla
+  bla bla bla
+
+<beginfold id='5'><</beginfold id='5'>wrong at
+    attr="abc"
+  bla bla bla
+  bla bla bla

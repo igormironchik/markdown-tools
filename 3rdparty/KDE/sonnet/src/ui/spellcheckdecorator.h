@@ -22,37 +22,38 @@ namespace Sonnet
 class SpellCheckDecoratorPrivate;
 class Highlighter;
 
-/**
- * @class Sonnet::SpellCheckDecorator spellcheckdecorator.h <Sonnet/SpellCheckDecorator>
+/*!
+ * \class Sonnet::SpellCheckDecorator
+ * \inheaderfile Sonnet/SpellCheckDecorator
+ * \inmodule KF6Sonnet
  *
- * @short Connects a Sonnet::Highlighter to a QTextEdit extending the context menu
- * of the text edit with spell check suggestions
- * @author Aurélien Gâteau <agateau@kde.org>
- * @since 5.0
- **/
+ * \brief Connects a Sonnet::Highlighter to a QTextEdit extending the context menu
+ * of the text edit with spell check suggestions.
+ * \since 5.0
+ */
 
 class SONNETUI_EXPORT SpellCheckDecorator : public QObject
 {
     Q_OBJECT
 public:
-    /**
+    /*!
      * Creates a spell-check decorator.
      *
-     * @param textEdit the QTextEdit in need of spell-checking. It also is used as the QObject parent for the decorator.
+     * \a textEdit the QTextEdit in need of spell-checking. It also is used as the QObject parent for the decorator.
      */
     explicit SpellCheckDecorator(QTextEdit *textEdit);
 
-    /**
+    /*!
      * Creates a spell-check decorator.
      *
-     * @param textEdit the QPlainTextEdit in need of spell-checking. It also is used as the QObject parent for the decorator.
-     * @since 5.12
+     * \a textEdit the QPlainTextEdit in need of spell-checking. It also is used as the QObject parent for the decorator.
+     * \since 5.12
      */
     explicit SpellCheckDecorator(QPlainTextEdit *textEdit);
 
     ~SpellCheckDecorator() override;
 
-    /**
+    /*!
      * Set a custom highlighter on the decorator.
      *
      * SpellCheckDecorator does not take ownership of the new highlighter,
@@ -60,7 +61,7 @@ public:
      */
     void setHighlighter(Highlighter *highlighter);
 
-    /**
+    /*!
      * Returns the hightlighter used by the decorator
      */
     Highlighter *highlighter() const;
@@ -68,7 +69,7 @@ public:
 protected:
     bool eventFilter(QObject *obj, QEvent *event) override;
 
-    /**
+    /*!
      * Returns true if the spell checking should be enabled for a given block of text
      * The default implementation always returns true.
      */

@@ -35,6 +35,16 @@ msgid "ABC"
 msgstr "एबीसी"
 
 #, fuzzy
+#| msgid "E Language"
+msgctxt "Language|"
+msgid "ACPI Source Language"
+msgstr "ई लैंग्वेज"
+
+msgctxt "Language|"
+msgid "ACPI DSL"
+msgstr ""
+
+#, fuzzy
 #| msgid "ActionScript 2.0"
 msgctxt "Language|"
 msgid "ActionScript 2.0"
@@ -174,6 +184,10 @@ msgstr ""
 
 msgctxt "Language|"
 msgid "Cabal"
+msgstr ""
+
+msgctxt "Language|"
+msgid "Cap'n Proto"
 msgstr ""
 
 msgctxt "Language|"
@@ -384,11 +398,19 @@ msgctxt "Language|"
 msgid "DTD"
 msgstr ""
 
+msgctxt "Language|"
+msgid "Devicetree Source (DTS)"
+msgstr ""
+
 #, fuzzy
 #| msgid "D"
 msgctxt "Language|"
 msgid "D"
 msgstr "डी"
+
+msgctxt "Language|"
+msgid "FreeFEM"
+msgstr ""
 
 #, fuzzy
 #| msgid "Eiffel"
@@ -721,6 +743,10 @@ msgid "Jira"
 msgstr ""
 
 msgctxt "Language|"
+msgid "JSON5"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Jsonnet"
 msgstr ""
 
@@ -777,6 +803,12 @@ msgid "k"
 msgstr ""
 
 #, fuzzy
+#| msgid "Save File"
+msgctxt "Language|"
+msgid "LaTeX Log File"
+msgstr "फ़ाइल सहेजें"
+
+#, fuzzy
 #| msgid "LaTeX"
 msgctxt "Language|"
 msgid "LaTeX"
@@ -831,8 +863,18 @@ msgid "Logcat"
 msgstr ""
 
 msgctxt "Language|"
+msgid "Log File (advanced) Selector"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Log File (advanced)"
 msgstr ""
+
+#, fuzzy
+#| msgid "Namespace"
+msgctxt "Language|"
+msgid "Log File (simplified) Selector"
+msgstr "नेमस्पेस"
 
 #, fuzzy
 #| msgid "Namespace"
@@ -1036,6 +1078,10 @@ msgstr "नेमेरल"
 
 msgctxt "Language|"
 msgid "nesC"
+msgstr ""
+
+msgctxt "Language|"
+msgid "NFTables"
 msgstr ""
 
 #, fuzzy
@@ -1251,6 +1297,10 @@ msgid "QML"
 msgstr "एसएमएल"
 
 msgctxt "Language|"
+msgid "Quarto"
+msgstr ""
+
+msgctxt "Language|"
 msgid "q"
 msgstr ""
 
@@ -1433,11 +1483,19 @@ msgid "SML"
 msgstr "एसएमएल"
 
 msgctxt "Language|"
+msgid "Snakemake"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Snort/Suricata"
 msgstr ""
 
 msgctxt "Language|"
 msgid "Solidity"
+msgstr ""
+
+msgctxt "Language|"
+msgid "SPARQL"
 msgstr ""
 
 #, fuzzy
@@ -1662,6 +1720,10 @@ msgctxt "Language|"
 msgid "Wayland Trace"
 msgstr ""
 
+msgctxt "Language|"
+msgid "Web Video Text Tracks"
+msgstr ""
+
 #, fuzzy
 #| msgid "WINE Config"
 msgctxt "Language|"
@@ -1677,6 +1739,12 @@ msgstr ""
 msgctxt "Language|"
 msgid "xHarbour"
 msgstr "एक्स-हॉर्बर"
+
+#, fuzzy
+#| msgid "HTML"
+msgctxt "Language|"
+msgid "XHTML"
+msgstr "एचटीएमएल"
 
 #, fuzzy
 #| msgid "XML (Debug)"
@@ -1701,12 +1769,6 @@ msgstr "पोस्टस्क्रिप्ट"
 msgctxt "Language|"
 msgid "x.org Configuration"
 msgstr "एक्स.ऑर्ग कॉन्फ़िगरेशन"
-
-#, fuzzy
-#| msgid "xslt"
-msgctxt "Language|"
-msgid "xslt"
-msgstr "एक्सएसएलटी"
 
 #, fuzzy
 #| msgid "XUL"
@@ -2089,6 +2151,12 @@ msgstr ""
 msgctxt "QObject|@info"
 msgid "Updating syntax definition for '%1' to version %2…"
 msgstr ""
+
+#, fuzzy
+#~| msgid "xslt"
+#~ msgctxt "Language|"
+#~ msgid "xslt"
+#~ msgstr "एक्सएसएलटी"
 
 #, fuzzy
 #~| msgid "Bash"
@@ -3296,9 +3364,6 @@ msgstr ""
 
 #~ msgid "Close Nevertheless"
 #~ msgstr "जो भी हो, बन्द करें"
-
-#~ msgid "Save File"
-#~ msgstr "फ़ाइल सहेजें"
 
 #~ msgid "Save failed"
 #~ msgstr "सहेजना असफल"

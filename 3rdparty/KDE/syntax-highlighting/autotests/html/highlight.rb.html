@@ -409,10 +409,13 @@ total<span style="color:#ca60ca;font-weight:bold">/</span>count<span style="colo
 total<span style="color:#ca60ca;font-weight:bold">/</span>(count<span style="color:#ca60ca;font-weight:bold">/</span><span style="color:#b08000">2</span>) <span style="color:#898887"># both division</span>
 
 <span style="color:#006e28">@foo</span><span style="color:#ca60ca;font-weight:bold">/</span><span style="color:#b08000">10</span>         <span style="color:#898887"># division</span>
-<span style="color:#006e28">@foo</span> <span style="color:#ca60ca;font-weight:bold">/</span><span style="color:#b08000">10</span>        <span style="color:#898887"># division</span>
+<span style="color:#006e28">@foo</span> <span style="color:#ff5500">/10/</span>       <span style="color:#898887"># reregexp</span>
 
 <span style="color:#bf0303">"hello"</span><span style="color:#ca60ca;font-weight:bold">/</span><span style="color:#b08000">10</span>      <span style="color:#898887"># division</span>
 <span style="color:#bf0303">"hello"</span> <span style="color:#ca60ca;font-weight:bold">/</span> <span style="color:#b08000">10</span>    <span style="color:#898887"># division</span>
+
+<span style="color:#bf0303">"a"</span><span style="color:#0057ae">.</span><span style="color:#0057ae">match</span><span style="color:#ca60ca;font-weight:bold">/</span><span style="color:#b08000">10</span>    <span style="color:#898887"># division</span>
+<span style="color:#bf0303">"a"</span><span style="color:#0057ae">.</span><span style="color:#0057ae">match</span> <span style="color:#ff5500">/10/</span>  <span style="color:#898887"># reg</span>
 
 <span style="color:#ff5500">/regexp/</span><span style="color:#ca60ca;font-weight:bold">/</span><span style="color:#b08000">10</span>     <span style="color:#898887"># division</span>
 <span style="color:#ff5500">/regexp/</span> <span style="color:#ca60ca;font-weight:bold">/</span> <span style="color:#b08000">10</span>   <span style="color:#898887"># division</span>
@@ -517,6 +520,8 @@ result <span style="color:#ca60ca;font-weight:bold">=</span> <span style="color:
 <span style="color:#006e28">%s&lt;</span><span style="color:#bf0303">one two three \n#{123} [&lt;({nested})>]</span><span style="color:#006e28">></span>
 <span style="color:#006e28">%s[</span><span style="color:#bf0303">one two three \n#{123} [&lt;({nested})>]</span><span style="color:#006e28">]</span>
 
+string_in_array <span style="color:#ca60ca;font-weight:bold">=</span> <span style="font-weight:bold">[</span><span style="color:#006e28">%(</span><span style="color:#3daee9">#{</span>x<span style="color:#3daee9">}</span><span style="color:#bf0303"> test</span><span style="color:#006e28">)</span><span style="font-weight:bold">]</span>
+
 <span style="color:#898887"># number</span>
 <span style="color:#898887"># binary</span>
 <span style="color:#b08000">0b001</span>
@@ -585,6 +590,8 @@ Abc? A1b? Ab1? ABC1a?
 
 <span style="color:#898887"># "member access"</span>
 <span style="color:#aa5500;font-weight:bold">POP</span><span style="color:#ca60ca;font-weight:bold">::</span><span style="color:#0057ae">Session</span><span style="color:#0057ae">.</span><span style="color:#aa5500">COUNT</span><span style="color:#0057ae">.</span><span style="color:#0057ae">attribute</span><span style="color:#0057ae">.</span><span style="color:#0057ae">calc_with</span>(<span style="color:#b08000">2</span>)<span style="color:#ca60ca;font-weight:bold">{</span> <span style="color:#ca60ca;font-weight:bold">|</span>arg<span style="color:#ca60ca;font-weight:bold">|</span> <span style="color:#644a9b;font-weight:bold">puts</span> arg <span style="color:#ca60ca;font-weight:bold">}</span>
+<span style="color:#644a9b;font-weight:bold">raise</span> <span style="color:#0057ae">Module</span><span style="color:#ca60ca;font-weight:bold">::</span><span style="color:#0057ae">Class</span>
+<span style="color:#0057ae">Module</span><span style="color:#ca60ca;font-weight:bold">::</span><span style="color:#0057ae">Class</span>
 
 <span style="color:#898887"># snippet from Net::SMTP</span>
 <span style="color:#898887"># This breaks the code folding. I think we would need to</span>
@@ -665,6 +672,8 @@ foo?(<span style="color:#3daee9">?</span><span style="color:#924c9d">a</span> <s
 foo?<span style="color:#3daee9">?</span><span style="color:#924c9d">a</span><span style="color:#ca60ca;font-weight:bold">?</span><span style="color:#b08000">1</span><span style="color:#ca60ca;font-weight:bold">:</span> <span style="color:#bf0303">:a</span>
 foo?(<span style="color:#3daee9">?</span><span style="color:#924c9d">a</span> <span style="color:#ca60ca;font-weight:bold">?</span> <span style="color:#b08000">1</span> <span style="color:#ca60ca;font-weight:bold">:</span> <span style="color:#b08000">2</span>) <span style="color:#898887"># or</span>
 foo?<span style="color:#3daee9">?</span><span style="color:#924c9d">a</span><span style="color:#ca60ca;font-weight:bold">?</span><span style="color:#b08000">1</span><span style="color:#ca60ca;font-weight:bold">:</span> <span style="color:#b08000">2</span>
+
+data <span style="color:#ca60ca;font-weight:bold">=</span> <span style="color:#006e28">@hash</span><span style="color:#0057ae">.</span><span style="color:#0057ae">slice</span> <span style="color:#bf0303">:key_one</span>, <span style="color:#bf0303">:key_two</span>
 
 <span style="color:#bf0303">"</span><span style="color:#3daee9">#{</span><span style="color:#ca60ca;font-weight:bold">{</span><span style="color:#bf0303">a:</span><span style="color:#ca60ca;font-weight:bold">}</span><span style="color:#3daee9">}</span><span style="color:#bf0303">"</span>
 <span style="color:#898887"># break substitution</span>

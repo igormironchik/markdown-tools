@@ -2,13 +2,13 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # SPDX-FileCopyrightText: 2010, 2011, 2012, 2013, 2014, 2016, 2019, 2020, 2021, 2022, 2023, 2024, 2025 g.sora <g.sora@tiscali.it>
-# giovanni <g.sora@tiscali.it>, 2023, 2024.
+# giovanni <g.sora@tiscali.it>, 2023, 2024, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2016-09-08 07:30+0000\n"
-"PO-Revision-Date: 2025-02-18 15:31+0100\n"
+"PO-Revision-Date: 2025-05-30 19:01+0200\n"
 "Last-Translator: giovanni <g.sora@tiscali.it>\n"
 "Language-Team: Italian <kde-i18n-doc@kde.org>\n"
 "Language: ia\n"
@@ -30,6 +30,14 @@ msgstr "ABAP"
 msgctxt "Language|"
 msgid "ABC"
 msgstr "ABC"
+
+msgctxt "Language|"
+msgid "ACPI Source Language"
+msgstr "Linguage de Fonte ACPI"
+
+msgctxt "Language|"
+msgid "ACPI DSL"
+msgstr "ACPI DSL"
 
 msgctxt "Language|"
 msgid "ActionScript 2.0"
@@ -142,6 +150,10 @@ msgstr "Boo"
 msgctxt "Language|"
 msgid "Cabal"
 msgstr "Cabal"
+
+msgctxt "Language|"
+msgid "Cap'n Proto"
+msgstr "Cap'n Proto"
 
 msgctxt "Language|"
 msgid "CartoCSS MML"
@@ -304,8 +316,16 @@ msgid "DTD"
 msgstr "DTD"
 
 msgctxt "Language|"
+msgid "Devicetree Source (DTS)"
+msgstr "Devicetree Source (DTS)"
+
+msgctxt "Language|"
 msgid "D"
 msgstr "D"
+
+msgctxt "Language|"
+msgid "FreeFEM"
+msgstr "FreeFEM"
 
 msgctxt "Language|"
 msgid "Eiffel"
@@ -575,6 +595,13 @@ msgctxt "Language|"
 msgid "Jira"
 msgstr "Jira"
 
+#, fuzzy
+#| msgctxt "Language|"
+#| msgid "JSON"
+msgctxt "Language|"
+msgid "JSON5"
+msgstr "JSON"
+
 msgctxt "Language|"
 msgid "Jsonnet"
 msgstr "Jsonnet"
@@ -623,6 +650,12 @@ msgctxt "Language|"
 msgid "k"
 msgstr "k"
 
+#, fuzzy
+#| msgid "Save File"
+msgctxt "Language|"
+msgid "LaTeX Log File"
+msgstr "Salveguarda file"
+
 msgctxt "Language|"
 msgid "LaTeX"
 msgstr "LaTeX"
@@ -663,9 +696,23 @@ msgctxt "Language|"
 msgid "Logcat"
 msgstr "Logcat"
 
+#, fuzzy
+#| msgctxt "Language|"
+#| msgid "Log File (advanced)"
+msgctxt "Language|"
+msgid "Log File (advanced) Selector"
+msgstr "File de Registro (avantiate="
+
 msgctxt "Language|"
 msgid "Log File (advanced)"
 msgstr "File de Registro (avantiate="
+
+#, fuzzy
+#| msgctxt "Language|"
+#| msgid "Log File (simplified)"
+msgctxt "Language|"
+msgid "Log File (simplified) Selector"
+msgstr "File de registro (simplificate"
 
 msgctxt "Language|"
 msgid "Log File (simplified)"
@@ -828,6 +875,10 @@ msgid "nesC"
 msgstr "nesC"
 
 msgctxt "Language|"
+msgid "NFTables"
+msgstr ""
+
+msgctxt "Language|"
 msgid "nginx Configuration"
 msgstr "Configuration de nginx"
 
@@ -988,6 +1039,10 @@ msgid "QML"
 msgstr "QML"
 
 msgctxt "Language|"
+msgid "Quarto"
+msgstr ""
+
+msgctxt "Language|"
 msgid "q"
 msgstr "q"
 
@@ -1132,12 +1187,20 @@ msgid "SML"
 msgstr "SML"
 
 msgctxt "Language|"
+msgid "Snakemake"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Snort/Suricata"
 msgstr "Snort/Suricata"
 
 msgctxt "Language|"
 msgid "Solidity"
 msgstr "Soliditate (Solidity)"
+
+msgctxt "Language|"
+msgid "SPARQL"
+msgstr ""
 
 msgctxt "Language|"
 msgid "Spice"
@@ -1316,6 +1379,10 @@ msgid "Wayland Trace"
 msgstr "Tarcia de Wayland"
 
 msgctxt "Language|"
+msgid "Web Video Text Tracks"
+msgstr ""
+
+msgctxt "Language|"
 msgid "WINE Config"
 msgstr "Configuration de WINE"
 
@@ -1326,6 +1393,13 @@ msgstr "Linguage de Markup de Wesnoth"
 msgctxt "Language|"
 msgid "xHarbour"
 msgstr "xHarbour"
+
+#, fuzzy
+#| msgctxt "Language|"
+#| msgid "HTML"
+msgctxt "Language|"
+msgid "XHTML"
+msgstr "HTML"
 
 msgctxt "Language|"
 msgid "XML (Debug)"
@@ -1342,10 +1416,6 @@ msgstr "Xonotic Script"
 msgctxt "Language|"
 msgid "x.org Configuration"
 msgstr "Configuration de x.org"
-
-msgctxt "Language|"
-msgid "xslt"
-msgstr "xslt"
 
 msgctxt "Language|"
 msgid "XUL"
@@ -1694,6 +1764,10 @@ msgstr "Discargante nove definition de syntaxe per '%1'..."
 msgctxt "QObject|@info"
 msgid "Updating syntax definition for '%1' to version %2…"
 msgstr "Actualisante definition de syntaxe per '%1' a version %2.."
+
+#~ msgctxt "Language|"
+#~ msgid "xslt"
+#~ msgstr "xslt"
 
 #~ msgctxt "SyntaxHighlightingCLI|"
 #~ msgid "The source file to highlight."
@@ -3280,9 +3354,6 @@ msgstr "Actualisante definition de syntaxe per '%1' a version %2.."
 
 #~ msgid "Close Nevertheless"
 #~ msgstr "Claude nonobstante isto"
-
-#~ msgid "Save File"
-#~ msgstr "Salveguarda file"
 
 #~ msgid "Save failed"
 #~ msgstr "Salvamento fallite"

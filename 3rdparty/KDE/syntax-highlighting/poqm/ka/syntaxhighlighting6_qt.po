@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Qt-Contexts: true\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Poedit 3.7\n"
 
 msgctxt "Language|"
 msgid "4DOS BatchToMemory"
@@ -24,6 +24,14 @@ msgstr "ABAP"
 msgctxt "Language|"
 msgid "ABC"
 msgstr "ABC"
+
+msgctxt "Language|"
+msgid "ACPI Source Language"
+msgstr "ACPI-ის წყარო ენა"
+
+msgctxt "Language|"
+msgid "ACPI DSL"
+msgstr "ACPI DSL"
 
 msgctxt "Language|"
 msgid "ActionScript 2.0"
@@ -136,6 +144,10 @@ msgstr "Boo"
 msgctxt "Language|"
 msgid "Cabal"
 msgstr "Cabal"
+
+msgctxt "Language|"
+msgid "Cap'n Proto"
+msgstr "Cap'n Proto"
 
 msgctxt "Language|"
 msgid "CartoCSS MML"
@@ -298,8 +310,16 @@ msgid "DTD"
 msgstr "DTD"
 
 msgctxt "Language|"
+msgid "Devicetree Source (DTS)"
+msgstr "Devicetree Source (DTS)"
+
+msgctxt "Language|"
 msgid "D"
 msgstr "D"
+
+msgctxt "Language|"
+msgid "FreeFEM"
+msgstr "FreeFEM"
 
 msgctxt "Language|"
 msgid "Eiffel"
@@ -570,6 +590,10 @@ msgid "Jira"
 msgstr "Jira"
 
 msgctxt "Language|"
+msgid "JSON5"
+msgstr "JSON5"
+
+msgctxt "Language|"
 msgid "Jsonnet"
 msgstr "Jsonnet"
 
@@ -618,6 +642,10 @@ msgid "k"
 msgstr "k"
 
 msgctxt "Language|"
+msgid "LaTeX Log File"
+msgstr "LaTeX-ის ჟურნალის ფაილი"
+
+msgctxt "Language|"
 msgid "LaTeX"
 msgstr "LaTeX"
 
@@ -658,8 +686,16 @@ msgid "Logcat"
 msgstr "Logcat"
 
 msgctxt "Language|"
+msgid "Log File (advanced) Selector"
+msgstr "ჟურნალის ფაილი (დამატებით) ამრჩევი"
+
+msgctxt "Language|"
 msgid "Log File (advanced)"
 msgstr "ჟურნალის ფაილი (დამატებით)"
+
+msgctxt "Language|"
+msgid "Log File (simplified) Selector"
+msgstr "ჟურნალის ფაილის (გამარტივებული) ამრჩევი"
 
 msgctxt "Language|"
 msgid "Log File (simplified)"
@@ -822,6 +858,10 @@ msgid "nesC"
 msgstr "nesC"
 
 msgctxt "Language|"
+msgid "NFTables"
+msgstr "NFTables"
+
+msgctxt "Language|"
 msgid "nginx Configuration"
 msgstr "nginx-ის მორგება"
 
@@ -982,6 +1022,10 @@ msgid "QML"
 msgstr "QML"
 
 msgctxt "Language|"
+msgid "Quarto"
+msgstr "Quarto"
+
+msgctxt "Language|"
 msgid "q"
 msgstr "q"
 
@@ -1126,12 +1170,20 @@ msgid "SML"
 msgstr "SML"
 
 msgctxt "Language|"
+msgid "Snakemake"
+msgstr "Snakemake"
+
+msgctxt "Language|"
 msgid "Snort/Suricata"
 msgstr "Snort/Suricata"
 
 msgctxt "Language|"
 msgid "Solidity"
 msgstr "Solidity"
+
+msgctxt "Language|"
+msgid "SPARQL"
+msgstr "SPARQL"
 
 msgctxt "Language|"
 msgid "Spice"
@@ -1310,6 +1362,10 @@ msgid "Wayland Trace"
 msgstr "Wayland Trace"
 
 msgctxt "Language|"
+msgid "Web Video Text Tracks"
+msgstr "ვებ-ვიდეოს ტექსტური ტრეკები"
+
+msgctxt "Language|"
 msgid "WINE Config"
 msgstr "WINE Config"
 
@@ -1320,6 +1376,10 @@ msgstr "Wesnoth Markup Language"
 msgctxt "Language|"
 msgid "xHarbour"
 msgstr "xHarbour"
+
+msgctxt "Language|"
+msgid "XHTML"
+msgstr "XHTML"
 
 msgctxt "Language|"
 msgid "XML (Debug)"
@@ -1336,10 +1396,6 @@ msgstr "Xonotic Script"
 msgctxt "Language|"
 msgid "x.org Configuration"
 msgstr "x.org Configuration"
-
-msgctxt "Language|"
-msgid "xslt"
-msgstr "xslt"
 
 msgctxt "Language|"
 msgid "XUL"
@@ -1573,7 +1629,7 @@ msgstr "სინტაქსის ახალი/განახლებუ�
 #: cli/ksyntaxhighlighter.cpp:83
 msgctxt "SyntaxHighlightingCLI|"
 msgid "File to write HTML output to (default: stdout)."
-msgstr "HTML გამოტანის ფაილი (ნაგულისხმები: სტანდარტული გამოტანა (stdout) )"
+msgstr "HTML გამოტანის ფაილი (ნაგულისხმევი: სტანდარტული გამოტანა (stdout) )"
 
 #: cli/ksyntaxhighlighter.cpp:84
 msgctxt "SyntaxHighlightingCLI|"
@@ -1585,7 +1641,7 @@ msgctxt "SyntaxHighlightingCLI|"
 msgid ""
 "Highlight using this syntax definition (default: auto-detect based on input "
 "file)."
-msgstr "სინტაქსის გამოკვეთა (ნაგულისხმები: ფაილის მიხედვით პოვნა)."
+msgstr "სინტაქსის გამოკვეთა (ნაგულისხმევი: ფაილის მიხედვით პოვნა)."
 
 #: cli/ksyntaxhighlighter.cpp:89
 msgctxt "SyntaxHighlightingCLI|"
@@ -1634,7 +1690,7 @@ msgstr "ტიპი"
 #: cli/ksyntaxhighlighter.cpp:111
 msgctxt "SyntaxHighlightingCLI|"
 msgid "Disable ANSI background for the default color."
-msgstr "ნაგულისხმები ფერისთვის ANSI ფონის გამორთვა."
+msgstr "ნაგულისხმევი ფერისთვის ANSI ფონის გამორთვა."
 
 #: cli/ksyntaxhighlighter.cpp:115
 msgctxt "SyntaxHighlightingCLI|"
@@ -1660,7 +1716,7 @@ msgid ""
 "(default: the filename or \"KSyntaxHighlighter\" if reading from stdin)."
 msgstr ""
 "დააყენეთ HTML გვერდის სათაური\n"
-"(ნაგულისხმები: ფაილის სახელი ან \"KSyntaxHighlighter\", თუ stdin-დან "
+"(ნაგულისხმევი: ფაილის სახელი ან \"KSyntaxHighlighter\", თუ stdin-დან "
 "იკითხება)."
 
 #: cli/ksyntaxhighlighter.cpp:126
@@ -1689,6 +1745,10 @@ msgstr "%1-სთვის ახალი სინტაქსის აღწ
 msgctxt "QObject|@info"
 msgid "Updating syntax definition for '%1' to version %2…"
 msgstr "%1-სთვის სინტაქსის აღწერის ახალ ვერსიამდე (%2) განახლება …"
+
+#~ msgctxt "Language|"
+#~ msgid "xslt"
+#~ msgstr "xslt"
 
 #~ msgctxt "SyntaxHighlightingCLI|"
 #~ msgid "The source file to highlight."

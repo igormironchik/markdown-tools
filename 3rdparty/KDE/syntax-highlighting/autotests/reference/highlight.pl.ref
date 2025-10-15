@@ -9,6 +9,7 @@
 <Normal Text>	</Normal Text><Data Type>$var</Data Type><Normal Text> =~ </Normal Text><Operator>s/</Operator><Pattern>bla</Pattern><Operator>/</Operator><String (interpolated)>foo</String (interpolated)><Operator>/igs</Operator><Normal Text>;</Normal Text><br/>
 <Normal Text>	</Normal Text><Data Type>$var</Data Type><Normal Text> =~ </Normal Text><Operator>s!</Operator><Pattern>bla</Pattern><Operator>!</Operator><String (interpolated)>foo</String (interpolated)><Operator>!igs</Operator><Normal Text>;</Normal Text><br/>
 <Normal Text>	</Normal Text><Data Type>$var</Data Type><Normal Text> =~ </Normal Text><Operator>s#</Operator><Pattern>bla</Pattern><Operator>#</Operator><String (interpolated)>foo</String (interpolated)><Operator>#igs</Operator><Normal Text>;</Normal Text><br/>
+<Normal Text>	</Normal Text><Data Type>$var</Data Type><Normal Text> =~ </Normal Text><Operator>s#</Operator><Pattern Internal Operator>(</Pattern Internal Operator><Pattern>.</Pattern><Pattern Internal Operator>)</Pattern Internal Operator><Operator>#</Operator><String (interpolated)>foo</String (interpolated)><Special Variable>$1</Special Variable><String (interpolated)>foo</String (interpolated)><Operator>#igs</Operator><Normal Text>;</Normal Text><br/>
 <Normal Text>	</Normal Text><Data Type>$var</Data Type><Normal Text> =~ </Normal Text><Operator>tr</Operator><Pattern>/a-z/A-Z/</Pattern><Normal Text>;</Normal Text><br/>
 <Normal Text>	(</Normal Text><Data Type>$match</Data Type><Normal Text>) = (</Normal Text><Data Type>$var</Data Type><Normal Text> =~ </Normal Text><Operator>m/</Operator><Pattern Internal Operator>(</Pattern Internal Operator><Pattern>.</Pattern><Pattern Internal Operator>*?)</Pattern Internal Operator><Operator>/igs</Operator><Normal Text>);</Normal Text><br/>
 <Normal Text></Normal Text><br/>
@@ -26,8 +27,8 @@
 <Normal Text></Normal Text><br/>
 <Normal Text>	</Normal Text><Data Type>$x</Data Type><Normal Text> = </Normal Text><Operator>"</Operator><String (interpolated)>dasds</String (interpolated)><Operator>"</Operator><Normal Text>;</Normal Text><br/>
 <Normal Text></Normal Text><br/>
-<Normal Text>	</Normal Text><Keyword>next</Keyword><Normal Text> </Normal Text><Keyword>if</Keyword><Normal Text>( </Normal Text><Data Type>$match</Data Type><Normal Text> </Normal Text><Operator>eq</Operator><Normal Text> </Normal Text><Operator>"</Operator><String (interpolated)>two</String (interpolated)><Operator>"</Operator><Normal Text> );</Normal Text><br/>
-<Normal Text>	</Normal Text><Keyword>next</Keyword><Normal Text> </Normal Text><Keyword>if</Keyword><Normal Text>( </Normal Text><Data Type>$match</Data Type><Normal Text> =~ </Normal Text><Operator>/</Operator><Pattern>go</Pattern><Operator>/i</Operator><Normal Text> );</Normal Text><br/>
+<Normal Text>	</Normal Text><Control Flow>next</Control Flow><Normal Text> </Normal Text><Control Flow>if</Control Flow><Normal Text>( </Normal Text><Data Type>$match</Data Type><Normal Text> </Normal Text><Operator>eq</Operator><Normal Text> </Normal Text><Operator>"</Operator><String (interpolated)>two</String (interpolated)><Operator>"</Operator><Normal Text> );</Normal Text><br/>
+<Normal Text>	</Normal Text><Control Flow>next</Control Flow><Normal Text> </Normal Text><Control Flow>if</Control Flow><Normal Text>( </Normal Text><Data Type>$match</Data Type><Normal Text> =~ </Normal Text><Operator>/</Operator><Pattern>go</Pattern><Operator>/i</Operator><Normal Text> );</Normal Text><br/>
 <Normal Text></Normal Text><br/>
 <Normal Text>	</Normal Text><Data Type>@array</Data Type><Normal Text> = (</Normal Text><Decimal>1</Decimal><Normal Text>,</Normal Text><Decimal>2</Decimal><Normal Text>,</Normal Text><Decimal>3</Decimal><Normal Text>);		</Normal Text><Comment># a comment</Comment><br/>
 <Normal Text>	</Normal Text><Comment># Test qw versions with special ending characters</Comment><br/>
@@ -76,6 +77,23 @@
 <Operator>s{</Operator><Pattern>aaa {aaa} a </Pattern><Special Variable>\x{A2}</Special Variable><Pattern> </Pattern><Pattern Internal Operator>*</Pattern Internal Operator><Pattern>b</Pattern><Pattern Internal Operator>?</Pattern Internal Operator><Operator>}{</Operator><String (interpolated)>aa</String (interpolated)><Operator>}</Operator><Normal Text>;</Normal Text><br/>
 <Operator>s(</Operator><Pattern>aa</Pattern><Pattern Internal Operator>(</Pattern Internal Operator><Pattern>a</Pattern><Pattern Internal Operator>(</Pattern Internal Operator><Pattern>a</Pattern><Pattern Internal Operator>(</Pattern Internal Operator><Pattern>a</Pattern><Pattern Internal Operator>(</Pattern Internal Operator><Pattern>b</Pattern><Pattern Internal Operator>|</Pattern Internal Operator><Pattern>c</Pattern><Pattern Internal Operator>)</Pattern Internal Operator><Pattern>a</Pattern><Pattern Internal Operator>)</Pattern Internal Operator><Pattern>a</Pattern><Pattern Internal Operator>)</Pattern Internal Operator><Pattern>a</Pattern><Pattern Internal Operator>)</Pattern Internal Operator><Pattern>aa</Pattern><Operator>)(</Operator><String (interpolated)>aa</String (interpolated)><Operator>)</Operator><Normal Text>;</Normal Text><br/>
 <Normal Text></Normal Text><br/>
+<Comment># Bracket closures in RegExp replacement</Comment><br/>
+<Operator>s(</Operator><Pattern>abc</Pattern><Operator>)</Operator><Normal Text> </Normal Text><Comment># </Comment><Alert Level 2>TODO</Alert Level 2><Comment> bla bla</Comment><br/>
+<Normal Text>    </Normal Text><Operator>(</Operator><String (interpolated)>aa{</String (interpolated)><Normal Text>(</Normal Text><String (interpolated)>b</String (interpolated)><Normal Text>)</Normal Text><String (interpolated)>}c</String (interpolated)><Operator>)g</Operator><Normal Text>;</Normal Text><br/>
+<Operator>s(</Operator><Pattern>abc</Pattern><Operator>)</Operator><Normal Text> </Normal Text><Comment># </Comment><Alert Level 2>TODO</Alert Level 2><Comment> bla bla</Comment><br/>
+<Normal Text>    </Normal Text><Operator>[</Operator><String (interpolated)>aa{(b)}c</String (interpolated)><Operator>]g</Operator><Normal Text>;</Normal Text><br/>
+<Operator>s(</Operator><Pattern>abc</Pattern><Operator>)</Operator><Normal Text> </Normal Text><Comment># </Comment><Alert Level 2>TODO</Alert Level 2><Comment> bla bla</Comment><br/>
+<Normal Text>    </Normal Text><Operator>{</Operator><String (interpolated)>aa</String (interpolated)><Normal Text>{</Normal Text><String (interpolated)>(b)</String (interpolated)><Normal Text>}</Normal Text><String (interpolated)>c</String (interpolated)><Operator>}g</Operator><Normal Text>;</Normal Text><br/>
+<Operator>s[</Operator><Pattern>abc</Pattern><Operator>]</Operator><Normal Text> </Normal Text><Comment># </Comment><Alert Level 2>TODO</Alert Level 2><Comment> bla bla</Comment><br/>
+<Normal Text>    </Normal Text><Operator>(</Operator><String (interpolated)>aa{</String (interpolated)><Normal Text>(</Normal Text><String (interpolated)>b</String (interpolated)><Normal Text>)</Normal Text><String (interpolated)>}c</String (interpolated)><Operator>)</Operator><Normal Text>;</Normal Text><br/>
+<Operator>s{</Operator><Pattern Internal Operator>(</Pattern Internal Operator><Pattern>abc</Pattern><Pattern Internal Operator>)</Pattern Internal Operator><Operator>}</Operator><Normal Text> </Normal Text><Comment># </Comment><Alert Level 2>TODO</Alert Level 2><Comment> bla bla</Comment><br/>
+<Normal Text>    </Normal Text><Operator>[</Operator><String (interpolated)>aa{(b)}c</String (interpolated)><Operator>]g</Operator><Normal Text>;</Normal Text><br/>
+<Comment># any char for replacement</Comment><br/>
+<Operator>s{</Operator><Pattern>abc</Pattern><Operator>}</Operator><Normal Text> </Normal Text><Comment># </Comment><Alert Level 2>TODO</Alert Level 2><Comment> bla bla</Comment><br/>
+<Normal Text>    </Normal Text><Operator>+</Operator><String (interpolated)>aa{(b)}c</String (interpolated)><Operator>+g</Operator><Normal Text>;</Normal Text><br/>
+<Operator>s{</Operator><Pattern>abc</Pattern><Operator>}</Operator><Normal Text> </Normal Text><Comment># </Comment><Alert Level 2>TODO</Alert Level 2><Comment> bla bla</Comment><br/>
+<Normal Text>    </Normal Text><Operator>]</Operator><String (interpolated)>aa{(b)}c</String (interpolated)><Operator>]g</Operator><Normal Text>; </Normal Text><Comment># this is fine</Comment><br/>
+<Normal Text></Normal Text><br/>
 <Comment># Strings as scalar references (bug #348765)</Comment><br/>
 <Data Type>$x</Data Type><Normal Text> = \</Normal Text><Operator>'</Operator><String>Reference of a String</String><Operator>'</Operator><Normal Text>;</Normal Text><br/>
 <Data Type>$y</Data Type><Normal Text> = \</Normal Text><Operator>"</Operator><String (interpolated)>Reference of a String</String (interpolated)><Operator>"</Operator><Normal Text>;</Normal Text><br/>
@@ -84,8 +102,8 @@
 <Data Type>$_variable</Data Type><br/>
 <Special Variable>$_</Special Variable><Normal Text> </Normal Text><Comment># Reserved var.</Comment><br/>
 <Normal Text></Normal Text><br/>
-<Keyword>for</Keyword><Normal Text> </Normal Text><Keyword>my</Keyword><Normal Text> </Normal Text><Data Type>$x</Data Type><Normal Text> (</Normal Text><Data Type>$hash</Data Type><Normal Text>->{arr}-></Normal Text><Data Type>@</Data Type><Operator>*</Operator><Normal Text>) {</Normal Text><br/>
-<Normal Text>    </Normal Text><Keyword>for</Keyword><Normal Text> </Normal Text><Keyword>my</Keyword><Normal Text> </Normal Text><Data Type>$k</Data Type><Normal Text> (</Normal Text><Function>keys</Function><Normal Text> </Normal Text><Data Type>$k</Data Type><Normal Text>->%</Normal Text><Operator>*</Operator><Normal Text>) {</Normal Text><br/>
+<Control Flow>for</Control Flow><Normal Text> </Normal Text><Keyword>my</Keyword><Normal Text> </Normal Text><Data Type>$x</Data Type><Normal Text> (</Normal Text><Data Type>$hash</Data Type><Normal Text>->{arr}-></Normal Text><Data Type>@</Data Type><Operator>*</Operator><Normal Text>) {</Normal Text><br/>
+<Normal Text>    </Normal Text><Control Flow>for</Control Flow><Normal Text> </Normal Text><Keyword>my</Keyword><Normal Text> </Normal Text><Data Type>$k</Data Type><Normal Text> (</Normal Text><Function>keys</Function><Normal Text> </Normal Text><Data Type>$k</Data Type><Normal Text>->%</Normal Text><Operator>*</Operator><Normal Text>) {</Normal Text><br/>
 <Normal Text>        ...</Normal Text><br/>
 <Normal Text>    }</Normal Text><br/>
 <Normal Text>}</Normal Text><br/>
@@ -93,3 +111,19 @@
 <Comment># Highlight correctly operator // (bug #407327)</Comment><br/>
 <Data Type>$x</Data Type><Normal Text> = ns // </Normal Text><Operator>""</Operator><Normal Text>;</Normal Text><br/>
 <Function>print</Function><Normal Text> </Normal Text><Data Type>$x</Data Type><Normal Text>;</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Comment># Number</Comment><br/>
+<Function>print</Function><Normal Text> _1__2_3 _0x1__2_3 _0b1 _0123 </Normal Text><Comment># not a Number</Comment><br/>
+<Function>print</Function><Normal Text> </Normal Text><Decimal>123</Decimal><Normal Text> </Normal Text><Decimal>1__2__3__</Decimal><Normal Text> </Normal Text><Decimal>000</Decimal><br/>
+<Function>print</Function><Normal Text> </Normal Text><Hex>0x123</Hex><Normal Text> </Normal Text><Hex>0x__1__2__3__</Hex><br/>
+<Function>print</Function><Normal Text> </Normal Text><Bin>0b10</Bin><Normal Text> </Normal Text><Bin>0b__1__0__</Bin><br/>
+<Function>print</Function><Normal Text> </Normal Text><Octal>0123</Octal><Normal Text> </Normal Text><Octal>0__1__2__3__</Octal><br/>
+<Function>print</Function><Normal Text> </Normal Text><Float>123.123</Float><Normal Text> </Normal Text><Float>123.</Float><Normal Text> </Normal Text><Float>123.__</Float><Normal Text> </Normal Text><Float>123.__1</Float><br/>
+<Function>print</Function><Normal Text> </Normal Text><Float>123e123</Float><Normal Text> </Normal Text><Float>123.e__2</Float><Normal Text> </Normal Text><Float>123.__e__2</Float><br/>
+<Function>print</Function><Normal Text> </Normal Text><Octal>012</Octal><Normal Text>.</Normal Text><Decimal>23</Decimal><Normal Text> </Normal Text><Decimal>123</Decimal><Normal Text>e__ </Normal Text><Comment># no float</Comment><br/>
+<Function>print</Function><Normal Text> </Normal Text><Float>1__2__3__.1__2__3__e__1__</Float><br/>
+<Function>print</Function><Normal Text> </Normal Text><Float>1__2__3__.1__2__3__</Float><Normal Text>e__ </Normal Text><Comment># no float</Comment><br/>
+<Function>print</Function><Normal Text> </Normal Text><Float>1__2__3__e__1__</Float><br/>
+<Function>print</Function><Normal Text> </Normal Text><Decimal>1__2__3__</Decimal><Normal Text>e__ </Normal Text><Comment># no float</Comment><br/>
+<Function>print</Function><Normal Text> </Normal Text><Float>0x1p8</Float><Normal Text> </Normal Text><Float>0x123__p1__0</Float><Normal Text> </Normal Text><Float>0x1p8__</Float><br/>
+<Function>print</Function><Normal Text> </Normal Text><Hex>0x1</Hex><Normal Text>p_8 </Normal Text><Comment># no float</Comment><br/>

@@ -9,6 +9,7 @@ sub prg($)
 	$var =~ s/bla/foo/igs;
 	$var =~ s!bla!foo!igs;
 	$var =~ s#bla#foo#igs;
+	$var =~ s#(.)#foo$1foo#igs;
 	$var =~ tr/a-z/A-Z/;
 	($match) = ($var =~ m/(.*?)/igs);
 
@@ -76,6 +77,23 @@ qr(aa(a(a(a(b|c)a)a)a)aa*b?);
 s{aaa {aaa} a \x{A2} *b?}{aa};
 s(aa(a(a(a(b|c)a)a)a)aa)(aa);
 
+# Bracket closures in RegExp replacement
+s(abc) # TODO bla bla
+    (aa{(b)}c)g;
+s(abc) # TODO bla bla
+    [aa{(b)}c]g;
+s(abc) # TODO bla bla
+    {aa{(b)}c}g;
+s[abc] # TODO bla bla
+    (aa{(b)}c);
+s{(abc)} # TODO bla bla
+    [aa{(b)}c]g;
+# any char for replacement
+s{abc} # TODO bla bla
+    +aa{(b)}c+g;
+s{abc} # TODO bla bla
+    ]aa{(b)}c]g; # this is fine
+
 # Strings as scalar references (bug #348765)
 $x = \'Reference of a String';
 $y = \"Reference of a String";
@@ -93,3 +111,19 @@ for my $x ($hash->{arr}->@*) {
 # Highlight correctly operator // (bug #407327)
 $x = ns // "";
 print $x;
+
+# Number
+print _1__2_3 _0x1__2_3 _0b1 _0123 # not a Number
+print 123 1__2__3__ 000
+print 0x123 0x__1__2__3__
+print 0b10 0b__1__0__
+print 0123 0__1__2__3__
+print 123.123 123. 123.__ 123.__1
+print 123e123 123.e__2 123.__e__2
+print 012.23 123e__ # no float
+print 1__2__3__.1__2__3__e__1__
+print 1__2__3__.1__2__3__e__ # no float
+print 1__2__3__e__1__
+print 1__2__3__e__ # no float
+print 0x1p8 0x123__p1__0 0x1p8__
+print 0x1p_8 # no float

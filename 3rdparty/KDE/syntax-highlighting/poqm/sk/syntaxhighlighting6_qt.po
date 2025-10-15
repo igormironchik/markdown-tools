@@ -30,6 +30,17 @@ msgctxt "Language|"
 msgid "ABC"
 msgstr "ABC"
 
+#, fuzzy
+#| msgctxt "Language|"
+#| msgid "E Language"
+msgctxt "Language|"
+msgid "ACPI Source Language"
+msgstr "Jazyk E"
+
+msgctxt "Language|"
+msgid "ACPI DSL"
+msgstr ""
+
 msgctxt "Language|"
 msgid "ActionScript 2.0"
 msgstr "Action skript 2.0"
@@ -143,6 +154,10 @@ msgstr "Boo"
 
 msgctxt "Language|"
 msgid "Cabal"
+msgstr ""
+
+msgctxt "Language|"
+msgid "Cap'n Proto"
 msgstr ""
 
 msgctxt "Language|"
@@ -312,8 +327,16 @@ msgid "DTD"
 msgstr "DTD"
 
 msgctxt "Language|"
+msgid "Devicetree Source (DTS)"
+msgstr ""
+
+msgctxt "Language|"
 msgid "D"
 msgstr "D"
+
+msgctxt "Language|"
+msgid "FreeFEM"
+msgstr ""
 
 msgctxt "Language|"
 msgid "Eiffel"
@@ -583,6 +606,13 @@ msgctxt "Language|"
 msgid "Jira"
 msgstr "Jira"
 
+#, fuzzy
+#| msgctxt "Language|"
+#| msgid "JSON"
+msgctxt "Language|"
+msgid "JSON5"
+msgstr "JSON"
+
 msgctxt "Language|"
 msgid "Jsonnet"
 msgstr ""
@@ -638,6 +668,10 @@ msgid "k"
 msgstr "k"
 
 msgctxt "Language|"
+msgid "LaTeX Log File"
+msgstr ""
+
+msgctxt "Language|"
 msgid "LaTeX"
 msgstr "LaTeX"
 
@@ -678,7 +712,15 @@ msgid "Logcat"
 msgstr "Logcat"
 
 msgctxt "Language|"
+msgid "Log File (advanced) Selector"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Log File (advanced)"
+msgstr ""
+
+msgctxt "Language|"
+msgid "Log File (simplified) Selector"
 msgstr ""
 
 msgctxt "Language|"
@@ -840,6 +882,10 @@ msgstr "Nemerle"
 msgctxt "Language|"
 msgid "nesC"
 msgstr "nesC"
+
+msgctxt "Language|"
+msgid "NFTables"
+msgstr ""
 
 #, fuzzy
 #| msgctxt "Language Section|"
@@ -1008,6 +1054,10 @@ msgid "QML"
 msgstr "QML"
 
 msgctxt "Language|"
+msgid "Quarto"
+msgstr ""
+
+msgctxt "Language|"
 msgid "q"
 msgstr "q"
 
@@ -1152,12 +1202,20 @@ msgid "SML"
 msgstr "SML"
 
 msgctxt "Language|"
+msgid "Snakemake"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Snort/Suricata"
 msgstr "Snort/Suricata"
 
 msgctxt "Language|"
 msgid "Solidity"
 msgstr "Solidity"
+
+msgctxt "Language|"
+msgid "SPARQL"
+msgstr ""
 
 msgctxt "Language|"
 msgid "Spice"
@@ -1339,6 +1397,10 @@ msgid "Wayland Trace"
 msgstr "Wayland Trace"
 
 msgctxt "Language|"
+msgid "Web Video Text Tracks"
+msgstr ""
+
+msgctxt "Language|"
 msgid "WINE Config"
 msgstr "WINE konfigurácia"
 
@@ -1349,6 +1411,13 @@ msgstr "Wesnoth Markup Language"
 msgctxt "Language|"
 msgid "xHarbour"
 msgstr "xHarbour"
+
+#, fuzzy
+#| msgctxt "Language|"
+#| msgid "HTML"
+msgctxt "Language|"
+msgid "XHTML"
+msgstr "HTML"
 
 msgctxt "Language|"
 msgid "XML (Debug)"
@@ -1365,10 +1434,6 @@ msgstr "Xonotic Script"
 msgctxt "Language|"
 msgid "x.org Configuration"
 msgstr "x.org konfigurácia"
-
-msgctxt "Language|"
-msgid "xslt"
-msgstr "xslt"
 
 msgctxt "Language|"
 msgid "XUL"
@@ -1747,6 +1812,10 @@ msgstr "Sťahujem novú definíciu syntaxe pre '%1'..."
 msgctxt "QObject|@info"
 msgid "Updating syntax definition for '%1' to version %2…"
 msgstr "Aktualizujem definíciu syntaxe pre '%1' na verziu %2..."
+
+#~ msgctxt "Language|"
+#~ msgid "xslt"
+#~ msgstr "xslt"
 
 #~ msgctxt "SyntaxHighlightingCLI|"
 #~ msgid "The source file to highlight."

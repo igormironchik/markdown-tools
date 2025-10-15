@@ -3,7 +3,7 @@
 # Sae-keun Kim <segni@susekorea.net>, 2001.
 # Louis JANG <louis@mizi.com>, 2001.
 # KIM KyungHeon <tody@teoal.net>, 2001, 2002, 2003, 2004.
-# SPDX-FileCopyrightText: 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024 Shinjo Park <kde@peremen.name>
+# SPDX-FileCopyrightText: 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025 Shinjo Park <kde@peremen.name>
 # JungHee Lee <daemul72@gmail.com>, 2019, 2021.
 #
 msgid ""
@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: katepart4\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2016-09-08 07:30+0000\n"
-"PO-Revision-Date: 2024-11-28 23:15+0100\n"
+"PO-Revision-Date: 2025-07-20 01:13+0200\n"
 "Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean <kde-kr@kde.org>\n"
 "Language: ko\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Lokalize 23.08.5\n"
+"X-Generator: Lokalize 24.12.3\n"
 "X-Qt-Contexts: true\n"
 
 msgctxt "Language|"
@@ -33,6 +33,14 @@ msgstr "ABAP"
 msgctxt "Language|"
 msgid "ABC"
 msgstr "ABC"
+
+msgctxt "Language|"
+msgid "ACPI Source Language"
+msgstr "ACPI 소스 언어"
+
+msgctxt "Language|"
+msgid "ACPI DSL"
+msgstr "ACPI DSL"
 
 msgctxt "Language|"
 msgid "ActionScript 2.0"
@@ -94,12 +102,9 @@ msgctxt "Language|"
 msgid "Asm6502"
 msgstr "Asm6502"
 
-#, fuzzy
-#| msgctxt "Language|"
-#| msgid "AVR Assembler"
 msgctxt "Language|"
 msgid "ARM Assembler"
-msgstr "AVR 어셈블러"
+msgstr "ARM 어셈블러"
 
 msgctxt "Language|"
 msgid "AVR Assembler"
@@ -148,6 +153,10 @@ msgstr "Boo"
 msgctxt "Language|"
 msgid "Cabal"
 msgstr "Cabal"
+
+msgctxt "Language|"
+msgid "Cap'n Proto"
+msgstr "Cap'n Proto"
 
 msgctxt "Language|"
 msgid "CartoCSS MML"
@@ -310,8 +319,16 @@ msgid "DTD"
 msgstr "DTD"
 
 msgctxt "Language|"
+msgid "Devicetree Source (DTS)"
+msgstr "Devicetree 소스(DTS)"
+
+msgctxt "Language|"
 msgid "D"
 msgstr "D"
+
+msgctxt "Language|"
+msgid "FreeFEM"
+msgstr "FreeFEM"
 
 msgctxt "Language|"
 msgid "Eiffel"
@@ -503,7 +520,7 @@ msgstr "Haxe"
 
 msgctxt "Language|"
 msgid "Hjson"
-msgstr ""
+msgstr "Hjson"
 
 msgctxt "Language|"
 msgid "HTML"
@@ -582,6 +599,10 @@ msgid "Jira"
 msgstr "Jira"
 
 msgctxt "Language|"
+msgid "JSON5"
+msgstr "JSON5"
+
+msgctxt "Language|"
 msgid "Jsonnet"
 msgstr "Jsonnet"
 
@@ -630,6 +651,10 @@ msgid "k"
 msgstr "k"
 
 msgctxt "Language|"
+msgid "LaTeX Log File"
+msgstr "LaTeX 로그 파일"
+
+msgctxt "Language|"
 msgid "LaTeX"
 msgstr "LaTeX"
 
@@ -670,8 +695,16 @@ msgid "Logcat"
 msgstr "Logcat"
 
 msgctxt "Language|"
+msgid "Log File (advanced) Selector"
+msgstr "로그 파일(고급) 선택기"
+
+msgctxt "Language|"
 msgid "Log File (advanced)"
 msgstr "로그 파일(고급)"
+
+msgctxt "Language|"
+msgid "Log File (simplified) Selector"
+msgstr "로그 파일(간략화) 선택기"
 
 msgctxt "Language|"
 msgid "Log File (simplified)"
@@ -834,6 +867,10 @@ msgid "nesC"
 msgstr "nesC"
 
 msgctxt "Language|"
+msgid "NFTables"
+msgstr "NFTables"
+
+msgctxt "Language|"
 msgid "nginx Configuration"
 msgstr "nginx 설정 파일"
 
@@ -994,6 +1031,10 @@ msgid "QML"
 msgstr "QML"
 
 msgctxt "Language|"
+msgid "Quarto"
+msgstr ""
+
+msgctxt "Language|"
 msgid "q"
 msgstr "q"
 
@@ -1138,12 +1179,20 @@ msgid "SML"
 msgstr "SML"
 
 msgctxt "Language|"
+msgid "Snakemake"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Snort/Suricata"
 msgstr "Snort/Suricata"
 
 msgctxt "Language|"
 msgid "Solidity"
 msgstr "Solidity"
+
+msgctxt "Language|"
+msgid "SPARQL"
+msgstr ""
 
 msgctxt "Language|"
 msgid "Spice"
@@ -1322,6 +1371,10 @@ msgid "Wayland Trace"
 msgstr "Wayland 추적"
 
 msgctxt "Language|"
+msgid "Web Video Text Tracks"
+msgstr ""
+
+msgctxt "Language|"
 msgid "WINE Config"
 msgstr "WINE 설정"
 
@@ -1332,6 +1385,10 @@ msgstr "Wesnoth Markup 언어"
 msgctxt "Language|"
 msgid "xHarbour"
 msgstr "xHarbour"
+
+msgctxt "Language|"
+msgid "XHTML"
+msgstr "XHTML"
 
 msgctxt "Language|"
 msgid "XML (Debug)"
@@ -1348,10 +1405,6 @@ msgstr "Xonotic 스크립트"
 msgctxt "Language|"
 msgid "x.org Configuration"
 msgstr "x.org 설정"
-
-msgctxt "Language|"
-msgid "xslt"
-msgstr "xslt"
 
 msgctxt "Language|"
 msgid "XUL"
@@ -1697,6 +1750,10 @@ msgstr "'%1'의 새 구문 강조 정의 다운로드 중…"
 msgctxt "QObject|@info"
 msgid "Updating syntax definition for '%1' to version %2…"
 msgstr "'%1'의 구문 강조 정의를 버전 %2(으)로 업데이트 중…"
+
+#~ msgctxt "Language|"
+#~ msgid "xslt"
+#~ msgstr "xslt"
 
 #~ msgctxt "SyntaxHighlightingCLI|"
 #~ msgid "The source file to highlight."
@@ -3149,9 +3206,6 @@ msgstr "'%1'의 구문 강조 정의를 버전 %2(으)로 업데이트 중…"
 
 #~ msgid "Close Nevertheless"
 #~ msgstr "그래도 닫기"
-
-#~ msgid "Save File"
-#~ msgstr "파일 저장"
 
 #~ msgid "Save failed"
 #~ msgstr "저장 실패"

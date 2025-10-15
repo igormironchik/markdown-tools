@@ -409,10 +409,13 @@ total<span style="color:#3f8058;font-weight:bold">/</span>count<span style="colo
 total<span style="color:#3f8058;font-weight:bold">/</span>(count<span style="color:#3f8058;font-weight:bold">/</span><span style="color:#f67400">2</span>) <span style="color:#7a7c7d"># both division</span>
 
 <span style="color:#27ae60">@foo</span><span style="color:#3f8058;font-weight:bold">/</span><span style="color:#f67400">10</span>         <span style="color:#7a7c7d"># division</span>
-<span style="color:#27ae60">@foo</span> <span style="color:#3f8058;font-weight:bold">/</span><span style="color:#f67400">10</span>        <span style="color:#7a7c7d"># division</span>
+<span style="color:#27ae60">@foo</span> <span style="color:#da4453">/10/</span>       <span style="color:#7a7c7d"># reregexp</span>
 
 <span style="color:#f44f4f">"hello"</span><span style="color:#3f8058;font-weight:bold">/</span><span style="color:#f67400">10</span>      <span style="color:#7a7c7d"># division</span>
 <span style="color:#f44f4f">"hello"</span> <span style="color:#3f8058;font-weight:bold">/</span> <span style="color:#f67400">10</span>    <span style="color:#7a7c7d"># division</span>
+
+<span style="color:#f44f4f">"a"</span><span style="color:#2980b9">.</span><span style="color:#2980b9">match</span><span style="color:#3f8058;font-weight:bold">/</span><span style="color:#f67400">10</span>    <span style="color:#7a7c7d"># division</span>
+<span style="color:#f44f4f">"a"</span><span style="color:#2980b9">.</span><span style="color:#2980b9">match</span> <span style="color:#da4453">/10/</span>  <span style="color:#7a7c7d"># reg</span>
 
 <span style="color:#da4453">/regexp/</span><span style="color:#3f8058;font-weight:bold">/</span><span style="color:#f67400">10</span>     <span style="color:#7a7c7d"># division</span>
 <span style="color:#da4453">/regexp/</span> <span style="color:#3f8058;font-weight:bold">/</span> <span style="color:#f67400">10</span>   <span style="color:#7a7c7d"># division</span>
@@ -517,6 +520,8 @@ result <span style="color:#3f8058;font-weight:bold">=</span> <span style="color:
 <span style="color:#27ae60">%s&lt;</span><span style="color:#da4453">one two three \n#{123} [&lt;({nested})>]</span><span style="color:#27ae60">></span>
 <span style="color:#27ae60">%s[</span><span style="color:#da4453">one two three \n#{123} [&lt;({nested})>]</span><span style="color:#27ae60">]</span>
 
+string_in_array <span style="color:#3f8058;font-weight:bold">=</span> <span style="font-weight:bold">[</span><span style="color:#27ae60">%(</span><span style="color:#3daee9">#{</span>x<span style="color:#3daee9">}</span><span style="color:#f44f4f"> test</span><span style="color:#27ae60">)</span><span style="font-weight:bold">]</span>
+
 <span style="color:#7a7c7d"># number</span>
 <span style="color:#7a7c7d"># binary</span>
 <span style="color:#f67400">0b001</span>
@@ -531,14 +536,14 @@ result <span style="color:#3f8058;font-weight:bold">=</span> <span style="color:
 <span style="color:#f67400">0x218</span> <span style="color:#f67400">0x1a_23</span>
 <span style="color:#f67400">0x218</span><span style="color:#da4453;text-decoration:underline">g</span> <span style="color:#f67400">0x1a_23</span><span style="color:#da4453;text-decoration:underline">g</span> <span style="color:#7a7c7d"># bad</span>
 <span style="color:#7a7c7d"># complex</span>
-<span style="color:#f67400">0</span><span style="color:#7f8c8d">i</span> <span style="color:#f67400">12</span><span style="color:#7f8c8d">i</span> <span style="color:#f67400">03</span><span style="color:#7f8c8d">i</span> <span style="color:#f67400">12.3</span><span style="color:#7f8c8d">i</span>
-<span style="color:#f67400">012</span><span style="color:#da4453;text-decoration:underline">_i</span> <span style="color:#f67400">12.3</span><span style="color:#da4453;text-decoration:underline">_i</span> <span style="color:#f67400">123</span><span style="color:#7f8c8d">i</span><span style="color:#da4453;text-decoration:underline">a</span> <span style="color:#7a7c7d"># bad</span>
+<span style="color:#f67400">0</span><span style="color:#609ca0">i</span> <span style="color:#f67400">12</span><span style="color:#609ca0">i</span> <span style="color:#f67400">03</span><span style="color:#609ca0">i</span> <span style="color:#f67400">12.3</span><span style="color:#609ca0">i</span>
+<span style="color:#f67400">012</span><span style="color:#da4453;text-decoration:underline">_i</span> <span style="color:#f67400">12.3</span><span style="color:#da4453;text-decoration:underline">_i</span> <span style="color:#f67400">123</span><span style="color:#609ca0">i</span><span style="color:#da4453;text-decoration:underline">a</span> <span style="color:#7a7c7d"># bad</span>
 <span style="color:#7a7c7d"># rational</span>
-<span style="color:#f67400">0</span><span style="color:#7f8c8d">r</span> <span style="color:#f67400">12</span><span style="color:#7f8c8d">r</span> <span style="color:#f67400">03</span><span style="color:#7f8c8d">r</span> <span style="color:#f67400">12.3</span><span style="color:#7f8c8d">r</span>
-<span style="color:#f67400">012</span><span style="color:#da4453;text-decoration:underline">_r</span> <span style="color:#f67400">12.3</span><span style="color:#da4453;text-decoration:underline">_r</span> <span style="color:#f67400">123</span><span style="color:#7f8c8d">r</span><span style="color:#da4453;text-decoration:underline">a</span> <span style="color:#7a7c7d"># bad</span>
+<span style="color:#f67400">0</span><span style="color:#609ca0">r</span> <span style="color:#f67400">12</span><span style="color:#609ca0">r</span> <span style="color:#f67400">03</span><span style="color:#609ca0">r</span> <span style="color:#f67400">12.3</span><span style="color:#609ca0">r</span>
+<span style="color:#f67400">012</span><span style="color:#da4453;text-decoration:underline">_r</span> <span style="color:#f67400">12.3</span><span style="color:#da4453;text-decoration:underline">_r</span> <span style="color:#f67400">123</span><span style="color:#609ca0">r</span><span style="color:#da4453;text-decoration:underline">a</span> <span style="color:#7a7c7d"># bad</span>
 <span style="color:#7a7c7d"># rational</span>
-<span style="color:#f67400">0</span><span style="color:#7f8c8d">ri</span> <span style="color:#f67400">12</span><span style="color:#7f8c8d">ri</span> <span style="color:#f67400">03</span><span style="color:#7f8c8d">ri</span> <span style="color:#f67400">12.3</span><span style="color:#7f8c8d">ri</span>
-<span style="color:#f67400">012</span><span style="color:#da4453;text-decoration:underline">_ri</span> <span style="color:#f67400">12.3</span><span style="color:#da4453;text-decoration:underline">_ri</span> <span style="color:#f67400">123</span><span style="color:#7f8c8d">i</span><span style="color:#da4453;text-decoration:underline">r</span> <span style="color:#f67400">123</span><span style="color:#7f8c8d">ri</span><span style="color:#da4453;text-decoration:underline">a</span> <span style="color:#7a7c7d"># bad</span>
+<span style="color:#f67400">0</span><span style="color:#609ca0">ri</span> <span style="color:#f67400">12</span><span style="color:#609ca0">ri</span> <span style="color:#f67400">03</span><span style="color:#609ca0">ri</span> <span style="color:#f67400">12.3</span><span style="color:#609ca0">ri</span>
+<span style="color:#f67400">012</span><span style="color:#da4453;text-decoration:underline">_ri</span> <span style="color:#f67400">12.3</span><span style="color:#da4453;text-decoration:underline">_ri</span> <span style="color:#f67400">123</span><span style="color:#609ca0">i</span><span style="color:#da4453;text-decoration:underline">r</span> <span style="color:#f67400">123</span><span style="color:#609ca0">ri</span><span style="color:#da4453;text-decoration:underline">a</span> <span style="color:#7a7c7d"># bad</span>
 
 <span style="color:#7a7c7d"># Global constant</span>
 <span style="color:#27aeae;font-weight:bold">ABC</span> <span style="color:#27aeae;font-weight:bold">ABC1</span> <span style="color:#27aeae;font-weight:bold">ABC1ABC</span> <span style="color:#27aeae;font-weight:bold">ABC_ABC_</span> <span style="color:#27aeae;font-weight:bold">___12</span> <span style="color:#27aeae;font-weight:bold">_1</span> <span style="color:#27aeae;font-weight:bold">_1ABC</span>
@@ -585,6 +590,8 @@ Abc? A1b? Ab1? ABC1a?
 
 <span style="color:#7a7c7d"># "member access"</span>
 <span style="color:#27aeae;font-weight:bold">POP</span><span style="color:#3f8058;font-weight:bold">::</span><span style="color:#2980b9">Session</span><span style="color:#2980b9">.</span><span style="color:#27aeae">COUNT</span><span style="color:#2980b9">.</span><span style="color:#2980b9">attribute</span><span style="color:#2980b9">.</span><span style="color:#2980b9">calc_with</span>(<span style="color:#f67400">2</span>)<span style="color:#3f8058;font-weight:bold">{</span> <span style="color:#3f8058;font-weight:bold">|</span>arg<span style="color:#3f8058;font-weight:bold">|</span> <span style="color:#8e44ad;font-weight:bold">puts</span> arg <span style="color:#3f8058;font-weight:bold">}</span>
+<span style="color:#8e44ad;font-weight:bold">raise</span> <span style="color:#2980b9">Module</span><span style="color:#3f8058;font-weight:bold">::</span><span style="color:#2980b9">Class</span>
+<span style="color:#2980b9">Module</span><span style="color:#3f8058;font-weight:bold">::</span><span style="color:#2980b9">Class</span>
 
 <span style="color:#7a7c7d"># snippet from Net::SMTP</span>
 <span style="color:#7a7c7d"># This breaks the code folding. I think we would need to</span>
@@ -665,6 +672,8 @@ foo?(<span style="color:#3daee9">?</span><span style="color:#3daee9">a</span> <s
 foo?<span style="color:#3daee9">?</span><span style="color:#3daee9">a</span><span style="color:#3f8058;font-weight:bold">?</span><span style="color:#f67400">1</span><span style="color:#3f8058;font-weight:bold">:</span> <span style="color:#da4453">:a</span>
 foo?(<span style="color:#3daee9">?</span><span style="color:#3daee9">a</span> <span style="color:#3f8058;font-weight:bold">?</span> <span style="color:#f67400">1</span> <span style="color:#3f8058;font-weight:bold">:</span> <span style="color:#f67400">2</span>) <span style="color:#7a7c7d"># or</span>
 foo?<span style="color:#3daee9">?</span><span style="color:#3daee9">a</span><span style="color:#3f8058;font-weight:bold">?</span><span style="color:#f67400">1</span><span style="color:#3f8058;font-weight:bold">:</span> <span style="color:#f67400">2</span>
+
+data <span style="color:#3f8058;font-weight:bold">=</span> <span style="color:#27ae60">@hash</span><span style="color:#2980b9">.</span><span style="color:#2980b9">slice</span> <span style="color:#da4453">:key_one</span>, <span style="color:#da4453">:key_two</span>
 
 <span style="color:#f44f4f">"</span><span style="color:#3daee9">#{</span><span style="color:#3f8058;font-weight:bold">{</span><span style="color:#da4453">a:</span><span style="color:#3f8058;font-weight:bold">}</span><span style="color:#3daee9">}</span><span style="color:#f44f4f">"</span>
 <span style="color:#7a7c7d"># break substitution</span>

@@ -12,7 +12,7 @@
 # Mohamed SAAD <metehyi@free.fr>, 2006.
 # Khaled Hosny <khaledhosny@eglug.org>, 2007.
 # Youssef Chahibi <chahibi@gmail.com>, 2007.
-# SPDX-FileCopyrightText: 2008, 2009, 2024 zayed <zayed.alsaidi@gmail.com>
+# SPDX-FileCopyrightText: 2008, 2009, 2024, 2025 zayed <zayed.alsaidi@gmail.com>
 # Zayed Al-Saidi <zayed.alsaidi@gmail.com>, 2009, 2021, 2023.
 # hanny <hannysabbagh@hotmail.com>, 2012.
 # Abderrahim Kitouni <a.kitouni@gmail.com>, 2012.
@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: kdelibs4\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-28 15:38+0300\n"
-"PO-Revision-Date: 2024-05-09 09:54+0400\n"
+"PO-Revision-Date: 2025-08-04 18:38+0400\n"
 "Last-Translator: Zayed Al-Saidi <zayed.alsaidi@gmail.com>\n"
 "Language-Team: ar\n"
 "Language: ar\n"
@@ -32,6 +32,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
+"X-Generator: Lokalize 23.08.5\n"
 "X-Qt-Contexts: true\n"
 
 #: core/loader.cpp:177
@@ -181,7 +182,7 @@ msgstr "لم يثبت أي خلفية للتهجية مثل هانسبل أو ا
 #: ui/configui.ui:36
 msgctxt "SonnetConfigUI|"
 msgid "Default language:"
-msgstr "اللغة الافتراضية:"
+msgstr "اللغة المبدئية:"
 
 #: ui/configui.ui:56
 msgctxt "SonnetConfigUI|"
@@ -201,7 +202,7 @@ msgstr "خيارات"
 #: ui/configui.ui:84
 msgctxt "SonnetConfigUI|"
 msgid "Enable autodetection of &language"
-msgstr "مكّن الاكتشاف الآلي للّ&غة"
+msgstr "مكّن الاكتشاف الآليّ للّ&غة"
 
 #: ui/configui.ui:91
 msgctxt "SonnetConfigUI|"
@@ -352,8 +353,8 @@ msgid ""
 msgstr ""
 "<qt> \n"
 "<p> هنا يمكنك مشاهدة مقتطف نصي يظهر كلمة غير معروفة في سياقها.إذا لم تكن هذه "
-"المعلومات كافية لاختيار أفضل بديل للكلمة غير المعروفة ، يمكنك النقر فوق "
-"المستند الذي تقوم بتدقيقه ، وقراءة جزء أكبر من النص ، ثم العودة إلى هنا "
+"المعلومات كافية لاختيار أفضل بديل للكلمة غير المعروفة، يمكنك النقر فوق "
+"المستند الذي تقوم بتدقيقه، وقراءة جزء أكبر من النص، ثم العودة إلى هنا "
 "لمتابعة التدقيق. </p> \n"
 "</qt>"
 
@@ -405,11 +406,11 @@ msgid ""
 "</qt>"
 msgstr ""
 "<qt> \n"
-"<p> إذا كانت الكلمة غير المعروفة بها أخطاء إملائية ، فيجب عليك التحقق مما "
-"إذا كان التصحيح الخاص بها متاحًا وإذا كان كذلك ، فانقر فوقه. إذا لم تكن أي من "
-"الكلمات الموجودة في هذه القائمة بديلاً جيدًا ، يمكنك كتابة الكلمة الصحيحة في "
+"<p> إذا كانت الكلمة غير المعروفة بها أخطاء إملائية، فيجب عليك التحقق مما إذا "
+"كان التصحيح الخاص بها متاحًا وإذا كان كذلك، فانقر فوقه. إذا لم تكن أي من "
+"الكلمات الموجودة في هذه القائمة بديلاً جيدًا، يمكنك كتابة الكلمة الصحيحة في "
 "مربع التعديل أعلاه. </p> \n"
-"<p> لتصحيح هذه الكلمة ، انقر فوق <b> استبدال </b> إذا كنت تريد تصحيح هذا "
+"<p> لتصحيح هذه الكلمة، انقر فوق <b> استبدال </b> إذا كنت تريد تصحيح هذا "
 "التكرار فقط أو على <b> استبدال الكل </b> إذا كنت تريد تصحيح جميع التكرارات.</"
 "p> \n"
 "</qt>"
@@ -529,7 +530,7 @@ msgstr "تجاهل الك&لّ"
 #: ui/sonnetui.ui:269
 msgctxt "SonnetUi|"
 msgid "Autocorrect"
-msgstr "صحّح آليًا"
+msgstr "صحّح آليًّا"
 
 #: ui/spellcheckdecorator.cpp:172
 #, qt-format

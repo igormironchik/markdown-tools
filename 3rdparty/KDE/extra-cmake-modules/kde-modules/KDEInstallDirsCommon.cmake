@@ -54,6 +54,7 @@ set(_gnu_install_dirs_vars
     SYSCONFDIR
     SHAREDSTATEDIR
     LOCALSTATEDIR
+    RUNSTATEDIR
     LIBDIR
     INCLUDEDIR
     OLDINCLUDEDIR
@@ -88,15 +89,14 @@ macro(_define_relative varname parent subdir docstring)
     if(${ARGC} GREATER 5)
         set(_aliasname "${ARGV5}")
     endif()
+
     set(_cmakename)
     if(NOT KDE_INSTALL_DIRS_NO_CMAKE_VARIABLES)
-        list(FIND _gnu_install_dirs_vars "${varname}" _list_offset)
-        set(_cmakename_is_deprecated FALSE)
-        if(NOT KDE_INSTALL_DIRS_NO_DEPRECATED OR NOT _list_offset EQUAL -1)
+        # The CMake name (CMAKE_INSTALL_<something>) is only supported for those variables
+        # defined by the GNUInstallDirs. Also in older ECM versions we supported CMAKE_INSTALL_<something>
+        # for all variables and if deprecated behaviour is enabled we still do
+        if((${varname} IN_LIST _gnu_install_dirs_vars) OR NOT KDE_INSTALL_DIRS_NO_DEPRECATED)
             set(_cmakename CMAKE_INSTALL_${varname})
-            if(_list_offset EQUAL -1)
-                set(_cmakename_is_deprecated TRUE)
-            endif()
         endif()
     endif()
 
@@ -121,7 +121,9 @@ macro(_define_relative varname parent subdir docstring)
     endif()
 
     if(KDE_INSTALL_${varname})
+        # The name was given (eg. on the command line or in the projects CMakeLists.txt)
         # make sure the cache documentation is set correctly
+
         get_property(_iscached CACHE KDE_INSTALL_${varname} PROPERTY VALUE SET)
         if (_iscached)
             # make sure the docs are still set if it was passed on the command line
@@ -132,33 +134,51 @@ macro(_define_relative varname parent subdir docstring)
                 PROPERTY TYPE PATH)
         endif()
     elseif(${_oldstylename})
-       message(DEPRECATION "${_oldstylename} is deprecated, use KDE_INSTALL_${varname} instead.")
-        # The old name was given (probably on the command line): move
-        # it to the new name
+        # If KDE_INSTALL_DIRS_NO_DEPRECATED is true, _oldstylename will be empty due to
+        # the logic on top of this macro, hence you will never end up here in this case
+        message(DEPRECATION "${_oldstylename} is deprecated, use KDE_INSTALL_${varname} instead.")
+        # The old name was given (probably on the command line): move it to the new name
         set(KDE_INSTALL_${varname} "${${_oldstylename}}"
             CACHE PATH
                   "${docstring} (${_docpath})"
                   FORCE)
     elseif(${_aliasname})
-        # The alias variable was given (probably on the command line): move
-        # it to the new name
+        # The alias variable was given (probably on the command line): move it to the new name
         set(KDE_INSTALL_${varname} "${${_aliasname}}"
             CACHE PATH
                   "${docstring} (${_docpath})"
                   FORCE)
     elseif(${_cmakename})
-        if(_cmakename_is_deprecated)
-            message(DEPRECATION "${_cmakename} is deprecated, use KDE_INSTALL_${varname} instead.")
+        # CMake name was given (eg. on the command line)
+        if(NOT ${varname} IN_LIST _gnu_install_dirs_vars)
+            # CMake name is NOT one of those defined by GNUInstallDirs. This is deprecated.
+            if(NOT KDE_INSTALL_DIRS_NO_DEPRECATED)
+                # Deprecated behavior is enabled, so allow this anyways
+                message(DEPRECATION "${_cmakename} is deprecated, use KDE_INSTALL_${varname} instead.")
+
+                set(KDE_INSTALL_${varname} "${${_cmakename}}"
+                    CACHE PATH
+                        "${docstring} (${_docpath})"
+                        FORCE)
+            endif()
+        else()
+            # CMake name is one of those defined by GNUInstallDirs.
+            # Note: If KDE_INSTALL_DIRS_NO_CMAKE_VARIABLES is true, _cmakename will be empty due to
+            # the logic on top of this macro, hence you will never end up here in this case
+
+            message(WARNING "KDE_INSTALL_${varname} got its value from ${_cmakename}. In most cases this is unintended, check if you included GNUInstallDirs before KDEInstallDirs. Some third party modules include GNUInstallDirs too so eg. find_package(Qt6 ...) is equivalent to include(GNUInstallDirs). If you set ${_cmakename} deliberately before including KDEInstallDirs its recommended to use KDE_INSTALL_${varname} instead to suppress this message.")
+
+            # The CMAKE_ name was given (probably on the command line): move it to the new name
+            set(KDE_INSTALL_${varname} "${${_cmakename}}"
+                CACHE PATH
+                    "${docstring} (${_docpath})"
+                    FORCE)
         endif()
-        # The CMAKE_ name was given (probably on the command line): move
-        # it to the new name
-        set(KDE_INSTALL_${varname} "${${_cmakename}}"
-            CACHE PATH
-                  "${docstring} (${_docpath})"
-                  FORCE)
-    else()
-        # insert an empty value into the cache, indicating the default
-        # should be used (including compatibility vars above)
+    endif()
+
+    if(NOT KDE_INSTALL_${varname})
+        # KDE_INSTALL_${varname} has not been set yet elsewhere so insert an empty value
+        # into the cache, indicating the default should be used (including compatibility vars above)
         set(KDE_INSTALL_${varname} ""
             CACHE PATH "${docstring} (${_docpath})")
         set(KDE_INSTALL_${varname} "${_realpath}")
@@ -210,8 +230,7 @@ macro(_define_non_cache varname value)
     endif()
 
     if(NOT KDE_INSTALL_DIRS_NO_CMAKE_VARIABLES)
-        list(FIND _gnu_install_dirs_vars "${varname}" _list_offset)
-        if(NOT KDE_INSTALL_DIRS_NO_DEPRECATED OR NOT _list_offset EQUAL -1)
+        if(NOT KDE_INSTALL_DIRS_NO_DEPRECATED OR (${varname} IN_LIST _gnu_install_dirs_vars))
             set(CMAKE_INSTALL_${varname} "${KDE_INSTALL_${varname}}")
             set(CMAKE_INSTALL_FULL_${varname} "${KDE_INSTALL_FULL_${varname}}")
         endif()
@@ -261,7 +280,12 @@ _define_absolute(INCLUDEDIR "include"
     "C and C++ header files"
     INCLUDE_INSTALL_DIR)
 
-_define_absolute(LOCALSTATEDIR "var"
+set(_default_localstate_dir "var")
+if (CMAKE_INSTALL_PREFIX STREQUAL "/usr")
+    set(_default_localstate_dir "/var")
+endif()
+
+_define_absolute(LOCALSTATEDIR ${_default_localstate_dir}
     "modifiable single-machine data")
 
 _define_absolute(SHAREDSTATEDIR "com"

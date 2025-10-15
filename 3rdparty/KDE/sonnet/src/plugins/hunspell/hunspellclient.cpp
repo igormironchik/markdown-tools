@@ -64,11 +64,15 @@ HunspellClient::HunspellClient(QObject *parent)
                 if (language != alias) {
                     qCDebug(SONNET_HUNSPELL) << "Found alias" << language << "->" << alias;
                     m_languageAliases.insert(language, alias);
+
+                    if (!m_languagePaths.contains(language)) {
+                        m_languagePaths.insert(alias, actualDict.canonicalPath());
+                    }
+
                     continue;
                 }
-            } else {
-                m_languagePaths.insert(language, dict.canonicalPath());
             }
+            m_languagePaths.insert(language, dict.canonicalPath());
         }
     }
 }

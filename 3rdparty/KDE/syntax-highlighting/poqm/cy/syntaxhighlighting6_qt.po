@@ -34,6 +34,14 @@ msgctxt "Language|"
 msgid "ABC"
 msgstr ""
 
+msgctxt "Language|"
+msgid "ACPI Source Language"
+msgstr ""
+
+msgctxt "Language|"
+msgid "ACPI DSL"
+msgstr ""
+
 #, fuzzy
 msgctxt "Language|"
 msgid "ActionScript 2.0"
@@ -148,6 +156,10 @@ msgstr ""
 
 msgctxt "Language|"
 msgid "Cabal"
+msgstr ""
+
+msgctxt "Language|"
+msgid "Cap'n Proto"
 msgstr ""
 
 msgctxt "Language|"
@@ -327,12 +339,20 @@ msgctxt "Language|"
 msgid "DTD"
 msgstr ""
 
+msgctxt "Language|"
+msgid "Devicetree Source (DTS)"
+msgstr ""
+
 #, fuzzy
 #| msgctxt "Language"
 #| msgid "D"
 msgctxt "Language|"
 msgid "D"
 msgstr "D"
+
+msgctxt "Language|"
+msgid "FreeFEM"
+msgstr ""
 
 msgctxt "Language|"
 msgid "Eiffel"
@@ -634,6 +654,10 @@ msgid "Jira"
 msgstr ""
 
 msgctxt "Language|"
+msgid "JSON5"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Jsonnet"
 msgstr ""
 
@@ -684,6 +708,10 @@ msgid "k"
 msgstr ""
 
 msgctxt "Language|"
+msgid "LaTeX Log File"
+msgstr ""
+
+msgctxt "Language|"
 msgid "LaTeX"
 msgstr ""
 
@@ -725,8 +753,17 @@ msgid "Logcat"
 msgstr ""
 
 msgctxt "Language|"
+msgid "Log File (advanced) Selector"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Log File (advanced)"
 msgstr ""
+
+#, fuzzy
+msgctxt "Language|"
+msgid "Log File (simplified) Selector"
+msgstr "Yn ôl"
 
 #, fuzzy
 msgctxt "Language|"
@@ -898,6 +935,10 @@ msgstr ""
 
 msgctxt "Language|"
 msgid "nesC"
+msgstr ""
+
+msgctxt "Language|"
+msgid "NFTables"
 msgstr ""
 
 #, fuzzy
@@ -1087,6 +1128,10 @@ msgid "QML"
 msgstr "SQL"
 
 msgctxt "Language|"
+msgid "Quarto"
+msgstr ""
+
+msgctxt "Language|"
 msgid "q"
 msgstr ""
 
@@ -1248,11 +1293,19 @@ msgid "SML"
 msgstr "SQL"
 
 msgctxt "Language|"
+msgid "Snakemake"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Snort/Suricata"
 msgstr ""
 
 msgctxt "Language|"
 msgid "Solidity"
+msgstr ""
+
+msgctxt "Language|"
+msgid "SPARQL"
 msgstr ""
 
 msgctxt "Language|"
@@ -1449,6 +1502,10 @@ msgctxt "Language|"
 msgid "Wayland Trace"
 msgstr ""
 
+msgctxt "Language|"
+msgid "Web Video Text Tracks"
+msgstr ""
+
 #, fuzzy
 msgctxt "Language|"
 msgid "WINE Config"
@@ -1461,6 +1518,13 @@ msgstr ""
 msgctxt "Language|"
 msgid "xHarbour"
 msgstr ""
+
+#, fuzzy
+#| msgctxt "Language"
+#| msgid "HTML"
+msgctxt "Language|"
+msgid "XHTML"
+msgstr "HTML"
 
 msgctxt "Language|"
 msgid "XML (Debug)"
@@ -1484,10 +1548,6 @@ msgstr "Sgriptiau"
 msgctxt "Language|"
 msgid "x.org Configuration"
 msgstr "Ffurfwedd"
-
-msgctxt "Language|"
-msgid "xslt"
-msgstr ""
 
 #, fuzzy
 msgctxt "Language|"

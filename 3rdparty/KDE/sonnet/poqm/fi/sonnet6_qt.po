@@ -11,7 +11,7 @@
 # Joonas Niilola <juippis@roskakori.org>, 2006.
 # Mikko Piippo <piippo@cc.helsinki.fi>, 2007.
 # Teemu Rytilahti <tpr@d5k.net>, 2008.
-# Tommi Nieminen <translator@legisign.org>, 2009, 2010, 2011, 2019, 2021, 2023.
+# SPDX-FileCopyrightText: 2009, 2010, 2011, 2019, 2021, 2023, 2025 Tommi Nieminen <translator@legisign.org>
 # Jorma Karvonen <karvonen.jorma@gmail.com>, 2010.
 # Lasse Liehu <lasse.liehu@gmail.com>, 2006, 2010, 2011, 2012, 2013, 2014, 2015.
 #
@@ -26,7 +26,7 @@ msgstr ""
 "Project-Id-Version: kdelibs4\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2014-03-23 01:50+0000\n"
-"PO-Revision-Date: 2023-03-30 13:06+0300\n"
+"PO-Revision-Date: 2025-05-31 10:57+0300\n"
 "Last-Translator: Tommi Nieminen <translator@legisign.org>\n"
 "Language-Team: Finnish <kde-i18n-doc@kde.org>\n"
 "Language: fi\n"
@@ -34,6 +34,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 23.08.5\n"
 "X-Qt-Contexts: true\n"
 
 #: core/loader.cpp:177
@@ -189,12 +190,9 @@ msgid "Default language:"
 msgstr "Oletuskieli:"
 
 #: ui/configui.ui:56
-#, fuzzy
-#| msgctxt "SonnetConfigUI|"
-#| msgid "Choose your preferred languages"
 msgctxt "SonnetConfigUI|"
 msgid "Preferred Languages"
-msgstr "Valitse suosimasi kielet"
+msgstr "Suositut kielet"
 
 #: ui/configui.ui:65
 msgctxt "SonnetConfigUI|"
@@ -232,12 +230,9 @@ msgid "S&kip run-together words"
 msgstr "Ohita &yhteen kirjoitetut sanat"
 
 #: ui/configui.ui:122
-#, fuzzy
-#| msgctxt "SonnetConfigUI|"
-#| msgid "Ignored Words:"
 msgctxt "SonnetConfigUI|"
 msgid "Ignored Words"
-msgstr "Ohitetut sanat:"
+msgstr "Sivuutetut sanat"
 
 #: ui/configui.ui:139
 msgctxt "SonnetConfigUI|"
@@ -255,12 +250,9 @@ msgid "Check Spelling"
 msgstr "Tarkista oikeinkirjoitus"
 
 #: ui/dialog.cpp:193
-#, fuzzy
-#| msgctxt "Sonnet::Dialog|progress label"
-#| msgid "Spell checking in progress..."
 msgctxt "Sonnet::Dialog|@info:progress"
 msgid "Spell checking in progress…"
-msgstr "Oikoluku käynnissä…"
+msgstr "Oikeinkirjoituksen tarkistus meneillään…"
 
 #: ui/dialog.cpp:214
 msgctxt "Sonnet::Dialog|"

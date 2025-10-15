@@ -24,6 +24,9 @@ This function will create a pre-commit hook which contains all the given checks.
 In addition to that, you can pass in paths to custom scripts that will be run as the pre-commit hook.
 If a custom hooks directory is set via ``core.hooksPath``, a warning is issued.
 
+The created pre-commit script will also execute any custom user-provided 
+scripts located in .git/hooks/pre-commit.d directory.
+
 Checks:
 
 - ``CLANG_FORMAT`` With this check enabled the ``git clang-format`` tool will be used to make sure that
@@ -33,7 +36,7 @@ Checks:
   want to use the one provided by ECM you can include ``include(KDEClangFormat)`` which will copy
   the file to the source dir. It is also recommended to reformat the entire project before enforcing
   the formatting using this commit hook.
-  - ``JSON_SCHEMA`` Since 5.110, uses the check-jsonschema CLI tool to ensure that all files are valid JSON and
+- ``JSON_SCHEMA`` Since 5.110, uses the check-jsonschema CLI tool to ensure that all files are valid JSON and
   match the KPluginMetaData spec. This only applied if the JSON file has a "KPlugin" object in its root.
   To ignore invalid files, for example for testing error handling, given files can be exlcuded in the .kde-ci.yml file
   Define Options.json-validate-ignore with an array of the files you want to ignore

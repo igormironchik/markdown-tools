@@ -34,6 +34,17 @@ msgctxt "Language|"
 msgid "ABC"
 msgstr "АБЦ"
 
+#, fuzzy
+#| msgctxt "Language|"
+#| msgid "E Language"
+msgctxt "Language|"
+msgid "ACPI Source Language"
+msgstr "Е"
+
+msgctxt "Language|"
+msgid "ACPI DSL"
+msgstr ""
+
 msgctxt "Language|"
 msgid "ActionScript 2.0"
 msgstr "акцискрипт 2.0"
@@ -150,6 +161,10 @@ msgstr "бу"
 
 msgctxt "Language|"
 msgid "Cabal"
+msgstr ""
+
+msgctxt "Language|"
+msgid "Cap'n Proto"
 msgstr ""
 
 msgctxt "Language|"
@@ -319,8 +334,16 @@ msgid "DTD"
 msgstr "ДТД"
 
 msgctxt "Language|"
+msgid "Devicetree Source (DTS)"
+msgstr ""
+
+msgctxt "Language|"
 msgid "D"
 msgstr "Д"
+
+msgctxt "Language|"
+msgid "FreeFEM"
+msgstr ""
 
 msgctxt "Language|"
 msgid "Eiffel"
@@ -596,6 +619,13 @@ msgctxt "Language|"
 msgid "Jira"
 msgstr "Џира"
 
+#, fuzzy
+#| msgctxt "Language|"
+#| msgid "JSON"
+msgctxt "Language|"
+msgid "JSON5"
+msgstr "ЈСОН"
+
 msgctxt "Language|"
 msgid "Jsonnet"
 msgstr ""
@@ -651,6 +681,10 @@ msgid "k"
 msgstr "К"
 
 msgctxt "Language|"
+msgid "LaTeX Log File"
+msgstr ""
+
+msgctxt "Language|"
 msgid "LaTeX"
 msgstr "латех"
 
@@ -691,7 +725,15 @@ msgid "Logcat"
 msgstr ""
 
 msgctxt "Language|"
+msgid "Log File (advanced) Selector"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Log File (advanced)"
+msgstr ""
+
+msgctxt "Language|"
+msgid "Log File (simplified) Selector"
 msgstr ""
 
 msgctxt "Language|"
@@ -856,6 +898,10 @@ msgstr "немерле"
 msgctxt "Language|"
 msgid "nesC"
 msgstr "несЦ"
+
+msgctxt "Language|"
+msgid "NFTables"
+msgstr ""
 
 #, fuzzy
 #| msgctxt "Language Section|"
@@ -1033,6 +1079,10 @@ msgid "QML"
 msgstr "КуМЛ"
 
 msgctxt "Language|"
+msgid "Quarto"
+msgstr ""
+
+msgctxt "Language|"
 msgid "q"
 msgstr "Ку"
 
@@ -1177,11 +1227,19 @@ msgid "SML"
 msgstr "СМЛ"
 
 msgctxt "Language|"
+msgid "Snakemake"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Snort/Suricata"
 msgstr ""
 
 msgctxt "Language|"
 msgid "Solidity"
+msgstr ""
+
+msgctxt "Language|"
+msgid "SPARQL"
 msgstr ""
 
 msgctxt "Language|"
@@ -1370,6 +1428,10 @@ msgid "Wayland Trace"
 msgstr ""
 
 msgctxt "Language|"
+msgid "Web Video Text Tracks"
+msgstr ""
+
+msgctxt "Language|"
 msgid "WINE Config"
 msgstr "вине‑постава"
 
@@ -1380,6 +1442,13 @@ msgstr "Веснотов обележивачки језик"
 msgctxt "Language|"
 msgid "xHarbour"
 msgstr "икс‑харбор"
+
+#, fuzzy
+#| msgctxt "Language|"
+#| msgid "HTML"
+msgctxt "Language|"
+msgid "XHTML"
+msgstr "ХТМЛ"
 
 msgctxt "Language|"
 msgid "XML (Debug)"
@@ -1396,10 +1465,6 @@ msgstr "Ксонотиков скрипт"
 msgctxt "Language|"
 msgid "x.org Configuration"
 msgstr "икс.орг‑постава"
-
-msgctxt "Language|"
-msgid "xslt"
-msgstr "ИксСЛТ"
 
 msgctxt "Language|"
 msgid "XUL"
@@ -1752,6 +1817,10 @@ msgstr "Преузимам нову дефиницију синтаксе за �
 msgctxt "QObject|@info"
 msgid "Updating syntax definition for '%1' to version %2…"
 msgstr "Ажурирам дефиницију синтаксе за „%1“ на издање %2..."
+
+#~ msgctxt "Language|"
+#~ msgid "xslt"
+#~ msgstr "ИксСЛТ"
 
 #~ msgctxt "SyntaxHighlightingCLI|"
 #~ msgid "The source file to highlight."

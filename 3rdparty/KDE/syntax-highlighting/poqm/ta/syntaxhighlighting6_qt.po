@@ -41,6 +41,17 @@ msgstr ""
 "ABC"
 
 #, fuzzy
+#| msgctxt "Language"
+#| msgid "E Language"
+msgctxt "Language|"
+msgid "ACPI Source Language"
+msgstr "E மொழி"
+
+msgctxt "Language|"
+msgid "ACPI DSL"
+msgstr ""
+
+#, fuzzy
 msgctxt "Language|"
 msgid "ActionScript 2.0"
 msgstr "சிறுநிரல்"
@@ -187,6 +198,10 @@ msgstr ""
 
 msgctxt "Language|"
 msgid "Cabal"
+msgstr ""
+
+msgctxt "Language|"
+msgid "Cap'n Proto"
 msgstr ""
 
 msgctxt "Language|"
@@ -416,12 +431,20 @@ msgctxt "Language|"
 msgid "DTD"
 msgstr ""
 
+msgctxt "Language|"
+msgid "Devicetree Source (DTS)"
+msgstr ""
+
 #, fuzzy
 #| msgctxt "Language"
 #| msgid "D"
 msgctxt "Language|"
 msgid "D"
 msgstr "D"
+
+msgctxt "Language|"
+msgid "FreeFEM"
+msgstr ""
 
 #, fuzzy
 msgctxt "Language|"
@@ -775,6 +798,10 @@ msgid "Jira"
 msgstr ""
 
 msgctxt "Language|"
+msgid "JSON5"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Jsonnet"
 msgstr ""
 
@@ -831,6 +858,12 @@ msgstr ""
 msgctxt "Language|"
 msgid "k"
 msgstr ""
+
+#, fuzzy
+#| msgid "Save File"
+msgctxt "Language|"
+msgid "LaTeX Log File"
+msgstr "கோப்பினைச் சேமி..."
 
 #, fuzzy
 #| msgctxt "Language"
@@ -894,8 +927,18 @@ msgid "Logcat"
 msgstr ""
 
 msgctxt "Language|"
+msgid "Log File (advanced) Selector"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Log File (advanced)"
 msgstr ""
+
+#, fuzzy
+#| msgid "Namespace"
+msgctxt "Language|"
+msgid "Log File (simplified) Selector"
+msgstr "பெயர்வெளி"
 
 #, fuzzy
 #| msgid "Namespace"
@@ -1112,6 +1155,10 @@ msgstr ""
 
 msgctxt "Language|"
 msgid "nesC"
+msgstr ""
+
+msgctxt "Language|"
+msgid "NFTables"
 msgstr ""
 
 #, fuzzy
@@ -1345,6 +1392,10 @@ msgstr ""
 "SML"
 
 msgctxt "Language|"
+msgid "Quarto"
+msgstr ""
+
+msgctxt "Language|"
 msgid "q"
 msgstr ""
 
@@ -1531,11 +1582,19 @@ msgstr ""
 "SML"
 
 msgctxt "Language|"
+msgid "Snakemake"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Snort/Suricata"
 msgstr ""
 
 msgctxt "Language|"
 msgid "Solidity"
+msgstr ""
+
+msgctxt "Language|"
+msgid "SPARQL"
 msgstr ""
 
 #, fuzzy
@@ -1782,6 +1841,10 @@ msgctxt "Language|"
 msgid "Wayland Trace"
 msgstr ""
 
+msgctxt "Language|"
+msgid "Web Video Text Tracks"
+msgstr ""
+
 #, fuzzy
 #| msgctxt "Language"
 #| msgid "WINE Config"
@@ -1799,6 +1862,13 @@ msgid "xHarbour"
 msgstr ""
 "_: Language\n"
 "xHarbour"
+
+#, fuzzy
+#| msgctxt "Language"
+#| msgid "HTML"
+msgctxt "Language|"
+msgid "XHTML"
+msgstr "HTML"
 
 #, fuzzy
 #| msgctxt "Language"
@@ -1827,13 +1897,6 @@ msgid "x.org Configuration"
 msgstr ""
 "_: Language Section\n"
 "வடிவமைத்தல்"
-
-#, fuzzy
-msgctxt "Language|"
-msgid "xslt"
-msgstr ""
-"_: Language\n"
-"xslt"
 
 #, fuzzy
 msgctxt "Language|"
@@ -2212,6 +2275,13 @@ msgstr ""
 msgctxt "QObject|@info"
 msgid "Updating syntax definition for '%1' to version %2…"
 msgstr ""
+
+#, fuzzy
+#~ msgctxt "Language|"
+#~ msgid "xslt"
+#~ msgstr ""
+#~ "_: Language\n"
+#~ "xslt"
 
 #~ msgctxt "SyntaxHighlightingCLI|"
 #~ msgid "The source file to highlight."
@@ -3365,9 +3435,6 @@ msgstr ""
 #~ msgid ""
 #~ "Do you really want to continue to close this file? Data loss may occur."
 #~ msgstr "கண்டிப்பாக இந்த கோப்பினை மூட விரும்புகிறீர்களா? தகவல் இழப்பு ஏற்படலாம்."
-
-#~ msgid "Save File"
-#~ msgstr "கோப்பினைச் சேமி..."
 
 #~ msgid "Save failed"
 #~ msgstr "சேமிக்க முடியவில்லை"

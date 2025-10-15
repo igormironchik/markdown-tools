@@ -1,4 +1,4 @@
-/**
+/*
  * test_highlighter.h
  *
  * SPDX-FileCopyrightText: 2006 Laurent Montel <montel@kde.org>
