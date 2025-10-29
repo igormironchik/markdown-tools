@@ -17,6 +17,7 @@ void initSharedResources()
 {
     Q_INIT_RESOURCE(qt);
     Q_INIT_RESOURCE(icon);
+    Q_INIT_RESOURCE(tr);
     MdShared::Syntax::init();
 }
 

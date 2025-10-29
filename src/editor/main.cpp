@@ -8,6 +8,7 @@
 #include <QCommandLineParser>
 #include <QScreen>
 #include <QString>
+#include <QTranslator>
 #include <QWebEngineUrlScheme>
 
 // md-editor include.
@@ -58,6 +59,11 @@ int main(int argc,
 
     initSharedResources();
     Q_INIT_RESOURCE(resources);
+
+    QTranslator appTranslator;
+    if (appTranslator.load(QStringLiteral("md_") + QLocale::system().name(), QStringLiteral(":/tr/"))) {
+        QApplication::installTranslator(&appTranslator);
+    }
 
     QIcon appIcon(QStringLiteral(":/icon/icon_256x256.png"));
     appIcon.addFile(QStringLiteral(":/icon/icon_128x128.png"));

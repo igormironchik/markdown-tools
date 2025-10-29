@@ -10,6 +10,7 @@
 #include <QApplication>
 #include <QCommandLineParser>
 #include <QString>
+#include <QTranslator>
 
 // shared include.
 #include "utils.h"
@@ -50,6 +51,11 @@ int main(int argc,
     tex::LaTeX::init(":/res");
 
     initSharedResources();
+
+    QTranslator appTranslator;
+    if (appTranslator.load(QStringLiteral("md_") + QLocale::system().name(), QStringLiteral(":/tr/"))) {
+        QApplication::installTranslator(&appTranslator);
+    }
 
     MainWindow w;
     w.show();

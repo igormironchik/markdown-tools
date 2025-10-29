@@ -38,6 +38,7 @@ set(SRC license_dialog.h
 
 qt6_add_resources(SRC qt.qrc)
 qt6_add_resources(SRC icon.qrc)
+qt6_add_resources(SRC tr.qrc)
     
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
