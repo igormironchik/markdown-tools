@@ -39,6 +39,14 @@ set(SRC license_dialog.h
 qt6_add_resources(SRC qt.qrc)
 qt6_add_resources(SRC icon.qrc)
 qt6_add_resources(SRC tr.qrc)
+
+install(FILES "icon/icon_16x16.png" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/16x16/apps/" RENAME "markdown-tools.png")
+install(FILES "icon/icon_24x24.png" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/24x24/apps/" RENAME "markdown-tools.png")
+install(FILES "icon/icon_32x32.png" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/32x32/apps/" RENAME "markdown-tools.png")
+install(FILES "icon/icon_48x48.png" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/48x48/apps/" RENAME "markdown-tools.png")
+install(FILES "icon/icon_64x64.png" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/64x64/apps/" RENAME "markdown-tools.png")
+install(FILES "icon/icon_128x128.png" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/128x128/apps/" RENAME "markdown-tools.png")
+install(FILES "icon/icon_256x256.png" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/256x256/apps/" RENAME "markdown-tools.png")
     
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 

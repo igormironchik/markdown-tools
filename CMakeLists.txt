@@ -80,6 +80,8 @@ if(NOT DEFINED _DISABLE_INSTALLATION)
 	endmacro()
 endif()
 
+install(FILES "markdown-tools.desktop" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/applications/")
+
 set(_DISABLE_INSTALLATION TRUE)
 
 if(NOT BUILD_WITH_SYSTEM_LIBS)
