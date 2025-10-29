@@ -5,6 +5,7 @@
 * [Building](#building)
   * [On what platforms better use `Conan` to build `markdown-tools`?](#on-what-platforms-better-use-conan-to-build-markdown-tools)
 * [Known issues](#known-issues)
+* [Translating](#translating)
 
 > [!CAUTION]
 >
@@ -99,3 +100,23 @@ fonts to monospaced due to [QTBUG-112145](https://bugreports.qt.io/browse/QTBUG-
 with spaces in converter to `PDF`.
 
 * SVG in PDF renders as raster image with support of Rust `resvg` library.
+
+# Translating
+
+To translate these applications into  your language you need to run
+
+```bash
+lupdate . -ts ../translate/md_{locale}.ts
+```
+
+from `src` directory.
+
+Make a translation of that file with Qt Linguist and run in `translate` directory
+
+```bash
+lrelease md_{locale}.ts -qm ../src/shared/tr/md_{locale}.qm
+```
+
+And put new line into `src/shared/tr.qrc` file with record about new translation.
+
+With these changes you can do a PR into the repository.
