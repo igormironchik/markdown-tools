@@ -282,6 +282,7 @@ struct EditorPrivate {
 
     ~EditorPrivate()
     {
+        m_parser->deleteLater();
         m_parsingThread->quit();
         m_parsingThread->wait();
     }
