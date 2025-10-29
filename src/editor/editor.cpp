@@ -796,6 +796,10 @@ void Editor::drawCodeBlocksBackground(QPainter &p)
             }
         }
     } else {
+        int x = -1;
+        int y = -1;
+        int h = 0;
+
         while (visibleBlock.isValid()) {
             auto geometry = blockBoundingGeometry(visibleBlock).translated(contentOffset());
 
@@ -808,15 +812,41 @@ void Editor::drawCodeBlocksBackground(QPainter &p)
             }
 
             if (visibleBlock.userData()) {
-                const auto x = static_cast<CodeBlockBackgroundData *>(visibleBlock.userData())->m_x;
+                const auto currentX = static_cast<CodeBlockBackgroundData *>(visibleBlock.userData())->m_x;
 
+                if (x == -1) {
+                    x = currentX;
+                    y = qRound(geometry.top());
+                    h = qRound(geometry.height());
+                } else if (x != currentX) {
+                    p.drawRect(x,
+                               y,
+                               viewport()->rect().width() - x - qRound(document()->documentMargin()),
+                               h);
+
+                    x = currentX;
+                    y = qRound(geometry.top());
+                    h = qRound(geometry.height());
+                } else {
+                    h += qRound(geometry.height());
+                }
+            } else if (x != -1) {
                 p.drawRect(x,
-                           qRound(geometry.top()),
+                           y,
                            viewport()->rect().width() - x - qRound(document()->documentMargin()),
-                           qRound(geometry.height()));
+                           h);
+
+                x = -1;
             }
 
             visibleBlock = visibleBlock.next();
+        }
+
+        if (x != -1) {
+            p.drawRect(x,
+                       y,
+                       viewport()->rect().width() - x - qRound(document()->documentMargin()),
+                       h);
         }
     }
 }
@@ -1292,16 +1322,13 @@ void Editor::onParsingDone(std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
         m_d->m_currentDoc = doc;
         m_d->m_idsMap = idsMap;
         m_d->m_syntax = syntax;
+        m_d->m_isReady = true;
 
         m_d->m_underlinedLink = {};
         m_d->restoreCursor();
         m_d->m_syntax.applyFormats(document());
 
         highlightCurrent();
-
-        viewport()->update();
-
-        m_d->m_isReady = true;
 
         auto block = document()->firstBlock();
 
@@ -1310,8 +1337,10 @@ void Editor::onParsingDone(std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
             block = block.next();
         }
 
-        emit misspelled(syntaxHighlighter().hasMisspelled());
         emit ready();
+        emit misspelled(syntaxHighlighter().hasMisspelled());
+
+        viewport()->repaint();
     }
 }
 
