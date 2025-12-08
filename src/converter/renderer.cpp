@@ -700,19 +700,19 @@ void PdfRenderer::renderImpl()
                                         t->setText(t->text() + QLatin1Char(' '));
                                     }
                                 } else {
-                                    auto t = QSharedPointer<MD::Text>();
+                                    auto t = QSharedPointer<MD::Text>::create();
                                     t->setText(QString(QLatin1Char(' ')));
                                     p->appendItem(t);
                                 }
                             }
                         } else {
-                            auto p = QSharedPointer<MD::Paragraph>();
+                            auto p = QSharedPointer<MD::Paragraph>::create();
                             fit.value()->appendItem(p);
                         }
                     }
 
                     auto p = static_cast<MD::Paragraph *>(fit.value()->items().back().get());
-                    auto link = QSharedPointer<MD::Link>();
+                    auto link = QSharedPointer<MD::Link>::create();
                     link->img()->setUrl(QStringLiteral("qrc:/img/go-jump.png"));
                     link->p()->appendItem(link->img());
                     link->setUrl(ref->id() + QStringLiteral("-%1").arg(QString::number(++pfit->second)));
@@ -1101,7 +1101,7 @@ void PdfRenderer::createPage(PdfAuxData &pdfData)
 
         pdfData.m_firstOnPage = true;
 
-        auto painter = QSharedPointer<Painter>();
+        auto painter = QSharedPointer<Painter>::create();
         painter->SetCanvas(*pdfData.m_page);
 
         (*pdfData.m_painters).push_back(painter);
@@ -4851,7 +4851,7 @@ double PdfRenderer::rowHeight(PdfAuxData &pdfData,
     pdfData.m_layout.margins().m_right = 0.0;
 
     for (const auto &c : row->cells()) {
-        auto p = QSharedPointer<MD::Paragraph>();
+        auto p = QSharedPointer<MD::Paragraph>::create();
         p->applyBlock(*c.get());
 
         const auto r = drawParagraph(pdfData, p.get(), doc, 0.0, false, CalcHeightOpt::Full, scale);
@@ -5128,7 +5128,7 @@ PdfRenderer::drawTableCell(QSharedPointer<MD::TableCell> cell,
 
     pdfData.m_layout.setRightToLeft(isRightToLeft(cell.get()));
 
-    auto p = QSharedPointer<MD::Paragraph>();
+    auto p = QSharedPointer<MD::Paragraph>::create();
     p->applyBlock(*cell.get());
 
     const auto ret = drawParagraph(pdfData,
