@@ -28,7 +28,7 @@
 #include <algorithm>
 
 // md4qt include.
-#include <md4qt/plugins.h>
+#include <md4qt/src/yaml_parser.h>
 
 namespace MdEditor
 {
@@ -38,7 +38,7 @@ namespace MdEditor
 //
 
 struct SyntaxVisitorPrivate {
-    SyntaxVisitorPrivate(std::shared_ptr<MdShared::Syntax> syntax)
+    SyntaxVisitorPrivate(QSharedPointer<MdShared::Syntax> syntax)
         : m_codeSyntax(new MdShared::Syntax)
     {
         if (syntax) {
@@ -64,7 +64,7 @@ struct SyntaxVisitorPrivate {
             m_misspelledPos = other.m_misspelledPos;
             m_currentHighlightedMisspelled = other.m_currentHighlightedMisspelled;
             m_correctWords = other.m_correctWords;
-            m_codeSyntax = std::make_shared<MdShared::Syntax>();
+            m_codeSyntax = QSharedPointer<MdShared::Syntax>::create();
             m_codeSyntax->setTheme(other.m_codeSyntax->theme());
             m_codeRects = other.m_codeRects;
         }
@@ -106,7 +106,7 @@ struct SyntaxVisitorPrivate {
     {
         for (auto i = startLine; i <= endLine; ++i) {
             if (m_stream) {
-                const auto block = m_stream->lineAt(i);
+                const auto block = m_stream->at(i);
 
                 QTextLayout::FormatRange r;
                 r.format = format;
@@ -173,7 +173,7 @@ struct SyntaxVisitorPrivate {
     //! Default font.
     QFont m_font;
     //! Lines stream.
-    MD::StringListStream<MD::QStringTrait> *m_stream = nullptr;
+    QStringList *m_stream = nullptr;
     //! Additional style that should be applied for any item.
     int m_additionalStyle = 0;
     //! Is spelling check enabled?
@@ -197,7 +197,7 @@ struct SyntaxVisitorPrivate {
     //! Cache of correct words.
     QSet<QString> m_correctWords;
     //! Code syntax highlighter.
-    std::shared_ptr<MdShared::Syntax> m_codeSyntax;
+    QSharedPointer<MdShared::Syntax> m_codeSyntax;
     //! Rectangles of code blocks that were highlighted.
     QVector<SyntaxVisitor::CodeRect> m_codeRects;
 }; // struct SyntaxVisitorPrivate
@@ -211,7 +211,7 @@ SyntaxVisitor::SyntaxVisitor()
 {
 }
 
-SyntaxVisitor::SyntaxVisitor(std::shared_ptr<MdShared::Syntax> syntax)
+SyntaxVisitor::SyntaxVisitor(QSharedPointer<MdShared::Syntax> syntax)
     : m_d(new SyntaxVisitorPrivate(syntax))
 {
 }
@@ -322,7 +322,7 @@ bool SyntaxVisitor::hasMisspelled() const
     return !m_d->m_misspelledPos.isEmpty();
 }
 
-std::shared_ptr<MdShared::Syntax> SyntaxVisitor::codeBlockSyntaxHighlighter()
+QSharedPointer<MdShared::Syntax> SyntaxVisitor::codeBlockSyntaxHighlighter()
 {
     return m_d->m_codeSyntax;
 }
@@ -363,8 +363,8 @@ void SyntaxVisitor::highlightNextMisspelled(QPlainTextEdit *editor)
     }
 }
 
-void SyntaxVisitor::highlight(MD::StringListStream<MD::QStringTrait> *stream,
-                              std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+void SyntaxVisitor::highlight(QStringList *stream,
+                              QSharedPointer<MD::Document> doc,
                               const Colors &cols)
 {
     m_d->m_misspelledPos.clear();
@@ -373,7 +373,7 @@ void SyntaxVisitor::highlight(MD::StringListStream<MD::QStringTrait> *stream,
     m_d->m_colors = cols;
     m_d->m_stream = stream;
 
-    MD::PosCache<MD::QStringTrait>::initialize(doc);
+    MD::PosCache::initialize(doc);
 
     m_d->m_stream = nullptr;
 }
@@ -389,7 +389,7 @@ void SyntaxVisitor::setColors(const Colors &c)
     m_d->m_colors = c;
 }
 
-void SyntaxVisitor::onItemWithOpts(MD::ItemWithOpts<MD::QStringTrait> *i)
+void SyntaxVisitor::onItemWithOpts(MD::ItemWithOpts *i)
 {
     if (m_d->m_colors.m_enabled) {
         QTextCharFormat special;
@@ -406,11 +406,11 @@ void SyntaxVisitor::onItemWithOpts(MD::ItemWithOpts<MD::QStringTrait> *i)
     }
 }
 
-void SyntaxVisitor::onUserDefined(MD::Item<MD::QStringTrait> *i)
+void SyntaxVisitor::onUserDefined(MD::Item *i)
 {
     if (m_d->m_colors.m_enabled) {
         if (i->type() == static_cast<MD::ItemType>(static_cast<int>(MD::ItemType::UserDefined) + 1)) {
-            auto yaml = static_cast<MD::YAMLHeader<MD::QStringTrait> *>(i);
+            auto yaml = static_cast<MD::YAMLHeader *>(i);
 
             QTextCharFormat format;
             format.setForeground(m_d->m_colors.m_codeColor);
@@ -427,10 +427,10 @@ void SyntaxVisitor::onUserDefined(MD::Item<MD::QStringTrait> *i)
         }
     }
 
-    MD::PosCache<MD::QStringTrait>::onUserDefined(i);
+    MD::PosCache::onUserDefined(i);
 }
 
-void SyntaxVisitor::onReferenceLink(MD::Link<MD::QStringTrait> *l)
+void SyntaxVisitor::onReferenceLink(MD::Link *l)
 {
     if (m_d->m_colors.m_enabled) {
         QTextCharFormat format;
@@ -440,7 +440,7 @@ void SyntaxVisitor::onReferenceLink(MD::Link<MD::QStringTrait> *l)
         m_d->setFormat(format, l->startLine(), l->startColumn(), l->endLine(), l->endColumn());
     }
 
-    MD::PosCache<MD::QStringTrait>::onReferenceLink(l);
+    MD::PosCache::onReferenceLink(l);
 }
 
 namespace /* anonymous */
@@ -486,7 +486,7 @@ QString readWord(const String &str,
 
 } /* namespace anonymous */
 
-void SyntaxVisitor::onText(MD::Text<MD::QStringTrait> *t)
+void SyntaxVisitor::onText(MD::Text *t)
 {
     QTextCharFormat format;
 
@@ -498,7 +498,7 @@ void SyntaxVisitor::onText(MD::Text<MD::QStringTrait> *t)
     }
 
     if (m_d->m_spellingEnabled && m_d->m_stream) {
-        const auto block = m_d->m_stream->lineAt(t->startLine());
+        const auto block = m_d->m_stream->at(t->startLine());
         auto pos = t->startColumn();
 
         format.setUnderlineColor(Qt::red);
@@ -554,10 +554,10 @@ void SyntaxVisitor::onText(MD::Text<MD::QStringTrait> *t)
 
     onItemWithOpts(t);
 
-    MD::PosCache<MD::QStringTrait>::onText(t);
+    MD::PosCache::onText(t);
 }
 
-void SyntaxVisitor::onMath(MD::Math<MD::QStringTrait> *m)
+void SyntaxVisitor::onMath(MD::Math *m)
 {
     if (m_d->m_colors.m_enabled) {
         QTextCharFormat format;
@@ -585,14 +585,14 @@ void SyntaxVisitor::onMath(MD::Math<MD::QStringTrait> *m)
 
     onItemWithOpts(m);
 
-    MD::PosCache<MD::QStringTrait>::onMath(m);
+    MD::PosCache::onMath(m);
 }
 
-void SyntaxVisitor::onHeading(MD::Heading<MD::QStringTrait> *h)
+void SyntaxVisitor::onHeading(MD::Heading *h)
 {
     QScopedValueRollback style(m_d->m_additionalStyle, m_d->m_additionalStyle | MD::BoldText);
 
-    MD::PosCache<MD::QStringTrait>::onHeading(h);
+    MD::PosCache::onHeading(h);
 
     if (m_d->m_colors.m_enabled) {
         QTextCharFormat special;
@@ -611,7 +611,7 @@ void SyntaxVisitor::onHeading(MD::Heading<MD::QStringTrait> *h)
     }
 }
 
-void SyntaxVisitor::onCode(MD::Code<MD::QStringTrait> *c)
+void SyntaxVisitor::onCode(MD::Code *c)
 {
     if (m_d->m_colors.m_enabled) {
         {
@@ -636,12 +636,14 @@ void SyntaxVisitor::onCode(MD::Code<MD::QStringTrait> *c)
             long long int startColumn = 0;
 
             auto calculateLine = [&](qsizetype line, bool calcInAnyCase = false) {
-                const auto block = m_d->m_stream->lineAt(c->startLine() + line).toString();
+                const auto block = m_d->m_stream->at(c->startLine() + line);
                 const auto codeLine = lines[line].trimmed();
 
                 if (!codeLine.isEmpty()) {
                     auto index = block.lastIndexOf(codeLine);
-                    auto ns = MD::skipSpaces(0, lines[line]);
+                    auto ns = MD::skipIf(0, lines[line], [](const QChar &c) {
+                        return c.isSpace();
+                    });
 
                     if (index >= 0) {
                         startColumn = index - ns;
@@ -730,10 +732,10 @@ void SyntaxVisitor::onCode(MD::Code<MD::QStringTrait> *c)
 
     onItemWithOpts(c);
 
-    MD::PosCache<MD::QStringTrait>::onCode(c);
+    MD::PosCache::onCode(c);
 }
 
-void SyntaxVisitor::onInlineCode(MD::Code<MD::QStringTrait> *c)
+void SyntaxVisitor::onInlineCode(MD::Code *c)
 {
     if (m_d->m_colors.m_enabled) {
         QTextCharFormat format;
@@ -757,12 +759,12 @@ void SyntaxVisitor::onInlineCode(MD::Code<MD::QStringTrait> *c)
 
     onItemWithOpts(c);
 
-    MD::PosCache<MD::QStringTrait>::onInlineCode(c);
+    MD::PosCache::onInlineCode(c);
 }
 
-void SyntaxVisitor::onBlockquote(MD::Blockquote<MD::QStringTrait> *b)
+void SyntaxVisitor::onBlockquote(MD::Blockquote *b)
 {
-    MD::PosCache<MD::QStringTrait>::onBlockquote(b);
+    MD::PosCache::onBlockquote(b);
 
     if (m_d->m_colors.m_enabled) {
         QTextCharFormat special;
@@ -775,11 +777,11 @@ void SyntaxVisitor::onBlockquote(MD::Blockquote<MD::QStringTrait> *b)
     }
 }
 
-void SyntaxVisitor::onListItem(MD::ListItem<MD::QStringTrait> *l,
+void SyntaxVisitor::onListItem(MD::ListItem *l,
                                bool first,
                                bool)
 {
-    MD::PosCache<MD::QStringTrait>::onListItem(l, first);
+    MD::PosCache::onListItem(l, first);
 
     if (m_d->m_colors.m_enabled) {
         QTextCharFormat special;
@@ -794,7 +796,7 @@ void SyntaxVisitor::onListItem(MD::ListItem<MD::QStringTrait> *l,
     }
 }
 
-void SyntaxVisitor::onTable(MD::Table<MD::QStringTrait> *t)
+void SyntaxVisitor::onTable(MD::Table *t)
 {
     if (m_d->m_colors.m_enabled) {
         QTextCharFormat format;
@@ -804,10 +806,10 @@ void SyntaxVisitor::onTable(MD::Table<MD::QStringTrait> *t)
         m_d->setFormat(format, t->startLine(), t->startColumn(), t->endLine(), t->endColumn());
     }
 
-    MD::PosCache<MD::QStringTrait>::onTable(t);
+    MD::PosCache::onTable(t);
 }
 
-void SyntaxVisitor::onRawHtml(MD::RawHtml<MD::QStringTrait> *h)
+void SyntaxVisitor::onRawHtml(MD::RawHtml *h)
 {
     if (m_d->m_colors.m_enabled) {
         QTextCharFormat format;
@@ -819,10 +821,10 @@ void SyntaxVisitor::onRawHtml(MD::RawHtml<MD::QStringTrait> *h)
 
     onItemWithOpts(h);
 
-    MD::PosCache<MD::QStringTrait>::onRawHtml(h);
+    MD::PosCache::onRawHtml(h);
 }
 
-void SyntaxVisitor::onHorizontalLine(MD::HorizontalLine<MD::QStringTrait> *l)
+void SyntaxVisitor::onHorizontalLine(MD::HorizontalLine *l)
 {
     if (m_d->m_colors.m_enabled) {
         QTextCharFormat special;
@@ -832,10 +834,10 @@ void SyntaxVisitor::onHorizontalLine(MD::HorizontalLine<MD::QStringTrait> *l)
         m_d->setFormat(special, l->startLine(), l->startColumn(), l->endLine(), l->endColumn());
     }
 
-    MD::PosCache<MD::QStringTrait>::onHorizontalLine(l);
+    MD::PosCache::onHorizontalLine(l);
 }
 
-void SyntaxVisitor::onLink(MD::Link<MD::QStringTrait> *l)
+void SyntaxVisitor::onLink(MD::Link *l)
 {
     if (m_d->m_colors.m_enabled) {
         QTextCharFormat format;
@@ -847,12 +849,12 @@ void SyntaxVisitor::onLink(MD::Link<MD::QStringTrait> *l)
 
     QScopedValueRollback style(m_d->m_additionalStyle, m_d->m_additionalStyle | l->opts());
 
-    MD::PosCache<MD::QStringTrait>::onLink(l);
+    MD::PosCache::onLink(l);
 
     onItemWithOpts(l);
 }
 
-void SyntaxVisitor::onImage(MD::Image<MD::QStringTrait> *i)
+void SyntaxVisitor::onImage(MD::Image *i)
 {
     if (m_d->m_colors.m_enabled) {
         QTextCharFormat format;
@@ -862,12 +864,12 @@ void SyntaxVisitor::onImage(MD::Image<MD::QStringTrait> *i)
         m_d->setFormat(format, i->startLine(), i->startColumn(), i->endLine(), i->endColumn());
     }
 
-    MD::PosCache<MD::QStringTrait>::onImage(i);
+    MD::PosCache::onImage(i);
 
     onItemWithOpts(i);
 }
 
-void SyntaxVisitor::onFootnoteRef(MD::FootnoteRef<MD::QStringTrait> *ref)
+void SyntaxVisitor::onFootnoteRef(MD::FootnoteRef *ref)
 {
     if (m_d->m_colors.m_enabled) {
         if (m_doc->footnotesMap().find(ref->id()) != m_doc->footnotesMap().cend()) {
@@ -885,12 +887,12 @@ void SyntaxVisitor::onFootnoteRef(MD::FootnoteRef<MD::QStringTrait> *ref)
         }
     }
 
-    MD::PosCache<MD::QStringTrait>::onFootnoteRef(ref);
+    MD::PosCache::onFootnoteRef(ref);
 
     onItemWithOpts(ref);
 }
 
-void SyntaxVisitor::onFootnote(MD::Footnote<MD::QStringTrait> *f)
+void SyntaxVisitor::onFootnote(MD::Footnote *f)
 {
     if (m_d->m_colors.m_enabled) {
         QTextCharFormat format;
@@ -900,7 +902,7 @@ void SyntaxVisitor::onFootnote(MD::Footnote<MD::QStringTrait> *f)
         m_d->setFormat(format, f->startLine(), f->startColumn(), f->endLine(), f->endColumn());
     }
 
-    MD::PosCache<MD::QStringTrait>::onFootnote(f);
+    MD::PosCache::onFootnote(f);
 }
 
 } /* namespace MdEditor */

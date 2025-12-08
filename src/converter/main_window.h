@@ -76,7 +76,7 @@ private:
     QThread *m_thread;
     bool m_textFontOk;
     bool m_codeFontOk;
-    std::shared_ptr<MdShared::Syntax> m_syntax;
+    QSharedPointer<MdShared::Syntax> m_syntax;
     bool m_alreadyShown = false;
     MdShared::PluginsCfg m_pluginsCfg;
     QColor m_markColor;

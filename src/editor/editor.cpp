@@ -23,6 +23,7 @@
 #include <QTextDocument>
 #include <QTextLayout>
 #include <QThread>
+#include <QFileInfo>
 
 // C++ include.
 #include <functional>
@@ -30,8 +31,7 @@
 #include <utility>
 
 // md4qt include.
-#include <md4qt/algo.h>
-#include <md4qt/plugins.h>
+#include <md4qt/src/algo.h>
 
 // shared include.
 #include "utils.h"
@@ -58,10 +58,10 @@ signals:
     //! Signals about data available for parsing.
     void newData();
     //! Parsing is done.
-    void done(std::shared_ptr<MD::Document<MD::QStringTrait>>,
+    void done(QSharedPointer<MD::Document>,
               unsigned long long int,
               SyntaxVisitor syntax,
-              MD::details::IdsMap<MD::QStringTrait> idsMap);
+              MD::details::IdsMap idsMap);
 
 public:
     DataParser()
@@ -103,41 +103,37 @@ private slots:
     {
         if (!m_data.isEmpty()) {
             QTextStream stream(&m_data.back());
-            MD::MdBlock<MD::QStringTrait>::Data data;
-
-            MD::TextStream<MD::QStringTrait> tmp(stream);
+            MD::TextStream tmp(stream);
+            QStringList lines;
 
             long long int i = 0;
 
             while (!tmp.atEnd()) {
-                data.push_back(std::pair<MD::QStringTrait::InternalString, MD::MdLineData>(tmp.readLine(), {i}));
-                ++i;
+                lines.append(tmp.readLine().slicedCopy(0));
             }
 
             stream.seek(0);
 
-            MD::StringListStream<MD::QStringTrait> linesStream(data);
-
             setPlugins(m_parser, m_pluginsCfg);
 
-            const auto doc = m_parser.parse(stream, m_path, m_fileName, false);
+            const auto doc = m_parser.parse(stream, m_path, m_fileName);
 
             m_data.clear();
 
-            m_syntax.highlight(&linesStream, doc, m_syntax.colors());
+            m_syntax.highlight(&lines, doc, m_syntax.colors());
 
-            MD::details::IdsMap<MD::QStringTrait> idsMap;
+            MD::details::IdsMap idsMap;
 
             m_id = 0;
 
-            MD::forEach<MD::QStringTrait>(
+            MD::forEach(
                 m_itemTypes,
                 doc,
-                [&idsMap, this](MD::Item<MD::QStringTrait> *item) {
+                [&idsMap, this](MD::Item *item) {
                     const auto id = this->generateId(item);
 
                     if (!id.isEmpty()) {
-                        idsMap.insert({item, id});
+                        idsMap.insert(item, id);
                     }
                 },
                 1);
@@ -148,7 +144,7 @@ private slots:
 
 private:
     //! \return Generated ID for a given item.
-    QString generateId(MD::Item<MD::QStringTrait> *item)
+    QString generateId(MD::Item *item)
     {
         if (item->type() != MD::ItemType::Heading) {
             if (m_id == std::numeric_limits<unsigned long long int>::max()) {
@@ -167,7 +163,7 @@ private:
                 return id;
             };
 
-            return labelToId(static_cast<MD::Heading<MD::QStringTrait> *>(item)->label());
+            return labelToId(static_cast<MD::Heading *>(item)->label());
         }
     }
 
@@ -181,7 +177,7 @@ private:
     //! ID of last requested parsing.
     unsigned long long int m_counter;
     //! Parser of Markdown.
-    MD::Parser<MD::QStringTrait> m_parser;
+    MD::Parser m_parser;
     //! Syntax highlighter.
     SyntaxVisitor m_syntax;
     //! List of type of items that should get IDs.
@@ -329,12 +325,12 @@ struct EditorPrivate {
     }
 
     //! \return Link if it's there...
-    MD::Link<MD::QStringTrait> *isLink(const MD::PosCache<MD::QStringTrait>::Items &items)
+    MD::Link *isLink(const MD::PosCache::Items &items)
     {
         if (!items.isEmpty()) {
             for (const auto &i : std::as_const(items)) {
                 if (i->type() == MD::ItemType::Link) {
-                    return static_cast<MD::Link<MD::QStringTrait> *>(i);
+                    return static_cast<MD::Link *>(i);
                 }
             }
         }
@@ -457,9 +453,9 @@ struct EditorPrivate {
     //! Currently highlighted text in "find" mode.
     QString m_highlightedText;
     //! Current parsed Markdown document.
-    std::shared_ptr<MD::Document<MD::QStringTrait>> m_currentDoc;
+    QSharedPointer<MD::Document> m_currentDoc;
     //! Map of current items IDs.
-    MD::details::IdsMap<MD::QStringTrait> m_idsMap;
+    MD::details::IdsMap m_idsMap;
     //! Syntax highlighter.
     SyntaxVisitor m_syntax;
     //! Tread for parsing.
@@ -535,7 +531,7 @@ void Editor::setFindWidget(Find *findWidget)
     m_d->m_find = findWidget;
 }
 
-const MD::details::IdsMap<MD::QStringTrait> &Editor::idsMap() const
+const MD::details::IdsMap &Editor::idsMap() const
 {
     return m_d->m_idsMap;
 }
@@ -634,7 +630,7 @@ void Editor::enableSpellingCheck(bool on)
     syntaxHighlighter().spellingSettingsChanged(on);
 }
 
-std::shared_ptr<MD::Document<MD::QStringTrait>> Editor::currentDoc() const
+QSharedPointer<MD::Document> Editor::currentDoc() const
 {
     return m_d->m_currentDoc;
 }
@@ -1313,10 +1309,10 @@ void Editor::onContentChanged()
                    m_d->m_settings.m_pluginsCfg);
 }
 
-void Editor::onParsingDone(std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+void Editor::onParsingDone(QSharedPointer<MD::Document> doc,
                            unsigned long long int counter,
                            SyntaxVisitor syntax,
-                           MD::details::IdsMap<MD::QStringTrait> idsMap)
+                           MD::details::IdsMap idsMap)
 {
     if (m_d->m_currentParsingCounter == counter) {
         m_d->m_currentDoc = doc;
@@ -1364,7 +1360,7 @@ bool Editor::navigate(const QString &place)
 
     if (hit != m_d->m_currentDoc->labeledHeadings().cend()) {
         auto c = textCursor();
-        c.setPosition(document()->findBlockByNumber(hit->second->startLine()).position());
+        c.setPosition(document()->findBlockByNumber(hit.value()->startLine()).position());
 
         setTextCursor(c);
 
@@ -1383,7 +1379,7 @@ void Editor::onLinkClicked(const QString &url)
     auto lit = m_d->m_currentDoc->labeledLinks().find(url);
 
     if (lit != m_d->m_currentDoc->labeledLinks().cend()) {
-        place = lit->second->url();
+        place = lit.value()->url();
     }
 
     if (place.startsWith(QLatin1Char('#'))) {
@@ -1474,7 +1470,7 @@ void Editor::clearUserStateOnAllBlocks()
 static const int s_autoAddedListItem = 1;
 
 bool Editor::handleReturnKeyForCode(QKeyEvent *event,
-                                    const MD::PosCache<MD::QStringTrait>::Items &items,
+                                    const MD::PosCache::Items &items,
                                     bool inList)
 {
     if (m_d->m_settings.m_isAutoCodeBlocksEnabled && !items.isEmpty() && items.back()->type() == MD::ItemType::Code) {
@@ -1482,7 +1478,7 @@ bool Editor::handleReturnKeyForCode(QKeyEvent *event,
             return false;
         }
 
-        auto code = static_cast<MD::Code<MD::QStringTrait> *>(items.back());
+        auto code = static_cast<MD::Code *>(items.back());
 
         if (!code->isInline()
             && (code->endLine() >= textCursor().block().blockNumber()
@@ -1534,7 +1530,7 @@ void Editor::keyPressEvent(QKeyEvent *event)
             if (!items.isEmpty()) {
                 for (auto it = items.crbegin(), last = items.crend(); it != last; ++it) {
                     if ((*it)->type() == MD::ItemType::ListItem) {
-                        auto l = static_cast<MD::ListItem<MD::QStringTrait> *>(*it);
+                        auto l = static_cast<MD::ListItem *>(*it);
 
                         if (handleReturnKeyForCode(event, items, true)) {
                             return;
@@ -1569,7 +1565,7 @@ void Editor::keyPressEvent(QKeyEvent *event)
                                 c.setPosition(c.block().position() + l->delim().endColumn() + 1,
                                               QTextCursor::KeepAnchor);
 
-                                if (l->listType() == MD::ListItem<MD::QStringTrait>::Unordered) {
+                                if (l->listType() == MD::ListItem::Unordered) {
                                     textCursor().insertText(c.selectedText());
                                 } else {
                                     const auto delim = c.selectedText();

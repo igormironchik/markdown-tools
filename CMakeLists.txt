@@ -94,10 +94,10 @@ endif()
 
 add_subdirectory(3rdparty/MicroTeX)
 
-set(BUILD_MD4QT_QT_TESTS OFF CACHE INTERNAL "" FORCE)
+set(BUILD_MD4QT_TESTS OFF CACHE INTERNAL "" FORCE)
 add_subdirectory(3rdparty/KDE/md4qt)
 
-include_directories(${md4qt_INCLUDE_DIRECTORIES})
+include_directories(${md4qt_INCLUDE_DIRECTORIES}/../..)
 
 set(_DISABLE_INSTALLATION FALSE)
 

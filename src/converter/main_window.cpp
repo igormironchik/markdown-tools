@@ -4,8 +4,7 @@
 */
 
 // md4qt include.
-#define MD4QT_QT_SUPPORT
-#include <md4qt/parser.h>
+#include <md4qt/src/parser.h>
 
 // md-pdf include.
 #include "const.h"
@@ -478,22 +477,20 @@ void MainWidget::process()
             fileName.append(QLatin1String(".pdf"));
         }
 
-        MD::Parser<MD::QStringTrait> parser;
+        MD::Parser parser;
         setPlugins(parser, m_pluginsCfg);
 
-        std::shared_ptr<MD::Document<MD::QStringTrait>> doc;
+        QSharedPointer<MD::Document> doc;
 
         if (m_ui->m_workingDirBox->isChecked()) {
             doc = parser.parse(m_ui->m_fileName->text(),
                                m_ui->m_workingDirectory->currentPath(),
                                m_ui->m_recursive->isChecked(),
-                               QStringList() << QStringLiteral("md") << QStringLiteral("markdown"),
-                               false);
+                               QStringList() << QStringLiteral("md") << QStringLiteral("markdown"));
         } else {
             doc = parser.parse(m_ui->m_fileName->text(),
                                m_ui->m_recursive->isChecked(),
-                               QStringList() << QStringLiteral("md") << QStringLiteral("markdown"),
-                               false);
+                               QStringList() << QStringLiteral("md") << QStringLiteral("markdown"));
         }
 
         if (!doc->isEmpty()) {

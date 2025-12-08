@@ -69,6 +69,6 @@ target_link_libraries(md-launcher Qt6::Core OpenSSL::SSL)
 install(TARGETS md-pdf-gui)
 install(TARGETS md-launcher)
 
-target_link_libraries(md-pdf-gui markdown-widgets LaTeX
+target_link_libraries(md-pdf-gui md4qt::md4qt markdown-widgets LaTeX
 	Qt6::Widgets Qt6::Network Qt6::Core
     podofo_shared resvg)

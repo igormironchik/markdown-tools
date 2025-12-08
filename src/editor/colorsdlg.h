@@ -40,7 +40,7 @@ class ColorsDialog : public MdShared::DlgWheelFilter
 
 public:
     ColorsDialog(const Colors &cols,
-                 std::shared_ptr<MdShared::Syntax> syntax,
+                 QSharedPointer<MdShared::Syntax> syntax,
                  QWidget *parent = nullptr);
     ~ColorsDialog() override;
 

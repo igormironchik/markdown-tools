@@ -33,7 +33,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/../../..
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/MicroTeX/src
-	${md4qt_INCLUDE_DIRECTORIES}
 	${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/shared)
 
@@ -65,7 +64,7 @@ qt6_add_resources(SRC ../../../3rdparty/MicroTeX/latex.qrc)
 
 add_executable(test.render ${SRC})
 
-target_link_libraries(test.render syntax podofo_shared markdown-widgets LaTeX
+target_link_libraries(test.render md4qt::md4qt podofo_shared markdown-widgets LaTeX
 	KF${KF_MAJOR_VERSION}::SyntaxHighlighting Qt6::Widgets Qt6::Gui Qt6::Network Qt6::Test Qt6::Core resvg)
 
 add_test(NAME test.render

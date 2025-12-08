@@ -99,7 +99,7 @@ public slots:
     //! Enable/disable colors scheme.
     void colorsToggled(bool on);
     //! Init code themes combo box.
-    void initCodeThemes(std::shared_ptr<MdShared::Syntax> syntax);
+    void initCodeThemes(QSharedPointer<MdShared::Syntax> syntax);
 
 private:
     //! Base implementation of color choosing.

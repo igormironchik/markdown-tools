@@ -10,9 +10,6 @@
 // Qt include.
 #include <QtResource>
 
-// md4qt include.
-#include <md4qt/plugins.h>
-
 void initSharedResources()
 {
     Q_INIT_RESOURCE(qt);
@@ -118,40 +115,40 @@ void orderWords(QVector<QPair<QString,
     reverseItems(start, end, text);
 }
 
-void setPlugins(MD::Parser<MD::QStringTrait> &parser,
+void setPlugins(MD::Parser &parser,
                 const MdShared::PluginsCfg &cfg)
 {
-    if (cfg.m_sup.m_on) {
-        parser.addTextPlugin(MD::TextPlugin::UserDefined,
-                             MD::EmphasisPlugin::emphasisTemplatePlugin<MD::QStringTrait>,
-                             true,
-                             QStringList() << cfg.m_sup.m_delimiter << QStringLiteral("8"));
-    } else {
-        parser.removeTextPlugin(MD::TextPlugin::UserDefined);
-    }
+    // if (cfg.m_sup.m_on) {
+    //     parser.addTextPlugin(MD::TextPlugin::UserDefined,
+    //                          MD::EmphasisPlugin::emphasisTemplatePlugin<MD::QStringTrait>,
+    //                          true,
+    //                          QStringList() << cfg.m_sup.m_delimiter << QStringLiteral("8"));
+    // } else {
+    //     parser.removeTextPlugin(MD::TextPlugin::UserDefined);
+    // }
 
-    if (cfg.m_sub.m_on) {
-        parser.addTextPlugin(static_cast<MD::TextPlugin>(static_cast<int>(MD::TextPlugin::UserDefined) + 1),
-                             MD::EmphasisPlugin::emphasisTemplatePlugin<MD::QStringTrait>,
-                             true,
-                             QStringList() << cfg.m_sub.m_delimiter << QStringLiteral("16"));
-    } else {
-        parser.removeTextPlugin(static_cast<MD::TextPlugin>(static_cast<int>(MD::TextPlugin::UserDefined) + 1));
-    }
+    // if (cfg.m_sub.m_on) {
+    //     parser.addTextPlugin(static_cast<MD::TextPlugin>(static_cast<int>(MD::TextPlugin::UserDefined) + 1),
+    //                          MD::EmphasisPlugin::emphasisTemplatePlugin<MD::QStringTrait>,
+    //                          true,
+    //                          QStringList() << cfg.m_sub.m_delimiter << QStringLiteral("16"));
+    // } else {
+    //     parser.removeTextPlugin(static_cast<MD::TextPlugin>(static_cast<int>(MD::TextPlugin::UserDefined) + 1));
+    // }
 
-    if (cfg.m_mark.m_on) {
-        parser.addTextPlugin(static_cast<MD::TextPlugin>(static_cast<int>(MD::TextPlugin::UserDefined) + 2),
-                             MD::EmphasisPlugin::emphasisTemplatePlugin<MD::QStringTrait>,
-                             true,
-                             QStringList() << cfg.m_mark.m_delimiter << QStringLiteral("32"));
-    } else {
-        parser.removeTextPlugin(static_cast<MD::TextPlugin>(static_cast<int>(MD::TextPlugin::UserDefined) + 2));
-    }
+    // if (cfg.m_mark.m_on) {
+    //     parser.addTextPlugin(static_cast<MD::TextPlugin>(static_cast<int>(MD::TextPlugin::UserDefined) + 2),
+    //                          MD::EmphasisPlugin::emphasisTemplatePlugin<MD::QStringTrait>,
+    //                          true,
+    //                          QStringList() << cfg.m_mark.m_delimiter << QStringLiteral("32"));
+    // } else {
+    //     parser.removeTextPlugin(static_cast<MD::TextPlugin>(static_cast<int>(MD::TextPlugin::UserDefined) + 2));
+    // }
 
-    if (cfg.m_yamlEnabled) {
-        parser.addBlockPlugin(std::make_shared<MD::YAMLBlockPlugin<MD::QStringTrait>>());
-    } else {
-        auto yaml = std::make_shared<MD::YAMLBlockPlugin<MD::QStringTrait>>();
-        parser.removeBlockPlugin(yaml->id());
-    }
+    // if (cfg.m_yamlEnabled) {
+    //     parser.addBlockPlugin(std::make_shared<MD::YAMLBlockPlugin<MD::QStringTrait>>());
+    // } else {
+    //     auto yaml = std::make_shared<MD::YAMLBlockPlugin<MD::QStringTrait>>();
+    //     parser.removeBlockPlugin(yaml->id());
+    // }
 }

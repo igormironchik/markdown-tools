@@ -11,8 +11,7 @@
 #include "src/shared/syntax.h"
 
 // md4qt include.
-#define MD4QT_QT_SUPPORT
-#include <md4qt/parser.h>
+#include <md4qt/src/parser.h>
 
 #include "test_const.h"
 
@@ -146,7 +145,7 @@ struct TestRendering {
                               ImageAlignment align = ImageAlignment::Center,
                               bool withPlugins = false)
     {
-        MD::Parser<MD::QStringTrait> parser;
+        MD::Parser parser;
 
         if (withPlugins) {
             MdShared::PluginsCfg pluginsCfg;
@@ -165,7 +164,7 @@ struct TestRendering {
         opts.m_borderColor = QColor(81, 81, 81);
         opts.m_linkColor = QColor(33, 122, 255);
         opts.m_bottom = mmInPt(20.0);
-        opts.m_syntax = std::make_shared<MdShared::Syntax>();
+        opts.m_syntax = QSharedPointer<MdShared::Syntax>::create();
         opts.m_syntax->setTheme(opts.m_syntax->themeForName(QStringLiteral("GitHub Light")));
         opts.m_codeFont = QStringLiteral("Space Mono");
         opts.m_codeFontSize = codeFontSize;

@@ -39,7 +39,7 @@
 #include <utility>
 
 // md4qt include.
-#include <md4qt/algo.h>
+#include <md4qt/src/algo.h>
 
 namespace MdPdf
 {
@@ -495,7 +495,7 @@ PdfRenderer::PdfRenderer()
 }
 
 void PdfRenderer::render(const QString &fileName,
-                         std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                         QSharedPointer<MD::Document> doc,
                          const RenderOpts &opts,
                          bool testing)
 {
@@ -540,7 +540,7 @@ void PdfRenderer::renderImpl()
         document.GetMetadata().SetCreator(
             PoDoFo::PdfString("This PDF was generated with Markdown Tools\n"
                               "https://github.com/igormironchik/markdown-tools"));
-        std::vector<std::shared_ptr<Painter>> painters;
+        std::vector<QSharedPointer<Painter>> painters;
 
         pdfData.m_doc = &document;
         pdfData.m_painters = &painters;
@@ -583,19 +583,19 @@ void PdfRenderer::renderImpl()
         }
 #endif // MD_PDF_TESTING
 
-        MD::forEach<MD::QStringTrait>(
+        MD::forEach(
             {MD::ItemType::Blockquote},
             m_doc,
-            [&pdfData](MD::Item<MD::QStringTrait> *i) {
-                auto b = static_cast<MD::Blockquote<MD::QStringTrait> *>(i);
+            [&pdfData](MD::Item *i) {
+                auto b = static_cast<MD::Blockquote *>(i);
 
                 if (!b->items().empty() && b->items().front()->type() == MD::ItemType::Paragraph) {
-                    auto p = static_cast<MD::Paragraph<MD::QStringTrait> *>(b->items().front().get());
+                    auto p = static_cast<MD::Paragraph *>(b->items().front().get());
 
                     if (!p->items().empty() && p->items().front()->type() == MD::ItemType::Text) {
-                        auto t = static_cast<MD::Text<MD::QStringTrait> *>(p->items().front().get());
+                        auto t = static_cast<MD::Text *>(p->items().front().get());
 
-                        auto isAloneMark = [](MD::Paragraph<MD::QStringTrait> *p) -> bool {
+                        auto isAloneMark = [](MD::Paragraph *p) -> bool {
                             return (p->items().size() > 1
                                         ? p->items().at(1)->startLine() != p->items().front()->startLine()
                                         : true);
@@ -643,19 +643,19 @@ void PdfRenderer::renderImpl()
                                     b->removeItemAt(0);
                                 }
 
-                                auto np = std::make_shared<MD::Paragraph<MD::QStringTrait>>();
+                                auto np = QSharedPointer<MD::Paragraph>::create();
                                 np->setStartColumn(t->startColumn());
                                 np->setStartLine(t->startLine());
                                 np->setEndColumn(t->endColumn());
                                 np->setEndLine(t->endLine());
-                                auto i = std::make_shared<MD::Image<MD::QStringTrait>>();
+                                auto i = QSharedPointer<MD::Image>::create();
                                 i->setUrl(url);
                                 i->setStartColumn(t->startColumn());
                                 i->setStartLine(t->startLine());
                                 i->setEndColumn(i->startColumn());
                                 i->setEndLine(t->endLine());
                                 np->appendItem(i);
-                                auto nt = std::make_shared<MD::Text<MD::QStringTrait>>();
+                                auto nt = QSharedPointer<MD::Text>::create();
                                 nt->setText(text);
                                 nt->setStartColumn(t->startColumn() + 1);
                                 nt->setStartLine(t->startLine());
@@ -673,46 +673,46 @@ void PdfRenderer::renderImpl()
             },
             1);
 
-        std::map<MD::Footnote<MD::QStringTrait> *, int> processedFootnotes;
+        std::map<MD::Footnote *, int> processedFootnotes;
 
-        MD::forEach<MD::QStringTrait>(
+        MD::forEach(
             {MD::ItemType::FootnoteRef},
             m_doc,
-            [&pdfData, &processedFootnotes, this](MD::Item<MD::QStringTrait> *i) {
-                auto ref = static_cast<MD::FootnoteRef<MD::QStringTrait> *>(i);
+            [&pdfData, &processedFootnotes, this](MD::Item *i) {
+                auto ref = static_cast<MD::FootnoteRef *>(i);
                 auto fit = this->m_doc->footnotesMap().find(ref->id());
 
                 if (fit != this->m_doc->footnotesMap().cend()) {
-                    auto pfit = processedFootnotes.find(fit->second.get());
+                    auto pfit = processedFootnotes.find(fit.value().get());
 
                     if (pfit == processedFootnotes.cend()) {
-                        pfit = processedFootnotes.insert({fit->second.get(), 0}).first;
+                        pfit = processedFootnotes.insert({fit.value().get(), 0}).first;
 
-                        if (!fit->second->items().isEmpty()
-                            && fit->second->items().back()->type() == MD::ItemType::Paragraph) {
-                            auto p = static_cast<MD::Paragraph<MD::QStringTrait> *>(fit->second->items().back().get());
+                        if (!fit.value()->items().isEmpty()
+                            && fit.value()->items().back()->type() == MD::ItemType::Paragraph) {
+                            auto p = static_cast<MD::Paragraph *>(fit.value()->items().back().get());
 
                             if (!p->isEmpty()) {
                                 if (p->items().back()->type() == MD::ItemType::Text) {
-                                    auto t = static_cast<MD::Text<MD::QStringTrait> *>(p->items().back().get());
+                                    auto t = static_cast<MD::Text *>(p->items().back().get());
 
                                     if (!t->text().endsWith(QLatin1Char(' '))) {
                                         t->setText(t->text() + QLatin1Char(' '));
                                     }
                                 } else {
-                                    auto t = std::make_shared<MD::Text<MD::QStringTrait>>();
+                                    auto t = QSharedPointer<MD::Text>();
                                     t->setText(QString(QLatin1Char(' ')));
                                     p->appendItem(t);
                                 }
                             }
                         } else {
-                            auto p = std::make_shared<MD::Paragraph<MD::QStringTrait>>();
-                            fit->second->appendItem(p);
+                            auto p = QSharedPointer<MD::Paragraph>();
+                            fit.value()->appendItem(p);
                         }
                     }
 
-                    auto p = static_cast<MD::Paragraph<MD::QStringTrait> *>(fit->second->items().back().get());
-                    auto link = std::make_shared<MD::Link<MD::QStringTrait>>();
+                    auto p = static_cast<MD::Paragraph *>(fit.value()->items().back().get());
+                    auto link = QSharedPointer<MD::Link>();
                     link->img()->setUrl(QStringLiteral("qrc:/img/go-jump.png"));
                     link->p()->appendItem(link->img());
                     link->setUrl(ref->id() + QStringLiteral("-%1").arg(QString::number(++pfit->second)));
@@ -733,7 +733,7 @@ void PdfRenderer::renderImpl()
         for (auto it = m_doc->items().cbegin(), last = m_doc->items().cend(); it != last; ++it) {
             switch ((*it)->type()) {
             case MD::ItemType::Anchor:
-                pdfData.m_anchors.push_back(static_cast<MD::Anchor<MD::QStringTrait> *>(it->get())->label());
+                pdfData.m_anchors.push_back(static_cast<MD::Anchor *>(it->get())->label());
 
             default:
                 break;
@@ -756,7 +756,7 @@ void PdfRenderer::renderImpl()
             switch ((*it)->type()) {
             case MD::ItemType::Heading:
                 drawHeading(pdfData,
-                            static_cast<MD::Heading<MD::QStringTrait> *>(it->get()),
+                            static_cast<MD::Heading *>(it->get()),
                             m_doc,
                             0.0,
                             // If there is another item after heading we need to know its min
@@ -771,7 +771,7 @@ void PdfRenderer::renderImpl()
 
             case MD::ItemType::Paragraph:
                 drawParagraph(pdfData,
-                              static_cast<MD::Paragraph<MD::QStringTrait> *>(it->get()),
+                              static_cast<MD::Paragraph *>(it->get()),
                               m_doc,
                               0.0,
                               true,
@@ -785,7 +785,7 @@ void PdfRenderer::renderImpl()
 
             case MD::ItemType::Code:
                 drawCode(pdfData,
-                         static_cast<MD::Code<MD::QStringTrait> *>(it->get()),
+                         static_cast<MD::Code *>(it->get()),
                          m_doc,
                          0.0,
                          CalcHeightOpt::Unknown,
@@ -795,7 +795,7 @@ void PdfRenderer::renderImpl()
 
             case MD::ItemType::Blockquote:
                 drawBlockquote(pdfData,
-                               static_cast<MD::Blockquote<MD::QStringTrait> *>(it->get()),
+                               static_cast<MD::Blockquote *>(it->get()),
                                m_doc,
                                0.0,
                                CalcHeightOpt::Unknown,
@@ -805,7 +805,7 @@ void PdfRenderer::renderImpl()
                 break;
 
             case MD::ItemType::List: {
-                auto *list = static_cast<MD::List<MD::QStringTrait> *>(it->get());
+                auto *list = static_cast<MD::List *>(it->get());
                 const auto bulletWidth = maxListNumberWidth(list);
 
                 drawList(pdfData, list, m_doc, bulletWidth, 0.0, CalcHeightOpt::Unknown, 1.0, false, &rtl);
@@ -814,7 +814,7 @@ void PdfRenderer::renderImpl()
 
             case MD::ItemType::Table:
                 drawTable(pdfData,
-                          static_cast<MD::Table<MD::QStringTrait> *>(it->get()),
+                          static_cast<MD::Table *>(it->get()),
                           m_doc,
                           0.0,
                           CalcHeightOpt::Unknown,
@@ -827,7 +827,7 @@ void PdfRenderer::renderImpl()
             } break;
 
             case MD::ItemType::Anchor: {
-                auto *a = static_cast<MD::Anchor<MD::QStringTrait> *>(it->get());
+                auto *a = static_cast<MD::Anchor *>(it->get());
                 auto dest = pdfData.m_doc->CreateDestination();
                 dest->SetDestination(*pdfData.m_page, pdfData.m_layout.margins().m_left, pdfData.m_layout.topY(), 0.0);
                 m_dests.insert(a->label(), std::move(dest));
@@ -1101,7 +1101,7 @@ void PdfRenderer::createPage(PdfAuxData &pdfData)
 
         pdfData.m_firstOnPage = true;
 
-        auto painter = std::make_shared<Painter>();
+        auto painter = QSharedPointer<Painter>();
         painter->SetCanvas(*pdfData.m_page);
 
         (*pdfData.m_painters).push_back(painter);
@@ -1213,8 +1213,8 @@ QString PdfRenderer::createQString(const char *str)
 QPair<QVector<WhereDrawn>,
       WhereDrawn>
 PdfRenderer::drawHeading(PdfAuxData &pdfData,
-                         MD::Heading<MD::QStringTrait> *item,
-                         std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                         MD::Heading *item,
+                         QSharedPointer<MD::Document> doc,
                          double offset,
                          double nextItemMinHeight,
                          CalcHeightOpt heightCalcOpt,
@@ -1262,7 +1262,7 @@ PdfRenderer::drawHeading(PdfAuxData &pdfData,
     }
 }
 
-void PdfRenderer::initSubSupScript(MD::ItemWithOpts<MD::QStringTrait> *item,
+void PdfRenderer::initSubSupScript(MD::ItemWithOpts *item,
                                    PrevBaselineStateStack &state,
                                    double lineHeight,
                                    double descent)
@@ -1293,7 +1293,7 @@ void PdfRenderer::initSubSupScript(MD::ItemWithOpts<MD::QStringTrait> *item,
     }
 }
 
-void PdfRenderer::deinitSubSupScript(MD::ItemWithOpts<MD::QStringTrait> *item,
+void PdfRenderer::deinitSubSupScript(MD::ItemWithOpts *item,
                                      PrevBaselineStateStack &state)
 {
     for (const auto &s : item->closeStyles()) {
@@ -1316,13 +1316,13 @@ void PdfRenderer::deinitSubSupScript(MD::ItemWithOpts<MD::QStringTrait> *item,
 QVector<QPair<QRectF,
               unsigned int>>
 PdfRenderer::drawText(PdfAuxData &pdfData,
-                      MD::Text<MD::QStringTrait> *item,
-                      std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                      MD::Text *item,
+                      QSharedPointer<MD::Document> doc,
                       bool &newLine,
                       Font *footnoteFont,
                       double footnoteFontSize,
                       double footnoteFontScale,
-                      MD::Item<MD::QStringTrait> *nextItem,
+                      MD::Item *nextItem,
                       int footnoteNum,
                       double offset,
                       bool firstInParagraph,
@@ -1345,7 +1345,7 @@ PdfRenderer::drawText(PdfAuxData &pdfData,
     const auto lineHeight = pdfData.lineSpacing(font, m_opts.m_textFontSize, scale);
 
     const AutoSubSupScriptInit initSubSup(this,
-                                          static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item),
+                                          static_cast<MD::ItemWithOpts *>(item),
                                           previousBaseline,
                                           lineHeight,
                                           -pdfData.fontDescent(font, m_opts.m_textFontSize, scale));
@@ -1418,8 +1418,8 @@ normalizeRects(const QVector<QPair<QRectF,
 
 } /* namespace anonymous */
 
-bool PdfRenderer::isTextOrOnlineAfter(MD::Block<MD::QStringTrait>::Items::const_iterator it,
-                                      MD::Block<MD::QStringTrait>::Items::const_iterator last,
+bool PdfRenderer::isTextOrOnlineAfter(MD::Block::Items::const_iterator it,
+                                      MD::Block::Items::const_iterator last,
                                       PdfAuxData &pdfData,
                                       double offset,
                                       double lineHeight,
@@ -1434,9 +1434,9 @@ bool PdfRenderer::isTextOrOnlineAfter(MD::Block<MD::QStringTrait>::Items::const_
     return false;
 }
 
-bool PdfRenderer::isTextOrOnlineBefore(MD::Block<MD::QStringTrait>::Items::const_iterator it,
-                                       MD::Block<MD::QStringTrait>::Items::const_iterator begin,
-                                       MD::Block<MD::QStringTrait>::Items::const_iterator last,
+bool PdfRenderer::isTextOrOnlineBefore(MD::Block::Items::const_iterator it,
+                                       MD::Block::Items::const_iterator begin,
+                                       MD::Block::Items::const_iterator last,
                                        PdfAuxData &pdfData,
                                        double offset,
                                        double lineHeight,
@@ -1453,8 +1453,8 @@ bool PdfRenderer::isTextOrOnlineBefore(MD::Block<MD::QStringTrait>::Items::const
     return false;
 }
 
-bool PdfRenderer::isNothingAfter(MD::Block<MD::QStringTrait>::Items::const_iterator it,
-                                 MD::Block<MD::QStringTrait>::Items::const_iterator last)
+bool PdfRenderer::isNothingAfter(MD::Block::Items::const_iterator it,
+                                 MD::Block::Items::const_iterator last)
 {
     if (it != last) {
         it = std::next(it);
@@ -1469,14 +1469,14 @@ bool PdfRenderer::isNothingAfter(MD::Block<MD::QStringTrait>::Items::const_itera
     return true;
 }
 
-MD::Item<MD::QStringTrait> *PdfRenderer::getPrevItem(MD::Block<MD::QStringTrait>::Items::const_iterator it,
-                                                     MD::Block<MD::QStringTrait>::Items::const_iterator begin,
-                                                     MD::Block<MD::QStringTrait>::Items::const_iterator last)
+MD::Item *PdfRenderer::getPrevItem(MD::Block::Items::const_iterator it,
+                                                     MD::Block::Items::const_iterator begin,
+                                                     MD::Block::Items::const_iterator last)
 {
     it = skipBackwardWithFunc(it,
                               begin,
                               last,
-                              &PdfRenderer::isNotHtml<MD::Block<MD::QStringTrait>::Items::const_iterator>);
+                              &PdfRenderer::isNotHtml<MD::Block::Items::const_iterator>);
 
     if (it != last) {
         return it->get();
@@ -1485,15 +1485,15 @@ MD::Item<MD::QStringTrait> *PdfRenderer::getPrevItem(MD::Block<MD::QStringTrait>
     }
 }
 
-MD::Block<MD::QStringTrait>::Items::const_iterator
-PdfRenderer::skipRawHtmlAndSpacesBackward(MD::Block<MD::QStringTrait>::Items::const_iterator it,
-                                          MD::Block<MD::QStringTrait>::Items::const_iterator begin,
-                                          MD::Block<MD::QStringTrait>::Items::const_iterator last)
+MD::Block::Items::const_iterator
+PdfRenderer::skipRawHtmlAndSpacesBackward(MD::Block::Items::const_iterator it,
+                                          MD::Block::Items::const_iterator begin,
+                                          MD::Block::Items::const_iterator last)
 {
     it = skipBackwardWithFunc(it,
                               begin,
                               last,
-                              &PdfRenderer::isNotHtmlNorSpace<MD::Block<MD::QStringTrait>::Items::const_iterator>);
+                              &PdfRenderer::isNotHtmlNorSpace<MD::Block::Items::const_iterator>);
 
     if (it != last) {
         if ((*it)->type() == MD::ItemType::RawHtml) {
@@ -1513,14 +1513,14 @@ PdfRenderer::skipRawHtmlAndSpacesBackward(MD::Block<MD::QStringTrait>::Items::co
 QVector<QPair<QRectF,
               unsigned int>>
 PdfRenderer::drawLink(PdfAuxData &pdfData,
-                      MD::Link<MD::QStringTrait> *item,
-                      std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                      MD::Link *item,
+                      QSharedPointer<MD::Document> doc,
                       bool &newLine,
                       Font *footnoteFont,
                       double footnoteFontSize,
                       double footnoteFontScale,
-                      MD::Item<MD::QStringTrait> *prevItem,
-                      MD::Item<MD::QStringTrait> *nextItem,
+                      MD::Item *prevItem,
+                      MD::Item *nextItem,
                       int footnoteNum,
                       double offset,
                       double lineHeight,
@@ -1542,7 +1542,7 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
     const auto lit = doc->labeledLinks().find(url);
 
     if (lit != doc->labeledLinks().cend()) {
-        url = lit->second->url();
+        url = lit.value()->url();
     }
 
     bool draw = true;
@@ -1560,7 +1560,7 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
                             pdfData);
 
     const AutoSubSupScriptInit subSupInit(this,
-                                          static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item),
+                                          static_cast<MD::ItemWithOpts *>(item),
                                           previousBaseline,
                                           pdfData.lineSpacing(font, m_opts.m_textFontSize, scale),
                                           -pdfData.fontDescent(font, m_opts.m_textFontSize, scale));
@@ -1569,7 +1569,7 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
         for (auto it = item->p()->items().cbegin(), last = item->p()->items().cend(); it != last; ++it) {
             switch ((*it)->type()) {
             case MD::ItemType::Text: {
-                auto *text = std::static_pointer_cast<MD::Text<MD::QStringTrait>>(*it).get();
+                auto text = (*it).staticCast<MD::Text>();
 
                 auto *spaceFont =
                     createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, pdfData.m_doc, scale, pdfData);
@@ -1583,7 +1583,7 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
                                         pdfData);
 
                 const AutoSubSupScriptInit subSupInit(this,
-                                                      static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(text),
+                                                      static_cast<MD::ItemWithOpts *>(text.get()),
                                                       previousBaseline,
                                                       pdfData.lineSpacing(font, m_opts.m_textFontSize, scale),
                                                       -pdfData.fontDescent(font, m_opts.m_textFontSize, scale));
@@ -1623,7 +1623,7 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
 
             case MD::ItemType::Code: {
                 rects.append(drawInlinedCode(pdfData,
-                                             static_cast<MD::Code<MD::QStringTrait> *>(it->get()),
+                                             static_cast<MD::Code *>(it->get()),
                                              doc,
                                              newLine,
                                              offset,
@@ -1642,7 +1642,7 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
                                                       : nullptr);
                 rects.append(drawImage(
                     pdfData,
-                    static_cast<MD::Image<MD::QStringTrait> *>(it->get()),
+                    static_cast<MD::Image *>(it->get()),
                     doc,
                     newLine,
                     offset,
@@ -1677,7 +1677,7 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
             createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, pdfData.m_doc, scale, pdfData);
 
         const AutoSubSupScriptInit subSupInit(this,
-                                              static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item),
+                                              static_cast<MD::ItemWithOpts *>(item),
                                               previousBaseline,
                                               pdfData.lineSpacing(font, m_opts.m_textFontSize, scale),
                                               -pdfData.fontDescent(font, m_opts.m_textFontSize, scale));
@@ -1824,12 +1824,12 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                         double fontSize,
                         double fontScale,
                         double lineHeight,
-                        std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                        QSharedPointer<MD::Document> doc,
                         bool &newLine,
                         Font *footnoteFont,
                         double footnoteFontSize,
                         double footnoteFontScale,
-                        MD::Item<MD::QStringTrait> *nextItem,
+                        MD::Item *nextItem,
                         int footnoteNum,
                         double offset,
                         bool firstInParagraph,
@@ -1878,7 +1878,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
 
     if (nextItem
         && nextItem->type() == MD::ItemType::FootnoteRef
-        && doc->footnotesMap().find(static_cast<MD::FootnoteRef<MD::QStringTrait> *>(nextItem)->id())
+        && doc->footnotesMap().find(static_cast<MD::FootnoteRef *>(nextItem)->id())
             != doc->footnotesMap().cend()) {
         footnoteAtEnd = true;
     }
@@ -2222,8 +2222,8 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
 QVector<QPair<QRectF,
               unsigned int>>
 PdfRenderer::drawInlinedCode(PdfAuxData &pdfData,
-                             MD::Code<MD::QStringTrait> *item,
-                             std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                             MD::Code *item,
+                             QSharedPointer<MD::Document> doc,
                              bool &newLine,
                              double offset,
                              bool firstInParagraph,
@@ -2263,7 +2263,7 @@ PdfRenderer::drawInlinedCode(PdfAuxData &pdfData,
     const auto lineHeight = pdfData.lineSpacing(textFont, m_opts.m_textFontSize, scale);
 
     const AutoSubSupScriptInit initSubSup(this,
-                                          static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item),
+                                          static_cast<MD::ItemWithOpts *>(item),
                                           previousBaseline,
                                           pdfData.lineSpacing(font, m_opts.m_codeFontSize, scale),
                                           -pdfData.fontDescent(font, m_opts.m_codeFontSize, scale));
@@ -2369,10 +2369,10 @@ double totalHeight(const QVector<WhereDrawn> &where,
                            });
 }
 
-bool isRightToLeft(MD::Item<MD::QStringTrait> *i)
+bool isRightToLeft(MD::Item *i)
 {
-    auto isTextRightToLeft = [](MD::Item<MD::QStringTrait> *i) -> bool {
-        return static_cast<MD::Text<MD::QStringTrait> *>(i)->text().isRightToLeft();
+    auto isTextRightToLeft = [](MD::Item *i) -> bool {
+        return static_cast<MD::Text *>(i)->text().isRightToLeft();
     };
 
     switch (i->type()) {
@@ -2380,7 +2380,7 @@ bool isRightToLeft(MD::Item<MD::QStringTrait> *i)
         return isTextRightToLeft(i);
 
     case MD::ItemType::Link: {
-        auto l = static_cast<MD::Link<MD::QStringTrait> *>(i);
+        auto l = static_cast<MD::Link *>(i);
 
         if (!l->p()->isEmpty()) {
             if (l->p()->items().front()->type() == MD::ItemType::Text) {
@@ -2398,7 +2398,7 @@ bool isRightToLeft(MD::Item<MD::QStringTrait> *i)
     }
 }
 
-bool isRightToLeft(MD::Block<MD::QStringTrait> *p)
+bool isRightToLeft(MD::Block *p)
 {
     if (!p->isEmpty()) {
         return isRightToLeft(p->items().front().get());
@@ -2407,8 +2407,8 @@ bool isRightToLeft(MD::Block<MD::QStringTrait> *p)
     }
 }
 
-inline bool isLastInParagraph(MD::Block<MD::QStringTrait>::Items::const_iterator it,
-                              MD::Block<MD::QStringTrait>::Items::const_iterator last)
+inline bool isLastInParagraph(MD::Block::Items::const_iterator it,
+                              MD::Block::Items::const_iterator last)
 {
     it = std::next(it);
 
@@ -2435,8 +2435,8 @@ inline bool isLastInParagraph(MD::Block<MD::QStringTrait>::Items::const_iterator
 QPair<QVector<WhereDrawn>,
       WhereDrawn>
 PdfRenderer::drawParagraph(PdfAuxData &pdfData,
-                           MD::Paragraph<MD::QStringTrait> *item,
-                           std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                           MD::Paragraph *item,
+                           QSharedPointer<MD::Document> doc,
                            double offset,
                            bool withNewLine,
                            CalcHeightOpt heightCalcOpt,
@@ -2506,12 +2506,12 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
         int nextFootnoteNum = pdfData.m_footnoteNum;
 
         if (it + 1 != last && (it + 1)->get()->type() == MD::ItemType::FootnoteRef) {
-            auto *ref = static_cast<MD::FootnoteRef<MD::QStringTrait> *>((it + 1)->get());
+            auto *ref = static_cast<MD::FootnoteRef *>((it + 1)->get());
 
             const auto fit = doc->footnotesMap().find(ref->id());
 
             if (fit != doc->footnotesMap().cend()) {
-                auto anchorIt = pdfData.m_footnotesAnchorsMap.constFind(fit->second.get());
+                auto anchorIt = pdfData.m_footnotesAnchorsMap.constFind(fit.value().get());
 
                 if (anchorIt != pdfData.m_footnotesAnchorsMap.cend()) {
                     nextFootnoteNum = anchorIt->second;
@@ -2521,7 +2521,7 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
 
         switch ((*it)->type()) {
         case MD::ItemType::Text: {
-            auto text = static_cast<MD::Text<MD::QStringTrait> *>(it->get());
+            auto text = static_cast<MD::Text *>(it->get());
 
             drawText(pdfData,
                      text,
@@ -2545,7 +2545,7 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
 
         case MD::ItemType::Code:
             drawInlinedCode(pdfData,
-                            static_cast<MD::Code<MD::QStringTrait> *>(it->get()),
+                            static_cast<MD::Code *>(it->get()),
                             doc,
                             newLine,
                             offset,
@@ -2560,7 +2560,7 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
 
         case MD::ItemType::Link:
             drawLink(pdfData,
-                     static_cast<MD::Link<MD::QStringTrait> *>(it->get()),
+                     static_cast<MD::Link *>(it->get()),
                      doc,
                      newLine,
                      footnoteFont,
@@ -2593,7 +2593,7 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
 
         case MD::ItemType::Image:
             drawImage(pdfData,
-                      static_cast<MD::Image<MD::QStringTrait> *>(it->get()),
+                      static_cast<MD::Image *>(it->get()),
                       doc,
                       newLine,
                       offset,
@@ -2622,7 +2622,7 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
 
         case MD::ItemType::Math:
             drawMathExpr(pdfData,
-                         static_cast<MD::Math<MD::QStringTrait> *>(it->get()),
+                         static_cast<MD::Math *>(it->get()),
                          doc,
                          (it != item->items().begin() ? std::prev(it)->get() : nullptr),
                          newLine,
@@ -2644,19 +2644,19 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
         } break;
 
         case MD::ItemType::FootnoteRef: {
-            auto *ref = static_cast<MD::FootnoteRef<MD::QStringTrait> *>(it->get());
+            auto *ref = static_cast<MD::FootnoteRef *>(it->get());
 
             const auto fit = doc->footnotesMap().find(ref->id());
 
             if (fit != doc->footnotesMap().cend()) {
-                auto anchorIt = pdfData.m_footnotesAnchorsMap.constFind(fit->second.get());
+                auto anchorIt = pdfData.m_footnotesAnchorsMap.constFind(fit.value().get());
 
                 if (anchorIt == pdfData.m_footnotesAnchorsMap.cend()) {
-                    pdfData.m_footnotesAnchorsMap.insert(fit->second.get(),
+                    pdfData.m_footnotesAnchorsMap.insert(fit.value().get(),
                                                          {pdfData.m_currentFile, pdfData.m_footnoteNum++});
                 }
             } else {
-                auto text = static_cast<MD::Text<MD::QStringTrait> *>(it->get());
+                auto text = static_cast<MD::Text *>(it->get());
 
                 drawText(pdfData,
                          text,
@@ -2770,12 +2770,12 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
         int nextFootnoteNum = pdfData.m_footnoteNum;
 
         if (it + 1 != last && (it + 1)->get()->type() == MD::ItemType::FootnoteRef) {
-            auto *ref = static_cast<MD::FootnoteRef<MD::QStringTrait> *>((it + 1)->get());
+            auto *ref = static_cast<MD::FootnoteRef *>((it + 1)->get());
 
             const auto fit = doc->footnotesMap().find(ref->id());
 
             if (fit != doc->footnotesMap().cend()) {
-                auto anchorIt = pdfData.m_footnotesAnchorsMap.constFind(fit->second.get());
+                auto anchorIt = pdfData.m_footnotesAnchorsMap.constFind(fit.value().get());
 
                 if (anchorIt != pdfData.m_footnotesAnchorsMap.cend()) {
                     nextFootnoteNum = anchorIt->second;
@@ -2785,7 +2785,7 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
 
         switch ((*it)->type()) {
         case MD::ItemType::Text: {
-            auto text = static_cast<MD::Text<MD::QStringTrait> *>(it->get());
+            auto text = static_cast<MD::Text *>(it->get());
 
             rects.append(drawText(pdfData,
                                   text,
@@ -2809,7 +2809,7 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
 
         case MD::ItemType::Code: {
             rects.append(drawInlinedCode(pdfData,
-                                         static_cast<MD::Code<MD::QStringTrait> *>(it->get()),
+                                         static_cast<MD::Code *>(it->get()),
                                          doc,
                                          newLine,
                                          offset,
@@ -2823,7 +2823,7 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
         } break;
 
         case MD::ItemType::Link: {
-            auto link = static_cast<MD::Link<MD::QStringTrait> *>(it->get());
+            auto link = static_cast<MD::Link *>(it->get());
 
             if ((!link->img()->isEmpty()
                  && !link->p()->isEmpty()
@@ -2833,7 +2833,7 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
             }
 
             rects.append(drawLink(pdfData,
-                                  static_cast<MD::Link<MD::QStringTrait> *>(it->get()),
+                                  static_cast<MD::Link *>(it->get()),
                                   doc,
                                   newLine,
                                   footnoteFont,
@@ -2871,7 +2871,7 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
 
             rects.append(drawImage(
                 pdfData,
-                static_cast<MD::Image<MD::QStringTrait> *>(it->get()),
+                static_cast<MD::Image *>(it->get()),
                 doc,
                 newLine,
                 offset,
@@ -2902,7 +2902,7 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
             pdfData.setColor(color);
             rects.append(
                 drawMathExpr(pdfData,
-                             static_cast<MD::Math<MD::QStringTrait> *>(it->get()),
+                             static_cast<MD::Math *>(it->get()),
                              doc,
                              (it != item->items().begin() ? std::prev(it)->get() : nullptr),
                              newLine,
@@ -2927,24 +2927,24 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
         case MD::ItemType::FootnoteRef: {
             lineBreak = false;
 
-            auto *ref = static_cast<MD::FootnoteRef<MD::QStringTrait> *>(it->get());
+            auto *ref = static_cast<MD::FootnoteRef *>(it->get());
 
             const auto fit = doc->footnotesMap().find(ref->id());
 
             if (fit != doc->footnotesMap().cend()) {
-                auto anchorIt = pdfData.m_footnotesAnchorsMap.constFind(fit->second.get());
+                auto anchorIt = pdfData.m_footnotesAnchorsMap.constFind(fit.value().get());
                 int num = pdfData.m_footnoteNum;
 
                 if (anchorIt != pdfData.m_footnotesAnchorsMap.cend()) {
                     num = anchorIt->second;
                 }
 
-                auto fcit = pdfData.m_footnoteRefCount.find(fit->second.get());
+                auto fcit = pdfData.m_footnoteRefCount.find(fit.value().get());
 
                 if (fcit != pdfData.m_footnoteRefCount.cend()) {
                     ++fcit.value();
                 } else {
-                    fcit = pdfData.m_footnoteRefCount.insert(fit->second.get(), 1);
+                    fcit = pdfData.m_footnoteRefCount.insert(fit.value().get(), 1);
                 }
 
                 const auto str = createUtf8String(QString::number(num));
@@ -2986,9 +2986,9 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
 
                 pdfData.m_layout.addX(w);
 
-                addFootnote(ref->id(), fit->second, pdfData, doc);
+                addFootnote(ref->id(), fit.value(), pdfData, doc);
             } else {
-                auto text = static_cast<MD::Text<MD::QStringTrait> *>(it->get());
+                auto text = static_cast<MD::Text *>(it->get());
 
                 rects.append(drawText(pdfData,
                                       text,
@@ -3028,9 +3028,9 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
 QPair<QRectF,
       unsigned int>
 PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
-                          MD::Math<MD::QStringTrait> *item,
-                          std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
-                          MD::Item<MD::QStringTrait> *prevItem,
+                          MD::Math *item,
+                          QSharedPointer<MD::Document> doc,
+                          MD::Item *prevItem,
                           bool &newLine,
                           double offset,
                           bool isNextText,
@@ -3081,7 +3081,7 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
     calculateSize();
 
     const AutoSubSupScriptInit subSupInit(this,
-                                          static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item),
+                                          static_cast<MD::ItemWithOpts *>(item),
                                           previousBaseline,
                                           size.height(),
                                           descent);
@@ -3257,7 +3257,7 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
                     break;
 
                 case MD::ItemType::Text: {
-                    auto t = static_cast<MD::Text<MD::QStringTrait> *>(prevItem);
+                    auto t = static_cast<MD::Text *>(prevItem);
 
                     if (!t->text().isEmpty() && !t->text().back().isSpace()) {
                         addSpace();
@@ -3404,9 +3404,9 @@ void PdfRenderer::reserveSpaceForFootnote(PdfAuxData &pdfData,
 }
 
 QVector<WhereDrawn> PdfRenderer::drawFootnote(PdfAuxData &pdfData,
-                                              std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                                              QSharedPointer<MD::Document> doc,
                                               const QString &footnoteRefId,
-                                              MD::Footnote<MD::QStringTrait> *note,
+                                              MD::Footnote *note,
                                               CalcHeightOpt heightCalcOpt,
                                               double *lineHeight,
                                               RTLFlag *rtl)
@@ -3453,7 +3453,7 @@ QVector<WhereDrawn> PdfRenderer::drawFootnote(PdfAuxData &pdfData,
         case MD::ItemType::Heading:
             ret.append(
                 drawHeading(pdfData,
-                            static_cast<MD::Heading<MD::QStringTrait> *>(it->get()),
+                            static_cast<MD::Heading *>(it->get()),
                             doc,
                             footnoteOffset,
                             // If there is another item after heading we need to know its min
@@ -3476,7 +3476,7 @@ QVector<WhereDrawn> PdfRenderer::drawFootnote(PdfAuxData &pdfData,
 
         case MD::ItemType::Paragraph:
             ret.append(drawParagraph(pdfData,
-                                     static_cast<MD::Paragraph<MD::QStringTrait> *>(it->get()),
+                                     static_cast<MD::Paragraph *>(it->get()),
                                      doc,
                                      footnoteOffset,
                                      true,
@@ -3498,7 +3498,7 @@ QVector<WhereDrawn> PdfRenderer::drawFootnote(PdfAuxData &pdfData,
 
         case MD::ItemType::Code:
             ret.append(drawCode(pdfData,
-                                static_cast<MD::Code<MD::QStringTrait> *>(it->get()),
+                                static_cast<MD::Code *>(it->get()),
                                 doc,
                                 footnoteOffset,
                                 heightCalcOpt,
@@ -3516,7 +3516,7 @@ QVector<WhereDrawn> PdfRenderer::drawFootnote(PdfAuxData &pdfData,
 
         case MD::ItemType::Blockquote:
             ret.append(drawBlockquote(pdfData,
-                                      static_cast<MD::Blockquote<MD::QStringTrait> *>(it->get()),
+                                      static_cast<MD::Blockquote *>(it->get()),
                                       doc,
                                       footnoteOffset,
                                       heightCalcOpt,
@@ -3534,7 +3534,7 @@ QVector<WhereDrawn> PdfRenderer::drawFootnote(PdfAuxData &pdfData,
             break;
 
         case MD::ItemType::List: {
-            auto *list = static_cast<MD::List<MD::QStringTrait> *>(it->get());
+            auto *list = static_cast<MD::List *>(it->get());
             const auto bulletWidth = maxListNumberWidth(list);
 
             ret.append(
@@ -3551,7 +3551,7 @@ QVector<WhereDrawn> PdfRenderer::drawFootnote(PdfAuxData &pdfData,
 
         case MD::ItemType::Table:
             ret.append(drawTable(pdfData,
-                                 static_cast<MD::Table<MD::QStringTrait> *>(it->get()),
+                                 static_cast<MD::Table *>(it->get()),
                                  doc,
                                  footnoteOffset,
                                  heightCalcOpt,
@@ -3617,8 +3617,8 @@ QVector<WhereDrawn> PdfRenderer::drawFootnote(PdfAuxData &pdfData,
 }
 
 QVector<WhereDrawn> PdfRenderer::footnoteHeight(PdfAuxData &pdfData,
-                                                std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
-                                                MD::Footnote<MD::QStringTrait> *note,
+                                                QSharedPointer<MD::Document> doc,
+                                                MD::Footnote *note,
                                                 double *lineHeight)
 {
     return drawFootnote(pdfData, doc, "", note, CalcHeightOpt::Full, lineHeight);
@@ -3633,7 +3633,7 @@ bool PdfRenderer::isOnlineImage(double totalAvailableWidth,
 }
 
 bool PdfRenderer::isOnlineImage(PdfAuxData &pdfData,
-                                MD::Image<MD::QStringTrait> *item,
+                                MD::Image *item,
                                 double offset,
                                 double lineHeight,
                                 bool scaleImagesToLineHeight)
@@ -3662,17 +3662,17 @@ bool PdfRenderer::isOnlineImage(PdfAuxData &pdfData,
 }
 
 bool PdfRenderer::isOnlineImageOrOnlineImageInLink(PdfAuxData &pdfData,
-                                                   MD::Item<MD::QStringTrait> *item,
+                                                   MD::Item *item,
                                                    double offset,
                                                    double lineHeight,
                                                    bool scaleImagesToLineHeight)
 {
     if (item) {
         if (item->type() == MD::ItemType::Image) {
-            auto i = static_cast<MD::Image<MD::QStringTrait> *>(item);
+            auto i = static_cast<MD::Image *>(item);
             return isOnlineImage(pdfData, i, offset, lineHeight, scaleImagesToLineHeight);
         } else if (item->type() == MD::ItemType::Link) {
-            auto l = static_cast<MD::Link<MD::QStringTrait> *>(item);
+            auto l = static_cast<MD::Link *>(item);
 
             if (!l->p()->isEmpty()) {
                 for (auto it = l->p()->items().crbegin(), last = l->p()->items().crend(); it != last; ++it) {
@@ -3680,7 +3680,7 @@ bool PdfRenderer::isOnlineImageOrOnlineImageInLink(PdfAuxData &pdfData,
                         continue;
                     } else if ((*it)->type() == MD::ItemType::Image) {
                         return isOnlineImage(pdfData,
-                                             static_cast<MD::Image<MD::QStringTrait> *>(it->get()),
+                                             static_cast<MD::Image *>(it->get()),
                                              offset,
                                              lineHeight,
                                              scaleImagesToLineHeight);
@@ -3726,8 +3726,8 @@ ParagraphAlignment imageToParagraphAlignment(ImageAlignment alignment)
 QPair<QRectF,
       unsigned int>
 PdfRenderer::drawImage(PdfAuxData &pdfData,
-                       MD::Image<MD::QStringTrait> *item,
-                       std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                       MD::Image *item,
+                       QSharedPointer<MD::Document> doc,
                        bool &newLine,
                        double offset,
                        double lineHeight,
@@ -3739,7 +3739,7 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
                        CustomWidth &cw,
                        double scale,
                        PrevBaselineStateStack &previousBaseline,
-                       MD::Item<MD::QStringTrait> *prevItem,
+                       MD::Item *prevItem,
                        ImageAlignment alignment,
                        bool scaleImagesToLineHeight)
 {
@@ -3841,7 +3841,7 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
         double dy = 0.0;
 
         const AutoSubSupScriptInit subSupInit(this,
-                                              static_cast<MD::ItemWithOpts<MD::QStringTrait> *>(item),
+                                              static_cast<MD::ItemWithOpts *>(item),
                                               previousBaseline,
                                               iHeight * imgScale,
                                               0.0);
@@ -3999,7 +3999,7 @@ void LoadImageFromNetwork::loadError(QNetworkReply::NetworkError)
     m_thread->quit();
 }
 
-QByteArray PdfRenderer::loadImage(MD::Image<MD::QStringTrait> *item,
+QByteArray PdfRenderer::loadImage(MD::Image *item,
                                   const ResvgOptions &opts,
                                   double height,
                                   bool scale,
@@ -4078,8 +4078,8 @@ QByteArray PdfRenderer::loadImage(MD::Image<MD::QStringTrait> *item,
 QPair<QVector<WhereDrawn>,
       WhereDrawn>
 PdfRenderer::drawCode(PdfAuxData &pdfData,
-                      MD::Code<MD::QStringTrait> *item,
-                      std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                      MD::Code *item,
+                      QSharedPointer<MD::Document> doc,
                       double offset,
                       CalcHeightOpt heightCalcOpt,
                       double scale)
@@ -4265,8 +4265,8 @@ PdfRenderer::drawCode(PdfAuxData &pdfData,
 QPair<QVector<WhereDrawn>,
       WhereDrawn>
 PdfRenderer::drawBlockquote(PdfAuxData &pdfData,
-                            MD::Blockquote<MD::QStringTrait> *item,
-                            std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                            MD::Blockquote *item,
+                            QSharedPointer<MD::Document> doc,
                             double offset,
                             CalcHeightOpt heightCalcOpt,
                             double scale,
@@ -4309,7 +4309,7 @@ PdfRenderer::drawBlockquote(PdfAuxData &pdfData,
             if (heightCalcOpt != CalcHeightOpt::Minimum) {
                 const auto where = drawHeading(
                     pdfData,
-                    static_cast<MD::Heading<MD::QStringTrait> *>(it->get()),
+                    static_cast<MD::Heading *>(it->get()),
                     doc,
                     offset + s_blockquoteBaseOffset,
                     (it + 1 != last
@@ -4335,7 +4335,7 @@ PdfRenderer::drawBlockquote(PdfAuxData &pdfData,
 
         case MD::ItemType::Paragraph: {
             const auto where = drawParagraph(pdfData,
-                                             static_cast<MD::Paragraph<MD::QStringTrait> *>(it->get()),
+                                             static_cast<MD::Paragraph *>(it->get()),
                                              doc,
                                              offset + s_blockquoteBaseOffset,
                                              true,
@@ -4355,7 +4355,7 @@ PdfRenderer::drawBlockquote(PdfAuxData &pdfData,
 
         case MD::ItemType::Code: {
             const auto where = drawCode(pdfData,
-                                        static_cast<MD::Code<MD::QStringTrait> *>(it->get()),
+                                        static_cast<MD::Code *>(it->get()),
                                         doc,
                                         offset + s_blockquoteBaseOffset,
                                         heightCalcOpt,
@@ -4373,7 +4373,7 @@ PdfRenderer::drawBlockquote(PdfAuxData &pdfData,
 
         case MD::ItemType::Blockquote: {
             const auto where = drawBlockquote(pdfData,
-                                              static_cast<MD::Blockquote<MD::QStringTrait> *>(it->get()),
+                                              static_cast<MD::Blockquote *>(it->get()),
                                               doc,
                                               offset + s_blockquoteBaseOffset,
                                               heightCalcOpt,
@@ -4389,7 +4389,7 @@ PdfRenderer::drawBlockquote(PdfAuxData &pdfData,
         } break;
 
         case MD::ItemType::List: {
-            auto *list = static_cast<MD::List<MD::QStringTrait> *>(it->get());
+            auto *list = static_cast<MD::List *>(it->get());
             const auto bulletWidth = maxListNumberWidth(list);
 
             const auto where = drawList(pdfData,
@@ -4412,7 +4412,7 @@ PdfRenderer::drawBlockquote(PdfAuxData &pdfData,
 
         case MD::ItemType::Table: {
             const auto where = drawTable(pdfData,
-                                         static_cast<MD::Table<MD::QStringTrait> *>(it->get()),
+                                         static_cast<MD::Table *>(it->get()),
                                          doc,
                                          offset + s_blockquoteBaseOffset,
                                          heightCalcOpt,
@@ -4481,8 +4481,8 @@ PdfRenderer::drawBlockquote(PdfAuxData &pdfData,
 QPair<QVector<WhereDrawn>,
       WhereDrawn>
 PdfRenderer::drawList(PdfAuxData &pdfData,
-                      MD::List<MD::QStringTrait> *item,
-                      std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                      MD::List *item,
+                      QSharedPointer<MD::Document> doc,
                       int bulletWidth,
                       double offset,
                       CalcHeightOpt heightCalcOpt,
@@ -4519,7 +4519,7 @@ PdfRenderer::drawList(PdfAuxData &pdfData,
     for (auto it = item->items().cbegin(), last = item->items().cend(); it != last; ++it) {
         if ((*it)->type() == MD::ItemType::ListItem) {
             const auto where = drawListItem(pdfData,
-                                            static_cast<MD::ListItem<MD::QStringTrait> *>(it->get()),
+                                            static_cast<MD::ListItem *>(it->get()),
                                             doc,
                                             idx,
                                             prevListItemType,
@@ -4550,8 +4550,8 @@ PdfRenderer::drawList(PdfAuxData &pdfData,
 QPair<QVector<WhereDrawn>,
       WhereDrawn>
 PdfRenderer::drawListItem(PdfAuxData &pdfData,
-                          MD::ListItem<MD::QStringTrait> *item,
-                          std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                          MD::ListItem *item,
+                          QSharedPointer<MD::Document> doc,
                           int &idx,
                           ListItemType &prevListItemType,
                           int bulletWidth,
@@ -4599,7 +4599,7 @@ PdfRenderer::drawListItem(PdfAuxData &pdfData,
             if (heightCalcOpt != CalcHeightOpt::Minimum) {
                 const auto where =
                     drawHeading(pdfData,
-                                static_cast<MD::Heading<MD::QStringTrait> *>(it->get()),
+                                static_cast<MD::Heading *>(it->get()),
                                 doc,
                                 offset,
                                 (it + 1 != last ? minNecessaryHeight(pdfData, *(it + 1), doc, offset, scale) : 0.0),
@@ -4622,7 +4622,7 @@ PdfRenderer::drawListItem(PdfAuxData &pdfData,
         case MD::ItemType::Paragraph: {
             const auto where =
                 drawParagraph(pdfData,
-                              static_cast<MD::Paragraph<MD::QStringTrait> *>(it->get()),
+                              static_cast<MD::Paragraph *>(it->get()),
                               doc,
                               offset,
                               (it == item->items().cbegin() && firstInList) || it != item->items().cbegin(),
@@ -4644,7 +4644,7 @@ PdfRenderer::drawListItem(PdfAuxData &pdfData,
 
         case MD::ItemType::Code: {
             const auto where = drawCode(pdfData,
-                                        static_cast<MD::Code<MD::QStringTrait> *>(it->get()),
+                                        static_cast<MD::Code *>(it->get()),
                                         doc,
                                         offset,
                                         heightCalcOpt,
@@ -4662,7 +4662,7 @@ PdfRenderer::drawListItem(PdfAuxData &pdfData,
 
         case MD::ItemType::Blockquote: {
             const auto where = drawBlockquote(pdfData,
-                                              static_cast<MD::Blockquote<MD::QStringTrait> *>(it->get()),
+                                              static_cast<MD::Blockquote *>(it->get()),
                                               doc,
                                               offset,
                                               heightCalcOpt,
@@ -4680,7 +4680,7 @@ PdfRenderer::drawListItem(PdfAuxData &pdfData,
         } break;
 
         case MD::ItemType::List: {
-            auto list = static_cast<MD::List<MD::QStringTrait> *>(it->get());
+            auto list = static_cast<MD::List *>(it->get());
 
             const auto where =
                 drawList(pdfData, list, doc, maxListNumberWidth(list), offset, heightCalcOpt, scale, true, rtl);
@@ -4695,7 +4695,7 @@ PdfRenderer::drawListItem(PdfAuxData &pdfData,
 
         case MD::ItemType::Table: {
             const auto where = drawTable(pdfData,
-                                         static_cast<MD::Table<MD::QStringTrait> *>(it->get()),
+                                         static_cast<MD::Table *>(it->get()),
                                          doc,
                                          offset,
                                          heightCalcOpt,
@@ -4760,7 +4760,7 @@ PdfRenderer::drawListItem(PdfAuxData &pdfData,
                 }
 
                 pdfData.restoreColor();
-            } else if (item->listType() == MD::ListItem<MD::QStringTrait>::Ordered) {
+            } else if (item->listType() == MD::ListItem::Ordered) {
                 if (prevListItemType == ListItemType::Unordered || firstItem) {
                     idx = item->startNumber();
                 } else if (prevListItemType == ListItemType::Ordered) {
@@ -4803,16 +4803,16 @@ PdfRenderer::drawListItem(PdfAuxData &pdfData,
     return {ret, firstLine};
 }
 
-int PdfRenderer::maxListNumberWidth(MD::List<MD::QStringTrait> *list) const
+int PdfRenderer::maxListNumberWidth(MD::List *list) const
 {
     int counter = 0;
     bool first = true;
 
     for (auto it = list->items().cbegin(), last = list->items().cend(); it != last; ++it) {
         if ((*it)->type() == MD::ItemType::ListItem) {
-            auto *item = static_cast<MD::ListItem<MD::QStringTrait> *>(it->get());
+            auto *item = static_cast<MD::ListItem *>(it->get());
 
-            if (item->listType() == MD::ListItem<MD::QStringTrait>::Ordered) {
+            if (item->listType() == MD::ListItem::Ordered) {
                 if (first) {
                     counter = item->startNumber();
                 } else {
@@ -4835,9 +4835,9 @@ int PdfRenderer::maxListNumberWidth(MD::List<MD::QStringTrait> *list) const
 }
 
 double PdfRenderer::rowHeight(PdfAuxData &pdfData,
-                              std::shared_ptr<MD::TableRow<MD::QStringTrait>> row,
+                              QSharedPointer<MD::TableRow> row,
                               double width,
-                              std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                              QSharedPointer<MD::Document> doc,
                               double scale)
 {
     if (!row->cells().size()) {
@@ -4851,7 +4851,7 @@ double PdfRenderer::rowHeight(PdfAuxData &pdfData,
     pdfData.m_layout.margins().m_right = 0.0;
 
     for (const auto &c : row->cells()) {
-        auto p = std::make_shared<MD::Paragraph<MD::QStringTrait>>();
+        auto p = QSharedPointer<MD::Paragraph>();
         p->applyBlock(*c.get());
 
         const auto r = drawParagraph(pdfData, p.get(), doc, 0.0, false, CalcHeightOpt::Full, scale);
@@ -4872,8 +4872,8 @@ double PdfRenderer::rowHeight(PdfAuxData &pdfData,
 QPair<QVector<WhereDrawn>,
       WhereDrawn>
 PdfRenderer::drawTable(PdfAuxData &pdfData,
-                       MD::Table<MD::QStringTrait> *item,
-                       std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                       MD::Table *item,
+                       QSharedPointer<MD::Document> doc,
                        double offset,
                        CalcHeightOpt heightCalcOpt,
                        double scale)
@@ -4983,10 +4983,10 @@ PdfRenderer::drawTable(PdfAuxData &pdfData,
 
 QPair<QVector<WhereDrawn>,
       WhereDrawn>
-PdfRenderer::drawTableRow(std::shared_ptr<MD::TableRow<MD::QStringTrait>> row,
+PdfRenderer::drawTableRow(QSharedPointer<MD::TableRow> row,
                           PdfAuxData &pdfData,
-                          std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
-                          MD::Table<MD::QStringTrait> *table,
+                          QSharedPointer<MD::Document> doc,
+                          MD::Table *table,
                           double offset,
                           double scale,
                           double columnWidth,
@@ -5094,16 +5094,16 @@ PdfRenderer::drawTableRow(std::shared_ptr<MD::TableRow<MD::QStringTrait>> row,
     return {ret, firstLine};
 }
 
-inline ParagraphAlignment columnAlignmentToParagraphAlignment(MD::Table<MD::QStringTrait>::Alignment align)
+inline ParagraphAlignment columnAlignmentToParagraphAlignment(MD::Table::Alignment align)
 {
     switch (align) {
-    case MD::Table<MD::QStringTrait>::AlignLeft:
+    case MD::Table::AlignLeft:
         return ParagraphAlignment::Left;
 
-    case MD::Table<MD::QStringTrait>::AlignRight:
+    case MD::Table::AlignRight:
         return ParagraphAlignment::Right;
 
-    case MD::Table<MD::QStringTrait>::AlignCenter:
+    case MD::Table::AlignCenter:
         return ParagraphAlignment::Center;
 
     default:
@@ -5113,10 +5113,10 @@ inline ParagraphAlignment columnAlignmentToParagraphAlignment(MD::Table<MD::QStr
 
 QPair<QVector<WhereDrawn>,
       WhereDrawn>
-PdfRenderer::drawTableCell(std::shared_ptr<MD::TableCell<MD::QStringTrait>> cell,
+PdfRenderer::drawTableCell(QSharedPointer<MD::TableCell> cell,
                            PdfAuxData &pdfData,
-                           std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
-                           MD::Table<MD::QStringTrait>::Alignment align,
+                           QSharedPointer<MD::Document> doc,
+                           MD::Table::Alignment align,
                            double scale)
 {
     pdfData.m_startLine = cell->startLine();
@@ -5128,7 +5128,7 @@ PdfRenderer::drawTableCell(std::shared_ptr<MD::TableCell<MD::QStringTrait>> cell
 
     pdfData.m_layout.setRightToLeft(isRightToLeft(cell.get()));
 
-    auto p = std::make_shared<MD::Paragraph<MD::QStringTrait>>();
+    auto p = QSharedPointer<MD::Paragraph>();
     p->applyBlock(*cell.get());
 
     const auto ret = drawParagraph(pdfData,
@@ -5151,26 +5151,26 @@ PdfRenderer::drawTableCell(std::shared_ptr<MD::TableCell<MD::QStringTrait>> cell
 }
 
 void PdfRenderer::addFootnote(const QString &refId,
-                              std::shared_ptr<MD::Footnote<MD::QStringTrait>> f,
+                              QSharedPointer<MD::Footnote> f,
                               PdfAuxData &pdfData,
-                              std::shared_ptr<MD::Document<MD::QStringTrait>> doc)
+                              QSharedPointer<MD::Document> doc)
 {
-    std::function<void(MD::Block<MD::QStringTrait> * b, PdfAuxData & pdfData)> findFootnoteRefs;
+    std::function<void(MD::Block * b, PdfAuxData & pdfData)> findFootnoteRefs;
 
-    findFootnoteRefs = [&](MD::Block<MD::QStringTrait> *b, PdfAuxData &pdfData) {
+    findFootnoteRefs = [&](MD::Block *b, PdfAuxData &pdfData) {
         for (auto it = b->items().cbegin(), last = b->items().cend(); it != last; ++it) {
-            auto cb = dynamic_cast<MD::Block<MD::QStringTrait> *>(it->get());
+            auto cb = dynamic_cast<MD::Block *>(it->get());
 
             if (cb) {
                 findFootnoteRefs(cb, pdfData);
             } else {
                 switch ((*it)->type()) {
                 case MD::ItemType::Heading:
-                    findFootnoteRefs(static_cast<MD::Heading<MD::QStringTrait> *>(it->get())->text().get(), pdfData);
+                    findFootnoteRefs(static_cast<MD::Heading *>(it->get())->text().get(), pdfData);
                     break;
 
                 case MD::ItemType::Table: {
-                    auto t = static_cast<MD::Table<MD::QStringTrait> *>(it->get());
+                    auto t = static_cast<MD::Table *>(it->get());
 
                     for (const auto &r : t->rows()) {
                         for (const auto &c : r->cells()) {
@@ -5180,12 +5180,12 @@ void PdfRenderer::addFootnote(const QString &refId,
                 } break;
 
                 case MD::ItemType::FootnoteRef: {
-                    auto *ref = static_cast<MD::FootnoteRef<MD::QStringTrait> *>(it->get());
+                    auto *ref = static_cast<MD::FootnoteRef *>(it->get());
 
                     const auto fit = doc->footnotesMap().find(ref->id());
 
                     if (fit != doc->footnotesMap().cend()) {
-                        this->addFootnote(ref->id(), fit->second, pdfData, doc);
+                        this->addFootnote(ref->id(), fit.value(), pdfData, doc);
                     }
                 } break;
 
@@ -5318,8 +5318,8 @@ void PdfRenderer::drawRowBorder(PdfAuxData &pdfData,
 }
 
 double PdfRenderer::minNecessaryHeight(PdfAuxData &pdfData,
-                                       std::shared_ptr<MD::Item<MD::QStringTrait>> item,
-                                       std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                                       QSharedPointer<MD::Item> item,
+                                       QSharedPointer<MD::Document> doc,
                                        double offset,
                                        double scale)
 {
@@ -5336,7 +5336,7 @@ double PdfRenderer::minNecessaryHeight(PdfAuxData &pdfData,
 
     case MD::ItemType::Paragraph: {
         ret = drawParagraph(tmp,
-                            static_cast<MD::Paragraph<MD::QStringTrait> *>(item.get()),
+                            static_cast<MD::Paragraph *>(item.get()),
                             doc,
                             offset,
                             true,
@@ -5347,7 +5347,7 @@ double PdfRenderer::minNecessaryHeight(PdfAuxData &pdfData,
 
     case MD::ItemType::Code: {
         ret = drawCode(tmp,
-                       static_cast<MD::Code<MD::QStringTrait> *>(item.get()),
+                       static_cast<MD::Code *>(item.get()),
                        doc,
                        offset,
                        CalcHeightOpt::Minimum,
@@ -5357,7 +5357,7 @@ double PdfRenderer::minNecessaryHeight(PdfAuxData &pdfData,
 
     case MD::ItemType::Blockquote: {
         ret = drawBlockquote(tmp,
-                             static_cast<MD::Blockquote<MD::QStringTrait> *>(item.get()),
+                             static_cast<MD::Blockquote *>(item.get()),
                              doc,
                              offset,
                              CalcHeightOpt::Minimum,
@@ -5366,7 +5366,7 @@ double PdfRenderer::minNecessaryHeight(PdfAuxData &pdfData,
     } break;
 
     case MD::ItemType::List: {
-        auto *list = static_cast<MD::List<MD::QStringTrait> *>(item.get());
+        auto *list = static_cast<MD::List *>(item.get());
         const auto bulletWidth = maxListNumberWidth(list);
 
         ret = drawList(tmp, list, m_doc, bulletWidth, offset, CalcHeightOpt::Minimum, scale).first;
@@ -5374,7 +5374,7 @@ double PdfRenderer::minNecessaryHeight(PdfAuxData &pdfData,
 
     case MD::ItemType::Table: {
         ret = drawTable(tmp,
-                        static_cast<MD::Table<MD::QStringTrait> *>(item.get()),
+                        static_cast<MD::Table *>(item.get()),
                         doc,
                         offset,
                         CalcHeightOpt::Minimum,
