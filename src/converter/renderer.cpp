@@ -675,50 +675,47 @@ void PdfRenderer::renderImpl()
 
         std::map<MD::Footnote *, int> processedFootnotes;
 
-        MD::forEach(
-            {MD::ItemType::FootnoteRef},
-            m_doc,
-            [&pdfData, &processedFootnotes, this](MD::Item *i) {
-                auto ref = static_cast<MD::FootnoteRef *>(i);
-                auto fit = this->m_doc->footnotesMap().find(ref->id());
+        MD::forEach({MD::ItemType::FootnoteRef}, m_doc, [&pdfData, &processedFootnotes, this](MD::Item *i) {
+            auto ref = static_cast<MD::FootnoteRef *>(i);
+            auto fit = this->m_doc->footnotesMap().find(ref->id());
 
-                if (fit != this->m_doc->footnotesMap().cend()) {
-                    auto pfit = processedFootnotes.find(fit.value().get());
+            if (fit != this->m_doc->footnotesMap().cend()) {
+                auto pfit = processedFootnotes.find(fit.value().get());
 
-                    if (pfit == processedFootnotes.cend()) {
-                        pfit = processedFootnotes.insert({fit.value().get(), 0}).first;
+                if (pfit == processedFootnotes.cend()) {
+                    pfit = processedFootnotes.insert({fit.value().get(), 0}).first;
 
-                        if (!fit.value()->items().isEmpty()
-                            && fit.value()->items().back()->type() == MD::ItemType::Paragraph) {
-                            auto p = static_cast<MD::Paragraph *>(fit.value()->items().back().get());
+                    if (!fit.value()->items().isEmpty()
+                        && fit.value()->items().back()->type() == MD::ItemType::Paragraph) {
+                        auto p = static_cast<MD::Paragraph *>(fit.value()->items().back().get());
 
-                            if (!p->isEmpty()) {
-                                if (p->items().back()->type() == MD::ItemType::Text) {
-                                    auto t = static_cast<MD::Text *>(p->items().back().get());
+                        if (!p->isEmpty()) {
+                            if (p->items().back()->type() == MD::ItemType::Text) {
+                                auto t = static_cast<MD::Text *>(p->items().back().get());
 
-                                    if (!t->text().endsWith(QLatin1Char(' '))) {
-                                        t->setText(t->text() + QLatin1Char(' '));
-                                    }
-                                } else {
-                                    auto t = QSharedPointer<MD::Text>::create();
-                                    t->setText(QString(QLatin1Char(' ')));
-                                    p->appendItem(t);
+                                if (!t->text().endsWith(QLatin1Char(' '))) {
+                                    t->setText(t->text() + QLatin1Char(' '));
                                 }
+                            } else {
+                                auto t = QSharedPointer<MD::Text>::create();
+                                t->setText(QString(QLatin1Char(' ')));
+                                p->appendItem(t);
                             }
-                        } else {
-                            auto p = QSharedPointer<MD::Paragraph>::create();
-                            fit.value()->appendItem(p);
                         }
+                    } else {
+                        auto p = QSharedPointer<MD::Paragraph>::create();
+                        fit.value()->appendItem(p);
                     }
-
-                    auto p = static_cast<MD::Paragraph *>(fit.value()->items().back().get());
-                    auto link = QSharedPointer<MD::Link>::create();
-                    link->img()->setUrl(QStringLiteral("qrc:/img/go-jump.png"));
-                    link->p()->appendItem(link->img());
-                    link->setUrl(ref->id() + QStringLiteral("-%1").arg(QString::number(++pfit->second)));
-                    p->appendItem(link);
                 }
-            });
+
+                auto p = static_cast<MD::Paragraph *>(fit.value()->items().back().get());
+                auto link = QSharedPointer<MD::Link>::create();
+                link->img()->setUrl(QStringLiteral("qrc:/img/go-jump.png"));
+                link->p()->appendItem(link->img());
+                link->setUrl(ref->id() + QStringLiteral("-%1").arg(QString::number(++pfit->second)));
+                p->appendItem(link);
+            }
+        });
 
         int itemIdx = 0;
 
@@ -784,12 +781,7 @@ void PdfRenderer::renderImpl()
                 break;
 
             case MD::ItemType::Code:
-                drawCode(pdfData,
-                         static_cast<MD::Code *>(it->get()),
-                         m_doc,
-                         0.0,
-                         CalcHeightOpt::Unknown,
-                         1.0);
+                drawCode(pdfData, static_cast<MD::Code *>(it->get()), m_doc, 0.0, CalcHeightOpt::Unknown, 1.0);
                 resetRTLFlagToDefaults(&rtl);
                 break;
 
@@ -813,12 +805,7 @@ void PdfRenderer::renderImpl()
             } break;
 
             case MD::ItemType::Table:
-                drawTable(pdfData,
-                          static_cast<MD::Table *>(it->get()),
-                          m_doc,
-                          0.0,
-                          CalcHeightOpt::Unknown,
-                          1.0);
+                drawTable(pdfData, static_cast<MD::Table *>(it->get()), m_doc, 0.0, CalcHeightOpt::Unknown, 1.0);
                 break;
 
             case MD::ItemType::PageBreak: {
@@ -1470,13 +1457,10 @@ bool PdfRenderer::isNothingAfter(MD::Block::Items::const_iterator it,
 }
 
 MD::Item *PdfRenderer::getPrevItem(MD::Block::Items::const_iterator it,
-                                                     MD::Block::Items::const_iterator begin,
-                                                     MD::Block::Items::const_iterator last)
+                                   MD::Block::Items::const_iterator begin,
+                                   MD::Block::Items::const_iterator last)
 {
-    it = skipBackwardWithFunc(it,
-                              begin,
-                              last,
-                              &PdfRenderer::isNotHtml<MD::Block::Items::const_iterator>);
+    it = skipBackwardWithFunc(it, begin, last, &PdfRenderer::isNotHtml<MD::Block::Items::const_iterator>);
 
     if (it != last) {
         return it->get();
@@ -1485,15 +1469,11 @@ MD::Item *PdfRenderer::getPrevItem(MD::Block::Items::const_iterator it,
     }
 }
 
-MD::Block::Items::const_iterator
-PdfRenderer::skipRawHtmlAndSpacesBackward(MD::Block::Items::const_iterator it,
-                                          MD::Block::Items::const_iterator begin,
-                                          MD::Block::Items::const_iterator last)
+MD::Block::Items::const_iterator PdfRenderer::skipRawHtmlAndSpacesBackward(MD::Block::Items::const_iterator it,
+                                                                           MD::Block::Items::const_iterator begin,
+                                                                           MD::Block::Items::const_iterator last)
 {
-    it = skipBackwardWithFunc(it,
-                              begin,
-                              last,
-                              &PdfRenderer::isNotHtmlNorSpace<MD::Block::Items::const_iterator>);
+    it = skipBackwardWithFunc(it, begin, last, &PdfRenderer::isNotHtmlNorSpace<MD::Block::Items::const_iterator>);
 
     if (it != last) {
         if ((*it)->type() == MD::ItemType::RawHtml) {
@@ -1878,8 +1858,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
 
     if (nextItem
         && nextItem->type() == MD::ItemType::FootnoteRef
-        && doc->footnotesMap().find(static_cast<MD::FootnoteRef *>(nextItem)->id())
-            != doc->footnotesMap().cend()) {
+        && doc->footnotesMap().find(static_cast<MD::FootnoteRef *>(nextItem)->id()) != doc->footnotesMap().cend()) {
         footnoteAtEnd = true;
     }
 
@@ -4643,12 +4622,7 @@ PdfRenderer::drawListItem(PdfAuxData &pdfData,
         } break;
 
         case MD::ItemType::Code: {
-            const auto where = drawCode(pdfData,
-                                        static_cast<MD::Code *>(it->get()),
-                                        doc,
-                                        offset,
-                                        heightCalcOpt,
-                                        scale);
+            const auto where = drawCode(pdfData, static_cast<MD::Code *>(it->get()), doc, offset, heightCalcOpt, scale);
 
             ret.append(where.first);
 
@@ -4694,12 +4668,8 @@ PdfRenderer::drawListItem(PdfAuxData &pdfData,
         } break;
 
         case MD::ItemType::Table: {
-            const auto where = drawTable(pdfData,
-                                         static_cast<MD::Table *>(it->get()),
-                                         doc,
-                                         offset,
-                                         heightCalcOpt,
-                                         scale);
+            const auto where =
+                drawTable(pdfData, static_cast<MD::Table *>(it->get()), doc, offset, heightCalcOpt, scale);
 
             ret.append(where.first);
 
@@ -5346,22 +5316,11 @@ double PdfRenderer::minNecessaryHeight(PdfAuxData &pdfData,
     } break;
 
     case MD::ItemType::Code: {
-        ret = drawCode(tmp,
-                       static_cast<MD::Code *>(item.get()),
-                       doc,
-                       offset,
-                       CalcHeightOpt::Minimum,
-                       scale)
-                  .first;
+        ret = drawCode(tmp, static_cast<MD::Code *>(item.get()), doc, offset, CalcHeightOpt::Minimum, scale).first;
     } break;
 
     case MD::ItemType::Blockquote: {
-        ret = drawBlockquote(tmp,
-                             static_cast<MD::Blockquote *>(item.get()),
-                             doc,
-                             offset,
-                             CalcHeightOpt::Minimum,
-                             scale)
+        ret = drawBlockquote(tmp, static_cast<MD::Blockquote *>(item.get()), doc, offset, CalcHeightOpt::Minimum, scale)
                   .first;
     } break;
 
@@ -5373,13 +5332,7 @@ double PdfRenderer::minNecessaryHeight(PdfAuxData &pdfData,
     } break;
 
     case MD::ItemType::Table: {
-        ret = drawTable(tmp,
-                        static_cast<MD::Table *>(item.get()),
-                        doc,
-                        offset,
-                        CalcHeightOpt::Minimum,
-                        scale)
-                  .first;
+        ret = drawTable(tmp, static_cast<MD::Table *>(item.get()), doc, offset, CalcHeightOpt::Minimum, scale).first;
     } break;
 
     default:

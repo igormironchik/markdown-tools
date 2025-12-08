@@ -1463,12 +1463,11 @@ void MainWindow::onTextChanged()
         m_d->m_mdDoc = m_d->m_editor->currentDoc();
 
         if (m_d->m_livePreviewVisible && m_d->m_mdDoc) {
-            m_d->m_html->setText(
-                MD::toHtml<HtmlVisitor>(m_d->m_mdDoc,
-                                                          false,
-                                                          QStringLiteral("<img src=\"qrc:/res/img/go-jump.png\" />"),
-                                                          true,
-                                                          &m_d->m_editor->idsMap()));
+            m_d->m_html->setText(MD::toHtml<HtmlVisitor>(m_d->m_mdDoc,
+                                                         false,
+                                                         QStringLiteral("<img src=\"qrc:/res/img/go-jump.png\" />"),
+                                                         true,
+                                                         &m_d->m_editor->idsMap()));
         }
     }
 
@@ -2365,12 +2364,11 @@ void MainWindow::readAllLinked(bool updateRootFileName)
         }
 
         if (m_d->m_livePreviewVisible) {
-            m_d->m_html->setText(
-                MD::toHtml<HtmlVisitor>(m_d->m_mdDoc,
-                                                          false,
-                                                          QStringLiteral("<img src=\"qrc:/res/img/go-jump.png\" />"),
-                                                          true,
-                                                          &idsMap));
+            m_d->m_html->setText(MD::toHtml<HtmlVisitor>(m_d->m_mdDoc,
+                                                         false,
+                                                         QStringLiteral("<img src=\"qrc:/res/img/go-jump.png\" />"),
+                                                         true,
+                                                         &idsMap));
         }
     }
 }
@@ -2556,12 +2554,11 @@ void MainWindow::onToggleLivePreviewAction(bool checked)
         m_d->m_splitter->handle(2)->setCursor(m_d->m_splitterCursor);
 
         if (m_d->m_mdDoc) {
-            m_d->m_html->setText(
-                MD::toHtml<HtmlVisitor>(m_d->m_mdDoc,
-                                                          false,
-                                                          QStringLiteral("<img src=\"qrc:/res/img/go-jump.png\" />"),
-                                                          true,
-                                                          &m_d->m_editor->idsMap()));
+            m_d->m_html->setText(MD::toHtml<HtmlVisitor>(m_d->m_mdDoc,
+                                                         false,
+                                                         QStringLiteral("<img src=\"qrc:/res/img/go-jump.png\" />"),
+                                                         true,
+                                                         &m_d->m_editor->idsMap()));
         } else {
             m_d->m_html->setText({});
         }

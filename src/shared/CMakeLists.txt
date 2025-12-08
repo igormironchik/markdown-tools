@@ -34,7 +34,9 @@ set(SRC license_dialog.h
     syntax.h
     syntax.cpp
     dlg_filter_wheel.cpp
-    dlg_filter_wheel.h)
+    dlg_filter_wheel.h
+    emphasis.h
+    emphasis.cpp)
 
 qt6_add_resources(SRC qt.qrc)
 qt6_add_resources(SRC icon.qrc)

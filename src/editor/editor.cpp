@@ -16,6 +16,7 @@
 #include <QApplication>
 #include <QCursor>
 #include <QDesktopServices>
+#include <QFileInfo>
 #include <QMenu>
 #include <QMimeData>
 #include <QPainter>
@@ -23,7 +24,6 @@
 #include <QTextDocument>
 #include <QTextLayout>
 #include <QThread>
-#include <QFileInfo>
 
 // C++ include.
 #include <functional>
@@ -815,10 +815,7 @@ void Editor::drawCodeBlocksBackground(QPainter &p)
                     y = qRound(geometry.top());
                     h = qRound(geometry.height());
                 } else if (x != currentX) {
-                    p.drawRect(x,
-                               y,
-                               viewport()->rect().width() - x - qRound(document()->documentMargin()),
-                               h);
+                    p.drawRect(x, y, viewport()->rect().width() - x - qRound(document()->documentMargin()), h);
 
                     x = currentX;
                     y = qRound(geometry.top());
@@ -827,10 +824,7 @@ void Editor::drawCodeBlocksBackground(QPainter &p)
                     h += qRound(geometry.height());
                 }
             } else if (x != -1) {
-                p.drawRect(x,
-                           y,
-                           viewport()->rect().width() - x - qRound(document()->documentMargin()),
-                           h);
+                p.drawRect(x, y, viewport()->rect().width() - x - qRound(document()->documentMargin()), h);
 
                 x = -1;
             }
@@ -839,10 +833,7 @@ void Editor::drawCodeBlocksBackground(QPainter &p)
         }
 
         if (x != -1) {
-            p.drawRect(x,
-                       y,
-                       viewport()->rect().width() - x - qRound(document()->documentMargin()),
-                       h);
+            p.drawRect(x, y, viewport()->rect().width() - x - qRound(document()->documentMargin()), h);
         }
     }
 }

@@ -1202,13 +1202,12 @@ private:
     }
     //! \return Previous not HTML item.
     MD::Item *getPrevItem(MD::Block::Items::const_iterator it,
-                                            MD::Block::Items::const_iterator begin,
-                                            MD::Block::Items::const_iterator last);
+                          MD::Block::Items::const_iterator begin,
+                          MD::Block::Items::const_iterator last);
     //! Skip raw HTML and spaces backward.
-    inline MD::Block::Items::const_iterator
-    skipRawHtmlAndSpacesBackward(MD::Block::Items::const_iterator it,
-                                 MD::Block::Items::const_iterator begin,
-                                 MD::Block::Items::const_iterator last);
+    inline MD::Block::Items::const_iterator skipRawHtmlAndSpacesBackward(MD::Block::Items::const_iterator it,
+                                                                         MD::Block::Items::const_iterator begin,
+                                                                         MD::Block::Items::const_iterator last);
     //! Skip raw HTML and spaces.
     template<class Iterator>
     inline Iterator skipRawHtmlAndSpaces(Iterator it,
