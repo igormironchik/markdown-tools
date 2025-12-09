@@ -6,10 +6,8 @@
 #pragma once
 
 // md4qt include.
-#define MD4QT_QT_SUPPORT
-#include <md4qt/parser.h>
-#include <md4qt/poscache.h>
-#include <md4qt/traits.h>
+#include <md4qt/src/parser.h>
+#include <md4qt/src/poscache.h>
 
 // shared include.
 #include "syntax.h"
@@ -38,19 +36,19 @@ struct Colors;
 struct SyntaxVisitorPrivate;
 
 //! Markdown syntax highlighter, including spelling check.
-class SyntaxVisitor : public MD::PosCache<MD::QStringTrait>
+class SyntaxVisitor : public MD::PosCache
 {
 public:
     SyntaxVisitor();
-    explicit SyntaxVisitor(std::shared_ptr<MdShared::Syntax> syntax);
+    explicit SyntaxVisitor(QSharedPointer<MdShared::Syntax> syntax);
     ~SyntaxVisitor() override;
 
     SyntaxVisitor(const SyntaxVisitor &other);
     SyntaxVisitor &operator=(const SyntaxVisitor &other);
 
     //! Hyghlight syntax.
-    void highlight(MD::StringListStream<MD::QStringTrait> *stream,
-                   std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+    void highlight(QStringList *stream,
+                   QSharedPointer<MD::Document> doc,
                    const Colors &cols);
 
     //! \return Colors scheme.
@@ -82,7 +80,7 @@ public:
     //! Select next misspelled word.
     void highlightNextMisspelled(QPlainTextEdit *editor);
     //! \return Code blocks syntax highlighter.
-    std::shared_ptr<MdShared::Syntax> codeBlockSyntaxHighlighter();
+    QSharedPointer<MdShared::Syntax> codeBlockSyntaxHighlighter();
 
     //! Rectangle of highlighted code block.
     struct CodeRect {
@@ -97,27 +95,27 @@ public:
     const QVector<CodeRect> &highlightedCodeRects() const;
 
 protected:
-    void onUserDefined(MD::Item<MD::QStringTrait> *i) override;
-    void onReferenceLink(MD::Link<MD::QStringTrait> *l) override;
-    void onText(MD::Text<MD::QStringTrait> *t) override;
-    void onMath(MD::Math<MD::QStringTrait> *m) override;
-    void onHeading(MD::Heading<MD::QStringTrait> *h) override;
-    void onCode(MD::Code<MD::QStringTrait> *c) override;
-    void onInlineCode(MD::Code<MD::QStringTrait> *c) override;
-    void onBlockquote(MD::Blockquote<MD::QStringTrait> *b) override;
-    void onTable(MD::Table<MD::QStringTrait> *t) override;
-    void onRawHtml(MD::RawHtml<MD::QStringTrait> *h) override;
-    void onHorizontalLine(MD::HorizontalLine<MD::QStringTrait> *l) override;
-    void onLink(MD::Link<MD::QStringTrait> *l) override;
-    void onImage(MD::Image<MD::QStringTrait> *i) override;
-    void onFootnoteRef(MD::FootnoteRef<MD::QStringTrait> *ref) override;
-    void onFootnote(MD::Footnote<MD::QStringTrait> *f) override;
-    void onListItem(MD::ListItem<MD::QStringTrait> *l,
+    void onUserDefined(MD::Item *i) override;
+    void onReferenceLink(MD::Link *l) override;
+    void onText(MD::Text *t) override;
+    void onMath(MD::Math *m) override;
+    void onHeading(MD::Heading *h) override;
+    void onCode(MD::Code *c) override;
+    void onInlineCode(MD::Code *c) override;
+    void onBlockquote(MD::Blockquote *b) override;
+    void onTable(MD::Table *t) override;
+    void onRawHtml(MD::RawHtml *h) override;
+    void onHorizontalLine(MD::HorizontalLine *l) override;
+    void onLink(MD::Link *l) override;
+    void onImage(MD::Image *i) override;
+    void onFootnoteRef(MD::FootnoteRef *ref) override;
+    void onFootnote(MD::Footnote *f) override;
+    void onListItem(MD::ListItem *l,
                     bool first,
                     bool skipOpeningWrap = false) override;
 
 private:
-    void onItemWithOpts(MD::ItemWithOpts<MD::QStringTrait> *i);
+    void onItemWithOpts(MD::ItemWithOpts *i);
 
 private:
     QScopedPointer<SyntaxVisitorPrivate> m_d;

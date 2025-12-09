@@ -10,9 +10,7 @@
 #include <QVector>
 
 // md4qt include.
-#define MD4QT_QT_SUPPORT
-#include <md4qt/parser.h>
-#include <md4qt/traits.h>
+#include <md4qt/src/parser.h>
 
 // shared include.
 #include "plugins_page.h"
@@ -39,5 +37,5 @@ void orderWords(QVector<QPair<QString,
                               bool>> &text);
 
 //! Set plugins to parser.
-void setPlugins(MD::Parser<MD::QStringTrait> &parser,
+void setPlugins(MD::Parser &parser,
                 const MdShared::PluginsCfg &cfg);

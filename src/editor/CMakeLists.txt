@@ -71,14 +71,13 @@ endif()
 configure_file(version.h.in ${CMAKE_CURRENT_BINARY_DIR}/version.h)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
-	${md4qt_INCLUDE_DIRECTORIES}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/widgets/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../shared)
 
 add_library(md-editor-lib STATIC ${LIB_SRC})
 
-target_link_libraries(md-editor-lib markdown-widgets
+target_link_libraries(md-editor-lib md4qt::md4qt markdown-widgets
     KF${KF_MAJOR_VERSION}::SyntaxHighlighting
     KF${KF_MAJOR_VERSION}::SonnetUi KF${KF_MAJOR_VERSION}::SonnetCore
     Qt6::WebEngineWidgets Qt6::Widgets Qt6::Core)

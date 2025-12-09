@@ -62,11 +62,9 @@
 #include <QWindow>
 
 // md4qt include.
-#define MD4QT_QT_SUPPORT
-#include <md4qt/algo.h>
-#include <md4qt/html.h>
-#include <md4qt/parser.h>
-#include <md4qt/plugins.h>
+#include <md4qt/src/algo.h>
+#include <md4qt/src/html.h>
+#include <md4qt/src/parser.h>
 
 // shared include.
 #include "folder_chooser.h"
@@ -82,19 +80,19 @@ namespace MdEditor
 //
 
 //! Converter into HTML.
-class HtmlVisitor : public MD::details::HtmlVisitor<MD::QStringTrait>
+class HtmlVisitor : public MD::details::HtmlVisitor
 {
 protected:
     //! Prepare text to insert into HTML content.
     QString prepareTextForHtml(const QString &t) override
     {
-        auto tmp = MD::details::HtmlVisitor<MD::QStringTrait>::prepareTextForHtml(t);
+        auto tmp = MD::details::HtmlVisitor::prepareTextForHtml(t);
         tmp.replace(QLatin1Char('$'), QStringLiteral("<span>$</span>"));
 
         return tmp;
     }
 
-    void openStyle(const typename MD::ItemWithOpts<MD::QStringTrait>::Styles &styles) override
+    void openStyle(const typename MD::ItemWithOpts::Styles &styles) override
     {
         for (const auto &s : styles) {
             switch (s.style()) {
@@ -128,7 +126,7 @@ protected:
         }
     }
 
-    void closeStyle(const typename MD::ItemWithOpts<MD::QStringTrait>::Styles &styles) override
+    void closeStyle(const typename MD::ItemWithOpts::Styles &styles) override
     {
         for (const auto &s : styles) {
             switch (s.style()) {
@@ -894,7 +892,7 @@ struct MainWindowPrivate {
     }
 
     //! \return Data for ToC item.
-    StringDataVec paragraphToMenuText(MD::Paragraph<MD::QStringTrait> *p,
+    StringDataVec paragraphToMenuText(MD::Paragraph *p,
                                       bool skipRtl = false)
     {
         StringDataVec res;
@@ -904,7 +902,7 @@ struct MainWindowPrivate {
         for (auto it = p->items().cbegin(), last = p->items().cend(); it != last; ++it) {
             switch ((*it)->type()) {
             case MD::ItemType::Text: {
-                auto t = static_cast<MD::Text<MD::QStringTrait> *>(it->get());
+                auto t = static_cast<MD::Text *>(it->get());
 
                 if (first) {
                     first = false;
@@ -915,7 +913,7 @@ struct MainWindowPrivate {
             } break;
 
             case MD::ItemType::Code: {
-                auto c = static_cast<MD::Code<MD::QStringTrait> *>(it->get());
+                auto c = static_cast<MD::Code *>(it->get());
 
                 if (first) {
                     first = false;
@@ -926,7 +924,7 @@ struct MainWindowPrivate {
             } break;
 
             case MD::ItemType::Link: {
-                auto l = static_cast<MD::Link<MD::QStringTrait> *>(it->get());
+                auto l = static_cast<MD::Link *>(it->get());
 
                 first = false;
 
@@ -955,11 +953,11 @@ struct MainWindowPrivate {
 
             std::vector<QModelIndex> current;
 
-            MD::forEach<MD::QStringTrait>(
+            MD::forEach(
                 {MD::ItemType::Heading},
                 m_tocDoc,
-                [this, &current](MD::Item<MD::QStringTrait> *item) {
-                    auto h = static_cast<MD::Heading<MD::QStringTrait> *>(item);
+                [this, &current](MD::Item *item) {
+                    auto h = static_cast<MD::Heading *>(item);
 
                     if (h->text()) {
                         if (current.size()) {
@@ -1067,8 +1065,8 @@ struct MainWindowPrivate {
     bool m_livePreviewVisible = true;
     bool m_initMarkdownMenuRequested = false;
     QCursor m_splitterCursor;
-    std::shared_ptr<MD::Document<MD::QStringTrait>> m_mdDoc;
-    std::shared_ptr<MD::Document<MD::QStringTrait>> m_tocDoc;
+    QSharedPointer<MD::Document> m_mdDoc;
+    QSharedPointer<MD::Document> m_tocDoc;
     QString m_baseUrl;
     QString m_rootFilePath;
     QString m_mdPdfExe;
@@ -1465,12 +1463,11 @@ void MainWindow::onTextChanged()
         m_d->m_mdDoc = m_d->m_editor->currentDoc();
 
         if (m_d->m_livePreviewVisible && m_d->m_mdDoc) {
-            m_d->m_html->setText(
-                MD::toHtml<MD::QStringTrait, HtmlVisitor>(m_d->m_mdDoc,
-                                                          false,
-                                                          QStringLiteral("<img src=\"qrc:/res/img/go-jump.png\" />"),
-                                                          true,
-                                                          &m_d->m_editor->idsMap()));
+            m_d->m_html->setText(MD::toHtml<HtmlVisitor>(m_d->m_mdDoc,
+                                                         false,
+                                                         QStringLiteral("<img src=\"qrc:/res/img/go-jump.png\" />"),
+                                                         true,
+                                                         &m_d->m_editor->idsMap()));
         }
     }
 
@@ -1607,7 +1604,7 @@ void MainWindow::onLineNumberContextMenuRequested(int lineNumber,
         if (it != m_d->m_editor->idsMap().cend()) {
             QMenu menu;
 
-            const auto id = it->second;
+            const auto id = it.value();
 
             menu.addAction(tr("Scroll Web Preview To"), [id, this]() {
                 this->onScrollWebViewTo(id);
@@ -2140,7 +2137,7 @@ void MainWindow::loadAllLinkedFilesImpl()
     if (m_d->m_mdDoc) {
         for (auto it = m_d->m_mdDoc->items().cbegin(), last = m_d->m_mdDoc->items().cend(); it != last; ++it) {
             if ((*it)->type() == MD::ItemType::Anchor) {
-                const auto fullFileName = static_cast<MD::Anchor<MD::QStringTrait> *>(it->get())->label();
+                const auto fullFileName = static_cast<MD::Anchor *>(it->get())->label();
 
                 const auto fileName =
                     fullFileName.startsWith(rootFolder) ? fullFileName.sliced(rootFolder.size()) : fullFileName;
@@ -2330,27 +2327,25 @@ void MainWindow::readAllLinked(bool updateRootFileName)
             m_d->m_rootFilePath = m_d->m_editor->docName();
         }
 
-        MD::Parser<MD::QStringTrait> parser;
+        MD::Parser parser;
         setPlugins(parser, m_d->m_editor->settings().m_pluginsCfg);
 
         if (m_d->m_workingDirectoryWidget->isRelative()) {
             m_d->m_mdDoc = parser.parse(m_d->m_rootFilePath,
                                         true,
-                                        {QStringLiteral("md"), QStringLiteral("mkd"), QStringLiteral("markdown")},
-                                        false);
+                                        {QStringLiteral("md"), QStringLiteral("mkd"), QStringLiteral("markdown")});
         } else {
             m_d->m_mdDoc = parser.parse(m_d->m_rootFilePath,
                                         m_d->m_workingDirectoryWidget->workingDirectory(),
                                         true,
-                                        {QStringLiteral("md"), QStringLiteral("mkd"), QStringLiteral("markdown")},
-                                        false);
+                                        {QStringLiteral("md"), QStringLiteral("mkd"), QStringLiteral("markdown")});
         }
 
-        MD::details::IdsMap<MD::QStringTrait> idsMap;
+        MD::details::IdsMap idsMap;
 
         for (auto it = m_d->m_mdDoc->items().cbegin(), last = m_d->m_mdDoc->items().cend(); it != last; ++it) {
             if ((*it)->type() == MD::ItemType::Anchor) {
-                auto a = static_cast<MD::Anchor<MD::QStringTrait> *>(it->get());
+                auto a = static_cast<MD::Anchor *>(it->get());
 
                 if (a->label() == m_d->m_editor->docName()) {
                     const auto doc = m_d->m_editor->currentDoc();
@@ -2359,7 +2354,7 @@ void MainWindow::readAllLinked(bool updateRootFileName)
                         const auto idIt = m_d->m_editor->idsMap().find(eIt->get());
 
                         if (idIt != m_d->m_editor->idsMap().cend()) {
-                            idsMap.insert({it->get(), idIt->second});
+                            idsMap.insert(it->get(), idIt.value());
                         }
                     }
 
@@ -2369,12 +2364,11 @@ void MainWindow::readAllLinked(bool updateRootFileName)
         }
 
         if (m_d->m_livePreviewVisible) {
-            m_d->m_html->setText(
-                MD::toHtml<MD::QStringTrait, HtmlVisitor>(m_d->m_mdDoc,
-                                                          false,
-                                                          QStringLiteral("<img src=\"qrc:/res/img/go-jump.png\" />"),
-                                                          true,
-                                                          &idsMap));
+            m_d->m_html->setText(MD::toHtml<HtmlVisitor>(m_d->m_mdDoc,
+                                                         false,
+                                                         QStringLiteral("<img src=\"qrc:/res/img/go-jump.png\" />"),
+                                                         true,
+                                                         &idsMap));
         }
     }
 }
@@ -2560,12 +2554,11 @@ void MainWindow::onToggleLivePreviewAction(bool checked)
         m_d->m_splitter->handle(2)->setCursor(m_d->m_splitterCursor);
 
         if (m_d->m_mdDoc) {
-            m_d->m_html->setText(
-                MD::toHtml<MD::QStringTrait, HtmlVisitor>(m_d->m_mdDoc,
-                                                          false,
-                                                          QStringLiteral("<img src=\"qrc:/res/img/go-jump.png\" />"),
-                                                          true,
-                                                          &m_d->m_editor->idsMap()));
+            m_d->m_html->setText(MD::toHtml<HtmlVisitor>(m_d->m_mdDoc,
+                                                         false,
+                                                         QStringLiteral("<img src=\"qrc:/res/img/go-jump.png\" />"),
+                                                         true,
+                                                         &m_d->m_editor->idsMap()));
         } else {
             m_d->m_html->setText({});
         }
@@ -2577,7 +2570,7 @@ void MainWindow::onToggleLivePreviewAction(bool checked)
 namespace /* anonymous */
 {
 
-inline QString paragraphToMD(MD::Paragraph<MD::QStringTrait> *p,
+inline QString paragraphToMD(MD::Paragraph *p,
                              QPlainTextEdit *editor)
 {
     QTextCursor c = editor->textCursor();
@@ -2622,15 +2615,15 @@ void MainWindow::onAddTOC()
     QString fileName;
     std::vector<int> current;
 
-    MD::forEach<MD::QStringTrait>(
+    MD::forEach(
         {MD::ItemType::Anchor, MD::ItemType::Heading},
         m_d->m_editor->currentDoc(),
-        [&](MD::Item<MD::QStringTrait> *item) {
+        [&](MD::Item *item) {
             if (item->type() == MD::ItemType::Anchor) {
-                auto a = static_cast<MD::Anchor<MD::QStringTrait> *>(item);
+                auto a = static_cast<MD::Anchor *>(item);
                 fileName = a->label();
             } else if (item->type() == MD::ItemType::Heading) {
-                auto h = static_cast<MD::Heading<MD::QStringTrait> *>(item);
+                auto h = static_cast<MD::Heading *>(item);
 
                 if (current.size()) {
                     if (h->level() < current.front()) {

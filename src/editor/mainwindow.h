@@ -134,7 +134,8 @@ private:
     //! Real implementation of loading all linked files.
     void loadAllLinkedFilesImpl();
     //! Open a file from navigation toolbar.
-    void openFileFromNavigationToolbar(const QString &path, bool modifyStack = true);
+    void openFileFromNavigationToolbar(const QString &path,
+                                       bool modifyStack = true);
 
 private:
     Q_DISABLE_COPY(MainWindow)

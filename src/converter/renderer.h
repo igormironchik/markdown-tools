@@ -9,9 +9,7 @@
 #include "syntax.h"
 
 // md4qt include.
-#define MD4QT_QT_SUPPORT
-#include <md4qt/doc.h>
-#include <md4qt/traits.h>
+#include <md4qt/src/doc.h>
 
 // Qt include.
 #include <QByteArray>
@@ -166,7 +164,7 @@ struct RenderOpts {
     //! DPI.
     quint16 m_dpi;
     //! Syntax highlighter.
-    std::shared_ptr<MdShared::Syntax> m_syntax;
+    QSharedPointer<MdShared::Syntax> m_syntax;
     //! Image alignment.
     ImageAlignment m_imageAlignment;
 
@@ -201,7 +199,7 @@ public:
     ~Renderer() override = default;
 
     virtual void render(const QString &fileName,
-                        std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                        QSharedPointer<MD::Document> doc,
                         const RenderOpts &opts,
                         bool testing = false) = 0;
     virtual void clean() = 0;
@@ -378,7 +376,7 @@ struct PdfAuxData {
     //! Document.
     Document *m_doc = nullptr;
     //! Painters.
-    std::vector<std::shared_ptr<Painter>> *m_painters = nullptr;
+    std::vector<QSharedPointer<Painter>> *m_painters = nullptr;
     //! Page.
     Page *m_page = nullptr;
     //! Index of the current page.
@@ -408,7 +406,7 @@ struct PdfAuxData {
     //! Colors stack.
     QStack<QColor> m_colorsStack;
     //! Markdown document.
-    std::shared_ptr<MD::Document<MD::QStringTrait>> m_md;
+    QSharedPointer<MD::Document> m_md;
     //! Start line of procesing in the document.
     long long int m_startLine = 0;
     //! Start position in the start line.
@@ -422,13 +420,13 @@ struct PdfAuxData {
     //! Current file.
     QString m_currentFile;
     //! Footnotes map to map anchors.
-    QMap<MD::Footnote<MD::QStringTrait> *, QPair<QString, int>> m_footnotesAnchorsMap;
+    QMap<MD::Footnote *, QPair<QString, int>> m_footnotesAnchorsMap;
     //! Map of footnotes references to its counter (uses for back links from footnote).
-    QMap<MD::Footnote<MD::QStringTrait> *, int> m_footnoteRefCount;
+    QMap<MD::Footnote *, int> m_footnoteRefCount;
     //! Resvg options.
     QSharedPointer<ResvgOptions> m_resvgOpts;
     //! Special blockquotes that should be highlighted.
-    QMap<MD::Blockquote<MD::QStringTrait> *, QColor> m_highlightedBlockquotes;
+    QMap<MD::Blockquote *, QColor> m_highlightedBlockquotes;
     //! Cache of fonts.
     QMap<QString, QSharedPointer<QTemporaryFile>> m_fontsCache;
     //! Stack of painters used on table drawing.
@@ -560,7 +558,7 @@ public slots:
     //! Don't reuse the same document twice.
     //! Renderer will delete himself on job finish.
     void render(const QString &fileName,
-                std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                QSharedPointer<MD::Document> doc,
                 const MdPdf::Render::RenderOpts &opts,
                 bool testing = false) override;
     //! Terminate rendering.
@@ -605,7 +603,7 @@ private:
     //! Load image.
     QByteArray loadImage(
         //! Image.
-        MD::Image<MD::QStringTrait> *item,
+        MD::Image *item,
         //! Options for SVG rendering.
         const ResvgOptions &opts,
         //! Height to scale image to.
@@ -617,7 +615,7 @@ private:
     //! Make all links clickable.
     void resolveLinks(PdfAuxData &pdfData);
     //! Max width of numbered list bullet.
-    int maxListNumberWidth(MD::List<MD::QStringTrait> *list) const;
+    int maxListNumberWidth(MD::List *list) const;
 
     //! What calculation of height to do?
     enum class CalcHeightOpt {
@@ -672,8 +670,8 @@ private:
     QPair<QVector<WhereDrawn>,
           WhereDrawn>
     drawHeading(PdfAuxData &pdfData,
-                MD::Heading<MD::QStringTrait> *item,
-                std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                MD::Heading *item,
+                QSharedPointer<MD::Document> doc,
                 double offset,
                 double nextItemMinHeight,
                 CalcHeightOpt heightCalcOpt,
@@ -684,8 +682,8 @@ private:
     QPair<QVector<WhereDrawn>,
           WhereDrawn>
     drawParagraph(PdfAuxData &pdfData,
-                  MD::Paragraph<MD::QStringTrait> *item,
-                  std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                  MD::Paragraph *item,
+                  QSharedPointer<MD::Document> doc,
                   double offset,
                   bool withNewLine,
                   CalcHeightOpt heightCalcOpt,
@@ -698,8 +696,8 @@ private:
     QPair<QVector<WhereDrawn>,
           WhereDrawn>
     drawCode(PdfAuxData &pdfData,
-             MD::Code<MD::QStringTrait> *item,
-             std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+             MD::Code *item,
+             QSharedPointer<MD::Document> doc,
              double offset,
              CalcHeightOpt heightCalcOpt,
              double scale);
@@ -707,8 +705,8 @@ private:
     QPair<QVector<WhereDrawn>,
           WhereDrawn>
     drawBlockquote(PdfAuxData &pdfData,
-                   MD::Blockquote<MD::QStringTrait> *item,
-                   std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                   MD::Blockquote *item,
+                   QSharedPointer<MD::Document> doc,
                    double offset,
                    CalcHeightOpt heightCalcOpt,
                    double scale,
@@ -717,8 +715,8 @@ private:
     QPair<QVector<WhereDrawn>,
           WhereDrawn>
     drawList(PdfAuxData &pdfData,
-             MD::List<MD::QStringTrait> *item,
-             std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+             MD::List *item,
+             QSharedPointer<MD::Document> doc,
              int bulletWidth,
              double offset = 0.0,
              CalcHeightOpt heightCalcOpt = CalcHeightOpt::Unknown,
@@ -729,30 +727,30 @@ private:
     QPair<QVector<WhereDrawn>,
           WhereDrawn>
     drawTable(PdfAuxData &pdfData,
-              MD::Table<MD::QStringTrait> *item,
-              std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+              MD::Table *item,
+              QSharedPointer<MD::Document> doc,
               double offset,
               CalcHeightOpt heightCalcOpt,
               double scale);
 
     //! \return Minimum necessary height to draw item, meant at least one line.
     double minNecessaryHeight(PdfAuxData &pdfData,
-                              std::shared_ptr<MD::Item<MD::QStringTrait>> item,
-                              std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                              QSharedPointer<MD::Item> item,
+                              QSharedPointer<MD::Document> doc,
                               double offset,
                               double scale);
     //! \return Height of the footnote.
     QVector<WhereDrawn> drawFootnote(PdfAuxData &pdfData,
-                                     std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                                     QSharedPointer<MD::Document> doc,
                                      const QString &footnoteRefId,
-                                     MD::Footnote<MD::QStringTrait> *note,
+                                     MD::Footnote *note,
                                      CalcHeightOpt heightCalcOpt,
                                      double *lineHeight = nullptr,
                                      RTLFlag *rtl = nullptr);
     //! \return Height of the footnote.
     QVector<WhereDrawn> footnoteHeight(PdfAuxData &pdfData,
-                                       std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
-                                       MD::Footnote<MD::QStringTrait> *note,
+                                       QSharedPointer<MD::Document> doc,
+                                       MD::Footnote *note,
                                        double *lineHeight);
     //! Reserve space for footnote.
     void reserveSpaceForFootnote(PdfAuxData &pdfData,
@@ -763,9 +761,9 @@ private:
                                  bool addExtraLine = false);
     //! Add footnote.
     void addFootnote(const QString &refId,
-                     std::shared_ptr<MD::Footnote<MD::QStringTrait>> f,
+                     QSharedPointer<MD::Footnote> f,
                      PdfAuxData &pdfData,
-                     std::shared_ptr<MD::Document<MD::QStringTrait>> doc);
+                     QSharedPointer<MD::Document> doc);
 
     //! List item type.
     enum class ListItemType {
@@ -780,8 +778,8 @@ private:
     QPair<QVector<WhereDrawn>,
           WhereDrawn>
     drawListItem(PdfAuxData &pdfData,
-                 MD::ListItem<MD::QStringTrait> *item,
-                 std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                 MD::ListItem *item,
+                 QSharedPointer<MD::Document> doc,
                  int &idx,
                  ListItemType &prevListItemType,
                  int bulletWidth,
@@ -1009,18 +1007,18 @@ private:
     }; // struct PrevBaselineStateStack
 
     //! Initialize baseline with the given item.
-    void initSubSupScript(MD::ItemWithOpts<MD::QStringTrait> *item,
+    void initSubSupScript(MD::ItemWithOpts *item,
                           PrevBaselineStateStack &state,
                           double lineHeight,
                           double descent);
 
     //! Deinit baseline with the given item.
-    void deinitSubSupScript(MD::ItemWithOpts<MD::QStringTrait> *item,
+    void deinitSubSupScript(MD::ItemWithOpts *item,
                             PrevBaselineStateStack &state);
 
     struct AutoSubSupScriptInit {
         AutoSubSupScriptInit(PdfRenderer *render,
-                             MD::ItemWithOpts<MD::QStringTrait> *item,
+                             MD::ItemWithOpts *item,
                              PrevBaselineStateStack &stack,
                              double lineHeight,
                              double descent)
@@ -1043,7 +1041,7 @@ private:
         }
 
         PdfRenderer *m_render;
-        MD::ItemWithOpts<MD::QStringTrait> *m_item;
+        MD::ItemWithOpts *m_item;
         PrevBaselineStateStack &m_stack;
         std::size_t m_count;
     };
@@ -1052,13 +1050,13 @@ private:
     QVector<QPair<QRectF,
                   unsigned int>>
     drawText(PdfAuxData &pdfData,
-             MD::Text<MD::QStringTrait> *item,
-             std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+             MD::Text *item,
+             QSharedPointer<MD::Document> doc,
              bool &newLine,
              Font *footnoteFont,
              double footnoteFontSize,
              double footnoteFontScale,
-             MD::Item<MD::QStringTrait> *nextItem,
+             MD::Item *nextItem,
              int footnoteNum,
              double offset,
              bool firstInParagraph,
@@ -1071,8 +1069,8 @@ private:
     QVector<QPair<QRectF,
                   unsigned int>>
     drawInlinedCode(PdfAuxData &pdfData,
-                    MD::Code<MD::QStringTrait> *item,
-                    std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                    MD::Code *item,
+                    QSharedPointer<MD::Document> doc,
                     bool &newLine,
                     double offset,
                     bool firstInParagraph,
@@ -1094,12 +1092,12 @@ private:
                double fontSize,
                double fontScale,
                double lineHeight,
-               std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+               QSharedPointer<MD::Document> doc,
                bool &newLine,
                Font *footnoteFont,
                double footnoteFontSize,
                double footnoteFontScale,
-               MD::Item<MD::QStringTrait> *nextItem,
+               MD::Item *nextItem,
                int footnoteNum,
                double offset,
                bool firstInParagraph,
@@ -1120,14 +1118,14 @@ private:
     QVector<QPair<QRectF,
                   unsigned int>>
     drawLink(PdfAuxData &pdfData,
-             MD::Link<MD::QStringTrait> *item,
-             std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+             MD::Link *item,
+             QSharedPointer<MD::Document> doc,
              bool &newLine,
              Font *footnoteFont,
              double footnoteFontSize,
              double footnoteFontScale,
-             MD::Item<MD::QStringTrait> *prevItem,
-             MD::Item<MD::QStringTrait> *nextItem,
+             MD::Item *prevItem,
+             MD::Item *nextItem,
              int footnoteNum,
              double offset,
              double lineHeight,
@@ -1146,7 +1144,7 @@ private:
     inline bool isSpace(Iterator it)
     {
         if ((*it)->type() == MD::ItemType::Text) {
-            auto t = static_cast<MD::Text<MD::QStringTrait> *>(it->get());
+            auto t = static_cast<MD::Text *>(it->get());
 
             if (t->text().simplified().isEmpty()) {
                 return true;
@@ -1176,8 +1174,8 @@ private:
         return ((*it)->type() != MD::ItemType::RawHtml);
     }
     //! \return Is after \par it nothing except HTML, spaces.
-    inline bool isNothingAfter(MD::Block<MD::QStringTrait>::Items::const_iterator it,
-                               MD::Block<MD::QStringTrait>::Items::const_iterator last);
+    inline bool isNothingAfter(MD::Block::Items::const_iterator it,
+                               MD::Block::Items::const_iterator last);
     //! Skip backward til \par func returns true.
     template<class Iterator,
              class Func>
@@ -1203,14 +1201,13 @@ private:
         return it;
     }
     //! \return Previous not HTML item.
-    MD::Item<MD::QStringTrait> *getPrevItem(MD::Block<MD::QStringTrait>::Items::const_iterator it,
-                                            MD::Block<MD::QStringTrait>::Items::const_iterator begin,
-                                            MD::Block<MD::QStringTrait>::Items::const_iterator last);
+    MD::Item *getPrevItem(MD::Block::Items::const_iterator it,
+                          MD::Block::Items::const_iterator begin,
+                          MD::Block::Items::const_iterator last);
     //! Skip raw HTML and spaces backward.
-    inline MD::Block<MD::QStringTrait>::Items::const_iterator
-    skipRawHtmlAndSpacesBackward(MD::Block<MD::QStringTrait>::Items::const_iterator it,
-                                 MD::Block<MD::QStringTrait>::Items::const_iterator begin,
-                                 MD::Block<MD::QStringTrait>::Items::const_iterator last);
+    inline MD::Block::Items::const_iterator skipRawHtmlAndSpacesBackward(MD::Block::Items::const_iterator it,
+                                                                         MD::Block::Items::const_iterator begin,
+                                                                         MD::Block::Items::const_iterator last);
     //! Skip raw HTML and spaces.
     template<class Iterator>
     inline Iterator skipRawHtmlAndSpaces(Iterator it,
@@ -1226,21 +1223,21 @@ private:
     }
     //! \return Is item a online image, or link with last online image?
     bool isOnlineImageOrOnlineImageInLink(PdfAuxData &pdfData,
-                                          MD::Item<MD::QStringTrait> *item,
+                                          MD::Item *item,
                                           double offset,
                                           double lineHeight,
                                           bool scaleImagesToLineHeight);
     //! \return Is after \par it a text item or online content?
-    bool isTextOrOnlineAfter(MD::Block<MD::QStringTrait>::Items::const_iterator it,
-                             MD::Block<MD::QStringTrait>::Items::const_iterator last,
+    bool isTextOrOnlineAfter(MD::Block::Items::const_iterator it,
+                             MD::Block::Items::const_iterator last,
                              PdfAuxData &pdfData,
                              double offset,
                              double lineHeight,
                              bool scaleImagesToLineHeight);
     //! \return Is before \par it a text item or online content?
-    bool isTextOrOnlineBefore(MD::Block<MD::QStringTrait>::Items::const_iterator it,
-                              MD::Block<MD::QStringTrait>::Items::const_iterator begin,
-                              MD::Block<MD::QStringTrait>::Items::const_iterator last,
+    bool isTextOrOnlineBefore(MD::Block::Items::const_iterator it,
+                              MD::Block::Items::const_iterator begin,
+                              MD::Block::Items::const_iterator last,
                               PdfAuxData &pdfData,
                               double offset,
                               double lineHeight,
@@ -1278,21 +1275,21 @@ private:
             return true;
 
         case MD::ItemType::Math: {
-            auto m = static_cast<MD::Math<MD::QStringTrait> *>(it->get());
+            auto m = static_cast<MD::Math *>(it->get());
 
             return m->isInline();
         } break;
 
         case MD::ItemType::Image: {
             return isOnlineImage(pdfData,
-                                 static_cast<MD::Image<MD::QStringTrait> *>(it->get()),
+                                 static_cast<MD::Image *>(it->get()),
                                  offset,
                                  lineHeight,
                                  scaleImagesToLineHeight);
         } break;
 
         case MD::ItemType::Link: {
-            auto l = static_cast<MD::Link<MD::QStringTrait> *>(it->get());
+            auto l = static_cast<MD::Link *>(it->get());
 
             if (!l->p()->isEmpty()) {
                 if (reverse) {
@@ -1332,7 +1329,7 @@ private:
                        double lineHeight);
     //! \return Is image online?
     bool isOnlineImage(PdfAuxData &pdfData,
-                       MD::Image<MD::QStringTrait> *item,
+                       MD::Image *item,
                        double offset,
                        double lineHeight,
                        bool scaleImagesToLineHeight);
@@ -1340,8 +1337,8 @@ private:
     QPair<QRectF,
           unsigned int>
     drawImage(PdfAuxData &pdfData,
-              MD::Image<MD::QStringTrait> *item,
-              std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+              MD::Image *item,
+              QSharedPointer<MD::Document> doc,
               bool &newLine,
               double offset,
               double lineHeight,
@@ -1353,7 +1350,7 @@ private:
               CustomWidth &cw,
               double scale,
               PrevBaselineStateStack &previousBaseline,
-              MD::Item<MD::QStringTrait> *prevItem,
+              MD::Item *prevItem,
               ImageAlignment alignment = ImageAlignment::Unknown,
               bool scaleImagesToLineHeight = false);
 
@@ -1361,9 +1358,9 @@ private:
     QPair<QRectF,
           unsigned int>
     drawMathExpr(PdfAuxData &pdfData,
-                 MD::Math<MD::QStringTrait> *item,
-                 std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
-                 MD::Item<MD::QStringTrait> *prevItem,
+                 MD::Math *item,
+                 QSharedPointer<MD::Document> doc,
+                 MD::Item *prevItem,
                  bool &newLine,
                  double offset,
                  bool isNextText,
@@ -1374,18 +1371,18 @@ private:
 
     //! \return Height of the table's row.
     double rowHeight(PdfAuxData &pdfData,
-                     std::shared_ptr<MD::TableRow<MD::QStringTrait>> row,
+                     QSharedPointer<MD::TableRow> row,
                      double width,
-                     std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+                     QSharedPointer<MD::Document> doc,
                      double scale);
 
     //! Draw table's row.
     QPair<QVector<WhereDrawn>,
           WhereDrawn>
-    drawTableRow(std::shared_ptr<MD::TableRow<MD::QStringTrait>> row,
+    drawTableRow(QSharedPointer<MD::TableRow> row,
                  PdfAuxData &pdfData,
-                 std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
-                 MD::Table<MD::QStringTrait> *table,
+                 QSharedPointer<MD::Document> doc,
+                 MD::Table *table,
                  double offset,
                  double scale,
                  double columnWidth,
@@ -1395,10 +1392,10 @@ private:
     //! Draw table's cell.
     QPair<QVector<WhereDrawn>,
           WhereDrawn>
-    drawTableCell(std::shared_ptr<MD::TableCell<MD::QStringTrait>> cell,
+    drawTableCell(QSharedPointer<MD::TableCell> cell,
                   PdfAuxData &pdfData,
-                  std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
-                  MD::Table<MD::QStringTrait>::Alignment align,
+                  QSharedPointer<MD::Document> doc,
+                  MD::Table::Alignment align,
                   double scale);
 
     //! Draw table border.
@@ -1422,7 +1419,7 @@ private:
     //! Name of the output file.
     QString m_fileName;
     //! Markdown document.
-    std::shared_ptr<MD::Document<MD::QStringTrait>> m_doc;
+    QSharedPointer<MD::Document> m_doc;
     //! Render options.
     RenderOpts m_opts;
     //! Mutex.
@@ -1438,7 +1435,7 @@ private:
     //! Cache of images.
     QMap<QString, QByteArray> m_imageCache;
     //! Footnotes to draw.
-    QVector<QPair<QString, std::shared_ptr<MD::Footnote<MD::QStringTrait>>>> m_footnotes;
+    QVector<QPair<QString, QSharedPointer<MD::Footnote>>> m_footnotes;
 #ifdef MD_PDF_TESTING
     bool m_isError;
 #endif

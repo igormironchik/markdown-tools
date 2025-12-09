@@ -14,9 +14,8 @@
 #include "syntaxvisitor.h"
 
 // md4qt include.
-#define MD4QT_QT_SUPPORT
-#include <md4qt/html.h>
-#include <md4qt/parser.h>
+#include <md4qt/src/html.h>
+#include <md4qt/src/parser.h>
 
 // shared include.
 #include "plugins_page.h"
@@ -104,7 +103,7 @@ public:
     //! Enable/disable spelling check.
     void enableSpellingCheck(bool on);
     //! Current Mardown AST (parsed document).
-    std::shared_ptr<MD::Document<MD::QStringTrait>> currentDoc() const;
+    QSharedPointer<MD::Document> currentDoc() const;
     //! Apply font for editor.
     void applyFont(const QFont &f);
     //! \return Syntax highlighter.
@@ -112,7 +111,7 @@ public:
     //! Set "find" widget for editor.
     void setFindWidget(Find *findWidget);
     //! \return Map if IDs of the current parsed Markdown document.
-    const MD::details::IdsMap<MD::QStringTrait> &idsMap() const;
+    const MD::details::IdsMap &idsMap() const;
     //! \return Is document ready?
     bool isReady() const;
     //! Set plugins configuration.
@@ -193,10 +192,10 @@ private slots:
     //! Process content's change.
     void onContentChanged();
     //! Process finish of Markdown content parsing on a thread.
-    void onParsingDone(std::shared_ptr<MD::Document<MD::QStringTrait>> doc,
+    void onParsingDone(QSharedPointer<MD::Document> doc,
                        unsigned long long int counter,
                        SyntaxVisitor syntax,
-                       MD::details::IdsMap<MD::QStringTrait> idsMap);
+                       MD::details::IdsMap idsMap);
     //! Link clicked.
     void onLinkClicked(const QString &url);
 
@@ -223,7 +222,7 @@ protected:
     void drawCodeBlocksBackground(QPainter &p);
     //! Handle "Return: key for code.
     bool handleReturnKeyForCode(QKeyEvent *event,
-                                const MD::PosCache<MD::QStringTrait>::Items &items,
+                                const MD::PosCache::Items &items,
                                 bool inList);
 
 private:

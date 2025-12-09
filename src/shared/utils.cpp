@@ -5,13 +5,36 @@
 
 // shared include.
 #include "utils.h"
+#include "emphasis.h"
 #include "syntax.h"
 
 // Qt include.
 #include <QtResource>
 
-// md4qt include.
-#include <md4qt/plugins.h>
+// md4qt inclide.
+#include <md4qt/src/asterisk_emphasis_parser.h>
+#include <md4qt/src/atx_heading_parser.h>
+#include <md4qt/src/autolink_parser.h>
+#include <md4qt/src/blockquote_parser.h>
+#include <md4qt/src/emphasis_parser.h>
+#include <md4qt/src/fenced_code_parser.h>
+#include <md4qt/src/footnote_parser.h>
+#include <md4qt/src/gfm_autolink_parser.h>
+#include <md4qt/src/hard_line_break_parser.h>
+#include <md4qt/src/html_parser.h>
+#include <md4qt/src/indented_code_parser.h>
+#include <md4qt/src/inline_code_parser.h>
+#include <md4qt/src/inline_html_parser.h>
+#include <md4qt/src/inline_math_parser.h>
+#include <md4qt/src/link_image_parser.h>
+#include <md4qt/src/list_parser.h>
+#include <md4qt/src/paragraph_parser.h>
+#include <md4qt/src/setext_heading_parser.h>
+#include <md4qt/src/strikethrough_emphasis_parser.h>
+#include <md4qt/src/table_parser.h>
+#include <md4qt/src/thematic_break_parser.h>
+#include <md4qt/src/underline_emphasis_parser.h>
+#include <md4qt/src/yaml_parser.h>
 
 void initSharedResources()
 {
@@ -118,40 +141,56 @@ void orderWords(QVector<QPair<QString,
     reverseItems(start, end, text);
 }
 
-void setPlugins(MD::Parser<MD::QStringTrait> &parser,
+void setPlugins(MD::Parser &parser,
                 const MdShared::PluginsCfg &cfg)
 {
+    MD::Parser::InlineParsers inlineParsers;
+
+    MD::Parser::appendInlineParser<MD::InlineCodeParser>(inlineParsers);
+
+    auto linkParser = MD::Parser::appendInlineParser<MD::LinkImageParser>(inlineParsers);
+
+    MD::Parser::appendInlineParser<MD::AutolinkParser>(inlineParsers);
+    MD::Parser::appendInlineParser<MD::InlineHtmlParser>(inlineParsers);
+    MD::Parser::appendInlineParser<MD::InlineMathParser>(inlineParsers);
+    MD::Parser::appendInlineParser<MD::AsteriskEmphasisParser>(inlineParsers);
+    MD::Parser::appendInlineParser<MD::UnderlineEmphasisParser>(inlineParsers);
+    MD::Parser::appendInlineParser<MD::StrikethroughEmphasisParser>(inlineParsers);
+
     if (cfg.m_sup.m_on) {
-        parser.addTextPlugin(MD::TextPlugin::UserDefined,
-                             MD::EmphasisPlugin::emphasisTemplatePlugin<MD::QStringTrait>,
-                             true,
-                             QStringList() << cfg.m_sup.m_delimiter << QStringLiteral("8"));
-    } else {
-        parser.removeTextPlugin(MD::TextPlugin::UserDefined);
+        inlineParsers.append(QSharedPointer<MdShared::SupEmphasisParser>::create(cfg.m_sup.m_delimiter));
     }
 
     if (cfg.m_sub.m_on) {
-        parser.addTextPlugin(static_cast<MD::TextPlugin>(static_cast<int>(MD::TextPlugin::UserDefined) + 1),
-                             MD::EmphasisPlugin::emphasisTemplatePlugin<MD::QStringTrait>,
-                             true,
-                             QStringList() << cfg.m_sub.m_delimiter << QStringLiteral("16"));
-    } else {
-        parser.removeTextPlugin(static_cast<MD::TextPlugin>(static_cast<int>(MD::TextPlugin::UserDefined) + 1));
+        inlineParsers.append(QSharedPointer<MdShared::SubEmphasisParser>::create(cfg.m_sub.m_delimiter));
     }
 
     if (cfg.m_mark.m_on) {
-        parser.addTextPlugin(static_cast<MD::TextPlugin>(static_cast<int>(MD::TextPlugin::UserDefined) + 2),
-                             MD::EmphasisPlugin::emphasisTemplatePlugin<MD::QStringTrait>,
-                             true,
-                             QStringList() << cfg.m_mark.m_delimiter << QStringLiteral("32"));
-    } else {
-        parser.removeTextPlugin(static_cast<MD::TextPlugin>(static_cast<int>(MD::TextPlugin::UserDefined) + 2));
+        inlineParsers.append(QSharedPointer<MdShared::HighlightEmphasisParser>::create(cfg.m_mark.m_delimiter));
     }
 
+    inlineParsers.append(QSharedPointer<MD::GfmAutolinkParser>::create(linkParser));
+
+    MD::Parser::appendInlineParser<MD::HardLineBreakParser>(inlineParsers);
+
+    MD::Parser::BlockParsers blockParsers;
+
     if (cfg.m_yamlEnabled) {
-        parser.addBlockPlugin(std::make_shared<MD::YAMLBlockPlugin<MD::QStringTrait>>());
-    } else {
-        auto yaml = std::make_shared<MD::YAMLBlockPlugin<MD::QStringTrait>>();
-        parser.removeBlockPlugin(yaml->id());
+        MD::Parser::appendBlockParser<MD::YAMLParser>(blockParsers, &parser);
     }
+
+    MD::Parser::appendBlockParser<MD::BlockquoteParser>(blockParsers, &parser);
+    MD::Parser::appendBlockParser<MD::SetextHeadingParser>(blockParsers, &parser);
+    MD::Parser::appendBlockParser<MD::ThematicBreakParser>(blockParsers, &parser);
+    MD::Parser::appendBlockParser<MD::ListParser>(blockParsers, &parser);
+    MD::Parser::appendBlockParser<MD::ATXHeadingParser>(blockParsers, &parser);
+    MD::Parser::appendBlockParser<MD::FencedCodeParser>(blockParsers, &parser);
+    MD::Parser::appendBlockParser<MD::HTMLParser>(blockParsers, &parser);
+    MD::Parser::appendBlockParser<MD::IndentedCodeParser>(blockParsers, &parser);
+    MD::Parser::appendBlockParser<MD::FootnoteParser>(blockParsers, &parser);
+    MD::Parser::appendBlockParser<MD::TableParser>(blockParsers, &parser);
+    MD::Parser::appendBlockParser<MD::ParagraphParser>(blockParsers, &parser);
+
+    parser.setBlockParsers(blockParsers);
+    parser.setInlineParsers(inlineParsers);
 }

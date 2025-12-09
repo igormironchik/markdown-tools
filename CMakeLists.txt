@@ -33,7 +33,7 @@ execute_process(COMMAND git rev-parse --short HEAD
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-set(MD_TOOLS_VERSION_NUMBER "0.15.20")
+set(MD_TOOLS_VERSION_NUMBER "0.16.0")
 set(HomeDir "@HomeDir@")
 string(TIMESTAMP MD_CURRENT_DATE "%Y-%m-%d")
 
@@ -94,10 +94,10 @@ endif()
 
 add_subdirectory(3rdparty/MicroTeX)
 
-set(BUILD_MD4QT_QT_TESTS OFF CACHE INTERNAL "" FORCE)
+set(BUILD_MD4QT_TESTS OFF CACHE INTERNAL "" FORCE)
 add_subdirectory(3rdparty/KDE/md4qt)
 
-include_directories(${md4qt_INCLUDE_DIRECTORIES})
+include_directories(${md4qt_INCLUDE_DIRECTORIES}/../..)
 
 set(_DISABLE_INSTALLATION FALSE)
 

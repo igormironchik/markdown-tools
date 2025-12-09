@@ -69,7 +69,7 @@ class SettingsDlg : public MdShared::DlgWheelFilter
 
 public:
     SettingsDlg(const Settings &s,
-                std::shared_ptr<MdShared::Syntax> syntax,
+                QSharedPointer<MdShared::Syntax> syntax,
                 QWidget *parent);
     ~SettingsDlg() override = default;
 
