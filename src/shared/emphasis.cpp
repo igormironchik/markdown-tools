@@ -10,48 +10,65 @@ namespace MdShared
 {
 
 //
-// SubEmphasisParser
+// BaseEmphasisParser
 //
 
-SubEmphasisParser::SubEmphasisParser(const QChar &ch)
+BaseEmphasisParser::BaseEmphasisParser(const QChar &ch)
     : m_symbol(ch)
 {
 }
 
-const QChar &SubEmphasisParser::symbol() const
+const QChar &BaseEmphasisParser::symbol() const
 {
     return m_symbol;
 }
 
-bool SubEmphasisParser::isEmphasis(int) const
+bool BaseEmphasisParser::isEmphasis(int) const
 {
     return true;
 }
 
-bool SubEmphasisParser::isLengthCorrespond() const
+bool BaseEmphasisParser::isLengthCorrespond() const
 {
     return false;
 }
 
-MD::ItemWithOpts::Styles SubEmphasisParser::openStyles(qsizetype startPos,
-                                                       qsizetype lineNumber,
-                                                       qsizetype length) const
+MD::ItemWithOpts::Styles BaseEmphasisParser::makeStyles(int style,
+                                                        qsizetype startPos,
+                                                        qsizetype lineNumber,
+                                                        qsizetype length) const
 {
     MD::ItemWithOpts::Styles styles;
 
     for (auto i = 0; i < length; ++i) {
-        styles.append(MD::StyleDelim(16, startPos, lineNumber, startPos, lineNumber));
+        styles.append(MD::StyleDelim(style, startPos, lineNumber, startPos, lineNumber));
         ++startPos;
     }
 
     return styles;
 }
 
+//
+// SubEmphasisParser
+//
+
+SubEmphasisParser::SubEmphasisParser(const QChar &ch)
+    : BaseEmphasisParser(ch)
+{
+}
+
+MD::ItemWithOpts::Styles SubEmphasisParser::openStyles(qsizetype startPos,
+                                                       qsizetype lineNumber,
+                                                       qsizetype length) const
+{
+    return makeStyles(16, startPos, lineNumber, length);
+}
+
 MD::ItemWithOpts::Styles SubEmphasisParser::closeStyles(qsizetype startPos,
                                                         qsizetype lineNumber,
                                                         qsizetype length) const
 {
-    return openStyles(startPos, lineNumber, length);
+    return makeStyles(16, startPos, lineNumber, length);
 }
 
 //
@@ -59,44 +76,22 @@ MD::ItemWithOpts::Styles SubEmphasisParser::closeStyles(qsizetype startPos,
 //
 
 SupEmphasisParser::SupEmphasisParser(const QChar &ch)
-    : m_symbol(ch)
+    : BaseEmphasisParser(ch)
 {
-}
-
-const QChar &SupEmphasisParser::symbol() const
-{
-    return m_symbol;
-}
-
-bool SupEmphasisParser::isEmphasis(int) const
-{
-    return true;
-}
-
-bool SupEmphasisParser::isLengthCorrespond() const
-{
-    return false;
 }
 
 MD::ItemWithOpts::Styles SupEmphasisParser::openStyles(qsizetype startPos,
                                                        qsizetype lineNumber,
                                                        qsizetype length) const
 {
-    MD::ItemWithOpts::Styles styles;
-
-    for (auto i = 0; i < length; ++i) {
-        styles.append(MD::StyleDelim(8, startPos, lineNumber, startPos, lineNumber));
-        ++startPos;
-    }
-
-    return styles;
+    return makeStyles(8, startPos, lineNumber, length);
 }
 
 MD::ItemWithOpts::Styles SupEmphasisParser::closeStyles(qsizetype startPos,
                                                         qsizetype lineNumber,
                                                         qsizetype length) const
 {
-    return openStyles(startPos, lineNumber, length);
+    return makeStyles(8, startPos, lineNumber, length);
 }
 
 //
@@ -104,44 +99,22 @@ MD::ItemWithOpts::Styles SupEmphasisParser::closeStyles(qsizetype startPos,
 //
 
 HighlightEmphasisParser::HighlightEmphasisParser(const QChar &ch)
-    : m_symbol(ch)
+    : BaseEmphasisParser(ch)
 {
-}
-
-const QChar &HighlightEmphasisParser::symbol() const
-{
-    return m_symbol;
-}
-
-bool HighlightEmphasisParser::isEmphasis(int) const
-{
-    return true;
-}
-
-bool HighlightEmphasisParser::isLengthCorrespond() const
-{
-    return false;
 }
 
 MD::ItemWithOpts::Styles HighlightEmphasisParser::openStyles(qsizetype startPos,
                                                              qsizetype lineNumber,
                                                              qsizetype length) const
 {
-    MD::ItemWithOpts::Styles styles;
-
-    for (auto i = 0; i < length; ++i) {
-        styles.append(MD::StyleDelim(32, startPos, lineNumber, startPos, lineNumber));
-        ++startPos;
-    }
-
-    return styles;
+    return makeStyles(32, startPos, lineNumber, length);
 }
 
 MD::ItemWithOpts::Styles HighlightEmphasisParser::closeStyles(qsizetype startPos,
                                                               qsizetype lineNumber,
                                                               qsizetype length) const
 {
-    return openStyles(startPos, lineNumber, length);
+    return makeStyles(32, startPos, lineNumber, length);
 }
 
 } /* namespace MdShared */
