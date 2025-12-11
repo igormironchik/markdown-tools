@@ -23,7 +23,6 @@
 constexpr unsigned PDF_VERSION_LENGHT = 3;
 constexpr unsigned PDF_MAGIC_LENGHT = 8;
 constexpr unsigned PDF_XREF_ENTRY_SIZE = 20;
-constexpr unsigned PDF_XREF_BUF = 512;
 constexpr unsigned MAX_XREF_SESSION_COUNT = 512;
 
 using namespace std;
@@ -32,7 +31,10 @@ using namespace chromium::base;
 
 static bool CheckEOL(char e1, char e2);
 static bool CheckXRefEntryType(char c);
-static bool ReadMagicWord(char ch, unsigned& cursoridx);
+static bool readMagicWord(char ch, unsigned& cursoridx);
+static bool isObjectStream(const PdfObject& obj);
+static bool tryGetCharBackward(InputStreamDevice& device, char& ch,
+    size_t& pos, charbuff& buff, unsigned short& buffSize);
 
 PdfParser::PdfParser(PdfIndirectObjectList& objects) :
     m_buffer(std::make_shared<charbuff>(PdfTokenizer::BufferSize)),
@@ -45,14 +47,14 @@ PdfParser::PdfParser(PdfIndirectObjectList& objects) :
 
 void PdfParser::reset()
 {
-    m_PdfVersion = PdfVersionDefault;
+    m_PdfVersion = PdfVersion::Unknown;
     m_LoadOnDemand = false;
-
-    m_magicOffset = 0;
     m_HasXRefStream = false;
+    m_magicOffset = 0;
+    m_StartXRefTokenPos = 0;
     m_XRefOffset = 0;
-    m_lastEOFOffset = 0;
-
+    m_FileSize = numeric_limits<size_t>::max();
+    m_lastEOFOffsetHint = 0;
     m_Trailer = nullptr;
     m_entries.Clear();
 
@@ -92,32 +94,39 @@ void PdfParser::ReadDocumentStructure(InputStreamDevice& device, ssize_t eofSear
     // Position at the end of the file, or the given
     // offset, to search the xref table.
     if (eofSearchOffset < 0)
+    {
         device.Seek(0, SeekDirection::End);
+        m_FileSize = device.GetPosition();
+        try
+        {
+            // Validate the eof marker and when not in strict
+            // mode accept garbage after it
+            checkEOFMarker(device);
+        }
+        catch (PdfError& e)
+        {
+            PODOFO_PUSH_FRAME_INFO(e, "EOF marker could not be found");
+            throw;
+        }
+    }
     else
+    {
         device.Seek(eofSearchOffset, SeekDirection::Begin);
-
-    m_FileSize = device.GetPosition();
-
-    // Validate the eof marker and when not in strict mode accept garbage after it
-    try
-    {
-        checkEOFMarker(device);
-    }
-    catch (PdfError& e)
-    {
-        PODOFO_PUSH_FRAME_INFO(e, "EOF marker could not be found");
-        throw;
+        m_FileSize = eofSearchOffset;
+        // NOTE: We don't search for %%EOF, as in the previous
+        // revision it may not exist, or leading to find
+        // an incorrect offset
+        m_lastEOFOffsetHint = eofSearchOffset;
     }
 
-    try
-    {
-        findXRef(device, m_XRefOffset);
-    }
-    catch (PdfError& e)
-    {
-        PODOFO_PUSH_FRAME_INFO(e, "Unable to find startxref entry in file");
-        throw;
-    }
+    // ISO32000-1:2008, 7.5.5 File Trailer "Conforming readers should read a PDF file from its end"
+    if (!tryFindTokenBackward(device, "startxref", m_lastEOFOffsetHint))
+        PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidXRef, "Unable to find startxref entry in file");
+
+    m_StartXRefTokenPos = device.GetPosition() - char_traits<char>::length("startxref");
+
+    // Support also files with whitespace offset before magic start
+    m_XRefOffset = (size_t)m_tokenizer.ReadNextNumber(device) + m_magicOffset;
 
     try
     {
@@ -162,7 +171,7 @@ bool PdfParser::IsPdfFile(InputStreamDevice& device)
         if (!device.Read(ch))
             return false;
 
-        if (ReadMagicWord(ch, i))
+        if (readMagicWord(ch, i))
             break;
     }
 
@@ -255,6 +264,8 @@ void PdfParser::readNextTrailer(InputStreamDevice& device, bool skipFollowPrevio
             // we know that the file was updated.
             m_IncrementalUpdateCount++;
 
+            // Fix the offset with the magic offset
+            offset += m_magicOffset;
             if (!skipFollowPrevious)
             {
                 if (m_visitedXRefOffsets.find((size_t)offset) == m_visitedXRefOffsets.end())
@@ -269,31 +280,6 @@ void PdfParser::readNextTrailer(InputStreamDevice& device, bool skipFollowPrevio
             PoDoFo::LogMessage(PdfLogSeverity::Warning, "XRef offset {} is invalid, skipping the read", offset);
         }
     }
-}
-
-void PdfParser::findXRef(InputStreamDevice& device, size_t& xRefOffset)
-{
-    // ISO32000-1:2008, 7.5.5 File Trailer "Conforming readers should read a PDF file from its end"
-    findTokenBackward(device, "startxref", PDF_XREF_BUF, m_lastEOFOffset);
-
-    string_view token;
-    if (!m_tokenizer.TryReadNextToken(device, token) || token != "startxref")
-    {
-        // Could be non-standard startref
-        if (!m_StrictParsing)
-        {
-            findTokenBackward(device, "startref", PDF_XREF_BUF, m_lastEOFOffset);
-            if (!m_tokenizer.TryReadNextToken(device, token) || token != "startref")
-                PODOFO_RAISE_ERROR(PdfErrorCode::InvalidXRef);
-        }
-        else
-        {
-            PODOFO_RAISE_ERROR(PdfErrorCode::InvalidXRef);
-        }
-    }
-
-    // Support also files with whitespace offset before magic start
-    xRefOffset = (size_t)m_tokenizer.ReadNextNumber(device) + m_magicOffset;
 }
 
 void PdfParser::ReadXRefContents(InputStreamDevice& device, size_t offset, bool skipFollowPrevious)
@@ -320,34 +306,32 @@ void PdfParser::ReadXRefContents(InputStreamDevice& device, size_t offset, bool 
 
     if (offset > fileSize)
     {
-        // Invalid "startxref"
-         // ignore returned value and get offset from the device
-        findXRef(device, offset);
-        offset = device.GetPosition();
-        // TODO: hard coded value "4"
-        m_buffer->resize(PDF_XREF_BUF * 4);
-        findTokenBackward(device, "xref", PDF_XREF_BUF * 4, offset);
-        m_buffer->resize(PDF_XREF_BUF);
-        offset = device.GetPosition();
+        // Invalid "startxref". If we haven't read any XRef section yet,
+        // try to find a legacy "xref" table
+        if (m_IncrementalUpdateCount != 0 || !tryFindTokenBackward(device, "xref", m_StartXRefTokenPos))
+            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidXRef, "Invalid \"startxref\" offset");
+
+        offset = device.GetPosition() - char_traits<char>::length("xref");
         m_XRefOffset = offset;
     }
     else
     {
         device.Seek(offset);
+        string_view token;
+        if (!m_tokenizer.TryReadNextToken(device, token))
+            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidXRef, "Invalid \"startxref\" offset");
+
+        if (token != "xref")
+        {
+            // Try to read a XRef stream instead
+            ReadXRefStreamContents(device, offset, skipFollowPrevious);
+            m_HasXRefStream = true;
+            return;
+        }
     }
 
+    // It's a "xref" table, read all subsections
     string_view token;
-    if (!m_tokenizer.TryReadNextToken(device, token))
-        PODOFO_RAISE_ERROR(PdfErrorCode::InvalidXRef);
-
-    if (token != "xref")
-    {
-        ReadXRefStreamContents(device, offset, skipFollowPrevious);
-        m_HasXRefStream = true;
-        return;
-    }
-
-    // read all xref subsections
     for (unsigned xrefSectionCount = 0; ; xrefSectionCount++)
     {
         if (xrefSectionCount == MAX_XREF_SESSION_COUNT)
@@ -791,31 +775,72 @@ void PdfParser::readCompressedObjectFromStream(uint32_t objNo, const cspan<int64
     parserObject.Parse(objectList);
 }
 
-void PdfParser::findTokenBackward(InputStreamDevice& device, const char* token, size_t range, size_t searchEnd)
+bool PdfParser::tryFindTokenBackward(InputStreamDevice& device, string_view token, size_t searchEnd)
 {
-    device.Seek((ssize_t)searchEnd, SeekDirection::Begin);
+    PODOFO_ASSERT(token.length() != 0);
+    if (searchEnd == 0)
+        return false;
 
-    char* buffer = m_buffer->data();
-    size_t currpos = device.GetPosition();
-    size_t searchSize = std::min(currpos, range);
-    device.Seek(-(ssize_t)searchSize, SeekDirection::Current);
-    device.Read(buffer, searchSize);
-    buffer[searchSize] = '\0';
-
-    // search backwards in the buffer in case the buffer contains null bytes
-    // because it is right after a stream (can't use strstr for this reason)
-    ssize_t i; // Do not use an unsigned variable here
-    size_t tokenLen = char_traits<char>::length(token);
-    for (i = searchSize - tokenLen; i >= 0; i--)
+    char ch;
+    size_t cursor = token.length() - 1;
+    bool atLastChar = true;
+    size_t currPos = searchEnd;
+    unsigned short buffSize = 0;
+    while (true)
     {
-        if (std::strncmp(buffer + i, token, tokenLen) == 0)
-            break;
+        if (!tryGetCharBackward(device, ch, currPos, *m_buffer, buffSize))
+            return false;
+
+    CheckCurrentChar:
+        if (token[cursor] == ch)
+        {
+            atLastChar = false;
+            if (cursor == 0)
+            {
+                // Set the current position just after the token
+                device.Seek((ssize_t)(currPos + buffSize + token.length()),
+                    SeekDirection::Begin);
+
+                return true;
+            }
+
+            cursor--;
+        }
+        else
+        {
+            if (atLastChar)
+                continue;
+
+            // Reset the cursor and avoid fetching another character
+            cursor = token.length() - 1;
+            atLastChar = true;
+            goto CheckCurrentChar;
+        }
+    }
+}
+
+bool tryGetCharBackward(InputStreamDevice& device, char& ch,
+    size_t& pos, charbuff& buff, unsigned short& buffSize)
+{
+    PODOFO_INVARIANT(buff.size() <= numeric_limits<unsigned short>::max());
+
+    // Refill buffer if empty
+    if (buffSize == 0)
+    {
+        if (pos == 0)
+            return false;
+
+        // Load up to buff.size() characters, but not before 0
+        size_t searchSize = std::min(pos, buff.size());
+        pos -= searchSize;
+        device.Seek((ssize_t)pos, SeekDirection::Begin);
+        device.Read(buff.data(), searchSize);
+        buffSize = static_cast<unsigned short>(searchSize);
     }
 
-    if (i == 0)
-        PODOFO_RAISE_ERROR(PdfErrorCode::InternalLogic);
-
-    device.Seek((ssize_t)(searchEnd - (searchSize - i)), SeekDirection::Begin);
+    // Emit the next character (backward in stream order)
+    ch = buff[--buffSize];
+    return true;
 }
 
 const PdfString& PdfParser::getDocumentId()
@@ -861,7 +886,7 @@ void PdfParser::updateDocumentVersion()
 void PdfParser::checkEOFMarker(InputStreamDevice& device)
 {
     // Check for the existence of the EOF marker
-    m_lastEOFOffset = 0;
+    m_lastEOFOffsetHint = 0;
     const char* EOFToken = "%%EOF";
     constexpr size_t EOFTokenLen = 5;
     char buff[EOFTokenLen + 1];
@@ -897,10 +922,10 @@ void PdfParser::checkEOFMarker(InputStreamDevice& device)
         }
 
         // Try and deal with garbage by offsetting the buffer reads in PdfParser from now on
-        if (found)
-            m_lastEOFOffset = device.GetPosition() - EOFTokenLen;
-        else
+        if (!found)
             PODOFO_RAISE_ERROR(PdfErrorCode::InvalidEOFToken);
+
+        m_lastEOFOffsetHint = device.GetPosition() - EOFTokenLen;
     }
 }
 
@@ -958,7 +983,7 @@ bool PdfParser::TryGetPreviousRevisionOffset(InputStreamDevice& input, size_t cu
 }
 
 // Read magic word keeping cursor
-bool ReadMagicWord(char ch, unsigned& cursoridx)
+bool readMagicWord(char ch, unsigned& cursoridx)
 {
     bool readchar;
     switch (cursoridx)

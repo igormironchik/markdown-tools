@@ -20,7 +20,7 @@ endif()
 
 set(PODOFO_VERSION_MAJOR "1" CACHE STRING "Major part of podofo version number")
 set(PODOFO_VERSION_MINOR "0" CACHE STRING "Minor part of podofo version number")
-set(PODOFO_VERSION_PATCH "2" CACHE STRING "Patchlevel part of podofo version number")
+set(PODOFO_VERSION_PATCH "3" CACHE STRING "Patchlevel part of podofo version number")
 set(PODOFO_VERSION "${PODOFO_VERSION_MAJOR}.${PODOFO_VERSION_MINOR}.${PODOFO_VERSION_PATCH}")
 set(PODOFO_SOVERSION "3")
 
@@ -31,6 +31,12 @@ configure_file(
     ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
     @ONLY
 )
+
+message("PoDoFo version: ${PODOFO_VERSION}")
+message("Host system: ${CMAKE_HOST_SYSTEM}")
+message("C++ compiler ID: ${CMAKE_CXX_COMPILER_ID}")
+message("C++ compiler version: ${CMAKE_CXX_COMPILER_VERSION}")
+message("CMake version: ${CMAKE_VERSION}")
 
 find_package(Doxygen)
 if (DOXYGEN_FOUND)
