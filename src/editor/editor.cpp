@@ -106,8 +106,6 @@ private slots:
             MD::TextStream tmp(stream);
             QStringList lines;
 
-            long long int i = 0;
-
             while (!tmp.atEnd()) {
                 lines.append(tmp.readLine().slicedCopy(0));
             }
