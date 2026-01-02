@@ -11,7 +11,7 @@ SPDX-License-Identifier = "BSD-3-Clause"
 
 [[annotations]]
 path = "3rdparty/KDE/syntax-highlighting/**"
-precedence = "aggregate"
+precedence = "override"
 SPDX-FileCopyrightText = "2020 Christoph Cullmann <cullmann@kde.org>"
 SPDX-License-Identifier = "MIT"
 
