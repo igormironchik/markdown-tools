@@ -94,7 +94,9 @@ On Linux you can use what you want, that is why this is my favourite OS.
 * Strange behaviour of font combo box in fonts dialogue on check in/out check box to constraint
 fonts to monospaced due to [QTBUG-112145](https://bugreports.qt.io/browse/QTBUG-112145)
 
-* I do not render HTML tags in PDF.
+* I do not render HTML tags in PDF. But if you wish I can implement a reasonable subset of HTML
+tags in Markdown to PDF converter, like: `<p>` with `align` attribute, `<img>` with `align` attribute,
+`<a>`, `<table>`, `<b>`. **Vote for this!**
 
 * I don't support languages that don't separate words
 with spaces in converter to `PDF`.
