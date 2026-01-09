@@ -590,12 +590,12 @@ void PdfRenderer::renderImpl()
                 auto b = static_cast<MD::Blockquote *>(i);
 
                 if (!b->items().empty() && b->items().front()->type() == MD::ItemType::Paragraph) {
-                    auto p = static_cast<MD::Paragraph *>(b->items().front().get());
+                    auto p = b->items().front().staticCast<MD::Paragraph>();
 
                     if (!p->items().empty() && p->items().front()->type() == MD::ItemType::Text) {
-                        auto t = static_cast<MD::Text *>(p->items().front().get());
+                        auto t = p->items().front().staticCast<MD::Text>();
 
-                        auto isAloneMark = [](MD::Paragraph *p) -> bool {
+                        auto isAloneMark = [](QSharedPointer<MD::Paragraph> p) -> bool {
                             return (p->items().size() > 1
                                         ? p->items().at(1)->startLine() != p->items().front()->startLine()
                                         : true);
