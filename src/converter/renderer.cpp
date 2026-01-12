@@ -3164,8 +3164,9 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
 
             cw.moveToNextLine();
 
-            if (isNextText)
+            if (isNextText) {
                 moveToNewLine(pdfData, offset, lineHeight + cw.height(), 1.0, cw.height());
+            }
 
             return {r, idx};
         } else {
@@ -3186,7 +3187,7 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
             - pdfData.m_layout.margins().m_right
             - offset;
 
-        if (size.width() * previousBaseline.currentScale() - pdfData.m_layout.availableWidth() > 0.01) {
+        if (size.width() - pdfData.m_layout.availableWidth() > 0.01) {
             if (draw) {
                 cw.moveToNextLine();
 
@@ -3286,7 +3287,7 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
             pd.enableDrawing();
             QPainter p(&pd);
 
-            const auto height = size.height() * imgScale;
+            render = latexRender(1.0 - imgScale > 0.001 ? imgScale : previousBaseline.currentScale());
 
             tex::Graphics2D_qt g2(&p);
             render->draw(g2,
@@ -3294,18 +3295,18 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
                          (pdfData.m_layout.pageHeight()
                           - pdfData.m_layout.y()
                           - cw.descent()
-                          - (height - descent) * imgScale
-                          - previousBaseline.m_stack.back().m_baselineDelta * imgScale)
+                          - (size.height() - descent) * imgScale
+                          - previousBaseline.m_stack.back().m_baselineDelta)
                              / 72.0
                              * pd.physicalDpiY());
 
             const QRectF r = {pdfData.m_layout.startX(size.width() * imgScale),
                               pdfData.m_layout.y()
-                                  + cw.descent()
-                                  + (height - descent) * imgScale
-                                  + previousBaseline.m_stack.back().m_baselineDelta * imgScale,
+                              + cw.descent()
+                              + (size.height() - descent) * imgScale
+                              + previousBaseline.m_stack.back().m_baselineDelta,
                               size.width() * imgScale,
-                              height};
+                              size.height() * imgScale};
 
             pdfData.m_layout.addX(size.width() * imgScale);
             const auto idx = pdfData.m_currentPainterIdx;
