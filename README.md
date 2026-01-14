@@ -7,11 +7,6 @@
 * [Known issues](#known-issues)
 * [Translating](#translating)
 
-> [!CAUTION]
->
-> In editor and converter is implemented support of RTL languages. But I don't know any of such
-> languages. I need testers to check if I implemented everything right. Thank you.
-
 # About
 
 This is a set of applications to work with `Markdown`, including editor, `HTML`
