@@ -3302,9 +3302,9 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
 
             const QRectF r = {pdfData.m_layout.startX(size.width() * imgScale),
                               pdfData.m_layout.y()
-                              + cw.descent()
-                              + (size.height() - descent) * imgScale
-                              + previousBaseline.m_stack.back().m_baselineDelta,
+                                  + cw.descent()
+                                  + (size.height() - descent) * imgScale
+                                  + previousBaseline.m_stack.back().m_baselineDelta,
                               size.width() * imgScale,
                               size.height() * imgScale};
 
