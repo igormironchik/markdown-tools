@@ -301,6 +301,7 @@ struct EditorPrivate {
 
         m_q->document()->setDocumentLayout(new DocumentLayoutWithRightAlignment(m_q->document(), m_q->viewport()));
         m_q->doUpdate();
+        m_q->setAcceptDrops(false);
 
         m_parsingThread->start();
     }

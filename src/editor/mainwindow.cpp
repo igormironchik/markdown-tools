@@ -38,6 +38,8 @@
 #include <QMenu>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QMimeData>
+#include <QMimeDatabase>
 #include <QProcess>
 #include <QResizeEvent>
 #include <QSet>
@@ -56,6 +58,7 @@
 #include <QToolTip>
 #include <QTreeView>
 #include <QTreeWidget>
+#include <QUrl>
 #include <QVBoxLayout>
 #include <QWebChannel>
 #include <QWidget>
@@ -880,6 +883,8 @@ struct MainWindowPrivate {
         m_q->setTabOrder(m_find->replaceLine(), m_findWeb->line());
 
         m_q->onFileNew();
+
+        m_q->setAcceptDrops(true);
     }
 
     void handleCurrentTab()
@@ -1221,6 +1226,10 @@ void MainWindow::showEvent(QShowEvent *e)
 
 void MainWindow::openFile(const QString &path)
 {
+    if (m_d->m_loadAllFlag) {
+        loadAllLinkedFilesImpl();
+    }
+
     QFile f(path);
     if (!f.open(QIODevice::ReadOnly)) {
         QMessageBox::warning(this,
@@ -1305,7 +1314,7 @@ void MainWindow::onFileNew()
     setWindowModified(false);
 }
 
-void MainWindow::onFileOpen()
+bool MainWindow::askAboutUnsavedFile()
 {
     if (isModified()) {
         QMessageBox::StandardButton button =
@@ -1316,8 +1325,17 @@ void MainWindow::onFileOpen()
                                   QMessageBox::No);
 
         if (button != QMessageBox::Yes) {
-            return;
+            return false;
         }
+    }
+
+    return true;
+}
+
+void MainWindow::onFileOpen()
+{
+    if (!askAboutUnsavedFile()) {
+        return;
     }
 
     const auto folder = m_d->m_isDefaultFile ? QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first()
@@ -2426,6 +2444,50 @@ void MainWindow::openFileFromNavigationToolbar(const QString &path,
         onCursorPositionChanged();
 
         m_d->runWhenEditorReady(std::bind(&MainWindow::onEditorReady, this));
+    }
+}
+
+void MainWindow::dragEnterEvent(QDragEnterEvent *event)
+{
+    if (event->mimeData()->hasUrls()) {
+        for (const auto &url : event->mimeData()->urls()) {
+            if (url.isLocalFile()) {
+                const auto fileName = url.toLocalFile();
+
+                QMimeDatabase db;
+                QMimeType mime = db.mimeTypeForFile(fileName);
+
+                if (mime.inherits(QStringLiteral("text/markdown"))
+                    || fileName.endsWith(QStringLiteral(".md"), Qt::CaseInsensitive)
+                    || fileName.endsWith(QStringLiteral(".markdown"), Qt::CaseInsensitive)) {
+                    event->acceptProposedAction();
+
+                    return;
+                }
+            }
+        }
+    }
+}
+
+void MainWindow::dropEvent(QDropEvent *event)
+{
+    for (const auto &url : event->mimeData()->urls()) {
+        if (url.isLocalFile()) {
+            const auto fileName = url.toLocalFile();
+
+            if (fileName.endsWith(".md", Qt::CaseInsensitive)
+                || fileName.endsWith(".markdown", Qt::CaseInsensitive)) {
+                if (!askAboutUnsavedFile()) {
+                    return;
+                }
+
+                openFile(fileName);
+
+                event->acceptProposedAction();
+
+                return;
+            }
+        }
     }
 }
 

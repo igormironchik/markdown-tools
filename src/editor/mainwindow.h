@@ -136,6 +136,12 @@ private:
     //! Open a file from navigation toolbar.
     void openFileFromNavigationToolbar(const QString &path,
                                        bool modifyStack = true);
+    //! Ask about unsaved file.
+    bool askAboutUnsavedFile();
+
+protected:
+    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dropEvent(QDropEvent *event) override;
 
 private:
     Q_DISABLE_COPY(MainWindow)

@@ -41,6 +41,31 @@ struct WebViewPrivate {
 }; // struct WebViewPrivate
 
 //
+// DNDBlocker
+//
+
+class DNDBlocker : public QObject
+{
+public:
+    explicit DNDBlocker(QObject *parent = nullptr)
+        : QObject(parent)
+    {
+    }
+
+protected:
+    bool eventFilter(QObject *obj,
+                     QEvent *event) override
+    {
+        if (event->type() == QEvent::DragEnter || event->type() == QEvent::DragMove || event->type() == QEvent::Drop) {
+            event->ignore();
+            return true;
+        }
+
+        return QObject::eventFilter(obj, event);
+    }
+}; // class DNDBlocker
+
+//
 // WebView
 //
 
@@ -49,6 +74,8 @@ WebView::WebView(QWidget *parent)
     , m_d(new WebViewPrivate(this))
 {
     m_d->initUi();
+
+    installEventFilter(new DNDBlocker(this));
 }
 
 WebView::~WebView()
