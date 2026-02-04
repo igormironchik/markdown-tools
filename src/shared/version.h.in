@@ -8,6 +8,11 @@
 // Qt include.
 #include <QString>
 
-static const QString c_version = QStringLiteral("@MDPDF_VERSION@");
+namespace MdShared
+{
+
+static const QString c_version = QStringLiteral("@MD_TOOLS_VERSION@");
 static const QString c_commit = QStringLiteral("@MD_TOOLS_COMMIT@");
 static const QString c_md4qtVersion = QStringLiteral("@md4qt_VERSION_STRING@");
+
+} /* namespace MdShared */

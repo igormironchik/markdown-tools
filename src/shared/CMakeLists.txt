@@ -54,7 +54,11 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_library(markdown-widgets STATIC ${SRC})
 
+configure_file(version.h.in ${CMAKE_CURRENT_BINARY_DIR}/version.h)
+
 target_link_libraries(markdown-widgets KF${KF_MAJOR_VERSION}::SyntaxHighlighting Qt6::Widgets Qt6::Core)
+
+target_include_directories(markdown-widgets INTERFACE ${CMAKE_CURRENT_BINARY_DIR})
 
 set_property(TARGET markdown-widgets PROPERTY CXX_STANDARD 17)
 

@@ -68,10 +68,7 @@ if(WIN32)
     list(APPEND SRC md-editor.rc)
 endif()
 
-configure_file(version.h.in ${CMAKE_CURRENT_BINARY_DIR}/version.h)
-
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/widgets/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../shared)
 

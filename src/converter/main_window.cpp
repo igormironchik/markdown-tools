@@ -738,7 +738,7 @@ void MainWindow::about()
            "com</a>).<br /><br />"
            "Copyright (c) 2026 Igor Mironchik.<br /><br />"
            "Licensed under GNU GPL 3.0.")
-            .arg(c_version, c_md4qtVersion, c_commit),
+            .arg(MdShared::c_version, MdShared::c_md4qtVersion, MdShared::c_commit),
         QMessageBox::NoButton,
         this);
     QIcon icon = dlg.windowIcon();

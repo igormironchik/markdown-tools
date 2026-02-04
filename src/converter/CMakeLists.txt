@@ -56,8 +56,6 @@ if(NOT BUILD_WITH_SYSTEM_LIBS)
         ${CMAKE_CURRENT_BINARY_DIR}/../../3rdparty/podofo/src)
 endif()
 
-configure_file(version.h.in ${CMAKE_CURRENT_BINARY_DIR}/version.h)
-
 add_definitions(-DBUILD_QT)
 
 add_executable(md-pdf-gui WIN32 ${GUI_SRC})
