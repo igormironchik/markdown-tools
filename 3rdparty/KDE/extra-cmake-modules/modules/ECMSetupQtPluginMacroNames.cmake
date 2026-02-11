@@ -105,6 +105,8 @@ automoc is instructed as well as needed:
 Since 5.45.0.
 #]=======================================================================]
 
+cmake_policy(VERSION 3.16)
+
 include(CMakePackageConfigHelpers)
 
 macro(ecm_setup_qtplugin_macro_names)
@@ -139,7 +141,7 @@ macro(ecm_setup_qtplugin_macro_names)
 
 
     # CMAKE_AUTOMOC_MACRO_NAMES
-    list(APPEND CMAKE_AUTOMOC_MACRO_NAMES $[_macro_names})
+    list(APPEND CMAKE_AUTOMOC_MACRO_NAMES ${_macro_names})
 
     # CMAKE_AUTOMOC_DEPEND_FILTERS
     # CMake's automoc needs help to find names of plugin metadata files in case Q_PLUGIN_METADATA

@@ -169,67 +169,67 @@ msgctxt "Sonnet::ConfigDialog|"
 msgid "Spell Checking Configuration"
 msgstr "Configuração da verificação ortográfica"
 
-#: ui/configui.ui:26
+#: ui/configui.ui:25
 msgctxt "SonnetConfigUI|"
 msgid "No backend like hunspell/aspell/myspell installed"
 msgstr "Nenhuma infraestrutura como hunspell/aspell/myspell instalada"
 
-#: ui/configui.ui:36
+#: ui/configui.ui:35
 msgctxt "SonnetConfigUI|"
 msgid "Default language:"
 msgstr "Idioma padrão:"
 
-#: ui/configui.ui:56
+#: ui/configui.ui:55
 msgctxt "SonnetConfigUI|"
 msgid "Preferred Languages"
 msgstr "Idiomas preferenciais"
 
-#: ui/configui.ui:65
+#: ui/configui.ui:79
 msgctxt "SonnetConfigUI|"
 msgid "Choose your preferred languages"
 msgstr "Escolha seus idiomas preferidos"
 
-#: ui/configui.ui:75
+#: ui/configui.ui:89
 msgctxt "SonnetConfigUI|"
 msgid "Options"
 msgstr "Opções"
 
-#: ui/configui.ui:84
+#: ui/configui.ui:113
 msgctxt "SonnetConfigUI|"
 msgid "Enable autodetection of &language"
 msgstr "Ativar a detecção automática do &idioma"
 
-#: ui/configui.ui:91
+#: ui/configui.ui:120
 msgctxt "SonnetConfigUI|"
 msgid "Enable &background spellchecking"
 msgstr "A&tivar a verificação ortográfica em segundo plano"
 
-#: ui/configui.ui:98
+#: ui/configui.ui:127
 msgctxt "SonnetConfigUI|"
 msgid "&Automatic spell checking enabled by default"
 msgstr "Verificação ortográfica &automática ativada por padrão"
 
-#: ui/configui.ui:105
+#: ui/configui.ui:134
 msgctxt "SonnetConfigUI|"
 msgid "Skip all &uppercase words"
 msgstr "Ignorar palavras com todas as letras em maiúsc&ulo"
 
-#: ui/configui.ui:112
+#: ui/configui.ui:141
 msgctxt "SonnetConfigUI|"
 msgid "S&kip run-together words"
 msgstr "Ignorar palavras &coladas"
 
-#: ui/configui.ui:122
+#: ui/configui.ui:151
 msgctxt "SonnetConfigUI|"
 msgid "Ignored Words"
 msgstr "Palavras ignoradas"
 
-#: ui/configui.ui:139
+#: ui/configui.ui:183
 msgctxt "SonnetConfigUI|"
 msgid "&Add"
 msgstr "&Adicionar"
 
-#: ui/configui.ui:151
+#: ui/configui.ui:195
 msgctxt "SonnetConfigUI|"
 msgid "&Remove"
 msgstr "&Remover"
@@ -539,18 +539,18 @@ msgctxt "SonnetUi|"
 msgid "Autocorrect"
 msgstr "Autocorreção"
 
-#: ui/spellcheckdecorator.cpp:172
+#: ui/spellcheckdecorator.cpp:180
 #, qt-format
 msgctxt "Sonnet::SpellCheckDecorator|"
 msgid "No suggestions for %1"
 msgstr "Sem sugestões para %1"
 
-#: ui/spellcheckdecorator.cpp:183
+#: ui/spellcheckdecorator.cpp:191
 msgctxt "Sonnet::SpellCheckDecorator|"
 msgid "Ignore"
 msgstr "Ignorar"
 
-#: ui/spellcheckdecorator.cpp:184
+#: ui/spellcheckdecorator.cpp:192
 msgctxt "Sonnet::SpellCheckDecorator|"
 msgid "Add to Dictionary"
 msgstr "Adicionar ao dicionário"

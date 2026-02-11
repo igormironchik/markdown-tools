@@ -43,7 +43,9 @@ public:
         m_textEdit->viewport()->installEventFilter(q);
     }
 
-    ~SpellCheckDecoratorPrivate()
+    ~SpellCheckDecoratorPrivate() = default;
+
+    void removeEventFilters()
     {
         if (m_plainTextEdit) {
             m_plainTextEdit->removeEventFilter(q);
@@ -53,6 +55,12 @@ public:
             m_textEdit->removeEventFilter(q);
             m_textEdit->viewport()->removeEventFilter(q);
         }
+    }
+
+    void onParentDestroyed()
+    {
+        m_plainTextEdit = nullptr;
+        m_textEdit = nullptr;
     }
 
     bool onContextMenuEvent(QContextMenuEvent *event);
@@ -223,15 +231,24 @@ SpellCheckDecorator::SpellCheckDecorator(QTextEdit *textEdit)
     : QObject(textEdit)
     , d(std::make_unique<SpellCheckDecoratorPrivate>(this, textEdit))
 {
+    connect(textEdit, &QObject::destroyed, this, [this] {
+        d->onParentDestroyed();
+    });
 }
 
 SpellCheckDecorator::SpellCheckDecorator(QPlainTextEdit *textEdit)
     : QObject(textEdit)
     , d(std::make_unique<SpellCheckDecoratorPrivate>(this, textEdit))
 {
+    connect(textEdit, &QObject::destroyed, this, [this] {
+        d->onParentDestroyed();
+    });
 }
 
-SpellCheckDecorator::~SpellCheckDecorator() = default;
+SpellCheckDecorator::~SpellCheckDecorator()
+{
+    d->removeEventFilters();
+}
 
 void SpellCheckDecorator::setHighlighter(Highlighter *highlighter)
 {

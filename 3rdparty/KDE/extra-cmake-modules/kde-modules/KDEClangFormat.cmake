@@ -49,6 +49,8 @@ file in the directory with the following contents:
 Since 5.64
 #]=======================================================================]
 
+cmake_policy(VERSION 3.16)
+
 # try to find clang-format in path
 find_program(KDE_CLANG_FORMAT_EXECUTABLE clang-format)
 
@@ -108,6 +110,7 @@ function(KDE_CLANG_FORMAT)
     else()
         add_custom_command(TARGET clang-format
             COMMAND
+                POST_BUILD
                 ${CMAKE_COMMAND} -E echo "Could not set up the clang-format target as the clang-format executable is missing."
             )
     endif()

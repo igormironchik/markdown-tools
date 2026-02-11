@@ -45,7 +45,7 @@ public:
      * return selected language
      * \since 4.8.1
      */
-    QString language() const;
+    [[nodiscard]] QString language() const;
 
 protected Q_SLOTS:
     /*!

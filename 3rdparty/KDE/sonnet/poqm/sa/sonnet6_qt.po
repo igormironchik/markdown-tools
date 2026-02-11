@@ -152,67 +152,67 @@ msgctxt "Sonnet::ConfigDialog|"
 msgid "Spell Checking Configuration"
 msgstr "वर्तनीपरीक्षा विन्यासः"
 
-#: ui/configui.ui:26
+#: ui/configui.ui:25
 msgctxt "SonnetConfigUI|"
 msgid "No backend like hunspell/aspell/myspell installed"
 msgstr "hunspell/aspell/myspell इव पृष्ठभागः संस्थापितः नास्ति"
 
-#: ui/configui.ui:36
+#: ui/configui.ui:35
 msgctxt "SonnetConfigUI|"
 msgid "Default language:"
 msgstr "पूर्वनिर्धारितभाषा :"
 
-#: ui/configui.ui:56
+#: ui/configui.ui:55
 msgctxt "SonnetConfigUI|"
 msgid "Preferred Languages"
 msgstr "प्राधान्य भाषा"
 
-#: ui/configui.ui:65
+#: ui/configui.ui:79
 msgctxt "SonnetConfigUI|"
 msgid "Choose your preferred languages"
 msgstr "भवतः इष्टभाषाः चिनुत"
 
-#: ui/configui.ui:75
+#: ui/configui.ui:89
 msgctxt "SonnetConfigUI|"
 msgid "Options"
 msgstr "विकल्पाः"
 
-#: ui/configui.ui:84
+#: ui/configui.ui:113
 msgctxt "SonnetConfigUI|"
 msgid "Enable autodetection of &language"
 msgstr "&language इत्यस्य स्वतः अन्वेषणं सक्षमं कुर्वन्तु"
 
-#: ui/configui.ui:91
+#: ui/configui.ui:120
 msgctxt "SonnetConfigUI|"
 msgid "Enable &background spellchecking"
 msgstr "&पृष्ठभूमिवर्तनीपरीक्षणं सक्षमं कुर्वन्तु"
 
-#: ui/configui.ui:98
+#: ui/configui.ui:127
 msgctxt "SonnetConfigUI|"
 msgid "&Automatic spell checking enabled by default"
 msgstr "&पूर्वनिर्धारितरूपेण स्वचालितं वर्तनीपरीक्षणं सक्षमम्"
 
-#: ui/configui.ui:105
+#: ui/configui.ui:134
 msgctxt "SonnetConfigUI|"
 msgid "Skip all &uppercase words"
 msgstr "सर्वाणि &बृहत्शब्दानि त्यजन्तु"
 
-#: ui/configui.ui:112
+#: ui/configui.ui:141
 msgctxt "SonnetConfigUI|"
 msgid "S&kip run-together words"
 msgstr "S&kip धाव-सह-शब्दाः"
 
-#: ui/configui.ui:122
+#: ui/configui.ui:151
 msgctxt "SonnetConfigUI|"
 msgid "Ignored Words"
 msgstr "उपेक्षिताः शब्दाः"
 
-#: ui/configui.ui:139
+#: ui/configui.ui:183
 msgctxt "SonnetConfigUI|"
 msgid "&Add"
 msgstr "&संयोजयति"
 
-#: ui/configui.ui:151
+#: ui/configui.ui:195
 msgctxt "SonnetConfigUI|"
 msgid "&Remove"
 msgstr "&अपाकरोति"
@@ -492,18 +492,18 @@ msgctxt "SonnetUi|"
 msgid "Autocorrect"
 msgstr "स्वतःशुद्धं कुर्वन्तु"
 
-#: ui/spellcheckdecorator.cpp:172
+#: ui/spellcheckdecorator.cpp:180
 #, qt-format
 msgctxt "Sonnet::SpellCheckDecorator|"
 msgid "No suggestions for %1"
 msgstr "%1 कृते कोऽपि सुझावः नास्ति"
 
-#: ui/spellcheckdecorator.cpp:183
+#: ui/spellcheckdecorator.cpp:191
 msgctxt "Sonnet::SpellCheckDecorator|"
 msgid "Ignore"
 msgstr "उपेक्षा"
 
-#: ui/spellcheckdecorator.cpp:184
+#: ui/spellcheckdecorator.cpp:192
 msgctxt "Sonnet::SpellCheckDecorator|"
 msgid "Add to Dictionary"
 msgstr "शब्दकोशे योजयतु"

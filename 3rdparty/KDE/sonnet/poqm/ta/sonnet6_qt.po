@@ -162,67 +162,67 @@ msgctxt "Sonnet::ConfigDialog|"
 msgid "Spell Checking Configuration"
 msgstr "எழுத்தாக்க சரிபார்ப்பு அமைப்புகள்"
 
-#: ui/configui.ui:26
+#: ui/configui.ui:25
 msgctxt "SonnetConfigUI|"
 msgid "No backend like hunspell/aspell/myspell installed"
 msgstr "Hunspell/aspell/myspell போன்ற எந்த பின்நிரலும் நிறுவப்படவில்லை"
 
-#: ui/configui.ui:36
+#: ui/configui.ui:35
 msgctxt "SonnetConfigUI|"
 msgid "Default language:"
 msgstr "இயல்பிருப்பு மொழி:"
 
-#: ui/configui.ui:56
+#: ui/configui.ui:55
 msgctxt "SonnetConfigUI|"
 msgid "Preferred Languages"
 msgstr "முதன்மையான மொழிகள்"
 
-#: ui/configui.ui:65
+#: ui/configui.ui:79
 msgctxt "SonnetConfigUI|"
 msgid "Choose your preferred languages"
 msgstr "முதன்மையான மொழிகளை தேர்ந்தெடுங்கள்"
 
-#: ui/configui.ui:75
+#: ui/configui.ui:89
 msgctxt "SonnetConfigUI|"
 msgid "Options"
 msgstr "விருப்பங்கள்"
 
-#: ui/configui.ui:84
+#: ui/configui.ui:113
 msgctxt "SonnetConfigUI|"
 msgid "Enable autodetection of &language"
 msgstr "&மொழியை தானாக கண்டறி"
 
-#: ui/configui.ui:91
+#: ui/configui.ui:120
 msgctxt "SonnetConfigUI|"
 msgid "Enable &background spellchecking"
 msgstr "&பின்னணியில் எழுத்தாக்கத்தை சரிபார்"
 
-#: ui/configui.ui:98
+#: ui/configui.ui:127
 msgctxt "SonnetConfigUI|"
 msgid "&Automatic spell checking enabled by default"
 msgstr "&தானியங்கி எழுத்தாக்க சரிபார்ப்பை இயல்பிருப்பாக இயக்கு"
 
-#: ui/configui.ui:105
+#: ui/configui.ui:134
 msgctxt "SonnetConfigUI|"
 msgid "Skip all &uppercase words"
 msgstr "&முழுதாக பேரெழுத்துகளைக் கொண்ட சொற்களை பொருட்படுத்தாதே"
 
-#: ui/configui.ui:112
+#: ui/configui.ui:141
 msgctxt "SonnetConfigUI|"
 msgid "S&kip run-together words"
 msgstr "ப&ல சொற்களை இடைவெளியில்லாமல் கூட்டுவதை பொருட்படுத்தாதே"
 
-#: ui/configui.ui:122
+#: ui/configui.ui:151
 msgctxt "SonnetConfigUI|"
 msgid "Ignored Words"
 msgstr "பொருட்படுத்தப்படா சொற்கள்"
 
-#: ui/configui.ui:139
+#: ui/configui.ui:183
 msgctxt "SonnetConfigUI|"
 msgid "&Add"
 msgstr "&சேர்"
 
-#: ui/configui.ui:151
+#: ui/configui.ui:195
 msgctxt "SonnetConfigUI|"
 msgid "&Remove"
 msgstr "&நீக்கு"
@@ -609,18 +609,18 @@ msgctxt "SonnetUi|"
 msgid "Autocorrect"
 msgstr "தானாக திருத்து"
 
-#: ui/spellcheckdecorator.cpp:172
+#: ui/spellcheckdecorator.cpp:180
 #, qt-format
 msgctxt "Sonnet::SpellCheckDecorator|"
 msgid "No suggestions for %1"
 msgstr "%1 என்பதற்கு எதுவும் பரிந்துரைக்கப்படவில்லை"
 
-#: ui/spellcheckdecorator.cpp:183
+#: ui/spellcheckdecorator.cpp:191
 msgctxt "Sonnet::SpellCheckDecorator|"
 msgid "Ignore"
 msgstr "பொருட்படுத்தாதே"
 
-#: ui/spellcheckdecorator.cpp:184
+#: ui/spellcheckdecorator.cpp:192
 msgctxt "Sonnet::SpellCheckDecorator|"
 msgid "Add to Dictionary"
 msgstr "அகரமுதலியில் சேர்"

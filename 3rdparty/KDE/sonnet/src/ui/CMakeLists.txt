@@ -17,12 +17,19 @@ qt_wrap_ui(sonnetui_ui_SRCS
 target_sources(KF6SonnetUi PRIVATE
     ${sonnetui_ui_SRCS}
     configdialog.cpp
+    configdialog.h
     configview.cpp
+    configview.h
     configwidget.cpp
+    configwidget.h
     dialog.cpp
+    dialog.h
     dictionarycombobox.cpp
+    dictionarycombobox.h
     highlighter.cpp
+    highlighter.h
     spellcheckdecorator.cpp
+    spellcheckdecorator.h
 )
 
 ecm_qt_declare_logging_category(KF6SonnetUi

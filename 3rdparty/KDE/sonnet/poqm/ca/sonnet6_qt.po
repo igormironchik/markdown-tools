@@ -3,13 +3,13 @@
 # This file is distributed under the license LGPL version 2.1 or
 # version 3 or later versions approved by the membership of KDE e.V.
 #
-# Sebastià Pla i Sanz <sps@sastia.com>, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007.
-# Antoni Bella Pérez <antonibella5@yahoo.com>, 2003, 2006, 2011, 2012, 2013, 2014, 2015, 2016, 2020, 2022.
-# Albert Astals Cid <aacid@kde.org>, 2004, 2005, 2007.
-# Josep M. Ferrer <txemaq@gmail.com>, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2017, 2018, 2021, 2022, 2023, 2024.
-# Robert Millan <rmh@aybabtu.com>, 2009.
-# Orestes Mas <orestes@tsc.upc.edu>, 2010.
-# Empar Montoro Martín <montoro_mde@gva.es>, 2019.
+# SPDX-FileCopyrightText: 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007 Sebastià Pla i Sanz <sps@sastia.com>
+# SPDX-FileCopyrightText: 2003, 2006, 2011, 2012, 2013, 2014, 2015, 2016, 2020, 2022 Antoni Bella Pérez <antonibella5@yahoo.com>
+# SPDX-FileCopyrightText: 2004, 2005, 2007 Albert Astals Cid <aacid@kde.org>
+# SPDX-FileCopyrightText: 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2017, 2018, 2021, 2022, 2023, 2024 Josep M. Ferrer <txemaq@gmail.com>
+# SPDX-FileCopyrightText: 2009 Robert Millan <rmh@aybabtu.com>
+# SPDX-FileCopyrightText: 2010 Orestes Mas <orestes@tsc.upc.edu>
+# SPDX-FileCopyrightText: 2019 Empar Montoro Martín <montoro_mde@gva.es>
 msgid ""
 msgstr ""
 "Project-Id-Version: sonnet\n"
@@ -168,67 +168,67 @@ msgctxt "Sonnet::ConfigDialog|"
 msgid "Spell Checking Configuration"
 msgstr "Configuració de la verificació ortogràfica"
 
-#: ui/configui.ui:26
+#: ui/configui.ui:25
 msgctxt "SonnetConfigUI|"
 msgid "No backend like hunspell/aspell/myspell installed"
 msgstr "No hi ha cap dorsal instal·lat com «hunspell/aspell/myspell»"
 
-#: ui/configui.ui:36
+#: ui/configui.ui:35
 msgctxt "SonnetConfigUI|"
 msgid "Default language:"
 msgstr "Idioma predeterminat:"
 
-#: ui/configui.ui:56
+#: ui/configui.ui:55
 msgctxt "SonnetConfigUI|"
 msgid "Preferred Languages"
 msgstr "Idiomes preferits"
 
-#: ui/configui.ui:65
+#: ui/configui.ui:79
 msgctxt "SonnetConfigUI|"
 msgid "Choose your preferred languages"
 msgstr "Trieu els idiomes preferits"
 
-#: ui/configui.ui:75
+#: ui/configui.ui:89
 msgctxt "SonnetConfigUI|"
 msgid "Options"
 msgstr "Opcions"
 
-#: ui/configui.ui:84
+#: ui/configui.ui:113
 msgctxt "SonnetConfigUI|"
 msgid "Enable autodetection of &language"
 msgstr "Activa la detecció automàtica de l'&idioma"
 
-#: ui/configui.ui:91
+#: ui/configui.ui:120
 msgctxt "SonnetConfigUI|"
 msgid "Enable &background spellchecking"
 msgstr "Habilita la verificació de l'&ortografia en segon pla"
 
-#: ui/configui.ui:98
+#: ui/configui.ui:127
 msgctxt "SonnetConfigUI|"
 msgid "&Automatic spell checking enabled by default"
 msgstr "Verificació &automàtica de l'ortografia habilitada per defecte"
 
-#: ui/configui.ui:105
+#: ui/configui.ui:134
 msgctxt "SonnetConfigUI|"
 msgid "Skip all &uppercase words"
 msgstr "Omet totes les paraules en &majúscules"
 
-#: ui/configui.ui:112
+#: ui/configui.ui:141
 msgctxt "SonnetConfigUI|"
 msgid "S&kip run-together words"
 msgstr "O&met les paraules enganxades"
 
-#: ui/configui.ui:122
+#: ui/configui.ui:151
 msgctxt "SonnetConfigUI|"
 msgid "Ignored Words"
 msgstr "Paraules ignorades"
 
-#: ui/configui.ui:139
+#: ui/configui.ui:183
 msgctxt "SonnetConfigUI|"
 msgid "&Add"
 msgstr "&Afegeix"
 
-#: ui/configui.ui:151
+#: ui/configui.ui:195
 msgctxt "SonnetConfigUI|"
 msgid "&Remove"
 msgstr "&Elimina"
@@ -539,18 +539,18 @@ msgctxt "SonnetUi|"
 msgid "Autocorrect"
 msgstr "Correcció automàtica"
 
-#: ui/spellcheckdecorator.cpp:172
+#: ui/spellcheckdecorator.cpp:180
 #, qt-format
 msgctxt "Sonnet::SpellCheckDecorator|"
 msgid "No suggestions for %1"
 msgstr "Sense suggeriments per a %1"
 
-#: ui/spellcheckdecorator.cpp:183
+#: ui/spellcheckdecorator.cpp:191
 msgctxt "Sonnet::SpellCheckDecorator|"
 msgid "Ignore"
 msgstr "Ignora"
 
-#: ui/spellcheckdecorator.cpp:184
+#: ui/spellcheckdecorator.cpp:192
 msgctxt "Sonnet::SpellCheckDecorator|"
 msgid "Add to Dictionary"
 msgstr "Afegeix al diccionari"

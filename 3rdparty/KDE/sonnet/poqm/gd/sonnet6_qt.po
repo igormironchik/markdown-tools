@@ -166,57 +166,57 @@ msgctxt "Sonnet::ConfigDialog|"
 msgid "Spell Checking Configuration"
 msgstr "Rèiteachadh airson dearbhadh an litreachaidh"
 
-#: ui/configui.ui:26
+#: ui/configui.ui:25
 msgctxt "SonnetConfigUI|"
 msgid "No backend like hunspell/aspell/myspell installed"
 msgstr ""
 
-#: ui/configui.ui:36
+#: ui/configui.ui:35
 msgctxt "SonnetConfigUI|"
 msgid "Default language:"
 msgstr "An cànan tùsail:"
 
-#: ui/configui.ui:56
+#: ui/configui.ui:55
 msgctxt "SonnetConfigUI|"
 msgid "Preferred Languages"
 msgstr ""
 
-#: ui/configui.ui:65
+#: ui/configui.ui:79
 msgctxt "SonnetConfigUI|"
 msgid "Choose your preferred languages"
 msgstr ""
 
-#: ui/configui.ui:75
+#: ui/configui.ui:89
 msgctxt "SonnetConfigUI|"
 msgid "Options"
 msgstr "Roghainnean"
 
-#: ui/configui.ui:84
+#: ui/configui.ui:113
 msgctxt "SonnetConfigUI|"
 msgid "Enable autodetection of &language"
 msgstr "Cuir an comas mothachadh fèin-obrachai&l a' chànain"
 
-#: ui/configui.ui:91
+#: ui/configui.ui:120
 msgctxt "SonnetConfigUI|"
 msgid "Enable &background spellchecking"
 msgstr "Cuir an comas dearbhadh an litreachaidh sa chùlai&bh"
 
-#: ui/configui.ui:98
+#: ui/configui.ui:127
 msgctxt "SonnetConfigUI|"
 msgid "&Automatic spell checking enabled by default"
 msgstr "Bidh dearbhadh fèin-obr&achail an litreachaidh an comas a ghnàth"
 
-#: ui/configui.ui:105
+#: ui/configui.ui:134
 msgctxt "SonnetConfigUI|"
 msgid "Skip all &uppercase words"
 msgstr "Gearr leum thairis air gach facal ann an litrichean &mòra"
 
-#: ui/configui.ui:112
+#: ui/configui.ui:141
 msgctxt "SonnetConfigUI|"
 msgid "S&kip run-together words"
 msgstr "Gearr leum thairis air faclan co-fhillte"
 
-#: ui/configui.ui:122
+#: ui/configui.ui:151
 #, fuzzy
 #| msgctxt "SonnetConfigUI|"
 #| msgid "Ignored Words:"
@@ -224,12 +224,12 @@ msgctxt "SonnetConfigUI|"
 msgid "Ignored Words"
 msgstr "Faclan a leigear seachad:"
 
-#: ui/configui.ui:139
+#: ui/configui.ui:183
 msgctxt "SonnetConfigUI|"
 msgid "&Add"
 msgstr "&Cuir ris"
 
-#: ui/configui.ui:151
+#: ui/configui.ui:195
 msgctxt "SonnetConfigUI|"
 msgid "&Remove"
 msgstr "Thoi&r air falbh"
@@ -552,18 +552,18 @@ msgctxt "SonnetUi|"
 msgid "Autocorrect"
 msgstr "Fèin-cheartaich"
 
-#: ui/spellcheckdecorator.cpp:172
+#: ui/spellcheckdecorator.cpp:180
 #, qt-format
 msgctxt "Sonnet::SpellCheckDecorator|"
 msgid "No suggestions for %1"
 msgstr "Chan eil moladh airson %1 ann"
 
-#: ui/spellcheckdecorator.cpp:183
+#: ui/spellcheckdecorator.cpp:191
 msgctxt "Sonnet::SpellCheckDecorator|"
 msgid "Ignore"
 msgstr "Leig seachad"
 
-#: ui/spellcheckdecorator.cpp:184
+#: ui/spellcheckdecorator.cpp:192
 msgctxt "Sonnet::SpellCheckDecorator|"
 msgid "Add to Dictionary"
 msgstr "Cuir ris an fhaclair"

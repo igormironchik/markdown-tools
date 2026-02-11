@@ -50,10 +50,10 @@ public:
 
     /*!
      */
-    QString originalBuffer() const;
+    [[nodiscard]] QString originalBuffer() const;
     /*!
      */
-    QString buffer() const;
+    [[nodiscard]] QString buffer() const;
 
     /*!
      */

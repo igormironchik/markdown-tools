@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: katepart4\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2016-09-08 07:30+0000\n"
-"PO-Revision-Date: 2025-09-26 15:16+0200\n"
+"PO-Revision-Date: 2025-12-04 17:28+0100\n"
 "Last-Translator: Mincho Kondarev <mkondarev@yahoo.de>\n"
 "Language-Team: Bulgarian <kde-i18n-doc@kde.org>\n"
 "Language: bg\n"
@@ -273,6 +273,10 @@ msgid "C"
 msgstr "C"
 
 msgctxt "Language|"
+msgid "D2"
+msgstr "D2"
+
+msgctxt "Language|"
 msgid "Dart"
 msgstr "Dart"
 
@@ -497,6 +501,10 @@ msgid "Groovy"
 msgstr "Groovy"
 
 msgctxt "Language|"
+msgid "GTK Blueprint"
+msgstr "GTK Blueprint"
+
+msgctxt "Language|"
 msgid "Hamlet"
 msgstr "Hamlet"
 
@@ -591,6 +599,10 @@ msgstr "Java"
 msgctxt "Language|"
 msgid "JCL"
 msgstr "JCL"
+
+msgctxt "Language|"
+msgid "Jinja"
+msgstr "Jinja"
 
 msgctxt "Language|"
 msgid "Jira"
@@ -1030,7 +1042,7 @@ msgstr "QML"
 
 msgctxt "Language|"
 msgid "Quarto"
-msgstr ""
+msgstr "Quarto"
 
 msgctxt "Language|"
 msgid "q"
@@ -1178,7 +1190,7 @@ msgstr "SML"
 
 msgctxt "Language|"
 msgid "Snakemake"
-msgstr ""
+msgstr "Snakemake"
 
 msgctxt "Language|"
 msgid "Snort/Suricata"
@@ -1215,6 +1227,10 @@ msgstr "SQL"
 msgctxt "Language|"
 msgid "Stan"
 msgstr "Stan"
+
+msgctxt "Language|"
+msgid "Starlark"
+msgstr "Starlark"
 
 msgctxt "Language|"
 msgid "Stata"

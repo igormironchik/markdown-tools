@@ -41,7 +41,6 @@ void SonnetSettingsTest::testRestoreDoesNotSave()
     // QFileInfo::lastModified() always returns invalid QDateTime
     QCOMPARE(QFileInfo(fileName).lastModified(), startTime);
 
-    speller->language();
     QCOMPARE(QFileInfo(fileName).lastModified(), startTime);
 
     QStringList langs = speller->availableLanguages();

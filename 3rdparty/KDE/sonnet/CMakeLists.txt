@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.16)
 
-set(KF_VERSION "6.19.0") # handled by release scripts
+set(KF_VERSION "6.22.0") # handled by release scripts
 project(Sonnet VERSION ${KF_VERSION})
 
 include(FeatureSummary)
 include(CMakeDependentOption)
-find_package(ECM 6.19.0  NO_MODULE)
+find_package(ECM 6.22.0  NO_MODULE)
 set_package_properties(ECM PROPERTIES TYPE REQUIRED DESCRIPTION "Extra CMake Modules." URL "https://commits.kde.org/extra-cmake-modules")
 feature_summary(WHAT REQUIRED_PACKAGES_NOT_FOUND FATAL_ON_MISSING_REQUIRED_PACKAGES)
 
@@ -29,7 +29,7 @@ include(ECMGenerateQDoc)
 
 set(EXCLUDE_DEPRECATED_BEFORE_AND_AT 0 CACHE STRING "Control the range of deprecated API excluded from the build [default=0].")
 
-set(REQUIRED_QT_VERSION 6.7.0)
+set(REQUIRED_QT_VERSION 6.8.0)
 option(SONNET_USE_WIDGETS "Build components using Qt6Widgets" ON)
 option(SONNET_USE_QML "Build components using Qt6Quick" ON)
 option(SONNET_NO_BACKENDS "Do not fail when no backends are built (to be used for cross-build host tooling)" OFF)
@@ -58,7 +58,7 @@ endif()
 ecm_install_po_files_as_qm(poqm)
 
 ecm_set_disabled_deprecation_versions(
-    QT 6.10.0
+    QT 6.11.0
 )
 
 if (NOT BUILD_SHARED_LIBS)

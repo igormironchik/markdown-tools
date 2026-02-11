@@ -5,6 +5,8 @@
 
 # Qt 5 implementation of ECMQmlModule
 
+cmake_policy(VERSION 3.16)
+
 set(_ECM_QMLMODULE_STATIC_QMLONLY_H   "${CMAKE_CURRENT_LIST_DIR}/ECMQmlModule.h.in")
 set(_ECM_QMLMODULE_STATIC_QMLONLY_CPP "${CMAKE_CURRENT_LIST_DIR}/ECMQmlModule.cpp.in")
 
@@ -333,7 +335,7 @@ function(ecm_finalize_qml_module ARG_TARGET)
             WORKING_DIRECTORY ${_runtime_output_dir}
             COMMAND ${CMAKE_COMMAND} -E make_directory ${_file_path}
             COMMAND ${CMAKE_COMMAND} -E copy ${_file} ${_file_path}
-            BYPRODUCTS ${_file_path}/${_filename}
+            BYPRODUCTS ${_runtime_output_dir}/${_file_path}/${_filename}
         )
     endforeach()
 endfunction()

@@ -305,6 +305,11 @@ msgctxt "Language|"
 msgid "C"
 msgstr "Ulwimi"
 
+#, fuzzy
+msgctxt "Language|"
+msgid "D2"
+msgstr "Ulwimi"
+
 msgctxt "Language|"
 msgid "Dart"
 msgstr ""
@@ -552,6 +557,10 @@ msgid "Groovy"
 msgstr ""
 
 msgctxt "Language|"
+msgid "GTK Blueprint"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Hamlet"
 msgstr ""
 
@@ -656,6 +665,10 @@ msgstr "Ulwimi"
 
 msgctxt "Language|"
 msgid "JCL"
+msgstr ""
+
+msgctxt "Language|"
+msgid "Jinja"
 msgstr ""
 
 msgctxt "Language|"
@@ -1361,6 +1374,10 @@ msgstr "Ulwimi"
 
 msgctxt "Language|"
 msgid "Stan"
+msgstr ""
+
+msgctxt "Language|"
+msgid "Starlark"
 msgstr ""
 
 #, fuzzy

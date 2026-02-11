@@ -171,59 +171,59 @@ msgctxt "Sonnet::ConfigDialog|"
 msgid "Spell Checking Configuration"
 msgstr "Õigekirja kontrolli seadistamine"
 
-#: ui/configui.ui:26
+#: ui/configui.ui:25
 msgctxt "SonnetConfigUI|"
 msgid "No backend like hunspell/aspell/myspell installed"
 msgstr ""
 
-#: ui/configui.ui:36
+#: ui/configui.ui:35
 msgctxt "SonnetConfigUI|"
 msgid "Default language:"
 msgstr "Vaikekeel:"
 
-#: ui/configui.ui:56
+#: ui/configui.ui:55
 #, fuzzy
 #| msgid "Preferred Number"
 msgctxt "SonnetConfigUI|"
 msgid "Preferred Languages"
 msgstr "Eelistatud number"
 
-#: ui/configui.ui:65
+#: ui/configui.ui:79
 msgctxt "SonnetConfigUI|"
 msgid "Choose your preferred languages"
 msgstr "Eelistatud keele valik"
 
-#: ui/configui.ui:75
+#: ui/configui.ui:89
 msgctxt "SonnetConfigUI|"
 msgid "Options"
 msgstr "Valikud"
 
-#: ui/configui.ui:84
+#: ui/configui.ui:113
 msgctxt "SonnetConfigUI|"
 msgid "Enable autodetection of &language"
 msgstr "&Keele automaatse tuvastamise lubamine"
 
-#: ui/configui.ui:91
+#: ui/configui.ui:120
 msgctxt "SonnetConfigUI|"
 msgid "Enable &background spellchecking"
 msgstr "Õigekirja kontrollimise lu&bamine taustal"
 
-#: ui/configui.ui:98
+#: ui/configui.ui:127
 msgctxt "SonnetConfigUI|"
 msgid "&Automatic spell checking enabled by default"
 msgstr "Vaikimisi õigekirja &automaatne kontroll"
 
-#: ui/configui.ui:105
+#: ui/configui.ui:134
 msgctxt "SonnetConfigUI|"
 msgid "Skip all &uppercase words"
 msgstr "Kõik S&UURTÄHELISED sõnad jäetakse vahele"
 
-#: ui/configui.ui:112
+#: ui/configui.ui:141
 msgctxt "SonnetConfigUI|"
 msgid "S&kip run-together words"
 msgstr "&Kokkujooksnud sõnad jäetakse vahele"
 
-#: ui/configui.ui:122
+#: ui/configui.ui:151
 #, fuzzy
 #| msgctxt "SonnetConfigUI|"
 #| msgid "Ignored Words:"
@@ -231,12 +231,12 @@ msgctxt "SonnetConfigUI|"
 msgid "Ignored Words"
 msgstr "Eiratavad sõnad:"
 
-#: ui/configui.ui:139
+#: ui/configui.ui:183
 msgctxt "SonnetConfigUI|"
 msgid "&Add"
 msgstr "Lis&a"
 
-#: ui/configui.ui:151
+#: ui/configui.ui:195
 msgctxt "SonnetConfigUI|"
 msgid "&Remove"
 msgstr "&Eemalda"
@@ -549,18 +549,18 @@ msgctxt "SonnetUi|"
 msgid "Autocorrect"
 msgstr "Korrigeeri automaatselt"
 
-#: ui/spellcheckdecorator.cpp:172
+#: ui/spellcheckdecorator.cpp:180
 #, qt-format
 msgctxt "Sonnet::SpellCheckDecorator|"
 msgid "No suggestions for %1"
 msgstr "\"%1\" jaoks soovitused puuduvad"
 
-#: ui/spellcheckdecorator.cpp:183
+#: ui/spellcheckdecorator.cpp:191
 msgctxt "Sonnet::SpellCheckDecorator|"
 msgid "Ignore"
 msgstr "Ignoreeri"
 
-#: ui/spellcheckdecorator.cpp:184
+#: ui/spellcheckdecorator.cpp:192
 msgctxt "Sonnet::SpellCheckDecorator|"
 msgid "Add to Dictionary"
 msgstr "Lisa sõnaraamatusse"

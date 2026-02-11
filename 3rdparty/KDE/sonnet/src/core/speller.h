@@ -41,7 +41,7 @@ public:
      * Returns \c true if the speller supports currently selected
      * language.
      */
-    bool isValid() const;
+    [[nodiscard]] bool isValid() const;
 
     /*!
      * Sets the language supported by this speller.
@@ -51,7 +51,7 @@ public:
     /*!
      * Returns language supported by this speller.
      */
-    QString language() const;
+    [[nodiscard]] QString language() const;
 
     /*!
      * Checks the given word.

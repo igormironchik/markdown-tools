@@ -230,38 +230,38 @@ public:
      */
     Q_INVOKABLE bool isWordMisspelled(const QString &word);
 
-    Q_REQUIRED_RESULT QQuickTextDocument *quickDocument() const;
+    [[nodiscard]] QQuickTextDocument *quickDocument() const;
     void setQuickDocument(QQuickTextDocument *document);
 
-    Q_REQUIRED_RESULT int cursorPosition() const;
+    [[nodiscard]] int cursorPosition() const;
     void setCursorPosition(int position);
 
-    Q_REQUIRED_RESULT int selectionStart() const;
+    [[nodiscard]] int selectionStart() const;
     void setSelectionStart(int position);
 
-    Q_REQUIRED_RESULT int selectionEnd() const;
+    [[nodiscard]] int selectionEnd() const;
     void setSelectionEnd(int position);
 
-    Q_REQUIRED_RESULT bool wordIsMisspelled() const;
-    Q_REQUIRED_RESULT QString wordUnderMouse() const;
+    [[nodiscard]] bool wordIsMisspelled() const;
+    [[nodiscard]] QString wordUnderMouse() const;
 
-    Q_REQUIRED_RESULT bool spellCheckerFound() const;
-    Q_REQUIRED_RESULT QString currentLanguage() const;
+    [[nodiscard]] bool spellCheckerFound() const;
+    [[nodiscard]] QString currentLanguage() const;
 
     void setActive(bool active);
-    Q_REQUIRED_RESULT bool active() const;
+    [[nodiscard]] bool active() const;
 
     void setAutomatic(bool automatic);
-    Q_REQUIRED_RESULT bool automatic() const;
+    [[nodiscard]] bool automatic() const;
 
     void setAutoDetectLanguageDisabled(bool autoDetectDisabled);
-    Q_REQUIRED_RESULT bool autoDetectLanguageDisabled() const;
+    [[nodiscard]] bool autoDetectLanguageDisabled() const;
 
     void setMisspelledColor(const QColor &color);
-    Q_REQUIRED_RESULT QColor misspelledColor() const;
+    [[nodiscard]] QColor misspelledColor() const;
 
     void setQuoteColor(const QColor &color);
-    Q_REQUIRED_RESULT QColor quoteColor() const;
+    [[nodiscard]] QColor quoteColor() const;
 
     /*
      * Set a new QTextDocument for this highlighter to operate on.
@@ -337,8 +337,8 @@ public Q_SLOTS:
     void slotRehighlight();
 
 private:
-    Q_REQUIRED_RESULT QTextCursor textCursor() const;
-    Q_REQUIRED_RESULT QTextDocument *textDocument() const;
+    [[nodiscard]] QTextCursor textCursor() const;
+    [[nodiscard]] QTextDocument *textDocument() const;
     void contentsChange(int pos, int add, int rem);
 
     void autodetectLanguage(const QString &sentence);

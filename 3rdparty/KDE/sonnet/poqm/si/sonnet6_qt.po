@@ -223,19 +223,19 @@ msgctxt "Sonnet::ConfigDialog|"
 msgid "Spell Checking Configuration"
 msgstr "යැවීම ස්තිර කරන්න"
 
-#: ui/configui.ui:26
+#: ui/configui.ui:25
 msgctxt "SonnetConfigUI|"
 msgid "No backend like hunspell/aspell/myspell installed"
 msgstr ""
 
-#: ui/configui.ui:36
+#: ui/configui.ui:35
 #, fuzzy
 #| msgid "Default language:"
 msgctxt "SonnetConfigUI|"
 msgid "Default language:"
 msgstr "පෙරනිමි භාෂාව:"
 
-#: ui/configui.ui:56
+#: ui/configui.ui:55
 #, fuzzy
 #| msgctxt "@action"
 #| msgid "Preferences"
@@ -243,66 +243,66 @@ msgctxt "SonnetConfigUI|"
 msgid "Preferred Languages"
 msgstr "අභිප්‍රේත"
 
-#: ui/configui.ui:65
+#: ui/configui.ui:79
 msgctxt "SonnetConfigUI|"
 msgid "Choose your preferred languages"
 msgstr ""
 
-#: ui/configui.ui:75
+#: ui/configui.ui:89
 #, fuzzy
 #| msgid "Options"
 msgctxt "SonnetConfigUI|"
 msgid "Options"
 msgstr "විකල්ප"
 
-#: ui/configui.ui:84
+#: ui/configui.ui:113
 msgctxt "SonnetConfigUI|"
 msgid "Enable autodetection of &language"
 msgstr ""
 
-#: ui/configui.ui:91
+#: ui/configui.ui:120
 #, fuzzy
 #| msgid "Enable &background spellchecking"
 msgctxt "SonnetConfigUI|"
 msgid "Enable &background spellchecking"
 msgstr "පසුබිම් අක්‍ෂරවින්‍යාස පරික්‍ෂාව සක්‍රීය කරන්න (&b)"
 
-#: ui/configui.ui:98
+#: ui/configui.ui:127
 #, fuzzy
 #| msgid "&Automatic spell checking enabled by default"
 msgctxt "SonnetConfigUI|"
 msgid "&Automatic spell checking enabled by default"
 msgstr "ස්වයංක්‍රීය අක්ෂර වින්‍යාසය පිරික්සුම පෙරනිමියෙන් ඇත."
 
-#: ui/configui.ui:105
+#: ui/configui.ui:134
 #, fuzzy
 #| msgid "Skip all &uppercase words"
 msgctxt "SonnetConfigUI|"
 msgid "Skip all &uppercase words"
 msgstr "සියළුම විශාලකුරු වචන මගහරින්න (&u)"
 
-#: ui/configui.ui:112
+#: ui/configui.ui:141
 #, fuzzy
 #| msgid "S&kip run-together words"
 msgctxt "SonnetConfigUI|"
 msgid "S&kip run-together words"
 msgstr "S&kip run-together words"
 
-#: ui/configui.ui:122
+#: ui/configui.ui:151
 #, fuzzy
 #| msgid "Ignored Words"
 msgctxt "SonnetConfigUI|"
 msgid "Ignored Words"
 msgstr "නොසැලකූ වචන"
 
-#: ui/configui.ui:139
+#: ui/configui.ui:183
 #, fuzzy
 #| msgid "&Add"
 msgctxt "SonnetConfigUI|"
 msgid "&Add"
 msgstr "එක් කරන්න (&A)"
 
-#: ui/configui.ui:151
+#: ui/configui.ui:195
 #, fuzzy
 #| msgid "&Remove"
 msgctxt "SonnetConfigUI|"
@@ -739,21 +739,21 @@ msgctxt "SonnetUi|"
 msgid "Autocorrect"
 msgstr "ස්වයංක්‍රීය නිවැරදි කිරීම"
 
-#: ui/spellcheckdecorator.cpp:172
+#: ui/spellcheckdecorator.cpp:180
 #, fuzzy, qt-format
 #| msgid "No suggestions for %1"
 msgctxt "Sonnet::SpellCheckDecorator|"
 msgid "No suggestions for %1"
 msgstr "%1 සඳහා යෝජනා නැත"
 
-#: ui/spellcheckdecorator.cpp:183
+#: ui/spellcheckdecorator.cpp:191
 #, fuzzy
 #| msgid "Ignore"
 msgctxt "Sonnet::SpellCheckDecorator|"
 msgid "Ignore"
 msgstr "නොසලකා හරින්න"
 
-#: ui/spellcheckdecorator.cpp:184
+#: ui/spellcheckdecorator.cpp:192
 #, fuzzy
 #| msgid "Add to Dictionary"
 msgctxt "Sonnet::SpellCheckDecorator|"

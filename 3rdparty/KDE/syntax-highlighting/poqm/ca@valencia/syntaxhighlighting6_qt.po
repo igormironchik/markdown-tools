@@ -3,14 +3,14 @@
 # This file is distributed under the license LGPL version 2.1 or
 # version 3 or later versions approved by the membership of KDE e.V.
 #
-# Antoni Bella Pérez <antonibella5@yahoo.com>, 2017, 2018, 2019, 2020, 2022.
-# Empar Montoro Martín <montoro_mde@gva.es>, 2019.
+# SPDX-FileCopyrightText: 2017, 2018, 2019, 2020, 2022 Antoni Bella Pérez <antonibella5@yahoo.com>
+# SPDX-FileCopyrightText: 2019 Empar Montoro Martín <montoro_mde@gva.es>
 # SPDX-FileCopyrightText: 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025 Josep M. Ferrer <txemaq@gmail.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: syntax-highlighting\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"PO-Revision-Date: 2025-09-29 10:12+0200\n"
+"PO-Revision-Date: 2025-11-30 11:04+0100\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: ca@valencia\n"
@@ -275,6 +275,10 @@ msgid "C"
 msgstr "C"
 
 msgctxt "Language|"
+msgid "D2"
+msgstr "D2"
+
+msgctxt "Language|"
 msgid "Dart"
 msgstr "Dart"
 
@@ -499,6 +503,10 @@ msgid "Groovy"
 msgstr "Groovy"
 
 msgctxt "Language|"
+msgid "GTK Blueprint"
+msgstr "GTK Blueprint"
+
+msgctxt "Language|"
 msgid "Hamlet"
 msgstr "Hamlet"
 
@@ -593,6 +601,10 @@ msgstr "Java"
 msgctxt "Language|"
 msgid "JCL"
 msgstr "JCL"
+
+msgctxt "Language|"
+msgid "Jinja"
+msgstr "Jinja"
 
 msgctxt "Language|"
 msgid "Jira"
@@ -1032,7 +1044,7 @@ msgstr "QML"
 
 msgctxt "Language|"
 msgid "Quarto"
-msgstr ""
+msgstr "Quarto"
 
 msgctxt "Language|"
 msgid "q"
@@ -1217,6 +1229,10 @@ msgstr "SQL"
 msgctxt "Language|"
 msgid "Stan"
 msgstr "Stan"
+
+msgctxt "Language|"
+msgid "Starlark"
+msgstr "Starlark"
 
 msgctxt "Language|"
 msgid "Stata"

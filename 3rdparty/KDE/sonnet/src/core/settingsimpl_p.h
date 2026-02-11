@@ -28,36 +28,36 @@ public:
     SettingsImpl(const SettingsImpl &) = delete;
     SettingsImpl &operator=(const SettingsImpl &) = delete;
 
-    bool modified() const;
+    [[nodiscard]] bool modified() const;
     void setModified(bool modified);
 
     bool setDefaultLanguage(const QString &lang);
-    QString defaultLanguage() const;
+    [[nodiscard]] QString defaultLanguage() const;
 
     bool setPreferredLanguages(const QStringList &lang);
-    QStringList preferredLanguages() const;
+    [[nodiscard]] QStringList preferredLanguages() const;
 
     bool setDefaultClient(const QString &client);
-    QString defaultClient() const;
+    [[nodiscard]] QString defaultClient() const;
 
     bool setCheckUppercase(bool);
-    bool checkUppercase() const;
+    [[nodiscard]] bool checkUppercase() const;
 
     bool setAutodetectLanguage(bool);
-    bool autodetectLanguage() const;
+    [[nodiscard]] bool autodetectLanguage() const;
 
     bool setSkipRunTogether(bool);
-    bool skipRunTogether() const;
+    [[nodiscard]] bool skipRunTogether() const;
 
     bool setBackgroundCheckerEnabled(bool);
-    bool backgroundCheckerEnabled() const;
+    [[nodiscard]] bool backgroundCheckerEnabled() const;
 
     bool setCheckerEnabledByDefault(bool);
-    bool checkerEnabledByDefault() const;
+    [[nodiscard]] bool checkerEnabledByDefault() const;
 
     bool setCurrentIgnoreList(const QStringList &ignores);
     bool addWordToIgnore(const QString &word);
-    QStringList currentIgnoreList() const;
+    [[nodiscard]] QStringList currentIgnoreList() const;
     bool ignore(const QString &word);
 
     void save();

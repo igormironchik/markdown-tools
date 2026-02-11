@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2025-10-04 13:24+0200\n"
+"PO-Revision-Date: 2025-11-30 09:30+0100\n"
 "Last-Translator: Freek de Kruijf <freekdekruijf@kde.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Qt-Contexts: true\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 25.08.1\n"
+"X-Generator: Lokalize 25.08.3\n"
 
 msgctxt "Language|"
 msgid "4DOS BatchToMemory"
@@ -267,6 +267,10 @@ msgid "C"
 msgstr "C"
 
 msgctxt "Language|"
+msgid "D2"
+msgstr "D2"
+
+msgctxt "Language|"
 msgid "Dart"
 msgstr "Dart"
 
@@ -491,6 +495,10 @@ msgid "Groovy"
 msgstr "Groovy"
 
 msgctxt "Language|"
+msgid "GTK Blueprint"
+msgstr "GTK-blauwdruk"
+
+msgctxt "Language|"
 msgid "Hamlet"
 msgstr "Gehucht"
 
@@ -585,6 +593,10 @@ msgstr "Java"
 msgctxt "Language|"
 msgid "JCL"
 msgstr "JCL"
+
+msgctxt "Language|"
+msgid "Jinja"
+msgstr "Jinja"
 
 msgctxt "Language|"
 msgid "Jira"
@@ -1209,6 +1221,10 @@ msgstr "SQL"
 msgctxt "Language|"
 msgid "Stan"
 msgstr "Stan"
+
+msgctxt "Language|"
+msgid "Starlark"
+msgstr "Starlark"
 
 msgctxt "Language|"
 msgid "Stata"

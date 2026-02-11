@@ -1,16 +1,27 @@
 #!/usr/bin/env python3
 #
-# Generate Kate syntax file for CMake
+# SPDX-FileCopyrightText: 2017-2025 Alex Turbov <i.zaufi@gmail.com>
 #
-# SPDX-FileCopyrightText: 2017-2024 Alex Turbov <i.zaufi@gmail.com>
+# /// script
+# requires-python = ">=3.11"
+# dependencies = [
+#   "click",
+#   "jinja2",
+#   "lxml",
+#   "pyyaml"
+# ]
+# ///
 #
-# To install prerequisites:
+# Generate Kate syntax file for CMake.
 #
-#   $ pip install --user click jinja2 lxml pyyaml
+# Run with [uv] or [pipx]:
 #
-# To use:
+#   $ uv run generate-cmake-syntax.py cmake.yaml > ../syntax/cmake.xml
 #
-#   $ ./generate-cmake-syntax.py cmake.yaml > ../syntax/cmake.xml
+# or install dependencies manually and run "normally".
+#
+# [uv]: https://docs.astral.sh/uv
+# [pipx]: https://pipx.pypa.io/stable
 #
 
 from __future__ import annotations
@@ -22,7 +33,6 @@ from dataclasses import dataclass, field
 import click
 import jinja2
 import yaml
-import sys
 from lxml import etree
 
 
@@ -399,15 +409,18 @@ def remove_duplicate_context_nodes(root):
 
         # update context name referenced by each rule
         for context in contexts:
+            ref = remap.get(context.attrib.get('fallthroughContext'))
+            if ref:
+                context.attrib['fallthroughContext'] = ref
             for rule in context:
                 ref = remap.get(rule.attrib.get('context'))
                 if ref:
                     rule.attrib['context'] = ref
 
 
-def remove_duplicate_nodes(xml_string):
+def remove_duplicate_nodes(raw_xml: str) -> str:
     parser = etree.XMLParser(resolve_entities=False, collect_ids=False)
-    root = etree.fromstring(xml_string.encode(), parser=parser)
+    root = etree.fromstring(raw_xml.encode(), parser=parser)
 
     remove_duplicate_list_nodes(root)
     remove_duplicate_context_nodes(root)
@@ -418,7 +431,7 @@ def remove_duplicate_nodes(xml_string):
     xml = re.sub(b'-->(?=[^ \n])', b'-->\n', xml)
 
     # extract DOCTYPE removed by etree.fromstring and reformat <language>
-    doctype = xml_string[:xml_string.find('<highlighting')]
+    doctype = raw_xml[:raw_xml.find('<highlighting')]
 
     # remove unformatted <language>
     xml = xml[xml.find(b'<highlighting'):]

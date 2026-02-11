@@ -2,6 +2,7 @@
  * kspell_hunspellclient.cpp
  *
  * SPDX-FileCopyrightText: 2009 Montel Laurent <montel@kde.org>
+ * SPDX-FileCopyrightText: 2025 Harald Sitter <sitter@kde.org>
  *
  * SPDX-License-Identifier: LGPL-2.1-or-later
  */
@@ -12,8 +13,53 @@
 #include <QDir>
 #include <QStandardPaths>
 #include <QString>
+#include <QVersionNumber>
 
 using namespace Sonnet;
+using namespace Qt::StringLiterals;
+
+namespace
+{
+
+[[nodiscard]] QStringList flatpakSources()
+{
+    QMap<QVersionNumber, QString> versionedPaths;
+    // TODO: could load all paths from libflatpak. For now we hardcode the known ones.
+    for (const auto &flatpakPath :
+         {u"/var/lib/flatpak/runtime/org.kde.Platform.Locale/"_s,
+          QStandardPaths::locate(QStandardPaths::GenericDataLocation, u"flatpak/runtime/org.kde.Platform.Locale"_s, QStandardPaths::LocateDirectory)}) {
+        for (const auto &architectureEntry : QDirListing(flatpakPath, QDirListing::IteratorFlag::DirsOnly)) {
+            const auto &architecturePath = architectureEntry.filePath();
+            for (const auto &versionEntry : QDirListing(architecturePath, QDirListing::IteratorFlag::DirsOnly)) {
+                const auto filesPath = versionEntry.filePath() + "/active/files/"_L1;
+                if (!QFileInfo::exists(filesPath)) {
+                    continue;
+                }
+
+                versionedPaths.insert(QVersionNumber::fromString(versionEntry.fileName()), filesPath);
+            }
+        }
+    }
+
+    if (versionedPaths.isEmpty()) {
+        qCDebug(SONNET_HUNSPELL) << "No flatpak hunspell location found";
+        return {};
+    }
+
+    const QString latestActiveVersionPath = versionedPaths.values().last();
+    qCDebug(SONNET_HUNSPELL) << "Found flatpak location" << latestActiveVersionPath;
+
+    QStringList sources;
+    for (const auto &parentLanguageEntry : QDirListing(latestActiveVersionPath, QDirListing::IteratorFlag::DirsOnly)) {
+        const auto &parentLanguagePath = parentLanguageEntry.filePath() + "/share/"_L1;
+        for (const auto &languageEntry : QDirListing(parentLanguagePath, QDirListing::IteratorFlag::DirsOnly)) {
+            sources.append(languageEntry.filePath() + "/hunspell/"_L1);
+        }
+    }
+    return sources;
+}
+
+} // namespace
 
 HunspellClient::HunspellClient(QObject *parent)
     : Client(parent)
@@ -51,6 +97,10 @@ HunspellClient::HunspellClient(QObject *parent)
     maybeAddPath(QStringLiteral("/System/Library/Spelling"));
     maybeAddPath(QStringLiteral("/usr/share/hunspell/"));
     maybeAddPath(QStringLiteral("/usr/share/myspell/"));
+    // Load supplementary dictionaries from our flatpak platform if available
+    for (const auto &flatpakSource : flatpakSources()) {
+        maybeAddPath(flatpakSource);
+    }
 #endif
 
     for (const QString &dirString : dirList) {

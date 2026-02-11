@@ -269,6 +269,10 @@ msgid "C"
 msgstr "C"
 
 msgctxt "Language|"
+msgid "D2"
+msgstr "D2"
+
+msgctxt "Language|"
 msgid "Dart"
 msgstr "Dart"
 
@@ -493,6 +497,10 @@ msgid "Groovy"
 msgstr "Groovy"
 
 msgctxt "Language|"
+msgid "GTK Blueprint"
+msgstr "GTK Blueprint"
+
+msgctxt "Language|"
 msgid "Hamlet"
 msgstr "Hamlet"
 
@@ -587,6 +595,10 @@ msgstr "Java"
 msgctxt "Language|"
 msgid "JCL"
 msgstr "JCL"
+
+msgctxt "Language|"
+msgid "Jinja"
+msgstr "Jinja"
 
 msgctxt "Language|"
 msgid "Jira"
@@ -1026,7 +1038,7 @@ msgstr "QML"
 
 msgctxt "Language|"
 msgid "Quarto"
-msgstr ""
+msgstr "Quarto"
 
 msgctxt "Language|"
 msgid "q"
@@ -1174,7 +1186,7 @@ msgstr "SML"
 
 msgctxt "Language|"
 msgid "Snakemake"
-msgstr ""
+msgstr "Snakemake"
 
 msgctxt "Language|"
 msgid "Snort/Suricata"
@@ -1211,6 +1223,10 @@ msgstr "SQL"
 msgctxt "Language|"
 msgid "Stan"
 msgstr "Stan"
+
+msgctxt "Language|"
+msgid "Starlark"
+msgstr "Starlark"
 
 msgctxt "Language|"
 msgid "Stata"

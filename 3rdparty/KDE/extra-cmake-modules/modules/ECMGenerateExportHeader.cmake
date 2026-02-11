@@ -405,10 +405,9 @@ To get the hex number style value the helper macro
 Since 5.64.0.
 #]=======================================================================]
 
-include(GenerateExportHeader)
+cmake_policy(VERSION 3.16)
 
-cmake_policy(PUSH)
-cmake_policy(SET CMP0057 NEW) # if IN_LIST
+include(GenerateExportHeader)
 
 # helper method
 function(_ecm_geh_generate_hex_number _var_name _version)
@@ -834,5 +833,3 @@ function(ecm_generate_export_header target)
         CUSTOM_CONTENT_FROM_VARIABLE _output
     )
 endfunction()
-
-cmake_policy(POP)

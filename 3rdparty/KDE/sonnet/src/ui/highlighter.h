@@ -54,12 +54,12 @@ public:
      *
      * Returns true if spell checking is supported for the current language.
      */
-    bool spellCheckerFound() const;
+    [[nodiscard]] bool spellCheckerFound() const;
 
     /*!
      * Returns the language code for the current language.
      */
-    QString currentLanguage() const;
+    [[nodiscard]] QString currentLanguage() const;
 
     /*!
      * \brief Enable/Disable spell checking.
@@ -83,7 +83,7 @@ public:
      *
      * \sa setActive()
      */
-    bool isActive() const;
+    [[nodiscard]] bool isActive() const;
 
     /*!
      * Returns the state of the automatic disabling of spell checking.
@@ -91,7 +91,7 @@ public:
      * Returns true if spell checking is automatically disabled if there's
      * too many errors
      */
-    bool automatic() const;
+    [[nodiscard]] bool automatic() const;
 
     /*!
      * Sets whether to automatically disable spell checking if there's too
@@ -109,7 +109,7 @@ public:
      * Returns true if the automatic language detection is disabled
      * \since 5.71
      */
-    bool autoDetectLanguageDisabled() const;
+    [[nodiscard]] bool autoDetectLanguageDisabled() const;
 
     /*!
      * Sets whether to disable the automatic language detection.

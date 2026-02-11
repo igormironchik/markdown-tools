@@ -45,12 +45,12 @@ public:
     /*!
      * Returns the current dictionary name, for example "German (Switzerland)"
      */
-    QString currentDictionaryName() const;
+    [[nodiscard]] QString currentDictionaryName() const;
 
     /*!
      * Returns the current dictionary, for example "de_CH"
      */
-    QString currentDictionary() const;
+    [[nodiscard]] QString currentDictionary() const;
 
     /*!
      * Sets the current dictionaryName to the given dictionaryName

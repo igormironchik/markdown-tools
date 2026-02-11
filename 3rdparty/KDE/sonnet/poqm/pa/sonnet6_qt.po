@@ -164,17 +164,17 @@ msgctxt "Sonnet::ConfigDialog|"
 msgid "Spell Checking Configuration"
 msgstr "ਸਪੈਲ ਚੈੱਕ ਸੰਰਚਨਾ"
 
-#: ui/configui.ui:26
+#: ui/configui.ui:25
 msgctxt "SonnetConfigUI|"
 msgid "No backend like hunspell/aspell/myspell installed"
 msgstr "hunspell/aspell/myspell ਵਰਗਾ ਕੋਈ ਵੀ ਬੈਕਐਂਡ ਇੰਸਟਾਲ ਨਹੀਂ ਹੈ"
 
-#: ui/configui.ui:36
+#: ui/configui.ui:35
 msgctxt "SonnetConfigUI|"
 msgid "Default language:"
 msgstr "ਡਿਫਾਲਟ ਭਾਸ਼ਾ:"
 
-#: ui/configui.ui:56
+#: ui/configui.ui:55
 #, fuzzy
 #| msgctxt "SonnetConfigUI|"
 #| msgid "Choose your preferred languages"
@@ -182,42 +182,42 @@ msgctxt "SonnetConfigUI|"
 msgid "Preferred Languages"
 msgstr "ਆਪਣੀਆਂ ਪਸੰਦ ਦੀਆਂ ਭਾਸ਼ਾਵਾਂ ਚੁਣੋ"
 
-#: ui/configui.ui:65
+#: ui/configui.ui:79
 msgctxt "SonnetConfigUI|"
 msgid "Choose your preferred languages"
 msgstr "ਆਪਣੀਆਂ ਪਸੰਦ ਦੀਆਂ ਭਾਸ਼ਾਵਾਂ ਚੁਣੋ"
 
-#: ui/configui.ui:75
+#: ui/configui.ui:89
 msgctxt "SonnetConfigUI|"
 msgid "Options"
 msgstr "ਚੋਣ"
 
-#: ui/configui.ui:84
+#: ui/configui.ui:113
 msgctxt "SonnetConfigUI|"
 msgid "Enable autodetection of &language"
 msgstr "ਭਾਸ਼ਾਵਾਂ ਦੀ ਆਪਣੇ-ਆਪ ਪਛਾਣ ਕਰਨੀ ਸਮਰੱਥ ਕਰੋ(&l)"
 
-#: ui/configui.ui:91
+#: ui/configui.ui:120
 msgctxt "SonnetConfigUI|"
 msgid "Enable &background spellchecking"
 msgstr "ਬੈਕਗਰਾਊਂਡ ਸ਼ਬਦ-ਜੋੜ ਦੀ ਜਾਂਚ ਯੋਗ(&b)"
 
-#: ui/configui.ui:98
+#: ui/configui.ui:127
 msgctxt "SonnetConfigUI|"
 msgid "&Automatic spell checking enabled by default"
 msgstr "ਮੂਲ ਰੂਪ ਵਿੱਚ ਆਟੋਮੈਟਿਕ ਹੀ ਸਪੈਲ ਚੈਕ ਚਾਲੂ ਕਰੋ(&A)"
 
-#: ui/configui.ui:105
+#: ui/configui.ui:134
 msgctxt "SonnetConfigUI|"
 msgid "Skip all &uppercase words"
 msgstr "ਵੱਡੇ ਅੱਖਰਾਂ ਵਾਲੇ ਸ਼ਬਦ ਛੱਡ ਦਿਓ(&u)"
 
-#: ui/configui.ui:112
+#: ui/configui.ui:141
 msgctxt "SonnetConfigUI|"
 msgid "S&kip run-together words"
 msgstr "ਇੱਕਠੇ ਰਹਿਣ ਵਾਲੇ ਸ਼ਬਦ ਛੱਡ ਦਿਓ(&k)"
 
-#: ui/configui.ui:122
+#: ui/configui.ui:151
 #, fuzzy
 #| msgctxt "SonnetConfigUI|"
 #| msgid "Ignored Words:"
@@ -225,12 +225,12 @@ msgctxt "SonnetConfigUI|"
 msgid "Ignored Words"
 msgstr "ਅਣਡਿੱਠੇ ਕੀਤੇ ਸ਼ਬਦ"
 
-#: ui/configui.ui:139
+#: ui/configui.ui:183
 msgctxt "SonnetConfigUI|"
 msgid "&Add"
 msgstr "ਸ਼ਾਮਿਲ(&A)"
 
-#: ui/configui.ui:151
+#: ui/configui.ui:195
 msgctxt "SonnetConfigUI|"
 msgid "&Remove"
 msgstr "ਹਟਾਓ(&R)"
@@ -529,18 +529,18 @@ msgctxt "SonnetUi|"
 msgid "Autocorrect"
 msgstr "ਸਵੈ-ਸ਼ੁੱਧ"
 
-#: ui/spellcheckdecorator.cpp:172
+#: ui/spellcheckdecorator.cpp:180
 #, qt-format
 msgctxt "Sonnet::SpellCheckDecorator|"
 msgid "No suggestions for %1"
 msgstr "%1 ਲਈ ਕੋਈ ਸੁਝਾਅ ਨਹੀਂ"
 
-#: ui/spellcheckdecorator.cpp:183
+#: ui/spellcheckdecorator.cpp:191
 msgctxt "Sonnet::SpellCheckDecorator|"
 msgid "Ignore"
 msgstr "ਅਣਡਿੱਠਾ"
 
-#: ui/spellcheckdecorator.cpp:184
+#: ui/spellcheckdecorator.cpp:192
 msgctxt "Sonnet::SpellCheckDecorator|"
 msgid "Add to Dictionary"
 msgstr "ਡਿਕਸ਼ਨਰੀ 'ਚ ਸ਼ਾਮਿਲ"

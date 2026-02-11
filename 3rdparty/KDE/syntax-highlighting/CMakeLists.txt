@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.16)
 
-set(KF_VERSION "6.19.0")
+set(KF_VERSION "6.22.0")
 project(KSyntaxHighlighting VERSION ${KF_VERSION})
 
-find_package(ECM 6.19.0 REQUIRED NO_MODULE)
+find_package(ECM 6.22.0 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 
 include(KDEInstallDirs)
@@ -38,7 +38,7 @@ set(EXCLUDE_DEPRECATED_BEFORE_AND_AT 0 CACHE STRING "Control the range of deprec
 #
 # Dependencies
 #
-set(REQUIRED_QT_VERSION 6.7.0)
+set(REQUIRED_QT_VERSION 6.8.0)
 find_package(Qt6 ${REQUIRED_QT_VERSION} NO_MODULE REQUIRED COMPONENTS Core Network Test)
 option(KSYNTAXHIGHLIGHTING_USE_GUI "Build components depending on QtGui" ON)
 if(KSYNTAXHIGHLIGHTING_USE_GUI)
@@ -56,6 +56,9 @@ set_package_properties(XercesC PROPERTIES PURPOSE "Compile-time validation of sy
 
 find_package(Perl REQUIRED)
 set_package_properties(Perl PROPERTIES PURPOSE "Auto-generate PHP syntax definition files.")
+
+find_package(Python)
+set_package_properties(Python PROPERTIES PURPOSE "Auto-generate Jinja syntax definition files.")
 
 #
 # allow to install the "differently" licensed syntax xml files instead of putting them in a QRC and link them in
@@ -85,7 +88,7 @@ if (NO_STANDARD_PATHS)
 endif()
 
 ecm_set_disabled_deprecation_versions(
-    QT 6.10.0
+    QT 6.11.0
 )
 
 #

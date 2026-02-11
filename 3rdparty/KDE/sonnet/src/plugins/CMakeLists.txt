@@ -2,7 +2,11 @@
 # you can find find_package() in kdelibs/cmake/modules/OptionalFindPackage.cmake
 # it is the same as FIND_PACKAGE(<name>) but additionally creates an OPTION(WITH_<name>)
 # so the checking for the software can be disabled via ccmake or -DWITH_<name>=OFF
-find_package(ASPELL)
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 4.1)
+    find_package(ASPELL COMPONENTS ASPELL)
+else()
+    find_package(ASPELL)
+endif()
 set_package_properties(ASPELL PROPERTIES
     URL "http://aspell.net/"
     DESCRIPTION "Spell checking support via Aspell"

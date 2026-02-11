@@ -34,7 +34,7 @@ public:
 
     /*!
      */
-    bool backgroundCheckingButtonShown() const;
+    [[nodiscard]] bool backgroundCheckingButtonShown() const;
 
     /*!
      * Sets the language/dictionary that will be selected by default
@@ -53,7 +53,7 @@ public:
      * Returns the language currently selected in the language combobox
      * \since 4.1
      */
-    QString language() const;
+    [[nodiscard]] QString language() const;
 
 public Q_SLOTS:
     /*!

@@ -234,19 +234,19 @@ msgctxt "Sonnet::ConfigDialog|"
 msgid "Spell Checking Configuration"
 msgstr "Mîhengên kontrola rastnivîsê"
 
-#: ui/configui.ui:26
+#: ui/configui.ui:25
 msgctxt "SonnetConfigUI|"
 msgid "No backend like hunspell/aspell/myspell installed"
 msgstr ""
 
-#: ui/configui.ui:36
+#: ui/configui.ui:35
 #, fuzzy
 #| msgid "Default language:"
 msgctxt "SonnetConfigUI|"
 msgid "Default language:"
 msgstr "Zimanê asayî:"
 
-#: ui/configui.ui:56
+#: ui/configui.ui:55
 #, fuzzy
 #| msgctxt "@action"
 #| msgid "Preferences"
@@ -254,66 +254,66 @@ msgctxt "SonnetConfigUI|"
 msgid "Preferred Languages"
 msgstr "Vebijêrk"
 
-#: ui/configui.ui:65
+#: ui/configui.ui:79
 msgctxt "SonnetConfigUI|"
 msgid "Choose your preferred languages"
 msgstr ""
 
-#: ui/configui.ui:75
+#: ui/configui.ui:89
 #, fuzzy
 #| msgid "Options"
 msgctxt "SonnetConfigUI|"
 msgid "Options"
 msgstr "Vebijêrk"
 
-#: ui/configui.ui:84
+#: ui/configui.ui:113
 msgctxt "SonnetConfigUI|"
 msgid "Enable autodetection of &language"
 msgstr ""
 
-#: ui/configui.ui:91
+#: ui/configui.ui:120
 #, fuzzy
 #| msgid "Enable &background spellchecking"
 msgctxt "SonnetConfigUI|"
 msgid "Enable &background spellchecking"
 msgstr "&Li rûerd kontrola rastnivîsê çalak bike"
 
-#: ui/configui.ui:98
+#: ui/configui.ui:127
 #, fuzzy
 #| msgid "&Automatic spell checking enabled by default"
 msgctxt "SonnetConfigUI|"
 msgid "&Automatic spell checking enabled by default"
 msgstr "Kontrola ratnivîsê ya &Bixweber bi standard çalak e"
 
-#: ui/configui.ui:105
+#: ui/configui.ui:134
 #, fuzzy
 #| msgid "Skip all &uppercase words"
 msgctxt "SonnetConfigUI|"
 msgid "Skip all &uppercase words"
 msgstr "Ji ser hemû peyvên ku bi &tîpen mezin e qevz bike"
 
-#: ui/configui.ui:112
+#: ui/configui.ui:141
 #, fuzzy
 #| msgid "S&kip run-together words"
 msgctxt "SonnetConfigUI|"
 msgid "S&kip run-together words"
 msgstr "Ji ser peyvên hevedudanî &qevz bike"
 
-#: ui/configui.ui:122
+#: ui/configui.ui:151
 #, fuzzy
 #| msgid "Suggested Words"
 msgctxt "SonnetConfigUI|"
 msgid "Ignored Words"
 msgstr "Peyvên ku têne pêşniyarkirin"
 
-#: ui/configui.ui:139
+#: ui/configui.ui:183
 #, fuzzy
 #| msgid "&Add"
 msgctxt "SonnetConfigUI|"
 msgid "&Add"
 msgstr "&Têxê"
 
-#: ui/configui.ui:151
+#: ui/configui.ui:195
 #, fuzzy
 #| msgid "&Remove"
 msgctxt "SonnetConfigUI|"
@@ -758,21 +758,21 @@ msgctxt "SonnetUi|"
 msgid "Autocorrect"
 msgstr "Sererastkirina Bixweber"
 
-#: ui/spellcheckdecorator.cpp:172
+#: ui/spellcheckdecorator.cpp:180
 #, fuzzy, qt-format
 #| msgid "No suggestions for %1"
 msgctxt "Sonnet::SpellCheckDecorator|"
 msgid "No suggestions for %1"
 msgstr "Ji bo %1 tu pêşniyaz tuneye"
 
-#: ui/spellcheckdecorator.cpp:183
+#: ui/spellcheckdecorator.cpp:191
 #, fuzzy
 #| msgid "Ignore"
 msgctxt "Sonnet::SpellCheckDecorator|"
 msgid "Ignore"
 msgstr "Guh nede"
 
-#: ui/spellcheckdecorator.cpp:184
+#: ui/spellcheckdecorator.cpp:192
 #, fuzzy
 #| msgid "Add to Dictionary"
 msgctxt "Sonnet::SpellCheckDecorator|"

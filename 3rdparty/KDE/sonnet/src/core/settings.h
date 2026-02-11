@@ -125,43 +125,43 @@ public:
 
     void setDefaultLanguage(const QString &lang);
 
-    QString defaultLanguage() const;
+    [[nodiscard]] QString defaultLanguage() const;
 
     void setPreferredLanguages(const QStringList &lang);
 
-    QStringList preferredLanguages() const;
+    [[nodiscard]] QStringList preferredLanguages() const;
 
     void setDefaultClient(const QString &client);
 
-    QString defaultClient() const;
+    [[nodiscard]] QString defaultClient() const;
 
     void setSkipUppercase(bool);
 
-    bool skipUppercase() const;
+    [[nodiscard]] bool skipUppercase() const;
 
     void setAutodetectLanguage(bool);
 
-    bool autodetectLanguage() const;
+    [[nodiscard]] bool autodetectLanguage() const;
 
     void setSkipRunTogether(bool);
 
-    bool skipRunTogether() const;
+    [[nodiscard]] bool skipRunTogether() const;
 
     void setBackgroundCheckerEnabled(bool);
 
-    bool backgroundCheckerEnabled() const;
+    [[nodiscard]] bool backgroundCheckerEnabled() const;
 
     void setCheckerEnabledByDefault(bool);
 
-    bool checkerEnabledByDefault() const;
+    [[nodiscard]] bool checkerEnabledByDefault() const;
 
     void setCurrentIgnoreList(const QStringList &ignores);
 
-    QStringList currentIgnoreList() const;
+    [[nodiscard]] QStringList currentIgnoreList() const;
 
-    QStringList clients() const;
+    [[nodiscard]] QStringList clients() const;
 
-    bool modified() const;
+    [[nodiscard]] bool modified() const;
 
     QAbstractListModel *dictionaryModel();
 
@@ -170,21 +170,21 @@ public:
      */
     Q_INVOKABLE void save();
 
-    static QStringList defaultIgnoreList();
+    [[nodiscard]] static QStringList defaultIgnoreList();
 
-    static bool defaultSkipUppercase();
+    [[nodiscard]] static bool defaultSkipUppercase();
 
-    static bool defaultAutodetectLanguage();
+    [[nodiscard]] static bool defaultAutodetectLanguage();
 
-    static bool defaultBackgroundCheckerEnabled();
+    [[nodiscard]] static bool defaultBackgroundCheckerEnabled();
 
-    static bool defaultCheckerEnabledByDefault();
+    [[nodiscard]] static bool defaultCheckerEnabledByDefault();
 
-    static bool defauktSkipRunTogether();
+    [[nodiscard]] static bool defauktSkipRunTogether();
 
-    static QString defaultDefaultLanguage();
+    [[nodiscard]] static QString defaultDefaultLanguage();
 
-    static QStringList defaultPreferredLanguages();
+    [[nodiscard]] static QStringList defaultPreferredLanguages();
 
 Q_SIGNALS:
 

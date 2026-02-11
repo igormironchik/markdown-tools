@@ -18,7 +18,7 @@ msgstr ""
 "Project-Id-Version: katepart4\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2016-09-08 07:30+0000\n"
-"PO-Revision-Date: 2025-09-27 10:16+0400\n"
+"PO-Revision-Date: 2025-12-03 16:47+0400\n"
 "Last-Translator: Zayed Al-Saidi <zayed.alsaidi@gmail.com>\n"
 "Language-Team: ar\n"
 "Language: ar\n"
@@ -283,6 +283,10 @@ msgid "C"
 msgstr "سي"
 
 msgctxt "Language|"
+msgid "D2"
+msgstr "D2"
+
+msgctxt "Language|"
 msgid "Dart"
 msgstr "دارت"
 
@@ -507,6 +511,10 @@ msgid "Groovy"
 msgstr "غروفي"
 
 msgctxt "Language|"
+msgid "GTK Blueprint"
+msgstr "طبعة زرقاء GTK"
+
+msgctxt "Language|"
 msgid "Hamlet"
 msgstr "هاملت"
 
@@ -601,6 +609,10 @@ msgstr "جاوة"
 msgctxt "Language|"
 msgid "JCL"
 msgstr "JCL"
+
+msgctxt "Language|"
+msgid "Jinja"
+msgstr "جينجا"
 
 msgctxt "Language|"
 msgid "Jira"
@@ -1040,7 +1052,7 @@ msgstr "كيو ام ال"
 
 msgctxt "Language|"
 msgid "Quarto"
-msgstr ""
+msgstr "كوارتو"
 
 msgctxt "Language|"
 msgid "q"
@@ -1188,7 +1200,7 @@ msgstr "SML"
 
 msgctxt "Language|"
 msgid "Snakemake"
-msgstr ""
+msgstr "صانع الثعابين"
 
 msgctxt "Language|"
 msgid "Snort/Suricata"
@@ -1225,6 +1237,10 @@ msgstr "SQL"
 msgctxt "Language|"
 msgid "Stan"
 msgstr "ستان"
+
+msgctxt "Language|"
+msgid "Starlark"
+msgstr "Starlark"
 
 msgctxt "Language|"
 msgid "Stata"

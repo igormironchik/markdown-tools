@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: syntaxhighlighting5_qt\n"
-"PO-Revision-Date: 2025-10-04 18:29+0300\n"
+"PO-Revision-Date: 2025-11-30 18:13+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -273,6 +273,10 @@ msgid "C"
 msgstr "C"
 
 msgctxt "Language|"
+msgid "D2"
+msgstr "D2"
+
+msgctxt "Language|"
 msgid "Dart"
 msgstr "Dart"
 
@@ -497,6 +501,10 @@ msgid "Groovy"
 msgstr "Groovy"
 
 msgctxt "Language|"
+msgid "GTK Blueprint"
+msgstr "Синька GTK"
+
+msgctxt "Language|"
 msgid "Hamlet"
 msgstr "Hamlet"
 
@@ -591,6 +599,10 @@ msgstr "Java"
 msgctxt "Language|"
 msgid "JCL"
 msgstr "JCL"
+
+msgctxt "Language|"
+msgid "Jinja"
+msgstr "Jinja"
 
 msgctxt "Language|"
 msgid "Jira"
@@ -1215,6 +1227,10 @@ msgstr "SQL"
 msgctxt "Language|"
 msgid "Stan"
 msgstr "Stan"
+
+msgctxt "Language|"
+msgid "Starlark"
+msgstr "Starlark"
 
 msgctxt "Language|"
 msgid "Stata"

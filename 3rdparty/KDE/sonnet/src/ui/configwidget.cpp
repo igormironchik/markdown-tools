@@ -180,6 +180,7 @@ void ConfigWidget::slotDefault()
     d->ui.kcfg_checkerEnabledByDefault->setChecked(Settings::defaultCheckerEnabledByDefault());
     d->ui.kcfg_backgroundCheckerEnabled->setChecked(Settings::defaultBackgroundCheckerEnabled());
     d->ui.ignoreListWidget->clear();
+    d->ui.ignoreListWidget->addItems(Settings::defaultIgnoreList());
     d->ui.m_langCombo->setCurrentByDictionary(d->settings->defaultLanguage());
 }
 

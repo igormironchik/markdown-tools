@@ -61,19 +61,19 @@ public:
 
     /*!
      */
-    bool backgroundCheckingButtonShown() const;
+    [[nodiscard]] bool backgroundCheckingButtonShown() const;
     /*!
      */
-    bool noBackendFoundVisible() const;
+    [[nodiscard]] bool noBackendFoundVisible() const;
     /*!
      */
-    QStringList preferredLanguages() const;
+    [[nodiscard]] QStringList preferredLanguages() const;
     /*!
      */
-    QString language() const;
+    [[nodiscard]] QString language() const;
     /*!
      */
-    QStringList ignoreList() const;
+    [[nodiscard]] QStringList ignoreList() const;
 
 public Q_SLOTS:
     /*!

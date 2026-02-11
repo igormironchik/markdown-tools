@@ -65,11 +65,11 @@ public:
     void setText(const QString &text);
     /*!
      */
-    QString text() const;
+    [[nodiscard]] QString text() const;
 
     /*!
      */
-    QString currentContext() const;
+    [[nodiscard]] QString currentContext() const;
 
     /*!
      */
@@ -156,7 +156,7 @@ protected:
      * position but a position in the last string returned
      * by fetchMoreText. You need to store the state in the derivatives.
      */
-    virtual QString fetchMoreText();
+    [[nodiscard]] virtual QString fetchMoreText();
 
     /*!
      * This function will be called whenever the background checker

@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: katepart4\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2016-09-08 07:30+0000\n"
-"PO-Revision-Date: 2025-07-20 01:13+0200\n"
+"PO-Revision-Date: 2025-10-09 01:37+0200\n"
 "Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean <kde-kr@kde.org>\n"
 "Language: ko\n"
@@ -274,6 +274,13 @@ msgctxt "Language|"
 msgid "C"
 msgstr "C"
 
+#, fuzzy
+#| msgctxt "Language|"
+#| msgid "D"
+msgctxt "Language|"
+msgid "D2"
+msgstr "D"
+
 msgctxt "Language|"
 msgid "Dart"
 msgstr "Dart"
@@ -499,6 +506,10 @@ msgid "Groovy"
 msgstr "Groovy"
 
 msgctxt "Language|"
+msgid "GTK Blueprint"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Hamlet"
 msgstr "Hamlet"
 
@@ -593,6 +604,10 @@ msgstr "자바"
 msgctxt "Language|"
 msgid "JCL"
 msgstr "JCL"
+
+msgctxt "Language|"
+msgid "Jinja"
+msgstr ""
 
 msgctxt "Language|"
 msgid "Jira"
@@ -1032,7 +1047,7 @@ msgstr "QML"
 
 msgctxt "Language|"
 msgid "Quarto"
-msgstr ""
+msgstr "Quarto"
 
 msgctxt "Language|"
 msgid "q"
@@ -1180,7 +1195,7 @@ msgstr "SML"
 
 msgctxt "Language|"
 msgid "Snakemake"
-msgstr ""
+msgstr "Snakemake"
 
 msgctxt "Language|"
 msgid "Snort/Suricata"
@@ -1192,7 +1207,7 @@ msgstr "Solidity"
 
 msgctxt "Language|"
 msgid "SPARQL"
-msgstr ""
+msgstr "SPARQL"
 
 msgctxt "Language|"
 msgid "Spice"
@@ -1217,6 +1232,10 @@ msgstr "SQL"
 msgctxt "Language|"
 msgid "Stan"
 msgstr "Stan"
+
+msgctxt "Language|"
+msgid "Starlark"
+msgstr ""
 
 msgctxt "Language|"
 msgid "Stata"
@@ -1372,7 +1391,7 @@ msgstr "Wayland 추적"
 
 msgctxt "Language|"
 msgid "Web Video Text Tracks"
-msgstr ""
+msgstr "WebVTT"
 
 msgctxt "Language|"
 msgid "WINE Config"
