@@ -33,10 +33,12 @@ StringData::StringData(const QString &t,
 TocData::TocData(const StringDataVec &t,
                  long long int l,
                  int v,
+                 const QString &shortId,
                  const QString &id,
                  TocData *p)
     : m_text(t)
     , m_id(id)
+    , m_shortId(shortId)
     , m_line(l)
     , m_level(v)
     , m_parent(p)
@@ -82,6 +84,19 @@ struct TocModelPrivate {
         return id;
     }
 
+    QString labelToShortId(const QString &label) const
+    {
+        const auto id = labelToId(label);
+
+        const auto idx = id.indexOf(QLatin1Char('/'));
+
+        if (idx != -1) {
+            return id.sliced(0, idx).toLower();
+        }
+
+        return {};
+    }
+
     //! Parent.
     TocModel *m_q;
     //! Model's m_data.
@@ -108,7 +123,8 @@ void TocModel::addTopLevelItem(const StringDataVec &text,
                                const QString &label)
 {
     beginInsertRows(QModelIndex(), m_d->m_data.size(), m_d->m_data.size());
-    m_d->m_data.push_back(std::make_shared<TocData>(text, line, level, m_d->labelToId(label)));
+    m_d->m_data.push_back(
+        std::make_shared<TocData>(text, line, level, m_d->labelToShortId(label), m_d->labelToId(label)));
     endInsertRows();
 }
 
@@ -121,7 +137,8 @@ void TocModel::addChildItem(const QModelIndex &parent,
     auto data = static_cast<TocData *>(parent.internalPointer());
 
     beginInsertRows(parent, data->m_children.size(), data->m_children.size());
-    data->m_children.push_back(std::make_shared<TocData>(text, line, level, m_d->labelToId(label), data));
+    data->m_children.push_back(
+        std::make_shared<TocData>(text, line, level, m_d->labelToShortId(label), m_d->labelToId(label), data));
     endInsertRows();
 }
 
@@ -145,6 +162,16 @@ int TocModel::lineNumber(const QModelIndex &index) const
 StringDataVec &TocModel::stringData(const QModelIndex &index) const
 {
     return static_cast<TocData *>(index.internalPointer())->m_text;
+}
+
+const QString &TocModel::id(const QModelIndex &index) const
+{
+    return static_cast<TocData *>(index.internalPointer())->m_id;
+}
+
+const QString &TocModel::shortId(const QModelIndex &index) const
+{
+    return static_cast<TocData *>(index.internalPointer())->m_shortId;
 }
 
 int TocModel::rowCount(const QModelIndex &parent) const

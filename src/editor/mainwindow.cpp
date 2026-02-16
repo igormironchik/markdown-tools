@@ -48,6 +48,7 @@
 #include <QSplitter>
 #include <QStandardPaths>
 #include <QStatusBar>
+#include <QStringListModel>
 #include <QStyleOptionTab>
 #include <QTabBar>
 #include <QTabWidget>
@@ -526,6 +527,8 @@ struct MainWindowPrivate {
         tpv->addWidget(m_tocTree);
         m_tabs->addTab(m_tocPanel, MainWindow::tr("To&C"));
 
+        m_urlAutoCompleteModel = new QStringListModel(m_q);
+
         m_filePanel = new QWidget(m_tabs);
         auto fpv = new QVBoxLayout(m_filePanel);
         fpv->setContentsMargins(3, 3, 3, 3);
@@ -571,7 +574,7 @@ struct MainWindowPrivate {
         auto v = new QVBoxLayout(editorPanel);
         v->setContentsMargins(0, 0, 0, 0);
         v->setSpacing(0);
-        m_editor = new Editor(editorPanel, m_q);
+        m_editor = new Editor(editorPanel, m_q, m_urlAutoCompleteModel);
         m_find = new Find(m_q, m_editor, editorPanel);
         m_editor->setFindWidget(m_find);
         m_gotoline = new GoToLine(m_q, m_editor, editorPanel);
@@ -950,8 +953,9 @@ struct MainWindowPrivate {
     {
         m_initMarkdownMenuRequested = true;
 
-        if (m_tabsVisible && m_tocDoc != m_editor->currentDoc()) {
+        if (m_tocDoc != m_editor->currentDoc()) {
             m_initMarkdownMenuRequested = false;
+            QStringList urls;
             m_tocModel->clear();
 
             m_tocDoc = m_editor->currentDoc();
@@ -961,7 +965,7 @@ struct MainWindowPrivate {
             MD::forEach(
                 {MD::ItemType::Heading},
                 m_tocDoc,
-                [this, &current](MD::Item *item) {
+                [this, &current, &urls](MD::Item *item) {
                     auto h = static_cast<MD::Heading *>(item);
 
                     if (h->text()) {
@@ -982,28 +986,40 @@ struct MainWindowPrivate {
                                                                   h->startLine(),
                                                                   h->level(),
                                                                   h->label());
-                                current.push_back(this->m_tocModel->index(this->m_tocModel->rowCount() - 1, 0));
+                                const auto idx = this->m_tocModel->index(this->m_tocModel->rowCount() - 1, 0);
+
+                                current.push_back(idx);
+                                urls.append(QLatin1Char('#') + this->m_tocModel->shortId(idx));
                             } else {
                                 this->m_tocModel->addChildItem(current.back(),
                                                                this->paragraphToMenuText(h->text().get()),
                                                                h->startLine(),
                                                                h->level(),
                                                                h->label());
-                                current.push_back(
-                                    this->m_tocModel->index(this->m_tocModel->rowCount(current.back()) - 1,
-                                                            0,
-                                                            current.back()));
+
+                                const auto idx = this->m_tocModel->index(this->m_tocModel->rowCount(current.back()) - 1,
+                                                                         0,
+                                                                         current.back());
+                                current.push_back(idx);
+                                urls.append(QLatin1Char('#') + this->m_tocModel->shortId(idx));
                             }
                         } else {
                             this->m_tocModel->addTopLevelItem(this->paragraphToMenuText(h->text().get()),
                                                               h->startLine(),
                                                               h->level(),
                                                               h->label());
-                            current.push_back(this->m_tocModel->index(this->m_tocModel->rowCount() - 1, 0));
+
+                            const auto idx = this->m_tocModel->index(this->m_tocModel->rowCount() - 1, 0);
+
+                            current.push_back(idx);
+                            urls.append(QLatin1Char('#') + this->m_tocModel->shortId(idx));
                         }
                     }
                 },
                 1);
+
+            std::sort(urls.begin(), urls.end());
+            m_urlAutoCompleteModel->setStringList(urls);
         }
     }
 
@@ -1059,6 +1075,7 @@ struct MainWindowPrivate {
     WorkingDirectoryWidget *m_workingDirectoryWidget = nullptr;
     TocTreeView *m_tocTree = nullptr;
     TocModel *m_tocModel = nullptr;
+    QStringListModel *m_urlAutoCompleteModel = nullptr;
     QSortFilterProxyModel *m_filterTocModel = nullptr;
     QLabel *m_cursorPosLabel = nullptr;
     QLineEdit *m_tocFilterLine = nullptr;

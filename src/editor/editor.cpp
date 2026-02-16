@@ -14,12 +14,15 @@
 
 // Qt include.
 #include <QApplication>
+#include <QCompleter>
 #include <QCursor>
 #include <QDesktopServices>
 #include <QFileInfo>
+#include <QListView>
 #include <QMenu>
 #include <QMimeData>
 #include <QPainter>
+#include <QStringListModel>
 #include <QTextBlock>
 #include <QTextDocument>
 #include <QTextLayout>
@@ -260,14 +263,30 @@ private:
 
 struct EditorPrivate {
     explicit EditorPrivate(Editor *parent,
-                           MainWindow *mainWindow)
+                           MainWindow *mainWindow,
+                           QStringListModel *tocModel)
         : m_q(parent)
         , m_mainWindow(mainWindow)
+        , m_tocModel(tocModel)
+        , m_completer(new QCompleter(m_tocModel,
+                                     m_q))
         , m_parsingThread(new QThread(m_q))
         , m_parser(new DataParser)
     {
         m_parser->moveToThread(m_parsingThread);
         m_q->setMouseTracking(true);
+
+        m_completer->setCaseSensitivity(Qt::CaseInsensitive);
+        m_completer->setCompletionMode(QCompleter::PopupCompletion);
+        m_completer->setWidget(m_q->viewport());
+
+        auto completerView = new QListView(m_q);
+        m_completer->setPopup(completerView);
+        completerView->installEventFilter(m_q);
+
+        QObject::connect(m_completer,
+                QOverload<const QString &>::of(&QCompleter::activated),
+                m_q, &Editor::onCompletionActivated);
 
         QObject::connect(m_q, &Editor::doParsing, m_parser, &DataParser::onData, Qt::QueuedConnection);
         QObject::connect(m_parser, &DataParser::done, m_q, &Editor::onParsingDone, Qt::QueuedConnection);
@@ -429,6 +448,10 @@ struct EditorPrivate {
     Editor *m_q = nullptr;
     //! Main window.
     MainWindow *m_mainWindow = nullptr;
+    //! ToC model.
+    QStringListModel *m_tocModel = nullptr;
+    //! ID completer.
+    QCompleter *m_completer;
     //! Line number area.
     LineNumberArea *m_lineNumberArea = nullptr;
     //! Document's name.
@@ -480,6 +503,8 @@ struct EditorPrivate {
     bool m_leftMouseBtnPressed = false;
     //! Settings.
     Settings m_settings;
+    //! Current link.
+    MD::Link *m_link = nullptr;
 
     //! Underlined link.
     struct UnderlinedLink {
@@ -513,10 +538,12 @@ struct EditorPrivate {
 //
 
 Editor::Editor(QWidget *parent,
-               MainWindow *mainWindow)
+               MainWindow *mainWindow,
+               QStringListModel *tocModel)
     : QPlainTextEdit(parent)
     , m_d(new EditorPrivate(this,
-                            mainWindow))
+                            mainWindow,
+                            tocModel))
 {
     m_d->initUi();
 }
@@ -992,6 +1019,36 @@ void Editor::keyReleaseEvent(QKeyEvent *event)
     QPlainTextEdit::keyReleaseEvent(event);
 }
 
+bool Editor::eventFilter(QObject *watched,
+                         QEvent *event)
+{
+    if (watched == m_d->m_completer->popup()) {
+        if (event->type() == QEvent::KeyPress) {
+            QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+
+            if (!keyEvent->matches(QKeySequence::MoveToEndOfBlock)
+                && !keyEvent->matches(QKeySequence::MoveToEndOfDocument)
+                && !keyEvent->matches(QKeySequence::MoveToEndOfLine)
+                && !keyEvent->matches(QKeySequence::MoveToNextChar)
+                && !keyEvent->matches(QKeySequence::MoveToNextLine)
+                && !keyEvent->matches(QKeySequence::MoveToNextPage)
+                && !keyEvent->matches(QKeySequence::MoveToNextWord)
+                && !keyEvent->matches(QKeySequence::MoveToPreviousChar)
+                && !keyEvent->matches(QKeySequence::MoveToPreviousLine)
+                && !keyEvent->matches(QKeySequence::MoveToPreviousPage)
+                && !keyEvent->matches(QKeySequence::MoveToPreviousWord)
+                && !keyEvent->matches(QKeySequence::MoveToStartOfBlock)
+                && !keyEvent->matches(QKeySequence::MoveToStartOfDocument)
+                && !keyEvent->matches(QKeySequence::MoveToStartOfLine)
+                && !keyEvent->matches(QKeySequence::InsertParagraphSeparator)) {
+                keyPressEvent(keyEvent);
+            }
+        }
+    }
+
+    return QPlainTextEdit::eventFilter(watched, event);
+}
+
 void Editor::highlightCurrentLine()
 {
     static const QColor lineColor = QColor(255, 255, 0, 75);
@@ -1286,6 +1343,7 @@ void Editor::replaceAll(const QString &with)
 void Editor::checkUrlAutocompletion()
 {
     if (m_d->m_isContentChangedByKey) {
+        m_d->m_link = nullptr;
         const auto lineNumber = textCursor().block().blockNumber();
         const auto pos = textCursor().positionInBlock() - 1;
 
@@ -1300,10 +1358,26 @@ void Editor::checkUrlAutocompletion()
                                                        link->urlPos().endColumn() - link->urlPos().startColumn() + 1);
 
                 if (url.startsWith(QLatin1Char('#'))) {
-                    qDebug() << "ho-ho" << url;
+                    m_d->m_link = link;
+                    m_d->m_completer->setCompletionPrefix(url);
+                    const auto cr = cursorRect();
+                    m_d->m_completer->complete(
+                        QRect(cr.bottomLeft(), QSize(m_d->m_completer->popup()->sizeHintForColumn(0), 1)));
                 }
             }
         }
+    }
+}
+
+void Editor::onCompletionActivated(const QString &text)
+{
+    if (m_d->m_link) {
+        auto tc = QTextCursor(document()->findBlockByNumber(m_d->m_link->urlPos().startLine()));
+        const auto startPos = tc.position();
+        tc.setPosition(startPos + m_d->m_link->urlPos().startColumn());
+        tc.setPosition(startPos + m_d->m_link->urlPos().endColumn() + 1, QTextCursor::KeepAnchor);
+        tc.insertText(text);
+        setTextCursor(tc);
     }
 }
 

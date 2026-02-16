@@ -20,6 +20,10 @@
 // shared include.
 #include "plugins_page.h"
 
+QT_BEGIN_NAMESPACE
+class QStringListModel;
+QT_END_NAMESPACE
+
 namespace MdEditor
 {
 
@@ -80,7 +84,8 @@ signals:
 
 public:
     Editor(QWidget *parent,
-           MainWindow *mainWindow);
+           MainWindow *mainWindow,
+           QStringListModel *tocModel);
     ~Editor() override;
 
     //! Set document file name.
@@ -200,6 +205,8 @@ private slots:
     void onLinkClicked(const QString &url);
     //! Check for URL auto-completion.
     void checkUrlAutocompletion();
+    //! Completion activated.
+    void onCompletionActivated(const QString &text);
 
 private:
     //! Navigate to reference.
@@ -216,6 +223,8 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
+    bool eventFilter(QObject *watched,
+                     QEvent *event) override;
 
 protected:
     //! \return Line number for a given point.

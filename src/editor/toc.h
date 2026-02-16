@@ -53,6 +53,7 @@ struct TocData {
     TocData(const StringDataVec &t,
             long long int l,
             int v,
+            const QString &shortId,
             const QString &id,
             TocData *p = nullptr);
 
@@ -63,6 +64,8 @@ struct TocData {
     StringDataVec m_text;
     //! ID of item.
     QString m_id;
+    //! Short ID.
+    QString m_shortId;
     //! Line number.
     long long int m_line = -1;
     //! Heading level.
@@ -105,6 +108,10 @@ public:
     int lineNumber(const QModelIndex &index) const;
     //! \return String data.
     StringDataVec &stringData(const QModelIndex &index) const;
+    //! \return ID.
+    const QString &id(const QModelIndex &index) const;
+    //! \return Short ID.
+    const QString &shortId(const QModelIndex &index) const;
 
     //! \return Count of the rows.
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
