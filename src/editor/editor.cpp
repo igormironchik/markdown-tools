@@ -287,6 +287,7 @@ struct EditorPrivate {
 
         QObject::connect(m_q, &Editor::cursorPositionChanged, m_q->viewport(), qOverload<>(&QWidget::update));
         QObject::connect(m_q, &QPlainTextEdit::textChanged, m_q, &Editor::onContentChanged);
+        QObject::connect(m_q, &Editor::ready, m_q, &Editor::checkUrlAutocompletion);
         QObject::connect(m_lineNumberArea,
                          &LineNumberArea::lineNumberContextMenuRequested,
                          m_q,
@@ -471,6 +472,10 @@ struct EditorPrivate {
     bool m_useWorkingDir = false;
     //! Is editor ready?
     bool m_isReady = true;
+    //! Is key was pressed? In case of Ctrl+Z will be false.
+    bool m_keyPressed = false;
+    //! Is content was changed by keyboard?
+    bool m_isContentChangedByKey = false;
     //! Is left mouse button pressed?
     bool m_leftMouseBtnPressed = false;
     //! Settings.
@@ -1248,7 +1253,7 @@ void Editor::replaceCurrent(const QString &with)
 void Editor::replaceAll(const QString &with)
 {
     if (foundHighlighted()) {
-        disconnect(this, &QPlainTextEdit::textChanged, this, &Editor::onContentChanged);
+        disconnect(this, &QPlainTextEdit::textChanged, this, 0);
 
         QTextCursor editCursor(document());
 
@@ -1271,11 +1276,35 @@ void Editor::replaceAll(const QString &with)
         editCursor.endEditBlock();
 
         clearExtraSelections();
+
+        connect(this, &QPlainTextEdit::textChanged, this, &Editor::onContentChanged);
     }
 
-    connect(this, &QPlainTextEdit::textChanged, this, &Editor::onContentChanged);
-
     onContentChanged();
+}
+
+void Editor::checkUrlAutocompletion()
+{
+    if (m_d->m_isContentChangedByKey) {
+        const auto lineNumber = textCursor().block().blockNumber();
+        const auto pos = textCursor().positionInBlock() - 1;
+
+        const auto items = syntaxHighlighter().findFirstInCache({pos, lineNumber, pos, lineNumber});
+
+        if (!items.isEmpty() && items.back()->type() == MD::ItemType::Link) {
+            auto link = static_cast<MD::Link *>(items.back());
+
+            if (pos >= link->urlPos().startColumn() && pos <= link->urlPos().endColumn()) {
+                const auto url =
+                    textCursor().block().text().sliced(link->urlPos().startColumn(),
+                                                       link->urlPos().endColumn() - link->urlPos().startColumn() + 1);
+
+                if (url.startsWith(QLatin1Char('#'))) {
+                    qDebug() << "ho-ho" << url;
+                }
+            }
+        }
+    }
 }
 
 void Editor::onContentChanged()
@@ -1290,6 +1319,8 @@ void Editor::onContentChanged()
     ++m_d->m_currentParsingCounter;
 
     m_d->m_isReady = false;
+    m_d->m_isContentChangedByKey = m_d->m_keyPressed;
+    m_d->m_keyPressed = false;
 
     emit doParsing(md,
                    (m_d->m_useWorkingDir ? m_d->m_workingDirectory : info.absolutePath()),
@@ -1505,6 +1536,8 @@ bool Editor::handleReturnKeyForCode(QKeyEvent *event,
 
 void Editor::keyPressEvent(QKeyEvent *event)
 {
+    m_d->m_keyPressed = !event->text().isEmpty() && !event->matches(QKeySequence::Undo);
+
     auto c = textCursor();
 
     if (event == QKeySequence::InsertParagraphSeparator) {

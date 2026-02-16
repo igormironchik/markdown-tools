@@ -198,6 +198,8 @@ private slots:
                        MD::details::IdsMap idsMap);
     //! Link clicked.
     void onLinkClicked(const QString &url);
+    //! Check for URL auto-completion.
+    void checkUrlAutocompletion();
 
 private:
     //! Navigate to reference.

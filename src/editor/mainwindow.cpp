@@ -2475,8 +2475,7 @@ void MainWindow::dropEvent(QDropEvent *event)
         if (url.isLocalFile()) {
             const auto fileName = url.toLocalFile();
 
-            if (fileName.endsWith(".md", Qt::CaseInsensitive)
-                || fileName.endsWith(".markdown", Qt::CaseInsensitive)) {
+            if (fileName.endsWith(".md", Qt::CaseInsensitive) || fileName.endsWith(".markdown", Qt::CaseInsensitive)) {
                 if (!askAboutUnsavedFile()) {
                     return;
                 }
