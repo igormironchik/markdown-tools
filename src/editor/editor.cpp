@@ -281,6 +281,7 @@ struct EditorPrivate {
         m_completer->setWidget(m_q->viewport());
 
         auto completerView = new QListView(m_q);
+        completerView->setFrameStyle(QFrame::Sunken | QFrame::Raised);
         m_completer->setPopup(completerView);
         completerView->installEventFilter(m_q);
 
@@ -1361,9 +1362,10 @@ void Editor::checkUrlAutocompletion()
                 if (url.startsWith(QLatin1Char('#'))) {
                     m_d->m_link = link;
                     m_d->m_completer->setCompletionPrefix(url);
-                    const auto cr = cursorRect();
+                    auto tc = textCursor();
+                    tc.setPosition(tc.block().position() + link->urlPos().startColumn());
                     m_d->m_completer->complete(
-                        QRect(cr.bottomLeft(), QSize(m_d->m_completer->popup()->sizeHintForColumn(0), 1)));
+                        QRect(cursorRect(tc).bottomLeft(), QSize(m_d->m_completer->popup()->sizeHintForColumn(0), 1)));
                 }
             }
         }
