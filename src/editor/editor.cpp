@@ -285,8 +285,9 @@ struct EditorPrivate {
         completerView->installEventFilter(m_q);
 
         QObject::connect(m_completer,
-                QOverload<const QString &>::of(&QCompleter::activated),
-                m_q, &Editor::onCompletionActivated);
+                         QOverload<const QString &>::of(&QCompleter::activated),
+                         m_q,
+                         &Editor::onCompletionActivated);
 
         QObject::connect(m_q, &Editor::doParsing, m_parser, &DataParser::onData, Qt::QueuedConnection);
         QObject::connect(m_parser, &DataParser::done, m_q, &Editor::onParsingDone, Qt::QueuedConnection);
