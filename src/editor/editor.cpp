@@ -14,12 +14,15 @@
 
 // Qt include.
 #include <QApplication>
+#include <QCompleter>
 #include <QCursor>
 #include <QDesktopServices>
 #include <QFileInfo>
+#include <QListView>
 #include <QMenu>
 #include <QMimeData>
 #include <QPainter>
+#include <QStringListModel>
 #include <QTextBlock>
 #include <QTextDocument>
 #include <QTextLayout>
@@ -260,14 +263,36 @@ private:
 
 struct EditorPrivate {
     explicit EditorPrivate(Editor *parent,
-                           MainWindow *mainWindow)
+                           MainWindow *mainWindow,
+                           QStringListModel *tocModel)
         : m_q(parent)
         , m_mainWindow(mainWindow)
+        , m_tocModel(tocModel)
+        , m_completer(new QCompleter(m_tocModel,
+                                     m_q))
         , m_parsingThread(new QThread(m_q))
         , m_parser(new DataParser)
     {
         m_parser->moveToThread(m_parsingThread);
         m_q->setMouseTracking(true);
+
+        m_completer->setCaseSensitivity(Qt::CaseInsensitive);
+        m_completer->setCompletionMode(QCompleter::PopupCompletion);
+        m_completer->setWidget(m_q->viewport());
+
+        auto completerView = new QListView(m_q);
+        completerView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+        completerView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        completerView->setSelectionBehavior(QAbstractItemView::SelectRows);
+        completerView->setSelectionMode(QAbstractItemView::SingleSelection);
+        completerView->setModelColumn(m_completer->completionColumn());
+        m_completer->setPopup(completerView);
+        completerView->installEventFilter(m_q);
+
+        QObject::connect(m_completer,
+                         QOverload<const QString &>::of(&QCompleter::activated),
+                         m_q,
+                         &Editor::onCompletionActivated);
 
         QObject::connect(m_q, &Editor::doParsing, m_parser, &DataParser::onData, Qt::QueuedConnection);
         QObject::connect(m_parser, &DataParser::done, m_q, &Editor::onParsingDone, Qt::QueuedConnection);
@@ -287,6 +312,7 @@ struct EditorPrivate {
 
         QObject::connect(m_q, &Editor::cursorPositionChanged, m_q->viewport(), qOverload<>(&QWidget::update));
         QObject::connect(m_q, &QPlainTextEdit::textChanged, m_q, &Editor::onContentChanged);
+        QObject::connect(m_q, &Editor::ready, m_q, &Editor::checkUrlAutocompletion);
         QObject::connect(m_lineNumberArea,
                          &LineNumberArea::lineNumberContextMenuRequested,
                          m_q,
@@ -428,6 +454,10 @@ struct EditorPrivate {
     Editor *m_q = nullptr;
     //! Main window.
     MainWindow *m_mainWindow = nullptr;
+    //! ToC model.
+    QStringListModel *m_tocModel = nullptr;
+    //! ID completer.
+    QCompleter *m_completer;
     //! Line number area.
     LineNumberArea *m_lineNumberArea = nullptr;
     //! Document's name.
@@ -471,10 +501,16 @@ struct EditorPrivate {
     bool m_useWorkingDir = false;
     //! Is editor ready?
     bool m_isReady = true;
+    //! Is key was pressed? In case of Ctrl+Z will be false.
+    bool m_keyPressed = false;
+    //! Is content was changed by keyboard?
+    bool m_isContentChangedByKey = false;
     //! Is left mouse button pressed?
     bool m_leftMouseBtnPressed = false;
     //! Settings.
     Settings m_settings;
+    //! Current link.
+    MD::Link *m_link = nullptr;
 
     //! Underlined link.
     struct UnderlinedLink {
@@ -508,10 +544,12 @@ struct EditorPrivate {
 //
 
 Editor::Editor(QWidget *parent,
-               MainWindow *mainWindow)
+               MainWindow *mainWindow,
+               QStringListModel *tocModel)
     : QPlainTextEdit(parent)
     , m_d(new EditorPrivate(this,
-                            mainWindow))
+                            mainWindow,
+                            tocModel))
 {
     m_d->initUi();
 }
@@ -987,6 +1025,36 @@ void Editor::keyReleaseEvent(QKeyEvent *event)
     QPlainTextEdit::keyReleaseEvent(event);
 }
 
+bool Editor::eventFilter(QObject *watched,
+                         QEvent *event)
+{
+    if (watched == m_d->m_completer->popup()) {
+        if (event->type() == QEvent::KeyPress) {
+            QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+
+            if (!keyEvent->matches(QKeySequence::MoveToEndOfBlock)
+                && !keyEvent->matches(QKeySequence::MoveToEndOfDocument)
+                && !keyEvent->matches(QKeySequence::MoveToEndOfLine)
+                && !keyEvent->matches(QKeySequence::MoveToNextChar)
+                && !keyEvent->matches(QKeySequence::MoveToNextLine)
+                && !keyEvent->matches(QKeySequence::MoveToNextPage)
+                && !keyEvent->matches(QKeySequence::MoveToNextWord)
+                && !keyEvent->matches(QKeySequence::MoveToPreviousChar)
+                && !keyEvent->matches(QKeySequence::MoveToPreviousLine)
+                && !keyEvent->matches(QKeySequence::MoveToPreviousPage)
+                && !keyEvent->matches(QKeySequence::MoveToPreviousWord)
+                && !keyEvent->matches(QKeySequence::MoveToStartOfBlock)
+                && !keyEvent->matches(QKeySequence::MoveToStartOfDocument)
+                && !keyEvent->matches(QKeySequence::MoveToStartOfLine)
+                && !keyEvent->matches(QKeySequence::InsertParagraphSeparator)) {
+                keyPressEvent(keyEvent);
+            }
+        }
+    }
+
+    return QPlainTextEdit::eventFilter(watched, event);
+}
+
 void Editor::highlightCurrentLine()
 {
     static const QColor lineColor = QColor(255, 255, 0, 75);
@@ -1248,7 +1316,7 @@ void Editor::replaceCurrent(const QString &with)
 void Editor::replaceAll(const QString &with)
 {
     if (foundHighlighted()) {
-        disconnect(this, &QPlainTextEdit::textChanged, this, &Editor::onContentChanged);
+        disconnect(this, &QPlainTextEdit::textChanged, this, 0);
 
         QTextCursor editCursor(document());
 
@@ -1271,11 +1339,53 @@ void Editor::replaceAll(const QString &with)
         editCursor.endEditBlock();
 
         clearExtraSelections();
+
+        connect(this, &QPlainTextEdit::textChanged, this, &Editor::onContentChanged);
     }
 
-    connect(this, &QPlainTextEdit::textChanged, this, &Editor::onContentChanged);
-
     onContentChanged();
+}
+
+void Editor::checkUrlAutocompletion()
+{
+    if (m_d->m_isContentChangedByKey) {
+        m_d->m_link = nullptr;
+        const auto lineNumber = textCursor().block().blockNumber();
+        const auto pos = textCursor().positionInBlock() - 1;
+
+        const auto items = syntaxHighlighter().findFirstInCache({pos, lineNumber, pos, lineNumber});
+
+        if (!items.isEmpty() && items.back()->type() == MD::ItemType::Link) {
+            auto link = static_cast<MD::Link *>(items.back());
+
+            if (pos >= link->urlPos().startColumn() && pos <= link->urlPos().endColumn()) {
+                const auto url =
+                    textCursor().block().text().sliced(link->urlPos().startColumn(),
+                                                       link->urlPos().endColumn() - link->urlPos().startColumn() + 1);
+
+                if (url.startsWith(QLatin1Char('#'))) {
+                    m_d->m_link = link;
+                    m_d->m_completer->setCompletionPrefix(url);
+                    auto tc = textCursor();
+                    tc.setPosition(tc.block().position() + link->urlPos().startColumn());
+                    m_d->m_completer->complete(
+                        QRect(cursorRect(tc).bottomLeft(), QSize(m_d->m_completer->popup()->sizeHintForColumn(0), 1)));
+                }
+            }
+        }
+    }
+}
+
+void Editor::onCompletionActivated(const QString &text)
+{
+    if (m_d->m_link) {
+        auto tc = QTextCursor(document()->findBlockByNumber(m_d->m_link->urlPos().startLine()));
+        const auto startPos = tc.position();
+        tc.setPosition(startPos + m_d->m_link->urlPos().startColumn());
+        tc.setPosition(startPos + m_d->m_link->urlPos().endColumn() + 1, QTextCursor::KeepAnchor);
+        tc.insertText(text);
+        setTextCursor(tc);
+    }
 }
 
 void Editor::onContentChanged()
@@ -1290,6 +1400,8 @@ void Editor::onContentChanged()
     ++m_d->m_currentParsingCounter;
 
     m_d->m_isReady = false;
+    m_d->m_isContentChangedByKey = m_d->m_keyPressed;
+    m_d->m_keyPressed = false;
 
     emit doParsing(md,
                    (m_d->m_useWorkingDir ? m_d->m_workingDirectory : info.absolutePath()),
@@ -1505,6 +1617,8 @@ bool Editor::handleReturnKeyForCode(QKeyEvent *event,
 
 void Editor::keyPressEvent(QKeyEvent *event)
 {
+    m_d->m_keyPressed = !event->text().isEmpty() && !event->matches(QKeySequence::Undo);
+
     auto c = textCursor();
 
     if (event == QKeySequence::InsertParagraphSeparator) {
