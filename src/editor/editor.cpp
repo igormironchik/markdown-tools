@@ -22,6 +22,7 @@
 #include <QMenu>
 #include <QMimeData>
 #include <QPainter>
+#include <QScrollBar>
 #include <QStringListModel>
 #include <QTextBlock>
 #include <QTextDocument>
@@ -286,6 +287,7 @@ struct EditorPrivate {
         completerView->setSelectionBehavior(QAbstractItemView::SelectRows);
         completerView->setSelectionMode(QAbstractItemView::SingleSelection);
         completerView->setModelColumn(m_completer->completionColumn());
+        completerView->setTextElideMode(Qt::ElideNone);
         m_completer->setPopup(completerView);
         completerView->installEventFilter(m_q);
 
@@ -1349,7 +1351,6 @@ void Editor::replaceAll(const QString &with)
 void Editor::checkUrlAutocompletion()
 {
     if (m_d->m_isContentChangedByKey) {
-        m_d->m_link = nullptr;
         const auto lineNumber = textCursor().block().blockNumber();
         const auto pos = textCursor().positionInBlock() - 1;
 
@@ -1369,7 +1370,12 @@ void Editor::checkUrlAutocompletion()
                     auto tc = textCursor();
                     tc.setPosition(tc.block().position() + link->urlPos().startColumn());
                     m_d->m_completer->complete(
-                        QRect(cursorRect(tc).bottomLeft(), QSize(m_d->m_completer->popup()->sizeHintForColumn(0), 1)));
+                        QRect(cursorRect(tc).bottomLeft(),
+                              QSize(m_d->m_completer->popup()->sizeHintForColumn(0)
+                                        + (m_d->m_completer->completionCount() > m_d->m_completer->maxVisibleItems()
+                                               ? m_d->m_completer->popup()->verticalScrollBar()->sizeHint().width()
+                                               : 0),
+                                    1)));
                 }
             }
         }
@@ -1617,6 +1623,7 @@ bool Editor::handleReturnKeyForCode(QKeyEvent *event,
 
 void Editor::keyPressEvent(QKeyEvent *event)
 {
+    m_d->m_link = nullptr;
     m_d->m_keyPressed = !event->text().isEmpty() && !event->matches(QKeySequence::Undo);
 
     auto c = textCursor();
