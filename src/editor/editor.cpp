@@ -24,6 +24,7 @@
 #include <QPainter>
 #include <QScrollBar>
 #include <QStringListModel>
+#include <QStyle>
 #include <QTextBlock>
 #include <QTextDocument>
 #include <QTextLayout>
@@ -1374,7 +1375,9 @@ void Editor::checkUrlAutocompletion()
                               QSize(m_d->m_completer->popup()->sizeHintForColumn(0)
                                         + (m_d->m_completer->completionCount() > m_d->m_completer->maxVisibleItems()
                                                ? m_d->m_completer->popup()->verticalScrollBar()->sizeHint().width()
-                                               : 0),
+                                               : 0)
+                                        + QApplication::style()->pixelMetric(QStyle::PM_FocusFrameHMargin)
+                                        + 1,
                                     1)));
                 }
             }
