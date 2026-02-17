@@ -281,7 +281,11 @@ struct EditorPrivate {
         m_completer->setWidget(m_q->viewport());
 
         auto completerView = new QListView(m_q);
-        completerView->setFrameStyle(QFrame::Sunken | QFrame::Raised);
+        completerView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+        completerView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        completerView->setSelectionBehavior(QAbstractItemView::SelectRows);
+        completerView->setSelectionMode(QAbstractItemView::SingleSelection);
+        completerView->setModelColumn(m_completer->completionColumn());
         m_completer->setPopup(completerView);
         completerView->installEventFilter(m_q);
 
