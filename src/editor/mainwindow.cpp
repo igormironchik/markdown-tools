@@ -19,6 +19,7 @@
 #include "version.h"
 #include "webview.h"
 #include "wordwrapdelegate.h"
+#include "emoji.h"
 
 // Sonnet include.
 #include <Sonnet/Settings>
@@ -79,6 +80,8 @@
 namespace MdEditor
 {
 
+static const QChar s_colon = QLatin1Char(':');
+
 //
 // HtmlVisitor
 //
@@ -92,6 +95,25 @@ protected:
     {
         auto tmp = MD::details::HtmlVisitor::prepareTextForHtml(t);
         tmp.replace(QLatin1Char('$'), QStringLiteral("<span>$</span>"));
+
+        auto i = tmp.indexOf(s_colon, 0);
+
+        while (i != -1) {
+            const auto j = tmp.indexOf(s_colon, i + 1);
+
+            if (j != -1) {
+                const auto name = tmp.sliced(i + 1, j - i - 1);
+
+                if (s_emojiMap.contains(name)) {
+                    tmp.replace(i, j - i + 1, s_emojiMap[name]);
+                    i = tmp.indexOf(s_colon, i + s_emojiMap[name].length());
+                } else {
+                    i = j;
+                }
+            } else {
+                break;
+            }
+        }
 
         return tmp;
     }
@@ -2748,7 +2770,6 @@ void MainWindow::onShowLicenses()
     msg.addLicense(s_katexName, s_katexLicense);
     msg.addLicense(s_githubMarkdownCssName, s_githubMarkdownCssLicense);
     msg.addLicense(s_highlightJsName, s_highlightJsLicense);
-    msg.addLicense(s_jsEmojiName, s_jsEmojiLicense);
     msg.addLicense(s_highlightBlockquoteName, s_highlightBlockquoteLicense);
     msg.addLicense(s_sonnetName, s_sonnetLicense);
     msg.addLicense(s_md4qtName, s_md4qtLicense);

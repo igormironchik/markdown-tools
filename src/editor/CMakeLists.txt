@@ -58,7 +58,8 @@ set(LIB_SRC
     sonnetconfig.h
     sonnetconfig.cpp
     speller.h
-    speller.cpp)
+    speller.cpp
+    emoji.h)
 
 set(SRC main.cpp)
 

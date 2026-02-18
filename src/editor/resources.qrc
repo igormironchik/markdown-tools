@@ -107,8 +107,6 @@
         <file>res/katex/contrib/render-a11y-string.min.js</file>
         <file>res/katex/contrib/render-a11y-string.mjs</file>
         <file>res/hightlight-blockquote.js</file>
-        <file>res/css/emoji.css</file>
-        <file>res/emoji.js</file>
         <file>res/img/view-sidetree.png</file>
         <file>res/img/configure.png</file>
         <file>res/img/document-properties.png</file>
