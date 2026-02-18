@@ -1255,6 +1255,7 @@ void MainWindow::openFile(const QString &path)
         return;
     }
 
+    m_d->m_preview->stop();
     m_d->m_isDefaultFile = false;
     m_d->m_editor->setDocName(path);
     const auto wd = QFileInfo(path).absoluteDir().absolutePath();
@@ -1306,6 +1307,7 @@ void MainWindow::onFileNew()
         }
     }
 
+    m_d->m_preview->stop();
     m_d->m_isDefaultFile = true;
     m_d->m_editor->setDocName(QStringLiteral("default.md"));
     m_d->m_editor->setText({});
@@ -1430,6 +1432,8 @@ void MainWindow::onFileSaveAs()
 
 void MainWindow::closeEvent(QCloseEvent *e)
 {
+    auto stopPreview = true;
+
     if (isModified()) {
         QMessageBox::StandardButton button =
             QMessageBox::question(this,
@@ -1440,10 +1444,15 @@ void MainWindow::closeEvent(QCloseEvent *e)
 
         if (button != QMessageBox::Yes) {
             e->ignore();
+            stopPreview = false;
         }
     }
 
     saveCfg();
+
+    if (stopPreview) {
+        m_d->m_preview->stop();
+    }
 }
 
 bool MainWindow::event(QEvent *event)
