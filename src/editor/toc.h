@@ -64,6 +64,8 @@ struct TocStringLevel {
     StringDataVec m_str;
     //! Heading level.
     int m_level;
+    //! Line number.
+    long long int m_line = -1;
 }; // struct TocStringLevel
 
 bool operator==(const TocStringLevel &s1,
@@ -133,6 +135,9 @@ public:
 
     //! \return ToC strings for comparing.
     TocStringLevelVec tocStrings() const;
+
+    //! Update line numbers of headings.
+    void updateTocLines(const TocStringLevelVec &vec);
 
     //! Clear.
     void clear();

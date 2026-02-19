@@ -973,10 +973,7 @@ struct MainWindowPrivate {
     //! Populate ToC tree view.
     void initMarkdownMenu()
     {
-        m_initMarkdownMenuRequested = true;
-
         if (m_tocDoc != m_editor->currentDoc()) {
-            m_initMarkdownMenuRequested = false;
             m_tocDoc = m_editor->currentDoc();
 
             TocStringLevelVec newToc;
@@ -987,7 +984,7 @@ struct MainWindowPrivate {
                 [this, &newToc](MD::Item *item) {
                     auto h = static_cast<MD::Heading *>(item);
 
-                    newToc.push_back({this->paragraphToMenuText(h->text().get()), h->level()});
+                    newToc.push_back({this->paragraphToMenuText(h->text().get()), h->level(), h->startLine()});
                 },
                 1);
 
@@ -1056,6 +1053,8 @@ struct MainWindowPrivate {
 
                 std::sort(urls.begin(), urls.end());
                 m_urlAutoCompleteModel->setStringList(urls);
+            } else {
+                m_tocModel->updateTocLines(newToc);
             }
         }
     }
@@ -1122,7 +1121,6 @@ struct MainWindowPrivate {
     bool m_previewMode = false;
     bool m_tabsVisible = false;
     bool m_livePreviewVisible = true;
-    bool m_initMarkdownMenuRequested = false;
     QCursor m_splitterCursor;
     QSharedPointer<MD::Document> m_mdDoc;
     QSharedPointer<MD::Document> m_tocDoc;
@@ -1552,14 +1550,7 @@ void MainWindow::onTextChanged()
         }
     }
 
-    const auto lineNumber = m_d->m_editor->textCursor().block().blockNumber();
-    const auto lineLength = m_d->m_editor->textCursor().block().length();
-
-    const auto items = m_d->m_editor->syntaxHighlighter().findFirstInCache({0, lineNumber, lineLength, lineNumber});
-
-    if ((!items.empty() && items[0]->type() == MD::ItemType::Heading) || m_d->m_initMarkdownMenuRequested) {
-        m_d->initMarkdownMenu();
-    }
+    m_d->initMarkdownMenu();
 }
 
 void MainWindow::onAbout()

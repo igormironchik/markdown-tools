@@ -202,6 +202,25 @@ TocStringLevelVec TocModel::tocStrings() const
     return vec;
 }
 
+void TocModel::updateTocLines(const TocStringLevelVec &vec)
+{
+    qsizetype idx = 0;
+
+    std::function<void(const std::vector<std::shared_ptr<TocData>> &)> walk;
+
+    walk = [&](const std::vector<std::shared_ptr<TocData>> &data) {
+        for (auto it = data.cbegin(), last = data.cend(); it != last; ++it) {
+            (*it)->m_line = vec.at(idx++).m_line;
+
+            if (!(*it)->m_children.empty()) {
+                walk((*it)->m_children);
+            }
+        }
+    };
+
+    walk(m_d->m_data);
+}
+
 void TocModel::clear()
 {
     beginResetModel();
