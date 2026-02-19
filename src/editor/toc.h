@@ -25,6 +25,11 @@ struct UnitData {
     bool m_isRightToLeft = false;
 };
 
+bool operator==(const UnitData &u1,
+                const UnitData &u2);
+bool operator!=(const UnitData &u1,
+                const UnitData &u2);
+
 //! ToC tree view full data.
 struct StringData {
     StringData(const QString &t,
@@ -41,8 +46,33 @@ struct StringData {
     QVector<QPair<QRect, UnitData>> m_textRects;
 }; // struct StringData
 
+bool operator==(const StringData &d1,
+                const StringData &d2);
+bool operator!=(const StringData &d1,
+                const StringData &d2);
+
 //! Vector of string data for ToC tree view item.
 using StringDataVec = QVector<StringData>;
+
+//
+// TocStringLevel
+//
+
+//! Auxiliary struct for comparing ToC data.
+struct TocStringLevel {
+    //! ToC text.
+    StringDataVec m_str;
+    //! Heading level.
+    int m_level;
+}; // struct TocStringLevel
+
+bool operator==(const TocStringLevel &s1,
+                const TocStringLevel &s2);
+bool operator!=(const TocStringLevel &s1,
+                const TocStringLevel &s2);
+
+//! Vector of all string data of items in ToC.
+using TocStringLevelVec = QVector<TocStringLevel>;
 
 //
 // TocData
@@ -100,6 +130,10 @@ public:
                       long long int line,
                       int level,
                       const QString &label);
+
+    //! \return ToC strings for comparing.
+    TocStringLevelVec tocStrings() const;
+
     //! Clear.
     void clear();
     //! \return Level.

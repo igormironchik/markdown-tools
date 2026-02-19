@@ -7,6 +7,7 @@
 #include "mainwindow.h"
 #include "colorsdlg.h"
 #include "editor.h"
+#include "emoji.h"
 #include "find.h"
 #include "findweb.h"
 #include "fontdlg.h"
@@ -19,7 +20,6 @@
 #include "version.h"
 #include "webview.h"
 #include "wordwrapdelegate.h"
-#include "emoji.h"
 
 // Sonnet include.
 #include <Sonnet/Settings>
@@ -977,71 +977,86 @@ struct MainWindowPrivate {
 
         if (m_tocDoc != m_editor->currentDoc()) {
             m_initMarkdownMenuRequested = false;
-            QStringList urls;
-            m_tocModel->clear();
-
             m_tocDoc = m_editor->currentDoc();
 
-            std::vector<QModelIndex> current;
+            TocStringLevelVec newToc;
 
             MD::forEach(
                 {MD::ItemType::Heading},
                 m_tocDoc,
-                [this, &current, &urls](MD::Item *item) {
+                [this, &newToc](MD::Item *item) {
                     auto h = static_cast<MD::Heading *>(item);
 
-                    if (h->text()) {
-                        if (current.size()) {
-                            if (h->level() < this->m_tocModel->level(current.front())) {
-                                current.clear();
-                            } else {
-                                current.erase(std::find_if(current.cbegin(),
-                                                           current.cend(),
-                                                           [h, this](const auto &i) {
-                                                               return this->m_tocModel->level(i) >= h->level();
-                                                           }),
-                                              current.cend());
-                            }
+                    newToc.push_back({this->paragraphToMenuText(h->text().get()), h->level()});
+                },
+                1);
 
-                            if (current.empty()) {
+            if (newToc != m_tocModel->tocStrings()) {
+                QStringList urls;
+                m_tocModel->clear();
+
+                std::vector<QModelIndex> current;
+
+                MD::forEach(
+                    {MD::ItemType::Heading},
+                    m_tocDoc,
+                    [this, &current, &urls](MD::Item *item) {
+                        auto h = static_cast<MD::Heading *>(item);
+
+                        if (h->text()) {
+                            if (current.size()) {
+                                if (h->level() < this->m_tocModel->level(current.front())) {
+                                    current.clear();
+                                } else {
+                                    current.erase(std::find_if(current.cbegin(),
+                                                               current.cend(),
+                                                               [h, this](const auto &i) {
+                                                                   return this->m_tocModel->level(i) >= h->level();
+                                                               }),
+                                                  current.cend());
+                                }
+
+                                if (current.empty()) {
+                                    this->m_tocModel->addTopLevelItem(this->paragraphToMenuText(h->text().get()),
+                                                                      h->startLine(),
+                                                                      h->level(),
+                                                                      h->label());
+                                    const auto idx = this->m_tocModel->index(this->m_tocModel->rowCount() - 1, 0);
+
+                                    current.push_back(idx);
+                                    urls.append(QLatin1Char('#') + this->m_tocModel->shortId(idx));
+                                } else {
+                                    this->m_tocModel->addChildItem(current.back(),
+                                                                   this->paragraphToMenuText(h->text().get()),
+                                                                   h->startLine(),
+                                                                   h->level(),
+                                                                   h->label());
+
+                                    const auto idx =
+                                        this->m_tocModel->index(this->m_tocModel->rowCount(current.back()) - 1,
+                                                                0,
+                                                                current.back());
+                                    current.push_back(idx);
+                                    urls.append(QLatin1Char('#') + this->m_tocModel->shortId(idx));
+                                }
+                            } else {
                                 this->m_tocModel->addTopLevelItem(this->paragraphToMenuText(h->text().get()),
                                                                   h->startLine(),
                                                                   h->level(),
                                                                   h->label());
+
                                 const auto idx = this->m_tocModel->index(this->m_tocModel->rowCount() - 1, 0);
 
                                 current.push_back(idx);
                                 urls.append(QLatin1Char('#') + this->m_tocModel->shortId(idx));
-                            } else {
-                                this->m_tocModel->addChildItem(current.back(),
-                                                               this->paragraphToMenuText(h->text().get()),
-                                                               h->startLine(),
-                                                               h->level(),
-                                                               h->label());
-
-                                const auto idx = this->m_tocModel->index(this->m_tocModel->rowCount(current.back()) - 1,
-                                                                         0,
-                                                                         current.back());
-                                current.push_back(idx);
-                                urls.append(QLatin1Char('#') + this->m_tocModel->shortId(idx));
                             }
-                        } else {
-                            this->m_tocModel->addTopLevelItem(this->paragraphToMenuText(h->text().get()),
-                                                              h->startLine(),
-                                                              h->level(),
-                                                              h->label());
-
-                            const auto idx = this->m_tocModel->index(this->m_tocModel->rowCount() - 1, 0);
-
-                            current.push_back(idx);
-                            urls.append(QLatin1Char('#') + this->m_tocModel->shortId(idx));
                         }
-                    }
-                },
-                1);
+                    },
+                    1);
 
-            std::sort(urls.begin(), urls.end());
-            m_urlAutoCompleteModel->setStringList(urls);
+                std::sort(urls.begin(), urls.end());
+                m_urlAutoCompleteModel->setStringList(urls);
+            }
         }
     }
 

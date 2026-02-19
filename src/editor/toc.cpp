@@ -9,8 +9,47 @@
 // shared include.
 #include "utils.h"
 
+// C++ include.
+#include <functional>
+
 namespace MdEditor
 {
+
+bool operator==(const TocStringLevel &s1,
+                const TocStringLevel &s2)
+{
+    return (s1.m_level == s2.m_level && s1.m_str == s2.m_str);
+}
+
+bool operator!=(const TocStringLevel &s1,
+                const TocStringLevel &s2)
+{
+    return !(s1 == s2);
+}
+
+bool operator==(const StringData &d1,
+                const StringData &d2)
+{
+    return (d1.m_data == d2.m_data);
+}
+
+bool operator!=(const StringData &d1,
+                const StringData &d2)
+{
+    return !(d1 == d2);
+}
+
+bool operator==(const UnitData &u1,
+                const UnitData &u2)
+{
+    return (u1.m_text == u2.m_text && u1.m_code == u2.m_code && u1.m_isRightToLeft == u2.m_isRightToLeft);
+}
+
+bool operator!=(const UnitData &u1,
+                const UnitData &u2)
+{
+    return !(u1 == u2);
+}
 
 StringData::StringData(const QString &t,
                        bool c,
@@ -140,6 +179,27 @@ void TocModel::addChildItem(const QModelIndex &parent,
     data->m_children.push_back(
         std::make_shared<TocData>(text, line, level, m_d->labelToShortId(label), m_d->labelToId(label), data));
     endInsertRows();
+}
+
+TocStringLevelVec TocModel::tocStrings() const
+{
+    TocStringLevelVec vec;
+
+    std::function<void(const std::vector<std::shared_ptr<TocData>> &)> walk;
+
+    walk = [&](const std::vector<std::shared_ptr<TocData>> &data) {
+        for (const auto &d : data) {
+            vec.push_back({d->m_text, d->m_level});
+
+            if (!d->m_children.empty()) {
+                walk(d->m_children);
+            }
+        }
+    };
+
+    walk(m_d->m_data);
+
+    return vec;
 }
 
 void TocModel::clear()
