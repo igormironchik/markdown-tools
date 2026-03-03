@@ -638,6 +638,8 @@ struct MainWindowPrivate {
         channel->registerObject(QStringLiteral("content"), m_html);
         m_page->setWebChannel(channel);
 
+        QObject::connect(m_preview, &WebView::scrollRequested, m_q, &MainWindow::onScrollEditor, Qt::QueuedConnection);
+
 #ifdef Q_OS_WIN
         m_mdPdfExe = QStringLiteral("md-pdf-gui.exe");
         m_launcherExe = QStringLiteral("md-launcher.exe");
@@ -2558,6 +2560,23 @@ void MainWindow::onOpenRequestedRef()
     }
 }
 
+void MainWindow::onScrollEditor(const QString &id)
+{
+    if (!id.isEmpty() && m_d->m_editor->itemsMap().contains(id)) {
+        auto item = m_d->m_editor->itemsMap()[id];
+
+        auto c = m_d->m_editor->textCursor();
+
+        c.setPosition(m_d->m_editor->document()->findBlockByNumber(item->startLine()).position());
+
+        m_d->m_editor->setTextCursor(c);
+
+        m_d->m_editor->ensureCursorVisible();
+
+        m_d->m_editor->setFocus();
+    }
+}
+
 void MainWindow::updateWindowTitle()
 {
     setWindowTitle(tr("%1[*] - Markdown Editor%2")
@@ -2570,9 +2589,11 @@ void MainWindow::updateLoadAllLinkedFilesMenuText()
     if (m_d->m_loadAllFlag) {
         m_d->m_loadAllAction->setText(tr("Show Only Current File..."));
         m_d->m_addTOCAction->setEnabled(false);
+        m_d->m_preview->enableScrollEditor(false);
     } else {
         m_d->m_loadAllAction->setText(tr("Load All Linked Files..."));
         m_d->m_addTOCAction->setEnabled(true);
+        m_d->m_preview->enableScrollEditor(true);
     }
 }
 

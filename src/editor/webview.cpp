@@ -10,6 +10,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QContextMenuEvent>
+#include <QWebEngineContextMenuRequest>
 
 namespace MdEditor
 {
@@ -26,6 +27,8 @@ struct WebViewPrivate {
 
     void initUi()
     {
+        m_scrollAction = new QAction(WebView::tr("Scroll Editor To"), m_q);
+        m_q->addAction(m_scrollAction);
         m_copyAction = new QAction(WebView::tr("Copy"), m_q);
         m_q->addAction(m_copyAction);
         m_copyAction->setEnabled(false);
@@ -33,11 +36,13 @@ struct WebViewPrivate {
         m_q->setFocusPolicy(Qt::ClickFocus);
 
         QObject::connect(m_copyAction, &QAction::triggered, m_q, &WebView::onCopy);
+        QObject::connect(m_scrollAction, &QAction::triggered, m_q, &WebView::onScroll);
         QObject::connect(m_q, &QWebEngineView::selectionChanged, m_q, &WebView::onSelectionChanged);
     }
 
     WebView *m_q;
     QAction *m_copyAction = nullptr;
+    QAction *m_scrollAction = nullptr;
 }; // struct WebViewPrivate
 
 //
@@ -82,6 +87,19 @@ WebView::~WebView()
 {
 }
 
+void WebView::enableScrollEditor(bool on)
+{
+    if (on) {
+        if (!actions().contains(m_d->m_scrollAction)) {
+            insertAction(m_d->m_copyAction, m_d->m_scrollAction);
+        }
+    } else {
+        if (actions().contains(m_d->m_scrollAction)) {
+            removeAction(m_d->m_scrollAction);
+        }
+    }
+}
+
 void WebView::onSelectionChanged()
 {
     m_d->m_copyAction->setEnabled(hasSelection());
@@ -90,6 +108,16 @@ void WebView::onSelectionChanged()
 void WebView::onCopy()
 {
     QApplication::clipboard()->setText(selectedText());
+}
+
+void WebView::onScroll()
+{
+    page()->runJavaScript(QStringLiteral("getId(%1, %2)")
+                              .arg(lastContextMenuRequest()->position().x())
+                              .arg(lastContextMenuRequest()->position().y()),
+                          [this](const QVariant &v) {
+                              emit this->scrollRequested(v.toString());
+                          });
 }
 
 } /* namespace MdEditor */

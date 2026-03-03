@@ -23,13 +23,20 @@ class WebView : public QWebEngineView
 {
     Q_OBJECT
 
+signals:
+    void scrollRequested(const QString &id);
+
 public:
     explicit WebView(QWidget *parent);
     ~WebView() override;
 
+public slots:
+    void enableScrollEditor(bool on = true);
+
 private slots:
     void onSelectionChanged();
     void onCopy();
+    void onScroll();
 
 private:
     friend class WebViewPrivate;

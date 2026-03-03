@@ -93,6 +93,9 @@ public:
     //! \return Document file name.
     const QString &docName() const;
 
+    //! Type of the map of items be theirs IDs.
+    using ItemsMap = QHash<QString, MD::Item *>;
+
     //! Draw line number area.
     void lineNumberAreaPaintEvent(QPaintEvent *event);
     //! \return Width of line number area.
@@ -117,6 +120,8 @@ public:
     void setFindWidget(Find *findWidget);
     //! \return Map if IDs of the current parsed Markdown document.
     const MD::details::IdsMap &idsMap() const;
+    //! \return Maop of items be theirs IDs.
+    const ItemsMap &itemsMap() const;
     //! \return Is document ready?
     bool isReady() const;
     //! Set plugins configuration.
@@ -200,7 +205,8 @@ private slots:
     void onParsingDone(QSharedPointer<MD::Document> doc,
                        unsigned long long int counter,
                        SyntaxVisitor syntax,
-                       MD::details::IdsMap idsMap);
+                       MD::details::IdsMap idsMap,
+                       Editor::ItemsMap itemsMap);
     //! Link clicked.
     void onLinkClicked(const QString &url);
     //! Check for URL auto-completion.

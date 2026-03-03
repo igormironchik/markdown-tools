@@ -66,7 +66,8 @@ signals:
     void done(QSharedPointer<MD::Document>,
               unsigned long long int,
               SyntaxVisitor syntax,
-              MD::details::IdsMap idsMap);
+              MD::details::IdsMap idsMap,
+              Editor::ItemsMap itemsMap);
 
 public:
     DataParser()
@@ -126,22 +127,24 @@ private slots:
             m_syntax.highlight(&lines, doc, m_syntax.colors());
 
             MD::details::IdsMap idsMap;
+            Editor::ItemsMap itemsMap;
 
             m_id = 0;
 
             MD::forEach(
                 m_itemTypes,
                 doc,
-                [&idsMap, this](MD::Item *item) {
+                [&idsMap, &itemsMap, this](MD::Item *item) {
                     const auto id = this->generateId(item);
 
                     if (!id.isEmpty()) {
                         idsMap.insert(item, id);
+                        itemsMap.insert(id, item);
                     }
                 },
                 1);
 
-            emit done(doc, m_counter, m_syntax, idsMap);
+            emit done(doc, m_counter, m_syntax, idsMap, itemsMap);
         }
     }
 
@@ -488,6 +491,8 @@ struct EditorPrivate {
     QSharedPointer<MD::Document> m_currentDoc;
     //! Map of current items IDs.
     MD::details::IdsMap m_idsMap;
+    //! Map of items be theirs IDs.
+    Editor::ItemsMap m_itemsMap;
     //! Syntax highlighter.
     SyntaxVisitor m_syntax;
     //! Tread for parsing.
@@ -574,6 +579,11 @@ void Editor::setFindWidget(Find *findWidget)
 const MD::details::IdsMap &Editor::idsMap() const
 {
     return m_d->m_idsMap;
+}
+
+const Editor::ItemsMap &Editor::itemsMap() const
+{
+    return m_d->m_itemsMap;
 }
 
 bool Editor::isReady() const
@@ -1423,11 +1433,13 @@ void Editor::onContentChanged()
 void Editor::onParsingDone(QSharedPointer<MD::Document> doc,
                            unsigned long long int counter,
                            SyntaxVisitor syntax,
-                           MD::details::IdsMap idsMap)
+                           MD::details::IdsMap idsMap,
+                           Editor::ItemsMap itemsMap)
 {
     if (m_d->m_currentParsingCounter == counter) {
         m_d->m_currentDoc = doc;
         m_d->m_idsMap = idsMap;
+        m_d->m_itemsMap = itemsMap;
         m_d->m_syntax = syntax;
         m_d->m_isReady = true;
 

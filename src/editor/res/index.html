@@ -17,6 +17,17 @@
         element.scrollIntoView();
       }
     }
+
+    function getId(x, y) {
+        var elem = document.elementFromPoint(x, y);
+        var topParent = elem;
+
+        while (topParent && topParent.parentElement && topParent.parentElement.tagName !== 'ARTICLE') {
+            topParent = topParent.parentElement;
+        }
+
+        return topParent ? topParent.id : null;
+    }
   </script>
 </head>
 <body>

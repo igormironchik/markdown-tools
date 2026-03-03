@@ -111,6 +111,7 @@ private slots:
     void onGoBack();
     void onGoForward();
     void onOpenRequestedRef();
+    void onScrollEditor(const QString &id);
 
 private:
     //! \return Is document was changed?
