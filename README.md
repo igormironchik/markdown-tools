@@ -41,6 +41,16 @@ For `Linux`, especially for `KDE`, I'd recommend to use your own build with syst
 For `openSUSE Tumbleweed` I have a repository https://download.opensuse.org/repositories/home:/imironchik/my/
 where you can get a `markdown-tools` package.
 
+# Wish list
+
+Here I will write some interesting things that can be done, but because of my laziness
+or some other reasons I didn't do it yet. I'd like to receive a feedback for the below
+cherries and if I'll get enough requests I will do it. Feel free to open issues here
+or even email me directly.
+
+* [ ] Implement collapsing blocks in editor, like in code editors. This is very easy thing
+for implementation, but I'm not sure it will be very demanded.
+
 # Building
 
 To build these applications first of all install dependencies:
