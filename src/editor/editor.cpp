@@ -1636,6 +1636,13 @@ bool Editor::handleReturnKeyForCode(QKeyEvent *event,
     return false;
 }
 
+inline bool isEmptyParagraphOnly(const MD::Block::Items &items)
+{
+    return (items.size() == 1
+            && items.at(0)->type() == MD::ItemType::Paragraph
+            && static_cast<MD::Paragraph *>(items.at(0).get())->isEmpty());
+}
+
 void Editor::keyPressEvent(QKeyEvent *event)
 {
     m_d->m_link = nullptr;
@@ -1665,7 +1672,8 @@ void Editor::keyPressEvent(QKeyEvent *event)
                         if (!m_d->m_settings.m_githubBehaviour || l->items().size() <= 1) {
                             c.setPosition(document()->findBlockByNumber(l->startLine()).position());
 
-                            if (l->items().isEmpty() && c.block().userState() == s_autoAddedListItem) {
+                            if ((l->items().isEmpty() || isEmptyParagraphOnly(l->items()))
+                                && c.block().userState() == s_autoAddedListItem) {
                                 textCursor().beginEditBlock();
                                 c.setPosition(c.position() + lineLength - 1, QTextCursor::KeepAnchor);
                                 c.deleteChar();
