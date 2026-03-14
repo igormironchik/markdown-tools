@@ -19,7 +19,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         submodules: recursive
 
@@ -86,7 +86,7 @@ jobs:
       run: ./script/macos/deploy.sh
 
     - name: Upload installer
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: Markdown_MacOS_x64.Installer.app
         path: Markdown_MacOS_x64.Installer.app
