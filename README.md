@@ -31,15 +31,10 @@ You can look at a presentation [here](https://igormironchik.github.io/markdown-t
 
 # Installers
 
-You can get installers for `Windows` at
-[actions page](https://github.com/igormironchik/markdown-tools/actions). Just check
-for artifact at `deploy_win` latest workflow run.
-
 For `Linux`, especially for `KDE`, I'd recommend to use your own build with system's
 `Qt`, in this case you won't have issues with platform integration in `KDE`.
 
-For `openSUSE Tumbleweed` I have a repository https://download.opensuse.org/repositories/home:/imironchik/my/
-where you can get a `markdown-tools` package.
+Look at the release page for the installer for some Linux and Windows distributions.
 
 # Wish list
 
