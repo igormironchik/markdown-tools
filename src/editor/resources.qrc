@@ -2,6 +2,7 @@
     <qresource prefix="/">
         <file>res/index.html</file>
         <file>res/img/preferences-desktop-font.png</file>
+        <file>res/img/help-hint.png</file>
         <file>res/img/go-previous.png</file>
         <file>res/img/go-next.png</file>
         <file>res/img/go-previous-16.png</file>

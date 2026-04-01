@@ -28,6 +28,7 @@
 #include <QAction>
 #include <QApplication>
 #include <QCloseEvent>
+#include <QDesktopServices>
 #include <QDir>
 #include <QFileDialog>
 #include <QFileInfo>
@@ -857,6 +858,12 @@ struct MainWindowPrivate {
                             MainWindow::tr("Licenses"),
                             m_q,
                             &MainWindow::onShowLicenses);
+        helpMenu->addAction(
+            QIcon::fromTheme(QStringLiteral("help-hint"), QIcon(QStringLiteral(":/res/img/help-hint.png"))),
+            MainWindow::tr("Tips && Tricks"),
+            []() {
+                QDesktopServices::openUrl(QUrl(QStringLiteral("https://igormironchik.github.io/markdown-tools/")));
+            });
 
         m_cursorPosLabel = new QLabel(m_q);
         m_workingDirectoryWidget = new WorkingDirectoryWidget(m_q);
