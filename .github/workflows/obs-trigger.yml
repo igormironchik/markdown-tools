@@ -12,10 +12,10 @@ jobs:
         run: |
           curl -X POST \
             -H "Authorization: Token ${{ secrets.OBS_TOKEN_SECRET_1 }}" \
-            "https://build.opensuse.org/trigger/workflow?id=${{ secrets.OBS_TOKEN_ID_1 }}"
+            "https://build.opensuse.org/trigger/runservice?id=${{ secrets.OBS_TOKEN_ID_1 }}"
 
       - name: Send Trigger to OBS 2
         run: |
           curl -X POST \
             -H "Authorization: Token ${{ secrets.OBS_TOKEN_SECRET_2 }}" \
-            "https://build.opensuse.org/trigger/workflow?id=${{ secrets.OBS_TOKEN_ID_2 }}"
+            "https://build.opensuse.org/trigger/runservice?id=${{ secrets.OBS_TOKEN_ID_2 }}"
