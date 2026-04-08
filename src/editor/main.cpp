@@ -61,7 +61,7 @@ int main(int argc,
     Q_INIT_RESOURCE(resources);
 
     QTranslator appTranslator;
-    if (appTranslator.load(QStringLiteral("md_") + QLocale::system().name(), QStringLiteral(":/tr/"))) {
+    if (appTranslator.load(QLocale::system(), QStringLiteral("md_"), QString(), QStringLiteral(":/tr/"))) {
         QApplication::installTranslator(&appTranslator);
     }
 
