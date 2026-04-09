@@ -61,8 +61,12 @@ int main(int argc,
     Q_INIT_RESOURCE(resources);
 
     QTranslator appTranslator;
-    if (appTranslator.load(QLocale::system(), QStringLiteral("md_"), QString(), QStringLiteral(":/tr/"))) {
-        QApplication::installTranslator(&appTranslator);
+    const auto locale = QLocale::system();
+
+    if (locale.language() != QLocale::English) {
+        if (appTranslator.load(locale, QStringLiteral("md_"), QString(), QStringLiteral(":/tr/"))) {
+            QApplication::installTranslator(&appTranslator);
+        }
     }
 
     QIcon appIcon(QStringLiteral(":/icon/icon_256x256.png"));
