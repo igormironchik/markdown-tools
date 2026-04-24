@@ -3,6 +3,7 @@
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 
+// Qt include.
 #include <QCoreApplication>
 #include <QDebug>
 #include <QFile>
@@ -11,6 +12,9 @@
 #include <QJsonObject>
 #include <QObject>
 #include <QTextStream>
+
+// C++ include.
+#include <algorithm>
 
 inline QString toString(const QString &s)
 {
@@ -44,6 +48,7 @@ int main(int argc,
 
             if (out.open(QIODevice::WriteOnly)) {
                 QTextStream stream(&out);
+                QStringList emojiNames;
 
                 // REUSE-IgnoreStart
                 stream << QStringLiteral(
@@ -53,7 +58,7 @@ int main(int argc,
                     "*/\n\n");
                 // REUSE-IgnoreEnd
 
-                stream << QStringLiteral("#include <QHash>\n\n");
+                stream << QStringLiteral("#include <QHash>\n#include <QStringList>\n\n");
                 stream << QStringLiteral("static const QHash<QString, QString> s_emojiMap = {\n");
 
                 auto first = true;
@@ -78,6 +83,8 @@ int main(int argc,
                                     first = false;
                                 }
 
+                                emojiNames << nit->toString();
+
                                 stream
                                     << QStringLiteral("    {QStringLiteral(\"")
                                     << nit->toString()
@@ -89,10 +96,33 @@ int main(int argc,
                     }
                 }
 
+                emojiNames.append(QStringLiteral("robot"));
+                emojiNames.append(QStringLiteral("metal"));
+                emojiNames.append(QStringLiteral("fu"));
+
                 stream << QStringLiteral(",\n");
                 stream << QStringLiteral("    {QStringLiteral(\"robot\"), QString::fromUcs4(U\"\\U0001f916\")},\n");
                 stream << QStringLiteral("    {QStringLiteral(\"metal\"), QString::fromUcs4(U\"\\U0001f918\")},\n");
                 stream << QStringLiteral("    {QStringLiteral(\"fu\"), QString::fromUcs4(U\"\\U0001f595\")}");
+                stream << QStringLiteral("};\n\n");
+
+                std::sort(emojiNames.begin(), emojiNames.end());
+
+                stream << QStringLiteral("static const QStringList s_emojiKeys = {\n");
+                first = true;
+
+                for (const auto &name : std::as_const(emojiNames)) {
+                    if (!first) {
+                        stream << QStringLiteral(",\n");
+                    } else {
+                        first = false;
+                    }
+
+                    stream << QStringLiteral("    {QStringLiteral(\"")
+                           << name
+                           << QStringLiteral("\")}");
+                }
+
                 stream << QStringLiteral("};\n");
 
                 out.close();
