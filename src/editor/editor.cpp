@@ -5,6 +5,7 @@
 
 // md-editor include.
 #include "editor.h"
+#include "emoji.h"
 #include "find.h"
 #include "mainwindow.h"
 #include "settings.h"
@@ -273,8 +274,12 @@ struct EditorPrivate {
         : m_q(parent)
         , m_mainWindow(mainWindow)
         , m_tocModel(tocModel)
+        , m_emojiModel(new QStringListModel(s_emojiKeys,
+                                            m_q))
         , m_completer(new QCompleter(m_tocModel,
                                      m_q))
+        , m_emojiCompleter(new QCompleter(m_emojiModel,
+                                          m_q))
         , m_parsingThread(new QThread(m_q))
         , m_parser(new DataParser)
     {
@@ -285,20 +290,43 @@ struct EditorPrivate {
         m_completer->setCompletionMode(QCompleter::PopupCompletion);
         m_completer->setWidget(m_q->viewport());
 
-        auto completerView = new QListView(m_q);
-        completerView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-        completerView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        completerView->setSelectionBehavior(QAbstractItemView::SelectRows);
-        completerView->setSelectionMode(QAbstractItemView::SingleSelection);
-        completerView->setModelColumn(m_completer->completionColumn());
-        completerView->setTextElideMode(Qt::ElideNone);
-        m_completer->setPopup(completerView);
-        completerView->installEventFilter(m_q);
+        {
+            auto completerView = new QListView(m_q);
+            completerView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+            completerView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+            completerView->setSelectionBehavior(QAbstractItemView::SelectRows);
+            completerView->setSelectionMode(QAbstractItemView::SingleSelection);
+            completerView->setModelColumn(m_completer->completionColumn());
+            completerView->setTextElideMode(Qt::ElideNone);
+            m_completer->setPopup(completerView);
+            completerView->installEventFilter(m_q);
+        }
 
         QObject::connect(m_completer,
                          QOverload<const QString &>::of(&QCompleter::activated),
                          m_q,
                          &Editor::onCompletionActivated);
+
+        m_emojiCompleter->setCaseSensitivity(Qt::CaseInsensitive);
+        m_emojiCompleter->setCompletionMode(QCompleter::PopupCompletion);
+        m_emojiCompleter->setWidget(m_q->viewport());
+
+        {
+            auto completerView = new QListView(m_q);
+            completerView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+            completerView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+            completerView->setSelectionBehavior(QAbstractItemView::SelectRows);
+            completerView->setSelectionMode(QAbstractItemView::SingleSelection);
+            completerView->setModelColumn(m_emojiCompleter->completionColumn());
+            completerView->setTextElideMode(Qt::ElideNone);
+            m_emojiCompleter->setPopup(completerView);
+            completerView->installEventFilter(m_q);
+        }
+
+        QObject::connect(m_emojiCompleter,
+                         QOverload<const QString &>::of(&QCompleter::activated),
+                         m_q,
+                         &Editor::onEmojiCompletionActivated);
 
         QObject::connect(m_q, &Editor::doParsing, m_parser, &DataParser::onData, Qt::QueuedConnection);
         QObject::connect(m_parser, &DataParser::done, m_q, &Editor::onParsingDone, Qt::QueuedConnection);
@@ -319,6 +347,7 @@ struct EditorPrivate {
         QObject::connect(m_q, &Editor::cursorPositionChanged, m_q->viewport(), qOverload<>(&QWidget::update));
         QObject::connect(m_q, &QPlainTextEdit::textChanged, m_q, &Editor::onContentChanged);
         QObject::connect(m_q, &Editor::ready, m_q, &Editor::checkUrlAutocompletion);
+        QObject::connect(m_q, &Editor::ready, m_q, &Editor::checkEmojiAutocompletion);
         QObject::connect(m_lineNumberArea,
                          &LineNumberArea::lineNumberContextMenuRequested,
                          m_q,
@@ -462,8 +491,12 @@ struct EditorPrivate {
     MainWindow *m_mainWindow = nullptr;
     //! ToC model.
     QStringListModel *m_tocModel = nullptr;
+    //! Emoji model.
+    QStringListModel *m_emojiModel = nullptr;
     //! ID completer.
-    QCompleter *m_completer;
+    QCompleter *m_completer = nullptr;
+    //! Emoji completer.
+    QCompleter *m_emojiCompleter = nullptr;
     //! Line number area.
     LineNumberArea *m_lineNumberArea = nullptr;
     //! Document's name.
@@ -545,6 +578,10 @@ struct EditorPrivate {
     UnderlinedLink m_underlinedLink;
     //! Is cursor overriden?
     bool m_cursorOverriden = false;
+    //! Start emoji pos.
+    qsizetype m_startEmoji = -1;
+    //! End emoji pos.
+    qsizetype m_endEmoji = -1;
 }; // struct EditorPrivate
 
 //
@@ -1041,7 +1078,7 @@ void Editor::keyReleaseEvent(QKeyEvent *event)
 bool Editor::eventFilter(QObject *watched,
                          QEvent *event)
 {
-    if (watched == m_d->m_completer->popup()) {
+    if (watched == m_d->m_completer->popup() || watched == m_d->m_emojiCompleter->popup()) {
         if (event->type() == QEvent::KeyPress) {
             QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
 
@@ -1395,6 +1432,98 @@ void Editor::checkUrlAutocompletion()
     }
 }
 
+static const QChar s_colon = QLatin1Char(':');
+static const QChar s_space = QLatin1Char(' ');
+
+void Editor::checkEmojiAutocompletion()
+{
+    if (m_d->m_isContentChangedByKey) {
+        auto tc = textCursor();
+        const auto lineNumber = tc.block().blockNumber();
+        const auto pos = textCursor().positionInBlock() - 1;
+
+        const auto items = syntaxHighlighter().findFirstInCache({pos, lineNumber, pos, lineNumber});
+
+        if (!items.isEmpty()
+            && (items.back()->type() == MD::ItemType::Link || items.back()->type() == MD::ItemType::Text)) {
+            if (items.back()->type() == MD::ItemType::Link) {
+                if (pos > static_cast<MD::Link *>(items.back())->textPos().endColumn()) {
+                    m_d->m_emojiCompleter->popup()->hide();
+                    return;
+                }
+            }
+
+            qsizetype startPos = -1;
+            qsizetype firstCharPos = tc.block().position()
+                + (items.back()->type() == MD::ItemType::Link
+                       ? static_cast<MD::Link *>(items.back())->textPos().startColumn()
+                       : items.back()->startColumn());
+
+            for (qsizetype i = tc.position() - 1; i >= firstCharPos; --i) {
+                const auto ch = document()->characterAt(i);
+
+                if (ch == s_space) {
+                    return;
+                } else if (ch == s_colon) {
+                    if (i == firstCharPos || document()->characterAt(i - 1).isSpace()) {
+                        startPos = i - tc.block().position() + 1;
+                        m_d->m_startEmoji = i;
+                        break;
+                    } else {
+                        m_d->m_emojiCompleter->popup()->hide();
+                        return;
+                    }
+                }
+            }
+
+            if (startPos != -1) {
+                QString emoji;
+                qsizetype lastCharPos = tc.block().position()
+                    + (items.back()->type() == MD::ItemType::Link
+                           ? static_cast<MD::Link *>(items.back())->textPos().endColumn()
+                           : items.back()->endColumn());
+
+                if (tc.position() + 1 <= lastCharPos) {
+                    for (qsizetype i = tc.position(); i <= lastCharPos; ++i) {
+                        if (document()->characterAt(i) == s_space) {
+                            emoji = tc.block().text().sliced(startPos, i - tc.block().position() - startPos);
+                            m_d->m_endEmoji = i - 1;
+                            break;
+                        } else if (i == lastCharPos) {
+                            m_d->m_endEmoji = lastCharPos;
+
+                            if (lastCharPos >= firstCharPos) {
+                                emoji = tc.block().text().sliced(startPos, lastCharPos - firstCharPos);
+                            }
+                        }
+                    }
+                } else {
+                    m_d->m_endEmoji = lastCharPos;
+
+                    if (lastCharPos >= firstCharPos) {
+                        emoji = tc.block().text().sliced(startPos, lastCharPos - firstCharPos);
+                    }
+                }
+
+                if (!emoji.isEmpty()) {
+                    m_d->m_emojiCompleter->setCompletionPrefix(emoji);
+                    auto tc = textCursor();
+                    tc.setPosition(tc.block().position() + startPos - 1);
+                    m_d->m_emojiCompleter->complete(QRect(
+                        cursorRect(tc).bottomLeft(),
+                        QSize(m_d->m_emojiCompleter->popup()->sizeHintForColumn(0)
+                                  + (m_d->m_emojiCompleter->completionCount() > m_d->m_emojiCompleter->maxVisibleItems()
+                                         ? m_d->m_emojiCompleter->popup()->verticalScrollBar()->sizeHint().width()
+                                         : 0)
+                                  + QApplication::style()->pixelMetric(QStyle::PM_FocusFrameHMargin)
+                                  + 1,
+                              1)));
+                }
+            }
+        }
+    }
+}
+
 void Editor::onCompletionActivated(const QString &text)
 {
     if (m_d->m_link) {
@@ -1405,6 +1534,15 @@ void Editor::onCompletionActivated(const QString &text)
         tc.insertText(text);
         setTextCursor(tc);
     }
+}
+
+void Editor::onEmojiCompletionActivated(const QString &emoji)
+{
+    auto tc = textCursor();
+    tc.setPosition(m_d->m_startEmoji);
+    tc.setPosition(m_d->m_endEmoji + 1, QTextCursor::KeepAnchor);
+    tc.insertText(s_colon + emoji + s_colon);
+    setTextCursor(tc);
 }
 
 void Editor::onContentChanged()

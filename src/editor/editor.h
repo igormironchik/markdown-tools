@@ -211,8 +211,12 @@ private slots:
     void onLinkClicked(const QString &url);
     //! Check for URL auto-completion.
     void checkUrlAutocompletion();
+    //! Check for Emoji autocompletion.
+    void checkEmojiAutocompletion();
     //! Completion activated.
     void onCompletionActivated(const QString &text);
+    //! Emoji completion activated.
+    void onEmojiCompletionActivated(const QString &emoji);
 
 private:
     //! Navigate to reference.

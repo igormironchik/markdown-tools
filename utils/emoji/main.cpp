@@ -118,9 +118,7 @@ int main(int argc,
                         first = false;
                     }
 
-                    stream << QStringLiteral("    {QStringLiteral(\"")
-                           << name
-                           << QStringLiteral("\")}");
+                    stream << QStringLiteral("    {QStringLiteral(\"") << name << QStringLiteral("\")}");
                 }
 
                 stream << QStringLiteral("};\n");
