@@ -1790,6 +1790,8 @@ const QString s_subscript = QStringLiteral("subscript");
 const QString s_mark = QStringLiteral("mark");
 const QString s_yaml = QStringLiteral("yaml");
 const QString s_autoLists = QStringLiteral("autoLists");
+const QString s_autoLinks = QStringLiteral("autoLinks");
+const QString s_autoEmojies = QStringLiteral("autoEmojies");
 const QString s_enableCodeBlockTheme = QStringLiteral("enableCodeBlockTheme");
 const QString s_codeBlockTheme = QStringLiteral("codeBlockTheme");
 const QString s_drawCodeBackground = QStringLiteral("drawCodeBackground");
@@ -1837,6 +1839,9 @@ void MainWindow::saveCfg() const
     s.setValue(s_dontUseAutoListInCodeBlock, m_d->m_editor->settings().m_dontUseAutoListInCodeBlock);
 
     s.setValue(s_autoCodeBlocks, m_d->m_editor->settings().m_isAutoCodeBlocksEnabled);
+
+    s.setValue(s_autoLinks, m_d->m_editor->settings().m_isLinksAutoCompletionEnabled);
+    s.setValue(s_autoEmojies, m_d->m_editor->settings().m_isEmojiAutoCompletionEnabled);
 
     s.setValue(s_findCaseSensitive, m_d->m_find->isCaseSensitive());
     s.setValue(s_findWholeWord, m_d->m_find->isWholeWord());
@@ -1977,6 +1982,10 @@ void MainWindow::readCfg()
         !s.value(s_dontUseAutoListInCodeBlock, !m_d->m_editor->settings().m_dontUseAutoListInCodeBlock).toBool());
     m_d->m_editor->enableAutoCodeBlocks(
         s.value(s_autoCodeBlocks, m_d->m_editor->settings().m_isAutoCodeBlocksEnabled).toBool());
+    m_d->m_editor->enableAutoCompletionOfLinks(
+        s.value(s_autoLinks, m_d->m_editor->settings().m_isLinksAutoCompletionEnabled).toBool());
+    m_d->m_editor->enableAutoCompletionOfEmojies(
+        s.value(s_autoEmojies, m_d->m_editor->settings().m_isEmojiAutoCompletionEnabled).toBool());
 
     Margins margins = m_d->m_editor->settings().m_margins;
 
@@ -2920,6 +2929,8 @@ void MainWindow::onSettings()
             m_d->m_editor->enableGithubBehaviour(settings.m_githubBehaviour);
             m_d->m_editor->enableAutoListInCodeBlock(!settings.m_dontUseAutoListInCodeBlock);
             m_d->m_editor->enableAutoCodeBlocks(settings.m_isAutoCodeBlocksEnabled);
+            m_d->m_editor->enableAutoCompletionOfLinks(settings.m_isLinksAutoCompletionEnabled);
+            m_d->m_editor->enableAutoCompletionOfEmojies(settings.m_isEmojiAutoCompletionEnabled);
 
             m_d->m_editor->doUpdate();
 

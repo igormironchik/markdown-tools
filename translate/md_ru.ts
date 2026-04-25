@@ -356,12 +356,12 @@
 <context>
     <name>MdEditor::Editor</name>
     <message>
-        <location filename="../src/editor/editor.cpp" line="949"/>
+        <location filename="../src/editor/editor.cpp" line="996"/>
         <source>Spelling</source>
         <translation>Орфография</translation>
     </message>
     <message>
-        <location filename="../src/editor/editor.cpp" line="961"/>
+        <location filename="../src/editor/editor.cpp" line="1008"/>
         <source>Skip Word</source>
         <translation>Пропустить слово</translation>
     </message>
@@ -524,7 +524,7 @@
     </message>
     <message>
         <location filename="../src/editor/mainwindow.cpp" line="682"/>
-        <location filename="../src/editor/mainwindow.cpp" line="2601"/>
+        <location filename="../src/editor/mainwindow.cpp" line="2610"/>
         <source>Load All Linked Files...</source>
         <translation>Загрузить все присоединенные файлы...</translation>
     </message>
@@ -744,7 +744,7 @@
     </message>
     <message>
         <location filename="../src/editor/mainwindow.cpp" line="1298"/>
-        <location filename="../src/editor/mainwindow.cpp" line="2479"/>
+        <location filename="../src/editor/mainwindow.cpp" line="2488"/>
         <source>Could not open file %1: %2</source>
         <translation>Не удалось открыть файл %1: %2</translation>
     </message>
@@ -918,43 +918,43 @@
         <translation>Прокрутить предпросмотр к</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="2139"/>
+        <location filename="../src/editor/mainwindow.cpp" line="2148"/>
         <source>&lt;b&gt;Line:&lt;/b&gt; %1, &lt;b&gt;Col:&lt;/b&gt; %2</source>
         <translation>&lt;b&gt;Строка:&lt;/b&gt; %1, &lt;b&gt;Колонка:&lt;/b&gt; %2</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="2196"/>
-        <location filename="../src/editor/mainwindow.cpp" line="2468"/>
+        <location filename="../src/editor/mainwindow.cpp" line="2205"/>
+        <location filename="../src/editor/mainwindow.cpp" line="2477"/>
         <source>You have unsaved changes. Please save document first.</source>
         <translation>У вас есть несохраненные изменения. Пожалуйста, сохраните документ.</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="2212"/>
+        <location filename="../src/editor/mainwindow.cpp" line="2221"/>
         <source>&amp;Navigation</source>
         <translation>Файл&amp;ы</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="2285"/>
+        <location filename="../src/editor/mainwindow.cpp" line="2294"/>
         <source>HTML preview is ready. Modifications in files will not update HTML preview till you save changes.</source>
         <translation>Предпросмотр HTML готов. Изменения в файлах не будут обновлять предпросмотр HTML, пока вы не сохраните изменения.</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="2297"/>
+        <location filename="../src/editor/mainwindow.cpp" line="2306"/>
         <source>This document doesn&apos;t have linked documents.</source>
         <translation>В этом документе нет других подключенных Markdown документов.</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="2589"/>
+        <location filename="../src/editor/mainwindow.cpp" line="2598"/>
         <source>%1[*] - Markdown Editor%2</source>
         <translation>%1[*] - Markdown редактор%2</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="2591"/>
+        <location filename="../src/editor/mainwindow.cpp" line="2600"/>
         <source> [Preview Mode]</source>
         <translation> [Режим просмотра]</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="2597"/>
+        <location filename="../src/editor/mainwindow.cpp" line="2606"/>
         <source>Show Only Current File...</source>
         <translation>Показать только текущий файл...</translation>
     </message>
@@ -1342,67 +1342,82 @@ This image is not a local existing file, and not in the Web. Check your Markdown
         <translation>Плагины</translation>
     </message>
     <message>
-        <location filename="../src/editor/settings.ui" line="122"/>
+        <location filename="../src/editor/settings.ui" line="186"/>
         <source>Indent</source>
         <translation>Отступ</translation>
     </message>
     <message>
-        <location filename="../src/editor/settings.ui" line="128"/>
+        <location filename="../src/editor/settings.ui" line="192"/>
         <source>Use</source>
         <translation>Использовать</translation>
     </message>
     <message>
-        <location filename="../src/editor/settings.ui" line="136"/>
+        <location filename="../src/editor/settings.ui" line="200"/>
         <source>Tabs</source>
         <translation>Табуляторы</translation>
     </message>
     <message>
-        <location filename="../src/editor/settings.ui" line="141"/>
+        <location filename="../src/editor/settings.ui" line="205"/>
         <source>Spaces</source>
         <translation>Пробелы</translation>
     </message>
     <message>
-        <location filename="../src/editor/settings.ui" line="149"/>
+        <location filename="../src/editor/settings.ui" line="213"/>
         <source>In quantity</source>
         <translation>В количестве</translation>
     </message>
     <message>
-        <location filename="../src/editor/settings.ui" line="175"/>
+        <location filename="../src/editor/settings.ui" line="239"/>
+        <source>Auto completion</source>
+        <translation>Автоматическое завершение</translation>
+    </message>
+    <message>
+        <location filename="../src/editor/settings.ui" line="245"/>
+        <source>Enable auto-completion of internal links</source>
+        <translation>Включить автоматическое завершение внутренних ссылок</translation>
+    </message>
+    <message>
+        <location filename="../src/editor/settings.ui" line="252"/>
+        <source>Enable auto-completion of Emojies</source>
+        <translation>Включить автоматическое завершение смайликов</translation>
+    </message>
+    <message>
+        <location filename="../src/editor/settings.ui" line="262"/>
         <source>Auto formatting</source>
         <translation>Автоформатирование</translation>
     </message>
     <message>
-        <location filename="../src/editor/settings.ui" line="181"/>
+        <location filename="../src/editor/settings.ui" line="268"/>
         <source>Auto continue lists</source>
         <translation>Автоматически продолжать списки</translation>
     </message>
     <message>
-        <location filename="../src/editor/settings.ui" line="190"/>
+        <location filename="../src/editor/settings.ui" line="277"/>
         <source>Don&apos;t auto add list after non-first block of list item (like on GitHub)</source>
         <translation>Не добавлять автоматически список поле не первого блока элемента списка (как на GitHub)</translation>
     </message>
     <message>
-        <location filename="../src/editor/settings.ui" line="197"/>
+        <location filename="../src/editor/settings.ui" line="284"/>
         <source>Don&apos;t auto add list in code block in list item</source>
         <translation>Не добавлять автоматически список в блоке кода в элементе списка</translation>
     </message>
     <message>
-        <location filename="../src/editor/settings.ui" line="207"/>
+        <location filename="../src/editor/settings.ui" line="294"/>
         <source>Auto continue code blocks</source>
         <translation>Автоматически продолжать блоки кода</translation>
     </message>
     <message>
-        <location filename="../src/editor/settings.ui" line="217"/>
+        <location filename="../src/editor/settings.ui" line="304"/>
         <source>Margins</source>
         <translation>Отступы</translation>
     </message>
     <message>
-        <location filename="../src/editor/settings.ui" line="223"/>
+        <location filename="../src/editor/settings.ui" line="310"/>
         <source>Display right margin at</source>
         <translation>Рисовать границу длины строки</translation>
     </message>
     <message>
-        <location filename="../src/editor/settings.ui" line="246"/>
+        <location filename="../src/editor/settings.ui" line="333"/>
         <source>Spelling</source>
         <translation>Орфография</translation>
     </message>

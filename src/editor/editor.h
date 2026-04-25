@@ -134,6 +134,10 @@ public:
     void enableAutoListInCodeBlock(bool on = true);
     //! Enable auto continue of code blocks.
     void enableAutoCodeBlocks(bool on = true);
+    //! Enable auto-completion of internal links.
+    void enableAutoCompletionOfLinks(bool on = true);
+    //! Enable auto-completion of Emojies.
+    void enableAutoCompletionOfEmojies(bool on = true);
 
     //! Indent mode.
     enum class IndentMode {
@@ -211,8 +215,12 @@ private slots:
     void onLinkClicked(const QString &url);
     //! Check for URL auto-completion.
     void checkUrlAutocompletion();
+    //! Check for Emoji autocompletion.
+    void checkEmojiAutocompletion();
     //! Completion activated.
     void onCompletionActivated(const QString &text);
+    //! Emoji completion activated.
+    void onEmojiCompletionActivated(const QString &emoji);
 
 private:
     //! Navigate to reference.
