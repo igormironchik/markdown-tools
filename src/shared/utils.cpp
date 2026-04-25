@@ -5,6 +5,7 @@
 
 // shared include.
 #include "utils.h"
+#include "emoji_parser.h"
 #include "emphasis.h"
 #include "syntax.h"
 
@@ -142,7 +143,8 @@ void orderWords(QVector<QPair<QString,
 }
 
 void setPlugins(MD::Parser &parser,
-                const MdShared::PluginsCfg &cfg)
+                const MdShared::PluginsCfg &cfg,
+                bool enableEmoji)
 {
     MD::Parser::InlineParsers inlineParsers;
 
@@ -156,6 +158,10 @@ void setPlugins(MD::Parser &parser,
     MD::Parser::appendInlineParser<MD::AsteriskEmphasisParser>(inlineParsers);
     MD::Parser::appendInlineParser<MD::UnderlineEmphasisParser>(inlineParsers);
     MD::Parser::appendInlineParser<MD::StrikethroughEmphasisParser>(inlineParsers);
+
+    if (enableEmoji) {
+        MD::Parser::appendInlineParser<MdShared::EmojiParser>(inlineParsers);
+    }
 
     if (cfg.m_sup.m_on) {
         inlineParsers.append(QSharedPointer<MdShared::SupEmphasisParser>::create(cfg.m_sup.m_delimiter));

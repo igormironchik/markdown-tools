@@ -5,7 +5,6 @@
 
 // md-editor include.
 #include "editor.h"
-#include "emoji.h"
 #include "find.h"
 #include "mainwindow.h"
 #include "settings.h"
@@ -40,6 +39,7 @@
 #include <md4qt/src/algo.h>
 
 // shared include.
+#include "emoji.h"
 #include "utils.h"
 
 namespace MdEditor
@@ -119,7 +119,7 @@ private slots:
 
             stream.seek(0);
 
-            setPlugins(m_parser, m_pluginsCfg);
+            setPlugins(m_parser, m_pluginsCfg, true);
 
             const auto doc = m_parser.parse(stream, m_path, m_fileName);
 
@@ -1447,6 +1447,18 @@ void Editor::checkUrlAutocompletion()
 static const QChar s_colon = QLatin1Char(':');
 static const QChar s_space = QLatin1Char(' ');
 
+MD::Text *findTextInLink(MD::Link *link,
+                         qsizetype pos)
+{
+    for (auto it = link->p()->items().cbegin(), last = link->p()->items().cend(); it != last; ++it) {
+        if ((*it)->startColumn() <= pos && (*it)->endColumn() >= pos && (*it)->type() == MD::ItemType::Text) {
+            return static_cast<MD::Text *>(it->get());
+        }
+    }
+
+    return nullptr;
+}
+
 void Editor::checkEmojiAutocompletion()
 {
     if (m_d->m_settings.m_isEmojiAutoCompletionEnabled) {
@@ -1459,8 +1471,17 @@ void Editor::checkEmojiAutocompletion()
 
             if (!items.isEmpty()
                 && (items.back()->type() == MD::ItemType::Link || items.back()->type() == MD::ItemType::Text)) {
+                MD::Text *textInLink = nullptr;
+
                 if (items.back()->type() == MD::ItemType::Link) {
                     if (pos > static_cast<MD::Link *>(items.back())->textPos().endColumn()) {
+                        m_d->m_emojiCompleter->popup()->hide();
+                        return;
+                    }
+
+                    textInLink = findTextInLink(static_cast<MD::Link *>(items.back()), pos);
+
+                    if (!textInLink) {
                         m_d->m_emojiCompleter->popup()->hide();
                         return;
                     }
@@ -1468,9 +1489,8 @@ void Editor::checkEmojiAutocompletion()
 
                 qsizetype startPos = -1;
                 qsizetype firstCharPos = tc.block().position()
-                    + (items.back()->type() == MD::ItemType::Link
-                           ? static_cast<MD::Link *>(items.back())->textPos().startColumn()
-                           : items.back()->startColumn());
+                    + (items.back()->type() == MD::ItemType::Link ? textInLink->startColumn()
+                                                                  : items.back()->startColumn());
 
                 for (qsizetype i = tc.position() - 1; i >= firstCharPos; --i) {
                     const auto ch = document()->characterAt(i);
@@ -1493,11 +1513,10 @@ void Editor::checkEmojiAutocompletion()
                 if (startPos != -1) {
                     QString emoji;
                     qsizetype lastCharPos = tc.block().position()
-                        + (items.back()->type() == MD::ItemType::Link
-                               ? static_cast<MD::Link *>(items.back())->textPos().endColumn()
-                               : items.back()->endColumn());
+                        + (items.back()->type() == MD::ItemType::Link ? textInLink->endColumn()
+                                                                      : items.back()->endColumn());
 
-                    if (tc.position() + 1 <= lastCharPos) {
+                    if (tc.position() <= lastCharPos) {
                         for (qsizetype i = tc.position(); i <= lastCharPos; ++i) {
                             if (document()->characterAt(i) == s_space) {
                                 emoji = tc.block().text().sliced(startPos, i - tc.block().position() - startPos);

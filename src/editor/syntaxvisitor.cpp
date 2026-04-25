@@ -10,6 +10,7 @@
 #include "speller.h"
 
 // shared include.
+#include "emoji_parser.h"
 #include "syntax.h"
 
 // Sonnet include.
@@ -409,7 +410,8 @@ void SyntaxVisitor::onItemWithOpts(MD::ItemWithOpts *i)
 void SyntaxVisitor::onUserDefined(MD::Item *i)
 {
     if (m_d->m_colors.m_enabled) {
-        if (i->type() == static_cast<MD::ItemType>(static_cast<int>(MD::ItemType::UserDefined) + 1)) {
+        switch (i->type()) {
+        case static_cast<MD::ItemType>(static_cast<int>(MD::ItemType::UserDefined) + 1): {
             auto yaml = static_cast<MD::YAMLHeader *>(i);
 
             QTextCharFormat format;
@@ -424,6 +426,20 @@ void SyntaxVisitor::onUserDefined(MD::Item *i)
 
             m_d->setFormat(special, yaml->startDelim());
             m_d->setFormat(special, yaml->endDelim());
+        } break;
+
+        case MdShared::EmojiItem::emojiType(): {
+            auto emoji = static_cast<MdShared::EmojiItem *>(i);
+
+            QTextCharFormat format;
+            format.setForeground(m_d->m_colors.m_textColor);
+            format.setFont(m_d->styleFont(m_d->m_additionalStyle));
+
+            m_d->setFormat(format, emoji->startLine(), emoji->startColumn(), emoji->endLine(), emoji->endColumn());
+        } break;
+
+        default:
+            break;
         }
     }
 

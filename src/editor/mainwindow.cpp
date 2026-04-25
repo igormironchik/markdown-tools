@@ -7,7 +7,6 @@
 #include "mainwindow.h"
 #include "colorsdlg.h"
 #include "editor.h"
-#include "emoji.h"
 #include "find.h"
 #include "findweb.h"
 #include "fontdlg.h"
@@ -73,6 +72,8 @@
 #include <md4qt/src/parser.h>
 
 // shared include.
+#include "emoji.h"
+#include "emoji_parser.h"
 #include "folder_chooser.h"
 #include "license_dialog.h"
 #include "plugins_page.h"
@@ -91,30 +92,26 @@ static const QChar s_colon = QLatin1Char(':');
 class HtmlVisitor : public MD::details::HtmlVisitor
 {
 protected:
+    void onUserDefined(MD::Item *item) override
+    {
+        if (!m_justCollectFootnoteRefs) {
+            if (item->type() == MdShared::EmojiItem::emojiType()) {
+                auto emoji = static_cast<MdShared::EmojiItem *>(item);
+
+                openStyle(emoji->openStyles());
+
+                m_html.push_back(s_emojiMap[emoji->emojiName()]);
+
+                closeStyle(emoji->closeStyles());
+            }
+        }
+    }
+
     //! Prepare text to insert into HTML content.
     QString prepareTextForHtml(const QString &t) override
     {
         auto tmp = MD::details::HtmlVisitor::prepareTextForHtml(t);
         tmp.replace(QLatin1Char('$'), QStringLiteral("<span>$</span>"));
-
-        auto i = tmp.indexOf(s_colon, 0);
-
-        while (i != -1) {
-            const auto j = tmp.indexOf(s_colon, i + 1);
-
-            if (j != -1) {
-                const auto name = tmp.sliced(i + 1, j - i - 1);
-
-                if (s_emojiMap.contains(name)) {
-                    tmp.replace(i, j - i + 1, s_emojiMap[name]);
-                    i = tmp.indexOf(s_colon, i + s_emojiMap[name].length());
-                } else {
-                    i = j;
-                }
-            } else {
-                break;
-            }
-        }
 
         return tmp;
     }
