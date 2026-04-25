@@ -1480,6 +1480,7 @@ void Editor::checkEmojiAutocompletion()
                     } else if (ch == s_colon) {
                         if (i == firstCharPos || document()->characterAt(i - 1).isSpace()) {
                             startPos = i - tc.block().position() + 1;
+                            firstCharPos = i;
                             m_d->m_startEmoji = i;
                             break;
                         } else {
