@@ -134,6 +134,10 @@ public:
     void enableAutoListInCodeBlock(bool on = true);
     //! Enable auto continue of code blocks.
     void enableAutoCodeBlocks(bool on = true);
+    //! Enable auto-completion of internal links.
+    void enableAutoCompletionOfLinks(bool on = true);
+    //! Enable auto-completion of Emojies.
+    void enableAutoCompletionOfEmojies(bool on = true);
 
     //! Indent mode.
     enum class IndentMode {

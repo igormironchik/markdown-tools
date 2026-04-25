@@ -53,6 +53,10 @@ struct Settings {
     bool m_dontUseAutoListInCodeBlock = true;
     //! Auto continue code blocks.
     bool m_isAutoCodeBlocksEnabled = true;
+    //! Is auto-completion of internal links enabled?
+    bool m_isLinksAutoCompletionEnabled = true;
+    //! Is auto-completion of Emojies enabled?
+    bool m_isEmojiAutoCompletionEnabled = true;
 }; // struct Settings
 
 bool operator!=(const Settings &s1,

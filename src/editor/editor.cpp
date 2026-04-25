@@ -655,6 +655,16 @@ void Editor::enableAutoCodeBlocks(bool on)
     m_d->m_settings.m_isAutoCodeBlocksEnabled = on;
 }
 
+void Editor::enableAutoCompletionOfLinks(bool on)
+{
+    m_d->m_settings.m_isLinksAutoCompletionEnabled = on;
+}
+
+void Editor::enableAutoCompletionOfEmojies(bool on)
+{
+    m_d->m_settings.m_isEmojiAutoCompletionEnabled = on;
+}
+
 void Editor::setIndentMode(IndentMode mode)
 {
     m_d->m_settings.m_indentMode = mode;
@@ -1398,34 +1408,36 @@ void Editor::replaceAll(const QString &with)
 
 void Editor::checkUrlAutocompletion()
 {
-    if (m_d->m_isContentChangedByKey) {
-        const auto lineNumber = textCursor().block().blockNumber();
-        const auto pos = textCursor().positionInBlock() - 1;
+    if (m_d->m_settings.m_isLinksAutoCompletionEnabled) {
+        if (m_d->m_isContentChangedByKey) {
+            const auto lineNumber = textCursor().block().blockNumber();
+            const auto pos = textCursor().positionInBlock() - 1;
 
-        const auto items = syntaxHighlighter().findFirstInCache({pos, lineNumber, pos, lineNumber});
+            const auto items = syntaxHighlighter().findFirstInCache({pos, lineNumber, pos, lineNumber});
 
-        if (!items.isEmpty() && items.back()->type() == MD::ItemType::Link) {
-            auto link = static_cast<MD::Link *>(items.back());
+            if (!items.isEmpty() && items.back()->type() == MD::ItemType::Link) {
+                auto link = static_cast<MD::Link *>(items.back());
 
-            if (pos >= link->urlPos().startColumn() && pos <= link->urlPos().endColumn()) {
-                const auto url =
-                    textCursor().block().text().sliced(link->urlPos().startColumn(),
-                                                       link->urlPos().endColumn() - link->urlPos().startColumn() + 1);
+                if (pos >= link->urlPos().startColumn() && pos <= link->urlPos().endColumn()) {
+                    const auto url = textCursor().block().text().sliced(
+                        link->urlPos().startColumn(),
+                        link->urlPos().endColumn() - link->urlPos().startColumn() + 1);
 
-                if (url.startsWith(QLatin1Char('#'))) {
-                    m_d->m_link = link;
-                    m_d->m_completer->setCompletionPrefix(url);
-                    auto tc = textCursor();
-                    tc.setPosition(tc.block().position() + link->urlPos().startColumn());
-                    m_d->m_completer->complete(
-                        QRect(cursorRect(tc).bottomLeft(),
-                              QSize(m_d->m_completer->popup()->sizeHintForColumn(0)
-                                        + (m_d->m_completer->completionCount() > m_d->m_completer->maxVisibleItems()
-                                               ? m_d->m_completer->popup()->verticalScrollBar()->sizeHint().width()
-                                               : 0)
-                                        + QApplication::style()->pixelMetric(QStyle::PM_FocusFrameHMargin)
-                                        + 1,
-                                    1)));
+                    if (url.startsWith(QLatin1Char('#'))) {
+                        m_d->m_link = link;
+                        m_d->m_completer->setCompletionPrefix(url);
+                        auto tc = textCursor();
+                        tc.setPosition(tc.block().position() + link->urlPos().startColumn());
+                        m_d->m_completer->complete(
+                            QRect(cursorRect(tc).bottomLeft(),
+                                  QSize(m_d->m_completer->popup()->sizeHintForColumn(0)
+                                            + (m_d->m_completer->completionCount() > m_d->m_completer->maxVisibleItems()
+                                                   ? m_d->m_completer->popup()->verticalScrollBar()->sizeHint().width()
+                                                   : 0)
+                                            + QApplication::style()->pixelMetric(QStyle::PM_FocusFrameHMargin)
+                                            + 1,
+                                        1)));
+                    }
                 }
             }
         }
@@ -1437,87 +1449,90 @@ static const QChar s_space = QLatin1Char(' ');
 
 void Editor::checkEmojiAutocompletion()
 {
-    if (m_d->m_isContentChangedByKey) {
-        auto tc = textCursor();
-        const auto lineNumber = tc.block().blockNumber();
-        const auto pos = textCursor().positionInBlock() - 1;
+    if (m_d->m_settings.m_isEmojiAutoCompletionEnabled) {
+        if (m_d->m_isContentChangedByKey) {
+            auto tc = textCursor();
+            const auto lineNumber = tc.block().blockNumber();
+            const auto pos = textCursor().positionInBlock() - 1;
 
-        const auto items = syntaxHighlighter().findFirstInCache({pos, lineNumber, pos, lineNumber});
+            const auto items = syntaxHighlighter().findFirstInCache({pos, lineNumber, pos, lineNumber});
 
-        if (!items.isEmpty()
-            && (items.back()->type() == MD::ItemType::Link || items.back()->type() == MD::ItemType::Text)) {
-            if (items.back()->type() == MD::ItemType::Link) {
-                if (pos > static_cast<MD::Link *>(items.back())->textPos().endColumn()) {
-                    m_d->m_emojiCompleter->popup()->hide();
-                    return;
-                }
-            }
-
-            qsizetype startPos = -1;
-            qsizetype firstCharPos = tc.block().position()
-                + (items.back()->type() == MD::ItemType::Link
-                       ? static_cast<MD::Link *>(items.back())->textPos().startColumn()
-                       : items.back()->startColumn());
-
-            for (qsizetype i = tc.position() - 1; i >= firstCharPos; --i) {
-                const auto ch = document()->characterAt(i);
-
-                if (ch == s_space) {
-                    return;
-                } else if (ch == s_colon) {
-                    if (i == firstCharPos || document()->characterAt(i - 1).isSpace()) {
-                        startPos = i - tc.block().position() + 1;
-                        m_d->m_startEmoji = i;
-                        break;
-                    } else {
+            if (!items.isEmpty()
+                && (items.back()->type() == MD::ItemType::Link || items.back()->type() == MD::ItemType::Text)) {
+                if (items.back()->type() == MD::ItemType::Link) {
+                    if (pos > static_cast<MD::Link *>(items.back())->textPos().endColumn()) {
                         m_d->m_emojiCompleter->popup()->hide();
                         return;
                     }
                 }
-            }
 
-            if (startPos != -1) {
-                QString emoji;
-                qsizetype lastCharPos = tc.block().position()
+                qsizetype startPos = -1;
+                qsizetype firstCharPos = tc.block().position()
                     + (items.back()->type() == MD::ItemType::Link
-                           ? static_cast<MD::Link *>(items.back())->textPos().endColumn()
-                           : items.back()->endColumn());
+                           ? static_cast<MD::Link *>(items.back())->textPos().startColumn()
+                           : items.back()->startColumn());
 
-                if (tc.position() + 1 <= lastCharPos) {
-                    for (qsizetype i = tc.position(); i <= lastCharPos; ++i) {
-                        if (document()->characterAt(i) == s_space) {
-                            emoji = tc.block().text().sliced(startPos, i - tc.block().position() - startPos);
-                            m_d->m_endEmoji = i - 1;
+                for (qsizetype i = tc.position() - 1; i >= firstCharPos; --i) {
+                    const auto ch = document()->characterAt(i);
+
+                    if (ch == s_space) {
+                        return;
+                    } else if (ch == s_colon) {
+                        if (i == firstCharPos || document()->characterAt(i - 1).isSpace()) {
+                            startPos = i - tc.block().position() + 1;
+                            m_d->m_startEmoji = i;
                             break;
-                        } else if (i == lastCharPos) {
-                            m_d->m_endEmoji = lastCharPos;
-
-                            if (lastCharPos >= firstCharPos) {
-                                emoji = tc.block().text().sliced(startPos, lastCharPos - firstCharPos);
-                            }
+                        } else {
+                            m_d->m_emojiCompleter->popup()->hide();
+                            return;
                         }
-                    }
-                } else {
-                    m_d->m_endEmoji = lastCharPos;
-
-                    if (lastCharPos >= firstCharPos) {
-                        emoji = tc.block().text().sliced(startPos, lastCharPos - firstCharPos);
                     }
                 }
 
-                if (!emoji.isEmpty()) {
-                    m_d->m_emojiCompleter->setCompletionPrefix(emoji);
-                    auto tc = textCursor();
-                    tc.setPosition(tc.block().position() + startPos - 1);
-                    m_d->m_emojiCompleter->complete(QRect(
-                        cursorRect(tc).bottomLeft(),
-                        QSize(m_d->m_emojiCompleter->popup()->sizeHintForColumn(0)
-                                  + (m_d->m_emojiCompleter->completionCount() > m_d->m_emojiCompleter->maxVisibleItems()
-                                         ? m_d->m_emojiCompleter->popup()->verticalScrollBar()->sizeHint().width()
-                                         : 0)
-                                  + QApplication::style()->pixelMetric(QStyle::PM_FocusFrameHMargin)
-                                  + 1,
-                              1)));
+                if (startPos != -1) {
+                    QString emoji;
+                    qsizetype lastCharPos = tc.block().position()
+                        + (items.back()->type() == MD::ItemType::Link
+                               ? static_cast<MD::Link *>(items.back())->textPos().endColumn()
+                               : items.back()->endColumn());
+
+                    if (tc.position() + 1 <= lastCharPos) {
+                        for (qsizetype i = tc.position(); i <= lastCharPos; ++i) {
+                            if (document()->characterAt(i) == s_space) {
+                                emoji = tc.block().text().sliced(startPos, i - tc.block().position() - startPos);
+                                m_d->m_endEmoji = i - 1;
+                                break;
+                            } else if (i == lastCharPos) {
+                                m_d->m_endEmoji = lastCharPos;
+
+                                if (lastCharPos >= firstCharPos) {
+                                    emoji = tc.block().text().sliced(startPos, lastCharPos - firstCharPos);
+                                }
+                            }
+                        }
+                    } else {
+                        m_d->m_endEmoji = lastCharPos;
+
+                        if (lastCharPos >= firstCharPos) {
+                            emoji = tc.block().text().sliced(startPos, lastCharPos - firstCharPos);
+                        }
+                    }
+
+                    if (!emoji.isEmpty()) {
+                        m_d->m_emojiCompleter->setCompletionPrefix(emoji);
+                        auto tc = textCursor();
+                        tc.setPosition(tc.block().position() + startPos - 1);
+                        m_d->m_emojiCompleter->complete(QRect(
+                            cursorRect(tc).bottomLeft(),
+                            QSize(m_d->m_emojiCompleter->popup()->sizeHintForColumn(0)
+                                      + (m_d->m_emojiCompleter->completionCount()
+                                                 > m_d->m_emojiCompleter->maxVisibleItems()
+                                             ? m_d->m_emojiCompleter->popup()->verticalScrollBar()->sizeHint().width()
+                                             : 0)
+                                      + QApplication::style()->pixelMetric(QStyle::PM_FocusFrameHMargin)
+                                      + 1,
+                                  1)));
+                    }
                 }
             }
         }
