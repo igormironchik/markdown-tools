@@ -36,7 +36,10 @@ set(SRC license_dialog.h
     dlg_filter_wheel.cpp
     dlg_filter_wheel.h
     emphasis.h
-    emphasis.cpp)
+    emphasis.cpp
+    emoji_parser.h
+    emoji_parser.cpp
+    emoji.h)
 
 qt6_add_resources(SRC qt.qrc)
 qt6_add_resources(SRC icon.qrc)

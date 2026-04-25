@@ -38,7 +38,8 @@ void orderWords(QVector<QPair<QString,
 
 //! Set plugins to parser.
 void setPlugins(MD::Parser &parser,
-                const MdShared::PluginsCfg &cfg);
+                const MdShared::PluginsCfg &cfg,
+                bool enableEmoji = false);
 
 static const QString s_oxygenName = QStringLiteral("The Oxygen Icon Theme");
 static const QString s_oxygenLicense = QStringLiteral(
