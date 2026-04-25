@@ -44,7 +44,7 @@ jobs:
       run: echo "${{ github.workspace }}\..\KDE\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
     - name: Install pkg-config
-      run: choco install pkgconfiglite
+      run: choco install pkgconfiglite --allow-empty-checksums
      
     - name: Install Qt
       run: cmd /c "script\windows\install-qt.bat"
