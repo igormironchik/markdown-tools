@@ -2415,7 +2415,7 @@ void MainWindow::readAllLinked(bool updateRootFileName)
         }
 
         MD::Parser parser;
-        setPlugins(parser, m_d->m_editor->settings().m_pluginsCfg);
+        setPlugins(parser, m_d->m_editor->settings().m_pluginsCfg, true);
 
         if (m_d->m_workingDirectoryWidget->isRelative()) {
             m_d->m_mdDoc = parser.parse(m_d->m_rootFilePath,
