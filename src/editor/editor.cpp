@@ -1446,6 +1446,7 @@ void Editor::checkUrlAutocompletion()
 
 static const QChar s_colon = QLatin1Char(':');
 static const QChar s_space = QLatin1Char(' ');
+static const QChar s_backslash = QLatin1Char('\\');
 
 MD::Text *findTextInLink(MD::Link *link,
                          qsizetype pos)
@@ -1498,7 +1499,7 @@ void Editor::checkEmojiAutocompletion()
                     if (ch == s_space) {
                         return;
                     } else if (ch == s_colon) {
-                        if (i == firstCharPos || document()->characterAt(i - 1).isSpace()) {
+                        if (i == firstCharPos || document()->characterAt(i - 1) != s_backslash) {
                             startPos = i - tc.block().position() + 1;
                             firstCharPos = i;
                             m_d->m_startEmoji = i;
