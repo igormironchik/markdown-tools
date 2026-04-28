@@ -1,0 +1,2571 @@
+# Xəyyam <xxmn77@gmail.com>, 2020, 2021, 2022.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"PO-Revision-Date: 2022-07-06 09:32+0400\n"
+"Last-Translator: Kheyyam <xxmn77@gmail.com>\n"
+"Language-Team: Azerbaijani <kde-i18n-doc@kde.org>\n"
+"Language: az\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Qt-Contexts: true\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 22.04.2\n"
+
+#. Generic sans serif font presented in font choosers. When selected, the system will choose a real font, mandated by distro settings.
+#: fonthelpers_p.h:22
+msgctxt "FontHelpers|@item Font name"
+msgid "Sans Serif"
+msgstr "Sans Serif"
+
+#. Generic serif font presented in font choosers. When selected, the system will choose a real font, mandated by distro settings.
+#: fonthelpers_p.h:25
+msgctxt "FontHelpers|@item Font name"
+msgid "Serif"
+msgstr "Serif"
+
+#. Generic monospace font presented in font choosers. When selected, the system will choose a real font, mandated by distro settings.
+#: fonthelpers_p.h:28
+msgctxt "FontHelpers|@item Font name"
+msgid "Monospace"
+msgstr "Enli"
+
+#: fonthelpers_p.h:88
+#, qt-format
+msgctxt "FontHelpers|@item Font name"
+msgid "%1"
+msgstr "%1"
+
+#: fonthelpers_p.h:92
+#, qt-format
+msgctxt "FontHelpers|@item Font name [foundry]"
+msgid "%1 [%2]"
+msgstr "%1 [%2]"
+
+#: kactionselector.cpp:98
+msgctxt "KActionSelector|@label:listbox"
+msgid "&Available:"
+msgstr "&Mövcuddur:"
+
+#: kactionselector.cpp:115
+msgctxt "KActionSelector|@label:listbox"
+msgid "&Selected:"
+msgstr "&Seçilmiş:"
+
+#: kassistantdialog.cpp:100
+msgctxt "KAssistantDialog|@action:button go back"
+msgid "&Back"
+msgstr "&Geriyə"
+
+#: kassistantdialog.cpp:102
+msgctxt "KAssistantDialog|@info:tooltip"
+msgid "Go back one step"
+msgstr "Bir addım geriyə"
+
+#: kassistantdialog.cpp:107
+msgctxt "KAssistantDialog|@action:button Opposite to Back"
+msgid "Next"
+msgstr "Növbəti"
+
+#: kassistantdialog.cpp:114
+msgctxt "KAssistantDialog|@action:button"
+msgid "Finish"
+msgstr "Son"
+
+#: kcharselect-translation.cpp:11 kcharselectdata.cpp:277
+msgctxt "KCharSelectData|KCharSelect section name"
+msgid "All"
+msgstr "Hamısı"
+
+#: kcharselect-translation.cpp:12
+msgctxt "KCharSelectData|KCharSelect section name"
+msgid "European Scripts"
+msgstr "Avropa yazı növü"
+
+#: kcharselect-translation.cpp:13
+msgctxt "KCharSelectData|KCharSelect section name"
+msgid "African Scripts"
+msgstr "Afrika yazı növü"
+
+#: kcharselect-translation.cpp:14
+msgctxt "KCharSelectData|KCharSelect section name"
+msgid "Middle Eastern Scripts"
+msgstr "Kiçik Asiya yazı növü"
+
+#: kcharselect-translation.cpp:15
+msgctxt "KCharSelectData|KCharSelect section name"
+msgid "Central Asian Scripts"
+msgstr "Mərkəzi Asiya yazı növü"
+
+#: kcharselect-translation.cpp:16
+msgctxt "KCharSelectData|KCharSelect section name"
+msgid "South Asian Scripts"
+msgstr "Cənubi Asiya yazı növü"
+
+#: kcharselect-translation.cpp:17
+msgctxt "KCharSelectData|KCharSelect section name"
+msgid "Southeast Asian Scripts"
+msgstr "Cənub-Şərqi Asiya yazı növü"
+
+#: kcharselect-translation.cpp:18
+msgctxt "KCharSelectData|KCharSelect section name"
+msgid "Indonesia and Oceania Scripts"
+msgstr "İndoneziya və Okeaniya yazı növü"
+
+#: kcharselect-translation.cpp:19
+msgctxt "KCharSelectData|KCharSelect section name"
+msgid "East Asian Scripts"
+msgstr "Şərqi Asiya yazı növü"
+
+#: kcharselect-translation.cpp:20
+msgctxt "KCharSelectData|KCharSelect section name"
+msgid "American Scripts"
+msgstr "Amerika yazı növü"
+
+#: kcharselect-translation.cpp:21
+msgctxt "KCharSelectData|KCharSelect section name"
+msgid "Symbols"
+msgstr "Simvollar"
+
+#: kcharselect-translation.cpp:22
+msgctxt "KCharSelectData|KCharSelect section name"
+msgid "Mathematical Symbols"
+msgstr "Riyazi Simvollar"
+
+#: kcharselect-translation.cpp:23
+msgctxt "KCharSelectData|KCharSelect section name"
+msgid "Phonetic Symbols"
+msgstr "Fonetik Simvollar"
+
+#: kcharselect-translation.cpp:24 kcharselectdata.cpp:743
+msgctxt "KCharSelectData|KCharSelect section name"
+msgid "Combining Diacritics"
+msgstr "kombinasiya olunan Diakritiklər"
+
+#: kcharselect-translation.cpp:25
+msgctxt "KCharSelectData|KCharSelect section name"
+msgid "Other"
+msgstr "Digər simvollar"
+
+#: kcharselect-translation.cpp:26
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Basic Latin"
+msgstr "Əsas latınca"
+
+#: kcharselect-translation.cpp:27
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Latin-1 Supplement"
+msgstr "1 latınca əlavəsi"
+
+#: kcharselect-translation.cpp:28
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Latin Extended-A"
+msgstr "Latınca (A genişlənməsi)"
+
+#: kcharselect-translation.cpp:29
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Latin Extended-B"
+msgstr "Latınca (B genişlənməsi)"
+
+#: kcharselect-translation.cpp:30
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "IPA Extensions"
+msgstr "Beynəlxalq Fonetik Əlifba"
+
+#: kcharselect-translation.cpp:31
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Spacing Modifier Letters"
+msgstr "Aralıq Dəyişdirici Hərflər"
+
+#: kcharselect-translation.cpp:32
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Combining Diacritical Marks"
+msgstr "Kombinasiya olunan Diakritik İşarələr"
+
+#: kcharselect-translation.cpp:33
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Greek and Coptic"
+msgstr "Yunan və Koptik əlifbaları"
+
+#: kcharselect-translation.cpp:34
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Cyrillic"
+msgstr "Kirill"
+
+#: kcharselect-translation.cpp:35
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Cyrillic Supplement"
+msgstr "Kirill əlavə simvolları"
+
+#: kcharselect-translation.cpp:36
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Armenian"
+msgstr "Erməni əlifbası"
+
+#: kcharselect-translation.cpp:37
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Hebrew"
+msgstr "İvrit əlifbası"
+
+#: kcharselect-translation.cpp:38
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Arabic"
+msgstr "Ərəb əlifbası"
+
+#: kcharselect-translation.cpp:39
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Syriac"
+msgstr "Suriya əlifbası"
+
+#: kcharselect-translation.cpp:40
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Arabic Supplement"
+msgstr "Ərəb yazısının əlavə simvolları"
+
+#: kcharselect-translation.cpp:41
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Thaana"
+msgstr "Taana"
+
+#: kcharselect-translation.cpp:42
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "NKo"
+msgstr "NKo"
+
+#: kcharselect-translation.cpp:43
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Samaritan"
+msgstr "Samiriyyə əlifbası"
+
+#: kcharselect-translation.cpp:44
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Mandaic"
+msgstr "Mandey əlifbası"
+
+#: kcharselect-translation.cpp:45
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Syriac Supplement"
+msgstr "Suriya yazısının əlavə simvolları"
+
+#: kcharselect-translation.cpp:46
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Arabic Extended-B"
+msgstr "Ərəbcə genişlənmiş-B"
+
+#: kcharselect-translation.cpp:47
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Arabic Extended-A"
+msgstr "Ərəb yazısı (A genişlənməsi)"
+
+#: kcharselect-translation.cpp:48
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Devanagari"
+msgstr "Devanaqari yazısı"
+
+#: kcharselect-translation.cpp:49
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Bengali"
+msgstr "Benqal yazısı"
+
+#: kcharselect-translation.cpp:50
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Gurmukhi"
+msgstr "Qurmuxi yazısı"
+
+#: kcharselect-translation.cpp:51
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Gujarati"
+msgstr "Qucarti yazısı"
+
+#: kcharselect-translation.cpp:52
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Oriya"
+msgstr "Oriya yazısı"
+
+#: kcharselect-translation.cpp:53
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Tamil"
+msgstr "Tamil yazısı"
+
+#: kcharselect-translation.cpp:54
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Telugu"
+msgstr "Teleuqu"
+
+#: kcharselect-translation.cpp:55
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Kannada"
+msgstr "Kannada"
+
+#: kcharselect-translation.cpp:56
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Malayalam"
+msgstr "Malayalam"
+
+#: kcharselect-translation.cpp:57
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Sinhala"
+msgstr "Sinqal yazısı"
+
+#: kcharselect-translation.cpp:58
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Thai"
+msgstr "Tay yazısı"
+
+#: kcharselect-translation.cpp:59
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Lao"
+msgstr "Laos yazısı"
+
+#: kcharselect-translation.cpp:60
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Tibetan"
+msgstr "Tibet yazısı"
+
+#: kcharselect-translation.cpp:61
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Myanmar"
+msgstr "Myanma yazısı"
+
+#: kcharselect-translation.cpp:62
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Georgian"
+msgstr "Gürcü əlifbası"
+
+#: kcharselect-translation.cpp:63
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Hangul Jamo"
+msgstr "Hanqıl"
+
+#: kcharselect-translation.cpp:64
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Ethiopic"
+msgstr "Efiopiya hecalı yazısı"
+
+#: kcharselect-translation.cpp:65
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Ethiopic Supplement"
+msgstr "Efiyopiya yazısının əlavə simvolları"
+
+#: kcharselect-translation.cpp:66
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Cherokee"
+msgstr "Çeroki yazısı"
+
+#: kcharselect-translation.cpp:67
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Unified Canadian Aboriginal Syllabics"
+msgstr "Kanada hecalı yazısı"
+
+#: kcharselect-translation.cpp:68
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Ogham"
+msgstr "Oqam yazısı"
+
+#: kcharselect-translation.cpp:69
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Runic"
+msgstr "Runi yazısı"
+
+#: kcharselect-translation.cpp:70
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Tagalog"
+msgstr "Taqaloq yazısı"
+
+#: kcharselect-translation.cpp:71
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Hanunoo"
+msgstr "Hanunu yazısı"
+
+#: kcharselect-translation.cpp:72
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Buhid"
+msgstr "Buhid"
+
+#: kcharselect-translation.cpp:73
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Tagbanwa"
+msgstr "Taqbanva"
+
+#: kcharselect-translation.cpp:74
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Khmer"
+msgstr "Khmer yazısı"
+
+#: kcharselect-translation.cpp:75
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Mongolian"
+msgstr "Monqol yazısı"
+
+#: kcharselect-translation.cpp:76
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Unified Canadian Aboriginal Syllabics Extended"
+msgstr "Kanada hecalı yazısı (genişlənmiş)"
+
+#: kcharselect-translation.cpp:77
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Limbu"
+msgstr "Limbu yazısı"
+
+#: kcharselect-translation.cpp:78
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Tai Le"
+msgstr "Əski Tay Li yazısı"
+
+#: kcharselect-translation.cpp:79
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "New Tai Lue"
+msgstr "Yeni Tay Li yazısı"
+
+#: kcharselect-translation.cpp:80
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Khmer Symbols"
+msgstr "Khmer simvolları"
+
+#: kcharselect-translation.cpp:81
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Buginese"
+msgstr "buqines yazısı"
+
+#: kcharselect-translation.cpp:82
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Tai Tham"
+msgstr "Tay Tham yazısı"
+
+#: kcharselect-translation.cpp:83
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Combining Diacritical Marks Extended"
+msgstr "Kombinə olunan diakritik işarələri (genişlənmiş)"
+
+#: kcharselect-translation.cpp:84
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Balinese"
+msgstr "Bali"
+
+#: kcharselect-translation.cpp:85
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Sundanese"
+msgstr "Sundan"
+
+#: kcharselect-translation.cpp:86
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Batak"
+msgstr "Batak"
+
+#: kcharselect-translation.cpp:87
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Lepcha"
+msgstr "Lepça"
+
+#: kcharselect-translation.cpp:88
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Ol Chiki"
+msgstr "Sabtalı əlifbası"
+
+#: kcharselect-translation.cpp:89
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Cyrillic Extended-C"
+msgstr "Kirill (C genişlənməsi)"
+
+#: kcharselect-translation.cpp:90
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Georgian Extended"
+msgstr "Gürcü əlifbası (genişlənmiş)"
+
+#: kcharselect-translation.cpp:91
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Sundanese Supplement"
+msgstr "Sundan yazısının əlavə simvolları"
+
+#: kcharselect-translation.cpp:92
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Vedic Extensions"
+msgstr "Veda sankristi üçün genişlənmə"
+
+#: kcharselect-translation.cpp:93
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Phonetic Extensions"
+msgstr "Fonetik genişlənmə"
+
+#: kcharselect-translation.cpp:94
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Phonetic Extensions Supplement"
+msgstr "Fonetik genişlənmə əlavəsi"
+
+#: kcharselect-translation.cpp:95
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Combining Diacritical Marks Supplement"
+msgstr "Genişlənmış Kombinə olunan işarələr"
+
+#: kcharselect-translation.cpp:96
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Latin Extended Additional"
+msgstr "Latınca (əlavə genişlənmiş)"
+
+#: kcharselect-translation.cpp:97
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Greek Extended"
+msgstr "Yunan (genişlənmiş)"
+
+#: kcharselect-translation.cpp:98
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "General Punctuation"
+msgstr "Əsas nöqtələmə işarəsi"
+
+#: kcharselect-translation.cpp:99
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Superscripts and Subscripts"
+msgstr "Sətiraltı və sətirüstü işarələr"
+
+#: kcharselect-translation.cpp:100
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Currency Symbols"
+msgstr "Valyuta simvolları"
+
+#: kcharselect-translation.cpp:101
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Combining Diacritical Marks for Symbols"
+msgstr "Simvollar üçün kombinə olunan diakritik işarələr"
+
+#: kcharselect-translation.cpp:102
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Letterlike Symbols"
+msgstr "Hərf şəkilli simvollar"
+
+#: kcharselect-translation.cpp:103
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Number Forms"
+msgstr "Rəqəmsal simvollar"
+
+#: kcharselect-translation.cpp:104
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Arrows"
+msgstr "Ox işarələri"
+
+#: kcharselect-translation.cpp:105
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Mathematical Operators"
+msgstr "Riyazi əməllər"
+
+#: kcharselect-translation.cpp:106
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Miscellaneous Technical"
+msgstr "Digər texniki simvollar"
+
+#: kcharselect-translation.cpp:107
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Control Pictures"
+msgstr "kodları idarə edən simvollar"
+
+#: kcharselect-translation.cpp:108
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Optical Character Recognition"
+msgstr "Optik aşkarlama simvolları"
+
+#: kcharselect-translation.cpp:109
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Enclosed Alphanumerics"
+msgstr "Çərçivələnmiş hərflər və simvollar"
+
+#: kcharselect-translation.cpp:110
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Box Drawing"
+msgstr "Çərçivə çizimi simvolları"
+
+#: kcharselect-translation.cpp:111
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Block Elements"
+msgstr "Doldurma simvolları"
+
+#: kcharselect-translation.cpp:112
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Geometric Shapes"
+msgstr "Həndəsi fiqurlar"
+
+#: kcharselect-translation.cpp:113
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Miscellaneous Symbols"
+msgstr "Müxtəlif simvollar"
+
+#: kcharselect-translation.cpp:114
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Dingbats"
+msgstr "Dekorativ işarələr"
+
+#: kcharselect-translation.cpp:115
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Miscellaneous Mathematical Symbols-A"
+msgstr "Müxtəlif Riyazi A-simvolları"
+
+#: kcharselect-translation.cpp:116
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Supplemental Arrows-A"
+msgstr "Əlavə A-ox işarələri"
+
+#: kcharselect-translation.cpp:117
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Braille Patterns"
+msgstr "Brayla əlifbası"
+
+#: kcharselect-translation.cpp:118
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Supplemental Arrows-B"
+msgstr "Əlavə B-ox işarələri"
+
+#: kcharselect-translation.cpp:119
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Miscellaneous Mathematical Symbols-B"
+msgstr "Müxtəlif Riyazi B-simvolları"
+
+#: kcharselect-translation.cpp:120
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Supplemental Mathematical Operators"
+msgstr "Əlavə Ryazi Əməllər"
+
+#: kcharselect-translation.cpp:121
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Miscellaneous Symbols and Arrows"
+msgstr "Müxtəlif simvollar və ox işarələri"
+
+#: kcharselect-translation.cpp:122
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Glagolitic"
+msgstr "Qlaqolit"
+
+#: kcharselect-translation.cpp:123
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Latin Extended-C"
+msgstr "Latın (C-genişlənməsi)"
+
+#: kcharselect-translation.cpp:124
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Coptic"
+msgstr "Koptik"
+
+#: kcharselect-translation.cpp:125
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Georgian Supplement"
+msgstr "Gürcü əlifbasının əlavə işarələri"
+
+#: kcharselect-translation.cpp:126
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Tifinagh"
+msgstr "Qədim Liviya yazısı"
+
+#: kcharselect-translation.cpp:127
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Ethiopic Extended"
+msgstr "Efiyopiya yazısı (genişlənmiş)"
+
+#: kcharselect-translation.cpp:128
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Cyrillic Extended-A"
+msgstr "Kirill (genişlənmiş)"
+
+#: kcharselect-translation.cpp:129
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Supplemental Punctuation"
+msgstr "Əlavə nöqtələmə işarələri"
+
+#: kcharselect-translation.cpp:130
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "CJK Radicals Supplement"
+msgstr "Əlavə CJK heroqlif açarları"
+
+#: kcharselect-translation.cpp:131
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Kangxi Radicals"
+msgstr "Kansi heroqlif açarları"
+
+#: kcharselect-translation.cpp:132
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Ideographic Description Characters"
+msgstr "Heroqlifləri təsvir edən simvollar"
+
+#: kcharselect-translation.cpp:133
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "CJK Symbols and Punctuation"
+msgstr "CJK simvolları və nöqtələmələri"
+
+#: kcharselect-translation.cpp:134
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Hiragana"
+msgstr "hiraqana"
+
+#: kcharselect-translation.cpp:135
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Katakana"
+msgstr "Katakana"
+
+#: kcharselect-translation.cpp:136
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Bopomofo"
+msgstr "Çjuin"
+
+#: kcharselect-translation.cpp:137
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Hangul Compatibility Jamo"
+msgstr "Hanqul ilə uyğun Camo"
+
+#: kcharselect-translation.cpp:138
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Kanbun"
+msgstr "Kanbun"
+
+#: kcharselect-translation.cpp:139
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Bopomofo Extended"
+msgstr "Çjuin (genişlənmiş)"
+
+#: kcharselect-translation.cpp:140
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "CJK Strokes"
+msgstr "CJK ştrixləri"
+
+#: kcharselect-translation.cpp:141
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Katakana Phonetic Extensions"
+msgstr "Katakana fonetik genişlənməsi"
+
+#: kcharselect-translation.cpp:142
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Enclosed CJK Letters and Months"
+msgstr "CJK hərflərinin və aylarının çərçivələnməsi"
+
+#: kcharselect-translation.cpp:143
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "CJK Compatibility"
+msgstr "CJK uyğunluq işarələri"
+
+#: kcharselect-translation.cpp:144
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "CJK Unified Ideographs Extension A"
+msgstr "vahid CJK heroqlifləri (A genişlənməsi)"
+
+#: kcharselect-translation.cpp:145
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Yijing Hexagram Symbols"
+msgstr "Yijing Heksaqram simvolları"
+
+#: kcharselect-translation.cpp:146
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "CJK Unified Ideographs"
+msgstr "Vahid CJK heroqlifləri"
+
+#: kcharselect-translation.cpp:147
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Yi Syllables"
+msgstr "Yi yazısının hecaları"
+
+#: kcharselect-translation.cpp:148
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Yi Radicals"
+msgstr "Yi yazısının heroqlif açarları"
+
+#: kcharselect-translation.cpp:149
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Lisu"
+msgstr "Lisu yazısı"
+
+#: kcharselect-translation.cpp:150
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Vai"
+msgstr "Vai yazısı"
+
+#: kcharselect-translation.cpp:151
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Cyrillic Extended-B"
+msgstr "Kirill (B-genişlınməsi)"
+
+#: kcharselect-translation.cpp:152
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Bamum"
+msgstr "Bamum yazısı"
+
+#: kcharselect-translation.cpp:153
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Modifier Tone Letters"
+msgstr "Tonun dəyişdirici simvolları"
+
+#: kcharselect-translation.cpp:154
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Latin Extended-D"
+msgstr "Latın (D-genişlənməsi)"
+
+#: kcharselect-translation.cpp:155
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Syloti Nagri"
+msgstr "Siheti-Naqari"
+
+#: kcharselect-translation.cpp:156
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Common Indic Number Forms"
+msgstr "Hind rəqəmsal işarələri"
+
+#: kcharselect-translation.cpp:157
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Phags-pa"
+msgstr "Paqba-lamı düzbucaqlı işarələri"
+
+#: kcharselect-translation.cpp:158
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Saurashtra"
+msgstr "Sauraştra yazısı"
+
+#: kcharselect-translation.cpp:159
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Devanagari Extended"
+msgstr "Devanaqari (genişləınmiş)"
+
+#: kcharselect-translation.cpp:160
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Kayah Li"
+msgstr "Kaya Li yazısı"
+
+#: kcharselect-translation.cpp:161
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Rejang"
+msgstr "Rejang yazısı"
+
+#: kcharselect-translation.cpp:162
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Hangul Jamo Extended-A"
+msgstr "Hanqıl Çamo (A-genişlnməsi)"
+
+#: kcharselect-translation.cpp:163
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Javanese"
+msgstr "Yavan yazısı"
+
+#: kcharselect-translation.cpp:164
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Myanmar Extended-B"
+msgstr "Myanma yazısı (B-genişlənməsi)"
+
+#: kcharselect-translation.cpp:165
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Cham"
+msgstr "Çam yazısı"
+
+#: kcharselect-translation.cpp:166
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Myanmar Extended-A"
+msgstr "Myanmar (A-genişlınməsi)"
+
+#: kcharselect-translation.cpp:167
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Tai Viet"
+msgstr "Tai Viet"
+
+#: kcharselect-translation.cpp:168
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Meetei Mayek Extensions"
+msgstr "Manipuri yazısı (genişləınmiş)"
+
+#: kcharselect-translation.cpp:169
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Ethiopic Extended-A"
+msgstr "Efiyopiya (A-genişlənməsi)"
+
+#: kcharselect-translation.cpp:170
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Latin Extended-E"
+msgstr "Latın (E-genişlənməsi)"
+
+#: kcharselect-translation.cpp:171
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Cherokee Supplement"
+msgstr "Çeroki yazısının əlavə simvolları"
+
+#: kcharselect-translation.cpp:172
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Meetei Mayek"
+msgstr "Manipuri yazısı"
+
+#: kcharselect-translation.cpp:173
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Hangul Syllables"
+msgstr "Hanqul hecaları"
+
+#: kcharselect-translation.cpp:174
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Hangul Jamo Extended-B"
+msgstr "Hanqul Çamo (B-genişlınməsi)"
+
+#: kcharselect-translation.cpp:175
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "High Surrogates"
+msgstr "Surroqat cütlüklərin yuxarı hissəsi"
+
+#: kcharselect-translation.cpp:176
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "High Private Use Surrogates"
+msgstr "Tez tez istigfadə olunan surroqat cütlüklərin yuxarı hissəsi"
+
+#: kcharselect-translation.cpp:177
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Low Surrogates"
+msgstr "Surroqat cütlüklərin aşağı hissəsi"
+
+#: kcharselect-translation.cpp:178
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Private Use Area"
+msgstr "Şəxsi istifadə üçün sahə"
+
+#: kcharselect-translation.cpp:179
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "CJK Compatibility Ideographs"
+msgstr "CJK uyğun heroqlifləri"
+
+#: kcharselect-translation.cpp:180
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Alphabetic Presentation Forms"
+msgstr "Əlifba mətnini təqdim edən simvollar"
+
+#: kcharselect-translation.cpp:181
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Arabic Presentation Forms-A"
+msgstr "A ərəb mətnini təqdim edən simvollar"
+
+#: kcharselect-translation.cpp:182
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Variation Selectors"
+msgstr "Variyasiya seçiciləri"
+
+#: kcharselect-translation.cpp:183
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Vertical Forms"
+msgstr "Şaquli nöqtələmə işarələri"
+
+#: kcharselect-translation.cpp:184
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Combining Half Marks"
+msgstr "Kombinə olunan yarım işarələr"
+
+#: kcharselect-translation.cpp:185
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "CJK Compatibility Forms"
+msgstr "CJK ilə uyğunluq üçün şaquli işarələr"
+
+#: kcharselect-translation.cpp:186
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Small Form Variants"
+msgstr "Kiçik ölçü variantı"
+
+#: kcharselect-translation.cpp:187
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Arabic Presentation Forms-B"
+msgstr "B ərəb mətnini təqdim edən simvollar"
+
+#: kcharselect-translation.cpp:188
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Halfwidth and Fullwidth Forms"
+msgstr "Yarım enli və Tam enli simvollar"
+
+#: kcharselect-translation.cpp:189
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Specials"
+msgstr "Xüsusi simvollar"
+
+#: kcharselect-translation.cpp:191
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Mahjong Tiles"
+msgstr "Mahjong plitələri"
+
+#: kcharselect-translation.cpp:192
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Domino Tiles"
+msgstr "Domino daşları"
+
+#: kcharselect-translation.cpp:193
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Playing Cards"
+msgstr "Oyun kartları"
+
+#: kcharselect-translation.cpp:194
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Enclosed Alphanumeric Supplement"
+msgstr "Hərf və Rəqəmlərin əlavə çərçivələnməsi"
+
+#: kcharselect-translation.cpp:195
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Enclosed Ideographic Supplement"
+msgstr "Heroqliflərin əlavə çərçivələnməsi"
+
+#: kcharselect-translation.cpp:196
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Miscellaneous Symbols and Pictographs"
+msgstr "Müxtəlif Simvollar və Piktoqramlar"
+
+#: kcharselect-translation.cpp:197
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Emoticons"
+msgstr "İfadələr (Smayliklr)"
+
+#: kcharselect-translation.cpp:198
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Ornamental Dingbats"
+msgstr "Bəzək naxış elementləri"
+
+#: kcharselect-translation.cpp:199
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Transport and Map Symbols"
+msgstr "Nəqliyyat sxemi və Xəritə üçün simvollar"
+
+#: kcharselect-translation.cpp:200
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Alchemical Symbols"
+msgstr "Kimyəvi rəmzlər"
+
+#: kcharselect-translation.cpp:201
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Geometric Shapes Extended"
+msgstr "Genişləndirilmiş Həndəsi fiqurlar"
+
+#: kcharselect-translation.cpp:202
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Supplemental Arrows-C"
+msgstr "Əlavə C-oxları"
+
+#: kcharselect-translation.cpp:203
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Supplemental Symbols and Pictographs"
+msgstr "Əlavə Simvollar və Piktoqramlar"
+
+#: kcharselect-translation.cpp:204
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Chess Symbols"
+msgstr "Şahmat fiqurları Simvolları"
+
+#: kcharselect-translation.cpp:205
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Symbols and Pictographs Extended-A"
+msgstr "Simvollar və Piktoqramlar (A-genişlənməsi)"
+
+#: kcharselect-translation.cpp:206
+msgctxt "KCharSelectData|KCharselect unicode block name"
+msgid "Symbols for Legacy Computing"
+msgstr "Köhnə kompyuter simvolları"
+
+#: kcharselect.cpp:393
+#, fuzzy
+#| msgctxt "KCharSelect|@info:placeholder"
+#| msgid "Enter a search term or character..."
+msgctxt "KCharSelect|@info:placeholder"
+msgid "Enter a search term or character…"
+msgstr "Axtarış termini və ya simvol daxil edin..."
+
+#: kcharselect.cpp:395
+msgctxt "KCharSelect|@info:tooltip"
+msgid "Enter a search term or character here"
+msgstr "Buraya axtarış termini və ya simvol daxil edin"
+
+#: kcharselect.cpp:402
+#, fuzzy
+#| msgctxt "KStandardGuiItem|"
+#| msgid "&Find"
+msgctxt "KCharSelect|@action"
+msgid "&Find…"
+msgstr "&Tapmaq"
+
+#: kcharselect.cpp:426
+msgctxt "KCharSelect|@action:button Goes to previous character"
+msgid "Previous in History"
+msgstr "Tarixçədə əvvəlki"
+
+#: kcharselect.cpp:428
+msgctxt "KCharSelect|@info:tooltip"
+msgid "Go to previous character in history"
+msgstr "Bir az əvvəl seçilmiş simvola"
+
+#: kcharselect.cpp:433
+msgctxt "KCharSelect|@action:button Goes to next character"
+msgid "Next in History"
+msgstr "Növbəti seçilmiş simvol"
+
+#: kcharselect.cpp:435
+msgctxt "KCharSelect|info:tooltip"
+msgid "Go to next character in history"
+msgstr "Növbəti seçilmi. simvola"
+
+#: kcharselect.cpp:440
+msgctxt "KCharSelect|@action go back"
+msgid "&Back"
+msgstr "&Geriyə"
+
+#: kcharselect.cpp:447
+msgctxt "KCharSelect|@action go forward"
+msgid "&Forward"
+msgstr "&İrəli"
+
+#: kcharselect.cpp:466
+msgctxt "KCharSelect|@info:tooltip"
+msgid "Select a category"
+msgstr "Kateqoriya seçmək"
+
+#: kcharselect.cpp:470
+msgctxt "KCharSelect|@info:tooltip"
+msgid "Select a block to be displayed"
+msgstr "Göstərmək üçün bloku seçin"
+
+#: kcharselect.cpp:489
+msgctxt "KCharSelect|@info:tooltip"
+msgid "Set font"
+msgstr "Şrift seçimi"
+
+#: kcharselect.cpp:496
+msgctxt "KCharSelect|@info:tooltip"
+msgid "Set font size"
+msgstr "Şriftin ölçüsü"
+
+#: kcharselect.cpp:798
+msgctxt "KCharSelect|"
+msgid "Character:"
+msgstr "Simvol:"
+
+#: kcharselect.cpp:804
+msgctxt "KCharSelect|"
+msgid "Name: "
+msgstr "Adı: "
+
+#: kcharselect.cpp:813
+msgctxt "KCharSelect|"
+msgid "Annotations and Cross References"
+msgstr "Qeyd və keçid ünvanları"
+
+#: kcharselect.cpp:817
+msgctxt "KCharSelect|"
+msgid "Alias names:"
+msgstr "Digər təqdimatlar:"
+
+#: kcharselect.cpp:825
+msgctxt "KCharSelect|"
+msgid "Notes:"
+msgstr "Qeydlər:"
+
+#: kcharselect.cpp:833
+msgctxt "KCharSelect|"
+msgid "See also:"
+msgstr "Həmçinin bax:"
+
+#: kcharselect.cpp:848
+msgctxt "KCharSelect|"
+msgid "Equivalents:"
+msgstr "Qarşılığı:"
+
+#: kcharselect.cpp:856
+msgctxt "KCharSelect|"
+msgid "Approximate equivalents:"
+msgstr "Təxmini qarşılığı:"
+
+#: kcharselect.cpp:864
+msgctxt "KCharSelect|"
+msgid "Decomposition:"
+msgstr "Tərkib hissələrinə bölünmə:"
+
+#: kcharselect.cpp:876
+msgctxt "KCharSelect|"
+msgid "CJK Ideograph Information"
+msgstr "CJK heroqlifləri məlumatları"
+
+#: kcharselect.cpp:879
+msgctxt "KCharSelect|"
+msgid "Definition in English: "
+msgstr "İngiliscə açması: "
+
+#: kcharselect.cpp:886
+msgctxt "KCharSelect|"
+msgid "Mandarin Pronunciation: "
+msgstr "Mandarincə tələffüz: "
+
+#: kcharselect.cpp:893
+msgctxt "KCharSelect|"
+msgid "Cantonese Pronunciation: "
+msgstr "Kantonca tələffüz: "
+
+#: kcharselect.cpp:900
+msgctxt "KCharSelect|"
+msgid "Japanese On Pronunciation: "
+msgstr "Yaponca (onyomi) tələffüz: "
+
+#: kcharselect.cpp:907
+msgctxt "KCharSelect|"
+msgid "Japanese Kun Pronunciation: "
+msgstr "Yaponca (kunyomi) tələfüz: "
+
+#: kcharselect.cpp:914
+msgctxt "KCharSelect|"
+msgid "Tang Pronunciation: "
+msgstr "Tan sülaləsi dövründə olduğu kimi tələffüz: "
+
+#: kcharselect.cpp:921
+msgctxt "KCharSelect|"
+msgid "Korean Pronunciation: "
+msgstr "Kore dilində tələffüz: "
+
+#: kcharselect.cpp:927
+msgctxt "KCharSelect|"
+msgid "General Character Properties"
+msgstr "Simvollar haqqında ümumi məlumat"
+
+#: kcharselect.cpp:928
+msgctxt "KCharSelect|"
+msgid "Block: "
+msgstr "Block: "
+
+#: kcharselect.cpp:929
+msgctxt "KCharSelect|"
+msgid "Unicode category: "
+msgstr "Unicode kateqoriyası: "
+
+#: kcharselect.cpp:933
+msgctxt "KCharSelect|"
+msgid "Various Useful Representations"
+msgstr "Faydalı təqdimatlar"
+
+#: kcharselect.cpp:934
+msgctxt "KCharSelect|"
+msgid "UTF-8:"
+msgstr "UTF-8:"
+
+#: kcharselect.cpp:938
+msgctxt "KCharSelect|"
+msgid "UTF-16: "
+msgstr "UTF-16: "
+
+#: kcharselect.cpp:945
+msgctxt "KCharSelect|"
+msgid "C octal escaped UTF-8: "
+msgstr "C dilində UTF-8 səkkizli kodu: "
+
+#: kcharselect.cpp:949
+msgctxt "KCharSelect|"
+msgid "XML decimal entity:"
+msgstr "XML onluq vahidi:"
+
+#: kcharselect.cpp:1101
+msgctxt "KCharSelectItemModel|"
+msgid "Unicode code point:"
+msgstr "Unicode kodu:"
+
+#: kcharselect.cpp:1101
+msgctxt "KCharSelectItemModel|Character"
+msgid "In decimal"
+msgstr "Onluq kimi:"
+
+#: kcharselectdata.cpp:303
+msgctxt "KCharSelectData|"
+msgid "<noncharacter>"
+msgstr "<simvol deyil>"
+
+#: kcharselectdata.cpp:324
+msgctxt "KCharSelectData|"
+msgid "<Non Private Use High Surrogate>"
+msgstr "<Böyük Hərif əvəzedicisi>"
+
+#: kcharselectdata.cpp:326
+msgctxt "KCharSelectData|"
+msgid "<Private Use High Surrogate>"
+msgstr "<İstifadəçi üçün Böyük Hərif əvəzedicisi>"
+
+#: kcharselectdata.cpp:328
+msgctxt "KCharSelectData|"
+msgid "<Low Surrogate>"
+msgstr "<Kiçik Həriflər>"
+
+#: kcharselectdata.cpp:330
+msgctxt "KCharSelectData|"
+msgid "<Private Use>"
+msgstr "<İstifadəçi üçün>"
+
+#: kcharselectdata.cpp:362
+msgctxt "KCharSelectData|"
+msgid "<not assigned>"
+msgstr "<təyinatsız>"
+
+#: kcharselectdata.cpp:440
+msgctxt "KCharSelectData|KCharselect unicode section name"
+msgid "All"
+msgstr "Hamısı"
+
+#: kcharselectdata.cpp:752
+msgctxt "KCharSelectData|"
+msgid "Non-printable"
+msgstr "Çap olunmayan"
+
+#: kcharselectdata.cpp:785
+msgctxt "KCharSelectData|"
+msgid "Other, Control"
+msgstr "Digər, Nəzarətçi"
+
+#: kcharselectdata.cpp:787
+msgctxt "KCharSelectData|"
+msgid "Other, Format"
+msgstr "Digər, Forma"
+
+#: kcharselectdata.cpp:789
+msgctxt "KCharSelectData|"
+msgid "Other, Not Assigned"
+msgstr "Digər, Təyinatsız"
+
+#: kcharselectdata.cpp:791
+msgctxt "KCharSelectData|"
+msgid "Other, Private Use"
+msgstr "Digər, Şəxsi istifadə"
+
+#: kcharselectdata.cpp:793
+msgctxt "KCharSelectData|"
+msgid "Other, Surrogate"
+msgstr "Digər, Əvəzedici"
+
+#: kcharselectdata.cpp:795
+msgctxt "KCharSelectData|"
+msgid "Letter, Lowercase"
+msgstr "Hərf, Kiçik hərf"
+
+#: kcharselectdata.cpp:797
+msgctxt "KCharSelectData|"
+msgid "Letter, Modifier"
+msgstr "Hərf, Dəyişdirici"
+
+#: kcharselectdata.cpp:799
+msgctxt "KCharSelectData|"
+msgid "Letter, Other"
+msgstr "Hərf, Digər"
+
+#: kcharselectdata.cpp:801
+msgctxt "KCharSelectData|"
+msgid "Letter, Titlecase"
+msgstr "Hərf, Başlıq"
+
+#: kcharselectdata.cpp:803
+msgctxt "KCharSelectData|"
+msgid "Letter, Uppercase"
+msgstr "Hərf, Böyük hərf"
+
+#: kcharselectdata.cpp:805
+msgctxt "KCharSelectData|"
+msgid "Mark, Spacing Combining"
+msgstr "Nişan, Boşluq birləşdirmə"
+
+#: kcharselectdata.cpp:807
+msgctxt "KCharSelectData|"
+msgid "Mark, Enclosing"
+msgstr "Nişan, Əhatə edən"
+
+#: kcharselectdata.cpp:809
+msgctxt "KCharSelectData|"
+msgid "Mark, Non-Spacing"
+msgstr "Niçan, Boşluqsuz"
+
+#: kcharselectdata.cpp:811
+msgctxt "KCharSelectData|"
+msgid "Number, Decimal Digit"
+msgstr "Say, Onluq rəqəm"
+
+#: kcharselectdata.cpp:813
+msgctxt "KCharSelectData|"
+msgid "Number, Letter"
+msgstr "Say, Hərf"
+
+#: kcharselectdata.cpp:815
+msgctxt "KCharSelectData|"
+msgid "Number, Other"
+msgstr "Say, Digər"
+
+#: kcharselectdata.cpp:817
+msgctxt "KCharSelectData|"
+msgid "Punctuation, Connector"
+msgstr "Nöqtələmə, Birləşdirici"
+
+#: kcharselectdata.cpp:819
+msgctxt "KCharSelectData|"
+msgid "Punctuation, Dash"
+msgstr "Nöqtələmə, tire"
+
+#: kcharselectdata.cpp:821
+msgctxt "KCharSelectData|"
+msgid "Punctuation, Close"
+msgstr "Nöqtələmə, Bağlamaq"
+
+#: kcharselectdata.cpp:823
+msgctxt "KCharSelectData|"
+msgid "Punctuation, Final Quote"
+msgstr "Nöqtələmə, Bağlanan dırnaq"
+
+#: kcharselectdata.cpp:825
+msgctxt "KCharSelectData|"
+msgid "Punctuation, Initial Quote"
+msgstr "Nöqtələmə, Açılan dırnaq"
+
+#: kcharselectdata.cpp:827
+msgctxt "KCharSelectData|"
+msgid "Punctuation, Other"
+msgstr "Nöqtələmə, Digər"
+
+#: kcharselectdata.cpp:829
+msgctxt "KCharSelectData|"
+msgid "Punctuation, Open"
+msgstr "Nöqtələmə, Açmaq"
+
+#: kcharselectdata.cpp:831
+msgctxt "KCharSelectData|"
+msgid "Symbol, Currency"
+msgstr "Valyuta İşarəsi"
+
+#: kcharselectdata.cpp:833
+msgctxt "KCharSelectData|"
+msgid "Symbol, Modifier"
+msgstr "Simvol, Dəyişdirici"
+
+#: kcharselectdata.cpp:835
+msgctxt "KCharSelectData|"
+msgid "Symbol, Math"
+msgstr "Riyazi Simvol"
+
+#: kcharselectdata.cpp:837
+msgctxt "KCharSelectData|"
+msgid "Symbol, Other"
+msgstr "Simvol, Digər"
+
+#: kcharselectdata.cpp:839
+msgctxt "KCharSelectData|"
+msgid "Separator, Line"
+msgstr "Sətirarası Boşluq"
+
+#: kcharselectdata.cpp:841
+msgctxt "KCharSelectData|"
+msgid "Separator, Paragraph"
+msgstr "Abzas Boşluğu"
+
+#: kcharselectdata.cpp:843
+msgctxt "KCharSelectData|"
+msgid "Separator, Space"
+msgstr "Boşluq, Ayırıcı"
+
+#: kcharselectdata.cpp:845
+msgctxt "KCharSelectData|"
+msgid "Unknown"
+msgstr "Naməlum"
+
+#: kcolorcombo.cpp:333
+#, fuzzy
+#| msgctxt "KColorCombo|@item:inlistbox Custom color"
+#| msgid "Custom..."
+msgctxt "KColorCombo|@item:inlistbox Custom color"
+msgid "Custom…"
+msgstr "Fərdi..."
+
+#: kcontextualhelpbutton.cpp:68
+#, fuzzy
+#| msgctxt "KPasswordDialog|"
+#| msgid "Show Contextual Help"
+msgctxt "QObject|@action:button accessible name"
+msgid "Contextual Help"
+msgstr "Kontekstual yardımı göstərmək"
+
+#: kdatecombobox.cpp:187
+msgctxt "KDateComboBox|@info"
+msgid "The date you entered is invalid"
+msgstr "Səhv tarix daxil edilib"
+
+#: kdatecombobox.cpp:190
+#, qt-format
+msgctxt "KDateComboBox|@info"
+msgid "Date cannot be earlier than %1"
+msgstr "Bu tarixdən əvvəl olmaz: %1"
+
+#: kdatecombobox.cpp:197
+#, qt-format
+msgctxt "KDateComboBox|@info"
+msgid "Date cannot be later than %1"
+msgstr "Bu tarixdən sonra olmaz: %1"
+
+#: kdatepicker.cpp:197
+#, qt-format
+msgctxt "KDatePicker|"
+msgid "Week %1"
+msgstr "Həftə %1"
+
+#: kdatepicker.cpp:306
+msgctxt "KDatePicker|@info:tooltip"
+msgid "Next year"
+msgstr "Gələn il"
+
+#: kdatepicker.cpp:307
+msgctxt "KDatePicker|@info:tooltip"
+msgid "Previous year"
+msgstr "Keçən il"
+
+#: kdatepicker.cpp:308
+msgctxt "KDatePicker|@info:tooltip"
+msgid "Next month"
+msgstr "Gələn ay"
+
+#: kdatepicker.cpp:309
+msgctxt "KDatePicker|@info:tooltip"
+msgid "Previous month"
+msgstr "Keçən ay"
+
+#: kdatepicker.cpp:310
+msgctxt "KDatePicker|@info:tooltip"
+msgid "Select a week"
+msgstr "Həftə seçin"
+
+#: kdatepicker.cpp:311
+msgctxt "KDatePicker|@info:tooltip"
+msgid "Select a month"
+msgstr "Ay seçin"
+
+#: kdatepicker.cpp:312
+msgctxt "KDatePicker|@info:tooltip"
+msgid "Select a year"
+msgstr "İl seçin"
+
+#: kdatepicker.cpp:313
+msgctxt "KDatePicker|@info:tooltip"
+msgid "Select the current day"
+msgstr "Bugünkü tarixi seçin"
+
+#: kdatepicker.cpp:648
+msgctxt "KDatePicker|@action:button"
+msgid "Close"
+msgstr "Bağla"
+
+#: kdatepickerpopup.cpp:96
+msgctxt "KDatePickerPopup|@option next year"
+msgid "Next Year"
+msgstr "Növbəti il"
+
+#: kdatepickerpopup.cpp:97
+msgctxt "KDatePickerPopup|@option next month"
+msgid "Next Month"
+msgstr "Növbəti ay"
+
+#: kdatepickerpopup.cpp:98
+msgctxt "KDatePickerPopup|@option next week"
+msgid "Next Week"
+msgstr "Növbəti həftə"
+
+#: kdatepickerpopup.cpp:99
+msgctxt "KDatePickerPopup|@option tomorrow"
+msgid "Tomorrow"
+msgstr "Sabah"
+
+#: kdatepickerpopup.cpp:100
+msgctxt "KDatePickerPopup|@option today"
+msgid "Today"
+msgstr "Bugün"
+
+#: kdatepickerpopup.cpp:101
+msgctxt "KDatePickerPopup|@option yesterday"
+msgid "Yesterday"
+msgstr "Dünən"
+
+#: kdatepickerpopup.cpp:102
+msgctxt "KDatePickerPopup|@option last week"
+msgid "Last Week"
+msgstr "Keçən həftə"
+
+#: kdatepickerpopup.cpp:103
+msgctxt "KDatePickerPopup|@option last month"
+msgid "Last Month"
+msgstr "Keçən ay"
+
+#: kdatepickerpopup.cpp:104
+msgctxt "KDatePickerPopup|@option last year"
+msgid "Last Year"
+msgstr "Keçən il"
+
+#: kdatepickerpopup.cpp:123
+msgctxt "KDatePickerPopup|@option do not specify a date"
+msgid "No Date"
+msgstr "Tarixsiz"
+
+#: kdatetimeedit.cpp:171
+msgctxt "KDateTimeEdit|@item:inlistbox UTC time zone"
+msgid "UTC"
+msgstr "UTC"
+
+#: kdatetimeedit.cpp:172
+msgctxt "KDateTimeEdit|@item:inlistbox No specific time zone"
+msgid "Floating"
+msgstr "Sərbəst"
+
+#: kdatetimeedit.cpp:211
+msgctxt "KDateTimeEdit|@info"
+msgid "The entered date and time is before the minimum allowed date and time."
+msgstr ""
+"Göstərilən tarix və vaxt, icazə verilən minimum tarix və vaxtdan əvvəldir."
+
+#: kdatetimeedit.cpp:221
+msgctxt "KDateTimeEdit|@info"
+msgid "The entered date and time is after the maximum allowed date and time."
+msgstr ""
+"Göstərilən tarix və vaxt, icazə verilən maksimum tarix və vaxtdan gecdir."
+
+#: keditlistwidget.cpp:281
+msgctxt "KEditListWidget|@action:button"
+msgid "&Add"
+msgstr "&Əlavə edin"
+
+#: keditlistwidget.cpp:293
+msgctxt "KEditListWidget|@action:button"
+msgid "&Remove"
+msgstr "&Silin"
+
+#: keditlistwidget.cpp:305
+msgctxt "KEditListWidget|@action:button"
+msgid "Move &Up"
+msgstr "Y&uxarı köşürün"
+
+#: keditlistwidget.cpp:310
+msgctxt "KEditListWidget|@action:button"
+msgid "Move &Down"
+msgstr "Aşağı &köçürün"
+
+#: kfontchooser.cpp:160
+msgctxt "KFontChooser|@title:group"
+msgid "Requested Font"
+msgstr "Tələb olunan şrift"
+
+#: kfontchooser.cpp:208
+msgctxt "KFontChooser|@item font"
+msgid "Normal"
+msgstr "Normal"
+
+#: kfontchooser.cpp:209 kfontchooser.cpp:469
+msgctxt "KFontChooser|@item font"
+msgid "Italic"
+msgstr "Kursiv"
+
+#: kfontchooser.cpp:210 kfontchooser.cpp:470
+msgctxt "KFontChooser|@item font"
+msgid "Oblique"
+msgstr "Köndələn"
+
+#: kfontchooser.cpp:211
+msgctxt "KFontChooser|@item font"
+msgid "Bold"
+msgstr "Qalın"
+
+#: kfontchooser.cpp:212
+msgctxt "KFontChooser|@item font"
+msgid "Bold Condensed Oblique"
+msgstr "Qalın sıxlaşdırılmış kursiv"
+
+#: kfontchooser.cpp:266
+msgctxt "KFontChooser|"
+msgid "The Quick Brown Fox Jumps Over The Lazy Dog"
+msgstr "Gecə Ürəyiyumşaq Əjdaha Paxıl Ovçunun Tüfəngini Söküb Kağıza Bükdü"
+
+#: kfontchooser.cpp:454
+#, qt-format
+msgctxt "KFontChooser|@item Font style"
+msgid "%1"
+msgstr "%1"
+
+#: kfontchooserdialog.cpp:25
+msgctxt "KFontChooserDialog|@title:window"
+msgid "Select Font"
+msgstr "Şrift seçimi"
+
+#: kfontchooserwidget.ui:21
+msgctxt "KFontChooserWidget|"
+msgid "Comma separated list of font features (e.g., liga, calt):"
+msgstr ""
+
+#: kfontchooserwidget.ui:31
+msgctxt "KFontChooserWidget|"
+msgid "Sample:"
+msgstr ""
+
+#: kfontchooserwidget.ui:41
+msgctxt "KFontChooserWidget|"
+msgid ""
+"This sample text illustrates the current settings. You may edit it to test "
+"special characters."
+msgstr ""
+"Bu sadə mətn, hazırkı yazı parametrlərini əyani göstərir. Xüsusi simvolları "
+"yoxlamaq üçün üzərində düzəliş edə bilərsiniz."
+
+#: kfontchooserwidget.ui:51
+msgctxt "KFontChooserWidget|"
+msgid "Show only monospaced fonts"
+msgstr "Yalnız bərabərenli şriftləri göstərmək"
+
+#: kfontchooserwidget.ui:66
+msgctxt "KFontChooserWidget|"
+msgid "Font"
+msgstr "Şrift"
+
+#: kfontchooserwidget.ui:73
+msgctxt "KFontChooserWidget|"
+msgid "Font:"
+msgstr "Şrift:"
+
+#: kfontchooserwidget.ui:91
+msgctxt "KFontChooserWidget|"
+msgid "Font style"
+msgstr "Şrtift tərzi"
+
+#: kfontchooserwidget.ui:98
+msgctxt "KFontChooserWidget|"
+msgid "Font style:"
+msgstr "Şrift tərzi:"
+
+#: kfontchooserwidget.ui:116
+msgctxt "KFontChooserWidget|"
+msgid "Size"
+msgstr "Ölçü"
+
+#: kfontchooserwidget.ui:123
+msgctxt "KFontChooserWidget|"
+msgid "Size:"
+msgstr "Ölçüsü:"
+
+#: kfontchooserwidget.ui:132
+msgctxt "KFontChooserWidget|"
+msgid "Relative"
+msgstr "Təqribi"
+
+#: kfontrequester.cpp:185
+#, fuzzy
+#| msgctxt "KFontRequester|@info:tooltip"
+#| msgid "Choose font..."
+msgctxt "KFontRequester|@info:tooltip"
+msgid "Choose font…"
+msgstr "Şrifti seçin..."
+
+#: kfontrequester.cpp:191
+msgctxt "KFontRequester|@info:tooltip"
+msgid "Preview of the selected font"
+msgstr "Seçilmiş şriftin görünüşü"
+
+#: kfontrequester.cpp:193
+msgctxt "KFontRequester|@info:whatsthis"
+msgid ""
+"This is a preview of the selected font. You can change it by clicking the "
+"\"Choose Font...\" button."
+msgstr ""
+"Bu seçilmiş şriftin görünüşüdür. Siz \"Şrifi Seçin...\" düyməsini vuraraq "
+"şrifti dəyişə bilərsiniz."
+
+#: kfontrequester.cpp:197
+#, qt-format
+msgctxt "KFontRequester|@info:tooltip"
+msgid "Preview of the \"%1\" font"
+msgstr "\"%1\" şriftinin görünüşü"
+
+#: kfontrequester.cpp:198
+#, qt-format
+msgctxt "KFontRequester|@info:whatsthis"
+msgid ""
+"This is a preview of the \"%1\" font. You can change it by clicking the "
+"\"Choose Font...\" button."
+msgstr ""
+"Bu \"%1\" şriftinin görünüşüdür. Siz \"Şrifi Seçin...\" düyməsini vuraraq "
+"şrifti dəyişə bilərsiniz."
+
+#: kled.cpp:172
+msgctxt "KLed|Accessible name of a Led whose state is on"
+msgid "LED on"
+msgstr "LED açıqdır"
+
+#: kled.cpp:173
+msgctxt "KLed|Accessible name of a Led whose state is off"
+msgid "LED off"
+msgstr "LED sönüb"
+
+#: kmessagebox.cpp:235
+msgctxt ""
+"QObject|This text is not actually shown. Please 'translate' it to some "
+"arbitrary text that is just short enough to show in a single line, while "
+"longer text should be wrapped for readability. In a latin charset, suggested "
+"length is around 120 chars."
+msgid ""
+"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod "
+"tempor incididunt ut labore et dolore magna alia"
+msgstr ""
+
+#: kmessagebox.cpp:252
+msgctxt ""
+"QObject|This text is not actually shown. Please 'translate' it to some "
+"arbitrary text that is just short enough that it should never be wrapped. In "
+"a latin charset, suggested length is around 70 chars."
+msgid "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmi"
+msgstr ""
+
+#: kmessagebox.cpp:319
+msgctxt "KMessageBox|"
+msgid "Details"
+msgstr "Təfərrüatlar"
+
+#: kmessagebox.cpp:472 kmessagebox.cpp:527
+msgctxt "KMessageBox|"
+msgid "Question"
+msgstr "Sual"
+
+#: kmessagebox.cpp:488 kmessagebox.cpp:544 kmessagebox.cpp:617
+#: kmessagebox.cpp:683 kmessagebox.cpp:767
+msgctxt "KMessageBox|"
+msgid "Do not ask again"
+msgstr "Bir daha soruşma"
+
+#: kmessagebox.cpp:601 kmessagebox.cpp:667 kmessagebox.cpp:750
+msgctxt "KMessageBox|"
+msgid "Warning"
+msgstr "Xəbərdarlıq"
+
+#: kmessagebox.cpp:809 kmessagebox.cpp:834 kmessagebox.cpp:853
+msgctxt "KMessageBox|"
+msgid "Error"
+msgstr "Xəta"
+
+#: kmessagebox.cpp:894
+msgctxt "KMessageBox|"
+msgid "Information"
+msgstr "Məlumat"
+
+#: kmessagebox.cpp:909
+msgctxt "KMessageBox|"
+msgid "Do not show this message again"
+msgstr "Bu ismarıcı bir daha göstərmə"
+
+#: kmessagedialog.cpp:140
+msgctxt "KMessageDialog|"
+msgid "Details"
+msgstr "Təfərrüatlar"
+
+#: kmessagedialog.cpp:226
+msgctxt "KMessageDialog|"
+msgid "Question"
+msgstr "Sual"
+
+#: kmessagedialog.cpp:231
+msgctxt "KMessageDialog|"
+msgid "Warning"
+msgstr "Xəbərdarlıq"
+
+#: kmessagedialog.cpp:234
+msgctxt "KMessageDialog|"
+msgid "Information"
+msgstr "Məlumat"
+
+#: kmessagedialog.cpp:237
+msgctxt "KMessageDialog|"
+msgid "Error"
+msgstr "Xəta"
+
+#: kmessagewidget.cpp:84
+msgctxt "KMessageWidget|@action:button"
+msgid "&Close"
+msgstr "&Bağlayın"
+
+#: kmessagewidget.cpp:85
+msgctxt "KMessageWidget|@info:tooltip"
+msgid "Close message"
+msgstr "İsmarıcı bağlamaq"
+
+#: kmessagewidget.cpp:288
+msgctxt ""
+"KMessageWidget|accessible name of positively-colored (e.g. green) message box"
+msgid "Success"
+msgstr ""
+
+#: kmessagewidget.cpp:291
+#, fuzzy
+#| msgctxt "KCharSelect|"
+#| msgid "Notes:"
+msgctxt ""
+"KMessageWidget|accessible name of info-colored (e.g. blue) message box"
+msgid "Note"
+msgstr "Qeydlər:"
+
+#: kmessagewidget.cpp:294
+#, fuzzy
+#| msgctxt "KMessageBox|"
+#| msgid "Warning"
+msgctxt ""
+"KMessageWidget|accessible name of warning-colored (e.g. orange) message box"
+msgid "Warning"
+msgstr "Xəbərdarlıq"
+
+#: kmessagewidget.cpp:297
+#, fuzzy
+#| msgctxt "KMessageBox|"
+#| msgid "Error"
+msgctxt ""
+"KMessageWidget|accessible name of error-colored (e.g. red) message box"
+msgid "Error"
+msgstr "Xəta"
+
+#: kmimetypechooser.cpp:88
+#, fuzzy
+#| msgctxt "KMimeTypeChooser|@info:placeholder"
+#| msgid "Search for file type or filename pattern..."
+msgctxt "KMimeTypeChooser|@info:placeholder"
+msgid "Search for file type or filename pattern…"
+msgstr "Faylın növünə və adına gorə axtarış..."
+
+#: kmimetypechooser.cpp:89
+msgctxt "KMimeTypeChooser|@label:textbox"
+msgid "&Filter:"
+msgstr "&Süzgəc:"
+
+#: kmimetypechooser.cpp:103
+msgctxt "KMimeTypeChooser|@title:column"
+msgid "MIME Type"
+msgstr "MİME növü"
+
+#: kmimetypechooser.cpp:106
+msgctxt "KMimeTypeChooser|@title:column"
+msgid "Comment"
+msgstr "Şərh"
+
+#: kmimetypechooser.cpp:110
+msgctxt "KMimeTypeChooser|@title:column"
+msgid "Patterns"
+msgstr "Nümunələr"
+
+#: kmimetypechooser.cpp:126
+#, fuzzy
+#| msgctxt "KMimeTypeChooser|@action:button"
+#| msgid "&Edit..."
+msgctxt "KMimeTypeChooser|@action:button"
+msgid "&Edit…"
+msgstr "&Düzəliş..."
+
+#: kmimetypechooser.cpp:141
+msgctxt "KMimeTypeChooser|@info:tooltip"
+msgid "Launch the MIME type editor"
+msgstr "MİME növü redaktorunu başlatmaq"
+
+#: kmimetypeeditor.cpp:27
+#, fuzzy
+#| msgctxt "QObject|"
+#| msgid "Could not find the \"keditfiletype5\" executable in PATH."
+msgctxt "QObject|"
+msgid "Could not find the \"keditfiletype\" executable in PATH."
+msgstr "PATH-da \"keditfiletype5\" icra faylı tapılmadı."
+
+#: kmimetypeeditor.cpp:37
+#, fuzzy
+#| msgctxt "QObject|"
+#| msgid ""
+#| "Could not start the \"keditfiletype5\" executable, please check your "
+#| "installation."
+msgctxt "QObject|"
+msgid ""
+"Could not start the \"keditfiletype\" executable, please check your "
+"installation."
+msgstr ""
+"\"keditfiletype5\" icra faylı başladıla bilmədi, quraşdırılmanın doğru olub "
+"olmadığını yoxlayın."
+
+#: knewpassworddialog.cpp:63
+#, qt-format
+msgctxt "KNewPasswordDialog|@info"
+msgid "Password must be at least %n character(s) long."
+msgid_plural "Password must be at least %n character(s) long."
+msgstr[0] "Şifrə ən azı %n işarə uzunluğunda olmalıdır."
+msgstr[1] "Şifrə ən azı %n işarə uzunluğunda olmalıdır."
+
+#: knewpassworddialog.cpp:67
+msgctxt "KNewPasswordDialog|@info"
+msgid "Password is empty."
+msgstr "Şifrə boşdur."
+
+#: knewpassworddialog.cpp:71
+msgctxt "KNewPasswordDialog|@info"
+msgid "Passwords do not match."
+msgstr "Şifrələr uyğun gəlmir."
+
+#: knewpassworddialog.cpp:76
+msgctxt "KNewPasswordDialog|@info"
+msgid "Passwords match."
+msgstr "Şifrələr uyğun gəlir."
+
+#: knewpassworddialog.cpp:133
+msgctxt "KNewPasswordDialog|@title:window"
+msgid "Low Password Strength"
+msgstr "Zəif Şifrə"
+
+#: knewpassworddialog.cpp:134
+msgctxt "KNewPasswordDialog|"
+msgid ""
+"The password you have entered has a low strength. To improve the strength of "
+"the password, try:\n"
+" - using a longer password;\n"
+" - using a mixture of upper- and lower-case letters;\n"
+" - using numbers or symbols as well as letters.\n"
+"\n"
+"Would you like to use this password anyway?"
+msgstr ""
+"Seçdiyiniz şifrə zəifdir. Daha güclü təhlükəsizliyə malik şifrə seçmək üçün "
+"aşağıdakı üsullardan istifadə adə bilərsiniz:\n"
+" - daha uzun şifrə istifadə etmək\n"
+" - böyük, kiçik hərflərdən etmək\n"
+" - hərflərlə bərabər rəqəmlərdən və xüsusi simvollardan istifadə etmək\n"
+"\n"
+"İstənilən halda bu şifrə istifadə edilsin?"
+
+#: knewpasswordwidget.cpp:52
+msgctxt "KNewPasswordWidget|@info:whatsthis"
+msgid ""
+"The password strength meter gives an indication of the security of the "
+"password you have entered. To improve the strength of the password, try:"
+"<ul><li>using a longer password;</li><li>using a mixture of upper- and lower-"
+"case letters;</li><li>using numbers or symbols, such as #, as well as "
+"letters.</li></ul>"
+msgstr ""
+"Bu göstərici daxil etdiyiniz şifrənin gücünü ölçür. Daha güclü şifrə seçimi "
+"üçün aşağıdakı üsuldan istifadə edin:<ul><li>uzun şifrə istifadə etmək;</"
+"li><li>böyük, kiçik hərflərdən istifadə etmək;</li><li># kimi simvollardan "
+"və rəqəmlərdən istifadə etmək.</li></ul>"
+
+#: knewpasswordwidget.ui:19
+msgctxt "KNewPasswordWidget|@label:textbox"
+msgid "Password:"
+msgstr "Şifrə:"
+
+#: knewpasswordwidget.ui:29
+msgctxt "KNewPasswordWidget|@label:textbox"
+msgid "&Verify:"
+msgstr "&Doğrulayın:"
+
+#: knewpasswordwidget.ui:54
+msgctxt "KNewPasswordWidget|@label"
+msgid "Password strength &meter:"
+msgstr "Şifrənin təhlükəsizlik &səviyyəsi:"
+
+#: kpageview.cpp:515
+msgctxt "KPageView|@info:placeholder"
+msgid "Search…"
+msgstr ""
+
+#: kpassworddialog.cpp:52
+msgctxt "KPasswordDialog|@title:window"
+msgid "Password"
+msgstr "Şifrə"
+
+#: kpassworddialog.cpp:80
+msgctxt "KPasswordDialog|"
+msgid "Show Contextual Help"
+msgstr "Kontekstual yardımı göstərmək"
+
+#: kpassworddialog.cpp:100
+msgctxt "KPasswordDialog|"
+msgid "Supply a password below."
+msgstr "Şifrəni daxil edin."
+
+#: kpassworddialog.ui:33
+msgctxt "KPasswordDialog|"
+msgid "Supply a username and password below."
+msgstr "İstifadəçi adını və Şifrəni daxil edin."
+
+#: kpassworddialog.ui:73
+msgctxt "KPasswordDialog|@option:radio"
+msgid "No password, use anonymous (or &guest) login"
+msgstr "Şifrə yoxdur, anonim (və ya &qonaq) kimi daxil olun"
+
+#: kpassworddialog.ui:80
+msgctxt "KPasswordDialog|@option:radio"
+msgid "Use this password:"
+msgstr "Bu şifrədən istifadə edin:"
+
+#: kpassworddialog.ui:105
+msgctxt "KPasswordDialog|@label:textbox"
+msgid "Username:"
+msgstr "İstifadəçi adı:"
+
+#: kpassworddialog.ui:130
+msgctxt "KPasswordDialog|@label:textbox"
+msgid "Domain:"
+msgstr "Domen:"
+
+#: kpassworddialog.ui:144
+msgctxt "KPasswordDialog|@label:textbox"
+msgid "Password:"
+msgstr "Şifrə:"
+
+#: kpassworddialog.ui:158
+msgctxt "KPasswordDialog|@option:check"
+msgid "Remember password"
+msgstr "Şifrənin yadda saxla"
+
+#: kpasswordlineedit.cpp:44
+msgctxt "QObject|@info:tooltip"
+msgid "Change the visibility of the password"
+msgstr "Şifrəni göstərmək/gizlətmək"
+
+#: kpasswordlineedit.cpp:87
+#, fuzzy
+#| msgctxt "KPasswordDialog|@title:window"
+#| msgid "Password"
+msgctxt "QObject|@action:inmenu"
+msgid "Show Password"
+msgstr "Şifrə"
+
+#: kpasswordlineedit.cpp:88
+#, fuzzy
+#| msgctxt "KPasswordDialog|@title:window"
+#| msgid "Password"
+msgctxt "QObject|@action:inmenu"
+msgid "Hide Password"
+msgstr "Şifrə"
+
+#: kpixmapregionselectordialog.cpp:56
+msgctxt "KPixmapRegionSelectorDialog|@title:window"
+msgid "Select Region of Image"
+msgstr "Şəkil sahəsini seçin"
+
+#: kpixmapregionselectordialog.cpp:60
+msgctxt "KPixmapRegionSelectorDialog|@label:chooser"
+msgid "Please click and drag on the image to select the region of interest:"
+msgstr "Siçanın düyməsini basılı saxlayaraq sizə lazım olan sahəni seçin:"
+
+#: kpixmapregionselectorwidget.cpp:177
+msgctxt "KPixmapRegionSelectorWidget|@title:menu"
+msgid "Image Operations"
+msgstr "Şəkil üzərində əməliyyatlar"
+
+#: kpixmapregionselectorwidget.cpp:180
+msgctxt "KPixmapRegionSelectorWidget|@action:inmenu"
+msgid "&Rotate Clockwise"
+msgstr "Saat əq&rəbi istiqamətinə"
+
+#: kpixmapregionselectorwidget.cpp:184
+msgctxt "KPixmapRegionSelectorWidget|@action:inmenu"
+msgid "Rotate &Counterclockwise"
+msgstr "&Saat əqrəbinin əksinə"
+
+#: krecentfilesmenu.cpp:123
+msgctxt "KRecentFilesMenu|"
+msgid "No Entries"
+msgstr "Qeydlər yoxdur"
+
+#: krecentfilesmenu.cpp:126
+msgctxt "KRecentFilesMenu|"
+msgid "Clear List"
+msgstr "Daxil edilənləri təmizləmək"
+
+#: krecentfilesmenu.cpp:132
+msgctxt "KRecentFilesMenu|"
+msgid "Recent Files"
+msgstr "Sonuncu fayllar"
+
+#: ksqueezedtextlabel.cpp:207
+msgctxt "KSqueezedTextLabel|@action:inmenu"
+msgid "&Copy Full Text"
+msgstr "Tam mətni &kopyalamaq"
+
+#: kstandardguiitem.cpp:152
+msgctxt "KStandardGuiItem|"
+msgid "&OK"
+msgstr "&Hazır"
+
+#: kstandardguiitem.cpp:157
+msgctxt "KStandardGuiItem|"
+msgid "&Cancel"
+msgstr "&İmtina etmək"
+
+#: kstandardguiitem.cpp:162
+msgctxt "KStandardGuiItem|"
+msgid "&Discard"
+msgstr "&Ləğv etmək"
+
+#: kstandardguiitem.cpp:164
+msgctxt "KStandardGuiItem|"
+msgid "Discard changes"
+msgstr "Dəyişiklikləri ləğv etmək"
+
+#: kstandardguiitem.cpp:165
+msgctxt "KStandardGuiItem|"
+msgid ""
+"Pressing this button will discard all recent changes made in this dialog."
+msgstr "Bu düyməyə vurmaq bu dialoqdakı bütün dəyişiklikləri ləğv edir."
+
+#: kstandardguiitem.cpp:172
+msgctxt "KStandardGuiItem|"
+msgid "&Save"
+msgstr "&Saxlayın"
+
+#: kstandardguiitem.cpp:174
+msgctxt "KStandardGuiItem|"
+msgid "Save data"
+msgstr "Verilənləri saxlamaq"
+
+#: kstandardguiitem.cpp:179
+msgctxt "KStandardGuiItem|"
+msgid "&Do Not Save"
+msgstr "&Saxlamamaq"
+
+#: kstandardguiitem.cpp:179
+msgctxt "KStandardGuiItem|"
+msgid "Do not save data"
+msgstr "Verilənləri saxlamamaq"
+
+#: kstandardguiitem.cpp:184
+#, fuzzy
+#| msgctxt "KStandardGuiItem|"
+#| msgid "Save &As..."
+msgctxt "KStandardGuiItem|"
+msgid "Save &As…"
+msgstr "Belə s&axla..."
+
+#: kstandardguiitem.cpp:186
+msgctxt "KStandardGuiItem|"
+msgid "Save file with another name"
+msgstr "Faylı başqa adla saxlayın"
+
+#: kstandardguiitem.cpp:191
+msgctxt "KStandardGuiItem|"
+msgid "&Apply"
+msgstr "&Tətbiq etmək"
+
+#: kstandardguiitem.cpp:193
+msgctxt "KStandardGuiItem|"
+msgid "Apply changes"
+msgstr "Dəyişiklikləri tətbiq edim"
+
+#: kstandardguiitem.cpp:194
+msgctxt "KStandardGuiItem|"
+msgid ""
+"When you click <b>Apply</b>, the settings will be handed over to the "
+"program, but the dialog will not be closed.\n"
+"Use this to try different settings."
+msgstr ""
+"<b>Tətbiq et</b> düyməsini vurduqda ayarlar proqrama ötürüləcək, lakin, "
+"ayarlar pəncərəsi bağlanmayacaq.\n"
+"Bunu müxtəlif ayarlar üçün istifadə edin."
+
+#: kstandardguiitem.cpp:203
+#, fuzzy
+#| msgctxt "KStandardGuiItem|"
+#| msgid "Administrator &Mode..."
+msgctxt "KStandardGuiItem|"
+msgid "Administrator &Mode…"
+msgstr "İnzibatşı Reji&mi..."
+
+#: kstandardguiitem.cpp:205
+msgctxt "KStandardGuiItem|"
+msgid "Enter Administrator Mode"
+msgstr "İnzibatçı imtiyazları ilə daxil olmaq"
+
+#: kstandardguiitem.cpp:206
+msgctxt "KStandardGuiItem|"
+msgid ""
+"When you click <b>Administrator Mode</b> you will be prompted for the "
+"administrator (root) password in order to make changes which require root "
+"privileges."
+msgstr ""
+"<b>İnzibatçı Rejimi</b> düyməsinə vurduqda inzibatçı (root) şifrəsi "
+"soruşulacaqdır, belə ki, bütün əməliyyatları bu istifadəçinin imtiyazları "
+"ilə etmək lazımdır."
+
+#: kstandardguiitem.cpp:214
+msgctxt "KStandardGuiItem|"
+msgid "C&lear"
+msgstr "Təmiz&lə"
+
+#: kstandardguiitem.cpp:216
+msgctxt "KStandardGuiItem|"
+msgid "Clear input"
+msgstr "Daxil edilənləri təmizləmək"
+
+#: kstandardguiitem.cpp:217
+msgctxt "KStandardGuiItem|"
+msgid "Clear the input in the edit field"
+msgstr "Düzəliş sətirinə daxil edilənləri təmizləyin"
+
+#: kstandardguiitem.cpp:222
+msgctxt "KStandardGuiItem|show help"
+msgid "&Help"
+msgstr "&Arayış"
+
+#: kstandardguiitem.cpp:224
+msgctxt "KStandardGuiItem|"
+msgid "Show help"
+msgstr "Arayışı göstər"
+
+#: kstandardguiitem.cpp:229
+msgctxt "KStandardGuiItem|"
+msgid "&Close"
+msgstr "&Bağla"
+
+#: kstandardguiitem.cpp:231
+msgctxt "KStandardGuiItem|"
+msgid "Close the current window or document"
+msgstr "Cari sənədi və ya pəncərəni bağlayın"
+
+#: kstandardguiitem.cpp:236
+msgctxt "KStandardGuiItem|"
+msgid "&Close Window"
+msgstr "&Pəncərəni Bağla"
+
+#: kstandardguiitem.cpp:238
+msgctxt "KStandardGuiItem|"
+msgid "Close the current window."
+msgstr "Cari pəncərəni bağlayın."
+
+#: kstandardguiitem.cpp:243
+msgctxt "KStandardGuiItem|"
+msgid "&Close Document"
+msgstr "&Sənədi bağla"
+
+#: kstandardguiitem.cpp:245
+msgctxt "KStandardGuiItem|"
+msgid "Close the current document."
+msgstr "Cari sənədi bağla"
+
+#: kstandardguiitem.cpp:250
+msgctxt "KStandardGuiItem|"
+msgid "&Defaults"
+msgstr "&Standart"
+
+#: kstandardguiitem.cpp:252
+msgctxt "KStandardGuiItem|"
+msgid "Reset all items to their default values"
+msgstr "Bütün göstəriciləri ilkin halına qaytarın"
+
+#: kstandardguiitem.cpp:258
+msgctxt "KStandardGuiItem|go back"
+msgid "&Back"
+msgstr "&Geriyə"
+
+#: kstandardguiitem.cpp:258
+msgctxt "KStandardGuiItem|"
+msgid "Go back one step"
+msgstr "Bir addım geriyə"
+
+#: kstandardguiitem.cpp:264
+msgctxt "KStandardGuiItem|go forward"
+msgid "&Forward"
+msgstr "&İrəli"
+
+#: kstandardguiitem.cpp:266
+msgctxt "KStandardGuiItem|"
+msgid "Go forward one step"
+msgstr "Bir addım irəli"
+
+#: kstandardguiitem.cpp:276
+#, fuzzy
+#| msgctxt "KStandardGuiItem|"
+#| msgid "&Print..."
+msgctxt "KStandardGuiItem|"
+msgid "&Print…"
+msgstr "&Çap et"
+
+#: kstandardguiitem.cpp:278
+msgctxt "KStandardGuiItem|"
+msgid "Opens the print dialog to print the current document"
+msgstr "Cari sənədi çap etmək üçün çap dialoqunu açın"
+
+#: kstandardguiitem.cpp:285
+msgctxt "KStandardGuiItem|"
+msgid "C&ontinue"
+msgstr "&Davam etmək"
+
+#: kstandardguiitem.cpp:287
+msgctxt "KStandardGuiItem|"
+msgid "Continue operation"
+msgstr "Əməliyyatı davam etdir"
+
+#: kstandardguiitem.cpp:292
+msgctxt "KStandardGuiItem|"
+msgid "&Delete"
+msgstr "&silin"
+
+#: kstandardguiitem.cpp:294
+msgctxt "KStandardGuiItem|"
+msgid "Delete item(s)"
+msgstr "Element(lər)i silin"
+
+#: kstandardguiitem.cpp:299
+#, fuzzy
+#| msgctxt "KStandardGuiItem|"
+#| msgid "&Open..."
+msgctxt "KStandardGuiItem|"
+msgid "&Open…"
+msgstr "&Açın..."
+
+#: kstandardguiitem.cpp:301
+msgctxt "KStandardGuiItem|"
+msgid "Open file"
+msgstr "Faylı açın"
+
+#: kstandardguiitem.cpp:306
+msgctxt "KStandardGuiItem|"
+msgid "&Quit"
+msgstr "Çıxma&q"
+
+#: kstandardguiitem.cpp:308
+msgctxt "KStandardGuiItem|"
+msgid "Quit application"
+msgstr "Tətbiqdən çıxın"
+
+#: kstandardguiitem.cpp:313
+msgctxt "KStandardGuiItem|"
+msgid "&Reset"
+msgstr "Sıfı&rlamaq"
+
+#: kstandardguiitem.cpp:315
+msgctxt "KStandardGuiItem|"
+msgid "Reset configuration"
+msgstr "Ayarları sıfırlamaq"
+
+#: kstandardguiitem.cpp:320
+msgctxt "KStandardGuiItem|Verb"
+msgid "&Insert"
+msgstr "Dax&il et"
+
+#: kstandardguiitem.cpp:325
+#, fuzzy
+#| msgctxt "KStandardGuiItem|"
+#| msgid "Confi&gure..."
+msgctxt "KStandardGuiItem|"
+msgid "Confi&gure…"
+msgstr "&Tənzimləmək..."
+
+#: kstandardguiitem.cpp:330
+msgctxt "KStandardGuiItem|"
+msgid "&Find"
+msgstr "&Tapmaq"
+
+#: kstandardguiitem.cpp:335
+msgctxt "KStandardGuiItem|"
+msgid "Stop"
+msgstr "Dayandırmaq"
+
+#: kstandardguiitem.cpp:340
+msgctxt "KStandardGuiItem|"
+msgid "Add"
+msgstr "Əlavə etmək"
+
+#: kstandardguiitem.cpp:345
+msgctxt "KStandardGuiItem|"
+msgid "Remove"
+msgstr "Silmək"
+
+#: kstandardguiitem.cpp:350
+msgctxt "KStandardGuiItem|"
+msgid "Test"
+msgstr "Yoxlamaq"
+
+#: kstandardguiitem.cpp:355
+msgctxt "KStandardGuiItem|"
+msgid "Properties"
+msgstr "Xüsusiyyətlər"
+
+#: kstandardguiitem.cpp:360
+msgctxt "KStandardGuiItem|"
+msgid "&Overwrite"
+msgstr "Ə&vəz etmək"
+
+#: ktimecombobox.cpp:243
+msgctxt "KTimeComboBox|@info"
+msgid "The time you entered is invalid"
+msgstr "Daxil etdiyiniz vaxt səhvdir"
+
+#: ktimecombobox.cpp:246
+#, qt-format
+msgctxt "KTimeComboBox|@info"
+msgid "Time cannot be earlier than %1"
+msgstr "Vaxt %1 radəsindən tez ola bilməz"
+
+#: ktimecombobox.cpp:253
+#, qt-format
+msgctxt "KTimeComboBox|@info"
+msgid "Time cannot be later than %1"
+msgstr "Vaxt %1 radəsindən gec ola bilməz"
+
+#: ktogglefullscreenaction.cpp:38
+msgctxt "KToggleFullScreenAction|@action:inmenu"
+msgid "F&ull Screen Mode"
+msgstr "&Tam ekran rejimi"
+
+#: ktogglefullscreenaction.cpp:39
+msgctxt "KToggleFullScreenAction|@action:intoolbar"
+msgid "Full Screen"
+msgstr "Tam ekran"
+
+#: ktogglefullscreenaction.cpp:40
+msgctxt "KToggleFullScreenAction|@info:tooltip"
+msgid "Display the window in full screen"
+msgstr "Pəncərə rejimindən tam ekran rejiminə keçid"
+
+#~ msgctxt "KCharSelect|@action"
+#~ msgid "&Find..."
+#~ msgstr "&Tapmaq..."
+
+#~ msgctxt "KFontChooserWidget|"
+#~ msgid "KFontChooserWidget"
+#~ msgstr "KFontChooserWidget"
+
+#~ msgctxt "KFontChooser|@info:tooltip"
+#~ msgid "Font size<br /><i>fixed</i> or <i>relative</i><br />to environment"
+#~ msgstr ""
+#~ "Yerinə görə<br /><i>dəyişməz</i> və ya <i>təqribi</i> şrift ölçüləri"
+
+#~ msgctxt "KFontChooser|@info:whatsthis"
+#~ msgid ""
+#~ "Here you can switch between fixed font size and font size to be "
+#~ "calculated dynamically and adjusted to changing environment (e.g. widget "
+#~ "dimensions, paper size)."
+#~ msgstr ""
+#~ "Burada yerinə görə dinamik olaraq hesablanan və sabit ölçülü şriftlər "
+#~ "arasında seçim edə bilərsiniz. (məsələn, pəncərə ölçüləri, kağız ölçüsü)."
+
+#~ msgctxt "KMessageBox|"
+#~ msgid "Sorry"
+#~ msgstr "Təəssüf"
+
+#~ msgctxt "KMessageDialog|"
+#~ msgid "Sorry"
+#~ msgstr "Təəssüf"
+
+#~ msgctxt "KStandardGuiItem|"
+#~ msgid "&Yes"
+#~ msgstr "&Bəli"
+
+#~ msgctxt "KStandardGuiItem|"
+#~ msgid "&No"
+#~ msgstr "&Xeyr"
+
+#~ msgctxt "KToggleFullScreenAction|@action:inmenu"
+#~ msgid "Exit F&ull Screen Mode"
+#~ msgstr "&Tam ekran rejimindən çıxın"
+
+#~ msgctxt "KToggleFullScreenAction|@action:intoolbar"
+#~ msgid "Exit Full Screen"
+#~ msgstr "Tam ekrandan çıxmaq"
+
+#~ msgctxt "KToggleFullScreenAction|@info:tooltip"
+#~ msgid "Exit full screen mode"
+#~ msgstr "Tam ekran rejimindən çıxın"
+
+#~ msgctxt "KMessageBox|@action:button post-filter"
+#~ msgid "."
+#~ msgstr "."
+
+#~ msgctxt "KFontChooser|@item font"
+#~ msgid "Bold Italic"
+#~ msgstr "Qalın Kursiv"
+
+#~ msgctxt "KStandardGuiItem|"
+#~ msgid "Yes"
+#~ msgstr "Bəli"
+
+#~ msgctxt "KStandardGuiItem|"
+#~ msgid "No"
+#~ msgstr "Xeyr"
+
+#~ msgctxt "KCharSelect|go back"
+#~ msgid "&Back"
+#~ msgstr "&Geriyə"
+
+#~ msgctxt "KPasswordDialog|"
+#~ msgid "Password:"
+#~ msgstr "Şifrə:"

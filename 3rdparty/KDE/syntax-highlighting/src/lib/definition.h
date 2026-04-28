@@ -414,6 +414,10 @@ public:
      * Returns a list of character/string mapping that can be used for spell
      * checking. This is useful for instance when spell checking LaTeX, where
      * the string \"{A} represents the character Ä.
+     *
+     * If a mapping is done to the null character, one should ignore this encoding
+     * for spell checking.
+     *
      * \since 5.50
      */
     QList<QPair<QChar, QString>> characterEncodings() const;

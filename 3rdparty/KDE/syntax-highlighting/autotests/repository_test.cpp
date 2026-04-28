@@ -400,6 +400,7 @@ private Q_SLOTS:
         QVERIFY(!encodings.isEmpty());
         QVERIFY(encodings.contains({QChar(196), QLatin1String("\\\"{A}")}));
         QVERIFY(encodings.contains({QChar(227), QLatin1String("\\~{a}")}));
+        QVERIFY(encodings.contains({QChar(), QLatin1String("''")}));
     }
 
     void testIncludeKeywordLists()

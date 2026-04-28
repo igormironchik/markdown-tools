@@ -520,6 +520,12 @@ msgctxt "Language|"
 msgid "GDL"
 msgstr ""
 
+#, fuzzy
+#| msgid "text"
+msgctxt "Language|"
+msgid "Gemtext"
+msgstr "मजकूर"
+
 msgctxt "Language|"
 msgid "GNU Gettext"
 msgstr ""
@@ -1123,6 +1129,13 @@ msgstr ""
 msgctxt "Language|"
 msgid "Pike"
 msgstr ""
+
+#, fuzzy
+#| msgctxt "Language Section"
+#| msgid "Assembler"
+msgctxt "Language|"
+msgid "PIO Assembler"
+msgstr "असेंब्लर"
 
 msgctxt "Language|"
 msgid "PL/I"
@@ -2912,9 +2925,6 @@ msgstr ""
 
 #~ msgid "(Selection of) "
 #~ msgstr "(निवड) "
-
-#~ msgid "text"
-#~ msgstr "मजकूर"
 
 #~ msgid "How do you want to import the schema?"
 #~ msgstr "स्किमा कशी आयात करायची आहे?"

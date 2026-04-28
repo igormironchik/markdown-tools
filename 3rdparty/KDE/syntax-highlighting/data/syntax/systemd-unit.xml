@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created for systemd version 259. -->
+<!-- Created for systemd version 260. -->
 <!DOCTYPE language [
 <!ENTITY alp "A-Za-z">
 <!ENTITY aln "&alp;0-9">
@@ -18,20 +18,26 @@
 <!ENTITY tsp_min "minutes?|min|m">
 <!ENTITY tsp_sec "seconds?|sec|s">
 <!ENTITY tsp_msec "msec|ms">
-<!-- Accept both UTF-8 "Micro Sign" and UTF-8 "Greek Small Letter Mu" for micro seconds. --><!ENTITY tsp_usec "usec|[u&#181;&#956;]s">
+<!-- Accept both UTF-8 "Micro Sign" and UTF-8 "Greek Small Letter Mu" for micro seconds. -->
+<!ENTITY tsp_usec "usec|[u&#181;&#956;]s">
 <!ENTITY tsp_unit "&tsp_year;|&tsp_month;|&tsp_week;|&tsp_day;|&tsp_hour;|&tsp_sec;|&tsp_msec;|&tsp_usec;|&tsp_min;">
 <!ENTITY tsp "\d+(?:\.\d+)?\h*(?=(&tsp_unit;)?)">
 ]>
-<language version="19" author="Andreas Gratzer" extensions="*.automount;*.device;*.mount;*.path;*.service;*.slice;*.socket;*.swap;*.target;*.timer" kateversion="5.0" license="MIT" mimetype="text/x-systemd-unit" name="systemd unit" section="Configuration">
+<language version="20" author="Andreas Gratzer" extensions="*.automount;*.device;*.mount;*.path;*.service;*.slice;*.socket;*.swap;*.target;*.timer" kateversion="5.0" license="MIT" mimetype="text/x-systemd-unit" name="systemd unit" section="Configuration">
   <highlighting>
     <list name="boolean">
-      <!-- 0, 1, t, f, y, n are also valid, but handled using AnyChar. -->
       <item>true</item>
       <item>yes</item>
       <item>on</item>
+      <item>t</item>
+      <item>y</item>
+      <item>1</item>
       <item>false</item>
       <item>no</item>
       <item>off</item>
+      <item>f</item>
+      <item>n</item>
+      <item>0</item>
     </list>
     <list name="action">
       <item>soft-reboot-force</item>
@@ -145,6 +151,7 @@
       <item>BPFTraceKprobeSession</item>
       <item>BPFTraceKprobeMulti</item>
       <item>BPFTraceIter</item>
+      <item>BPFTraceFsession</item>
       <item>BPFTraceFexit</item>
       <item>BPFTraceFentry</item>
       <item>BPFTcxIngress</item>
@@ -208,6 +215,7 @@
       <item>BPFProgDetach</item>
       <item>BPFProgBindMap</item>
       <item>BPFProgAttach</item>
+      <item>BPFProgAssocStructOps</item>
       <item>BPFObjPin</item>
       <item>BPFObjGetInfoByFd</item>
       <item>BPFObjGet</item>
@@ -395,6 +403,7 @@
       <item>bpf-foreign</item>
       <item>bpf-firewall</item>
       <item>bpf-devices</item>
+      <item>bpf-bind-network-interface</item>
     </list>
     <list name="controller cg">
       <item>v2</item>
@@ -462,6 +471,7 @@
       <item>other</item>
       <item>idle</item>
       <item>fifo</item>
+      <item>ext</item>
       <item>batch</item>
     </list>
     <list name="device policy">
@@ -815,6 +825,12 @@
       <item>skip</item>
       <item>auto</item>
     </list>
+    <list name="memory thp">
+      <item>system</item>
+      <item>madvise</item>
+      <item>inherit</item>
+      <item>disable</item>
+    </list>
     <list name="mount flag">
       <item>slave</item>
       <item>shared</item>
@@ -895,6 +911,7 @@
     </list>
     <list name="private users">
       <item>self</item>
+      <item>managed</item>
       <item>identity</item>
       <item>full</item>
     </list>
@@ -913,6 +930,10 @@
     <list name="protect system">
       <item>strict</item>
       <item>full</item>
+    </list>
+    <list name="refresh on reload">
+      <item>extensions</item>
+      <item>credentials</item>
     </list>
     <list name="restart">
       <item>on-watchdog</item>
@@ -1153,6 +1174,7 @@
       <item>RootImage</item>
       <item>RootImageOptions</item>
       <item>RootImagePolicy</item>
+      <item>RootMStack</item>
       <item>RootVerity</item>
       <item>RuntimeDirectory</item>
       <item>SetCredential</item>
@@ -1182,6 +1204,7 @@
     </list>
     <list name="options resource-control">
       <!-- Only options of type "text". Others are handled separately. -->
+      <item>BindNetworkInterface</item>
       <item>DelegateSubgroup</item>
       <item>DeviceAllow</item>
       <item>IPEgressFilterPath</item>
@@ -1381,7 +1404,6 @@
       </context>
       <context name="boolean" attribute="Normal" lineEndContext="#pop">
         <keyword String="boolean" attribute="Constant" context="#pop"/>
-        <AnyChar String="01tfyn" attribute="Constant" context="#pop"/>
       </context>
       <context name="boolean virtualization" attribute="Normal" lineEndContext="#pop">
         <IncludeRules context="boolean"/>
@@ -1651,6 +1673,9 @@
         <keyword String="memory pressure watch" attribute="Constant" context="#pop"/>
         <IncludeRules context="boolean"/>
       </context>
+      <context name="memory thp" attribute="Normal" lineEndContext="#pop">
+        <keyword String="memory thp" attribute="Constant" context="#pop"/>
+      </context>
       <context name="mount flag" attribute="Normal" lineEndContext="#pop">
         <keyword String="mount flag" attribute="Constant" context="#pop"/>
       </context>
@@ -1738,6 +1763,15 @@
       <context name="protect system" attribute="Normal" lineEndContext="#pop">
         <keyword String="protect system" attribute="Constant" context="#pop"/>
         <IncludeRules context="boolean"/>
+      </context>
+      <context name="refresh on reload" attribute="Normal" lineEndContext="#pop">
+        <IncludeRules context="boolean"/>
+        <IncludeRules context="refresh on reload resource list"/>
+        <DetectChar char="~" attribute="Prefix" context="refresh on reload resource list"/>
+      </context>
+      <context name="refresh on reload resource list" attribute="Normal" lineEndContext="#pop">
+        <IncludeRules context="boolean"/>
+        <keyword String="refresh on reload" attribute="Constant"/>
       </context>
       <context name="restart" attribute="Normal" lineEndContext="#pop">
         <keyword String="restart" attribute="Constant" context="#pop"/>
@@ -1976,6 +2010,7 @@
         <WordDetect String="LogsDirectoryQuota" firstNonSpace="true" attribute="Option Name" context="cardinal %KMGT off"/>
         <WordDetect String="MemoryDenyWriteExecute" firstNonSpace="true" attribute="Option Name" context="boolean"/>
         <WordDetect String="MemoryKSM" firstNonSpace="true" attribute="Option Name" context="boolean"/>
+        <WordDetect String="MemoryTHP" firstNonSpace="true" attribute="Option Name" context="memory thp"/>
         <WordDetect String="MountAPIVFS" firstNonSpace="true" attribute="Option Name" context="boolean"/>
         <WordDetect String="MountFlags" firstNonSpace="true" attribute="Option Name" context="mount flag"/>
         <WordDetect String="NUMAMask" firstNonSpace="true" attribute="Option Name" context="numa mask"/>
@@ -2088,7 +2123,6 @@
         <WordDetect String="CPUQuotaPeriodSec" firstNonSpace="true" attribute="Option Name" context="time span"/>
         <WordDetect String="CPUWeight" firstNonSpace="true" attribute="Option Name" context="cpu weight"/>
         <WordDetect String="CoredumpReceive" firstNonSpace="true" attribute="Option Name" context="boolean"/>
-        <WordDetect String="DefaultStartupMemoryLow" firstNonSpace="true" attribute="Option Name" context="cardinal %KMGT infinity"/>
         <WordDetect String="Delegate" firstNonSpace="true" attribute="Option Name" context="delegate"/>
         <WordDetect String="DevicePolicy" firstNonSpace="true" attribute="Option Name" context="device policy"/>
         <WordDetect String="DisableControllers" firstNonSpace="true" attribute="Option Name" context="controller list"/>
@@ -2157,6 +2191,7 @@
         <WordDetect String="NotifyAccess" firstNonSpace="true" attribute="Option Name" context="notify access"/>
         <WordDetect String="OOMPolicy" firstNonSpace="true" attribute="Option Name" context="oom policy"/>
         <WordDetect String="OpenFile" firstNonSpace="true" attribute="Option Name" context="open file"/>
+        <WordDetect String="RefreshOnReload" firstNonSpace="true" attribute="Option Name" context="refresh on reload"/>
         <WordDetect String="ReloadSignal" firstNonSpace="true" attribute="Option Name" context="signal"/>
         <WordDetect String="RemainAfterExit" firstNonSpace="true" attribute="Option Name" context="boolean"/>
         <WordDetect String="Restart" firstNonSpace="true" attribute="Option Name" context="restart"/>
@@ -2290,6 +2325,7 @@
         <WordDetect String="AssertPathIsEncrypted" firstNonSpace="true" attribute="Option Name" context="AC text"/>
         <WordDetect String="AssertPathIsMountPoint" firstNonSpace="true" attribute="Option Name" context="AC text"/>
         <WordDetect String="AssertPathIsReadWrite" firstNonSpace="true" attribute="Option Name" context="AC text"/>
+        <WordDetect String="AssertPathIsSocket" firstNonSpace="true" attribute="Option Name" context="AC text"/>
         <WordDetect String="AssertPathIsSymbolicLink" firstNonSpace="true" attribute="Option Name" context="AC text"/>
         <WordDetect String="AssertSecurity" firstNonSpace="true" attribute="Option Name" context="AC security"/>
         <WordDetect String="AssertUser" firstNonSpace="true" attribute="Option Name" context="AC user"/>
@@ -2325,6 +2361,7 @@
         <WordDetect String="ConditionPathIsEncrypted" firstNonSpace="true" attribute="Option Name" context="AC text"/>
         <WordDetect String="ConditionPathIsMountPoint" firstNonSpace="true" attribute="Option Name" context="AC text"/>
         <WordDetect String="ConditionPathIsReadWrite" firstNonSpace="true" attribute="Option Name" context="AC text"/>
+        <WordDetect String="ConditionPathIsSocket" firstNonSpace="true" attribute="Option Name" context="AC text"/>
         <WordDetect String="ConditionPathIsSymbolicLink" firstNonSpace="true" attribute="Option Name" context="AC text"/>
         <WordDetect String="ConditionSecurity" firstNonSpace="true" attribute="Option Name" context="AC security"/>
         <WordDetect String="ConditionUser" firstNonSpace="true" attribute="Option Name" context="AC user"/>

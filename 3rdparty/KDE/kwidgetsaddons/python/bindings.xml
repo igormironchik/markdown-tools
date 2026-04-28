@@ -1,0 +1,264 @@
+<?xml version="1.0"?>
+<typesystem package="KWidgetsAddons">
+<!--
+SPDX-FileCopyrightText: 2024 Manuel Alcaraz Zambrano <manuelalcarazzam@gmail.com>
+SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
+-->
+    <load-typesystem name="typesystem_widgets.xml" generate="no" />
+    <object-type name="KAcceleratorManager" />
+    <object-type name="KActionMenu" />
+    <object-type name="KActionSelector">
+        <enum-type name="InsertionPolicy" />
+        <enum-type name="MoveButton" />
+    </object-type>
+    <object-type name="KAnimatedButton" />
+    <object-type name="KAssistantDialog" />
+    <object-type name="KBusyIndicatorWidget" />
+    <object-type name="KCapacityBar">
+        <enum-type name="DrawTextMode" />
+    </object-type>
+    <object-type name="KCharSelect">
+        <enum-type name="Control" flags="Controls" />
+    </object-type>
+    <object-type name="KCollapsibleGroupBox" />
+    <object-type name="KColorButton" />
+    <object-type name="KColorCombo" />
+    <object-type name="KColumnResizer" />
+    <object-type name="KContextualHelpButton" />
+    <object-type name="KCursor" />
+    <object-type name="KDateComboBox">
+        <enum-type name="Option" flags="Options" />
+    </object-type>
+    <object-type name="KDatePicker" />
+    <object-type name="KDatePickerPopup">
+        <enum-type name="Mode" flags="Modes" />
+    </object-type>
+    <object-type name="KDateTimeEdit">
+        <enum-type name="Option" flags="Options" />
+    </object-type>
+    <object-type name="KDragWidgetDecoratorBase" />
+    <object-type name="KDualAction" />
+    <object-type name="KEditListWidget">
+        <enum-type name="Button" flags="Buttons" />
+    </object-type>
+    <object-type name="CustomEditor" />
+    <object-type name="KFontAction" />
+    <object-type name="KFontChooser">
+        <enum-type name="DisplayFlag" flags="DisplayFlags" />
+        <enum-type name="FontColumn" />
+        <enum-type name="FontDiff" flags="FontDiffFlags" />
+        <enum-type name="FontListCriteria" />
+    </object-type>
+    <object-type name="KFontChooserDialog" />
+    <object-type name="KFontRequester" />
+    <object-type name="KFontSizeAction">
+        <extra-includes>
+            <include file-name="pysidesignal.h" location="global" />
+        </extra-includes>
+    </object-type>
+    <object-type name="KGradientSelector" />
+    <object-type name="KGuiItem" />
+    <namespace-type name="KJobWidgets" />
+    <object-type name="KLed">
+        <enum-type name="Look" />
+        <enum-type name="Shape" />
+        <enum-type name="State" />
+    </object-type>
+    <namespace-type name="KLineEditEventHandler" />
+    <object-type name="KLineEditUrlDropEventFilter" />
+    <namespace-type name="KMessageBox">
+        <enum-type name="ButtonCode" />
+        <enum-type name="DialogType" />
+        <enum-type name="Option" flags="Options" />
+        <modify-function signature="messageBox(QWidget*,KMessageBox::DialogType,QString,QString,KGuiItem,KGuiItem,KGuiItem,QString,KMessageBox::Options)">
+            <modify-argument index="7">
+                <remove-default-expression />
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="messageBoxWId(WId,KMessageBox::DialogType,QString,QString,KGuiItem,KGuiItem,KGuiItem,QString,KMessageBox::Options)">
+            <modify-argument index="7">
+                <remove-default-expression />
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="questionTwoActionsCancel(QWidget*,QString,QString,KGuiItem,KGuiItem,KGuiItem,QString,KMessageBox::Options)">
+            <modify-argument index="6">
+                <remove-default-expression />
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="questionTwoActionsCancelWId(WId,QString,QString,KGuiItem,KGuiItem,KGuiItem,QString,KMessageBox::Options)">
+            <modify-argument index="6">
+                <remove-default-expression />
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="warningContinueCancel(QWidget*,QString,QString,KGuiItem,KGuiItem,QString,KMessageBox::Options)">
+            <modify-argument index="4">
+                <remove-default-expression />
+            </modify-argument>
+            <modify-argument index="5">
+                <remove-default-expression />
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="warningContinueCancelDetailed(QWidget*,QString,QString,KGuiItem,KGuiItem,QString,KMessageBox::Options,QString)">
+            <modify-argument index="4">
+                <remove-default-expression />
+            </modify-argument>
+            <modify-argument index="5">
+                <remove-default-expression />
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="warningContinueCancelList(QWidget*,QString,QStringList,QString,KGuiItem,KGuiItem,QString,KMessageBox::Options)">
+            <modify-argument index="5">
+                <remove-default-expression />
+            </modify-argument>
+            <modify-argument index="6">
+                <remove-default-expression />
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="warningContinueCancelListWId(WId,QString,QStringList,QString,KGuiItem,KGuiItem,QString,KMessageBox::Options)">
+            <modify-argument index="5">
+                <remove-default-expression />
+            </modify-argument>
+            <modify-argument index="6">
+                <remove-default-expression />
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="warningContinueCancelWId(WId,QString,QString,KGuiItem,KGuiItem,QString,KMessageBox::Options)">
+            <modify-argument index="4">
+                <remove-default-expression />
+            </modify-argument>
+            <modify-argument index="5">
+                <remove-default-expression />
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="warningTwoActionsCancel(QWidget*,QString,QString,KGuiItem,KGuiItem,KGuiItem,QString,KMessageBox::Options)">
+            <modify-argument index="6">
+                <remove-default-expression />
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="warningTwoActionsCancelList(QWidget*,QString,QStringList,QString,KGuiItem,KGuiItem,KGuiItem,QString,KMessageBox::Options)">
+            <modify-argument index="7">
+                <remove-default-expression />
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="warningTwoActionsCancelListWId(WId,QString,QStringList,QString,KGuiItem,KGuiItem,KGuiItem,QString,KMessageBox::Options)">
+            <modify-argument index="7">
+                <remove-default-expression />
+            </modify-argument>
+        </modify-function>
+        <modify-function signature="warningTwoActionsCancelWId(WId,QString,QString,KGuiItem,KGuiItem,KGuiItem,QString,KMessageBox::Options)">
+            <modify-argument index="6">
+                <remove-default-expression />
+            </modify-argument>
+        </modify-function>
+    </namespace-type>
+    <object-type name="KMessageBoxNotifyInterface" />
+    <object-type name="KMessageDialog">
+        <enum-type name="ButtonType" />
+        <enum-type name="Type" />
+        <modify-function signature="setButtons(const KGuiItem &amp;,const KGuiItem &amp;,const KGuiItem &amp;)">
+            <modify-argument index="1">
+                <remove-default-expression />
+            </modify-argument>
+            <modify-argument index="2">
+                <remove-default-expression />
+            </modify-argument>
+            <modify-argument index="3">
+                <remove-default-expression />
+            </modify-argument>
+        </modify-function>
+    </object-type>
+    <object-type name="KMessageWidget">
+        <enum-type name="MessageType" />
+        <enum-type name="Position" />
+    </object-type>
+    <object-type name="KMimeTypeChooser">
+        <enum-type name="Visuals" />
+        <modify-function signature="KMimeTypeChooser(const QString &amp;,const QStringList &amp;,const QString &amp;,const QStringList &amp;,int,QWidget*)">
+            <modify-argument index="5">
+                <replace-default-expression with="KMimeTypeChooser::Visuals::Comments | KMimeTypeChooser::Visuals::Patterns | KMimeTypeChooser::Visuals::EditButton" />
+            </modify-argument>
+        </modify-function>
+    </object-type>
+    <object-type name="KMimeTypeChooserDialog" />
+    <namespace-type name="KMimeTypeEditor" />
+    <object-type name="KMultiTabBar">
+        <enum-type name="KMultiTabBarPosition" />
+        <enum-type name="KMultiTabBarStyle" />
+    </object-type>
+    <object-type name="KMultiTabBarButton" />
+    <object-type name="KMultiTabBarTab" />
+    <object-type name="KNewPasswordDialog" />
+    <object-type name="KNewPasswordWidget">
+        <enum-type name="PasswordStatus" />
+        <enum-type name="RevealPasswordMode" />
+    </object-type>
+    <object-type name="KPageDialog">
+        <enum-type name="FaceType" />
+    </object-type>
+    <object-type name="KPageModel">
+        <enum-type name="Role" />
+    </object-type>
+    <object-type name="KPageView">
+        <enum-type name="FaceType" />
+    </object-type>
+    <object-type name="KPageWidget" />
+    <object-type name="KPageWidgetItem" />
+    <object-type name="KPageWidgetModel" />
+    <namespace-type name="KPassword">
+        <enum-type name="RevealMode" />
+    </namespace-type>
+    <object-type name="KPasswordDialog">
+        <enum-type name="ErrorType" />
+        <enum-type name="KPasswordDialogFlag" flags="KPasswordDialogFlags" />
+    </object-type>
+    <object-type name="KPasswordLineEdit" />
+    <object-type name="KPixmapRegionSelectorDialog" />
+    <object-type name="KPixmapRegionSelectorWidget">
+        <enum-type name="RotateDirection" />
+    </object-type>
+    <object-type name="KPixmapSequence" />
+    <object-type name="KPixmapSequenceOverlayPainter" />
+    <object-type name="KPixmapSequenceWidget" />
+    <object-type name="KPopupFrame" />
+    <object-type name="KRatingPainter" />
+    <object-type name="KRatingWidget" />
+    <object-type name="KRecentFilesMenu" />
+    <object-type name="KRuler">
+        <enum-type name="MetricStyle" />
+    </object-type>
+    <object-type name="KSelectAction">
+        <enum-type name="ToolBarMode" />
+    </object-type>
+    <object-type name="KSelector" />
+    <object-type name="KSeparator" />
+    <object-type name="KSplitterCollapserButton" />
+    <namespace-type name="KStandardGuiItem">
+        <enum-type name="BidiMode" />
+        <enum-type name="StandardItem" />
+    </namespace-type>
+    <namespace-type name="KStyleExtensions" />
+    <object-type name="KSqueezedTextLabel" />
+    <object-type name="KTimeComboBox">
+        <enum-type name="Option" flags="Options" />
+    </object-type>
+    <object-type name="KTitleWidget">
+        <enum-type name="ImageAlignment" />
+        <enum-type name="MessageType" />
+    </object-type>
+    <object-type name="KToggleAction" />
+    <object-type name="KToggleFullScreenAction" />
+    <object-type name="KToolBarLabelAction" />
+    <object-type name="KToolBarPopupAction">
+        <enum-type name="PopupMode" />
+    </object-type>
+    <object-type name="KToolBarSpacerAction" />
+    <object-type name="KToolTipWidget" />
+    <object-type name="KTwoFingerSwipe" />
+    <object-type name="KTwoFingerSwipeRecognizer" />
+    <object-type name="KTwoFingerTap" />
+    <object-type name="KTwoFingerTapRecognizer" />
+    <object-type name="KUrlLabel" />
+    <object-type name="KViewStateSerializer" />
+    <object-type name="KXYSelector" />
+
+</typesystem>

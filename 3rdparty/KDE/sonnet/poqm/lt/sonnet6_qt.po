@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: kdelibs4\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2014-03-23 01:50+0000\n"
-"PO-Revision-Date: 2014-11-11 00:34+0200\n"
+"PO-Revision-Date: 2026-03-28 17:24+0200\n"
 "Last-Translator: Liudas Ališauskas <liudas@aksioma.lt>\n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "Language: lt\n"
@@ -21,7 +21,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n==1 ? 0 : n%10>=2 && (n%100<10 || n"
 "%100>=20) ? 1 : n%10==0 || (n%100>10 && n%100<20) ? 2 : 3);\n"
-"X-Generator: Lokalize 1.5\n"
+"X-Generator: Poedit 3.8\n"
 "X-Qt-Contexts: true\n"
 
 #: core/loader.cpp:177
@@ -52,7 +52,7 @@ msgstr "-ize priesagos"
 #: core/loader.cpp:182
 msgctxt "Sonnet::Loader|dictionary variant"
 msgid "-ise suffixes and with accents"
-msgstr "-ise priesagos su kirčiais"
+msgstr "-ise priesagos ir su kirčiais"
 
 #: core/loader.cpp:183
 msgctxt "Sonnet::Loader|dictionary variant"
@@ -62,7 +62,7 @@ msgstr "-ise priesagos ir be kirčių"
 #: core/loader.cpp:184
 msgctxt "Sonnet::Loader|dictionary variant"
 msgid "-ize suffixes and with accents"
-msgstr "-ize priesagos su kirčiais"
+msgstr "-ize priesagos ir su kirčiais"
 
 #: core/loader.cpp:185
 msgctxt "Sonnet::Loader|dictionary variant"
@@ -112,17 +112,17 @@ msgstr "su kirčiais"
 #: core/loader.cpp:194
 msgctxt "Sonnet::Loader|dictionary variant"
 msgid "with ye, modern russian"
-msgstr ""
+msgstr "su jė, šiuolaikinė rusų"
 
 #: core/loader.cpp:195
 msgctxt "Sonnet::Loader|dictionary variant"
 msgid "with yeyo, modern and old russian"
-msgstr ""
+msgstr "su jė jo, šiuolaikinė ir senovinė rusų"
 
 #: core/loader.cpp:196
 msgctxt "Sonnet::Loader|dictionary variant"
 msgid "with yo, old russian"
-msgstr ""
+msgstr "su jo, senovinė rusų"
 
 #: core/loader.cpp:197
 msgctxt "Sonnet::Loader|dictionary variant"
@@ -144,30 +144,21 @@ msgid "%1 (%2)"
 msgstr "%1 (%2)"
 
 #: quick/spellcheckhighlighter.cpp:253 quick/spellcheckhighlighter.cpp:277
-#, fuzzy
-#| msgctxt "Sonnet::Highlighter|"
-#| msgid "As-you-type spell checking enabled."
 msgctxt "SpellcheckHighlighter|"
 msgid "As-you-type spell checking enabled."
-msgstr "Įjungtas klaidų tikrinimas spausdinimo metu."
+msgstr "Įjungtas rašybos tikrinimas renkant tekstą."
 
 #: quick/spellcheckhighlighter.cpp:257
-#, fuzzy
-#| msgctxt "Sonnet::Highlighter|"
-#| msgid "Too many misspelled words. As-you-type spell checking disabled."
 msgctxt "SpellcheckHighlighter|"
 msgid "Too many misspelled words. As-you-type spell checking disabled."
 msgstr ""
-"Pernelyg daug klaidingai parašytų žodžių. Klaidų tikrinimas spausdinant "
-"išjungiamas."
+"Per daug neteisingai parašytų žodžių. Rašybos tikrinimas renkant tekstą "
+"išjungtas."
 
 #: quick/spellcheckhighlighter.cpp:279
-#, fuzzy
-#| msgctxt "Sonnet::Highlighter|"
-#| msgid "As-you-type spell checking disabled."
 msgctxt "SpellcheckHighlighter|"
 msgid "As-you-type spell checking disabled."
-msgstr "Klaidų tikrinimas spausdinimo metu išjungtas."
+msgstr "Rašybos tikrinimas renkant tekstą išjungtas."
 
 #: ui/configdialog.cpp:40
 msgctxt "Sonnet::ConfigDialog|"
@@ -177,22 +168,22 @@ msgstr "Rašybos tikrinimo konfigūracija"
 #: ui/configui.ui:25
 msgctxt "SonnetConfigUI|"
 msgid "No backend like hunspell/aspell/myspell installed"
-msgstr ""
+msgstr "Nėra įdiegta jokia vidinė pusė, tokia kaip hunspell/aspell/myspell"
 
 #: ui/configui.ui:35
 msgctxt "SonnetConfigUI|"
 msgid "Default language:"
-msgstr "Numatyta kalba:"
+msgstr "Numatytoji kalba:"
 
 #: ui/configui.ui:55
 msgctxt "SonnetConfigUI|"
 msgid "Preferred Languages"
-msgstr ""
+msgstr "Pageidaujamos kalbos"
 
 #: ui/configui.ui:79
 msgctxt "SonnetConfigUI|"
 msgid "Choose your preferred languages"
-msgstr ""
+msgstr "Pasirinkti pageidaujamas kalbas"
 
 #: ui/configui.ui:89
 msgctxt "SonnetConfigUI|"
@@ -202,17 +193,17 @@ msgstr "Parinktys"
 #: ui/configui.ui:113
 msgctxt "SonnetConfigUI|"
 msgid "Enable autodetection of &language"
-msgstr ""
+msgstr "Įjungti automatinį ka&lbos aptikimą"
 
 #: ui/configui.ui:120
 msgctxt "SonnetConfigUI|"
 msgid "Enable &background spellchecking"
-msgstr "Įjungti f&oninį klaidų tikrinimą"
+msgstr "Įjungti f&oninį rašybos tikrinimą"
 
 #: ui/configui.ui:127
 msgctxt "SonnetConfigUI|"
 msgid "&Automatic spell checking enabled by default"
-msgstr "Į&galinti automatinį rašybos tikrinimą"
+msgstr "Įjungti pagal numatymą &automatinį rašybos tikrinimą"
 
 #: ui/configui.ui:134
 msgctxt "SonnetConfigUI|"
@@ -225,12 +216,9 @@ msgid "S&kip run-together words"
 msgstr "Pra&leisti sulietus žodžius"
 
 #: ui/configui.ui:151
-#, fuzzy
-#| msgctxt "SonnetConfigUI|"
-#| msgid "Ignored Words:"
 msgctxt "SonnetConfigUI|"
 msgid "Ignored Words"
-msgstr "Ignoruoti žodžiai:"
+msgstr "Nepaisomi žodžiai"
 
 #: ui/configui.ui:183
 msgctxt "SonnetConfigUI|"
@@ -240,7 +228,7 @@ msgstr "&Pridėti"
 #: ui/configui.ui:195
 msgctxt "SonnetConfigUI|"
 msgid "&Remove"
-msgstr "&Pašalinti"
+msgstr "Ša&linti"
 
 #: ui/dialog.cpp:85 ui/dialog.cpp:194 ui/dialog.cpp:399
 msgctxt "Sonnet::Dialog|@title:window"
@@ -248,12 +236,9 @@ msgid "Check Spelling"
 msgstr "Tikrinti rašybą"
 
 #: ui/dialog.cpp:193
-#, fuzzy
-#| msgctxt "Sonnet::Dialog|progress label"
-#| msgid "Spell checking in progress..."
 msgctxt "Sonnet::Dialog|@info:progress"
 msgid "Spell checking in progress…"
-msgstr "Vyksta rašybos tikrinimas..."
+msgstr "Vyksta rašybos tikrinimas…"
 
 #: ui/dialog.cpp:214
 msgctxt "Sonnet::Dialog|"
@@ -268,24 +253,24 @@ msgstr "Rašybos tikrinimas nutrauktas."
 #: ui/dialog.cpp:396 ui/dialog.cpp:399
 msgctxt "Sonnet::Dialog|"
 msgid "Spell check complete."
-msgstr "Rašybos tikrinimas baigtas."
+msgstr "Rašybos tikrinimas užbaigtas."
 
 #: ui/highlighter.cpp:257 ui/highlighter.cpp:280
 msgctxt "Sonnet::Highlighter|"
 msgid "As-you-type spell checking enabled."
-msgstr "Įjungtas klaidų tikrinimas spausdinimo metu."
+msgstr "Įjungtas rašybos tikrinimas renkant tekstą."
 
 #: ui/highlighter.cpp:261
 msgctxt "Sonnet::Highlighter|"
 msgid "Too many misspelled words. As-you-type spell checking disabled."
 msgstr ""
-"Pernelyg daug klaidingai parašytų žodžių. Klaidų tikrinimas spausdinant "
-"išjungiamas."
+"Per daug neteisingai parašytų žodžių. Rašybos tikrinimas renkant tekstą "
+"išjungtas."
 
 #: ui/highlighter.cpp:282
 msgctxt "Sonnet::Highlighter|"
 msgid "As-you-type spell checking disabled."
-msgstr "Klaidų tikrinimas spausdinimo metu išjungtas."
+msgstr "Rašybos tikrinimas renkant tekstą išjungtas."
 
 #: ui/sonnetui.ui:41 ui/sonnetui.ui:57
 msgctxt "SonnetUi|"
@@ -303,17 +288,17 @@ msgid ""
 "All</b>.</p>\n"
 "</qt>"
 msgstr ""
-"<qt><p>Šis žodis buvo palaikytas „nežinomu“ nes jis neatitiko jokio įrašo "
+"<qt><p>Šis žodis buvo palaikytas „nežinomu“, nes jis neatitiko jokio įrašo "
 "šiuo metu naudojamame žodyne. Tai taip pat gali būti žodis užsienio kalba.</"
 "p>\n"
-"<p>Jei žodis nėra klaidingai parašytas, galite jį įdėti į žodyną paspaudę "
-"mygtuką <b>įdėti į žodyną</b>. Jei nenorite įdėti nežinomo žodžio į žodyną, "
-"tačiau norite palikti jį nepakeistą, spauskite <b>Ignoruoti</b> arba "
-"<b>Ignoruoti visus</b>.</p>\n"
-"<p>Tačiau, jei žodis visgi yra įrašytas klaidingai, galite bandyti rasti jam "
-"tinkamą pakeitimą iš žemiau siūlymų žodžių sąrašo. Jei negalite rasti jam "
-"pakaitalo sąraše, galite įrašyti jį žemiau esančiame teksto laukelyje ir "
-"spausti <b>Pakeisti</b> arba <b>Pakeisti visus</b>.</p>\n"
+"<p>Jei žodis yra teisingai parašytas, galite jį pridėti į žodyną paspaudę "
+"mygtuką <b>Įtraukti į žodyną</b>. Jei nenorite pridėti nežinomo žodžio į "
+"žodyną, tačiau norite palikti jį nepakeistą, spustelėkite <b>Nepaisyti</b> "
+"arba <b>Nepaisyti visų</b>.</p>\n"
+"<p>Vis dėlto, jeigu žodis yra parašytas neteisingai, galite bandyti rasti "
+"jam tinkamą pakeitimą iš žemiau esančio siūlomų žodžių sąrašo. Jei negalite "
+"rasti jam pakaitalo sąraše, galite įrašyti jį žemiau esančiame teksto "
+"laukelyje ir spustelėti <b>Pakeisti</b> arba <b>Pakeisti visus</b>.</p>\n"
 "</qt>"
 
 #: ui/sonnetui.ui:47
@@ -329,7 +314,7 @@ msgstr "Nežinomas žodis"
 #: ui/sonnetui.ui:63
 msgctxt "SonnetUi|"
 msgid "<b>misspelled</b>"
-msgstr "<b>klaidingas</b>"
+msgstr "<b>neteisingai parašytas</b>"
 
 #: ui/sonnetui.ui:70 ui/sonnetui.ui:180
 msgctxt "SonnetUi|"
@@ -339,13 +324,13 @@ msgid ""
 "</qt>"
 msgstr ""
 "<qt>\n"
-"<p>Čia galite pasirinkti kalbą dokumento, kurį tikrinate.</p>\n"
+"<p>Čia galite pasirinkti dokumento, kurį tikrinate, kalbą.</p>\n"
 "</qt>"
 
 #: ui/sonnetui.ui:75
 msgctxt "SonnetUi|"
 msgid "&Language:"
-msgstr "&Kalba:"
+msgstr "Ka&lba:"
 
 #: ui/sonnetui.ui:85
 msgctxt "SonnetUi|"
@@ -364,16 +349,16 @@ msgid ""
 msgstr ""
 "<qt>\n"
 "<p>Čia galite pamatyti teksto ištrauką, kurioje nežinomas žodis pateikiamas "
-"kontekste. Jei ši informacija nėra užtektina, kad galėtumėte parinkti "
-"geriausią pakaitalą nežinomam žodžiui, galite spragtelėti mygtuku ant "
-"dokumento, kurį taisote, perskaityti didesnę teksto dalį, ir tuomet grįžti "
-"čia ir tęsti tikrinimą.</p>\n"
+"kontekste. Jei šios informacijos nepakanka, kad galėtumėte parinkti "
+"geriausią pakaitalą nežinomam žodžiui, galite spustelėti mygtuku ant "
+"dokumento, kurį taisote, perskaityti didesnę teksto dalį, ir tada grįžti "
+"čia, ir tęsti taisymą.</p>\n"
 "</qt>"
 
 #: ui/sonnetui.ui:96
 msgctxt "SonnetUi|"
 msgid "... the <b>misspelled</b> word shown in context ..."
-msgstr "... <b>klaidingas</b> žodis rodomas kontekste ..."
+msgstr "... <b>neteisingai parašytas</b> žodis rodomas kontekste ..."
 
 #: ui/sonnetui.ui:106
 msgctxt "SonnetUi|"
@@ -390,16 +375,16 @@ msgstr ""
 "<qt>\n"
 "<p>Nežinomas žodis buvo aptiktas ir laikomas nežinomu, kadangi jo nėra "
 "žodyne.<br>\n"
-"Spauskite čia jei manote, kad nežinomas žodis nėra klaidingai parašytas, ir "
+"Spustelėkite čia, jei manote, kad nežinomas žodis parašytas teisingai ir "
 "nenorite, kad jį ateityje vėl rodytų kaip klaidą. O jei norite palikti žodį "
-"tokį, koks jis yra, tačiau nenorite pridėti jo į žodyną, spauskite "
-"<b>Ignoruoti</b> ar <b>Ignoruoti visus</b>.</p>\n"
+"tokį, koks jis yra, tačiau nenorite pridėti jo į žodyną, tada spustelėkite "
+"<b>Nepaisyti</b> arba <b>Nepaisyti visų</b>.</p>\n"
 "</qt>"
 
 #: ui/sonnetui.ui:112
 msgctxt "SonnetUi|"
 msgid "<< Add to Dictionary"
-msgstr "<< Įdėti į žodyną"
+msgstr "<< Įtraukti į žodyną"
 
 #: ui/sonnetui.ui:135
 msgctxt "SonnetUi|"
@@ -420,13 +405,13 @@ msgid ""
 "</qt>"
 msgstr ""
 "<qt>\n"
-"<p>Jei nežinomas žodis yra parašytas su klaida, patikrinkite, ar jam yra "
-"siūlomas tinkamas pakaitalas, ir jei taip, pažymėkite jį. Jei nei vienas "
-"žodis sąraše netinka, galite įrašyti pakaitalą į teksto laukelį viršuje.</"
-"p>\n"
-"<p>Norėdami pakeisti žodį, spauskite <b>Pakeisti</b> jei norite pakeisti tik "
-"šį vieną atvejį tekste, arba <b>pakeisti visus</b> jei norite pakeisti visus "
-"atvejus.</p>\n"
+"<p>Jei nežinomas žodis yra parašytas neteisingai, patikrinkite, ar jam yra "
+"siūlomas tinkamas pakaitalas, ir jei taip, spustelėkite ant jo. Jei nei "
+"vienas žodis sąraše netinka, galite įrašyti teisingą pakaitalą į teksto "
+"laukelį viršuje.</p>\n"
+"<p>Norėdami ištaisyti šį žodį, spustelėkite <b>Pakeisti</b>, kad "
+"ištaisytumėte tik šią vieną atitiktį tekste, arba <b>Pakeisti visus</b>, kad "
+"ištaisytumėte visas atitiktis.</p>\n"
 "</qt>"
 
 #: ui/sonnetui.ui:151 ui/sonnetui.ui:167
@@ -441,18 +426,17 @@ msgid ""
 "</qt>"
 msgstr ""
 "<qt>\n"
-"<p>Jei nežinomas žodis yra tiesiog klaidingai įrašytas, turite įrašyti "
-"pataisytą nežinomą žodį čia arba pasirinkti jį iš žemiau pateikiamo sąrašo.</"
+"<p>Jei nežinomas žodis yra parašytas neteisingai, turėtumėte čia įrašyti "
+"pataisytą nežinomą žodį arba pasirinkti jį iš žemiau pateikto sąrašo.</p>\n"
+"<p>Tada galite spustelėti <b>Pakeisti</b>, kad ištaisytumėte tik šią žodžio "
+"atitiktį, arba <b>Pakeisti visus</b>, kad ištaisytumėte visas atitiktis.</"
 "p>\n"
-"<p>Tuomet galite spausti <b>Pakeisti</b> jei norite pataisyti tik šį žodžio "
-"atvejį, <b>Pakeisti visus</b> jei norite pakeisti visus atvejus šiame tekste."
-"</p>\n"
 "</qt>"
 
 #: ui/sonnetui.ui:157
 msgctxt "SonnetUi|"
 msgid "Replace &with:"
-msgstr "Keis&ti į:"
+msgstr "Pakeis&ti į:"
 
 #: ui/sonnetui.ui:177
 msgctxt "SonnetUi|"
@@ -473,8 +457,8 @@ msgid ""
 "</qt>"
 msgstr ""
 "<qt>\n"
-"<p>Spauskite čia norėdami pakeisti nežinomą žodį tekstu, kuris yra teksto "
-"laukelyje viršuje (kairiau).</p>\n"
+"<p>Spustelėkite čia norėdami pakeisti šią nežinomo teksto atitiktį tekstu, "
+"kuris yra taisymo laukelyje viršuje (kairiau).</p>\n"
 "</qt>"
 
 #: ui/sonnetui.ui:218
@@ -491,14 +475,14 @@ msgid ""
 "</qt>"
 msgstr ""
 "<qt>\n"
-"<p>Spauskite čia jei norite pakeisti visus nežinomo žodžio atvejus tekste "
-"tuo tekstu, kuris įrašytas lentelėje viršuje (kairiau).</p>\n"
+"<p>Spustelėkite čia norėdami pakeisti visas nežinomo teksto atitiktis "
+"tekstu, kuris yra taisymo laukelyje viršuje (kairiau).</p>\n"
 "</qt>"
 
 #: ui/sonnetui.ui:230
 msgctxt "SonnetUi|"
 msgid "R&eplace All"
-msgstr "Keisti &visus"
+msgstr "Pakeisti &visus"
 
 #: ui/sonnetui.ui:237
 msgctxt "SonnetUi|"
@@ -511,16 +495,17 @@ msgid ""
 "</qt>"
 msgstr ""
 "<qt>\n"
-"<p>Spauskite čia jei nežinomą žodį norite palikti tokį, koks jis yra.</p>\n"
-"<p>Šis veiksmas naudingas tada, kai nežinomas žodis yra akronimas, vardas, "
+"<p>Spustelėkite čia norėdami palikti šią nežinomo žodžio atitiktį tokią, "
+"kokia ji yra.</p>\n"
+"<p>Šis veiksmas naudingas tada, kai nežinomas žodis yra vardas, akronimas, "
 "užsienio kalbos žodis ar bet kuris kitas nežinomas žodis, kurį norite "
-"naudoti, tačiau nenorite įtraukti į žodyną.</p>\n"
+"naudoti, tačiau nenorite pridėti į žodyną.</p>\n"
 "</qt>"
 
 #: ui/sonnetui.ui:243
 msgctxt "SonnetUi|"
 msgid "&Ignore"
-msgstr "&Ignoruoti"
+msgstr "Nepa&isyti"
 
 #: ui/sonnetui.ui:250 ui/sonnetui.ui:263
 msgctxt "SonnetUi|"
@@ -534,17 +519,17 @@ msgid ""
 "</qt>"
 msgstr ""
 "<qt>\n"
-"<p>Spauskite čia jei norite visus nežinomo žodžio atvejus šiame tekste "
-"palikti nepakeistus.</p>\n"
-"<p>Šis veiksmas naudingas tada, kai nežinomas žodis yra akronimas, vardas, "
+"<p>Spustelėkite čia norėdami palikti visas nežinomo žodžio atitiktis šiame "
+"tekste nepakeistas.</p>\n"
+"<p>Šis veiksmas naudingas tada, kai nežinomas žodis yra vardas, akronimas, "
 "užsienio kalbos žodis ar bet kuris kitas nežinomas žodis, kurį norite "
-"naudoti, tačiau nenorite įtraukti į žodyną.</p>\n"
+"naudoti, tačiau nenorite pridėti į žodyną.</p>\n"
 "</qt>"
 
 #: ui/sonnetui.ui:256
 msgctxt "SonnetUi|"
 msgid "I&gnore All"
-msgstr "I&gnoruoti visus"
+msgstr "N&epaisyti visų"
 
 #: ui/sonnetui.ui:269
 msgctxt "SonnetUi|"
@@ -555,17 +540,17 @@ msgstr "Taisyti automatiškai"
 #, qt-format
 msgctxt "Sonnet::SpellCheckDecorator|"
 msgid "No suggestions for %1"
-msgstr "Pasiūlymų %1 nėra"
+msgstr "Nėra pasiūlymų žodžiui „%1“"
 
 #: ui/spellcheckdecorator.cpp:191
 msgctxt "Sonnet::SpellCheckDecorator|"
 msgid "Ignore"
-msgstr "Ignoruoti"
+msgstr "Nepaisyti"
 
 #: ui/spellcheckdecorator.cpp:192
 msgctxt "Sonnet::SpellCheckDecorator|"
 msgid "Add to Dictionary"
-msgstr "Pridėti į žodyną"
+msgstr "Įtraukti į žodyną"
 
 #, fuzzy
 #~| msgctxt "SonnetConfigUI|"

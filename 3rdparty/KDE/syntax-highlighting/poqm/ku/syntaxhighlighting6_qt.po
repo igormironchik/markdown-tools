@@ -447,6 +447,11 @@ msgctxt "Language|"
 msgid "GDL"
 msgstr ""
 
+#, fuzzy
+msgctxt "Language|"
+msgid "Gemtext"
+msgstr "Herî Dawî"
+
 msgctxt "Language|"
 msgid "GNU Gettext"
 msgstr ""
@@ -995,6 +1000,10 @@ msgstr ""
 
 msgctxt "Language|"
 msgid "Pike"
+msgstr ""
+
+msgctxt "Language|"
+msgid "PIO Assembler"
 msgstr ""
 
 msgctxt "Language|"
@@ -2267,10 +2276,6 @@ msgstr ""
 #~| msgid "Name"
 #~ msgid "File Name"
 #~ msgstr "Nav"
-
-#, fuzzy
-#~ msgid "text"
-#~ msgstr "Herî Dawî"
 
 #, fuzzy
 #~| msgid "What do you want to do?"

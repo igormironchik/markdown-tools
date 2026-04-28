@@ -586,6 +586,12 @@ msgid "GDL"
 msgstr "GDL"
 
 #, fuzzy
+#| msgid "Next"
+msgctxt "Language|"
+msgid "Gemtext"
+msgstr "A heul"
+
+#, fuzzy
 #| msgctxt "Language"
 #| msgid "GNU Gettext"
 msgctxt "Language|"
@@ -1288,6 +1294,13 @@ msgstr ""
 msgctxt "Language|"
 msgid "Pike"
 msgstr "Pike"
+
+#, fuzzy
+#| msgctxt "Language Section"
+#| msgid "Assembler"
+msgctxt "Language|"
+msgid "PIO Assembler"
+msgstr "Stroller"
 
 msgctxt "Language|"
 msgid "PL/I"
@@ -3165,11 +3178,6 @@ msgstr ""
 
 #~ msgid "(Selection of) "
 #~ msgstr "(Diuzadenn eus) "
-
-#, fuzzy
-#~| msgid "Next"
-#~ msgid "text"
-#~ msgstr "A heul"
 
 #, fuzzy
 #~| msgid "What do you want to do?"

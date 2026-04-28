@@ -587,6 +587,12 @@ msgid "GDL"
 msgstr "GDL"
 
 #, fuzzy
+#| msgid "Context"
+msgctxt "Language|"
+msgid "Gemtext"
+msgstr "Konteks"
+
+#, fuzzy
 #| msgctxt "Language"
 #| msgid "GNU Gettext"
 msgctxt "Language|"
@@ -1286,6 +1292,13 @@ msgstr ""
 msgctxt "Language|"
 msgid "Pike"
 msgstr "Pike"
+
+#, fuzzy
+#| msgctxt "Language Section"
+#| msgid "Assembler"
+msgctxt "Language|"
+msgid "PIO Assembler"
+msgstr "Pengumpul"
 
 msgctxt "Language|"
 msgid "PL/I"
@@ -3817,11 +3830,6 @@ msgstr ""
 
 #~ msgid "Typographical Conventions for %1"
 #~ msgstr "Konvensyen Tipografi untuk %1"
-
-#, fuzzy
-#~| msgid "Context"
-#~ msgid "text"
-#~ msgstr "Konteks"
 
 #, fuzzy
 #~| msgid "What do you want to do?"

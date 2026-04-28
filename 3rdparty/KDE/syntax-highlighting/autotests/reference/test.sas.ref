@@ -1,0 +1,377 @@
+<Comment>/* =====================================================================</Comment><br/>
+<Comment>   test_sas_syntax.sas  —  minimal highlighting coverage + edge cases</Comment><br/>
+<Comment>   ===================================================================== */</Comment><br/>
+<Normal Text></Normal Text><br/>
+<Comment>/* ---- 1. COMMENTS --------------------------------------------------- */</Comment><br/>
+<Normal Text></Normal Text><br/>
+<Comment>/* block comment */</Comment><br/>
+<Normal Text></Normal Text><br/>
+<Comment>* statement comment at start of line;</Comment><br/>
+<Normal Text></Normal Text><br/>
+<Comment>* multi-line</Comment><br/>
+<Comment>  statement comment;</Comment><br/>
+<Normal Text></Normal Text><br/>
+<Comment>%* macro comment;</Comment><br/>
+<Normal Text></Normal Text><br/>
+<Step>data</Step><Normal Text> </Normal Text><Constants>_null_</Constants><Normal Text>;</Normal Text><br/>
+<Normal Text>  x </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>1</Number><Normal Text>; </Normal Text><Comment>* inline comment after semicolon;</Comment><br/>
+<Normal Text>  y </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>2</Number><Normal Text>; </Normal Text><Comment>* chained;</Comment><Normal Text> </Normal Text><Comment>* second;</Comment><br/>
+<Normal Text>  a </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>4</Number><Normal Text>; </Normal Text><Comment>* comment;</Comment><Normal Text> b </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>5</Number><Normal Text>;   </Normal Text><Comment>/* b=5 resumes normal highlighting */</Comment><br/>
+<Normal Text>  z </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>4</Number><br/>
+<Normal Text>  </Normal Text><Operator>*</Operator><Normal Text> </Normal Text><Number>2</Number><Normal Text>;   </Normal Text><Comment>* arithmetic * then comment on next statement;</Comment><br/>
+<Normal Text>  x</Normal Text><Number>2</Number><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Comment>%* macro comment mid-expression;</Comment><Normal Text> </Normal Text><Number>4</Number><Normal Text>;</Normal Text><br/>
+<Normal Text>  y</Normal Text><Number>2</Number><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Comment>/* block comment mid-expression */</Comment><Normal Text> </Normal Text><Number>5</Number><Normal Text>;</Normal Text><br/>
+<Step>run;</Step><br/>
+<Normal Text></Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Comment>/* ---- 2. STRING LITERALS — all suffix types ------------------------- */</Comment><br/>
+<Normal Text></Normal Text><br/>
+<Keywords>options</Keywords><Normal Text> </Normal Text><SecKeyword>validvarname</SecKeyword><Operator>=</Operator><Normal Text>any;</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Step>data</Step><Normal Text> </Normal Text><Constants>_null_</Constants><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Comment>/* double-quoted */</Comment><br/>
+<Normal Text>  plain   </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><String>"hello world"</String><Normal Text>;</Normal Text><br/>
+<Normal Text>  escaped </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><String>"it's ""quoted"""</String><Normal Text>;</Normal Text><br/>
+<Normal Text>  date    </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>"01jan2024"d</Number><Normal Text>;</Normal Text><br/>
+<Normal Text>  dtime   </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>"01jan2024:12:00:00"dt</Number><Normal Text>;</Normal Text><br/>
+<Normal Text>  time    </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>"12:00:00"t</Number><Normal Text>;</Normal Text><br/>
+<Normal Text>  bits    </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><String>"1010"b</String><Normal Text>;</Normal Text><br/>
+<Normal Text>  naml    </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><String>"my variable"n</String><Normal Text>;</Normal Text><br/>
+<Normal Text>  hex     </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><String>"FFAB3C"x</String><Normal Text>;</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Normal Text>  </Normal Text><Comment>/* single-quoted */</Comment><br/>
+<Normal Text>  sq_plain  </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><String>'hello world'</String><Normal Text>;</Normal Text><br/>
+<Normal Text>  sq_escape </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><String>'it''s quoted'</String><Normal Text>;</Normal Text><br/>
+<Normal Text>  sq_date   </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>'01jan2024'd</Number><Normal Text>;</Normal Text><br/>
+<Normal Text>  sq_dtime  </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>'01jan2024:12:00:00'dt</Number><Normal Text>;</Normal Text><br/>
+<Normal Text>  sq_time   </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>'12:00:00't</Number><Normal Text>;</Normal Text><br/>
+<Normal Text>  sq_bits   </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><String>'1010'b</String><Normal Text>;</Normal Text><br/>
+<Normal Text>  sq_naml   </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><String>'my variable'n</String><Normal Text>;</Normal Text><br/>
+<Normal Text>  sq_hex    </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><String>'FFAB3C'x</String><Normal Text>;</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Normal Text>  </Normal Text><Comment>/* uppercase suffixes */</Comment><br/>
+<Normal Text>  uc_date  </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>"01jan2024"D</Number><Normal Text>;</Normal Text><br/>
+<Normal Text>  uc_dtime </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>"01jan2024:00:00:00"DT</Number><Normal Text>;</Normal Text><br/>
+<Normal Text>  uc_time  </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>"06:00:00"T</Number><Normal Text>;</Normal Text><br/>
+<Normal Text>  uc_hex   </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><String>"FF"X</String><Normal Text>;</Normal Text><br/>
+<Step>run;</Step><br/>
+<Normal Text></Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Comment>/* ---- 3. NUMERIC LITERALS ------------------------------------------- */</Comment><br/>
+<Normal Text></Normal Text><br/>
+<Step>data</Step><Normal Text> </Normal Text><Constants>_null_</Constants><Normal Text>;</Normal Text><br/>
+<Normal Text>  int_val  </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>42</Number><Normal Text>;</Normal Text><br/>
+<Normal Text>  neg_int  </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Operator>-</Operator><Number>7</Number><Normal Text>;</Normal Text><br/>
+<Normal Text>  float    </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>3.14159</Number><Normal Text>;</Normal Text><br/>
+<Normal Text>  sci_pos  </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>1.5e10</Number><Normal Text>;</Normal Text><br/>
+<Normal Text>  sci_neg  </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>2.0E-3</Number><Normal Text>;</Normal Text><br/>
+<Normal Text>  leading  </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>.9</Number><Normal Text>;</Normal Text><br/>
+<Normal Text>  sas_hex  </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>0c1x</Number><Normal Text>;</Normal Text><br/>
+<Step>run;</Step><br/>
+<Normal Text></Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Comment>/* ---- 4. FORMATS AND INFORMATS -------------------------------------- */</Comment><br/>
+<Normal Text></Normal Text><br/>
+<Step>data</Step><Normal Text> </Normal Text><Constants>_null_</Constants><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Keywords>format</Keywords><Normal Text> date_var  </Normal Text><Format>date9.</Format><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Keywords>format</Keywords><Normal Text> num_var   </Normal Text><Format>comma12.2</Format><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Keywords>format</Keywords><Normal Text> chr_var   </Normal Text><Format>$char20.</Format><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Keywords>format</Keywords><Normal Text> best_var  </Normal Text><Format>best.</Format><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Keywords>informat</Keywords><Normal Text> raw_in  </Normal Text><Format>$50.</Format><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Keywords>informat</Keywords><Normal Text> dt_in   </Normal Text><Format>anydtdtm20.</Format><Normal Text>;</Normal Text><br/>
+<Step>run;</Step><br/>
+<Normal Text></Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Comment>/* ---- 5. OPERATORS -------------------------------------------------- */</Comment><br/>
+<Normal Text></Normal Text><br/>
+<Step>data</Step><Normal Text> </Normal Text><Constants>_null_</Constants><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Comment>/* arithmetic — * and / dont trigger comment context */</Comment><br/>
+<Normal Text>  a </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>2</Number><Normal Text> </Normal Text><Operator>**</Operator><Normal Text> </Normal Text><Number>3</Number><Normal Text>;</Normal Text><br/>
+<Normal Text>  b </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>15</Number><Normal Text> </Normal Text><Operator>*</Operator><Normal Text> </Normal Text><Number>3</Number><Normal Text>;</Normal Text><br/>
+<Normal Text>  c </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>10</Number><Normal Text> </Normal Text><Operator>/</Operator><Normal Text> </Normal Text><Number>4</Number><Normal Text>;</Normal Text><br/>
+<Normal Text>  d </Normal Text><Operator>=</Operator><Normal Text> a </Normal Text><Operator>+</Operator><Normal Text> b </Normal Text><Operator>-</Operator><Normal Text> c;</Normal Text><br/>
+<Normal Text>  z </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>15</Number><Normal Text> </Normal Text><Operator>*</Operator><Normal Text> </Normal Text><Number>3</Number><Normal Text> </Normal Text><Operator>/</Operator><Normal Text> </Normal Text><Number>4</Number><Normal Text> </Normal Text><Operator>+</Operator><Normal Text> </Normal Text><Number>100</Number><Normal Text>;</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Normal Text>  </Normal Text><Comment>/* comparison — symbolic */</Comment><br/>
+<Normal Text>  eq_  </Normal Text><Operator>=</Operator><Normal Text> (z </Normal Text><Operator>=</Operator><Normal Text>  </Normal Text><Number>45</Number><Normal Text>);</Normal Text><br/>
+<Normal Text>  ne_  </Normal Text><Operator>=</Operator><Normal Text> (z </Normal Text><Operator>^=</Operator><Normal Text> </Normal Text><Number>45</Number><Normal Text>);</Normal Text><br/>
+<Normal Text>  ne</Normal Text><Number>2</Number><Normal Text>  </Normal Text><Operator>=</Operator><Normal Text> (z </Normal Text><Operator>~=</Operator><Normal Text> </Normal Text><Number>45</Number><Normal Text>);</Normal Text><br/>
+<Normal Text>  gt_  </Normal Text><Operator>=</Operator><Normal Text> (z </Normal Text><Operator>></Operator><Normal Text>  </Normal Text><Number>10</Number><Normal Text>);</Normal Text><br/>
+<Normal Text>  lt_  </Normal Text><Operator>=</Operator><Normal Text> (z </Normal Text><Operator><</Operator><Normal Text>  </Normal Text><Number>200</Number><Normal Text>);</Normal Text><br/>
+<Normal Text>  ge_  </Normal Text><Operator>=</Operator><Normal Text> (z </Normal Text><Operator>>=</Operator><Normal Text> </Normal Text><Number>10</Number><Normal Text>);</Normal Text><br/>
+<Normal Text>  le_  </Normal Text><Operator>=</Operator><Normal Text> (z </Normal Text><Operator><=</Operator><Normal Text> </Normal Text><Number>200</Number><Normal Text>);</Normal Text><br/>
+<Normal Text>  mn_  </Normal Text><Operator>=</Operator><Normal Text> z </Normal Text><Operator><></Operator><Normal Text> </Normal Text><Number>100</Number><Normal Text>;   </Normal Text><Comment>/* min operator */</Comment><br/>
+<Normal Text>  mx_  </Normal Text><Operator>=</Operator><Normal Text> z </Normal Text><Operator>><</Operator><Normal Text> </Normal Text><Number>100</Number><Normal Text>;   </Normal Text><Comment>/* max operator */</Comment><br/>
+<Normal Text>  cat_ </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><String>"a"</String><Normal Text> </Normal Text><Operator>||</Operator><Normal Text> </Normal Text><String>"b"</String><Normal Text>; </Normal Text><Comment>/* concatenation */</Comment><br/>
+<Normal Text></Normal Text><br/>
+<Normal Text>  </Normal Text><Comment>/* trailing-modifier operators */</Comment><br/>
+<Normal Text>  name </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><String>"Jones"</String><Normal Text>;</Normal Text><br/>
+<Normal Text>  eq_t </Normal Text><Operator>=</Operator><Normal Text> (name </Normal Text><Operator>=:</Operator><Normal Text>  </Normal Text><String>"Jo"</String><Normal Text>);</Normal Text><br/>
+<Normal Text>  gt_t </Normal Text><Operator>=</Operator><Normal Text> (name </Normal Text><Operator>>:</Operator><Normal Text>  </Normal Text><String>"Jo"</String><Normal Text>);</Normal Text><br/>
+<Normal Text>  ne_t </Normal Text><Operator>=</Operator><Normal Text> (name </Normal Text><Operator>^=:</Operator><Normal Text> </Normal Text><String>"Jo"</String><Normal Text>);</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Normal Text>  </Normal Text><Comment>/* mnemonic operators */</Comment><br/>
+<Normal Text>  x </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>5</Number><Normal Text>; y </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>10</Number><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Control>if</Control><Normal Text> x </Normal Text><Operator>gt</Operator><Normal Text> </Normal Text><Number>0</Number><Normal Text> </Normal Text><Operator>and</Operator><Normal Text> y </Normal Text><Operator>lt</Operator><Normal Text> </Normal Text><Number>20</Number><Normal Text>  </Normal Text><Control>then</Control><Normal Text> </Normal Text><Keywords>put</Keywords><Normal Text> </Normal Text><String>"gt lt"</String><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Control>if</Control><Normal Text> x </Normal Text><Operator>ge</Operator><Normal Text> </Normal Text><Number>5</Number><Normal Text> </Normal Text><Operator>and</Operator><Normal Text> y </Normal Text><Operator>le</Operator><Normal Text> </Normal Text><Number>10</Number><Normal Text>  </Normal Text><Control>then</Control><Normal Text> </Normal Text><Keywords>put</Keywords><Normal Text> </Normal Text><String>"ge le"</String><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Control>if</Control><Normal Text> x </Normal Text><Operator>eq</Operator><Normal Text> </Normal Text><Number>5</Number><Normal Text> </Normal Text><Operator>or</Operator><Normal Text>  y </Normal Text><Operator>ne</Operator><Normal Text> </Normal Text><Number>0</Number><Normal Text>   </Normal Text><Control>then</Control><Normal Text> </Normal Text><Keywords>put</Keywords><Normal Text> </Normal Text><String>"eq ne"</String><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Control>if</Control><Normal Text> not (x </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>0</Number><Normal Text>)         </Normal Text><Control>then</Control><Normal Text> </Normal Text><Keywords>put</Keywords><Normal Text> </Normal Text><String>"not"</String><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Control>if</Control><Normal Text> x in (</Normal Text><Number>1</Number><Normal Text> </Normal Text><Number>2</Number><Normal Text> </Normal Text><Number>3</Number><Normal Text> </Normal Text><Number>4</Number><Normal Text> </Normal Text><Number>5</Number><Normal Text>)    </Normal Text><Control>then</Control><Normal Text> </Normal Text><Keywords>put</Keywords><Normal Text> </Normal Text><String>"in"</String><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Control>if</Control><Normal Text> name </Normal Text><Operator>like</Operator><Normal Text> </Normal Text><String>"Jo%"</String><Normal Text>     </Normal Text><Control>then</Control><Normal Text> </Normal Text><Keywords>put</Keywords><Normal Text> </Normal Text><String>"like"</String><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Control>if</Control><Normal Text> name </Normal Text><Operator>contains</Operator><Normal Text> </Normal Text><String>"ohn"</String><Normal Text> </Normal Text><Control>then</Control><Normal Text> </Normal Text><Keywords>put</Keywords><Normal Text> </Normal Text><String>"contains"</String><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Control>if</Control><Normal Text> x </Normal Text><Operator>between</Operator><Normal Text> </Normal Text><Number>1</Number><Normal Text> </Normal Text><Operator>and</Operator><Normal Text> </Normal Text><Number>10</Number><Normal Text>  </Normal Text><Control>then</Control><Normal Text> </Normal Text><Keywords>put</Keywords><Normal Text> </Normal Text><String>"between"</String><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Control>if</Control><Normal Text> x </Normal Text><Operator>is</Operator><Normal Text> missing        </Normal Text><Control>then</Control><Normal Text> </Normal Text><Keywords>put</Keywords><Normal Text> </Normal Text><String>"missing"</String><Normal Text>;</Normal Text><br/>
+<Step>run;</Step><br/>
+<Normal Text></Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Comment>/* ---- 6. SPECIAL / AUTOMATIC VARIABLES ------------------------------ */</Comment><br/>
+<Normal Text></Normal Text><br/>
+<Step>data</Step><Normal Text> </Normal Text><Constants>_null_</Constants><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Keywords>put</Keywords><Normal Text> </Normal Text><Constants>_n_</Constants><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Keywords>put</Keywords><Normal Text> </Normal Text><Constants>_error_</Constants><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Control>if</Control><Normal Text> </Normal Text><Constants>_n_</Constants><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>1</Number><Normal Text> </Normal Text><Control>then</Control><Normal Text> </Normal Text><Keywords>put</Keywords><Normal Text> </Normal Text><String>"first"</String><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Keywords>keep</Keywords><Normal Text> </Normal Text><Constants>_all_</Constants><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Keywords>drop</Keywords><Normal Text> </Normal Text><Constants>_character_</Constants><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Keywords>retain</Keywords><Normal Text> </Normal Text><Constants>_numeric_</Constants><Normal Text>;</Normal Text><br/>
+<Step>run;</Step><br/>
+<Normal Text></Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Comment>/* ---- 7. CONTROL FLOW ----------------------------------------------- */</Comment><br/>
+<Normal Text></Normal Text><br/>
+<Step>data</Step><Normal Text> </Normal Text><Constants>_null_</Constants><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Control>do</Control><Normal Text> i </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>1</Number><Normal Text> </Normal Text><Control>to</Control><Normal Text> </Normal Text><Number>10</Number><Normal Text> </Normal Text><Control>by</Control><Normal Text> </Normal Text><Number>2</Number><Normal Text>;</Normal Text><br/>
+<Normal Text>    </Normal Text><Control>if</Control><Normal Text> i </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>5</Number><Normal Text> </Normal Text><Control>then</Control><Normal Text> </Normal Text><Keywords>continue</Keywords><Normal Text>;</Normal Text><br/>
+<Normal Text>    </Normal Text><Control>if</Control><Normal Text> i </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>9</Number><Normal Text> </Normal Text><Control>then</Control><Normal Text> </Normal Text><Keywords>leave</Keywords><Normal Text>;</Normal Text><br/>
+<Normal Text>    </Normal Text><Keywords>put</Keywords><Normal Text> i;</Normal Text><br/>
+<Normal Text>  </Normal Text><Control>end</Control><Normal Text>;</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Normal Text>  i </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>0</Number><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Control>do</Control><Normal Text> </Normal Text><Control>while</Control><Normal Text> (i </Normal Text><Operator><</Operator><Normal Text> </Normal Text><Number>10</Number><Normal Text>);</Normal Text><br/>
+<Normal Text>    i </Normal Text><Operator>+</Operator><Normal Text> </Normal Text><Number>1</Number><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Control>end</Control><Normal Text>;</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Normal Text>  i </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>0</Number><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Control>do</Control><Normal Text> </Normal Text><Control>until</Control><Normal Text> (i </Normal Text><Operator>>=</Operator><Normal Text> </Normal Text><Number>10</Number><Normal Text>);</Normal Text><br/>
+<Normal Text>    i </Normal Text><Operator>+</Operator><Normal Text> </Normal Text><Number>1</Number><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Control>end</Control><Normal Text>;</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Normal Text>  </Normal Text><Control>select</Control><Normal Text> (i);</Normal Text><br/>
+<Normal Text>    </Normal Text><Control>when</Control><Normal Text> (</Normal Text><Number>1</Number><Normal Text>)  </Normal Text><Keywords>put</Keywords><Normal Text> </Normal Text><String>"one"</String><Normal Text>;</Normal Text><br/>
+<Normal Text>    </Normal Text><Control>when</Control><Normal Text> (</Normal Text><Number>2</Number><Normal Text>)  </Normal Text><Keywords>put</Keywords><Normal Text> </Normal Text><String>"two"</String><Normal Text>;</Normal Text><br/>
+<Normal Text>    </Normal Text><Control>otherwise</Control><Normal Text> </Normal Text><Keywords>put</Keywords><Normal Text> </Normal Text><String>"other"</String><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Control>end</Control><Normal Text>;</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Normal Text>  </Normal Text><Control>if</Control><Normal Text> i </Normal Text><Operator>></Operator><Normal Text> </Normal Text><Number>5</Number><Normal Text> </Normal Text><Control>then</Control><Normal Text> </Normal Text><Keywords>put</Keywords><Normal Text> </Normal Text><String>"big"</String><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Control>else</Control><Normal Text> </Normal Text><Keywords>put</Keywords><Normal Text> </Normal Text><String>"small"</String><Normal Text>;</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Normal Text>  </Normal Text><Control>goto</Control><Normal Text> done;</Normal Text><br/>
+<Normal Text>  </Normal Text><Control>link</Control><Normal Text> sub;</Normal Text><br/>
+<Normal Text>  </Normal Text><Keywords>return</Keywords><Normal Text>;</Normal Text><br/>
+<Normal Text>  done:</Normal Text><br/>
+<Normal Text>  sub:</Normal Text><br/>
+<Normal Text>  </Normal Text><Keywords>return</Keywords><Normal Text>;</Normal Text><br/>
+<Step>run;</Step><br/>
+<Normal Text></Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Comment>/* ---- 8. DATA STEP STATEMENTS + DATASET OPTIONS --------------------- */</Comment><br/>
+<Normal Text></Normal Text><br/>
+<Step>data</Step><Normal Text> work.out (</Normal Text><SecKeyword>keep</SecKeyword><Operator>=</Operator><Normal Text>name age </Normal Text><SecKeyword>compress</SecKeyword><Operator>=</Operator><Normal Text>yes);</Normal Text><br/>
+<Normal Text>  </Normal Text><Comment>/* dataset options on SET — (opt=val) must NOT colour ds name as function */</Comment><br/>
+<Normal Text>  </Normal Text><Keywords>set</Keywords><Normal Text> sashelp.class (</Normal Text><SecKeyword>obs</SecKeyword><Operator>=</Operator><Number>50</Number><Normal Text> </Normal Text><SecKeyword>where</SecKeyword><Operator>=</Operator><Normal Text>(age </Normal Text><Operator>></Operator><Normal Text> </Normal Text><Number>12</Number><Normal Text>) </Normal Text><SecKeyword>keep</SecKeyword><Operator>=</Operator><Normal Text>name age sex);</Normal Text><br/>
+<Normal Text>  </Normal Text><Keywords>merge</Keywords><Normal Text> work.a (</Normal Text><SecKeyword>in</SecKeyword><Operator>=</Operator><Normal Text>ina) work.b (</Normal Text><SecKeyword>in</SecKeyword><Operator>=</Operator><Normal Text>inb);</Normal Text><br/>
+<Normal Text>  </Normal Text><Control>by</Control><Normal Text> id;</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Normal Text>  </Normal Text><Keywords>array</Keywords><Normal Text> nums{</Normal Text><Number>3</Number><Normal Text>} a b c;</Normal Text><br/>
+<Normal Text>  </Normal Text><Keywords>attrib</Keywords><Normal Text> name </Normal Text><Keywords>length</Keywords><Operator>=</Operator><Normal Text>$</Normal Text><Number>20</Number><Normal Text> </Normal Text><Keywords>label</Keywords><Operator>=</Operator><String>"Full name"</String><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Keywords>length</Keywords><Normal Text> score </Normal Text><Number>8</Number><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Keywords>retain</Keywords><Normal Text> cumcount </Normal Text><Number>0</Number><Normal Text>;</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Normal Text>  </Normal Text><Comment>/* known functions highlighted; non-function before ( is Normal Text */</Comment><br/>
+<Normal Text>  z </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Functions>max</Functions><Normal Text>(a, b);</Normal Text><br/>
+<Normal Text>  w </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Functions>substr</Functions><Normal Text>(name, </Normal Text><Number>1</Number><Normal Text>, </Normal Text><Number>3</Number><Normal Text>);</Normal Text><br/>
+<Normal Text>  </Normal Text><Control>if</Control><Normal Text> notafunction(z) </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>1</Number><Normal Text> </Normal Text><Control>then</Control><Normal Text> </Normal Text><Keywords>output</Keywords><Normal Text>;   </Normal Text><Comment>/* notafunction -> Normal Text */</Comment><br/>
+<Normal Text></Normal Text><br/>
+<Normal Text>  </Normal Text><Keywords>stop</Keywords><Normal Text>;</Normal Text><br/>
+<Step>run;</Step><br/>
+<Normal Text></Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Comment>/* ---- 9. CARDS / DATALINES ------------------------------------------ */</Comment><br/>
+<Normal Text></Normal Text><br/>
+<Step>data</Step><Normal Text> work.inline;</Normal Text><br/>
+<Normal Text>  </Normal Text><Keywords>input</Keywords><Normal Text> name $ age;</Normal Text><br/>
+<Normal Text>  </Normal Text><Keywords>cards;</Keywords><br/>
+<Cards>Alice 30</Cards><br/>
+<Cards>Bob   25</Cards><br/>
+<Cards>   </Cards><Normal Text>;</Normal Text><br/>
+<Step>run;</Step><br/>
+<Normal Text></Normal Text><br/>
+<Step>data</Step><Normal Text> work.cards</Normal Text><Number>4</Number><Normal Text>test;</Normal Text><br/>
+<Normal Text>  </Normal Text><Keywords>input</Keywords><Normal Text> line $ </Normal Text><Number>1</Number><Operator>-</Operator><Number>20</Number><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Keywords>cards4;</Keywords><br/>
+<Cards>line with ; inside</Cards><br/>
+<Cards>another ; line here</Cards><br/>
+<Normal Text>;;;;</Normal Text><br/>
+<Step>run;</Step><br/>
+<Normal Text></Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Comment>/* ---- 10. PROC (GENERIC) + CONTEXT SWITCHING ------------------------ */</Comment><br/>
+<Normal Text></Normal Text><br/>
+<Step>proc means</Step><Normal Text> </Normal Text><SecKeyword>data</SecKeyword><Operator>=</Operator><Normal Text>sashelp.class </Normal Text><SecKeyword>n</SecKeyword><Normal Text> </Normal Text><SecKeyword>mean</SecKeyword><Normal Text> </Normal Text><SecKeyword>std</SecKeyword><Normal Text> </Normal Text><SecKeyword>min</SecKeyword><Normal Text> </Normal Text><SecKeyword>max</SecKeyword><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><SecKeyword>var</SecKeyword><Normal Text> age height weight;</Normal Text><br/>
+<Normal Text>  </Normal Text><SecKeyword>class</SecKeyword><Normal Text> sex;</Normal Text><br/>
+<Normal Text>  </Normal Text><SecKeyword>output</SecKeyword><Normal Text> out</Normal Text><Operator>=</Operator><Normal Text>work.stats mean</Normal Text><Operator>=</Operator><Normal Text> std</Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Operator>/</Operator><Normal Text> autoname;</Normal Text><br/>
+<Step>run;</Step><br/>
+<Normal Text></Normal Text><br/>
+<Step>proc sort</Step><Normal Text> </Normal Text><SecKeyword>data</SecKeyword><Operator>=</Operator><Normal Text>sashelp.class </Normal Text><SecKeyword>out</SecKeyword><Operator>=</Operator><Normal Text>work.sorted (</Normal Text><SecKeyword>keep</SecKeyword><Operator>=</Operator><Normal Text>name age) </Normal Text><SecKeyword>nodupkey</SecKeyword><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><SecKeyword>by</SecKeyword><Normal Text> sex descending age;</Normal Text><br/>
+<Step>run;</Step><br/>
+<Normal Text></Normal Text><br/>
+<Comment>/* No RUN — next proc/data boundary switches context */</Comment><br/>
+<Step>proc datasets</Step><Normal Text> </Normal Text><SecKeyword>library</SecKeyword><Operator>=</Operator><Normal Text>work </Normal Text><SecKeyword>nolist</SecKeyword><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><SecKeyword>delete</SecKeyword><Normal Text> sorted;</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Step>data</Step><Normal Text> work.after_no_run;</Normal Text><br/>
+<Normal Text>  x </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>1</Number><Normal Text>;</Normal Text><br/>
+<Step>run;</Step><br/>
+<Normal Text></Normal Text><br/>
+<Comment>/* ---- 11. PROC SQL -------------------------------------------------- */</Comment><br/>
+<Normal Text></Normal Text><br/>
+<Step>proc sql</Step><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Keyword>create</Keyword><Normal Text> </Normal Text><Keyword>table</Keyword><Normal Text> </Normal Text><Keyword>work</Keyword><Normal Text>.sql_out </Normal Text><Keyword>as</Keyword><br/>
+<Normal Text>    </Normal Text><Keyword>select</Keyword><Normal Text> name, age, height </Normal Text><Operator>/</Operator><Normal Text> weight </Normal Text><Keyword>as</Keyword><Normal Text> ratio</Normal Text><br/>
+<Normal Text>    </Normal Text><Keyword>from</Keyword><Normal Text>   sashelp.</Normal Text><Keyword>class</Keyword><br/>
+<Normal Text>    </Normal Text><Keyword>where</Keyword><Normal Text>  age </Normal Text><Operator>></Operator><Normal Text> </Normal Text><Decimal>12</Decimal><Normal Text> </Normal Text><Operator Keyword>and</Operator Keyword><Normal Text> sex </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><String>'M'</String><br/>
+<Normal Text>    </Normal Text><Keyword>order</Keyword><Normal Text>  </Normal Text><Keyword>by</Keyword><Normal Text> age </Normal Text><Keyword>desc</Keyword><Normal Text>;</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Normal Text>  </Normal Text><Keyword>select</Keyword><Normal Text> </Normal Text><Function>count</Function><Normal Text>(</Normal Text><Operator>*</Operator><Normal Text>) </Normal Text><Keyword>as</Keyword><Normal Text> n_obs,</Normal Text><br/>
+<Normal Text>         </Normal Text><Function>sum</Function><Normal Text>(age </Normal Text><Operator>*</Operator><Normal Text> </Normal Text><Float>1.0</Float><Normal Text>) </Normal Text><Operator>/</Operator><Normal Text> </Normal Text><Function>count</Function><Normal Text>(</Normal Text><Operator>*</Operator><Normal Text>) </Normal Text><Keyword>as</Keyword><Normal Text> mean_age</Normal Text><br/>
+<Normal Text>  </Normal Text><Keyword>from</Keyword><Normal Text>   sashelp.</Normal Text><Keyword>class</Keyword><Normal Text>;</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Normal Text>  </Normal Text><Keyword>drop</Keyword><Normal Text> </Normal Text><Keyword>table</Keyword><Normal Text> </Normal Text><Keyword>work</Keyword><Normal Text>.sql_out;</Normal Text><br/>
+<Step>quit;</Step><br/>
+<Normal Text></Normal Text><br/>
+<Comment>/* SQL with no QUIT — next step boundary exits */</Comment><br/>
+<Step>proc sql</Step><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><Keyword>select</Keyword><Normal Text> name </Normal Text><Keyword>from</Keyword><Normal Text> sashelp.</Normal Text><Keyword>class</Keyword><Normal Text>;</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Step>data</Step><Normal Text> work.after_sql;</Normal Text><br/>
+<Normal Text>  </Normal Text><Keywords>set</Keywords><Normal Text> sashelp.class;</Normal Text><br/>
+<Step>run;</Step><br/>
+<Normal Text></Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Comment>/* ---- 12. PROC PYTHON (embedded block) ------------------------------ */</Comment><br/>
+<Normal Text></Normal Text><br/>
+<Step>proc python</Step><Normal Text>;</Normal Text><br/>
+<Keywords>submit;</Keywords><br/>
+<Import>import</Import><Normal Text> sys</Normal Text><Normal Text>,</Normal Text><Normal Text> math</Normal Text><br/>
+<Normal Text>x </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Int>2</Int><Normal Text> </Normal Text><Operator>**</Operator><Normal Text> </Normal Text><Int>10</Int><Normal Text> </Normal Text><Comment># Python comment</Comment><br/>
+<Normal Text>s </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><String Deliminator>"</String Deliminator><String>hello</String><String Deliminator>"</String Deliminator><br/>
+<Normal Text>s2 </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><String Deliminator>'</String Deliminator><String>world</String><String Deliminator>'</String Deliminator><br/>
+<Normal Text>multi </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><String Deliminator>"""</String Deliminator><br/>
+<String>triple-quoted string</String><br/>
+<String Deliminator>"""</String Deliminator><br/>
+<Builtin Function>print</Builtin Function><Normal Text>(sys.version, math.pi, x)</Normal Text><br/>
+<Keywords>endsubmit;</Keywords><br/>
+<Step>quit;</Step><br/>
+<Normal Text></Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Comment>/* ---- 13. PROC LUA (embedded block) --------------------------------- */</Comment><br/>
+<Normal Text></Normal Text><br/>
+<Step>proc lua</Step><Normal Text>;</Normal Text><br/>
+<Keywords>submit;</Keywords><br/>
+<Comment>-- Lua single-line comment</Comment><br/>
+<Keyword>local</Keyword><Normal Text> </Normal Text><Variable>x</Variable><Normal Text> </Normal Text><Symbols>=</Symbols><Normal Text> </Normal Text><Numbers>10</Numbers><Normal Text> </Normal Text><Symbols>*</Symbols><Normal Text> </Normal Text><Numbers>3</Numbers><Normal Text>     </Normal Text><Comment>-- * is arithmetic</Comment><br/>
+<Keyword>local</Keyword><Normal Text> </Normal Text><Variable>s</Variable><Normal Text>  </Normal Text><Symbols>=</Symbols><Normal Text> </Normal Text><Strings>"hello"</Strings><br/>
+<Keyword>local</Keyword><Normal Text> </Normal Text><Variable>s2</Variable><Normal Text> </Normal Text><Symbols>=</Symbols><Normal Text> </Normal Text><Strings>'world'</Strings><br/>
+<Keyword>local</Keyword><Normal Text> </Normal Text><Variable>ml</Variable><Normal Text> </Normal Text><Symbols>=</Symbols><Normal Text> </Normal Text><RawStrings>[[multi-line string]]</RawStrings><br/>
+<Comment>--[[ multi-line Lua comment ]]</Comment><br/>
+<BFunc>print</BFunc><Symbols>(</Symbols><Variable>x</Variable><Symbols>,</Symbols><Normal Text> </Normal Text><Variable>s</Variable><Symbols>,</Symbols><Normal Text> </Normal Text><Variable>s2</Variable><Symbols>)</Symbols><br/>
+<Keywords>endsubmit;</Keywords><br/>
+<Step>quit;</Step><br/>
+<Normal Text></Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Comment>/* ---- 14. MACRO LANGUAGE -------------------------------------------- */</Comment><br/>
+<Normal Text></Normal Text><br/>
+<MacroDef>%macro</MacroDef><Normal Text> </Normal Text><MacroName>greet</MacroName><Normal Text>(name</Normal Text><Operator>=</Operator><Normal Text>World, n</Normal Text><Operator>=</Operator><Number>1</Number><Normal Text>);</Normal Text><br/>
+<Normal Text>  </Normal Text><MacroKeyword>%local</MacroKeyword><Normal Text> i;</Normal Text><br/>
+<Normal Text>  </Normal Text><MacroKeyword>%do</MacroKeyword><Normal Text> i </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>1</Number><Normal Text> </Normal Text><MacroKeyword>%to</MacroKeyword><Normal Text> </Normal Text><MacroVariable>&n</MacroVariable><Normal Text>;</Normal Text><br/>
+<Normal Text>    </Normal Text><MacroKeyword>%put</MacroKeyword><Normal Text> Hello, </Normal Text><MacroVariable>&name</MacroVariable><Operator>!</Operator><Normal Text> (iteration </Normal Text><MacroVariable>&i</MacroVariable><Normal Text> of </Normal Text><MacroVariable>&n</MacroVariable><Normal Text>);</Normal Text><br/>
+<Normal Text>  </Normal Text><MacroKeyword>%end</MacroKeyword><Normal Text>;</Normal Text><br/>
+<MacroDef>%mend</MacroDef><Normal Text> greet;</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<MacroName>%greet</MacroName><Normal Text>(name</Normal Text><Operator>=</Operator><Normal Text>SAS, n</Normal Text><Operator>=</Operator><Number>3</Number><Normal Text>);</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<MacroKeyword>%let</MacroKeyword><Normal Text> myvar </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Number>42</Number><Normal Text>;</Normal Text><br/>
+<MacroKeyword>%let</MacroKeyword><Normal Text> mystr </Normal Text><Operator>=</Operator><Normal Text> Hello World;</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<MacroKeyword>%if</MacroKeyword><Normal Text> </Normal Text><MacroVariable>&myvar</MacroVariable><Normal Text> </Normal Text><Operator>></Operator><Normal Text> </Normal Text><Number>10</Number><Normal Text> </Normal Text><MacroKeyword>%then</MacroKeyword><Normal Text> </Normal Text><MacroKeyword>%do</MacroKeyword><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><MacroKeyword>%put</MacroKeyword><Normal Text> myvar (</Normal Text><MacroVariable>&myvar</MacroVariable><Normal Text>) </Normal Text><Operator>is</Operator><Normal Text> large;</Normal Text><br/>
+<MacroKeyword>%end</MacroKeyword><Normal Text>;</Normal Text><br/>
+<MacroKeyword>%else</MacroKeyword><Normal Text> </Normal Text><MacroKeyword>%do</MacroKeyword><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><MacroKeyword>%put</MacroKeyword><Normal Text> myvar (</Normal Text><MacroVariable>&myvar</MacroVariable><Normal Text>) </Normal Text><Operator>is</Operator><Normal Text> small;</Normal Text><br/>
+<MacroKeyword>%end</MacroKeyword><Normal Text>;</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Comment>/* indirect macro reference */</Comment><br/>
+<MacroKeyword>%let</MacroKeyword><Normal Text> prefix </Normal Text><Operator>=</Operator><Normal Text> abc;</Normal Text><br/>
+<MacroKeyword>%let</MacroKeyword><Normal Text> abcval </Normal Text><Operator>=</Operator><Normal Text> found;</Normal Text><br/>
+<MacroKeyword>%put</MacroKeyword><Normal Text> </Normal Text><MacroVariable>&prefix</MacroVariable><Normal Text> </Normal Text><Operator>-</Operator><Normal Text> simple;</Normal Text><br/>
+<MacroKeyword>%put</MacroKeyword><Normal Text> </Normal Text><MacroVariable>&&prefix.</MacroVariable><Normal Text>val </Normal Text><Operator>-</Operator><Normal Text> indirect </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><MacroVariable>&abcval</MacroVariable><Normal Text>;</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Comment>/* macro quoting / utility functions */</Comment><br/>
+<MacroKeyword>%let</MacroKeyword><Normal Text> q</Normal Text><Number>1</Number><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><MacroName>%str</MacroName><Normal Text>(a semicolon: ;);</Normal Text><br/>
+<MacroKeyword>%let</MacroKeyword><Normal Text> q</Normal Text><Number>2</Number><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><MacroName>%nrstr</MacroName><Normal Text>(</Normal Text><MacroVariable>&notresolved</MacroVariable><Normal Text>);</Normal Text><br/>
+<MacroKeyword>%let</MacroKeyword><Normal Text> len </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><MacroName>%length</MacroName><Normal Text>(</Normal Text><MacroVariable>&mystr</MacroVariable><Normal Text>);</Normal Text><br/>
+<MacroKeyword>%let</MacroKeyword><Normal Text> up  </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><MacroName>%upcase</MacroName><Normal Text>(</Normal Text><MacroVariable>&mystr</MacroVariable><Normal Text>);</Normal Text><br/>
+<MacroKeyword>%let</MacroKeyword><Normal Text> ev  </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><MacroName>%eval</MacroName><Normal Text>(</Normal Text><Number>2</Number><Normal Text> </Normal Text><Operator>+</Operator><Normal Text> </Normal Text><Number>3</Number><Normal Text>);</Normal Text><br/>
+<MacroKeyword>%let</MacroKeyword><Normal Text> sev </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><MacroName>%sysevalf</MacroName><Normal Text>(</Normal Text><Number>1.5</Number><Normal Text> </Normal Text><Operator>*</Operator><Normal Text> </Normal Text><Number>2.0</Number><Normal Text>);</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<MacroKeyword>%global</MacroKeyword><Normal Text> gvar</Normal Text><Number>1</Number><Normal Text> gvar</Normal Text><Number>2</Number><Normal Text>;</Normal Text><br/>
+<MacroKeyword>%local</MacroKeyword><Normal Text>  lvar</Normal Text><Number>1</Number><Normal Text>;</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Comment>%* macro comment;</Comment><br/>
+<Normal Text></Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Comment>/* ---- 15. LIBNAME / FILENAME / OPTIONS ------------------------------ */</Comment><br/>
+<Normal Text></Normal Text><br/>
+<Keywords>libname</Keywords><Normal Text> mylib </Normal Text><String>"/path/to/data"</String><Normal Text> access</Normal Text><Operator>=</Operator><Normal Text>readonly;</Normal Text><br/>
+<Keywords>libname</Keywords><Normal Text> mylib clear;</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Keywords>filename</Keywords><Normal Text> myfile </Normal Text><String>"/path/to/file.txt"</String><Normal Text> lrecl</Normal Text><Operator>=</Operator><Number>256</Number><Normal Text>;</Normal Text><br/>
+<Keywords>filename</Keywords><Normal Text> myfile clear;</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Comment>/* option=value pattern: option name -> SecKeyword, value -> Normal Text */</Comment><br/>
+<Keywords>options</Keywords><Normal Text> </Normal Text><SecKeyword>obs</SecKeyword><Operator>=</Operator><Normal Text>max </Normal Text><SecKeyword>nodate</SecKeyword><Normal Text> </Normal Text><SecKeyword>nonumber</SecKeyword><Normal Text> </Normal Text><SecKeyword>mprint</SecKeyword><Normal Text> </Normal Text><SecKeyword>mlogic</SecKeyword><Normal Text> </Normal Text><SecKeyword>symbolgen</SecKeyword><Normal Text>;</Normal Text><br/>
+<Keywords>options</Keywords><Normal Text> </Normal Text><SecKeyword>validvarname</SecKeyword><Operator>=</Operator><Normal Text>any </Normal Text><SecKeyword>compress</SecKeyword><Operator>=</Operator><Normal Text>yes </Normal Text><SecKeyword>bufno</SecKeyword><Operator>=</Operator><Number>20</Number><Normal Text>;</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Comment>/* ---- 16. MISC PROCS ------------------------------------------------ */</Comment><br/>
+<Normal Text></Normal Text><br/>
+<Step>proc mixed</Step><Normal Text> </Normal Text><SecKeyword>data</SecKeyword><Operator>=</Operator><Normal Text>sashelp.class;</Normal Text><br/>
+<Normal Text>  </Normal Text><SecKeyword>class</SecKeyword><Normal Text> sex;</Normal Text><br/>
+<Normal Text>  </Normal Text><SecKeyword>model</SecKeyword><Normal Text> height </Normal Text><Operator>=</Operator><Normal Text> age sex </Normal Text><Operator>/</Operator><Normal Text> solution ddfm</Normal Text><Operator>=</Operator><Normal Text>kr;</Normal Text><br/>
+<Normal Text>  </Normal Text><SecKeyword>random</SecKeyword><Normal Text> intercept </Normal Text><Operator>/</Operator><Normal Text> subject</Normal Text><Operator>=</Operator><Normal Text>name type</Normal Text><Operator>=</Operator><Normal Text>un;</Normal Text><br/>
+<Normal Text>  </Normal Text><SecKeyword>lsmeans</SecKeyword><Normal Text> sex </Normal Text><Operator>/</Operator><Normal Text> pdiff adjust</Normal Text><Operator>=</Operator><Normal Text>tukey;</Normal Text><br/>
+<Step>run;</Step><br/>
+<Normal Text></Normal Text><br/>
+<Step>proc report</Step><Normal Text> </Normal Text><SecKeyword>data</SecKeyword><Operator>=</Operator><Normal Text>sashelp.class </Normal Text><SecKeyword>nowd</SecKeyword><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><SecKeyword>column</SecKeyword><Normal Text> name sex age height;</Normal Text><br/>
+<Normal Text>  </Normal Text><SecKeyword>define</SecKeyword><Normal Text> name   </Normal Text><Operator>/</Operator><Normal Text> display </Normal Text><String>"Student"</String><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><SecKeyword>define</SecKeyword><Normal Text> height </Normal Text><Operator>/</Operator><Normal Text> analysis mean format</Normal Text><Operator>=</Operator><Number>6.2</Number><Normal Text> </Normal Text><String>"Avg Height"</String><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><SecKeyword>break</SecKeyword><Normal Text> after sex </Normal Text><Operator>/</Operator><Normal Text> summarize;</Normal Text><br/>
+<Normal Text>  </Normal Text><SecKeyword>compute</SecKeyword><Normal Text> after sex;</Normal Text><br/>
+<Normal Text>    </Normal Text><SecKeyword>line</SecKeyword><Normal Text> </Normal Text><String>"--- end of group ---"</String><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><SecKeyword>endcomp</SecKeyword><Normal Text>;</Normal Text><br/>
+<Step>run;</Step><br/>
+<Normal Text></Normal Text><br/>
+<Step>proc fcmp</Step><Normal Text> </Normal Text><SecKeyword>outlib</SecKeyword><Operator>=</Operator><Normal Text>work.funcs.mathlib;</Normal Text><br/>
+<Normal Text>  </Normal Text><SecKeyword>function</SecKeyword><Normal Text> cube(x);</Normal Text><br/>
+<Normal Text>    </Normal Text><SecKeyword>return</SecKeyword><Normal Text> (x </Normal Text><Operator>**</Operator><Normal Text> </Normal Text><Number>3</Number><Normal Text>);</Normal Text><br/>
+<Normal Text>  </Normal Text><SecKeyword>endfunc</SecKeyword><Normal Text>;</Normal Text><br/>
+<Normal Text>  </Normal Text><SecKeyword>subroutine</SecKeyword><Normal Text> swap(a, b);</Normal Text><br/>
+<Normal Text>    </Normal Text><SecKeyword>outargs</SecKeyword><Normal Text> a, b;</Normal Text><br/>
+<Normal Text>    </Normal Text><SecKeyword>temp</SecKeyword><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> a; </Normal Text><SecKeyword>a</SecKeyword><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> b; </Normal Text><SecKeyword>b</SecKeyword><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> temp;</Normal Text><br/>
+<Normal Text>  </Normal Text><SecKeyword>endsub</SecKeyword><Normal Text>;</Normal Text><br/>
+<Step>run;</Step><br/>
+<Normal Text></Normal Text><br/>
+<Keywords>endsas</Keywords><Normal Text>;</Normal Text><br/>
+<MacroKeyword>%abort</MacroKeyword><Normal Text> abend;</Normal Text><br/>

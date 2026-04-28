@@ -8,10 +8,10 @@
 ]>
 <language
 	name="ConTeXt"
-	version="11"
+	version="12"
 	section="Markup"
 	kateversion="5.79"
-	priority="8"
+	priority="9"
 	extensions="*.ctx;*.mkiv;*.mkvi;*.mkxl;*.mklx"
 	mimetype="text/x-tex"
 	casesensitive="1"
@@ -203,13 +203,12 @@
 		<comments>
 			<comment name="singleLine" start="%" />
 		</comments>
+		<spellchecking>
+			<encodings>
+				<encoding string="''" />
+			</encodings>
+		</spellchecking>
 	</general>
-
-	<spellchecking>
-		<encodings>
-			<encoding string="''" ignored="true" />
-		</encodings>
-	</spellchecking>
 </language>
 
 <!-- kate: space-indent off; indent-width 4; -->

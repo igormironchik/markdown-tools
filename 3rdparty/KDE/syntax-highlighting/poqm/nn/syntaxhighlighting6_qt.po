@@ -446,6 +446,11 @@ msgctxt "Language|"
 msgid "GDL"
 msgstr "GDL"
 
+#, fuzzy
+msgctxt "Language|"
+msgid "Gemtext"
+msgstr "GNU Gettext"
+
 msgctxt "Language|"
 msgid "GNU Gettext"
 msgstr "GNU Gettext"
@@ -983,6 +988,11 @@ msgstr "Pig"
 msgctxt "Language|"
 msgid "Pike"
 msgstr "Pike"
+
+#, fuzzy
+msgctxt "Language|"
+msgid "PIO Assembler"
+msgstr "Assembler"
 
 msgctxt "Language|"
 msgid "PL/I"

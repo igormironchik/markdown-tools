@@ -651,6 +651,12 @@ msgid "GDL"
 msgstr "GDL"
 
 #, fuzzy
+#| msgid "text"
+msgctxt "Language|"
+msgid "Gemtext"
+msgstr "téacs"
+
+#, fuzzy
 #| msgctxt "Language"
 #| msgid "GNU Gettext"
 msgctxt "Language|"
@@ -1408,6 +1414,13 @@ msgstr ""
 msgctxt "Language|"
 msgid "Pike"
 msgstr "Pike"
+
+#, fuzzy
+#| msgctxt "Language Section"
+#| msgid "Assembler"
+msgctxt "Language|"
+msgid "PIO Assembler"
+msgstr "Díolamóir"
 
 msgctxt "Language|"
 msgid "PL/I"
@@ -3455,9 +3468,6 @@ msgstr ""
 
 #~ msgid "Typographical Conventions for %1"
 #~ msgstr "Comhshocruithe Chlóghrafacha do %1"
-
-#~ msgid "text"
-#~ msgstr "téacs"
 
 #~ msgid "Import as new schema:"
 #~ msgstr "Iompórtáil mar scéimre nua:"

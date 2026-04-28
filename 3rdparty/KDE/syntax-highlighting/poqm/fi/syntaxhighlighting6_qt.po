@@ -10,7 +10,7 @@
 # Teemu Rytilahti <tpr@d5k.net>, 2008.
 # Teemu Rytilahti <teemu.rytilahti@kde-fi.org>, 2008.
 # Teemu Rytilahti <teemu.rytilahti@d5k.net>, 2008, 2012.
-# SPDX-FileCopyrightText: 2009, 2010, 2011, 2012, 2014, 2016, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025 Tommi Nieminen <translator@legisign.org>
+# SPDX-FileCopyrightText: 2009, 2010, 2011, 2012, 2014, 2016, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026 Tommi Nieminen <translator@legisign.org>
 # Jorma Karvonen <karvonen.jorma@gmail.com>, 2010, 2012.
 # Lasse Liehu <lasse.liehu@gmail.com>, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017.
 # Jiri Grönroos <jiri.gronroos+kde@iki.fi>, 2012.
@@ -25,7 +25,7 @@ msgstr ""
 "Project-Id-Version: katepart4\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2016-09-08 07:30+0000\n"
-"PO-Revision-Date: 2025-12-05 18:41+0200\n"
+"PO-Revision-Date: 2026-01-05 20:41+0200\n"
 "Last-Translator: Tommi Nieminen <translator@legisign.org>\n"
 "Language-Team: Finnish <kde-i18n-doc@kde.org>\n"
 "Language: fi\n"
@@ -456,6 +456,12 @@ msgctxt "Language|"
 msgid "GDL"
 msgstr "GDL"
 
+#, fuzzy
+#| msgid "text"
+msgctxt "Language|"
+msgid "Gemtext"
+msgstr "teksti"
+
 msgctxt "Language|"
 msgid "GNU Gettext"
 msgstr "GNU Gettext"
@@ -518,7 +524,7 @@ msgstr "Groovy"
 
 msgctxt "Language|"
 msgid "GTK Blueprint"
-msgstr ""
+msgstr "GTK Blueprint"
 
 msgctxt "Language|"
 msgid "Hamlet"
@@ -618,7 +624,7 @@ msgstr "JCL"
 
 msgctxt "Language|"
 msgid "Jinja"
-msgstr ""
+msgstr "Jinja"
 
 msgctxt "Language|"
 msgid "Jira"
@@ -987,6 +993,13 @@ msgstr "Pig"
 msgctxt "Language|"
 msgid "Pike"
 msgstr "Pike"
+
+#, fuzzy
+#| msgctxt "Language Section|"
+#| msgid "Assembler"
+msgctxt "Language|"
+msgid "PIO Assembler"
+msgstr "Assembler"
 
 msgctxt "Language|"
 msgid "PL/I"
@@ -3583,9 +3596,6 @@ msgstr "Päivitetään syntaksimääritelmää ”%1” versioon %2…"
 
 #~ msgid "Typographical Conventions for %1"
 #~ msgstr "Typografiset ehdot kohteelle %1"
-
-#~ msgid "text"
-#~ msgstr "teksti"
 
 #~ msgid "How do you want to import the schema?"
 #~ msgstr "Miten haluat tuoda teeman?"

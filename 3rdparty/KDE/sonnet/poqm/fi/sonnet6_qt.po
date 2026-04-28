@@ -11,7 +11,7 @@
 # Joonas Niilola <juippis@roskakori.org>, 2006.
 # Mikko Piippo <piippo@cc.helsinki.fi>, 2007.
 # Teemu Rytilahti <tpr@d5k.net>, 2008.
-# SPDX-FileCopyrightText: 2009, 2010, 2011, 2019, 2021, 2023, 2025 Tommi Nieminen <translator@legisign.org>
+# SPDX-FileCopyrightText: 2009, 2010, 2011, 2019, 2021, 2023, 2025, 2026 Tommi Nieminen <translator@legisign.org>
 # Jorma Karvonen <karvonen.jorma@gmail.com>, 2010.
 # Lasse Liehu <lasse.liehu@gmail.com>, 2006, 2010, 2011, 2012, 2013, 2014, 2015.
 #
@@ -26,7 +26,7 @@ msgstr ""
 "Project-Id-Version: kdelibs4\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2014-03-23 01:50+0000\n"
-"PO-Revision-Date: 2025-05-31 10:57+0300\n"
+"PO-Revision-Date: 2026-01-25 21:50+0200\n"
 "Last-Translator: Tommi Nieminen <translator@legisign.org>\n"
 "Language-Team: Finnish <kde-i18n-doc@kde.org>\n"
 "Language: fi\n"
@@ -34,7 +34,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 23.08.5\n"
+"X-Generator: Lokalize 25.04.0\n"
 "X-Qt-Contexts: true\n"
 
 #: core/loader.cpp:177
@@ -125,17 +125,17 @@ msgstr "aksentit käytössä"
 #: core/loader.cpp:194
 msgctxt "Sonnet::Loader|dictionary variant"
 msgid "with ye, modern russian"
-msgstr "with ye, nykyvenäjä"
+msgstr "je, nykyvenäjä"
 
 #: core/loader.cpp:195
 msgctxt "Sonnet::Loader|dictionary variant"
 msgid "with yeyo, modern and old russian"
-msgstr "with yeyo, nyky- ja muinaisvenäjä"
+msgstr "jejo, nyky- ja muinaisvenäjä"
 
 #: core/loader.cpp:196
 msgctxt "Sonnet::Loader|dictionary variant"
 msgid "with yo, old russian"
-msgstr "with yo, muinaisvenäjä"
+msgstr "jo, muinaisvenäjä"
 
 #: core/loader.cpp:197
 msgctxt "Sonnet::Loader|dictionary variant"
@@ -159,7 +159,7 @@ msgstr "%1 (%2)"
 #: quick/spellcheckhighlighter.cpp:253 quick/spellcheckhighlighter.cpp:277
 msgctxt "SpellcheckHighlighter|"
 msgid "As-you-type spell checking enabled."
-msgstr "Kirjoituksenaikainen oikoluku otettu käyttöön."
+msgstr "Kirjoituksenaikainen oikoluku käytössä."
 
 #: quick/spellcheckhighlighter.cpp:257
 msgctxt "SpellcheckHighlighter|"
@@ -192,12 +192,12 @@ msgstr "Oletuskieli:"
 #: ui/configui.ui:55
 msgctxt "SonnetConfigUI|"
 msgid "Preferred Languages"
-msgstr "Suositut kielet"
+msgstr "Ensisijaiset kielet"
 
 #: ui/configui.ui:79
 msgctxt "SonnetConfigUI|"
 msgid "Choose your preferred languages"
-msgstr "Valitse suosimasi kielet"
+msgstr "Valitse ensisijaiset kielet"
 
 #: ui/configui.ui:89
 msgctxt "SonnetConfigUI|"
@@ -262,7 +262,7 @@ msgstr "Oikoluku pysähtyi."
 #: ui/dialog.cpp:224
 msgctxt "Sonnet::Dialog|"
 msgid "Spell check canceled."
-msgstr "Oikoluku peruttiin."
+msgstr "Oikoluku peruttu."
 
 #: ui/dialog.cpp:396 ui/dialog.cpp:399
 msgctxt "Sonnet::Dialog|"
@@ -302,15 +302,14 @@ msgid ""
 "</qt>"
 msgstr ""
 "<qt><p>Sana luokiteltiin ”tuntemattomaksi”, koska sitä ei löydy käytössä "
-"olevasta sanakirjasta. Sana voi olla myös vieraskielinen.</p>\n"
-"<p>Jos sana on kirjoitettu oikein, voit lisätä sen sanakirjaan "
-"napsauttamalla <b>Lisää sanakirjaan</b>-painiketta. Jos et halua lisätä "
-"sanaa sanakirjaan ja haluat jättää kohdan muuttamatta, napsauta <b>Ohita</"
-"b>- tai <b>Ohita kaikki</b>-painiketta.</p>\n"
-"<p>Jos sanassa on kirjoitusvirhe, voit valita sopivan korjauksen "
-"alapuolelta. Jos luettelosta ei löydy sopivaa vaihtoehtoa, voit kirjoittaa "
-"sen myös itse alapuolella olevaan tekstikenttään ja napsauttamalla sen "
-"jälkeen <b>Korvaa</b>- tai <b>Korvaa kaikki</b>-painiketta.</p>\n"
+"olevasta sanastosta. Se voi olla myös vieraskielinen.</p>\n"
+"<p>Jos sana on kirjoitettu oikein, sen voi lisätä sanastoon napsauttamalla "
+"<b>Lisää sanastoon</b>. Ellet halua lisätä sanaa sanastoon vaan jättää "
+"kohdan sikseen, napsauta <b>Ohita</b> tai <b>Ohita kaikki</b>.</p>\n"
+"<p>Jos sanassa on kirjoitusvirhe, sopivan korjauksen voi valita alta. Ellei "
+"luettelosta löydy sopivaa, sen voi kirjoittaa itse alla olevaan "
+"tekstikenttään ja napsauttaa sen jälkeen <b>Korvaa</b> tai <b>Korvaa kaikki</"
+"b>.</p>\n"
 "</qt>"
 
 #: ui/sonnetui.ui:47
@@ -369,7 +368,7 @@ msgstr ""
 #: ui/sonnetui.ui:96
 msgctxt "SonnetUi|"
 msgid "... the <b>misspelled</b> word shown in context ..."
-msgstr "… <b>virheellisesti kirjoitettu</b> sana kontekstissa …"
+msgstr "…<b>virheellinen</b> sana kontekstissa…"
 
 #: ui/sonnetui.ui:106
 msgctxt "SonnetUi|"
@@ -384,17 +383,17 @@ msgid ""
 "</qt>"
 msgstr ""
 "<qt>\n"
-"<p>Oikoluku löysi sanan, jota ei ole sanakirjassa.<br />\n"
+"<p>Oikoluku löysi sanan, jota sanastossa ei ole.<br />\n"
 "Napsauta tästä, jos tunnistamaton sana on kirjoitettu oikein ja haluat "
-"välttää väärän tunnistuksen jatkossa. Jos haluat jättää sanan "
-"alkuperäiseksi, mutta et halua lisätä sitä sanakirjaan, napsauta <b>Ohita</"
-"b> tai <b>Ohita kaikki</b>.</p>\n"
+"välttää väärän tunnistuksen jatkossa. Jos haluat jättää sanan sikseen muttet "
+"halua lisätä sitä sanastoon, napsauta <b>Ohita</b> tai <b>Ohita kaikki</b>.</"
+"p>\n"
 "</qt>"
 
 #: ui/sonnetui.ui:112
 msgctxt "SonnetUi|"
 msgid "<< Add to Dictionary"
-msgstr "<< Lisää sanakirjaan"
+msgstr "<< Lisää sanastoon"
 
 #: ui/sonnetui.ui:135
 msgctxt "SonnetUi|"
@@ -504,10 +503,9 @@ msgid ""
 "</qt>"
 msgstr ""
 "<qt>\n"
-"<p>Napsauta tästä jättääksesi tuntemattoman sanan alkuperäiseen muotoon.</"
-"p>\n"
-"<p>Tämä on hyödyllistä jos sana on nimi, lyhenne, vieraskielinen tai mikä "
-"tahansa muu sana, jota et halua lisätä sanakirjaan.</p>\n"
+"<p>Napsauta tästä jättääksesi tuntemattoman sanan sikseen.</p>\n"
+"<p>Tämä auttaa, jos sana on nimi, lyhenne, vieraskielinen tai muu sana, jota "
+"ei haluta sanastoon lisätä.</p>\n"
 "</qt>"
 
 #: ui/sonnetui.ui:243
@@ -527,10 +525,9 @@ msgid ""
 "</qt>"
 msgstr ""
 "<qt>\n"
-"<p>Napsauta tästä jättääksesi kaikki tuntemattomat sanat alkuperäiseen "
-"muotoon.</p>\n"
-"<p>Tämä on hyödyllistä jos sana on nimi, lyhenne, vieraskielinen tai mikä "
-"tahansa muu sana, jota et halua lisätä sanakirjaan.</p>\n"
+"<p>Jätä kaikki tuntemattomat sanat sikseen napsauttamalla tästä.</p>\n"
+"<p>Tämä auttaa, jos sana on nimi, lyhenne, vieraskielinen tai muu sana, jota "
+"ei haluta sanastoon lisätä.</p>\n"
 "</qt>"
 
 #: ui/sonnetui.ui:256
@@ -557,7 +554,7 @@ msgstr "Ohita"
 #: ui/spellcheckdecorator.cpp:192
 msgctxt "Sonnet::SpellCheckDecorator|"
 msgid "Add to Dictionary"
-msgstr "Lisää sanakirjaan"
+msgstr "Lisää sanastoon"
 
 #~ msgctxt "SonnetConfigUI|"
 #~ msgid "No backend found for spell checking"

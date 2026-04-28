@@ -134,7 +134,7 @@ public:
 
     int autoCompleteBeginPosition = -1;
     int autoCompleteEndPosition = -1;
-    int wordIsMisspelled = false;
+    bool wordIsMisspelled = false;
     bool active = false;
     bool automatic = false;
     bool autoDetectLanguageDisabled = false;
@@ -326,64 +326,58 @@ void SpellcheckHighlighter::highlightBlock(const QString &text)
         d->connected = true;
     }
     QTextCursor cursor = textCursor();
-    const int index = cursor.position() + 1;
 
-    const int lengthPosition = text.length() - 1;
+    d->languageFilter->setBuffer(text);
 
-    if (index != lengthPosition //
-        || (lengthPosition > 0 && !text[lengthPosition - 1].isLetter())) {
-        d->languageFilter->setBuffer(text);
+    LanguageCache *cache = dynamic_cast<LanguageCache *>(currentBlockUserData());
+    if (!cache) {
+        cache = new LanguageCache;
+        setCurrentBlockUserData(cache);
+    }
 
-        LanguageCache *cache = dynamic_cast<LanguageCache *>(currentBlockUserData());
-        if (!cache) {
-            cache = new LanguageCache;
-            setCurrentBlockUserData(cache);
+    const bool autodetectLanguage = d->spellchecker->testAttribute(Speller::AutoDetectLanguage);
+    while (d->languageFilter->hasNext()) {
+        Sonnet::Token sentence = d->languageFilter->next();
+        if (autodetectLanguage && !d->autoDetectLanguageDisabled) {
+            QString lang;
+            QPair<int, int> spos = QPair<int, int>(sentence.position(), sentence.length());
+            // try cache first
+            if (cache->languages.contains(spos)) {
+                lang = cache->languages.value(spos);
+            } else {
+                lang = d->languageFilter->language();
+                if (!d->languageFilter->isSpellcheckable()) {
+                    lang.clear();
+                }
+                cache->languages[spos] = lang;
+            }
+            if (lang.isEmpty()) {
+                continue;
+            }
+            d->spellchecker->setLanguage(lang);
         }
 
-        const bool autodetectLanguage = d->spellchecker->testAttribute(Speller::AutoDetectLanguage);
-        while (d->languageFilter->hasNext()) {
-            Sonnet::Token sentence = d->languageFilter->next();
-            if (autodetectLanguage && !d->autoDetectLanguageDisabled) {
-                QString lang;
-                QPair<int, int> spos = QPair<int, int>(sentence.position(), sentence.length());
-                // try cache first
-                if (cache->languages.contains(spos)) {
-                    lang = cache->languages.value(spos);
-                } else {
-                    lang = d->languageFilter->language();
-                    if (!d->languageFilter->isSpellcheckable()) {
-                        lang.clear();
-                    }
-                    cache->languages[spos] = lang;
-                }
-                if (lang.isEmpty()) {
-                    continue;
-                }
-                d->spellchecker->setLanguage(lang);
+        d->tokenizer->setBuffer(sentence.toString());
+        int offset = sentence.position();
+        while (d->tokenizer->hasNext()) {
+            Sonnet::Token word = d->tokenizer->next();
+            if (!d->tokenizer->isSpellcheckable()) {
+                continue;
             }
-
-            d->tokenizer->setBuffer(sentence.toString());
-            int offset = sentence.position();
-            while (d->tokenizer->hasNext()) {
-                Sonnet::Token word = d->tokenizer->next();
-                if (!d->tokenizer->isSpellcheckable()) {
-                    continue;
-                }
-                ++d->wordCount;
-                if (d->spellchecker->isMisspelled(word.toString())) {
-                    ++d->errorCount;
-                    if (word.position() + offset <= cursor.position() && cursor.position() <= word.position() + offset + word.length()) {
-                        setMisspelledSelected(word.position() + offset, word.length());
-                    } else {
-                        setMisspelled(word.position() + offset, word.length());
-                    }
+            ++d->wordCount;
+            if (d->spellchecker->isMisspelled(word.toString())) {
+                ++d->errorCount;
+                if (word.position() + offset <= cursor.position() && cursor.position() <= word.position() + offset + word.length()) {
+                    setMisspelledSelected(word.position() + offset, word.length());
                 } else {
-                    unsetMisspelled(word.position() + offset, word.length());
+                    setMisspelled(word.position() + offset, word.length());
                 }
+            } else {
+                unsetMisspelled(word.position() + offset, word.length());
             }
         }
     }
-    // QTimer::singleShot( 0, this, SLOT(checkWords()) );
+
     setCurrentBlockState(0);
 }
 

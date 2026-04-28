@@ -437,6 +437,10 @@ msgid "GDL"
 msgstr "GDL"
 
 msgctxt "Language|"
+msgid "Gemtext"
+msgstr "Gemtext"
+
+msgctxt "Language|"
 msgid "GNU Gettext"
 msgstr "GNU Gettext"
 
@@ -967,6 +971,10 @@ msgstr "Pig"
 msgctxt "Language|"
 msgid "Pike"
 msgstr "Pike"
+
+msgctxt "Language|"
+msgid "PIO Assembler"
+msgstr "PIO 汇编"
 
 msgctxt "Language|"
 msgid "PL/I"

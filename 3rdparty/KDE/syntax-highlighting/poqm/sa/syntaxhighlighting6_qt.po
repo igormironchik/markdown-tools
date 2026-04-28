@@ -442,6 +442,13 @@ msgctxt "Language|"
 msgid "GDL"
 msgstr "जीडीएल"
 
+#, fuzzy
+#| msgctxt "Language|"
+#| msgid "GNU Gettext"
+msgctxt "Language|"
+msgid "Gemtext"
+msgstr "GNU Gettext"
+
 msgctxt "Language|"
 msgid "GNU Gettext"
 msgstr "GNU Gettext"
@@ -982,6 +989,13 @@ msgstr "सुकरः"
 msgctxt "Language|"
 msgid "Pike"
 msgstr "पाईक"
+
+#, fuzzy
+#| msgctxt "Language Section|"
+#| msgid "Assembler"
+msgctxt "Language|"
+msgid "PIO Assembler"
+msgstr "संयोजकः"
 
 msgctxt "Language|"
 msgid "PL/I"
