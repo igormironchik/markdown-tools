@@ -6,9 +6,6 @@
 // md-pdf include.
 #include "settings.h"
 
-// Qt include.
-#include <QColorDialog>
-
 namespace MdPdf
 {
 
@@ -26,7 +23,7 @@ SettingsDlg::SettingsDlg(const MdShared::PluginsCfg &pluginsCfg,
     m_ui.m_pluginsPage->setCfg(pluginsCfg);
     m_ui.m_markColor->setColor(markColor);
 
-    connect(m_ui.m_markColor, &MdShared::ColorWidget::clicked, this, &SettingsDlg::onMarkColorChoose);
+    connect(m_ui.m_markColor, &KColorButton::changed, this, &SettingsDlg::markColorChanged);
 }
 
 SettingsDlg::~SettingsDlg()
@@ -43,13 +40,9 @@ const QColor &SettingsDlg::markColor() const
     return m_ui.m_markColor->color();
 }
 
-void SettingsDlg::onMarkColorChoose()
+void SettingsDlg::markColorChanged(const QColor &c)
 {
-    QColorDialog dlg(m_ui.m_markColor->color(), this);
-
-    if (QDialog::Accepted == dlg.exec()) {
-        m_ui.m_markColor->setColor(dlg.currentColor());
-    }
+    m_ui.m_markColor->setColor(c);
 }
 
 } /* namespace MdPdf */

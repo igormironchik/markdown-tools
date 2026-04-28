@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>546</width>
-    <height>400</height>
+    <width>654</width>
+    <height>685</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,8 +27,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>534</width>
-        <height>380</height>
+        <width>642</width>
+        <height>497</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -69,18 +69,12 @@
              </widget>
             </item>
             <item row="0" column="1">
-             <widget class="MdShared::ColorWidget" name="textColor">
+             <widget class="KColorButton" name="textColor">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
-              </property>
-              <property name="frameShape">
-               <enum>QFrame::Shape::StyledPanel</enum>
-              </property>
-              <property name="frameShadow">
-               <enum>QFrame::Shadow::Raised</enum>
               </property>
              </widget>
             </item>
@@ -98,18 +92,12 @@
              </widget>
             </item>
             <item row="1" column="1">
-             <widget class="MdShared::ColorWidget" name="inlineColor">
+             <widget class="KColorButton" name="inlineColor">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
-              </property>
-              <property name="frameShape">
-               <enum>QFrame::Shape::StyledPanel</enum>
-              </property>
-              <property name="frameShadow">
-               <enum>QFrame::Shadow::Raised</enum>
               </property>
              </widget>
             </item>
@@ -127,18 +115,12 @@
              </widget>
             </item>
             <item row="2" column="1">
-             <widget class="MdShared::ColorWidget" name="linkColor">
+             <widget class="KColorButton" name="linkColor">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
-              </property>
-              <property name="frameShape">
-               <enum>QFrame::Shape::StyledPanel</enum>
-              </property>
-              <property name="frameShadow">
-               <enum>QFrame::Shadow::Raised</enum>
               </property>
              </widget>
             </item>
@@ -150,14 +132,7 @@
              </widget>
             </item>
             <item row="3" column="1">
-             <widget class="MdShared::ColorWidget" name="htmlColor">
-              <property name="frameShape">
-               <enum>QFrame::Shape::StyledPanel</enum>
-              </property>
-              <property name="frameShadow">
-               <enum>QFrame::Shadow::Raised</enum>
-              </property>
-             </widget>
+             <widget class="KColorButton" name="htmlColor"/>
             </item>
             <item row="4" column="0">
              <widget class="QLabel" name="label_6">
@@ -167,14 +142,7 @@
              </widget>
             </item>
             <item row="4" column="1">
-             <widget class="MdShared::ColorWidget" name="tableColor">
-              <property name="frameShape">
-               <enum>QFrame::Shape::StyledPanel</enum>
-              </property>
-              <property name="frameShadow">
-               <enum>QFrame::Shadow::Raised</enum>
-              </property>
-             </widget>
+             <widget class="KColorButton" name="tableColor"/>
             </item>
             <item row="5" column="0">
              <widget class="QLabel" name="label_8">
@@ -184,14 +152,7 @@
              </widget>
             </item>
             <item row="5" column="1">
-             <widget class="MdShared::ColorWidget" name="codeColor">
-              <property name="frameShape">
-               <enum>QFrame::Shape::StyledPanel</enum>
-              </property>
-              <property name="frameShadow">
-               <enum>QFrame::Shadow::Raised</enum>
-              </property>
-             </widget>
+             <widget class="KColorButton" name="codeColor"/>
             </item>
             <item row="6" column="0">
              <widget class="QLabel" name="label_10">
@@ -201,14 +162,7 @@
              </widget>
             </item>
             <item row="6" column="1">
-             <widget class="MdShared::ColorWidget" name="mathColor">
-              <property name="frameShape">
-               <enum>QFrame::Shape::StyledPanel</enum>
-              </property>
-              <property name="frameShadow">
-               <enum>QFrame::Shadow::Raised</enum>
-              </property>
-             </widget>
+             <widget class="KColorButton" name="mathColor"/>
             </item>
             <item row="7" column="0">
              <widget class="QLabel" name="label_11">
@@ -218,14 +172,7 @@
              </widget>
             </item>
             <item row="7" column="1">
-             <widget class="MdShared::ColorWidget" name="referenceColor">
-              <property name="frameShape">
-               <enum>QFrame::Shape::StyledPanel</enum>
-              </property>
-              <property name="frameShadow">
-               <enum>QFrame::Shadow::Raised</enum>
-              </property>
-             </widget>
+             <widget class="KColorButton" name="referenceColor"/>
             </item>
             <item row="8" column="0">
              <widget class="QLabel" name="label_12">
@@ -235,14 +182,7 @@
              </widget>
             </item>
             <item row="8" column="1">
-             <widget class="MdShared::ColorWidget" name="specialColor">
-              <property name="frameShape">
-               <enum>QFrame::Shape::StyledPanel</enum>
-              </property>
-              <property name="frameShadow">
-               <enum>QFrame::Shadow::Raised</enum>
-              </property>
-             </widget>
+             <widget class="KColorButton" name="specialColor"/>
             </item>
            </layout>
           </item>
@@ -293,10 +233,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>MdShared::ColorWidget</class>
-   <extends>QFrame</extends>
-   <header>color_widget.h</header>
-   <container>1</container>
+   <class>KColorButton</class>
+   <extends>QPushButton</extends>
+   <header>kcolorbutton.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

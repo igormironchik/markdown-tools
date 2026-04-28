@@ -16,8 +16,6 @@ find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
 set(SRC license_dialog.h
 	license_dialog.cpp
 	license_dialog.ui
-	color_widget.cpp
-	color_widget.h
 	utils.h
 	utils.cpp
 	folder_chooser.h

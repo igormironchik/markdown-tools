@@ -35,7 +35,7 @@ public:
     const QColor &markColor() const;
 
 private slots:
-    void onMarkColorChoose();
+    void markColorChanged(const QColor &c);
 
 private:
     Ui::SettingsDlg m_ui;

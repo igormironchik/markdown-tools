@@ -55,8 +55,8 @@ public:
     void setMarkColor(const QColor &c);
 
 private slots:
-    void changeLinkColor();
-    void changeBorderColor();
+    void linkColorChanged(const QColor &c);
+    void borderColorChanged(const QColor &c);
     void selectMarkdown();
     void process();
     void codeFontSizeChanged(int i);
