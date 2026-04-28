@@ -8,9 +8,7 @@ echo "Installing Qt..."
 
 set /P qt_version=<%CD%\script\qt.version
 
-set AQT_CONCURRENCY=1
-
-aqt install-qt --outputdir Qt windows desktop %qt_version% win64_msvc2022_64 -m qtimageformats qtwebchannel qtwebview qtpositioning qtwebengine
+aqt install-qt --outputdir Qt windows desktop %qt_version% win64_msvc2022_64 -m qtimageformats qtwebchannel qtwebview qtpositioning qtwebengine  --config script\aqt.config 
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
