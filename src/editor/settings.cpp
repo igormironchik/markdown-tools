@@ -90,7 +90,7 @@ SettingsDlg::SettingsDlg(const Settings &s,
     fontPageItem->setIcon(QIcon::fromTheme(QStringLiteral("preferences-desktop-font"),
                                            QIcon(QStringLiteral(":/res/img/preferences-desktop-font.png"))));
     m_editorPageItem->setIcon(QIcon::fromTheme(QStringLiteral("document-properties"),
-                                             QIcon(QStringLiteral(":/res/img/document-properties.png"))));
+                                               QIcon(QStringLiteral(":/res/img/document-properties.png"))));
     pluginsPageItem->setIcon(QIcon::fromTheme(QStringLiteral("preferences-plugin"),
                                               QIcon(QStringLiteral(":/res/img/preferences-plugin.png"))));
 
@@ -120,7 +120,8 @@ Settings SettingsDlg::settings() const
     return s;
 }
 
-void SettingsDlg::onPageChanged(KPageWidgetItem *current, KPageWidgetItem *)
+void SettingsDlg::onPageChanged(KPageWidgetItem *current,
+                                KPageWidgetItem *)
 {
     if (static_cast<QAbstractButton *>(buttonBox()->button(QDialogButtonBox::RestoreDefaults)) != nullptr) {
         buttonBox()->removeButton(buttonBox()->button(QDialogButtonBox::StandardButton::RestoreDefaults));

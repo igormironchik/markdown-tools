@@ -60,7 +60,8 @@ configure_file(version.h.in ${CMAKE_CURRENT_BINARY_DIR}/version.h)
 target_link_libraries(markdown-widgets KF${KF_MAJOR_VERSION}::SyntaxHighlighting KF${KF_MAJOR_VERSION}::WidgetsAddons
     Qt6::Widgets Qt6::Core)
 
-target_include_directories(markdown-widgets INTERFACE ${CMAKE_CURRENT_BINARY_DIR})
+target_include_directories(markdown-widgets INTERFACE ${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}/markdown-widgets_autogen/include)
 
 set_property(TARGET markdown-widgets PROPERTY CXX_STANDARD 17)
 

@@ -23,7 +23,17 @@ SettingsDlg::SettingsDlg(const MdShared::PluginsCfg &pluginsCfg,
     m_ui.m_pluginsPage->setCfg(pluginsCfg);
     m_ui.m_markColor->setColor(markColor);
 
-    connect(m_ui.m_markColor, &KColorButton::changed, this, &SettingsDlg::markColorChanged);
+    auto s = m_ui.m_pluginsPage->ui().m_scrollAreaWidgetContents->sizeHint();
+    m_ui.m_pluginsPage->ui().m_scrollAreaWidgetContents->setMinimumWidth(s.width());
+    m_ui.m_pluginsPage->ui().m_scrollAreaWidgetContents->setMinimumHeight(s.height());
+    s.setHeight(s.height()
+                + m_ui.m_pluginsPage->layout()->contentsMargins().top()
+                + m_ui.m_pluginsPage->layout()->contentsMargins().bottom());
+    s.setWidth(s.width()
+               + m_ui.m_pluginsPage->layout()->contentsMargins().left()
+               + m_ui.m_pluginsPage->layout()->contentsMargins().right());
+    m_ui.m_pluginsPage->setMinimumWidth(s.width());
+    m_ui.m_pluginsPage->setMinimumHeight(s.height());
 }
 
 SettingsDlg::~SettingsDlg()
@@ -35,14 +45,9 @@ MdShared::PluginsCfg SettingsDlg::pluginsCfg() const
     return m_ui.m_pluginsPage->cfg();
 }
 
-const QColor &SettingsDlg::markColor() const
+QColor SettingsDlg::markColor() const
 {
     return m_ui.m_markColor->color();
-}
-
-void SettingsDlg::markColorChanged(const QColor &c)
-{
-    m_ui.m_markColor->setColor(c);
 }
 
 } /* namespace MdPdf */

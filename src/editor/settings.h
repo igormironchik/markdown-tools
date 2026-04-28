@@ -93,7 +93,8 @@ public:
     Sonnet::ConfigWidget *sonnetConfigWidget() const;
 
 private slots:
-    void onPageChanged(KPageWidgetItem *current, KPageWidgetItem *before);
+    void onPageChanged(KPageWidgetItem *current,
+                       KPageWidgetItem *before);
     void onButtonclicked(QAbstractButton *btn);
 
 private:
