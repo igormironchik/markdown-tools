@@ -10,7 +10,7 @@ set(CMAKE_AUTOUIC ON)
 find_package(Qt6Core REQUIRED)
 find_package(Qt6Widgets REQUIRED)
 find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
-    SyntaxHighlighting
+    SyntaxHighlighting WidgetsAddons
 )
 
 set(SRC license_dialog.h
@@ -59,7 +59,8 @@ add_library(markdown-widgets STATIC ${SRC})
 
 configure_file(version.h.in ${CMAKE_CURRENT_BINARY_DIR}/version.h)
 
-target_link_libraries(markdown-widgets KF${KF_MAJOR_VERSION}::SyntaxHighlighting Qt6::Widgets Qt6::Core)
+target_link_libraries(markdown-widgets KF${KF_MAJOR_VERSION}::SyntaxHighlighting KF${KF_MAJOR_VERSION}::WidgetsAddons
+    Qt6::Widgets Qt6::Core)
 
 target_include_directories(markdown-widgets INTERFACE ${CMAKE_CURRENT_BINARY_DIR})
 

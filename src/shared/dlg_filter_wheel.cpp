@@ -16,7 +16,7 @@ namespace MdShared
 {
 
 DlgWheelFilter::DlgWheelFilter(QWidget *parent)
-    : QDialog(parent)
+    : KPageDialog(parent)
 {
 }
 

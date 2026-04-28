@@ -21,6 +21,7 @@
 #include "wordwrapdelegate.h"
 
 // Sonnet include.
+#include <Sonnet/ConfigWidget>
 #include <Sonnet/Settings>
 
 // Qt include.
