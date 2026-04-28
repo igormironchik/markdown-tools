@@ -5,7 +5,6 @@
 
 // md-editor include.
 #include "colorsdlg.h"
-#include "ui_colorsdlg.h"
 
 // Qt include.
 #include <QDialogButtonBox>
@@ -19,7 +18,14 @@ namespace MdEditor
 //
 
 struct ColorsDialogPrivate {
-    Ui::ColorsDialog m_ui;
+    ColorsDialogPrivate(ColorsDialog *parent)
+        : m_q(parent)
+        , m_page(new ColorsPage(m_q))
+    {
+    }
+
+    ColorsDialog *m_q = nullptr;
+    ColorsPage *m_page = nullptr;
 }; // struct ColorsDialogPrivate
 
 //
@@ -30,19 +36,31 @@ ColorsDialog::ColorsDialog(const Colors &cols,
                            QSharedPointer<MdShared::Syntax> syntax,
                            QWidget *parent)
     : MdShared::DlgWheelFilter(parent)
-    , m_d(new ColorsDialogPrivate)
+    , m_d(new ColorsDialogPrivate(this))
 {
-    m_d->m_ui.setupUi(this);
+    setWindowTitle(tr("Colors"));
 
-    m_d->m_ui.m_page->colors() = cols;
+    m_d->m_page->colors() = cols;
 
-    m_d->m_ui.m_page->initCodeThemes(syntax);
+    m_d->m_page->initCodeThemes(syntax);
 
-    m_d->m_ui.m_page->applyColors();
+    m_d->m_page->applyColors();
 
-    connect(m_d->m_ui.buttonBox, &QDialogButtonBox::clicked, this, &ColorsDialog::clicked);
+    addPage(m_d->m_page, {});
+
+    buttonBox()->addButton(QDialogButtonBox::RestoreDefaults);
+
+    connect(buttonBox(), &QDialogButtonBox::clicked, this, &ColorsDialog::clicked);
 
     installFilterForChildren(this);
+
+    auto s = m_d->m_page->ui().m_scrollAreaWidgetContents->sizeHint();
+    m_d->m_page->ui().m_scrollAreaWidgetContents->setMinimumWidth(s.width());
+    m_d->m_page->ui().m_scrollAreaWidgetContents->setMinimumHeight(s.height());
+    s.setHeight(s.height() + m_d->m_page->layout()->contentsMargins().top() + m_d->m_page->layout()->contentsMargins().bottom());
+    s.setWidth(s.width() + m_d->m_page->layout()->contentsMargins().left() + m_d->m_page->layout()->contentsMargins().right());
+    m_d->m_page->setMinimumWidth(s.width());
+    m_d->m_page->setMinimumHeight(s.height());
 }
 
 ColorsDialog::~ColorsDialog()
@@ -51,13 +69,13 @@ ColorsDialog::~ColorsDialog()
 
 const Colors &ColorsDialog::colors() const
 {
-    return m_d->m_ui.m_page->colors();
+    return m_d->m_page->colors();
 }
 
 void ColorsDialog::clicked(QAbstractButton *btn)
 {
-    if (static_cast<QAbstractButton *>(m_d->m_ui.buttonBox->button(QDialogButtonBox::RestoreDefaults)) == btn) {
-        m_d->m_ui.m_page->resetDefaults();
+    if (static_cast<QAbstractButton *>(buttonBox()->button(QDialogButtonBox::RestoreDefaults)) == btn) {
+        m_d->m_page->resetDefaults();
     }
 }
 

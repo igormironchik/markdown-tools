@@ -9,13 +9,13 @@
 #include <QFont>
 #include <QScopedPointer>
 
-#include "ui_fontdlg.h"
-
 // shared include.
 #include "dlg_filter_wheel.h"
 
 namespace MdEditor
 {
+
+class FontPage;
 
 //
 // FontDlg
@@ -37,8 +37,7 @@ public:
 private:
     Q_DISABLE_COPY(FontDlg)
 
-    //! UI component.
-    Ui::FontDlg m_ui;
+    FontPage *m_page;
 }; // class FontDlg
 
 } /* namespace MdEditor */

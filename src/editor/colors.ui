@@ -15,14 +15,14 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_4">
    <item>
-    <widget class="QScrollArea" name="scrollArea">
+    <widget class="QScrollArea" name="m_scrollArea">
      <property name="widgetResizable">
       <bool>true</bool>
      </property>
      <property name="alignment">
       <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
      </property>
-     <widget class="QWidget" name="scrollAreaWidgetContents">
+     <widget class="QWidget" name="m_scrollAreaWidgetContents">
       <property name="geometry">
        <rect>
         <x>0</x>

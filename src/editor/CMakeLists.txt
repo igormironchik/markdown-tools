@@ -34,10 +34,8 @@ set(LIB_SRC
 	gotoline.ui
 	fontdlg.h
 	fontdlg.cpp
-	fontdlg.ui
 	colorsdlg.h
 	colorsdlg.cpp
-	colorsdlg.ui
 	syntaxvisitor.cpp
 	syntaxvisitor.h
 	closebutton.h
