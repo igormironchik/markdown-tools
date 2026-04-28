@@ -12,6 +12,6 @@ cmake -S 3rdparty/KDE/sonnet -B ../build-sonnet -DCMAKE_BUILD_TYPE=Release -DCMA
 cmake --build ../build-sonnet --config Release
 cmake --install ../build-sonnet --prefix ../KDE
 
-cmake -S 3rdparty/KDE/kwidgetsaddons -B ../build-kwidgetsaddons -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH=$PWD/Qt/$qt_version/gcc_64
+cmake -S 3rdparty/KDE/kwidgetsaddons -B ../build-kwidgetsaddons -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH=$PWD/Qt/$qt_version/gcc_64 -DBUILD_PYTHON_BINDINGS=False
 cmake --build ../build-kwidgetsaddons --config Release
 cmake --install ../build-kwidgetsaddons --prefix ../KDE
