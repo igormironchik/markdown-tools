@@ -171,6 +171,12 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
+xcopy %CD%\..\KDE\bin\data\locale installer\packages\mironchik.igor.markdown\data\bin\data\locale /S /Y
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
 del /Q installer\packages\mironchik.igor.markdown\data\bin\test.render.bat
 
 IF %ERRORLEVEL% NEQ 0 (
