@@ -19,6 +19,8 @@ rm -rf ./installer/packages/mironchik.igor.markdown/data/resources
 
 rm -rf ./installer/packages/mironchik.igor.markdown/data/translations
 
+rm -rf ./installer/packages/mironchik.igor.markdown/data/share
+
 mkdir ./installer/packages/mironchik.igor.markdown/data/bin || exit 1
 
 mkdir ./installer/packages/mironchik.igor.markdown/data/lib || exit 1
@@ -30,6 +32,10 @@ mkdir ./installer/packages/mironchik.igor.markdown/data/libexec || exit 1
 mkdir ./installer/packages/mironchik.igor.markdown/data/resources || exit 1
 
 mkdir ./installer/packages/mironchik.igor.markdown/data/translations || exit 1
+
+mkdir ./installer/packages/mironchik.igor.markdown/data/share || exit 1
+
+mkdir ./installer/packages/mironchik.igor.markdown/data/share/locale || exit 1
 
 cp ./build-markdown-tools/bin/md-editor ./installer/packages/mironchik.igor.markdown/data/bin/md-editor || exit 1
 
