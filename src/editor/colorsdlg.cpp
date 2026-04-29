@@ -54,6 +54,8 @@ ColorsDialog::ColorsDialog(const Colors &cols,
 
     installFilterForChildren(this);
 
+    m_d->m_page->ui().m_scrollArea->setFrameStyle(QFrame::NoFrame);
+
     auto s = m_d->m_page->ui().m_scrollAreaWidgetContents->sizeHint();
     m_d->m_page->ui().m_scrollAreaWidgetContents->setMinimumWidth(s.width());
     m_d->m_page->ui().m_scrollAreaWidgetContents->setMinimumHeight(s.height());

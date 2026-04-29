@@ -31,6 +31,8 @@ FontDlg::FontDlg(const QFont &f,
 
     installFilterForChildren(this);
 
+    m_page->ui().m_scrollArea->setFrameStyle(QFrame::NoFrame);
+
     auto s = m_page->ui().m_scrollAreaWidgetContents->sizeHint();
     m_page->ui().m_scrollAreaWidgetContents->setMinimumWidth(s.width());
     m_page->ui().m_scrollAreaWidgetContents->setMinimumHeight(s.height());

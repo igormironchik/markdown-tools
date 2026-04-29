@@ -24,6 +24,7 @@ SettingsDlg::SettingsDlg(const MdShared::PluginsCfg &pluginsCfg,
     m_ui.m_markColor->setColor(markColor);
 
     m_ui.m_pluginsPage->ui().m_scrollArea->setFrameStyle(QFrame::NoFrame);
+    m_ui.m_markColor->setAlphaChannelEnabled(true);
 
     auto s = m_ui.m_pluginsPage->ui().m_scrollAreaWidgetContents->sizeHint();
     m_ui.m_pluginsPage->ui().m_scrollAreaWidgetContents->setMinimumWidth(s.width());
