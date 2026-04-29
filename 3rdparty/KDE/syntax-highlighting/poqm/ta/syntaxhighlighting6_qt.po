@@ -599,6 +599,12 @@ msgid "GDL"
 msgstr "GDL"
 
 #, fuzzy
+#| msgid "text"
+msgctxt "Language|"
+msgid "Gemtext"
+msgstr "உரை"
+
+#, fuzzy
 msgctxt "Language|"
 msgid "GNU Gettext"
 msgstr ""
@@ -1306,6 +1312,13 @@ msgid "Pike"
 msgstr ""
 "_: Language\n"
 "பைக்"
+
+#, fuzzy
+msgctxt "Language|"
+msgid "PIO Assembler"
+msgstr ""
+"_: Language Section\n"
+"சேர்ப்பவர்"
 
 msgctxt "Language|"
 msgid "PL/I"
@@ -3696,9 +3709,6 @@ msgstr ""
 
 #~ msgid "Typographical Conventions for %1"
 #~ msgstr "அச்சு நியதி %1 க்கு"
-
-#~ msgid "text"
-#~ msgstr "உரை"
 
 #, fuzzy
 #~| msgid "What do you want to do?"

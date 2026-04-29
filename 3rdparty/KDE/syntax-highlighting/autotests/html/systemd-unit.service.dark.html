@@ -105,6 +105,7 @@
 <span style="color:#2980b9">OOMPolicy</span> = <span style="color:#27aeae;font-weight:bold">stop</span>
 <span style="color:#2980b9">OpenFile</span> = /some/path<span style="color:#da4453">:</span><span style="font-style:italic">fd-name</span><span style="color:#da4453">:</span><span style="color:#27aeae;font-weight:bold">graceful</span>,<span style="color:#27aeae;font-weight:bold">read-only</span>
 <span style="color:#2980b9">ReloadSignal</span> = <span style="color:#27aeae;font-weight:bold">SIGUSR1</span>
+<span style="color:#2980b9">RefreshOnReload</span> = <span style="color:#27aeae;font-weight:bold">credentials</span>
 
 <span style="color:#7a7c7d">## from systemd.exec</span>
 <span style="color:#2980b9">ExecPaths</span> = some/path some/other/path
@@ -112,6 +113,7 @@
 <span style="color:#2980b9">ExtensionDirectories</span> = /source/path
 <span style="color:#2980b9">IPCNamespacePath</span> = /some/absolute/path
 <span style="color:#2980b9">MemoryKSM</span> = <span style="color:#27aeae;font-weight:bold">false</span>
+<span style="color:#2980b9">MemoryTHP</span> = <span style="color:#27aeae;font-weight:bold">madvise</span>
 <span style="color:#2980b9">NoExecPaths</span> = some/path some/other/path
 <span style="color:#2980b9">PrivateIPC</span> = <span style="color:#27aeae;font-weight:bold">false</span>
 <span style="color:#7a7c7d">## from systemd.exec Paths</span>
@@ -125,6 +127,7 @@
 <span style="color:#2980b9">RootHash</span> = <span style="color:#f67400">0xABCDEF</span>
 <span style="color:#2980b9">RootHashSignature</span> =
 <span style="color:#2980b9">RootVerity</span> = /some/path
+<span style="color:#2980b9">RootMStack</span> = /some/path
 <span style="color:#2980b9">MountAPIVFS</span> = <span style="color:#27aeae;font-weight:bold">true</span>
 <span style="color:#2980b9">BindLogSockets</span> = <span style="color:#27aeae;font-weight:bold">true</span>
 <span style="color:#2980b9">ProcSubset</span> = <span style="color:#27aeae;font-weight:bold">pid</span>
@@ -322,7 +325,6 @@
 <span style="color:#2980b9">MemoryMin</span> = <span style="color:#f67400">10</span><span style="font-style:italic">G</span>
 <span style="color:#2980b9">MemoryLow</span> = <span style="color:#f67400">20</span><span style="font-style:italic">%</span>
 <span style="color:#2980b9">StartupMemoryLow</span> = <span style="color:#f67400">22</span><span style="font-style:italic">%</span>
-<span style="color:#2980b9">DefaultStartupMemoryLow</span> = <span style="color:#27aeae;font-weight:bold">infinity</span>
 <span style="color:#2980b9">MemoryHigh</span> = <span style="color:#f67400">40 </span><span style="font-style:italic">%</span>
 <span style="color:#2980b9">StartupMemoryHigh</span> = <span style="color:#f67400">12</span><span style="font-style:italic">%</span>
 <span style="color:#2980b9">MemoryMax</span> = <span style="color:#f67400">60</span><span style="font-style:italic">%</span>
@@ -361,6 +363,7 @@
 <span style="color:#2980b9">CoredumpReceive</span> = <span style="color:#27aeae;font-weight:bold">true</span>
 <span style="color:#2980b9">BPFProgram</span> = <span style="color:#27aeae;font-weight:bold">bind6</span>:/sys/fs/bpf/sock-addr-hook
 <span style="color:#2980b9">RestrictNetworkInterfaces</span> = <span style="color:#da4453">~</span>eth1 eth2
+<span style="color:#2980b9">BindNetworkInterface</span> = some-interface-name
 <span style="color:#2980b9">NFTSet</span> = <span style="color:#27aeae;font-weight:bold">cgroup</span>:<span style="color:#27aeae;font-weight:bold">inet</span>:filter:my_service <span style="color:#fdbc4b;font-weight:bold">\</span>
   <span style="color:#27aeae;font-weight:bold">user</span>:<span style="color:#27aeae;font-weight:bold">inet</span>:filter:serviceuser
 
@@ -538,6 +541,7 @@
 <span style="color:#2980b9">ConditionPathIsMountPoint</span> = /some/path
 <span style="color:#2980b9">ConditionPathIsReadWrite</span> = <span style="color:#da4453">!</span>/some/path
 <span style="color:#2980b9">ConditionPathIsEncrypted</span> = <span style="color:#da4453">!</span>/some/absolute/path
+<span style="color:#2980b9">ConditionPathIsSocket</span> = <span style="color:#da4453">!</span>/some/path
 <span style="color:#2980b9">ConditionDirectoryNotEmpty</span> = <span style="color:#da4453">!</span>/some/path
 <span style="color:#2980b9">ConditionFileNotEmpty</span> = <span style="color:#da4453">!</span>/some/path
 <span style="color:#2980b9">ConditionFileIsExecutable</span> = <span style="color:#da4453">!</span>/some/path
@@ -571,6 +575,7 @@
 <span style="color:#2980b9">AssertPathIsMountPoint</span> = <span style="color:#da4453">!</span>/some/path
 <span style="color:#2980b9">AssertPathIsReadWrite</span> = <span style="color:#da4453">!</span>/some/path
 <span style="color:#2980b9">AssertPathIsEncrypted</span> = <span style="color:#da4453">!</span>/some/path
+<span style="color:#2980b9">AssertPathIsSocket</span> = <span style="color:#da4453">!</span>/some/path
 <span style="color:#2980b9">AssertDirectoryNotEmpty</span> = <span style="color:#da4453">!</span>/some/path
 <span style="color:#2980b9">AssertFileNotEmpty</span> = <span style="color:#da4453">!</span>/some/path
 <span style="color:#2980b9">AssertFileIsExecutable</span> = <span style="color:#da4453">!</span>/some/path
@@ -991,7 +996,7 @@ WantedBy = some.service some.socket
 <span style="color:#2980b9">RestrictNamespaces</span> = <span style="color:#27aeae;font-weight:bold">true</span>
 <span style="color:#2980b9">RestrictNamespaces</span> = <span style="color:#27aeae;font-weight:bold">false</span>
 <span style="color:#7a7c7d">## invalid values</span>
-<span style="color:#2980b9">RestrictNamespaces</span> = i<span style="color:#27aeae;font-weight:bold">n</span>valid
+<span style="color:#2980b9">RestrictNamespaces</span> = invalid
 <span style="color:#2980b9">RestrictNamespaces</span> = <span style="color:#da4453">~</span> <span style="color:#27aeae;font-weight:bold">true</span>
 <span style="color:#7a7c7d"># if boolean, no multiple values</span>
 <span style="color:#2980b9">RestrictNamespaces</span> = <span style="color:#27aeae;font-weight:bold">true</span> cgroup
@@ -1114,7 +1119,7 @@ WantedBy = some.service some.socket
 <span style="color:#2980b9">StopWhenUnneeded</span> = <span style="color:#27aeae;font-weight:bold">on</span>
 <span style="color:#2980b9">StopWhenUnneeded</span> = <span style="color:#27aeae;font-weight:bold">off</span>
 <span style="color:#7a7c7d">## invalid values</span>
-<span style="color:#2980b9">StopWhenUnneeded</span> = i<span style="color:#27aeae;font-weight:bold">n</span>valid
+<span style="color:#2980b9">StopWhenUnneeded</span> = invalid
 <span style="color:#7a7c7d"># multiple values</span>
 <span style="color:#2980b9">StopWhenUnneeded</span> = <span style="color:#27aeae;font-weight:bold">false</span> true
 
@@ -1635,6 +1640,7 @@ WantedBy = some.service some.socket
 <span style="color:#7a7c7d">###### cpu scheduling policy</span>
 <span style="font-weight:bold">[Service]</span>
 <span style="color:#2980b9">CPUSchedulingPolicy</span> = <span style="color:#27aeae;font-weight:bold">batch</span>
+<span style="color:#2980b9">CPUSchedulingPolicy</span> = <span style="color:#27aeae;font-weight:bold">ext</span>
 <span style="color:#2980b9">CPUSchedulingPolicy</span> = <span style="color:#27aeae;font-weight:bold">fifo</span>
 <span style="color:#2980b9">CPUSchedulingPolicy</span> = <span style="color:#27aeae;font-weight:bold">idle</span>
 <span style="color:#2980b9">CPUSchedulingPolicy</span> = <span style="color:#27aeae;font-weight:bold">other</span>
@@ -1688,7 +1694,7 @@ WantedBy = some.service some.socket
 <span style="color:#2980b9">DeferTrigger</span> = <span style="color:#27aeae;font-weight:bold">false</span>
 <span style="color:#2980b9">DeferTrigger</span> = <span style="color:#27aeae;font-weight:bold">true</span>
 <span style="color:#7a7c7d">## invalid values</span>
-<span style="color:#2980b9">DeferTrigger</span> = i<span style="color:#27aeae;font-weight:bold">n</span>valid
+<span style="color:#2980b9">DeferTrigger</span> = invalid
 <span style="color:#7a7c7d"># multiple values</span>
 <span style="color:#2980b9">DeferTrigger</span> = <span style="color:#27aeae;font-weight:bold">patient</span> true
 
@@ -1711,7 +1717,7 @@ WantedBy = some.service some.socket
 <span style="color:#2980b9">Delegate</span> = <span style="color:#27aeae;font-weight:bold">cpu</span> <span style="color:#27aeae;font-weight:bold">io</span> <span style="color:#fdbc4b;font-weight:bold">\</span>
   <span style="color:#27aeae;font-weight:bold">memory</span>
 <span style="color:#7a7c7d">## invalid values</span>
-<span style="color:#2980b9">Delegate</span> = i<span style="color:#27aeae;font-weight:bold">n</span>valid
+<span style="color:#2980b9">Delegate</span> = invalid
 <span style="color:#7a7c7d"># multiple boolean values</span>
 <span style="color:#2980b9">Delegate</span> = <span style="color:#27aeae;font-weight:bold">on</span> off
 
@@ -2260,6 +2266,18 @@ WantedBy = some.service some.socket
 <span style="color:#2980b9">CoredumpFilter</span> = <span style="color:#27aeae;font-weight:bold">private-file-backed</span>, <span style="color:#27aeae;font-weight:bold">shared-dax</span>
 
 
+<span style="color:#7a7c7d">###### memory thp (transparent hugepages)</span>
+<span style="font-weight:bold">[Service]</span>
+<span style="color:#2980b9">MemoryTHP</span> = <span style="color:#27aeae;font-weight:bold">inherit</span>
+<span style="color:#2980b9">MemoryTHP</span> = <span style="color:#27aeae;font-weight:bold">disable</span>
+<span style="color:#2980b9">MemoryTHP</span> = <span style="color:#27aeae;font-weight:bold">madvise</span>
+<span style="color:#2980b9">MemoryTHP</span> = <span style="color:#27aeae;font-weight:bold">system</span>
+<span style="color:#7a7c7d">## invalid values</span>
+<span style="color:#2980b9">MemoryTHP</span> = invalid
+<span style="color:#7a7c7d"># multiple values</span>
+<span style="color:#2980b9">MemoryTHP</span> = <span style="color:#27aeae;font-weight:bold">madvise</span> system
+
+
 <span style="color:#7a7c7d">###### memory pressure watch</span>
 <span style="font-weight:bold">[Service]</span>
 <span style="color:#2980b9">MemoryPressureWatch</span> = <span style="color:#27aeae;font-weight:bold">auto</span>
@@ -2274,7 +2292,7 @@ WantedBy = some.service some.socket
 <span style="color:#2980b9">MemoryPressureWatch</span> = <span style="color:#27aeae;font-weight:bold">false</span>
 <span style="color:#2980b9">MemoryPressureWatch</span> = <span style="color:#27aeae;font-weight:bold">0</span>
 <span style="color:#7a7c7d">## invalid values</span>
-<span style="color:#2980b9">MemoryPressureWatch</span> = i<span style="color:#27aeae;font-weight:bold">n</span>valid
+<span style="color:#2980b9">MemoryPressureWatch</span> = invalid
 <span style="color:#7a7c7d"># multiple values</span>
 <span style="color:#2980b9">MemoryPressureWatch</span> = <span style="color:#27aeae;font-weight:bold">auto</span> skip
 
@@ -2490,7 +2508,7 @@ WantedBy = some.service some.socket
 <span style="color:#2980b9">PrivateTmp</span> = <span style="color:#27aeae;font-weight:bold">false</span>
 <span style="color:#2980b9">PrivateTmp</span> = <span style="color:#27aeae;font-weight:bold">0</span>
 <span style="color:#7a7c7d">## invalid values</span>
-<span style="color:#2980b9">PrivateTmp</span> = i<span style="color:#27aeae;font-weight:bold">n</span>valid
+<span style="color:#2980b9">PrivateTmp</span> = invalid
 <span style="color:#7a7c7d"># multiple values</span>
 <span style="color:#2980b9">PrivateTmp</span> = <span style="color:#27aeae;font-weight:bold">disconnected</span> true
 
@@ -2510,7 +2528,7 @@ WantedBy = some.service some.socket
 <span style="color:#2980b9">PrivateUsers</span> = <span style="color:#27aeae;font-weight:bold">false</span>
 <span style="color:#2980b9">PrivateUsers</span> = <span style="color:#27aeae;font-weight:bold">0</span>
 <span style="color:#7a7c7d">## invalid values</span>
-<span style="color:#2980b9">PrivateUsers</span> = i<span style="color:#27aeae;font-weight:bold">n</span>valid
+<span style="color:#2980b9">PrivateUsers</span> = invalid
 <span style="color:#7a7c7d"># multiple values</span>
 <span style="color:#2980b9">PrivateUsers</span> = <span style="color:#27aeae;font-weight:bold">identity</span> self
 
@@ -2552,7 +2570,7 @@ WantedBy = some.service some.socket
 <span style="color:#2980b9">ProtectHome</span> = <span style="color:#27aeae;font-weight:bold">false</span>
 <span style="color:#2980b9">ProtectHome</span> = <span style="color:#27aeae;font-weight:bold">yes</span>
 <span style="color:#7a7c7d">## invalid values</span>
-<span style="color:#2980b9">ProtectHome</span> = i<span style="color:#27aeae;font-weight:bold">n</span>valid
+<span style="color:#2980b9">ProtectHome</span> = invalid
 <span style="color:#7a7c7d"># multiple values</span>
 <span style="color:#2980b9">ProtectHome</span> = <span style="color:#27aeae;font-weight:bold">tmpfs</span> true
 
@@ -2564,7 +2582,7 @@ WantedBy = some.service some.socket
 <span style="color:#2980b9">ProtectHostname</span> = <span style="color:#27aeae;font-weight:bold">true</span>
 <span style="color:#2980b9">ProtectHostname</span> = <span style="color:#27aeae;font-weight:bold">yes</span>:somehostname
 <span style="color:#7a7c7d">## invalid values</span>
-<span style="color:#2980b9">ProtectHostname</span> = i<span style="color:#27aeae;font-weight:bold">n</span>valid
+<span style="color:#2980b9">ProtectHostname</span> = invalid
 <span style="color:#7a7c7d"># multiple values</span>
 <span style="color:#2980b9">ProtectHostname</span> = <span style="color:#27aeae;font-weight:bold">private</span> true
 
@@ -2578,9 +2596,24 @@ WantedBy = some.service some.socket
 <span style="color:#2980b9">ProtectSystem</span> = <span style="color:#27aeae;font-weight:bold">yes</span>
 <span style="color:#2980b9">ProtectSystem</span> = <span style="color:#27aeae;font-weight:bold">no</span>
 <span style="color:#7a7c7d">## invalid values</span>
-<span style="color:#2980b9">ProtectSystem</span> = i<span style="color:#27aeae;font-weight:bold">n</span>valid
+<span style="color:#2980b9">ProtectSystem</span> = invalid
 <span style="color:#7a7c7d"># multiple values</span>
 <span style="color:#2980b9">ProtectSystem</span> = <span style="color:#27aeae;font-weight:bold">full</span> true
+
+
+<span style="color:#7a7c7d">###### refresh on reload</span>
+<span style="font-weight:bold">[Service]</span>
+<span style="color:#2980b9">RefreshOnReload</span> = <span style="color:#27aeae;font-weight:bold">true</span>
+<span style="color:#2980b9">RefreshOnReload</span> = <span style="color:#27aeae;font-weight:bold">false</span>
+<span style="color:#2980b9">RefreshOnReload</span> = <span style="color:#27aeae;font-weight:bold">credentials</span>
+<span style="color:#2980b9">RefreshOnReload</span> = <span style="color:#27aeae;font-weight:bold">extensions</span>
+<span style="color:#2980b9">RefreshOnReload</span> = <span style="color:#27aeae;font-weight:bold">credentials</span> <span style="color:#27aeae;font-weight:bold">extensions</span>
+<span style="color:#2980b9">RefreshOnReload</span> = <span style="color:#da4453">~</span> <span style="color:#27aeae;font-weight:bold">credentials</span> <span style="color:#27aeae;font-weight:bold">extensions</span>
+<span style="color:#7a7c7d">## invalid values</span>
+<span style="color:#2980b9">RefreshOnReload</span> = invalid
+<span style="color:#2980b9">RefreshOnReload</span> = <span style="color:#27aeae;font-weight:bold">credentials</span> invalid extension
+<span style="color:#7a7c7d"># boolean and resource list</span>
+<span style="color:#2980b9">RefreshOnReload</span> = <span style="color:#27aeae;font-weight:bold">true</span> credentials extensions
 
 
 <span style="color:#7a7c7d">###### restart</span>
@@ -2617,7 +2650,7 @@ WantedBy = some.service some.socket
 <span style="color:#2980b9">RuntimeDirectoryPreserve</span> = <span style="color:#27aeae;font-weight:bold">yes</span>
 <span style="color:#2980b9">RuntimeDirectoryPreserve</span> = <span style="color:#27aeae;font-weight:bold">no</span>
 <span style="color:#7a7c7d">## invalid values</span>
-<span style="color:#2980b9">RuntimeDirectoryPreserve</span> = i<span style="color:#27aeae;font-weight:bold">n</span>valid
+<span style="color:#2980b9">RuntimeDirectoryPreserve</span> = invalid
 <span style="color:#7a7c7d"># multiple values</span>
 <span style="color:#2980b9">RuntimeDirectoryPreserve</span> = <span style="color:#27aeae;font-weight:bold">restart</span> no
 
@@ -3211,8 +3244,8 @@ WantedBy = some.service some.socket
 <span style="color:#7a7c7d"># negated</span>
 <span style="color:#2980b9">ConditionVirtualization</span> = <span style="color:#da4453">!</span><span style="color:#27aeae;font-weight:bold">vmware</span>
 <span style="color:#7a7c7d">## invalid values</span>
-<span style="color:#2980b9">ConditionVirtualization</span> = i<span style="color:#27aeae;font-weight:bold">n</span>valid
-<span style="color:#2980b9">ConditionVirtualization</span> = i<span style="color:#27aeae;font-weight:bold">n</span>valid vmware
+<span style="color:#2980b9">ConditionVirtualization</span> = invalid
+<span style="color:#2980b9">ConditionVirtualization</span> = invalid <span style="color:#27aeae;font-weight:bold">vmware</span>
 <span style="color:#7a7c7d"># multiple values</span>
 <span style="color:#2980b9">ConditionVirtualization</span> = <span style="color:#27aeae;font-weight:bold">xen</span> vmware
 

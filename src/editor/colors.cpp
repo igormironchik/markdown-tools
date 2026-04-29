@@ -7,7 +7,6 @@
 #include "colors.h"
 
 // Qt include.
-#include <QColorDialog>
 #include <QComboBox>
 
 namespace MdEditor
@@ -41,16 +40,16 @@ ColorsPage::ColorsPage(QWidget *parent)
 {
     m_ui.setupUi(this);
 
-    connect(m_ui.linkColor, &MdShared::ColorWidget::clicked, this, &ColorsPage::chooseLinkColor);
-    connect(m_ui.textColor, &MdShared::ColorWidget::clicked, this, &ColorsPage::chooseTextColor);
-    connect(m_ui.inlineColor, &MdShared::ColorWidget::clicked, this, &ColorsPage::chooseInlineColor);
-    connect(m_ui.htmlColor, &MdShared::ColorWidget::clicked, this, &ColorsPage::chooseHtmlColor);
-    connect(m_ui.tableColor, &MdShared::ColorWidget::clicked, this, &ColorsPage::chooseTableColor);
-    connect(m_ui.codeColor, &MdShared::ColorWidget::clicked, this, &ColorsPage::chooseCodeColor);
+    connect(m_ui.linkColor, &KColorButton::changed, this, &ColorsPage::linkColorChanged);
+    connect(m_ui.textColor, &KColorButton::changed, this, &ColorsPage::textColorChanged);
+    connect(m_ui.inlineColor, &KColorButton::changed, this, &ColorsPage::inlineColorChanged);
+    connect(m_ui.htmlColor, &KColorButton::changed, this, &ColorsPage::htmlColorChanged);
+    connect(m_ui.tableColor, &KColorButton::changed, this, &ColorsPage::tableColorChanged);
+    connect(m_ui.codeColor, &KColorButton::changed, this, &ColorsPage::codeColorChanged);
     connect(m_ui.colors, &QGroupBox::toggled, this, &ColorsPage::colorsToggled);
-    connect(m_ui.specialColor, &MdShared::ColorWidget::clicked, this, &ColorsPage::chooseSpecialColor);
-    connect(m_ui.referenceColor, &MdShared::ColorWidget::clicked, this, &ColorsPage::chooseReferenceColor);
-    connect(m_ui.mathColor, &MdShared::ColorWidget::clicked, this, &ColorsPage::chooseMathColor);
+    connect(m_ui.specialColor, &KColorButton::changed, this, &ColorsPage::specialColorChanged);
+    connect(m_ui.referenceColor, &KColorButton::changed, this, &ColorsPage::referenceColorChanged);
+    connect(m_ui.mathColor, &KColorButton::changed, this, &ColorsPage::mathColorChanged);
 }
 
 Ui::ColorsPage &ColorsPage::ui()
@@ -93,60 +92,49 @@ void ColorsPage::applyColors()
     m_ui.m_drawCodeBackground->setChecked(m_colors.m_drawCodeBackground);
 }
 
-void ColorsPage::chooseColor(MdShared::ColorWidget *w,
-                             QColor &c)
+void ColorsPage::linkColorChanged(const QColor &c)
 {
-    QColorDialog dlg(c, this);
-
-    if (dlg.exec() == QDialog::Accepted) {
-        w->setColor(dlg.currentColor());
-        c = dlg.currentColor();
-    }
+    m_colors.m_linkColor = c;
 }
 
-void ColorsPage::chooseLinkColor()
+void ColorsPage::textColorChanged(const QColor &c)
 {
-    chooseColor(m_ui.linkColor, m_colors.m_linkColor);
+    m_colors.m_textColor = c;
 }
 
-void ColorsPage::chooseTextColor()
+void ColorsPage::inlineColorChanged(const QColor &c)
 {
-    chooseColor(m_ui.textColor, m_colors.m_textColor);
+    m_colors.m_inlineColor = c;
 }
 
-void ColorsPage::chooseInlineColor()
+void ColorsPage::htmlColorChanged(const QColor &c)
 {
-    chooseColor(m_ui.inlineColor, m_colors.m_inlineColor);
+    m_colors.m_htmlColor = c;
 }
 
-void ColorsPage::chooseHtmlColor()
+void ColorsPage::tableColorChanged(const QColor &c)
 {
-    chooseColor(m_ui.htmlColor, m_colors.m_htmlColor);
+    m_colors.m_tableColor = c;
 }
 
-void ColorsPage::chooseTableColor()
+void ColorsPage::codeColorChanged(const QColor &c)
 {
-    chooseColor(m_ui.tableColor, m_colors.m_tableColor);
+    m_colors.m_codeColor = c;
 }
 
-void ColorsPage::chooseCodeColor()
+void ColorsPage::mathColorChanged(const QColor &c)
 {
-    chooseColor(m_ui.codeColor, m_colors.m_codeColor);
+    m_colors.m_mathColor = c;
 }
 
-void ColorsPage::chooseMathColor()
+void ColorsPage::referenceColorChanged(const QColor &c)
 {
-    chooseColor(m_ui.mathColor, m_colors.m_mathColor);
+    m_colors.m_referenceColor = c;
 }
 
-void ColorsPage::chooseReferenceColor()
+void ColorsPage::specialColorChanged(const QColor &c)
 {
-    chooseColor(m_ui.referenceColor, m_colors.m_referenceColor);
-}
-
-void ColorsPage::chooseSpecialColor()
-{
-    chooseColor(m_ui.specialColor, m_colors.m_specialColor);
+    m_colors.m_specialColor = c;
 }
 
 void ColorsPage::colorsToggled(bool on)

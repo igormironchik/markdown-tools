@@ -99,6 +99,7 @@
 <Option Name>OOMPolicy</Option Name><Normal> = </Normal><Constant>stop</Constant><br/>
 <Option Name>OpenFile</Option Name><Normal> = /some/path</Normal><Separator>:</Separator><File Descriptor Name>fd-name</File Descriptor Name><Separator>:</Separator><Constant>graceful</Constant><Normal>,</Normal><Constant>read-only</Constant><br/>
 <Option Name>ReloadSignal</Option Name><Normal> = </Normal><Constant>SIGUSR1</Constant><br/>
+<Option Name>RefreshOnReload</Option Name><Normal> = </Normal><Constant>credentials</Constant><br/>
 <Normal></Normal><br/>
 <Comment>## from systemd.exec</Comment><br/>
 <Option Name>ExecPaths</Option Name><Normal> = some/path some/other/path</Normal><br/>
@@ -106,6 +107,7 @@
 <Option Name>ExtensionDirectories</Option Name><Normal> = /source/path</Normal><br/>
 <Option Name>IPCNamespacePath</Option Name><Normal> = /some/absolute/path</Normal><br/>
 <Option Name>MemoryKSM</Option Name><Normal> = </Normal><Constant>false</Constant><br/>
+<Option Name>MemoryTHP</Option Name><Normal> = </Normal><Constant>madvise</Constant><br/>
 <Option Name>NoExecPaths</Option Name><Normal> = some/path some/other/path</Normal><br/>
 <Option Name>PrivateIPC</Option Name><Normal> = </Normal><Constant>false</Constant><br/>
 <Comment>## from systemd.exec Paths</Comment><br/>
@@ -119,6 +121,7 @@
 <Option Name>RootHash</Option Name><Normal> = </Normal><Number Hexadecimal>0xABCDEF</Number Hexadecimal><br/>
 <Option Name>RootHashSignature</Option Name><Normal> =</Normal><br/>
 <Option Name>RootVerity</Option Name><Normal> = /some/path</Normal><br/>
+<Option Name>RootMStack</Option Name><Normal> = /some/path</Normal><br/>
 <Option Name>MountAPIVFS</Option Name><Normal> = </Normal><Constant>true</Constant><br/>
 <Option Name>BindLogSockets</Option Name><Normal> = </Normal><Constant>true</Constant><br/>
 <Option Name>ProcSubset</Option Name><Normal> = </Normal><Constant>pid</Constant><br/>
@@ -316,7 +319,6 @@
 <Option Name>MemoryMin</Option Name><Normal> = </Normal><Number>10</Number><Measurement Unit>G</Measurement Unit><br/>
 <Option Name>MemoryLow</Option Name><Normal> = </Normal><Number>20</Number><Measurement Unit>%</Measurement Unit><br/>
 <Option Name>StartupMemoryLow</Option Name><Normal> = </Normal><Number>22</Number><Measurement Unit>%</Measurement Unit><br/>
-<Option Name>DefaultStartupMemoryLow</Option Name><Normal> = </Normal><Constant>infinity</Constant><br/>
 <Option Name>MemoryHigh</Option Name><Normal> = </Normal><Number>40 </Number><Measurement Unit>%</Measurement Unit><br/>
 <Option Name>StartupMemoryHigh</Option Name><Normal> = </Normal><Number>12</Number><Measurement Unit>%</Measurement Unit><br/>
 <Option Name>MemoryMax</Option Name><Normal> = </Normal><Number>60</Number><Measurement Unit>%</Measurement Unit><br/>
@@ -355,6 +357,7 @@
 <Option Name>CoredumpReceive</Option Name><Normal> = </Normal><Constant>true</Constant><br/>
 <Option Name>BPFProgram</Option Name><Normal> = </Normal><Constant>bind6</Constant><Normal>:/sys/fs/bpf/sock-addr-hook</Normal><br/>
 <Option Name>RestrictNetworkInterfaces</Option Name><Normal> = </Normal><Prefix>~</Prefix><Normal>eth1 eth2</Normal><br/>
+<Option Name>BindNetworkInterface</Option Name><Normal> = some-interface-name</Normal><br/>
 <Option Name>NFTSet</Option Name><Normal> = </Normal><Constant>cgroup</Constant><Normal>:</Normal><Constant>inet</Constant><Normal>:filter:my_service </Normal><Continuation>\</Continuation><br/>
 <Normal>  </Normal><Constant>user</Constant><Normal>:</Normal><Constant>inet</Constant><Normal>:filter:serviceuser</Normal><br/>
 <Normal></Normal><br/>
@@ -532,6 +535,7 @@
 <Option Name>ConditionPathIsMountPoint</Option Name><Normal> = /some/path</Normal><br/>
 <Option Name>ConditionPathIsReadWrite</Option Name><Normal> = </Normal><Prefix>!</Prefix><Normal>/some/path</Normal><br/>
 <Option Name>ConditionPathIsEncrypted</Option Name><Normal> = </Normal><Prefix>!</Prefix><Normal>/some/absolute/path</Normal><br/>
+<Option Name>ConditionPathIsSocket</Option Name><Normal> = </Normal><Prefix>!</Prefix><Normal>/some/path</Normal><br/>
 <Option Name>ConditionDirectoryNotEmpty</Option Name><Normal> = </Normal><Prefix>!</Prefix><Normal>/some/path</Normal><br/>
 <Option Name>ConditionFileNotEmpty</Option Name><Normal> = </Normal><Prefix>!</Prefix><Normal>/some/path</Normal><br/>
 <Option Name>ConditionFileIsExecutable</Option Name><Normal> = </Normal><Prefix>!</Prefix><Normal>/some/path</Normal><br/>
@@ -565,6 +569,7 @@
 <Option Name>AssertPathIsMountPoint</Option Name><Normal> = </Normal><Prefix>!</Prefix><Normal>/some/path</Normal><br/>
 <Option Name>AssertPathIsReadWrite</Option Name><Normal> = </Normal><Prefix>!</Prefix><Normal>/some/path</Normal><br/>
 <Option Name>AssertPathIsEncrypted</Option Name><Normal> = </Normal><Prefix>!</Prefix><Normal>/some/path</Normal><br/>
+<Option Name>AssertPathIsSocket</Option Name><Normal> = </Normal><Prefix>!</Prefix><Normal>/some/path</Normal><br/>
 <Option Name>AssertDirectoryNotEmpty</Option Name><Normal> = </Normal><Prefix>!</Prefix><Normal>/some/path</Normal><br/>
 <Option Name>AssertFileNotEmpty</Option Name><Normal> = </Normal><Prefix>!</Prefix><Normal>/some/path</Normal><br/>
 <Option Name>AssertFileIsExecutable</Option Name><Normal> = </Normal><Prefix>!</Prefix><Normal>/some/path</Normal><br/>
@@ -985,7 +990,7 @@
 <Option Name>RestrictNamespaces</Option Name><Normal> = </Normal><Constant>true</Constant><br/>
 <Option Name>RestrictNamespaces</Option Name><Normal> = </Normal><Constant>false</Constant><br/>
 <Comment>## invalid values</Comment><br/>
-<Option Name>RestrictNamespaces</Option Name><Normal> = i</Normal><Constant>n</Constant><Normal>valid</Normal><br/>
+<Option Name>RestrictNamespaces</Option Name><Normal> = invalid</Normal><br/>
 <Option Name>RestrictNamespaces</Option Name><Normal> = </Normal><Prefix>~</Prefix><Normal> </Normal><Constant>true</Constant><br/>
 <Comment># if boolean, no multiple values</Comment><br/>
 <Option Name>RestrictNamespaces</Option Name><Normal> = </Normal><Constant>true</Constant><Normal> cgroup</Normal><br/>
@@ -1108,7 +1113,7 @@
 <Option Name>StopWhenUnneeded</Option Name><Normal> = </Normal><Constant>on</Constant><br/>
 <Option Name>StopWhenUnneeded</Option Name><Normal> = </Normal><Constant>off</Constant><br/>
 <Comment>## invalid values</Comment><br/>
-<Option Name>StopWhenUnneeded</Option Name><Normal> = i</Normal><Constant>n</Constant><Normal>valid</Normal><br/>
+<Option Name>StopWhenUnneeded</Option Name><Normal> = invalid</Normal><br/>
 <Comment># multiple values</Comment><br/>
 <Option Name>StopWhenUnneeded</Option Name><Normal> = </Normal><Constant>false</Constant><Normal> true</Normal><br/>
 <Normal></Normal><br/>
@@ -1629,6 +1634,7 @@
 <Comment>###### cpu scheduling policy</Comment><br/>
 <Section Header>[Service]</Section Header><br/>
 <Option Name>CPUSchedulingPolicy</Option Name><Normal> = </Normal><Constant>batch</Constant><br/>
+<Option Name>CPUSchedulingPolicy</Option Name><Normal> = </Normal><Constant>ext</Constant><br/>
 <Option Name>CPUSchedulingPolicy</Option Name><Normal> = </Normal><Constant>fifo</Constant><br/>
 <Option Name>CPUSchedulingPolicy</Option Name><Normal> = </Normal><Constant>idle</Constant><br/>
 <Option Name>CPUSchedulingPolicy</Option Name><Normal> = </Normal><Constant>other</Constant><br/>
@@ -1682,7 +1688,7 @@
 <Option Name>DeferTrigger</Option Name><Normal> = </Normal><Constant>false</Constant><br/>
 <Option Name>DeferTrigger</Option Name><Normal> = </Normal><Constant>true</Constant><br/>
 <Comment>## invalid values</Comment><br/>
-<Option Name>DeferTrigger</Option Name><Normal> = i</Normal><Constant>n</Constant><Normal>valid</Normal><br/>
+<Option Name>DeferTrigger</Option Name><Normal> = invalid</Normal><br/>
 <Comment># multiple values</Comment><br/>
 <Option Name>DeferTrigger</Option Name><Normal> = </Normal><Constant>patient</Constant><Normal> true</Normal><br/>
 <Normal></Normal><br/>
@@ -1705,7 +1711,7 @@
 <Option Name>Delegate</Option Name><Normal> = </Normal><Constant>cpu</Constant><Normal> </Normal><Constant>io</Constant><Normal> </Normal><Continuation>\</Continuation><br/>
 <Normal>  </Normal><Constant>memory</Constant><br/>
 <Comment>## invalid values</Comment><br/>
-<Option Name>Delegate</Option Name><Normal> = i</Normal><Constant>n</Constant><Normal>valid</Normal><br/>
+<Option Name>Delegate</Option Name><Normal> = invalid</Normal><br/>
 <Comment># multiple boolean values</Comment><br/>
 <Option Name>Delegate</Option Name><Normal> = </Normal><Constant>on</Constant><Normal> off</Normal><br/>
 <Normal></Normal><br/>
@@ -2254,6 +2260,18 @@
 <Option Name>CoredumpFilter</Option Name><Normal> = </Normal><Constant>private-file-backed</Constant><Normal>, </Normal><Constant>shared-dax</Constant><br/>
 <Normal></Normal><br/>
 <Normal></Normal><br/>
+<Comment>###### memory thp (transparent hugepages)</Comment><br/>
+<Section Header>[Service]</Section Header><br/>
+<Option Name>MemoryTHP</Option Name><Normal> = </Normal><Constant>inherit</Constant><br/>
+<Option Name>MemoryTHP</Option Name><Normal> = </Normal><Constant>disable</Constant><br/>
+<Option Name>MemoryTHP</Option Name><Normal> = </Normal><Constant>madvise</Constant><br/>
+<Option Name>MemoryTHP</Option Name><Normal> = </Normal><Constant>system</Constant><br/>
+<Comment>## invalid values</Comment><br/>
+<Option Name>MemoryTHP</Option Name><Normal> = invalid</Normal><br/>
+<Comment># multiple values</Comment><br/>
+<Option Name>MemoryTHP</Option Name><Normal> = </Normal><Constant>madvise</Constant><Normal> system</Normal><br/>
+<Normal></Normal><br/>
+<Normal></Normal><br/>
 <Comment>###### memory pressure watch</Comment><br/>
 <Section Header>[Service]</Section Header><br/>
 <Option Name>MemoryPressureWatch</Option Name><Normal> = </Normal><Constant>auto</Constant><br/>
@@ -2268,7 +2286,7 @@
 <Option Name>MemoryPressureWatch</Option Name><Normal> = </Normal><Constant>false</Constant><br/>
 <Option Name>MemoryPressureWatch</Option Name><Normal> = </Normal><Constant>0</Constant><br/>
 <Comment>## invalid values</Comment><br/>
-<Option Name>MemoryPressureWatch</Option Name><Normal> = i</Normal><Constant>n</Constant><Normal>valid</Normal><br/>
+<Option Name>MemoryPressureWatch</Option Name><Normal> = invalid</Normal><br/>
 <Comment># multiple values</Comment><br/>
 <Option Name>MemoryPressureWatch</Option Name><Normal> = </Normal><Constant>auto</Constant><Normal> skip</Normal><br/>
 <Normal></Normal><br/>
@@ -2484,7 +2502,7 @@
 <Option Name>PrivateTmp</Option Name><Normal> = </Normal><Constant>false</Constant><br/>
 <Option Name>PrivateTmp</Option Name><Normal> = </Normal><Constant>0</Constant><br/>
 <Comment>## invalid values</Comment><br/>
-<Option Name>PrivateTmp</Option Name><Normal> = i</Normal><Constant>n</Constant><Normal>valid</Normal><br/>
+<Option Name>PrivateTmp</Option Name><Normal> = invalid</Normal><br/>
 <Comment># multiple values</Comment><br/>
 <Option Name>PrivateTmp</Option Name><Normal> = </Normal><Constant>disconnected</Constant><Normal> true</Normal><br/>
 <Normal></Normal><br/>
@@ -2504,7 +2522,7 @@
 <Option Name>PrivateUsers</Option Name><Normal> = </Normal><Constant>false</Constant><br/>
 <Option Name>PrivateUsers</Option Name><Normal> = </Normal><Constant>0</Constant><br/>
 <Comment>## invalid values</Comment><br/>
-<Option Name>PrivateUsers</Option Name><Normal> = i</Normal><Constant>n</Constant><Normal>valid</Normal><br/>
+<Option Name>PrivateUsers</Option Name><Normal> = invalid</Normal><br/>
 <Comment># multiple values</Comment><br/>
 <Option Name>PrivateUsers</Option Name><Normal> = </Normal><Constant>identity</Constant><Normal> self</Normal><br/>
 <Normal></Normal><br/>
@@ -2546,7 +2564,7 @@
 <Option Name>ProtectHome</Option Name><Normal> = </Normal><Constant>false</Constant><br/>
 <Option Name>ProtectHome</Option Name><Normal> = </Normal><Constant>yes</Constant><br/>
 <Comment>## invalid values</Comment><br/>
-<Option Name>ProtectHome</Option Name><Normal> = i</Normal><Constant>n</Constant><Normal>valid</Normal><br/>
+<Option Name>ProtectHome</Option Name><Normal> = invalid</Normal><br/>
 <Comment># multiple values</Comment><br/>
 <Option Name>ProtectHome</Option Name><Normal> = </Normal><Constant>tmpfs</Constant><Normal> true</Normal><br/>
 <Normal></Normal><br/>
@@ -2558,7 +2576,7 @@
 <Option Name>ProtectHostname</Option Name><Normal> = </Normal><Constant>true</Constant><br/>
 <Option Name>ProtectHostname</Option Name><Normal> = </Normal><Constant>yes</Constant><Normal>:somehostname</Normal><br/>
 <Comment>## invalid values</Comment><br/>
-<Option Name>ProtectHostname</Option Name><Normal> = i</Normal><Constant>n</Constant><Normal>valid</Normal><br/>
+<Option Name>ProtectHostname</Option Name><Normal> = invalid</Normal><br/>
 <Comment># multiple values</Comment><br/>
 <Option Name>ProtectHostname</Option Name><Normal> = </Normal><Constant>private</Constant><Normal> true</Normal><br/>
 <Normal></Normal><br/>
@@ -2572,9 +2590,24 @@
 <Option Name>ProtectSystem</Option Name><Normal> = </Normal><Constant>yes</Constant><br/>
 <Option Name>ProtectSystem</Option Name><Normal> = </Normal><Constant>no</Constant><br/>
 <Comment>## invalid values</Comment><br/>
-<Option Name>ProtectSystem</Option Name><Normal> = i</Normal><Constant>n</Constant><Normal>valid</Normal><br/>
+<Option Name>ProtectSystem</Option Name><Normal> = invalid</Normal><br/>
 <Comment># multiple values</Comment><br/>
 <Option Name>ProtectSystem</Option Name><Normal> = </Normal><Constant>full</Constant><Normal> true</Normal><br/>
+<Normal></Normal><br/>
+<Normal></Normal><br/>
+<Comment>###### refresh on reload</Comment><br/>
+<Section Header>[Service]</Section Header><br/>
+<Option Name>RefreshOnReload</Option Name><Normal> = </Normal><Constant>true</Constant><br/>
+<Option Name>RefreshOnReload</Option Name><Normal> = </Normal><Constant>false</Constant><br/>
+<Option Name>RefreshOnReload</Option Name><Normal> = </Normal><Constant>credentials</Constant><br/>
+<Option Name>RefreshOnReload</Option Name><Normal> = </Normal><Constant>extensions</Constant><br/>
+<Option Name>RefreshOnReload</Option Name><Normal> = </Normal><Constant>credentials</Constant><Normal> </Normal><Constant>extensions</Constant><br/>
+<Option Name>RefreshOnReload</Option Name><Normal> = </Normal><Prefix>~</Prefix><Normal> </Normal><Constant>credentials</Constant><Normal> </Normal><Constant>extensions</Constant><br/>
+<Comment>## invalid values</Comment><br/>
+<Option Name>RefreshOnReload</Option Name><Normal> = invalid</Normal><br/>
+<Option Name>RefreshOnReload</Option Name><Normal> = </Normal><Constant>credentials</Constant><Normal> invalid extension</Normal><br/>
+<Comment># boolean and resource list</Comment><br/>
+<Option Name>RefreshOnReload</Option Name><Normal> = </Normal><Constant>true</Constant><Normal> credentials extensions</Normal><br/>
 <Normal></Normal><br/>
 <Normal></Normal><br/>
 <Comment>###### restart</Comment><br/>
@@ -2611,7 +2644,7 @@
 <Option Name>RuntimeDirectoryPreserve</Option Name><Normal> = </Normal><Constant>yes</Constant><br/>
 <Option Name>RuntimeDirectoryPreserve</Option Name><Normal> = </Normal><Constant>no</Constant><br/>
 <Comment>## invalid values</Comment><br/>
-<Option Name>RuntimeDirectoryPreserve</Option Name><Normal> = i</Normal><Constant>n</Constant><Normal>valid</Normal><br/>
+<Option Name>RuntimeDirectoryPreserve</Option Name><Normal> = invalid</Normal><br/>
 <Comment># multiple values</Comment><br/>
 <Option Name>RuntimeDirectoryPreserve</Option Name><Normal> = </Normal><Constant>restart</Constant><Normal> no</Normal><br/>
 <Normal></Normal><br/>
@@ -3205,8 +3238,8 @@
 <Comment># negated</Comment><br/>
 <Option Name>ConditionVirtualization</Option Name><Normal> = </Normal><Prefix>!</Prefix><Constant>vmware</Constant><br/>
 <Comment>## invalid values</Comment><br/>
-<Option Name>ConditionVirtualization</Option Name><Normal> = i</Normal><Constant>n</Constant><Normal>valid</Normal><br/>
-<Option Name>ConditionVirtualization</Option Name><Normal> = i</Normal><Constant>n</Constant><Normal>valid vmware</Normal><br/>
+<Option Name>ConditionVirtualization</Option Name><Normal> = invalid</Normal><br/>
+<Option Name>ConditionVirtualization</Option Name><Normal> = invalid </Normal><Constant>vmware</Constant><br/>
 <Comment># multiple values</Comment><br/>
 <Option Name>ConditionVirtualization</Option Name><Normal> = </Normal><Constant>xen</Constant><Normal> vmware</Normal><br/>
 <Normal></Normal><br/>

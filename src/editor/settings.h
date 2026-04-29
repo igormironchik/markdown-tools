@@ -11,19 +11,28 @@
 // md-editor include.
 #include "colorsdlg.h"
 #include "editor.h"
-#include "ui_settings.h"
 
 // shared include.
 #include "dlg_filter_wheel.h"
 #include "syntax.h"
+
+class KPageWidgetItem;
 
 namespace Sonnet
 {
 class ConfigWidget;
 }
 
+namespace MdShared
+{
+class PluginsPage;
+}
+
 namespace MdEditor
 {
+
+class EditorSettingsPage;
+class FontPage;
 
 //
 // Settings
@@ -84,16 +93,19 @@ public:
     Sonnet::ConfigWidget *sonnetConfigWidget() const;
 
 private slots:
-    void onPageChanged(int idx);
+    void onPageChanged(KPageWidgetItem *current,
+                       KPageWidgetItem *before);
     void onButtonclicked(QAbstractButton *btn);
-    void onMenu(int idx);
-    void onEnableRightMargin(Qt::CheckState st);
-    void onIndentModeChanged(int index);
 
 private:
     Q_DISABLE_COPY(SettingsDlg)
 
-    Ui::SettingsDlg m_ui;
+    EditorSettingsPage *m_editorPage = nullptr;
+    ColorsPage *m_colorsPage = nullptr;
+    FontPage *m_fontPage = nullptr;
+    MdShared::PluginsPage *m_pluginsPage = nullptr;
+    KPageWidgetItem *m_colorsPageItem = nullptr;
+    KPageWidgetItem *m_editorPageItem = nullptr;
 }; // class SettingsDlg
 
 } /* namespace MdEditor */

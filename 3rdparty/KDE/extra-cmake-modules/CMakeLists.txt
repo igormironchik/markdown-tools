@@ -5,13 +5,13 @@
 # SPDX-License-Identifier: BSD-3-Clause
 #=============================================================================
 
-cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.29)
 
 #
 # Preliminary setup
 #
 
-set(VERSION "6.22.0") # handled by release scripts
+set(VERSION "6.25.0") # handled by release scripts
 
 project(ECM
     VERSION "${VERSION}"

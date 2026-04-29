@@ -53,19 +53,7 @@
          </widget>
         </item>
         <item row="5" column="1">
-         <widget class="MdShared::ColorWidget" name="m_borderColor">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="frameShape">
-           <enum>QFrame::Shape::Panel</enum>
-          </property>
-          <property name="frameShadow">
-           <enum>QFrame::Shadow::Sunken</enum>
-          </property>
+         <widget class="KColorButton" name="m_borderColor">
          </widget>
         </item>
         <item row="7" column="1">
@@ -128,19 +116,7 @@
          </widget>
         </item>
         <item row="4" column="1">
-         <widget class="MdShared::ColorWidget" name="m_linkColor">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="frameShape">
-           <enum>QFrame::Shape::Panel</enum>
-          </property>
-          <property name="frameShadow">
-           <enum>QFrame::Shadow::Sunken</enum>
-          </property>
+         <widget class="KColorButton" name="m_linkColor">
          </widget>
         </item>
         <item row="4" column="0">
@@ -638,12 +614,11 @@
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>MdShared::ColorWidget</class>
-   <extends>QFrame</extends>
-   <header>color_widget.h</header>
-   <container>1</container>
-  </customwidget>
+   <customwidget>
+    <class>KColorButton</class>
+    <extends>QPushButton</extends>
+    <header>kcolorbutton.h</header>
+   </customwidget>
   <customwidget>
    <class>MdShared::FolderChooser</class>
    <extends>QWidget</extends>

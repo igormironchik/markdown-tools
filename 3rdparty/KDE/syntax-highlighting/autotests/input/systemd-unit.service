@@ -99,6 +99,7 @@ USBFunctionStrings = /some/absolute/path
 OOMPolicy = stop
 OpenFile = /some/path:fd-name:graceful,read-only
 ReloadSignal = SIGUSR1
+RefreshOnReload = credentials
 
 ## from systemd.exec
 ExecPaths = some/path some/other/path
@@ -106,6 +107,7 @@ ExtensionImages = /source/path
 ExtensionDirectories = /source/path
 IPCNamespacePath = /some/absolute/path
 MemoryKSM = false
+MemoryTHP = madvise
 NoExecPaths = some/path some/other/path
 PrivateIPC = false
 ## from systemd.exec Paths
@@ -119,6 +121,7 @@ RootHash = /some/path
 RootHash = 0xABCDEF
 RootHashSignature =
 RootVerity = /some/path
+RootMStack = /some/path
 MountAPIVFS = true
 BindLogSockets = true
 ProcSubset = pid
@@ -316,7 +319,6 @@ MemoryAccounting = yes
 MemoryMin = 10G
 MemoryLow = 20%
 StartupMemoryLow = 22%
-DefaultStartupMemoryLow = infinity
 MemoryHigh = 40 %
 StartupMemoryHigh = 12%
 MemoryMax = 60%
@@ -355,6 +357,7 @@ MemoryPressureThresholdSec = 50ms
 CoredumpReceive = true
 BPFProgram = bind6:/sys/fs/bpf/sock-addr-hook
 RestrictNetworkInterfaces = ~eth1 eth2
+BindNetworkInterface = some-interface-name
 NFTSet = cgroup:inet:filter:my_service \
   user:inet:filter:serviceuser
 
@@ -532,6 +535,7 @@ ConditionPathIsSymbolicLink = !/some/path
 ConditionPathIsMountPoint = /some/path
 ConditionPathIsReadWrite = !/some/path
 ConditionPathIsEncrypted = !/some/absolute/path
+ConditionPathIsSocket = !/some/path
 ConditionDirectoryNotEmpty = !/some/path
 ConditionFileNotEmpty = !/some/path
 ConditionFileIsExecutable = !/some/path
@@ -565,6 +569,7 @@ AssertPathIsSymbolicLink = !/some/path
 AssertPathIsMountPoint = !/some/path
 AssertPathIsReadWrite = !/some/path
 AssertPathIsEncrypted = !/some/path
+AssertPathIsSocket = !/some/path
 AssertDirectoryNotEmpty = !/some/path
 AssertFileNotEmpty = !/some/path
 AssertFileIsExecutable = !/some/path
@@ -1629,6 +1634,7 @@ NUMAMask = numa
 ###### cpu scheduling policy
 [Service]
 CPUSchedulingPolicy = batch
+CPUSchedulingPolicy = ext
 CPUSchedulingPolicy = fifo
 CPUSchedulingPolicy = idle
 CPUSchedulingPolicy = other
@@ -2254,6 +2260,18 @@ CoredumpFilter = invalid shared-dax
 CoredumpFilter = private-file-backed, shared-dax
 
 
+###### memory thp (transparent hugepages)
+[Service]
+MemoryTHP = inherit
+MemoryTHP = disable
+MemoryTHP = madvise
+MemoryTHP = system
+## invalid values
+MemoryTHP = invalid
+# multiple values
+MemoryTHP = madvise system
+
+
 ###### memory pressure watch
 [Service]
 MemoryPressureWatch = auto
@@ -2575,6 +2593,21 @@ ProtectSystem = no
 ProtectSystem = invalid
 # multiple values
 ProtectSystem = full true
+
+
+###### refresh on reload
+[Service]
+RefreshOnReload = true
+RefreshOnReload = false
+RefreshOnReload = credentials
+RefreshOnReload = extensions
+RefreshOnReload = credentials extensions
+RefreshOnReload = ~ credentials extensions
+## invalid values
+RefreshOnReload = invalid
+RefreshOnReload = credentials invalid extension
+# boolean and resource list
+RefreshOnReload = true credentials extensions
 
 
 ###### restart

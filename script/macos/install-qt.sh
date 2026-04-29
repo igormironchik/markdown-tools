@@ -8,4 +8,6 @@ qt_version=$(cat $PWD/script/qt.version)
 
 echo "Installing Qt..."
 
+export AQT_CONFIG="./script/aqt.ini"
+
 ./python/bin/aqt install-qt --outputdir ./Qt mac desktop $qt_version -m qtimageformats qtwebchannel qtwebview qtpositioning qtwebengine || exit 1

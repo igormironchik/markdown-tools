@@ -1,0 +1,59 @@
+
+.program my_program
+
+; optional side-set
+.side_set 1 opt
+
+// definitions
+.define dec 1
+.define hex 0xFF
+.define bin 0b01010101
+.define exp ( 1 + 2 - 3 * 4 / 5 )
+
+/*
+pio test program
+NOTE: this program don't do anything useful
+*/
+.wrap_target ; resume here at the end of the program
+public start: ; start of the program
+    set x, 7
+
+loop: // iterate x times
+    set y, 1 ; set y to 1
+    set y, dec
+    set y, (1 << 0)
+    set y, (dec << 0)
+    set y, 1 side 1 ; keep setting y to 1
+    set y, 1 side dec
+    set y, 1 side (1 << 0)
+    set y, 1 side (dec << 0)
+    set y, 1 side 1 [1] ; still setting y to 1
+    set y, 1 side 1 [dec]
+    set y, 1 side 1 [1 << 0]
+    set y, 1 side 1 [dec << 0]
+    set y, 1 side 1 [(1 * 1) << 0]
+    set y, 1 side 1 [(dec * 1) << 0]
+    /**/ set /**/ y /**/ , /**/ 1 /**/ side /**/ ( /**/ 1 /**/ << /**/ 0 /**/ ) /**/ [ /**/ 1 /**/ ]
+    jmp x-- loop
+
+busywait: jmp pin busywait // wait for input pin to go low
+.wrap
+
+% c-sdk {
+/*
+this function does nothing useful
+*/
+uint8_t do_nothing(uint8_t num) {
+    return num;
+}
+%}
+
+% python {
+# this function also does nothing useful
+def do_nothing(num):
+    return num
+%}
+
+% unknown {
+    unknown language pass through
+%}

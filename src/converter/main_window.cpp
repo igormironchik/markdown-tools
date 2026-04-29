@@ -55,8 +55,8 @@ MainWidget::MainWidget(QWidget *parent)
 {
     m_ui->setupUi(this);
 
-    connect(m_ui->m_linkColor, &MdShared::ColorWidget::clicked, this, &MainWidget::changeLinkColor);
-    connect(m_ui->m_borderColor, &MdShared::ColorWidget::clicked, this, &MainWidget::changeBorderColor);
+    connect(m_ui->m_linkColor, &KColorButton::changed, this, &MainWidget::linkColorChanged);
+    connect(m_ui->m_borderColor, &KColorButton::changed, this, &MainWidget::borderColorChanged);
     connect(m_ui->m_fileNameBtn, &QToolButton::clicked, this, &MainWidget::selectMarkdown);
     connect(m_ui->m_startBtn, &QPushButton::clicked, this, &MainWidget::process);
     connect(m_ui->m_textFont, &QFontComboBox::currentFontChanged, this, &MainWidget::textFontChanged);
@@ -428,22 +428,14 @@ void MainWidget::setMarkdownFile(const QString &fileName)
     changeStateOfStartButton();
 }
 
-void MainWidget::changeLinkColor()
+void MainWidget::linkColorChanged(const QColor &c)
 {
-    QColorDialog dlg(m_ui->m_linkColor->color(), this);
-
-    if (QDialog::Accepted == dlg.exec()) {
-        m_ui->m_linkColor->setColor(dlg.currentColor());
-    }
+    m_ui->m_linkColor->setColor(c);
 }
 
-void MainWidget::changeBorderColor()
+void MainWidget::borderColorChanged(const QColor &c)
 {
-    QColorDialog dlg(m_ui->m_borderColor->color(), this);
-
-    if (QDialog::Accepted == dlg.exec()) {
-        m_ui->m_borderColor->setColor(dlg.currentColor());
-    }
+    m_ui->m_borderColor->setColor(c);
 }
 
 void MainWidget::changeStateOfStartButton()

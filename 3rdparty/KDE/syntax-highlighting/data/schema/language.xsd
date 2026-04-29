@@ -129,7 +129,6 @@
       <xs:sequence>
         <xs:element ref="highlighting"/>
         <xs:element minOccurs="0" ref="general"/>
-        <xs:element minOccurs="0" ref="spellchecking"/>
       </xs:sequence>
       <xs:attribute name="name" use="required"/>
       <xs:attribute name="alternativeNames"/>
@@ -157,6 +156,7 @@
         <xs:element ref="comments"/>
         <xs:element ref="keywords"/>
         <xs:element ref="emptyLines"/>
+        <xs:element ref="spellchecking"/>
       </xs:choice>
     </xs:complexType>
   </xs:element>
@@ -655,14 +655,12 @@
   <!--
     Encoding specification
     sequence       CDATA        #REQUIRED  Character sequence of the encoding; must not contain new-line characters, i.e. \n or \r
-    character      CDATA        #IMPLIED   Encoded character; must be of length 1
-    ignored        (%boolean;)  #IMPLIED   If true, then the encoding sequence is ignored for spellchecking
+    character      CDATA        #IMPLIED   Encoded character; must be of length 1, if not there, then the encoding sequence is ignored for spellchecking
   -->
   <xs:element name="encoding">
     <xs:complexType>
       <xs:attribute name="string" use="required"/>
       <xs:attribute name="char" type="char"/>
-      <xs:attribute name="ignored" type="xs:boolean"/>
     </xs:complexType>
   </xs:element>
 </xs:schema>

@@ -6,9 +6,6 @@
 // md-pdf include.
 #include "settings.h"
 
-// Qt include.
-#include <QColorDialog>
-
 namespace MdPdf
 {
 
@@ -26,7 +23,31 @@ SettingsDlg::SettingsDlg(const MdShared::PluginsCfg &pluginsCfg,
     m_ui.m_pluginsPage->setCfg(pluginsCfg);
     m_ui.m_markColor->setColor(markColor);
 
-    connect(m_ui.m_markColor, &MdShared::ColorWidget::clicked, this, &SettingsDlg::onMarkColorChoose);
+    m_ui.m_pluginsPage->ui().m_scrollArea->setFrameStyle(QFrame::NoFrame);
+    m_ui.m_markColor->setAlphaChannelEnabled(true);
+
+    auto s = m_ui.m_pluginsPage->ui().m_scrollAreaWidgetContents->sizeHint();
+    m_ui.m_pluginsPage->ui().m_scrollAreaWidgetContents->setMinimumWidth(s.width());
+    m_ui.m_pluginsPage->ui().m_scrollAreaWidgetContents->setMinimumHeight(s.height());
+    s.setHeight(s.height()
+                + m_ui.m_pluginsPage->layout()->contentsMargins().top()
+                + m_ui.m_pluginsPage->layout()->contentsMargins().bottom()
+                + m_ui.m_pluginsPage->ui().m_scrollArea->frameWidth() * 2);
+    s.setWidth(s.width()
+               + m_ui.m_pluginsPage->layout()->contentsMargins().left()
+               + m_ui.m_pluginsPage->layout()->contentsMargins().right()
+               + m_ui.m_pluginsPage->ui().m_scrollArea->frameWidth() * 2);
+    m_ui.m_pluginsPage->setMinimumWidth(s.width());
+    m_ui.m_pluginsPage->setMinimumHeight(s.height());
+
+    const auto m = m_ui.m_pluginsPage->layout()->contentsMargins().left() * 2
+        + m_ui.m_pluginsPage->ui().m_scrollArea->frameWidth();
+    m_ui.m_colors->layout()->setContentsMargins(m,
+                                                m_ui.m_colors->layout()->contentsMargins().top(),
+                                                m,
+                                                m_ui.m_colors->layout()->contentsMargins().bottom());
+
+    adjustSize();
 }
 
 SettingsDlg::~SettingsDlg()
@@ -38,18 +59,9 @@ MdShared::PluginsCfg SettingsDlg::pluginsCfg() const
     return m_ui.m_pluginsPage->cfg();
 }
 
-const QColor &SettingsDlg::markColor() const
+QColor SettingsDlg::markColor() const
 {
     return m_ui.m_markColor->color();
-}
-
-void SettingsDlg::onMarkColorChoose()
-{
-    QColorDialog dlg(m_ui.m_markColor->color(), this);
-
-    if (QDialog::Accepted == dlg.exec()) {
-        m_ui.m_markColor->setColor(dlg.currentColor());
-    }
 }
 
 } /* namespace MdPdf */

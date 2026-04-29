@@ -463,6 +463,12 @@ msgctxt "Language|"
 msgid "GDL"
 msgstr "GDL"
 
+#, fuzzy
+#| msgid "text"
+msgctxt "Language|"
+msgid "Gemtext"
+msgstr "κείμενο"
+
 msgctxt "Language|"
 msgid "GNU Gettext"
 msgstr "GNU Gettext"
@@ -1011,6 +1017,13 @@ msgstr "Pig"
 msgctxt "Language|"
 msgid "Pike"
 msgstr "Pike"
+
+#, fuzzy
+#| msgctxt "Language Section|"
+#| msgid "Assembler"
+msgctxt "Language|"
+msgid "PIO Assembler"
+msgstr "Συμβολομεταφραστής"
 
 msgctxt "Language|"
 msgid "PL/I"
@@ -3732,9 +3745,6 @@ msgstr "Ενημέρωση ορισμών σύνταξης για το '%1' στ
 
 #~ msgid "Typographical Conventions for %1"
 #~ msgstr "Τυπογραφικοί κανόνες για %1"
-
-#~ msgid "text"
-#~ msgstr "κείμενο"
 
 #~ msgid "How do you want to import the schema?"
 #~ msgstr "Πώς θέλετε να εισαγάγετε το σχήμα;"

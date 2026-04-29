@@ -1,8 +1,8 @@
 #
-# SPDX-FileCopyrightText: 2017-2025 Alex Turbov <i.zaufi@gmail.com>
+# SPDX-FileCopyrightText: 2017-2026 Alex Turbov <i.zaufi@gmail.com>
 #
 
-version: 59
+version: 60
 
 global-properties:
   - ALLOW_DUPLICATE_CUSTOM_TARGETS
@@ -294,6 +294,7 @@ target-properties:
   - <LANG>_ICSTAT                                           # Since 4.1
   - <LANG>_INCLUDE_WHAT_YOU_USE
   - <LANG>_LINKER_LAUNCHER                                  # Since 3.21
+  - <LANG>_PVS_STUDIO                                       # Since 4.3
   - <LANG>_STANDARD
   - <LANG>_STANDARD_REQUIRED
   - <LANG>_VISIBILITY_PRESET
@@ -369,6 +370,7 @@ target-properties:
   - PRECOMPILE_HEADERS_REUSE_FROM                           # Since 3.16
   - PREFIX
   - PRIVATE_HEADER
+  - PRIVATE_HEADER_SETS_TO_VERIFY                           # Since 4.3
   - PROJECT_LABEL
   - PUBLIC_HEADER
   - RESOURCE
@@ -406,6 +408,7 @@ target-properties:
   - UNITY_BUILD_MODE                                        # Since 3.18
   - UNITY_BUILD_UNIQUE_ID                                   # Since 3.20
   - VERIFY_INTERFACE_HEADER_SETS                            # Since 3.24
+  - VERIFY_PRIVATE_HEADER_SETS                              # Since 4.3
   - VERSION
   - VISIBILITY_INLINES_HIDDEN
   - VS_CONFIGURATION_TYPE
@@ -609,8 +612,8 @@ generator-expressions:
   - AND
   - OR
   - NOT
-  # String Comparisons
-  - STREQUAL
+  # Primary Comparison Expression
+  # Numeric Comparisons
   - EQUAL
   # Version Comparisons
   - VERSION_LESS
@@ -618,12 +621,43 @@ generator-expressions:
   - VERSION_EQUAL
   - VERSION_LESS_EQUAL
   - VERSION_GREATER_EQUAL
-  # String Transformations
+  # String Expressions
+  # * String Comparisons
+  - STREQUAL
+  - STRLESS
+  - STRGREATER
+  - STRLESS_EQUAL
+  - STRGREATER_EQUAL
+  # * String Queries
+  - name: STRING                                           # Since 4.3
+    subcommands:
+      - LENGTH
+      - SUBSTRING
+      - FIND
+      - MATCH
+      # * String Generations
+      - JOIN
+      - ASCII
+      - TIMESTAMP
+      - RANDOM
+      - UUID
+      # * String Transformations
+      - REPLACE
+      - APPEND
+      - PREPEND
+      - TOLOWER
+      - TOUPPER
+      - STRIP
+      - QUOTE
+      - HEX
+      - HASH
+      - MAKE_C_IDENTIFIER
+  # * String Transformations (legacy)
   - LOWER_CASE
   - UPPER_CASE
   - MAKE_C_IDENTIFIER
   # List Expressions
-  #   * List Comparisons
+  # * List Comparisons
   - IN_LIST                                                 # Since 3.12
   - name: LIST                                              # Since 3.27
     subcommands:
@@ -688,16 +722,16 @@ generator-expressions:
       - NORMAL_PATH
       - RELATIVE_PATH
       - ABSOLUTE_PATH
-  # Shell Paths
+  # * Shell Paths
   - SHELL_PATH
   # Configuration Expressions
   - CONFIG
   - OUTPUT_CONFIG                                           # Since 3.20
   - COMMAND_CONFIG                                          # Since 3.20
   # Toolchain And Language Expressions
-  #   * Platform
+  # * Platform
   - PLATFORM_ID
-  #   * Compiler Version
+  # * Compiler Version
   - C_COMPILER_VERSION
   - CXX_COMPILER_VERSION
   - CUDA_COMPILER_VERSION                                   # Since 3.15
@@ -706,7 +740,7 @@ generator-expressions:
   - Fortran_COMPILER_VERSION
   - HIP_COMPILER_VERSION                                    # Since 3.21
   - ISPC_COMPILER_VERSION                                   # Since 3.19
-  #   * Compiler Language And ID
+  # * Compiler Language, ID, and Frontend-Variant
   - C_COMPILER_ID
   - CXX_COMPILER_ID
   - CUDA_COMPILER_ID                                        # Since 3.15
@@ -725,21 +759,21 @@ generator-expressions:
   - ISPC_COMPILER_FRONTEND_VARIANT                          # Since 3.30
   - COMPILE_LANGUAGE                                        # Since 3.3
   - COMPILE_LANG_AND_ID                                     # Since 3.15
-  #   * Compile Features
+  # * Compile Features
   - COMPILE_FEATURES
-  #   * Compile Context
+  # * Compile Context
   - COMPILE_ONLY                                            # Since 3.27
-  #   * Linker Language And ID
+  # * Linker Language And ID
   - LINK_LANGUAGE                                           # Since 3.18
   - LINK_LANG_AND_ID                                        # Since 3.18
-  #   * Link Features
+  # * Link Features
   - LINK_LIBRARY                                            # Since 3.24
   - LINK_GROUP                                              # Since 3.24
-  #   * Link Context
+  # * Link Context
   - LINK_ONLY
   - DEVICE_LINK                                             # Since 3.18
   - HOST_LINK                                               # Since 3.18
-  # Linker ID and Frontend-Variant                          # Since 4.2
+  # * Linker ID and Frontend-Variant                        # Since 4.2
   - C_COMPILER_LINKER_ID
   - CXX_COMPILER_LINKER_ID
   - CUDA_COMPILER_LINKER_ID
@@ -754,13 +788,25 @@ generator-expressions:
   - OBJCXX_COMPILER_LINKER_FRONTEND_VARIANT
   - Fortran_COMPILER_LINKER_FRONTEND_VARIANT
   - HIP_COMPILER_LINKER_FRONTEND_VARIANT
+  # Source-Dependent Expressions                            # Since 4.3
+  # * Source Meta-Data
+  - SOURCE_EXISTS
+  # * Source Properties
+  - SOURCE_PROPERTY
+  # FileSet-Dependent Expression                            # Since 4.3
+  # * FileSet Meta-Data
+  - FILE_SET_EXISTS
+  # * FileSet Properties
+  - FILE_SET_PROPERTY
   # Target-Dependent Expressions
+  # * Target Meta-Data
   - TARGET_EXISTS                                           # Since 3.12
   - TARGET_NAME_IF_EXISTS                                   # Since 3.12
   - TARGET_NAME
-  - TARGET_PROPERTY
-  - TARGET_OBJECTS
   - TARGET_POLICY
+  # * Target Properties
+  - TARGET_PROPERTY
+  # * Target Artifacts
   - TARGET_FILE
   - TARGET_FILE_BASE_NAME                                   # Since 3.15
   - TARGET_FILE_PREFIX                                      # Since 3.15
@@ -779,16 +825,32 @@ generator-expressions:
   - TARGET_LINKER_FILE_SUFFIX                               # Since 3.15
   - TARGET_LINKER_FILE_NAME
   - TARGET_LINKER_FILE_DIR
+  - TARGET_LINKER_LIBRARY_FILE                              # Since 3.27
+  - TARGET_LINKER_LIBRARY_FILE_BASE_NAME                    # Since 3.27
+  - TARGET_LINKER_LIBRARY_FILE_PREFIX                       # Since 3.27
+  - TARGET_LINKER_LIBRARY_FILE_SUFFIX                       # Since 3.27
+  - TARGET_LINKER_LIBRARY_FILE_NAME                         # Since 3.27
+  - TARGET_LINKER_LIBRARY_FILE_DIR                          # Since 3.27
+  - TARGET_LINKER_IMPORT_FILE                               # Since 3.27
+  - TARGET_LINKER_IMPORT_FILE_BASE_NAME                     # Since 3.27
+  - TARGET_LINKER_IMPORT_FILE_PREFIX                        # Since 3.27
+  - TARGET_LINKER_IMPORT_FILE_SUFFIX                        # Since 3.27
+  - TARGET_LINKER_IMPORT_FILE_NAME                          # Since 3.27
+  - TARGET_LINKER_IMPORT_FILE_DIR                           # Since 3.27
   - TARGET_SONAME_FILE
   - TARGET_SONAME_FILE_NAME
   - TARGET_SONAME_FILE_DIR
+  - TARGET_SONAME_IMPORT_FILE                               # Since 3.27
+  - TARGET_SONAME_IMPORT_FILE_NAME                          # Since 3.27
+  - TARGET_SONAME_IMPORT_FILE_DIR                           # Since 3.27
   - TARGET_PDB_FILE
   - TARGET_PDB_FILE_BASE_NAME                               # Since 3.15
   - TARGET_PDB_FILE_NAME
   - TARGET_PDB_FILE_DIR
-  - TARGET_BUNDLE_DIR_NAME                                  # Since 3.24
   - TARGET_BUNDLE_DIR
+  - TARGET_BUNDLE_DIR_NAME                                  # Since 3.24
   - TARGET_BUNDLE_CONTENT_DIR
+  - TARGET_OBJECTS
   - TARGET_RUNTIME_DLLS                                     # Since 3.21
   - TARGET_RUNTIME_DLL_DIRS                                 # Since 3.27
   - TARGET_INTERMEDIATE_DIR                                 # Since 4.2
@@ -869,6 +931,8 @@ variables:
   - CMAKE_<LANG>_COMPILER_LINKER_VERSION                    # Since 3.29
   - CMAKE_<LANG>_COMPILER_RANLIB
   - CMAKE_<LANG>_DEVICE_LINK_MODE                           # Since 4.0
+  - CMAKE_<LANG>_LINK_FLAGS                                 # Since 4.3
+  - CMAKE_<LANG>_LINK_FLAGS_<CONFIG>                        # Since 4.3
   - CMAKE_<LANG>_LINK_LIBRARY_SUFFIX                        # Since 3.16
   - CMAKE_<LANG>_LINK_MODE                                  # Since 4.0
   - CMAKE_LINK_LIBRARY_SUFFIX
@@ -888,9 +952,11 @@ variables:
   - CMAKE_NETRC_FILE                                        # Since 3.11
   - CMAKE_PARENT_LIST_FILE
   - CMAKE_PATCH_VERSION
+  - CMAKE_PROJECT_COMPAT_VERSION                            # Since 4.3
   - CMAKE_PROJECT_DESCRIPTION
   - CMAKE_PROJECT_HOMEPAGE_URL                              # Since 3.12
   - CMAKE_PROJECT_NAME
+  - CMAKE_PROJECT_SPDX_LICENSE                              # Since 4.3
   - CMAKE_PROJECT_VERSION                                   # Since 3.12
   - CMAKE_PROJECT_VERSION_MAJOR                             # Since 3.12
   - CMAKE_PROJECT_VERSION_MINOR                             # Since 3.12
@@ -946,21 +1012,25 @@ variables:
   - CMAKE_XCODE_BUILD_SYSTEM                                # Since 3.19
   - CMAKE_XCODE_PLATFORM_TOOLSET
   - <PROJECT-NAME>_BINARY_DIR
+  - <PROJECT-NAME>_COMPAT_VERSION                           # Since 4.3
   - <PROJECT-NAME>_DESCRIPTION                              # Since 3.12
   - <PROJECT-NAME>_IS_TOP_LEVEL                             # Since 3.21
   - <PROJECT-NAME>_HOMEPAGE_URL                             # Since 3.12
   - <PROJECT-NAME>_SOURCE_DIR
+  - <PROJECT-NAME>_SPDX_LICENSE                             # Since 4.3
   - <PROJECT-NAME>_VERSION
   - <PROJECT-NAME>_VERSION_MAJOR
   - <PROJECT-NAME>_VERSION_MINOR
   - <PROJECT-NAME>_VERSION_PATCH
   - <PROJECT-NAME>_VERSION_TWEAK
   - PROJECT_BINARY_DIR
+  - PROJECT_COMPAT_VERSION                                  # Since 4.3
   - PROJECT_DESCRIPTION                                     # Since 3.9
   - PROJECT_IS_TOP_LEVEL                                    # Since 3.21
   - PROJECT_HOMEPAGE_URL                                    # Since 3.12
   - PROJECT_NAME
   - PROJECT_SOURCE_DIR
+  - PROJECT_SPDX_LICENSE                                    # Since 4.3
   - PROJECT_VERSION
   - PROJECT_VERSION_MAJOR
   - PROJECT_VERSION_MINOR
@@ -1214,7 +1284,7 @@ variables:
   - CMAKE_DEFAULT_CONFIGS                                   # Since 3.17
   - CMAKE_DISABLE_PRECOMPILE_HEADERS                        # Since 3.17
   - CMAKE_DLL_NAME_WITH_SOVERSION                           # Since 3.27
-  # `CMAKE_ENABLE_EXPORTS` has been moved to deprecated se  ction
+  # `CMAKE_ENABLE_EXPORTS` has been moved to deprecated section
   - CMAKE_EXECUTABLE_ENABLE_EXPORTS                         # Since 3.27
   - CMAKE_EXE_LINKER_FLAGS
   - CMAKE_EXE_LINKER_FLAGS_<CONFIG>
@@ -1254,6 +1324,7 @@ variables:
   - CMAKE_<LANG>_LINK_LIBRARY_USING_<FEATURE>_SUPPORTED     # Since 3.24
   - CMAKE_<LANG>_LINK_WHAT_YOU_USE_FLAG                     # Since 3.22
   - CMAKE_<LANG>_LINKER_LAUNCHER                            # Since 3.21
+  - CMAKE_<LANG>_PVS_STUDIO                                 # Since 4.3
   - CMAKE_<LANG>_USING_LINKER_<TYPE>                        # Since 3.29
   - CMAKE_<LANG>_VISIBILITY_PRESET
   - CMAKE_LIBRARY_OUTPUT_DIRECTORY
@@ -1322,6 +1393,7 @@ variables:
   - CMAKE_UNITY_BUILD_RELOCATABLE                           # Since 4.0
   - CMAKE_UNITY_BUILD_UNIQUE_ID                             # Since 3.20
   - CMAKE_VERIFY_INTERFACE_HEADER_SETS                      # Since 3.24
+  - CMAKE_VERIFY_PRIVATE_HEADER_SETS                        # Since 4.3
   - CMAKE_VISIBILITY_INLINES_HIDDEN
   - CMAKE_VS_DEBUGGER_COMMAND                               # Since 3.27
   - CMAKE_VS_DEBUGGER_COMMAND_ARGUMENTS                     # Since 3.27
@@ -1713,7 +1785,10 @@ variables:
   - CPACK_ARCHIVE_<COMPONENT>_FILE_NAME
   - CPACK_ARCHIVE_FILE_EXTENSION                            # Since 3.25
   - CPACK_ARCHIVE_COMPONENT_INSTALL
+  - CPACK_ARCHIVE_UID                                       # Since 4.3
+  - CPACK_ARCHIVE_GID                                       # Since 4.3
   - CPACK_ARCHIVE_THREADS                                   # Since 3.18
+  - CPACK_ARCHIVE_COMPRESSION_LEVEL                         # Since 4.3
   # - CPackBundle
   - CPACK_BUNDLE_NAME
   - CPACK_BUNDLE_PLIST
@@ -1760,6 +1835,7 @@ variables:
   - CPACK_DEBIAN_<COMPONENT>_PACKAGE_SECTION
   - CPACK_DEBIAN_ARCHIVE_TYPE
   - CPACK_DEBIAN_COMPRESSION_TYPE
+  - CPACK_DEBIAN_COMPRESSION_LEVEL                          # Since 4.3
   - CPACK_DEBIAN_PACKAGE_PRIORITY
   - CPACK_DEBIAN_<COMPONENT>_PACKAGE_PRIORITY
   - CPACK_DEBIAN_PACKAGE_HOMEPAGE
@@ -2152,6 +2228,7 @@ variables:
   - CPACK_STRIP_FILES
   - CPACK_VERBATIM_VARIABLES
   - CPACK_THREADS                                           # Since 3.20
+  - CPACK_COMPRESSION_LEVEL                                 # Since 4.3
   - CPACK_SOURCE_PACKAGE_FILE_NAME
   - CPACK_SOURCE_STRIP_FILES
   - CPACK_SOURCE_GENERATOR
@@ -2500,6 +2577,7 @@ variables:
   - LIBXML2_DEFINITIONS
   - LIBXML2_XMLLINT_EXECUTABLE
   - LIBXML2_LIBRARY
+  - LibXml2_USE_STATIC_LIBS                                 # Since 4.3
   # - FindLibXslt
   - LIBXSLT_DEFINITIONS
   - LIBXSLT_XSLTPROC_EXECUTABLE
@@ -2991,10 +3069,14 @@ deprecated-or-internal-variables:
   - CMAKE_ENABLE_EXPORTS
   # This variable exists only for backwards compatibility. Use CMAKE_MAKE_PROGRAM.
   - CMAKE_BUILD_TOOL
+  # Deprecated variables from shipped modules
   # The FindwxWidgets module's result variable `wxWidgets_USE_FILE`
   # is now deprecated in favor of including the UsewxWidgets module directly.
   # (since 4.2)
   - wxWidgets_USE_FILE
+  # - FindLibXml2
+  - LIBXML2_FOUND                                           # Since 4.2
+  - LIBXML2_VERSION_STRING                                  # Since 4.2
 
 
 # https://cmake.org/cmake/help/latest/manual/cmake-env-variables.7.html
@@ -3156,6 +3238,8 @@ scripting-commands:
       - HOST
       - TARGET
       - BOTH
+      # Since 4.3
+      - LOCALE_CHARSET
 
   - name: cmake_language
     named-args:
@@ -3519,6 +3603,7 @@ scripting-commands:
       - COMPRESSION
       - COMPRESSION_LEVEL                                   # Since 3.19
       - MTIME
+      - THREADS                                             # Since 4.3
       - WORKING_DIRECTORY                                   # Since 3.31
       - VERBOSE
       - ARCHIVE_EXTRACT
@@ -3575,6 +3660,11 @@ scripting-commands:
       - GZip
       - XZ
       - Zstd
+      # Since 4.3
+      - Deflate
+      - LZMA
+      - LZMA2
+      - PPMd
       # Special args for `NEWLINE_STYLE` named argument since 3.18
       - UNIX
       - DOS
@@ -3728,6 +3818,7 @@ scripting-commands:
       - GLOBAL
       - DIRECTORY
       - TARGET
+      - FILE_SET                                            # Since 4.3
       - SOURCE
       - TARGET_DIRECTORY                                    # `SOURCE` sub-option since 3.18
       - DIRECTORY                                           # `SOURCE` sub-option since 3.18
@@ -3879,6 +3970,7 @@ scripting-commands:
       - GLOBAL
       - DIRECTORY
       - TARGET
+      - FILE_SET                                            # Since 4.3
       - DIRECTORY
       - SOURCE
       - TARGET_DIRECTORY                                    # `SOURCE` sub-option since 3.18
@@ -3966,12 +4058,14 @@ scripting-commands:
       - JSON
       - ERROR_VARIABLE
       - GET
+      - GET_RAW                                             # Since 4.3
       - TYPE
       - MEMBER
       - LENGTH
       - REMOVE
       - SET
       - EQUAL
+      - STRING_ENCODE                                       # Since 4.3
 
   - name: unset
     named-args:
@@ -4103,6 +4197,20 @@ project-commands:
       - CMAKEFILES
       - TOOLCHAINS
 
+  - name: cmake_instrumentation                             # Since 4.3
+    named-args:
+      - API_VERSION
+      - DATA_VERSION
+      - HOOKS
+      - OPTIONS
+      - CALLBACK
+      - CUSTOM_CONTENT
+    special-args:
+      - STRING
+      - BOOL
+      - LIST
+      - JSON
+
   - name: create_test_sourcelist
     named-args:
       - EXTRA_INCLUDE
@@ -4164,6 +4272,25 @@ project-commands:
       - AUTO
       - TARGET
       - XCFRAMEWORK_LOCATION
+      # Since CMake 4.3
+      - PACKAGE_INFO
+      - PROJECT
+      - NO_PROJECT_METADATA
+      - APPENDIX
+      - LOWER_CASE_FILE
+      - VERSION
+      - COMPAT_VERSION
+      - VERSION_SCHEMA
+      - DEFAULT_TARGETS
+      - DEFAULT_CONFIGURATIONS
+      - LICENSE
+      - DEFAULT_LICENSE
+      - DESCRIPTION
+      - HOMEPAGE_URL
+      - CXX_MODULES_DIRECTORY
+      - SBOM
+      - FORMAT
+      - PACKAGE_URL
     has-target-names-after-kw:
       - TARGETS
       - TARGET
@@ -4266,6 +4393,25 @@ project-commands:
       - POST_INCLUDE_FILES
       - POST_EXCLUDE_FILES
       - DIRECTORIES
+      # Since CMake 4.3
+      - PACKAGE_INFO
+      - PROJECT
+      - NO_PROJECT_METADATA
+      - APPENDIX
+      - LOWER_CASE_FILE
+      - VERSION
+      - COMPAT_VERSION
+      - VERSION_SCHEMA
+      - DEFAULT_TARGETS
+      - DEFAULT_CONFIGURATIONS
+      - LICENSE
+      - DEFAULT_LICENSE
+      - DESCRIPTION
+      - HOMEPAGE_URL
+      - CXX_MODULES_DIRECTORY
+      - SBOM
+      - PACKAGE_URL
+      - FORMAT
     special-args:
       - OWNER_READ
       - OWNER_WRITE
@@ -4319,6 +4465,7 @@ project-commands:
       - HOMEPAGE_URL                                        # Since 3.12
       - LANGUAGES
       - COMPAT_VERSION                                      # Since 4.1
+      - SPDX_LICENSE                                        # Since 4.3
     special-args:
       - ASM
       - ASM-ATT
@@ -4527,7 +4674,7 @@ project-commands:
       - SOURCES
       - COMPILE_DEFINITIONS
       - LINK_LIBRARIES
-      - LINK_OPTIONS # Since 3.14
+      - LINK_OPTIONS                                        # Since 3.14
       - COPY_FILE
       - COPY_FILE_ERROR
       - <LANG>_STANDARD
@@ -5329,6 +5476,15 @@ standard-module-commands:
       - GLOB
       - DELETE
       - QUIET
+    special-args:
+      # TARBALL_COMPRESSION values                          # Since 3.18
+      - GZIP
+      - BZIP2
+      - LZMA
+      - LZMA2
+      - XZ
+      - ZSTD
+      - FROM_EXT
   # CTestScriptMode
   # CTestUseLaunchers
   # Dart
@@ -5704,6 +5860,7 @@ standard-module-commands:
       - RESOURCES
       - NAMESPACE
       - INCLUDE_JARS
+      - INCLUDE_MODULES                                     # Since 4.3
       - ENTRY_POINT
       - VERSION
       - MANIFEST

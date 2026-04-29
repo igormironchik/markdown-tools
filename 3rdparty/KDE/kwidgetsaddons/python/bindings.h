@@ -1,0 +1,92 @@
+// SPDX-FileCopyrightText: 2024 Manuel Alcaraz Zambrano <manuelalcarazzam@gmail.com>
+// SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
+
+#pragma once
+
+// Make "signals:", "slots:" visible as access specifiers
+#define QT_ANNOTATE_ACCESS_SPECIFIER(a) __attribute__((annotate(#a)))
+
+#include "pysidesignal.h"
+
+#include <KAcceleratorManager>
+#include <KActionMenu>
+#include <KActionSelector>
+#include <KAnimatedButton>
+#include <KAssistantDialog>
+#include <KBusyIndicatorWidget>
+#include <KCapacityBar>
+#include <KCharSelect>
+#include <KCollapsibleGroupBox>
+#include <KColorButton>
+#include <KColorCombo>
+#include <KColumnResizer>
+#include <KContextualHelpButton>
+#include <KCursor>
+#include <KDateComboBox>
+#include <KDatePicker>
+#include <KDatePickerPopup>
+#include <KDateTimeEdit>
+#include <KDragWidgetDecorator>
+#include <KDualAction>
+#include <KEditListWidget>
+#include <KFontAction>
+#include <KFontChooser>
+#include <KFontChooserDialog>
+#include <KFontRequester>
+#include <KFontSizeAction>
+#include <KGradientSelector>
+#include <KGuiItem>
+#include <KJobWidgets>
+#include <KLed>
+#include <KLineEditEventHandler>
+#include <KLineEditUrlDropEventFilter>
+#include <KMessageBox>
+#include <KMessageBoxNotifyInterface>
+#include <KMessageDialog>
+#include <KMessageWidget>
+#include <KMimeTypeChooser>
+#include <KMimeTypeChooserDialog>
+#include <KMimeTypeEditor>
+#include <KMultiTabBar>
+#include <KMultiTabBarButton>
+#include <KMultiTabBarTab>
+#include <KNewPasswordDialog>
+#include <KNewPasswordWidget>
+#include <KPageDialog>
+#include <KPageModel>
+#include <KPageView>
+#include <KPageWidget>
+#include <KPageWidgetItem>
+#include <KPageWidgetModel>
+#include <KPasswordDialog>
+#include <KPasswordLineEdit>
+#include <KPixmapRegionSelectorDialog>
+#include <KPixmapRegionSelectorWidget>
+#include <KPixmapSequence>
+#include <KPixmapSequenceOverlayPainter>
+#include <KPixmapSequenceWidget>
+#include <KPopupFrame>
+#include <KRatingPainter>
+#include <KRatingWidget>
+#include <KRecentFilesMenu>
+#include <KRuler>
+#include <KSelectAction>
+#include <KSelector>
+#include <KSeparator>
+#include <KSplitterCollapserButton>
+#include <KSqueezedTextLabel>
+#include <KStandardGuiItem>
+#include <KStyleExtensions>
+#include <KTimeComboBox>
+#include <KTitleWidget>
+#include <KToggleAction>
+#include <KToggleFullScreenAction>
+#include <KToolBarLabelAction>
+#include <KToolBarPopupAction>
+#include <KToolBarSpacerAction>
+#include <KToolTipWidget>
+#include <KTwoFingerSwipe>
+#include <KTwoFingerTap>
+#include <KUrlLabel>
+#include <KViewStateSerializer>
+#include <KXYSelector>

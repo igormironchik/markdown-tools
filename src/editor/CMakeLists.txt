@@ -9,7 +9,7 @@ find_package(Qt6Core REQUIRED)
 find_package(Qt6Widgets REQUIRED)
 find_package(Qt6WebEngineWidgets REQUIRED)
 find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
-    Sonnet SyntaxHighlighting
+    Sonnet SyntaxHighlighting WidgetsAddons
 )
 
 set(LIB_SRC
@@ -34,10 +34,8 @@ set(LIB_SRC
 	gotoline.ui
 	fontdlg.h
 	fontdlg.cpp
-	fontdlg.ui
 	colorsdlg.h
 	colorsdlg.cpp
-	colorsdlg.ui
 	syntaxvisitor.cpp
 	syntaxvisitor.h
 	closebutton.h
@@ -46,7 +44,6 @@ set(LIB_SRC
 	toc.cpp
 	wordwrapdelegate.h
 	wordwrapdelegate.cpp
-	settings.ui
 	font.ui
 	colors.ui
 	colors.h
@@ -58,7 +55,10 @@ set(LIB_SRC
     sonnetconfig.h
     sonnetconfig.cpp
     speller.h
-    speller.cpp)
+    speller.cpp
+    editor_settings.h
+    editor_settings.cpp
+    editor_settings.ui)
 
 set(SRC main.cpp)
 
@@ -84,4 +84,5 @@ add_executable(md-editor WIN32 ${SRC})
 install(TARGETS md-editor)
 
 target_link_libraries(md-editor md-editor-lib markdown-widgets KF${KF_MAJOR_VERSION}::SonnetUi KF${KF_MAJOR_VERSION}::SonnetCore
+    KF${KF_MAJOR_VERSION}::WidgetsAddons
     Qt6::WebEngineWidgets Qt6::Widgets Qt6::Core)

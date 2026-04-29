@@ -5,6 +5,9 @@
 
 #pragma once
 
+// md-shared include.
+#include "ui_plugins_page.h"
+
 // Qt include.
 #include <QWidget>
 
@@ -71,6 +74,9 @@ public:
     void setCfg(const PluginsCfg &cfg);
     //! \return Configuration.
     PluginsCfg cfg() const;
+
+    //! \return Ui.
+    Ui::PluginsPage &ui();
 
 private slots:
     void onButtonStateChanged(int st);

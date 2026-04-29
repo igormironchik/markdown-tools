@@ -1,9 +1,9 @@
-# SPDX-FileCopyrightText: 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025 Freek de Kruijf <freek@opensuse.org>
+# SPDX-FileCopyrightText: 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026 Freek de Kruijf <freek@opensuse.org>
 # Freek de Kruijf <freekdekruijf@kde.nl>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2025-11-30 09:30+0100\n"
+"PO-Revision-Date: 2026-03-22 15:55+0100\n"
 "Last-Translator: Freek de Kruijf <freekdekruijf@kde.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Qt-Contexts: true\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 25.08.3\n"
+"X-Generator: Lokalize 25.12.3\n"
 
 msgctxt "Language|"
 msgid "4DOS BatchToMemory"
@@ -433,6 +433,10 @@ msgstr "GDB"
 msgctxt "Language|"
 msgid "GDL"
 msgstr "GDL"
+
+msgctxt "Language|"
+msgid "Gemtext"
+msgstr "Gemtext"
 
 msgctxt "Language|"
 msgid "GNU Gettext"
@@ -965,6 +969,10 @@ msgstr "Pig"
 msgctxt "Language|"
 msgid "Pike"
 msgstr "Pike"
+
+msgctxt "Language|"
+msgid "PIO Assembler"
+msgstr "PIO Assembler"
 
 msgctxt "Language|"
 msgid "PL/I"

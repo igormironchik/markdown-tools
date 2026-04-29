@@ -620,6 +620,12 @@ msgid "GDL"
 msgstr "ภาษา GDL"
 
 #, fuzzy
+#| msgid "text"
+msgctxt "Language|"
+msgid "Gemtext"
+msgstr "ข้อความ"
+
+#, fuzzy
 #| msgctxt "Language"
 #| msgid "GNU Gettext"
 msgctxt "Language|"
@@ -1308,6 +1314,13 @@ msgstr ""
 msgctxt "Language|"
 msgid "Pike"
 msgstr ""
+
+#, fuzzy
+#| msgctxt "Language Section"
+#| msgid "Assembler"
+msgctxt "Language|"
+msgid "PIO Assembler"
+msgstr "ภาษาแอสเซมเบลอร์"
 
 msgctxt "Language|"
 msgid "PL/I"
@@ -3821,9 +3834,6 @@ msgstr ""
 
 #~ msgid "Typographical Conventions for %1"
 #~ msgstr "ธรรมเนียมรูปแบบในการพิมพ์สำหรับ %1"
-
-#~ msgid "text"
-#~ msgstr "ข้อความ"
 
 #, fuzzy
 #~| msgid "What do you want to do?"

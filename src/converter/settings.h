@@ -32,10 +32,7 @@ public:
     ~SettingsDlg() override;
 
     MdShared::PluginsCfg pluginsCfg() const;
-    const QColor &markColor() const;
-
-private slots:
-    void onMarkColorChoose();
+    QColor markColor() const;
 
 private:
     Ui::SettingsDlg m_ui;

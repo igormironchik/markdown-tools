@@ -5,8 +5,8 @@
 
 #pragma once
 
-// Qt include.
-#include <QDialog>
+// KDE include.
+#include <KPageDialog>
 
 namespace MdShared
 {
@@ -18,7 +18,7 @@ namespace MdShared
 /*!
  * Filter of wheel event for QComboBox and QSpinBox.
  */
-class DlgWheelFilter : public QDialog
+class DlgWheelFilter : public KPageDialog
 {
     Q_OBJECT
 
@@ -33,6 +33,6 @@ protected:
 protected:
     virtual bool isFilteredType(QObject *o);
     virtual void installFilterForChildren(QObject *parent);
-}; // class ScrollFilter
+}; // class DlgWheelFilter
 
 } /* namespace MdShared */

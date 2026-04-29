@@ -14,6 +14,8 @@
 // shared include.
 #include "syntax.h"
 
+class KColorButton;
+
 namespace MdEditor
 {
 
@@ -78,33 +80,30 @@ public slots:
     void resetDefaults();
     //! Apply color scheme for settings page UI.
     void applyColors();
-    //! Choose link color.
-    void chooseLinkColor();
-    //! Choose text color.
-    void chooseTextColor();
-    //! Choose inline color.
-    void chooseInlineColor();
-    //! Choose HTML color.
-    void chooseHtmlColor();
-    //! Choose table's borders color.
-    void chooseTableColor();
-    //! Choose code color.
-    void chooseCodeColor();
-    //! Choose LaTeX Math injection color.
-    void chooseMathColor();
-    //! Choose reference link color.
-    void chooseReferenceColor();
-    //! Choose color for special symbols.
-    void chooseSpecialColor();
-    //! Enable/disable colors scheme.
-    void colorsToggled(bool on);
     //! Init code themes combo box.
     void initCodeThemes(QSharedPointer<MdShared::Syntax> syntax);
 
-private:
-    //! Base implementation of color choosing.
-    void chooseColor(MdShared::ColorWidget *w,
-                     QColor &c);
+private slots:
+    //! Link color changed.
+    void linkColorChanged(const QColor &c);
+    //! Text color changed.
+    void textColorChanged(const QColor &c);
+    //! Inline color changed.
+    void inlineColorChanged(const QColor &c);
+    //! HTML color changed.
+    void htmlColorChanged(const QColor &c);
+    //! Table's borders color changed.
+    void tableColorChanged(const QColor &c);
+    //! Code color changed.
+    void codeColorChanged(const QColor &c);
+    //! LaTeX Math injection color changed.
+    void mathColorChanged(const QColor &c);
+    //! Reference link color changed.
+    void referenceColorChanged(const QColor &c);
+    //! Color for special symbols changed.
+    void specialColorChanged(const QColor &c);
+    //! Enable/disable colors scheme.
+    void colorsToggled(bool on);
 
 private:
     Q_DISABLE_COPY(ColorsPage)

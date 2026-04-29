@@ -661,6 +661,12 @@ msgid "GDL"
 msgstr "GDL"
 
 #, fuzzy
+#| msgid "text"
+msgctxt "Language|"
+msgid "Gemtext"
+msgstr "អត្ថបទ"
+
+#, fuzzy
 #| msgctxt "Language"
 #| msgid "GNU Gettext"
 msgctxt "Language|"
@@ -1444,6 +1450,13 @@ msgstr "Pig"
 msgctxt "Language|"
 msgid "Pike"
 msgstr "Pike"
+
+#, fuzzy
+#| msgctxt "Language Section"
+#| msgid "Assembler"
+msgctxt "Language|"
+msgid "PIO Assembler"
+msgstr "Assembler"
 
 msgctxt "Language|"
 msgid "PL/I"
@@ -4297,9 +4310,6 @@ msgstr ""
 
 #~ msgid "Typographical Conventions for %1"
 #~ msgstr "ការ​សន្មត​ទូទៅ​នៃ​មុទ្ទវិទ្យា​សម្រាប់ %1"
-
-#~ msgid "text"
-#~ msgstr "អត្ថបទ"
 
 #~ msgid "How do you want to import the schema?"
 #~ msgstr "តើ​អ្នក​ចង់​នាំចូល​ឌីយ៉ា​ក្រាម​យ៉ាង​ដូចម្ដេច ?"

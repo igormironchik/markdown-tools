@@ -19,6 +19,8 @@ rm -rf ./installer/packages/mironchik.igor.markdown/data/resources
 
 rm -rf ./installer/packages/mironchik.igor.markdown/data/translations
 
+rm -rf ./installer/packages/mironchik.igor.markdown/data/share
+
 mkdir ./installer/packages/mironchik.igor.markdown/data/bin || exit 1
 
 mkdir ./installer/packages/mironchik.igor.markdown/data/lib || exit 1
@@ -31,29 +33,41 @@ mkdir ./installer/packages/mironchik.igor.markdown/data/resources || exit 1
 
 mkdir ./installer/packages/mironchik.igor.markdown/data/translations || exit 1
 
+mkdir ./installer/packages/mironchik.igor.markdown/data/share || exit 1
+
+mkdir ./installer/packages/mironchik.igor.markdown/data/share/locale || exit 1
+
 cp ./build-markdown-tools/bin/md-editor ./installer/packages/mironchik.igor.markdown/data/bin/md-editor || exit 1
 
 cp ./build-markdown-tools/bin/md-launcher ./installer/packages/mironchik.igor.markdown/data/bin/md-launcher || exit 1
 
 cp ./build-markdown-tools/bin/md-pdf-gui ./installer/packages/mironchik.igor.markdown/data/bin/md-pdf-gui || exit 1
 
-cp $PWD/../KDE/lib/x86_64-linux-gnu/libKF6SyntaxHighlighting.so.6.12.0 ./installer/packages/mironchik.igor.markdown/data/lib/libKF6SyntaxHighlighting.so.6.12.0 || exit 1
+cp $PWD/../KDE/lib/x86_64-linux-gnu/libKF6SyntaxHighlighting.so.6.25.0 ./installer/packages/mironchik.igor.markdown/data/lib/libKF6SyntaxHighlighting.so.6.25.0 || exit 1
 
 cp $PWD/../KDE/lib/x86_64-linux-gnu/libKF6SyntaxHighlighting.so.6 ./installer/packages/mironchik.igor.markdown/data/lib/libKF6SyntaxHighlighting.so.6 || exit 1
 
 cp $PWD/../KDE/lib/x86_64-linux-gnu/libKF6SyntaxHighlighting.so ./installer/packages/mironchik.igor.markdown/data/lib/libKF6SyntaxHighlighting.so || exit 1
 
-cp $PWD/../KDE/lib/x86_64-linux-gnu/libKF6SonnetCore.so.6.12.0 ./installer/packages/mironchik.igor.markdown/data/lib/libKF6SonnetCore.so.6.12.0 || exit 1
+cp $PWD/../KDE/lib/x86_64-linux-gnu/libKF6SonnetCore.so.6.25.0 ./installer/packages/mironchik.igor.markdown/data/lib/libKF6SonnetCore.so.6.25.0 || exit 1
 
 cp $PWD/../KDE/lib/x86_64-linux-gnu/libKF6SonnetCore.so.6 ./installer/packages/mironchik.igor.markdown/data/lib/libKF6SonnetCore.so.6 || exit 1
 
 cp $PWD/../KDE/lib/x86_64-linux-gnu/libKF6SonnetCore.so ./installer/packages/mironchik.igor.markdown/data/lib/libKF6SonnetCore.so || exit 1
 
-cp $PWD/../KDE/lib/x86_64-linux-gnu/libKF6SonnetUi.so.6.12.0 ./installer/packages/mironchik.igor.markdown/data/lib/libKF6SonnetUi.so.6.12.0 || exit 1
+cp $PWD/../KDE/lib/x86_64-linux-gnu/libKF6SonnetUi.so.6.25.0 ./installer/packages/mironchik.igor.markdown/data/lib/libKF6SonnetUi.so.6.25.0 || exit 1
 
 cp $PWD/../KDE/lib/x86_64-linux-gnu/libKF6SonnetUi.so.6 ./installer/packages/mironchik.igor.markdown/data/lib/libKF6SonnetUi.so.6 || exit 1
 
 cp $PWD/../KDE/lib/x86_64-linux-gnu/libKF6SonnetUi.so ./installer/packages/mironchik.igor.markdown/data/lib/libKF6SonnetUi.so || exit 1
+
+cp $PWD/../KDE/lib/x86_64-linux-gnu/libKF6WidgetsAddons.so.6.25.0 ./installer/packages/mironchik.igor.markdown/data/lib/libKF6WidgetsAddons.so.6.25.0 || exit 1
+
+cp $PWD/../KDE/lib/x86_64-linux-gnu/libKF6WidgetsAddons.so.6 ./installer/packages/mironchik.igor.markdown/data/lib/libKF6WidgetsAddons.so.6 || exit 1
+
+cp $PWD/../KDE/lib/x86_64-linux-gnu/libKF6WidgetsAddons.so ./installer/packages/mironchik.igor.markdown/data/lib/libKF6WidgetsAddons.so || exit 1
+
+cp -r $PWD/../KDE/share/locale ./installer/packages/mironchik.igor.markdown/data/share || exit 1
 
 cp -r ./build-markdown-tools/lib ./installer/packages/mironchik.igor.markdown/data || exit 1
 

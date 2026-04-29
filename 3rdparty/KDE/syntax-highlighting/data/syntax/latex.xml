@@ -4,7 +4,7 @@
     <!ENTITY bullet "&#xd7;">
     <!ENTITY envname "[a-zA-Z]+\*?">
 ]>
-<language name="LaTeX" version="25" section="Markup" kateversion="5.79" priority="10" extensions="*.tex;*.ltx;*.dtx;*.sty;*.cls;*.bbx;*.cbx;*.lbx;*.tikz;*.pgf" mimetype="text/x-tex" casesensitive="1" author="Jeroen Wijnhout (Jeroen.Wijnhout@kdemail.net)+Holger Danielsson (holger.danielsson@versanet.de)+Michel Ludwig (michel.ludwig@kdemail.net)+Thomas Braun (thomas.braun@virtuell-zuhause.de)" license="LGPL" >
+<language name="LaTeX" version="27" section="Markup" kateversion="5.79" priority="10" extensions="*.tex;*.ltx;*.dtx;*.sty;*.cls;*.bbx;*.cbx;*.lbx;*.tikz;*.pgf" mimetype="text/x-tex" casesensitive="1" author="Jeroen Wijnhout (Jeroen.Wijnhout@kdemail.net)+Holger Danielsson (holger.danielsson@versanet.de)+Michel Ludwig (michel.ludwig@kdemail.net)+Thomas Braun (thomas.braun@virtuell-zuhause.de)" license="LGPL" >
   <highlighting>
     <!-- NOTE: Keywords of kind "\something" do not need a delimiter before "\".
          Using a DetectChar rule with lookAhead to detect "\" at the beginning
@@ -6361,124 +6361,123 @@
     <comments>
       <comment name="singleLine" start="%" />
     </comments>
+    <spellchecking>
+      <encodings>
+        <encoding char="&#192;" string="\`{A}" />
+        <encoding char="&#192;" string="\`A" />
+        <encoding char="&#193;" string="\'{A}" />
+        <encoding char="&#193;" string="\'A" />
+        <encoding char="&#194;" string="\^{A}" />
+        <encoding char="&#194;" string="\^A" />
+        <encoding char="&#195;" string="\~{A}" />
+        <encoding char="&#195;" string="\~A" />
+        <encoding char="&#196;" string="\&#34;{A}" />
+        <encoding char="&#196;" string="\&#34;A" />
+        <encoding char="&#197;" string="\AA{}" />
+        <encoding char="&#198;" string="\AE{}" />
+        <encoding char="&#199;" string="\c{C}" />
+        <encoding char="&#200;" string="\`{E}" />
+        <encoding char="&#200;" string="\`E" />
+        <encoding char="&#201;" string="\'{E}" />
+        <encoding char="&#201;" string="\'E" />
+        <encoding char="&#202;" string="\^{E}" />
+        <encoding char="&#202;" string="\^E" />
+        <encoding char="&#203;" string="\&#34;{E}" />
+        <encoding char="&#203;" string="\&#34;E" />
+        <encoding char="&#204;" string="\`{I}" />
+        <encoding char="&#204;" string="\`I" />
+        <encoding char="&#205;" string="\'{I}" />
+        <encoding char="&#205;" string="\'I" />
+        <encoding char="&#206;" string="\^{I}" />
+        <encoding char="&#206;" string="\^I" />
+        <encoding char="&#207;" string="\&#34;{I}" />
+        <encoding char="&#207;" string="\&#34;I" />
+        <encoding char="&#208;" string="\DH{}" />
+        <encoding char="&#209;" string="\~{N}" />
+        <encoding char="&#209;" string="\~N" />
+        <encoding char="&#210;" string="\`{O}" />
+        <encoding char="&#210;" string="\`O" />
+        <encoding char="&#211;" string="\'{O}" />
+        <encoding char="&#211;" string="\'O" />
+        <encoding char="&#212;" string="\^{O}" />
+        <encoding char="&#212;" string="\^O" />
+        <encoding char="&#213;" string="\~{O}" />
+        <encoding char="&#213;" string="\~O" />
+        <encoding char="&#214;" string="\&#34;{O}" />
+        <encoding char="&#214;" string="\&#34;O" />
+        <encoding char="&#216;" string="\O{}" />
+        <encoding char="&#217;" string="\`{U}" />
+        <encoding char="&#217;" string="\`U" />
+        <encoding char="&#218;" string="\'{U}" />
+        <encoding char="&#218;" string="\'U" />
+        <encoding char="&#219;" string="\^{U}" />
+        <encoding char="&#219;" string="\^U" />
+        <encoding char="&#220;" string="\&#34;{U}" />
+        <encoding char="&#220;" string="\&#34;U" />
+        <encoding char="&#221;" string="\'{Y}" />
+        <encoding char="&#221;" string="\'Y" />
+        <encoding char="&#222;" string="\TH{}" />
+        <encoding char="&#223;" string="\ss{}" />
+        <encoding char="&#224;" string="\`{a}" />
+        <encoding char="&#224;" string="\`a" />
+        <encoding char="&#225;" string="\'{a}" />
+        <encoding char="&#225;" string="\'a" />
+        <encoding char="&#226;" string="\^{a}" />
+        <encoding char="&#226;" string="\^a" />
+        <encoding char="&#227;" string="\~{a}" />
+        <encoding char="&#227;" string="\~a" />
+        <encoding char="&#228;" string="\&#34;{a}" />
+        <encoding char="&#228;" string="\&#34;a" />
+        <encoding char="&#229;" string="\aa{}" />
+        <encoding char="&#230;" string="\ae{}" />
+        <encoding char="&#231;" string="\c{c}" />
+        <encoding char="&#232;" string="\`{e}" />
+        <encoding char="&#232;" string="\`e" />
+        <encoding char="&#233;" string="\'{e}" />
+        <encoding char="&#233;" string="\'e" />
+        <encoding char="&#234;" string="\^{e}" />
+        <encoding char="&#234;" string="\^e" />
+        <encoding char="&#235;" string="\&#34;{e}" />
+        <encoding char="&#235;" string="\&#34;e" />
+        <encoding char="&#236;" string="\`{i}" />
+        <encoding char="&#236;" string="\`i" />
+        <encoding char="&#237;" string="\'{i}" />
+        <encoding char="&#237;" string="\'i" />
+        <encoding char="&#238;" string="\^{i}" />
+        <encoding char="&#238;" string="\^i" />
+        <encoding char="&#239;" string="\&#34;{i}" />
+        <encoding char="&#239;" string="\&#34;i" />
+        <encoding char="&#240;" string="\dh{}" />
+        <encoding char="&#241;" string="\~{n}" />
+        <encoding char="&#241;" string="\~n" />
+        <encoding char="&#242;" string="\`{o}" />
+        <encoding char="&#242;" string="\`o" />
+        <encoding char="&#243;" string="\'{o}" />
+        <encoding char="&#243;" string="\'o" />
+        <encoding char="&#244;" string="\^{o}" />
+        <encoding char="&#244;" string="\^o" />
+        <encoding char="&#245;" string="\~{o}" />
+        <encoding char="&#245;" string="\~o" />
+        <encoding char="&#246;" string="\&#34;{o}" />
+        <encoding char="&#246;" string="\&#34;o" />
+        <encoding char="&#248;" string="\o{}" />
+        <encoding char="&#249;" string="\`{u}" />
+        <encoding char="&#249;" string="\`u" />
+        <encoding char="&#250;" string="\'{u}" />
+        <encoding char="&#250;" string="\'u" />
+        <encoding char="&#251;" string="\^{u}" />
+        <encoding char="&#251;" string="\^u" />
+        <encoding char="&#252;" string="\&#34;{u}" />
+        <encoding char="&#252;" string="\&#34;u" />
+        <encoding char="&#253;" string="\'{y}" />
+        <encoding char="&#253;" string="\'y" />
+        <encoding char="&#254;" string="\th{}" />
+        <encoding char="&#255;" string="\&#34;{y}" />
+        <encoding char="&#255;" string="\&#34;y" />
+        <encoding string="''" />
+        <encoding string="\-" />
+      </encodings>
+    </spellchecking>
   </general>
-
-  <spellchecking>
-    <encodings>
-      <encoding char="&#192;" string="\`{A}" />
-      <encoding char="&#192;" string="\`A" />
-      <encoding char="&#193;" string="\'{A}" />
-      <encoding char="&#193;" string="\'A" />
-      <encoding char="&#194;" string="\^{A}" />
-      <encoding char="&#194;" string="\^A" />
-      <encoding char="&#195;" string="\~{A}" />
-      <encoding char="&#195;" string="\~A" />
-      <encoding char="&#196;" string="\&#34;{A}" />
-      <encoding char="&#196;" string="\&#34;A" />
-      <encoding char="&#197;" string="\AA{}" />
-      <encoding char="&#198;" string="\AE{}" />
-      <encoding char="&#199;" string="\c{C}" />
-      <encoding char="&#200;" string="\`{E}" />
-      <encoding char="&#200;" string="\`E" />
-      <encoding char="&#201;" string="\'{E}" />
-      <encoding char="&#201;" string="\'E" />
-      <encoding char="&#202;" string="\^{E}" />
-      <encoding char="&#202;" string="\^E" />
-      <encoding char="&#203;" string="\&#34;{E}" />
-      <encoding char="&#203;" string="\&#34;E" />
-      <encoding char="&#204;" string="\`{I}" />
-      <encoding char="&#204;" string="\`I" />
-      <encoding char="&#205;" string="\'{I}" />
-      <encoding char="&#205;" string="\'I" />
-      <encoding char="&#206;" string="\^{I}" />
-      <encoding char="&#206;" string="\^I" />
-      <encoding char="&#207;" string="\&#34;{I}" />
-      <encoding char="&#207;" string="\&#34;I" />
-      <encoding char="&#208;" string="\DH{}" />
-      <encoding char="&#209;" string="\~{N}" />
-      <encoding char="&#209;" string="\~N" />
-      <encoding char="&#210;" string="\`{O}" />
-      <encoding char="&#210;" string="\`O" />
-      <encoding char="&#211;" string="\'{O}" />
-      <encoding char="&#211;" string="\'O" />
-      <encoding char="&#212;" string="\^{O}" />
-      <encoding char="&#212;" string="\^O" />
-      <encoding char="&#213;" string="\~{O}" />
-      <encoding char="&#213;" string="\~O" />
-      <encoding char="&#214;" string="\&#34;{O}" />
-      <encoding char="&#214;" string="\&#34;O" />
-      <encoding char="&#216;" string="\O{}" />
-      <encoding char="&#217;" string="\`{U}" />
-      <encoding char="&#217;" string="\`U" />
-      <encoding char="&#218;" string="\'{U}" />
-      <encoding char="&#218;" string="\'U" />
-      <encoding char="&#219;" string="\^{U}" />
-      <encoding char="&#219;" string="\^U" />
-      <encoding char="&#220;" string="\&#34;{U}" />
-      <encoding char="&#220;" string="\&#34;U" />
-      <encoding char="&#221;" string="\'{Y}" />
-      <encoding char="&#221;" string="\'Y" />
-      <encoding char="&#222;" string="\TH{}" />
-      <encoding char="&#223;" string="\ss{}" />
-      <encoding char="&#224;" string="\`{a}" />
-      <encoding char="&#224;" string="\`a" />
-      <encoding char="&#225;" string="\'{a}" />
-      <encoding char="&#225;" string="\'a" />
-      <encoding char="&#226;" string="\^{a}" />
-      <encoding char="&#226;" string="\^a" />
-      <encoding char="&#227;" string="\~{a}" />
-      <encoding char="&#227;" string="\~a" />
-      <encoding char="&#228;" string="\&#34;{a}" />
-      <encoding char="&#228;" string="\&#34;a" />
-      <encoding char="&#229;" string="\aa{}" />
-      <encoding char="&#230;" string="\ae{}" />
-      <encoding char="&#231;" string="\c{c}" />
-      <encoding char="&#232;" string="\`{e}" />
-      <encoding char="&#232;" string="\`e" />
-      <encoding char="&#233;" string="\'{e}" />
-      <encoding char="&#233;" string="\'e" />
-      <encoding char="&#234;" string="\^{e}" />
-      <encoding char="&#234;" string="\^e" />
-      <encoding char="&#235;" string="\&#34;{e}" />
-      <encoding char="&#235;" string="\&#34;e" />
-      <encoding char="&#236;" string="\`{i}" />
-      <encoding char="&#236;" string="\`i" />
-      <encoding char="&#237;" string="\'{i}" />
-      <encoding char="&#237;" string="\'i" />
-      <encoding char="&#238;" string="\^{i}" />
-      <encoding char="&#238;" string="\^i" />
-      <encoding char="&#239;" string="\&#34;{i}" />
-      <encoding char="&#239;" string="\&#34;i" />
-      <encoding char="&#240;" string="\dh{}" />
-      <encoding char="&#241;" string="\~{n}" />
-      <encoding char="&#241;" string="\~n" />
-      <encoding char="&#242;" string="\`{o}" />
-      <encoding char="&#242;" string="\`o" />
-      <encoding char="&#243;" string="\'{o}" />
-      <encoding char="&#243;" string="\'o" />
-      <encoding char="&#244;" string="\^{o}" />
-      <encoding char="&#244;" string="\^o" />
-      <encoding char="&#245;" string="\~{o}" />
-      <encoding char="&#245;" string="\~o" />
-      <encoding char="&#246;" string="\&#34;{o}" />
-      <encoding char="&#246;" string="\&#34;o" />
-      <encoding char="&#248;" string="\o{}" />
-      <encoding char="&#249;" string="\`{u}" />
-      <encoding char="&#249;" string="\`u" />
-      <encoding char="&#250;" string="\'{u}" />
-      <encoding char="&#250;" string="\'u" />
-      <encoding char="&#251;" string="\^{u}" />
-      <encoding char="&#251;" string="\^u" />
-      <encoding char="&#252;" string="\&#34;{u}" />
-      <encoding char="&#252;" string="\&#34;u" />
-      <encoding char="&#253;" string="\'{y}" />
-      <encoding char="&#253;" string="\'y" />
-      <encoding char="&#254;" string="\th{}" />
-      <encoding char="&#255;" string="\&#34;{y}" />
-      <encoding char="&#255;" string="\&#34;y" />
-      <encoding string="''" ignored="true" />
-      <encoding string="\-" ignored="true" />
-    </encodings>
-  </spellchecking>
 </language>
 <!-- kate: replace-tabs on; tab-width 2; indent-width 2; -->

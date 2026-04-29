@@ -5,7 +5,6 @@
 
 // Widgets include.
 #include "plugins_page.h"
-#include "ui_plugins_page.h"
 
 namespace MdShared
 {
@@ -77,6 +76,11 @@ PluginsPage::PluginsPage(QWidget *parent)
 
 PluginsPage::~PluginsPage()
 {
+}
+
+Ui::PluginsPage &PluginsPage::ui()
+{
+    return d->m_ui;
 }
 
 void PluginsPage::setCfg(const PluginsCfg &cfg)

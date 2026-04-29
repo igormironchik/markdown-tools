@@ -463,6 +463,13 @@ msgctxt "Language|"
 msgid "GDL"
 msgstr "ГДЛ"
 
+#, fuzzy
+#| msgctxt "Language|"
+#| msgid "GNU Gettext"
+msgctxt "Language|"
+msgid "Gemtext"
+msgstr "Гнуов геттекст"
+
 msgctxt "Language|"
 msgid "GNU Gettext"
 msgstr "Гнуов геттекст"
@@ -1018,6 +1025,13 @@ msgstr "пиг"
 msgctxt "Language|"
 msgid "Pike"
 msgstr "пајк"
+
+#, fuzzy
+#| msgctxt "Language Section|"
+#| msgid "Assembler"
+msgctxt "Language|"
+msgid "PIO Assembler"
+msgstr "асемблерски"
 
 msgctxt "Language|"
 msgid "PL/I"

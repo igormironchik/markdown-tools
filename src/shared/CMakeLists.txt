@@ -10,14 +10,12 @@ set(CMAKE_AUTOUIC ON)
 find_package(Qt6Core REQUIRED)
 find_package(Qt6Widgets REQUIRED)
 find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
-    SyntaxHighlighting
+    SyntaxHighlighting WidgetsAddons
 )
 
 set(SRC license_dialog.h
 	license_dialog.cpp
 	license_dialog.ui
-	color_widget.cpp
-	color_widget.h
 	utils.h
 	utils.cpp
 	folder_chooser.h
@@ -59,9 +57,11 @@ add_library(markdown-widgets STATIC ${SRC})
 
 configure_file(version.h.in ${CMAKE_CURRENT_BINARY_DIR}/version.h)
 
-target_link_libraries(markdown-widgets KF${KF_MAJOR_VERSION}::SyntaxHighlighting Qt6::Widgets Qt6::Core)
+target_link_libraries(markdown-widgets KF${KF_MAJOR_VERSION}::SyntaxHighlighting KF${KF_MAJOR_VERSION}::WidgetsAddons
+    Qt6::Widgets Qt6::Core)
 
-target_include_directories(markdown-widgets INTERFACE ${CMAKE_CURRENT_BINARY_DIR})
+target_include_directories(markdown-widgets INTERFACE ${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}/markdown-widgets_autogen/include)
 
 set_property(TARGET markdown-widgets PROPERTY CXX_STANDARD 17)
 

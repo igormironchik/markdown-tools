@@ -7,3 +7,4 @@ Options:
  test-before-installing: True
  require-passing-tests-on: ['Linux', 'FreeBSD', 'Windows']
  cmake-options: -DBUILD_EXAMPLES=ON
+ enable-lsan: True
