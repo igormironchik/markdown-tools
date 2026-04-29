@@ -67,7 +67,7 @@ cp $PWD/../KDE/lib/x86_64-linux-gnu/libKF6WidgetsAddons.so.6 ./installer/package
 
 cp $PWD/../KDE/lib/x86_64-linux-gnu/libKF6WidgetsAddons.so ./installer/packages/mironchik.igor.markdown/data/lib/libKF6WidgetsAddons.so || exit 1
 
-cp -r $PWD/../KDE/share/locale ./installer/packages/mironchik.igor.markdown/data/share/locale || exit 1
+cp -r $PWD/../KDE/share/locale ./installer/packages/mironchik.igor.markdown/data/share || exit 1
 
 cp -r ./build-markdown-tools/lib ./installer/packages/mironchik.igor.markdown/data || exit 1
 
