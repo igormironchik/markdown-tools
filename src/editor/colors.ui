@@ -20,15 +20,15 @@
       <bool>true</bool>
      </property>
      <property name="alignment">
-      <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
      </property>
      <widget class="QWidget" name="m_scrollAreaWidgetContents">
       <property name="geometry">
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>642</width>
-        <height>497</height>
+        <width>634</width>
+        <height>412</height>
        </rect>
       </property>
       <property name="sizePolicy">

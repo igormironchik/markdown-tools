@@ -34,10 +34,18 @@ FontDlg::FontDlg(const QFont &f,
     auto s = m_page->ui().m_scrollAreaWidgetContents->sizeHint();
     m_page->ui().m_scrollAreaWidgetContents->setMinimumWidth(s.width());
     m_page->ui().m_scrollAreaWidgetContents->setMinimumHeight(s.height());
-    s.setHeight(s.height() + m_page->layout()->contentsMargins().top() + m_page->layout()->contentsMargins().bottom());
-    s.setWidth(s.width() + m_page->layout()->contentsMargins().left() + m_page->layout()->contentsMargins().right());
+    s.setHeight(s.height()
+                + m_page->layout()->contentsMargins().top()
+                + m_page->layout()->contentsMargins().bottom()
+                + m_page->ui().m_scrollArea->frameWidth() * 2);
+    s.setWidth(s.width()
+               + m_page->layout()->contentsMargins().left()
+               + m_page->layout()->contentsMargins().right()
+               + m_page->ui().m_scrollArea->frameWidth() * 2);
     m_page->setMinimumWidth(s.width());
     m_page->setMinimumHeight(s.height());
+
+    adjustSize();
 }
 
 QFont FontDlg::currentFont() const

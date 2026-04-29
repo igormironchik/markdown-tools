@@ -57,13 +57,20 @@ ColorsDialog::ColorsDialog(const Colors &cols,
     auto s = m_d->m_page->ui().m_scrollAreaWidgetContents->sizeHint();
     m_d->m_page->ui().m_scrollAreaWidgetContents->setMinimumWidth(s.width());
     m_d->m_page->ui().m_scrollAreaWidgetContents->setMinimumHeight(s.height());
+
     s.setHeight(s.height()
                 + m_d->m_page->layout()->contentsMargins().top()
-                + m_d->m_page->layout()->contentsMargins().bottom());
-    s.setWidth(
-        s.width() + m_d->m_page->layout()->contentsMargins().left() + m_d->m_page->layout()->contentsMargins().right());
+                + m_d->m_page->layout()->contentsMargins().bottom()
+                + m_d->m_page->ui().m_scrollArea->frameWidth() * 2);
+    s.setWidth(s.width()
+               + m_d->m_page->layout()->contentsMargins().left()
+               + m_d->m_page->layout()->contentsMargins().right()
+               + m_d->m_page->ui().m_scrollArea->frameWidth() * 2);
+
     m_d->m_page->setMinimumWidth(s.width());
     m_d->m_page->setMinimumHeight(s.height());
+
+    adjustSize();
 }
 
 ColorsDialog::~ColorsDialog()
