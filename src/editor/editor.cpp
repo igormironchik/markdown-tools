@@ -1764,6 +1764,28 @@ void Editor::clearUserStateOnAllBlocks()
     }
 }
 
+void replaceListDelims(QString &text, const MD::PosCache::Items &items)
+{
+    const auto lineNumber = items.back()->startLine();
+
+    auto it = items.crbegin();
+    ++it;
+
+    for (auto last = items.crend(); it != last; ++it) {
+        if ((*it)->startLine() == lineNumber) {
+            if ((*it)->type() == MD::ItemType::ListItem) {
+                auto li = static_cast<MD::ListItem *>(*it);
+
+                const auto count = li->delim().endColumn() - li->delim().startColumn() + 1;
+
+                text.replace(li->delim().startColumn(), count, QString(count, QLatin1Char(' ')));
+            }
+        } else {
+            break;
+        }
+    }
+}
+
 static const int s_autoAddedListItem = 1;
 
 bool Editor::handleReturnKeyForCode(QKeyEvent *event,
@@ -1786,7 +1808,12 @@ bool Editor::handleReturnKeyForCode(QKeyEvent *event,
 
             if (code->isFensedCode()) {
                 const auto block = document()->findBlockByNumber(code->startDelim().startLine());
-                const auto first = block.text().sliced(0, code->startDelim().startColumn());
+                auto first = block.text().sliced(0, code->startDelim().startColumn());
+
+                if (inList) {
+                    replaceListDelims(first, items);
+                }
+
                 textCursor().insertText(first);
 
                 if (!code->syntax().isEmpty()
