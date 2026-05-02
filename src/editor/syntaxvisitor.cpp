@@ -693,6 +693,10 @@ void SyntaxVisitor::onCode(MD::Code *c)
                     if (line != colored[i].line) {
                         line = colored[i].line;
 
+                        if (line + c->startLine() >= m_d->m_stream->size()) {
+                            break;
+                        }
+
                         calculateLine(line);
                     }
 
