@@ -1,8 +1,5 @@
-/**
- * SPDX-FileCopyrightText: (C) 2022 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- * SPDX-License-Identifier: MPL-2.0
- */
+// SPDX-FileCopyrightText: 2022 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #include <podofo/private/PdfDeclarationsPrivate.h>
 #include "PdfCharCodeMap.h"
@@ -75,7 +72,7 @@ bool PdfCharCodeMap::IsTrivialIdentity() const
     // We look first if we can look just at straight mappings
     if (m_Mappings.size() != 0)
     {
-        // If we also have ranges, then it's definetely not trivial
+        // If we also have ranges, then it's definitely not trivial
         if (m_Ranges.size() != 0)
             return false;
 
@@ -156,7 +153,7 @@ vector<CodeSpaceRange> PdfCharCodeMap::GetCodeSpaceRanges() const
         prevCodeHi = range.GetSrcCodeHi();
     }
 
-    // Merge all smae code space size ranges
+    // Merge all same code space size ranges
     it = ranges.begin();
     end = ranges.end();
     ret.push_back(CodeSpaceRange{ it->SrcCodeLo.Code, it->GetSrcCodeHi().Code, it->SrcCodeLo.CodeSpaceSize });
@@ -249,14 +246,23 @@ void PdfCharCodeMap::PushRange(const PdfCharCode& srcCodeLo, unsigned rangeSize,
     {
         if (inserted.first->Size < rangeSize)
         {
-            // Prepare an hint for re-insertion
-            auto it = std::prev(inserted.first);
+            // Prepare a hint for re-insertion
+            auto it = inserted.first;
+            bool atBegin = (it == m_Ranges.begin());
+            if (!atBegin)
+                it = std::prev(it);
             // If the current range with same srcCodeLo has a
             // size lesser than the one being inserted update it
             invalidRanges = true;
             auto node = m_Ranges.extract(inserted.first);
             node.value().Size = rangeSize;
-            it = m_Ranges.insert(it, std::move(node));
+            // NOTE: The second atBegin evaulation is needed because
+            // the iterator can be invalidated after the extraction
+            // when the node being updated is the first element
+            if (atBegin)
+                it = m_Ranges.insert(m_Ranges.begin(), std::move(node));
+            else
+                it = m_Ranges.insert(it, std::move(node));
             (void)tryFixNextRanges(it, srcCodeLo.Code + rangeSize);
         }
     }

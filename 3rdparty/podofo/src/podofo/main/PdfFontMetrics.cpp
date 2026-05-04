@@ -1,14 +1,14 @@
-/**
- * SPDX-FileCopyrightText: (C) 2005 Dominik Seichter <domseichter@web.de>
- * SPDX-FileCopyrightText: (C) 2020 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2005 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2020 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #include <podofo/private/PdfDeclarationsPrivate.h>
 #include "PdfFontMetrics.h"
 
 #include <podofo/private/FreetypePrivate.h>
-#include <podofo/private/FontUtils.h>
+#ifdef PODOFO_ENABLE_AFDKO
+#include <podofo/private/FontUtilsAFDKO.h>
+#endif
 
 #include "PdfArray.h"
 #include "PdfDictionary.h"
@@ -43,10 +43,10 @@ unique_ptr<const PdfFontMetrics> PdfFontMetrics::CreateFromFile(const string_vie
     const PdfFontMetrics* refMetrics, bool skipNormalization)
 {
     charbuff buffer;
-    unique_ptr<FT_FaceRec_, decltype(&FT_Done_Face)> face(FT::CreateFaceFromFile(filepath, faceIndex, buffer), FT_Done_Face);
+    auto face = FT::CreateFaceFromFile(filepath, faceIndex, buffer);
     if (face == nullptr)
     {
-        PoDoFo::LogMessage(PdfLogSeverity::Error, "Error when loading the face from buffer");
+        PoDoFo::LogMessage(PdfLogSeverity::Error, "Error when loading the face from the file");
         return nullptr;
     }
     auto ret = CreateFromFace(face.get(), std::make_unique<charbuff>(std::move(buffer)), refMetrics, skipNormalization);
@@ -69,7 +69,7 @@ unique_ptr<const PdfFontMetrics> PdfFontMetrics::CreateFromBuffer(const buffervi
     const PdfFontMetrics* refMetrics, bool skipNormalization)
 {
     charbuff buffer;
-    unique_ptr<FT_FaceRec_, decltype(&FT_Done_Face)> face(FT::CreateFaceFromBuffer(view, faceIndex, buffer), FT_Done_Face);
+    auto face = FT::CreateFaceFromBuffer(view, faceIndex, buffer);
     if (face == nullptr)
     {
         PoDoFo::LogMessage(PdfLogSeverity::Error, "Error when loading the face from buffer");
@@ -91,15 +91,17 @@ unique_ptr<const PdfFontMetrics> PdfFontMetrics::CreateMergedMetrics(bool skipNo
         auto fontType = GetFontFileType();
         if (fontType == PdfFontFileType::Type1)
         {
+#ifdef PODOFO_ENABLE_AFDKO
             // Unconditionally convert the Type1 font to CFF: this allow
-            // the font file to be insterted in a CID font
+            // the font file to be inserted in a CID font
             charbuff cffDest;
-            PoDoFo::ConvertFontType1ToCFF(GetOrLoadFontFileData(), cffDest);
-            unique_ptr<FT_FaceRec_, decltype(&FT_Done_Face)> face(FT::CreateFaceFromBuffer(cffDest), FT_Done_Face);
+            afdko::ConvertFontType1ToCFF(GetOrLoadFontFileData(), cffDest);
+            auto face = FT::CreateFaceFromBuffer(cffDest);
             auto ret = unique_ptr<PdfFontMetricsFreetype>(new PdfFontMetricsFreetype(
                 face.get(), datahandle(std::move(cffDest)), this));
             (void)face.release();
             return ret;
+#endif
         }
     }
 
@@ -107,7 +109,7 @@ unique_ptr<const PdfFontMetrics> PdfFontMetrics::CreateMergedMetrics(bool skipNo
     auto ret = unique_ptr<PdfFontMetricsFreetype>(new PdfFontMetricsFreetype(face,
         GetFontFileDataHandle(), this));
     // Reference the face after having created a new PdfFontMetricsFreetype instance
-    FT_Reference_Face(face);
+    FT::ReferenceFace(face);
     return ret;
 }
 
@@ -118,21 +120,26 @@ unique_ptr<PdfFontMetrics> PdfFontMetrics::CreateFromFace(FT_Face face, unique_p
     if (!FT::TryGetFontFileFormat(face, fontType))
         return nullptr;
 
+#ifdef PODOFO_ENABLE_AFDKO
     if (!skipNormalization)
     {
         if (fontType == PdfFontFileType::Type1)
         {
+
             // Unconditionally convert the Type1 font to CFF: this allow
-            // the font file to be insterted in a CID font
+            // the font file to be inserted in a CID font
             charbuff cffDest;
-            PoDoFo::ConvertFontType1ToCFF(*buffer, cffDest);
-            unique_ptr<FT_FaceRec_, decltype(&FT_Done_Face)> newface(FT::CreateFaceFromBuffer(cffDest), FT_Done_Face);
+            afdko::ConvertFontType1ToCFF(*buffer, cffDest);
+            auto newface = FT::CreateFaceFromBuffer(cffDest);
             auto ret = unique_ptr<PdfFontMetricsFreetype>(new PdfFontMetricsFreetype(
                 newface.get(), datahandle(std::move(cffDest)), refMetrics));
             (void)newface.release();
             return ret;
         }
     }
+#else
+    (void)skipNormalization;
+#endif // PODOFO_ENABLE_AFDKO
 
     return unique_ptr<PdfFontMetrics>(new PdfFontMetricsFreetype(face, datahandle(std::move(buffer)), refMetrics));
 }
@@ -570,7 +577,7 @@ PdfEncodingMapConstPtr PdfFontMetrics::getDefaultEncoding(bool tryFetchCidToGidM
         if (face != nullptr)
         {
             auto ret = getFontType1BuiltInEncoding(face);
-            if (tryFetchCidToGidMap)
+            if (tryFetchCidToGidMap && ret != nullptr)
                 cidToGidMap = getIntrinsicCIDToGIDMapType1(face, *ret, nullptr);
 
             return ret;
@@ -656,7 +663,7 @@ PdfFontMetricsBase::PdfFontMetricsBase()
 
 PdfFontMetricsBase::~PdfFontMetricsBase()
 {
-    FT_Done_Face(m_Face);
+    FT::FreeFace(m_Face);
 }
 
 const datahandle& PdfFontMetricsBase::GetFontFileDataHandle() const
@@ -679,7 +686,7 @@ FT_Face PdfFontMetricsBase::GetFaceHandle() const
         auto view = GetFontFileDataHandle().view();
         // NOTE: The data always represents a face, not a collection
         if (view.size() != 0)
-            rthis.m_Face = FT::CreateFaceFromBuffer(view);
+            rthis.m_Face = FT::CreateFaceFromBuffer(view).release();
 
         rthis.m_faceInit = true;
     }
@@ -753,23 +760,20 @@ PdfCIDToGIDMapConstPtr getIntrinsicCIDToGIDMapType1(FT_Face face, const PdfEncod
     const PdfName* name;
     CodePointSpan codePoints;
     FT_UInt index;
-    // NOTE:  It's safe to assume the base encoding is a one byte encoding.
-    // Iterate all the range, as the base econding may be narrow
+    // NOTE: It's safe to assume the base encoding is a one byte encoding.
+    // Iterate all the range, as the base encoding may be narrow
     for (unsigned code = 0; code <= 0xFFU; code++)
     {
         // If there's a difference, use that instead
         if (differences == nullptr || !differences->TryGetMappedName((unsigned char)code, name, codePoints))
         {
             // NOTE: 9.6.5.2 does not mention about querying the AGL, but
-            // all predefined encodings characater names are also present in the AGL
+            // all predefined encodings character names are also present in the AGL
             if (!baseEncodings.TryGetCodePoints(PdfCharCode(code, 1), codePoints)
                 || codePoints.GetSize() != 1
                 || !PdfPredefinedEncoding::TryGetCharNameFromCodePoint(*codePoints, name))
             {
-                // It may happen the code is not found even in the base encoding,
-                // just add an identity mapping
-            Identity:
-                map[code] = code;
+                // It may happen the code is not found even in the base encoding
                 continue;
             }
         }
@@ -777,7 +781,7 @@ PdfCIDToGIDMapConstPtr getIntrinsicCIDToGIDMapType1(FT_Face face, const PdfEncod
         // "A Type 1 font program’s glyph descriptions are keyed by glyph names, not by character codes"
         index = FT_Get_Name_Index(face, name->GetString().data());
         if (index == 0)
-            goto Identity;
+            continue;
 
         map[code] = index;
     }
@@ -827,24 +831,21 @@ PdfCIDToGIDMapConstPtr getIntrinsicCIDToGIDMapTrueType(FT_Face face, const PdfEn
     PdfCharCode charCode;
     FT_UInt index;
     auto& standardEncoding = PdfEncodingMapFactory::GetStandardEncodingInstance();
-    // NOTE:  It's safe to assume the base encoding is a one byte encoding.
-    // Iterate all the range, as the base econding may be narrow
+    // NOTE: It's safe to assume the base encoding is a one byte encoding.
+    // Iterate all the range, as the base encoding may be narrow
     for (unsigned code = 0; code <= 0xFFU; code++)
     {
         // If there's a difference, use that instead
         if (differences == nullptr || !differences->TryGetMappedName((unsigned char)code, name, codePoints))
         {
-            // "...the table shall be initialised with the entries from the
+            // "...the table shall be initialized with the entries from the
             // dictionary’s BaseEncoding entry. (...) Finally, any undefined
             // entries in the table shall be filled using StandardEncoding"
             charCode = PdfCharCode(code, 1);
             if (!(baseEncodings.TryGetCodePoints(charCode, codePoints)
                 || standardEncoding.TryGetCodePoints(charCode, codePoints)))
             {
-                // It may happen the code is not found even in the base encoding,
-                // just add an identity mapping
-            Identity:
-                map[code] = code;
+                // It may happen the code is not found even in the base encoding
                 continue;
             }
         }
@@ -868,7 +869,7 @@ PdfCIDToGIDMapConstPtr getIntrinsicCIDToGIDMapTrueType(FT_Face face, const PdfEn
         if (name == nullptr)
         {
             if (codePoints.GetSize() != 1 || !PdfPredefinedEncoding::TryGetCharNameFromCodePoint(*codePoints, name))
-                goto Identity;
+                continue;
         }
 
         // "In any of these cases, if the glyph name cannot be mapped as specified,
@@ -878,7 +879,7 @@ PdfCIDToGIDMapConstPtr getIntrinsicCIDToGIDMapTrueType(FT_Face face, const PdfEn
             fontPostMap.reset(new unordered_map<string_view, unsigned>(FT::GetPostMap(face)));
 
         if ((found = fontPostMap->find(*name)) == fontPostMap->end())
-            goto Identity;
+            continue;
 
         map[code] = found->second;
     }

@@ -1,8 +1,6 @@
-/**
- * SPDX-FileCopyrightText: (C) 2006 Dominik Seichter <domseichter@web.de>
- * SPDX-FileCopyrightText: (C) 2020 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2006 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2020 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #include <podofo/private/PdfDeclarationsPrivate.h>
 #include "PdfMemDocument.h"
@@ -24,7 +22,9 @@ PdfMemDocument::PdfMemDocument(bool empty) :
     m_Version(PdfVersionDefault),
     m_InitialVersion(PdfVersionDefault),
     m_HasXRefStream(false),
-    m_PrevXRefOffset(-1)
+    m_HasBrokenXRef(false),
+    m_MagicOffset(0),
+    m_PrevXRefOffset(0) // 0 is a sentinel for no or invalid XRef offset
 {
 }
 
@@ -34,7 +34,16 @@ PdfMemDocument::PdfMemDocument(shared_ptr<InputStreamDevice> device, const strin
     if (device == nullptr)
         PODOFO_RAISE_ERROR(PdfErrorCode::InvalidHandle);
 
-    loadFromDevice(std::move(device), password);
+    loadFromDevice(std::move(device), PdfLoadOptions::None, password);
+}
+
+PdfMemDocument::PdfMemDocument(shared_ptr<InputStreamDevice> device, PdfLoadOptions opts, const string_view& password)
+    : PdfMemDocument(true)
+{
+    if (device == nullptr)
+        PODOFO_RAISE_ERROR(PdfErrorCode::InvalidHandle);
+
+    loadFromDevice(std::move(device), opts, password);
 }
 
 PdfMemDocument::PdfMemDocument(const PdfMemDocument& rhs) :
@@ -42,6 +51,8 @@ PdfMemDocument::PdfMemDocument(const PdfMemDocument& rhs) :
     m_Version(rhs.m_Version),
     m_InitialVersion(rhs.m_InitialVersion),
     m_HasXRefStream(rhs.m_HasXRefStream),
+    m_HasBrokenXRef(rhs.m_HasBrokenXRef),
+    m_MagicOffset(rhs.m_MagicOffset),
     m_PrevXRefOffset(rhs.m_PrevXRefOffset)
 {
     // Do a full copy of the encrypt session
@@ -62,7 +73,9 @@ void PdfMemDocument::reset()
     m_Version = PdfVersionDefault;
     m_InitialVersion = PdfVersionDefault;
     m_HasXRefStream = false;
-    m_PrevXRefOffset = -1;
+    m_HasBrokenXRef = false;
+    m_MagicOffset = 0;
+    m_PrevXRefOffset = 0;
 }
 
 void PdfMemDocument::initFromParser(PdfParser& parser)
@@ -70,7 +83,9 @@ void PdfMemDocument::initFromParser(PdfParser& parser)
     m_Version = parser.GetPdfVersion();
     m_InitialVersion = m_Version;
     m_HasXRefStream = parser.HasXRefStream();
+    m_HasBrokenXRef = parser.HasCorruptedXRefSections();
     m_PrevXRefOffset = parser.GetXRefOffset();
+    m_MagicOffset = parser.GetMagicOffset();
     this->SetTrailer(parser.TakeTrailer());
 
     if (PdfCommon::IsLoggingSeverityEnabled(PdfLogSeverity::Debug))
@@ -89,20 +104,28 @@ void PdfMemDocument::initFromParser(PdfParser& parser)
 
 void PdfMemDocument::Load(const string_view& filename, const string_view& password)
 {
+    Load(filename, PdfLoadOptions::None, password);
+}
+
+void PdfMemDocument::Load(const string_view& filename, PdfLoadOptions opts, const string_view& password)
+{
     if (filename.length() == 0)
         PODOFO_RAISE_ERROR(PdfErrorCode::InvalidHandle);
 
-    auto device = std::make_shared<FileStreamDevice>(filename);
-    Load(device, password);
+    loadFromDevice(std::make_shared<FileStreamDevice>(filename), opts, password);
 }
 
 void PdfMemDocument::LoadFromBuffer(const bufferview& buffer, const string_view& password)
 {
+    LoadFromBuffer(buffer, PdfLoadOptions::None, password);
+}
+
+void PdfMemDocument::LoadFromBuffer(const bufferview& buffer, PdfLoadOptions opts, const string_view& password)
+{
     if (buffer.size() == 0)
         PODOFO_RAISE_ERROR(PdfErrorCode::InvalidHandle);
 
-    auto device = std::make_shared<SpanStreamDevice>(buffer);
-    Load(device, password);
+    loadFromDevice(std::make_shared<SpanStreamDevice>(buffer), opts, password);
 }
 
 void PdfMemDocument::Load(shared_ptr<InputStreamDevice> device, const string_view& password)
@@ -110,19 +133,35 @@ void PdfMemDocument::Load(shared_ptr<InputStreamDevice> device, const string_vie
     if (device == nullptr)
         PODOFO_RAISE_ERROR(PdfErrorCode::InvalidHandle);
 
-    this->Clear();
-    loadFromDevice(std::move(device), password);
+    loadFromDevice(std::move(device), PdfLoadOptions::None, password);
 }
 
-void PdfMemDocument::loadFromDevice(shared_ptr<InputStreamDevice>&& device, const string_view& password)
+void PdfMemDocument::Load(shared_ptr<InputStreamDevice> device, PdfLoadOptions opts, const string_view& password)
 {
+    if (device == nullptr)
+        PODOFO_RAISE_ERROR(PdfErrorCode::InvalidHandle);
+
+    loadFromDevice(std::move(device), opts, password);
+}
+
+void PdfMemDocument::loadFromDevice(shared_ptr<InputStreamDevice>&& device,
+    PdfLoadOptions opts, const string_view& password)
+{
+    this->Clear();
     m_device = std::move(device);
 
     // Call parse file instead of using the constructor
     // so that m_Parser is initialized for encrypted documents
     PdfParser parser(PdfDocument::GetObjects());
+    if ((opts & PdfLoadOptions::StrictParsing) != PdfLoadOptions::None)
+        parser.SetStrictParsing(true);
+    if ((opts & PdfLoadOptions::SkipXRefRecovery) != PdfLoadOptions::None)
+        parser.SetSkipXRefRecovery(true);
+    if ((opts & PdfLoadOptions::LoadStreamsEagerly) != PdfLoadOptions::None)
+        parser.SetLoadStreamsEagerly(true);
+
     parser.SetPassword(password);
-    parser.Parse(*m_device, true);
+    parser.Parse(*m_device);
     initFromParser(parser);
 }
 
@@ -136,7 +175,7 @@ void PdfMemDocument::Save(OutputStreamDevice& device, PdfSaveOptions opts)
 {
     beforeWrite(opts);
 
-    PdfWriter writer(this->GetObjects(), this->GetTrailer().GetObject());
+    PdfWriter writer(this->GetObjects(), this->GetTrailer().GetObject(), 0);
     writer.SetPdfVersion(GetMetadata().GetPdfVersion());
     writer.SetPdfALevel(GetMetadata().GetPdfALevel());
     writer.SetSaveOptions(opts);
@@ -153,6 +192,9 @@ void PdfMemDocument::Save(OutputStreamDevice& device, PdfSaveOptions opts)
         PODOFO_PUSH_FRAME(e);
         throw;
     }
+
+    m_PrevXRefOffset = writer.GetCurrXRefOffset();
+    m_HasBrokenXRef = false;
 }
 
 void PdfMemDocument::SaveUpdate(const string_view& filename, PdfSaveOptions opts)
@@ -165,13 +207,13 @@ void PdfMemDocument::SaveUpdate(OutputStreamDevice& device, PdfSaveOptions opts)
 {
     beforeWrite(opts);
 
-    PdfWriter writer(this->GetObjects(), this->GetTrailer().GetObject());
+    PdfWriter writer(this->GetObjects(), this->GetTrailer().GetObject(), m_MagicOffset);
     writer.SetPdfVersion(GetMetadata().GetPdfVersion());
     writer.SetPdfALevel(GetMetadata().GetPdfALevel());
     writer.SetSaveOptions(opts);
     writer.SetPrevXRefOffset(m_PrevXRefOffset);
     writer.SetUseXRefStream(m_HasXRefStream);
-    writer.SetIncrementalUpdate(false);
+    writer.SetIncrementalUpdate(true);
 
     if (m_Encrypt != nullptr)
         writer.SetEncrypt(*m_Encrypt);
@@ -194,6 +236,9 @@ void PdfMemDocument::SaveUpdate(OutputStreamDevice& device, PdfSaveOptions opts)
         PODOFO_PUSH_FRAME(e);
         throw;
     }
+
+    m_PrevXRefOffset = writer.GetCurrXRefOffset();
+    m_HasBrokenXRef = false;
 }
 
 void PdfMemDocument::beforeWrite(PdfSaveOptions opts)
@@ -229,6 +274,11 @@ void PdfMemDocument::SetEncrypt(unique_ptr<PdfEncrypt>&& encrypt)
         m_Encrypt = nullptr;
     else
         m_Encrypt.reset(new PdfEncryptSession(std::move(encrypt)));
+}
+
+bool PdfMemDocument::HasOwnerPermissions() const
+{
+    return m_Encrypt == nullptr || m_Encrypt->HasOwnerPermissions();
 }
 
 const PdfEncrypt* PdfMemDocument::GetEncrypt() const

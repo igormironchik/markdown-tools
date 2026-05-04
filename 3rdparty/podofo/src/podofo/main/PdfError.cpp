@@ -1,8 +1,6 @@
-/**
- * SPDX-FileCopyrightText: (C) 2006 Dominik Seichter <domseichter@web.de>
- * SPDX-FileCopyrightText: (C) 2020 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2006 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2020 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 // PdfError.h doesn't, and can't, include PdfDeclarations.h so we do so here.
 // PdfDeclarationsPrivate.h will include PdfError.h for us.
@@ -134,6 +132,8 @@ string_view PdfError::ErrorName(PdfErrorCode code)
             return "PdfErrorCode::FlateError"sv;
         case PdfErrorCode::FreeTypeError:
             return "PdfErrorCode::FreeTypeError"sv;
+        case PdfErrorCode::UnsupportedOperation:
+            return "PdfErrorCode::UnsupportedOperation"sv;
         case PdfErrorCode::UnsupportedPixelFormat:
             return "PdfErrorCode::UnsupportedPixelFormat"sv;
         case PdfErrorCode::UnsupportedImageFormat:
@@ -215,6 +215,8 @@ string_view PdfError::ErrorMessage(PdfErrorCode code)
             return "The content stream is invalid due to mismatched context pairing or other problems."sv;
         case PdfErrorCode::InvalidInput:
             return "The supplied input value is incorrect/unsupported."sv;
+        case PdfErrorCode::UnsupportedOperation:
+            return "The requested operation is not supported"sv;
         case PdfErrorCode::UnsupportedFilter:
             break;
         case PdfErrorCode::UnsupportedFontFormat:

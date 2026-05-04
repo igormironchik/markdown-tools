@@ -1,8 +1,6 @@
-/**
- * SPDX-FileCopyrightText: (C) 2006 Dominik Seichter <domseichter@web.de>
- * SPDX-FileCopyrightText: (C) 2020 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2006 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2020 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #ifndef PDF_TOKENIZER_H
 #define PDF_TOKENIZER_H
@@ -34,11 +32,13 @@ struct PODOFO_API PdfTokenizerOptions final
  */
 class PODOFO_API PdfTokenizer
 {
+    friend class PdfParser;
     friend class PdfPostScriptTokenizer;
     PODOFO_PRIVATE_FRIEND(class PdfParserObject);
 
 public:
     static constexpr unsigned BufferSize = 4096;
+    static constexpr size_t MaxStringLength = 64 * 1024 * 1024; // 64 MiB
 
 public:
     PdfTokenizer(const PdfTokenizerOptions& options = { });
@@ -95,6 +95,8 @@ public:
      */
     void ReadNextVariant(InputStreamDevice& device, PdfVariant& variant, const PdfStatefulEncrypt* encrypt = { });
     bool TryReadNextVariant(InputStreamDevice& device, PdfVariant& variant, const PdfStatefulEncrypt* encrypt = { });
+
+    void Reset();
 
 protected:
     // This enum differs from regular PdfDataType in the sense
@@ -196,12 +198,12 @@ private:
 
 private:
     using TokenizerPair = std::pair<std::string, PdfTokenType>;
-    using TokenizerQueque = std::deque<TokenizerPair>;
+    using TokenizerQueue = std::deque<TokenizerPair>;
 
 private:
     std::shared_ptr<charbuff> m_buffer;
     PdfTokenizerOptions m_options;
-    TokenizerQueque m_tokenQueque;
+    TokenizerQueue m_tokenQueue;
     charbuff m_charBuffer;
 };
 

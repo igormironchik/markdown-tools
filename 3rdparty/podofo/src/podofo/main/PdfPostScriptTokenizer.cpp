@@ -1,8 +1,5 @@
-/**
- * SPDX-FileCopyrightText: (C) 2021 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- * SPDX-License-Identifier: MPL-2.0
- */
+// SPDX-FileCopyrightText: 2021 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #include <podofo/private/PdfDeclarationsPrivate.h>
 #include "PdfPostScriptTokenizer.h"
@@ -86,7 +83,10 @@ bool PdfPostScriptTokenizer::TryReadNext(InputStreamDevice& device, PdfPostScrip
         case PdfLiteralDataType::Reference:
             PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InternalLogic, "Unsupported reference datatype at this context");
         default:
-            // Assume we have a keyword
+            // Assume we have a keyword. Drain any token that
+            // DetermineDataType re-enqueued for TryReadNextVariant
+            // callers, otherwise we'd re-process it infinitely.
+            this->Reset();
             keyword = token;
             psTokenType = PdfPostScriptTokenType::Keyword;
             break;

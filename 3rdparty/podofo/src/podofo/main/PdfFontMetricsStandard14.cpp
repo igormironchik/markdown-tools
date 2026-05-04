@@ -1,8 +1,6 @@
-/**
- * SPDX-FileCopyrightText: (C) 2010 Dominik Seichter <domseichter@web.de>
- * SPDX-FileCopyrightText: (C) 2020 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2010 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2020 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #include <podofo/private/PdfDeclarationsPrivate.h>
 #include "PdfFontMetricsStandard14.h"
@@ -21,14 +19,8 @@ PdfFontMetricsStandard14::PdfFontMetricsStandard14(
     m_Std14FontType(fontType),
     m_data(data)
 {
-    m_LineSpacing = 0.0;
     m_UnderlineThickness = 0.05;
     m_StrikeThroughThickness = m_UnderlineThickness;
-    m_Ascent = data.Ascent / 1000.0;
-    m_Descent = data.Descent / 1000.0;
-
-    m_UnderlinePosition = data.UnderlinePos / 1000.0;
-    m_StrikeThroughPosition = data.StrikeThroughPos / 1000.0;
 
     // calculate the line spacing now, as it changes only with the font size
     m_LineSpacing = (data.Ascent + abs(data.Descent)) / 1000.0;
@@ -154,13 +146,13 @@ bool PdfFontMetricsStandard14::TryGetItalicAngle(double& value) const
 
 bool PdfFontMetricsStandard14::TryGetAscent(double& value) const
 {
-    value = m_Ascent;
+    value = m_data.Ascent / 1000.0;
     return true;
 }
 
 bool PdfFontMetricsStandard14::TryGetDescent(double& value) const
 {
-    value = m_Descent;
+    value = m_data.Descent / 1000.0;
     return true;
 }
 
@@ -193,12 +185,12 @@ double PdfFontMetricsStandard14::GetUnderlineThickness() const
 
 double PdfFontMetricsStandard14::GetUnderlinePosition() const
 {
-    return m_UnderlinePosition;
+    return m_data.UnderlinePos / 1000.0;
 }
 
 double PdfFontMetricsStandard14::GetStrikeThroughPosition() const
 {
-    return m_StrikeThroughPosition;
+    return m_data.StrikeThroughPos / 1000.0;
 }
 
 double PdfFontMetricsStandard14::GetStrikeThroughThickness() const
@@ -258,7 +250,7 @@ double PdfFontMetricsStandard14::GetMaxWidthRaw() const
 
 PdfFontFileType PdfFontMetricsStandard14::GetFontFileType() const
 {
-    return PdfFontFileType::Type1CFF;
+    return m_data.FileType;
 }
 
 bool PdfFontMetricsStandard14::IsStandard14FontMetrics(PdfStandard14FontType& std14Font) const

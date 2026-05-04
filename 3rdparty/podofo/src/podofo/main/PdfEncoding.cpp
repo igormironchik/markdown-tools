@@ -1,8 +1,5 @@
-/**
- * SPDX-FileCopyrightText: (C) 2021 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- * SPDX-License-Identifier: MPL-2.0
- */
+// SPDX-FileCopyrightText: 2021 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #include <podofo/private/PdfDeclarationsPrivate.h>
 #include "PdfEncoding.h"
@@ -24,7 +21,7 @@ namespace PoDoFo
     class PdfDynamicEncodingMap : public PdfEncodingMapBase
     {
     public:
-        PdfDynamicEncodingMap(shared_ptr<PdfCharCodeMap> map);
+        PdfDynamicEncodingMap(shared_ptr<PdfCharCodeMap>&& map);
 
         void AppendCodeSpaceRange(OutputStream& stream, charbuff& temp) const override;
     };
@@ -80,11 +77,11 @@ unique_ptr<PdfEncoding> PdfEncoding::CreateSchim(const PdfEncoding& encoding, Pd
     return ret;
 }
 
-unique_ptr<PdfEncoding> PdfEncoding::CreateDynamicEncoding(const shared_ptr<PdfCharCodeMap>& cidMap,
-    const shared_ptr<PdfCharCodeMap>& toUnicodeMap, PdfFont& font)
+unique_ptr<PdfEncoding> PdfEncoding::CreateDynamicEncoding(shared_ptr<PdfCharCodeMap>&& cidMap,
+    shared_ptr<PdfCharCodeMap>&& toUnicodeMap, PdfFont& font)
 {
-    unique_ptr<PdfEncoding> ret(new PdfEncoding(GetNextId(), PdfEncodingMapConstPtr(new PdfDynamicEncodingMap(cidMap)),
-        PdfEncodingMapConstPtr(new PdfDynamicEncodingMap(toUnicodeMap))));
+    unique_ptr<PdfEncoding> ret(new PdfEncoding(GetNextId(), PdfEncodingMapConstPtr(new PdfDynamicEncodingMap(std::move(cidMap))),
+        PdfEncodingMapConstPtr(new PdfDynamicEncodingMap(std::move(toUnicodeMap)))));
     ret->m_Font = &font;
     return ret;
 }
@@ -655,7 +652,7 @@ void PdfEncoding::writeToUnicodeCMap(PdfObject& cmapObj, const PdfFont& font) co
         "/CMapType 2 def\n");     // As defined in Adobe Technical Notes #5099
     toUnicode.AppendCodeSpaceRange(output, temp);
 
-    toUnicode.AppendToUnicodeEntries(output, temp);
+    toUnicode.AppendToUnicodeEntries(output, font, temp);
     output.Write(
         "endcmap\n"
         "CMapName currentdict /CMap defineresource pop\n"
@@ -723,7 +720,7 @@ bool PdfStringScanContext::TryScan(PdfCID & cid, string &utf8str, vector<unsigne
     return success;
 }
 
-PdfDynamicEncodingMap::PdfDynamicEncodingMap(shared_ptr<PdfCharCodeMap> map)
+PdfDynamicEncodingMap::PdfDynamicEncodingMap(shared_ptr<PdfCharCodeMap>&& map)
     : PdfEncodingMapBase(std::move(map), PdfEncodingMapType::CMap) {
 }
 

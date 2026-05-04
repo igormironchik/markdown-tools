@@ -1,8 +1,6 @@
-/**
- * SPDX-FileCopyrightText: (C) 2007 Dominik Seichter <domseichter@web.de>
- * SPDX-FileCopyrightText: (C) 2020 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2007 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2020 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #ifndef PDF_ENCODING_MAP_H
 #define PDF_ENCODING_MAP_H
@@ -158,7 +156,7 @@ protected:
      *
      * To be called by PdfEncoding
      */
-    virtual void AppendToUnicodeEntries(OutputStream& stream, charbuff& temp) const = 0;
+    virtual void AppendToUnicodeEntries(OutputStream& stream, const PdfFont& font, charbuff& temp) const = 0;
 
     /** During a PdfEncoding::ExportToFont() append "begincidchar"
      * and/or "begincidrange" entries. See Adobe tecnichal notes #5014\
@@ -228,7 +226,7 @@ protected:
 
     void AppendCodeSpaceRange(OutputStream& stream, charbuff& temp) const override;
 
-    void AppendToUnicodeEntries(OutputStream& stream, charbuff& temp) const override;
+    void AppendToUnicodeEntries(OutputStream& stream, const PdfFont& font, charbuff& temp) const override;
 
     void AppendCIDMappingEntries(OutputStream& stream, const PdfFont& font, charbuff& temp) const override;
 
@@ -260,7 +258,7 @@ private:
     PdfEncodingMapSimple(const PdfEncodingLimits& limits);
 
 protected:
-    void AppendToUnicodeEntries(OutputStream& stream, charbuff& temp) const override;
+    void AppendToUnicodeEntries(OutputStream& stream, const PdfFont& font, charbuff& temp) const override;
 
     void AppendCIDMappingEntries(OutputStream& stream, const PdfFont& font, charbuff& temp) const override;
 
@@ -345,7 +343,7 @@ protected:
 
     bool tryGetCodePoints(const PdfCharCode& codeUnit, const unsigned* cidId, CodePointSpan& codePoints) const override;
 
-    void AppendToUnicodeEntries(OutputStream& stream, charbuff& temp) const override;
+    void AppendToUnicodeEntries(OutputStream& stream, const PdfFont& font, charbuff& temp) const override;
 
     void AppendCIDMappingEntries(OutputStream& stream, const PdfFont& font, charbuff& temp) const override;
 };

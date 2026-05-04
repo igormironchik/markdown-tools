@@ -1,8 +1,6 @@
-/**
- * SPDX-FileCopyrightText: (C) 2005 Dominik Seichter <domseichter@web.de>
- * SPDX-FileCopyrightText: (C) 2020 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2005 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2020 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #ifndef PDF_OBJECT_H
 #define PDF_OBJECT_H
@@ -512,9 +510,9 @@ protected:
 
     void DelayedLoadStream() const;
 
-    void delayedLoadStream() const;
-
     void EnableDelayedLoadingStream();
+
+    void MakeDelayedLoadingStreamDone();
 
     inline void SetIndirectReference(const PdfReference& reference) { m_IndirectReference = reference; }
 
@@ -569,7 +567,7 @@ private:
 
     void assign(const PdfObject& rhs);
 
-    void moveFrom(PdfObject&& rhs);
+    void moveFrom(PdfObject&& rhs) noexcept;
 
     void ResetDirty();
 
@@ -582,8 +580,6 @@ private:
     PdfObject(T*) = delete;
 
     void copyStreamFrom(const PdfObject& obj);
-
-    void moveStreamFrom(PdfObject& obj);
 
     // Shared initialization between all the ctors
     void initObject();

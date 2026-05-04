@@ -1,8 +1,6 @@
-/**
- * SPDX-FileCopyrightText: (C) 2008 Dominik Seichter <domseichter@web.de>
- * SPDX-FileCopyrightText: (C) 2021 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2008 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2021 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #ifndef PDF_FONT_TTF_SUBSET_H
 #define PDF_FONT_TTF_SUBSET_H
@@ -13,17 +11,6 @@ namespace PoDoFo {
 
 class InputStreamDevice;
 class OutputStream;
-
-/**
- * Internal enum specifying the type of a fontfile.
- */
-enum class TrueTypeFontFileType
-{
-    Unknown, ///< Unknown
-    TTF,    ///< TrueType Font
-    TTC,    ///< TrueType Collection
-    OTF,    ///< OpenType Font
-};
 
 /**
  * This class is able to build a new TTF font with only
@@ -51,26 +38,15 @@ private:
     FontTrueTypeSubset(const FontTrueTypeSubset& rhs) = delete;
     FontTrueTypeSubset& operator=(const FontTrueTypeSubset& rhs) = delete;
 
-    void BuildFont(const cspan<PdfCharGIDInfo>& infos, charbuff& output);
+    void buildFont(const cspan<PdfCharGIDInfo>& infos, charbuff& output);
 
-    void Init();
-    unsigned GetTableOffset(unsigned tag);
-    void GetNumberOfGlyphs();
-    void SeeIfLongLocaOrNot();
-    void InitTables();
+    void init();
+    unsigned getTableOffset(unsigned tag);
+    void getNumberOfGlyphs();
+    void determineLongLocaTable();
+    void initTables();
 
-    void CopyData(OutputStream& output, unsigned offset, unsigned size);
-
-private:
-    /** Information of TrueType tables.
-     */
-    struct TrueTypeTable
-    {
-        uint32_t Tag = 0;
-        uint32_t Checksum = 0;
-        uint32_t Length = 0;
-        uint32_t Offset = 0;
-    };
+    void copyData(OutputStream& output, unsigned offset, unsigned size);
 
     struct GlyphCompoundComponentData
     {
@@ -113,16 +89,26 @@ private:
         int16_t LeftSideBearing = 0;
     };
 
-    void LoadGlyphData(GlyphContext& ctx, unsigned gid);
-    void LoadCompound(GlyphContext& ctx, const GlyphData& data);
-    void LoadGlyphMetrics(const cspan<PdfCharGIDInfo>& infos);
-    LongHorMetrics GetGlyphMetrics(unsigned gid);
-    LongHorMetrics GetGlyphMetricsPdfAdvance(unsigned gid, unsigned metricsId);
-    void WriteGlyphTable(OutputStream& output);
-    void WriteHmtxTable(OutputStream& output);
-    void WriteLocaTable(OutputStream& output);
-    void WriteTables(charbuff& output);
-    void ReadGlyphCompoundData(GlyphCompoundData& data, unsigned offset);
+    void loadGlyphData(GlyphContext& ctx, unsigned gid);
+    void loadCompound(GlyphContext& ctx, const GlyphData& data);
+    void loadGlyphMetrics(const cspan<PdfCharGIDInfo>& infos);
+    LongHorMetrics getGlyphMetrics(unsigned gid);
+    LongHorMetrics getGlyphMetricsPdfAdvance(unsigned gid, unsigned metricsId);
+    void writeGlyphTable(OutputStream& output);
+    void writeHmtxTable(OutputStream& output);
+    void writeLocaTable(OutputStream& output);
+    void writeTables(charbuff& output);
+    void readGlyphCompoundData(GlyphCompoundData& data, unsigned offset);
+
+    /** Information of TrueType tables.
+     */
+    struct TrueTypeTable
+    {
+        uint32_t Tag = 0;
+        uint32_t Checksum = 0;
+        uint32_t Length = 0;
+        uint32_t Offset = 0;
+    };
 
     struct GIDInfo
     {
@@ -134,7 +120,7 @@ private:
     InputStreamDevice* m_device;
     const PdfFontMetrics* m_metrics;
 
-    bool m_isLongLoca;
+    bool m_isLongLoca; ///< Determines if the glyph locations are 16 or 32 bits
     uint16_t m_glyphCount;
     uint16_t m_HMetricsCount;
     uint16_t m_unitsPerEM;
@@ -148,6 +134,6 @@ private:
     charbuff m_tmpBuffer;
 };
 
-};
+}
 
 #endif // PDF_FONT_TRUE_TYPE_H

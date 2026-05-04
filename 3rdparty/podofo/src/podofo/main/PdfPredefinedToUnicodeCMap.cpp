@@ -1,8 +1,5 @@
-/**
- * SPDX-FileCopyrightText: (C) 2022 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- * SPDX-License-Identifier: MPL-2.0
- */
+// SPDX-FileCopyrightText: 2022 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #include <podofo/private/PdfDeclarationsPrivate.h>
 #include "PdfPredefinedToUnicodeCMap.h"
@@ -57,9 +54,10 @@ bool PdfPredefinedToUnicodeCMap::tryGetCharCodeSpan(const unicodeview& ligature,
     return m_CIDEncoding->GetCharMap().TryGetCharCode(codeUnit.Code, codeUnit);
 }
 
-void PdfPredefinedToUnicodeCMap::AppendToUnicodeEntries(OutputStream& stream, charbuff& temp) const
+void PdfPredefinedToUnicodeCMap::AppendToUnicodeEntries(OutputStream& stream, const PdfFont& font, charbuff& temp) const
 {
     (void)stream;
+    (void)font;
     (void)temp;
     PODOFO_RAISE_ERROR_INFO(PdfErrorCode::NotImplemented, "Unsupported serializing a predefined ToUnicode map");
 }

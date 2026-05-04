@@ -1,8 +1,6 @@
-/**
- * SPDX-FileCopyrightText: (C) 2007 Dominik Seichter <domseichter@web.de>
- * SPDX-FileCopyrightText: (C) 2020 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2007 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2020 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #include <podofo/private/PdfDeclarationsPrivate.h>
 #include "PdfEncodingMap.h"
@@ -309,9 +307,9 @@ void PdfEncodingMapBase::AppendCodeSpaceRange(OutputStream& stream, charbuff& te
     PoDoFo::AppendCodeSpaceRangeTo(stream, *m_charMap, temp);
 }
 
-void PdfEncodingMapBase::AppendToUnicodeEntries(OutputStream& stream, charbuff& temp) const
+void PdfEncodingMapBase::AppendToUnicodeEntries(OutputStream& stream, const PdfFont& font, charbuff& temp) const
 {
-    PoDoFo::AppendToUnicodeEntriesTo(stream, *m_charMap, temp);
+    PoDoFo::AppendToUnicodeEntriesTo(stream, *m_charMap, font.GetCharCodeSubset().get(), temp);
 }
 
 void PdfEncodingMapBase::AppendCIDMappingEntries(OutputStream& stream, const PdfFont& font, charbuff& temp) const
@@ -328,35 +326,76 @@ const PdfEncodingLimits& PdfEncodingMapBase::GetLimits() const
 PdfEncodingMapSimple::PdfEncodingMapSimple(const PdfEncodingLimits& limits)
     : PdfEncodingMap(PdfEncodingMapType::Simple), m_Limits(limits) { }
 
-void PdfEncodingMapSimple::AppendToUnicodeEntries(OutputStream& stream, charbuff& temp) const
+void PdfEncodingMapSimple::AppendToUnicodeEntries(OutputStream& stream, const PdfFont& font, charbuff& temp) const
 {
-    auto& limits = GetLimits();
-    PODOFO_ASSERT(limits.MaxCodeSize == 1);
     CodePointSpan codePoints;
-    unsigned code = limits.FirstChar.Code;
-    unsigned lastCode = limits.LastChar.Code;
-    stream.Write("1 beginbfrange\n");
-    limits.FirstChar.WriteHexTo(temp);
-    stream.Write(temp);
-    stream.Write(" ");
-    limits.LastChar.WriteHexTo(temp);
-    stream.Write(temp);
-    stream.Write(" [\n");
-    u16string u16tmp;
-    for (; code <= lastCode; code++)
+    auto charCodeSubset = font.GetCharCodeSubset();
+    if (charCodeSubset != nullptr)
     {
-        if (!TryGetCodePoints(PdfCharCode(code), codePoints))
+        struct BFCharMapping
         {
-            // If we don't find the code in the encoding/font
-            // program, it's safe to continue
-            continue;
+            BFCharMapping(const PdfCharCode& code, const CodePointSpan& span)
+                : CharCode(code), CodePoints(span) { }
+
+            PdfCharCode CharCode;
+            CodePointSpan CodePoints;
+        };
+
+        vector<BFCharMapping> mappings;
+        mappings.reserve(charCodeSubset->size());
+        for (auto& charCode : *charCodeSubset)
+        {
+            if (!TryGetCodePoints(charCode, codePoints))
+                continue;
+
+            mappings.emplace_back(charCode, codePoints);
         }
 
-        PoDoFo::AppendUTF16CodeTo(stream, codePoints, u16tmp);
-        stream.Write("\n");
+        utls::FormatTo(temp, mappings.size());
+        stream.Write(temp);
+        stream.Write(" beginbfchar\n");
+
+        u16string u16temp;
+        for (auto& mapping : mappings)
+        {
+            mapping.CharCode.WriteHexTo(temp);
+            stream.Write(temp);
+            stream.Write(" ");
+            PoDoFo::AppendUTF16CodeTo(stream, mapping.CodePoints, u16temp);
+            stream.Write("\n");
+        }
+        stream.Write("endbfchar\n");
     }
-    stream.Write("]\n");
-    stream.Write("endbfrange\n");
+    else
+    {
+        auto& limits = GetLimits();
+        PODOFO_ASSERT(limits.MaxCodeSize == 1);
+        unsigned code = limits.FirstChar.Code;
+        unsigned lastCode = limits.LastChar.Code;
+        stream.Write("1 beginbfrange\n");
+        limits.FirstChar.WriteHexTo(temp);
+        stream.Write(temp);
+        stream.Write(" ");
+        limits.LastChar.WriteHexTo(temp);
+        stream.Write(temp);
+        stream.Write(" [\n");
+        u16string u16tmp;
+        for (; code <= lastCode; code++)
+        {
+            if (!TryGetCodePoints(PdfCharCode(code), codePoints))
+            {
+                // If we don't find the code in the encoding/font
+                // just map it to null
+                stream.Write("<0000>\n");
+                continue;
+            }
+
+            PoDoFo::AppendUTF16CodeTo(stream, codePoints, u16tmp);
+            stream.Write("\n");
+        }
+        stream.Write("]\n");
+        stream.Write("endbfrange\n");
+    }
 }
 
 void PdfEncodingMapSimple::AppendCIDMappingEntries(OutputStream& stream, const PdfFont& font, charbuff& temp) const
@@ -435,9 +474,10 @@ bool PdfNullEncodingMap::tryGetCodePoints(const PdfCharCode& codeUnit, const uns
     PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InternalLogic, "The null encoding must be bound to a PdfFont");
 }
 
-void PdfNullEncodingMap::AppendToUnicodeEntries(OutputStream& stream, charbuff& temp) const
+void PdfNullEncodingMap::AppendToUnicodeEntries(OutputStream& stream, const PdfFont& font, charbuff& temp) const
 {
     (void)stream;
+    (void)font;
     (void)temp;
     PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InternalLogic, "The null encoding must be bound to a PdfFont");
 }

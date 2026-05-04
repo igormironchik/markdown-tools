@@ -1,8 +1,6 @@
-/**
- * SPDX-FileCopyrightText: (C) 2008 Dominik Seichter <domseichter@web.de>
- * SPDX-FileCopyrightText: (C) 2020 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2008 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2020 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #include <podofo/private/PdfDeclarationsPrivate.h>
 #include "PdfDifferenceEncoding.h"
@@ -36,7 +34,7 @@ namespace
     {
         AglMapType Type;                ///< The mapping may belong to multiple maps
         unsigned char CodePointCount;
-        unsigned short Code;            ///< The unicode code point of the charater, or the index in the ligatures lists
+        unsigned short Code;            ///< The unicode code point of the character, or the index in the ligatures lists
     };
 
     struct AglLigatureInfo
@@ -5062,6 +5060,8 @@ void ensureAglMapInitialized()
     {
         Init()
         {
+            // NOTE: This map was generated using the
+            // "staging/BuildAglMapsBinary.cpp" script
             static constexpr const char CompressedMaps[] =
 "\170\234\034\334\005\224\033\125\033\306\361\271\167\364\216\247"
 "\205\266\130\330\335\146\267\024\051\221\172\013\324\240\305\241"

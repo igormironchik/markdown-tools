@@ -1,7 +1,5 @@
-/**
- * SPDX-FileCopyrightText: (C) 2006 Dominik Seichter <domseichter@web.de>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2006 Dominik Seichter <domseichter@web.de>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #ifndef PDF_FILTER_H
 #define PDF_FILTER_H
@@ -168,19 +166,6 @@ public:
     virtual PdfFilterType GetType() const = 0;
 
 protected:
-    /**
-     * Indicate that the filter has failed, and will be non-functional
-     * until BeginEncode() or BeginDecode() is next called. Call this
-     * instead of EndEncode() or EndDecode if something went wrong.
-     * It clears the stream output but otherwise does nothing.
-     *
-     * After this method is called further calls to EncodeBlock(),
-     * DecodeBlock(), EndDecode() and EndEncode() before the next
-     * BeginEncode() or BeginDecode() are guaranteed to throw
-     * without calling their virtual implementations.
-     */
-    void FailEncodeDecode();
-
     /** Real implementation of BeginEncode(). NEVER call this method directly.
      *
      *  By default this function does nothing. If your filter needs to do setup
@@ -270,6 +255,8 @@ protected:
 private:
     void encodeTo(OutputStream& stream, const bufferview& inBuffer);
     void decodeTo(OutputStream& stream, const bufferview& inBuffer, const PdfDictionary* decodeParms);
+    void failEncodeDecode();
+    void closeEncodeDecode();
 
 private:
     OutputStream* m_OutputStream;

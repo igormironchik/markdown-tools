@@ -1,8 +1,6 @@
-/**
- * SPDX-FileCopyrightText: (C) 2005 Dominik Seichter <domseichter@web.de>
- * SPDX-FileCopyrightText: (C) 2020 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2005 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2020 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #ifndef PDF_FONT_H
 #define PDF_FONT_H
@@ -45,10 +43,12 @@ class PODOFO_API PdfFont : public PdfDictionaryElement
 {
     friend class PdfFontSimple;
     friend class PdfFontCID;
-    friend class PdfFontFactory;
     friend class PdfFontObject;
     friend class PdfEncoding;
     friend class PdfFontManager;
+    friend class PdfEncodingMapBase;
+    friend class PdfEncodingMapSimple;
+    friend class PdfFontBuiltinType1Encoding;
 
 private:
     /** Create a new PdfFont object which will introduce itself
@@ -56,7 +56,7 @@ private:
      *
      *  \param parent parent of the font object
      *  \param metrics pointer to a font metrics object. The font in the PDF
-     *         file will match this fontmetrics object. The metrics object is
+     *         file will match this font metrics object. The metrics object is
      *         deleted along with the font.
      *  \param encoding the encoding of this font
      */
@@ -87,7 +87,7 @@ private:
      *
      * \param doc the parent of the created font.
      * \param metrics pointer to a font metrics object. The font in the PDF
-     *      file will match this fontmetrics object. The metrics object is
+     *      file will match this font metrics object. The metrics object is
      *      deleted along with the created font. In case of an error, it is deleted
      *      here.
      * \param encoding the encoding of this font.
@@ -100,14 +100,11 @@ private:
         const PdfFontCreateParams& createParams, bool isProxy = false);
 
     /**
-     * Creates a new standard 14 font object (of class PdfFontStandard14) if
-     * the font name (has to include variant) is one of the standard 14 fonts.
-     * The font name is to be given as specified (with an ASCII hyphen)
+     * Creates a new standard 14 font object
      *
      * \param doc the parent of the created font
      * \param std14Font standard14 font type
-     * \param encoding an encoding compatible with the font
-     * \param flags flags for font init
+     * \param createParams params for font init
      * \remarks to be called by PdfFontManager
      * \returns a new PdfFont object
      */
@@ -426,24 +423,23 @@ private:
      */
     PdfCharCode AddCharCodeSafe(unsigned gid, const unicodeview& codePoints);
 
-    /** Optional function to map a CID to a GID
-     *
-     * Example for /Type2 CID fonts may have a /CIDToGIDMap
+    /** Returns all the char codes that were subsetted
      */
-    bool TryMapCIDToGID(unsigned cid, PdfGID& gid) const;
-    bool TryMapCIDToGID(unsigned cid, PdfGlyphAccess access, unsigned& gid) const;
+    std::unique_ptr<std::set<PdfCharCode>> GetCharCodeSubset() const;
 
 private:
-    struct CIDSubsetInfo
-    {
-        PdfGID Gid;                     ///< The GID mapped from the source CID in the map
-        PdfCharCodeList Codes;          ///< The codes that maps to the CID in the map
-    };
-
-    using CIDSubsetMap = std::map<unsigned, CIDSubsetInfo>;
-
     bool tryConvertToGIDs(const std::string_view& utf8Str, PdfGlyphAccess access, std::vector<unsigned>& gids) const;
     bool tryAddSubsetGID(unsigned gid, const unicodeview& codePoints, PdfCID& cid);
+
+    /** Map a CID to a GID
+     * If available it uses the /CIDToGIDMap, 
+     */
+    void mapCIDToGID(unsigned cid, PdfGID& gid) const;
+
+    /** Map a CID to a GID
+     * Similar to the previous method but specialized for queries
+     */
+    bool tryMapCIDToGID(unsigned cid, PdfGlyphAccess access, unsigned& gid) const;
 
     void initBase(const PdfEncoding& encoding);
 
@@ -461,6 +457,17 @@ private:
 
     void pushSubsetInfo(unsigned cid, const PdfGID& gid, const PdfCharCode& code);
 
+    // TODO: Optimize me
+    using PdfCharCodeList = std::vector<PdfCharCode>;
+
+    struct PODOFO_API CIDSubsetInfo final
+    {
+        PdfGID Gid;                     ///< The GID mapped from the source CID in the map
+        PdfCharCodeList Codes;          ///< The codes that maps to the CID in the map
+    };
+
+    using CIDSubsetMap = std::map<unsigned, CIDSubsetInfo>;
+
 private:
     std::string m_Name;
     std::string m_SubsetPrefix;
@@ -469,7 +476,7 @@ private:
     bool m_IsEmbedded;
     bool m_SubsettingEnabled;
     bool m_IsProxy;
-    std::unique_ptr<CIDSubsetMap> m_subsetCIDMap;
+    std::unique_ptr<CIDSubsetMap> m_SubsetCIDMap;
     std::unique_ptr<std::unordered_map<unsigned, unsigned>> m_subsetGIDToCIDMap;
     const PdfCIDToGIDMap* m_fontProgCIDToGIDMap;
     double m_WordSpacingLengthRaw;
@@ -478,8 +485,8 @@ private:
 protected:
     PdfFontMetricsConstPtr m_Metrics;
     std::unique_ptr<PdfEncoding> m_Encoding;
-    std::shared_ptr<PdfCharCodeMap> m_DynamicCIDMap;
-    std::shared_ptr<PdfCharCodeMap> m_DynamicToUnicodeMap;
+    PdfCharCodeMap* m_DynamicCIDMap;
+    PdfCharCodeMap* m_DynamicToUnicodeMap;
 };
 
 };

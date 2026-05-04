@@ -1,8 +1,6 @@
-/**
- * SPDX-FileCopyrightText: (C) 2005 Dominik Seichter <domseichter@web.de>
- * SPDX-FileCopyrightText: (C) 2020 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2005 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2020 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #ifndef PDF_FONT_METRICS_FREETYPE_H
 #define PDF_FONT_METRICS_FREETYPE_H
@@ -85,7 +83,9 @@ public:
 
     const datahandle& GetFontFileDataHandle() const override;
 
+#ifdef PODOFO_3RDPARTY_INTEROP_ENABLED
     FT_Face GetFaceHandle() const override;
+#endif // #ifdef PODOFO_3RDPARTY_INTEROP_ENABLED
 
 protected:
     std::string_view GetBaseFontName() const override;

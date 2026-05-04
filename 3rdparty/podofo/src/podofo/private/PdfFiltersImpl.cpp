@@ -1,7 +1,5 @@
-/**
- * SPDX-FileCopyrightText: (C) 2007 Dominik Seichter <domseichter@web.de>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2007 Dominik Seichter <domseichter@web.de>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #include "PdfDeclarationsPrivate.h"
 #include "PdfFiltersImpl.h"
@@ -510,7 +508,6 @@ void PdfFlateFilter::EncodeBlockInternal(const char* buffer, size_t len, int nMo
 
         if (deflate(&m_stream, nMode) == Z_STREAM_ERROR)
         {
-            FailEncodeDecode();
             PODOFO_RAISE_ERROR(PdfErrorCode::FlateError);
         }
 
@@ -525,7 +522,6 @@ void PdfFlateFilter::EncodeBlockInternal(const char* buffer, size_t len, int nMo
         catch (PdfError& e)
         {
             // clean up after any output stream errors
-            FailEncodeDecode();
             PODOFO_PUSH_FRAME(e);
             throw;
         }
@@ -564,17 +560,33 @@ void PdfFlateFilter::DecodeBlockImpl(const char* buffer, size_t len)
         m_stream.avail_out = BUFFER_SIZE;
         m_stream.next_out = m_buffer;
 
-        switch ((flateErr = inflate(&m_stream, Z_NO_FLUSH)))
+        switch ((flateErr = inflate(&m_stream, Z_SYNC_FLUSH)))
         {
             case Z_NEED_DICT:
-            case Z_DATA_ERROR:
             case Z_MEM_ERROR:
             {
+            FlateError:
                 PoDoFo::LogMessage(PdfLogSeverity::Error, "Flate Decoding Error from ZLib: {}", flateErr);
                 (void)inflateEnd(&m_stream);
 
-                FailEncodeDecode();
                 PODOFO_RAISE_ERROR(PdfErrorCode::FlateError);
+            }
+            case Z_DATA_ERROR:
+            {
+                if (m_stream.msg != nullptr && m_stream.msg == "incorrect data check"sv)
+                {
+                    // As found in qpdf, when inflating we can detect an error condition in
+                    // zlib that is ignored by most PDF implementations, and still get good
+                    // data if using Z_SYNC_FLUSH instead of Z_NO_FLUSH. Unfortunately this
+                    // error condition can be detected by string comparison only in zlib,
+                    // but ghostscript does the same as well. References:
+                    // https://github.com/qpdf/qpdf/blob/cc1623e7ae87e4d698910017196f6f65b635f6a7/libqpdf/Pl_Flate.cc#L171
+                    // https://github.com/ArtifexSoftware/ghostpdl/blob/5f06a65da5064036c001dc355188ca02f4181526/base/szlibd.c#L92
+                    PoDoFo::LogMessage(PdfLogSeverity::Warning, "Flate Decoding Error from ZLib: {}, incorrect data check", flateErr);
+                    break;
+                }
+
+                goto FlateError;
             }
             default:
                 break;
@@ -591,7 +603,6 @@ void PdfFlateFilter::DecodeBlockImpl(const char* buffer, size_t len)
         catch (PdfError& e)
         {
             // clean up after any output stream errors
-            FailEncodeDecode();
             PODOFO_PUSH_FRAME(e);
             throw;
         }

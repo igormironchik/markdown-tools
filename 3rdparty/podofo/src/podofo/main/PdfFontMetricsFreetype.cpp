@@ -1,8 +1,6 @@
-/**
- * SPDX-FileCopyrightText: (C) 2005 Dominik Seichter <domseichter@web.de>
- * SPDX-FileCopyrightText: (C) 2020 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2005 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2020 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #include <podofo/private/PdfDeclarationsPrivate.h>
 #include "PdfFontMetricsFreetype.h"
@@ -82,7 +80,7 @@ PdfFontMetricsFreetype::PdfFontMetricsFreetype(FT_Face face, const datahandle& d
 
 PdfFontMetricsFreetype::~PdfFontMetricsFreetype()
 {
-    FT_Done_Face(m_Face);
+    FT::FreeFace(m_Face);
 }
 
 void PdfFontMetricsFreetype::init(const PdfFontMetrics* refMetrics)
@@ -143,7 +141,7 @@ void PdfFontMetricsFreetype::init(const PdfFontMetrics* refMetrics)
         // NOTE2: It is not correct to write flags ForceBold if the
         // font is already bold. The ForceBold flag is just an hint
         // for the viewer to draw glyphs with more pixels
-        // TODO: Infer more characateristics
+        // TODO: Infer more characteristics
         if ((GetStyle() & PdfFontStyle::Italic) == PdfFontStyle::Italic)
             m_Flags |= PdfFontDescriptorFlags::Italic;
     }
@@ -780,11 +778,21 @@ int MetricsFetcher::GetWeight() const
 
 double MetricsFetcher::GetAscent() const
 {
+    // NOTE: For some reason FT_FaceRec::ascender is not the expected
+    // ascent, but it's more like a maximum value
+    if (m_os2Table != nullptr)
+        return m_os2Table->sTypoAscender / (double)m_face->units_per_EM;
+
     return m_face->ascender / (double)m_face->units_per_EM;
 }
 
 double MetricsFetcher::GetDescent() const
 {
+    // NOTE: For some reason FT_FaceRec::descender is not the expected
+    // descent, but it's more like a minimum value
+    if (m_os2Table != nullptr)
+        return m_os2Table->sTypoDescender / (double)m_face->units_per_EM;
+
     return m_face->descender / (double)m_face->units_per_EM;
 }
 

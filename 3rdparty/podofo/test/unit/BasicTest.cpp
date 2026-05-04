@@ -1,10 +1,6 @@
-/**
- * Copyright (C) 2008 by Dominik Seichter <domseichter@web.de>
- * Copyright (C) 2021 by Francesco Pretto <ceztko@gmail.com>
- *
- * Licensed under GNU Library General Public 2.0 or later.
- * Some rights reserved. See COPYING, AUTHORS.
- */
+// SPDX-FileCopyrightText: 2008 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2021 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: MIT-0
 
 #include <PdfTest.h>
 #include <podofo/optional/PdfNames.h>
@@ -262,4 +258,43 @@ TEST_CASE("TestObjectAdapter")
     REQUIRE(info.FindKeyAsSafe<PdfString>("Prod", "fallback") == "fallback");
     REQUIRE(info.FindKeyParentAs<PdfString>("Producer") == "PoDoFo - http://podofo.sf.net");
     REQUIRE(info.FindKeyParentAsSafe<PdfString>("Prod", "fallback") == "fallback");
+}
+
+TEST_CASE("TestGetDocKeywords")
+{
+    PdfMemDocument doc;
+    vector<string> keywords = { "one", "two", "three" };
+    doc.GetMetadata().SetKeywords(keywords);
+    REQUIRE(keywords == doc.GetMetadata().GetKeywords());
+}
+
+TEST_CASE("DocumentMagicOffsetReset")
+{
+    // Normal PDF
+    string_view pdf = R"(%PDF-2.0
+1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj
+2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj
+3 0 obj<</Type/Page/Parent 2 0 R/Resources<<>>/MediaBox[0 0 9 9]>>endobj
+xref
+0 4
+0000000000 65535 f 
+0000000009 00000 n 
+0000000052 00000 n 
+0000000101 00000 n 
+trailer<</Root 1 0 R/Size 4/ID[(1234567890123456)(1234567890123456)]>>
+startxref
+174
+%%EOF)";
+    
+    // PDF with a 10-byte prefix
+    string pdfWithOffset = string("OFFSET1234").append(pdf);
+
+    PdfMemDocument doc;
+    doc.LoadFromBuffer(pdf);
+    REQUIRE(doc.GetMagicOffset() == 0);
+
+    doc.LoadFromBuffer(pdfWithOffset);
+    REQUIRE(doc.GetMagicOffset() == 10);
+    doc.Reset();
+    REQUIRE(doc.GetMagicOffset() == 0);
 }

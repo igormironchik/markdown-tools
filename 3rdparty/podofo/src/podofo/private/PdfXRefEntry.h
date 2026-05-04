@@ -1,8 +1,6 @@
-/**
- * SPDX-FileCopyrightText: (C) 2009 Dominik Seichter <domseichter@web.de>
- * SPDX-FileCopyrightText: (C) 2020 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2009 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2020 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #pragma once
 #ifndef PDF_XREF_ENTRY_H
@@ -25,7 +23,7 @@ namespace PoDoFo
     {
         PdfXRefEntry();
 
-        static PdfXRefEntry CreateFree(uint32_t object, uint16_t generation);
+        static PdfXRefEntry CreateFree(uint32_t nextFreeObj, uint16_t generation);
 
         static PdfXRefEntry CreateInUse(uint64_t offset, uint16_t generation);
 

@@ -1,8 +1,6 @@
-/**
- * SPDX-FileCopyrightText: (C) 2006 Dominik Seichter <domseichter@web.de>
- * SPDX-FileCopyrightText: (C) 2020 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2006 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2020 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #include <podofo/private/PdfDeclarationsPrivate.h>
 #include "PdfTokenizer.h"
@@ -53,9 +51,9 @@ bool PdfTokenizer::TryReadNextToken(InputStreamDevice& device, string_view& toke
     size_t bufferSize = m_buffer->size() - 1;
 
     // check first if there are queued tokens and return them first
-    if (m_tokenQueque.size() != 0)
+    if (m_tokenQueue.size() != 0)
     {
-        auto& pair = m_tokenQueque.front();
+        auto& pair = m_tokenQueue.front();
         tokenType = pair.second;
 
         size_t size = std::min(bufferSize, pair.first.size());
@@ -64,7 +62,7 @@ bool PdfTokenizer::TryReadNextToken(InputStreamDevice& device, string_view& toke
         buffer[size] = '\0';
         token = string_view(buffer, size);
 
-        m_tokenQueque.pop_front();
+        m_tokenQueue.pop_front();
         return true;
     }
 
@@ -249,6 +247,11 @@ bool PdfTokenizer::TryReadNextVariant(InputStreamDevice& device, const string_vi
     utls::RecursionGuard guard;
     PdfLiteralDataType dataType = DetermineDataType(device, token, tokenType, variant);
     return tryReadDataType(device, dataType, variant, encrypt);
+}
+
+void PdfTokenizer::Reset()
+{
+    m_tokenQueue.clear();
 }
 
 PdfTokenizer::PdfLiteralDataType PdfTokenizer::DetermineDataType(InputStreamDevice& device,
@@ -543,6 +546,9 @@ void PdfTokenizer::ReadString(InputStreamDevice& device, PdfVariant& variant, co
     m_charBuffer.clear();
     while (device.Read(ch))
     {
+        if (m_charBuffer.size() >= MaxStringLength)
+            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::ValueOutOfRange, "String length exceeds maximum allowed size");
+
         if (escape)
         {
             // Handle escape sequences
@@ -695,7 +701,7 @@ void PdfTokenizer::ReadName(InputStreamDevice& device, PdfVariant& variant)
 
 void PdfTokenizer::EnqueueToken(const string_view& token, PdfTokenType tokenType)
 {
-    m_tokenQueque.push_back(TokenizerPair(string(token), tokenType));
+    m_tokenQueue.push_back(TokenizerPair(string(token), tokenType));
 }
 
 bool tryGetEscapedCharacter(char ch, char& escapedChar)
@@ -735,6 +741,9 @@ void readHexString(InputStreamDevice& device, charbuff& buffer)
     char ch;
     while (device.Read(ch))
     {
+        if (buffer.size() >= PdfTokenizer::MaxStringLength)
+            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::ValueOutOfRange, "Hex string length exceeds maximum allowed size");
+
         // end of stream reached
         if (ch == '>')
             break;

@@ -1,9 +1,7 @@
-/**
- * SPDX-FileCopyrightText: (C) 2011 Dominik Seichter <domseichter@web.de>
- * SPDX-FileCopyrightText: (C) 2011 Petr Pytelka
- * SPDX-FileCopyrightText: (C) 2020 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2011 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2011 Petr Pytelka
+// SPDX-FileCopyrightText: 2020 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #include <podofo/private/PdfDeclarationsPrivate.h>
 #include "PdfSignature.h"
@@ -127,19 +125,32 @@ void PdfSignature::SetSignatureLocation(nullable<const PdfString&> text)
 
 void PdfSignature::SetSignatureCreator(nullable<const PdfString&> creator)
 {
+    if (creator == nullptr)
+        SetCreatingApplication(nullptr);
+    else
+        SetCreatingApplication(PdfName(creator->GetString()));
+}
+
+void PdfSignature::SetCreatingApplication(nullable<const PdfName&> application)
+{
     EnsureValueObject();
-    // TODO: Make it less brutal, preserving /Prop_Build
-    if (creator.has_value())
+    PdfDictionary* dict;
+    if (application.has_value())
     {
-        m_ValueObj->GetDictionary().AddKey("Prop_Build"_n, PdfDictionary());
-        PdfObject* propBuild = m_ValueObj->GetDictionary().GetKey("Prop_Build");
-        propBuild->GetDictionary().AddKey("App"_n, PdfDictionary());
-        PdfObject* app = propBuild->GetDictionary().GetKey("App");
-        app->GetDictionary().AddKey("Name"_n, *creator);
+        if (!m_ValueObj->GetDictionary().TryFindKeyAs("Prop_Build", dict))
+            dict = &m_ValueObj->GetDictionary().AddKey("Prop_Build"_n, PdfDictionary()).GetDictionary();
+
+        PdfDictionary* appDict;
+        if (!dict->TryFindKeyAs("Prop_Build", appDict))
+            appDict = &dict->AddKey("App"_n, PdfDictionary()).GetDictionary();
+
+        appDict->AddKey("Name"_n, *application);
     }
     else
     {
-        m_ValueObj->GetDictionary().RemoveKey("Prop_Build");
+        dict = m_ValueObj->GetDictionary().FindKeyAs<PdfDictionary*>("Prop_Build");
+        if (dict != nullptr)
+            dict->RemoveKey("App");
     }
 }
 

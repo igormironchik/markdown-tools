@@ -1,8 +1,5 @@
-/**
- * SPDX-FileCopyrightText: (C) 2021 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- * SPDX-License-Identifier: MPL-2.0
- */
+// SPDX-FileCopyrightText: 2021 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #ifndef PDF_FONT_OBJECT_H
 #define PDF_FONT_OBJECT_H
@@ -17,7 +14,6 @@ class PODOFO_API PdfFontObject final : public PdfFont
 
 private:
     /** Create a PdfFontObject based on an existing PdfObject
-     *  To be used by PdfFontFactory
      */
     PdfFontObject(PdfObject& obj, PdfFontMetricsConstPtr&& metrics,
         const PdfEncoding& encoding);

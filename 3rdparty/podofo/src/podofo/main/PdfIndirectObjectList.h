@@ -1,8 +1,6 @@
-/**
- * SPDX-FileCopyrightText: (C) 2005 Dominik Seichter <domseichter@web.de>
- * SPDX-FileCopyrightText: (C) 2020 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2005 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2020 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #ifndef PDF_INDIRECT_OBJECT_LIST_H
 #define PDF_INDIRECT_OBJECT_LIST_H
@@ -13,6 +11,7 @@ namespace PoDoFo {
 
 class PdfObjectStreamProvider;
 using PdfFreeObjectList = std::deque<PdfReference>;
+using PdfObjectNumSet = std::set<uint32_t>;
 
 /** A list of PdfObjects that constitutes the indirect object list
  *  of the document
@@ -31,6 +30,8 @@ class PODOFO_API PdfIndirectObjectList final
     friend class PdfDocument;
     friend class PdfObject;
     friend class PdfObjectOutputStream;
+    friend class PdfParser;
+    friend class PdfWriter;
     PODOFO_PRIVATE_FRIEND(class PdfObjectStreamParser);
     PODOFO_PRIVATE_FRIEND(class PdfImmediateWriter);
     PODOFO_PRIVATE_FRIEND(class PdfParser);
@@ -101,15 +102,25 @@ public:
     /**
      * \returns the logical object count in the document.
      * \remarks It corresponds to the highest object number
-     *   ever used and it never decreases. This value is used
+     *   ever used + 1 and it never decreases. This value is used
      *   to determine the next available object number, when
      *   the free object list is empty
      */
-    inline unsigned GetObjectCount() const { return m_ObjectCount; }
+    unsigned GetObjectCount() const;
+
+    /**
+     * The highest object number ever used
+     * \remarks This value is used to determine the next
+     * available object number, when the free object list
+     * is empty. We assume object 0 to be always present
+     */
+    inline uint32_t GetLastObjectNumber() const { return m_LastObjectNumber; }
 
     /** \returns a list of free references in this vector
      */
     inline const PdfFreeObjectList& GetFreeObjects() const { return m_FreeObjects; }
+
+    inline const PdfObjectNumSet& GetUnavailableObjects() const { return m_UnavailableObjects; }
 
     /** \returns a reference to the owner document
      */
@@ -151,7 +162,6 @@ private:
         virtual std::unique_ptr<PdfObjectStreamProvider> CreateStream() = 0;
     };
 
-    using ObjectNumSet = std::set<uint32_t>;
     using ReferenceSet = std::set<PdfReference>;
     using ObserverList = std::vector<Observer*>;
     using ObjectList = std::set<PdfObject*, PdfObjectInequality>;
@@ -188,6 +198,8 @@ private:
     PdfIndirectObjectList& operator=(const PdfIndirectObjectList&) = delete;
 
 private:
+    void CollectGarbage(PdfObject& trailer);
+
     /** Creates a stream object
      *  This method is a factory for PdfObjectStream objects.
      *
@@ -255,37 +267,20 @@ private:
      *
      *  \param obj pointer to the object you want to insert
      */
-    void PushObject(PdfObject* obj);
+    void PushObject(std::unique_ptr<PdfObject> obj);
 
-    /** Mark a reference as unused so that it can be reused for new objects.
-     *
-     *  Add the object only if the generation is the allowed range
-     *
-     *  \param rReference the reference to reuse
-     *  \returns true if the object was successfully added
-     *
-     *  \see AddFreeObject
+    /** Add the given reference as a free object
+     * It adds the object only if the generation is the allowed range
+     * \param reference the reference to reuse
      */
-    bool TryAddFreeObject(const PdfReference& reference);
+    void AddFreeObjectSafe(const PdfReference& reference);
 
-    /** Mark a reference as unused so that it can be reused for new objects.
-     *
-     *  Add the object and increment the generation number. Add the object
-     *  only if the generation is the allowed range
-     *
-     *  \param rReference the reference to reuse
-     *  \returns the generation of the added free object
-     *
-     *  \see AddFreeObject
+    /** Add the given reference as a free object
+     * \param reference the reference to reuse
      */
-    int32_t SafeAddFreeObject(const PdfReference& reference);
+    void AddFreeObjectUnchecked(const PdfReference& reference);
 
-    /** Mark a reference as unused so that it can be reused for new objects.
-     *  \param rReference the reference to reuse
-     *
-     *  \see GetCanReuseObjectNumbers
-     */
-    void AddFreeObject(const PdfReference& reference);
+    void AddUnavailableObject(uint32_t objNum);
 
     /** Add the reference object number as an object stream
      * \remarks These objects are usually compressed and can't be removed,
@@ -301,19 +296,33 @@ private:
      */
     void SetStreamFactory(StreamFactory* factory);
 
+    /** Reset the flag which determines if the free objects were invalidated
+     */
+    void ResetFreeObjectsInvalidated();
+
+    /** Determine if the free objects needs re-writing in incremental updates
+     */
+    bool AreFreeObjectsInvalidated() const { return m_FreeObjectsInvalidated; }
+
 private:
+    /** Mark a reference as unused so that it can be reused for new objects.
+     *
+     *  Add the object and increment the generation number. Add the object
+     *  only if the generation is the allowed range
+     * \param doConsistencyCheck check if the free object reference is not already part of this list
+     */
+    void markObjectFree(const PdfReference& reference, bool doConsistencyCheck);
+
     void pushObject(const ObjectList::const_iterator& hintpos, ObjectList::node_type& node, PdfObject* obj);
 
     std::unique_ptr<PdfObject> removeObject(const iterator& it, bool markAsFree);
 
-    void addNewObject(PdfObject* obj);
+    void addNewObject(std::unique_ptr<PdfObject>&& obj);
 
     /**
      * \returns the next free object reference
      */
     PdfReference getNextFreeObject();
-
-    int32_t tryAddFreeObject(uint32_t objnum, uint32_t gennum);
 
     void visitObject(const PdfObject& obj, std::unordered_set<PdfReference>& referencedObj);
 
@@ -321,17 +330,18 @@ private:
      * Set the object count so that the object described this reference
      * is contained in the object count.
      *
-     * \param ref reference of newly added object
+     * \param objNum number of the added object
      */
-    void tryIncrementObjectCount(const PdfReference& ref);
+    void tryIncrementLastObjectNumber(uint32_t objNum);
 
 private:
     PdfDocument* m_Document;
     ObjectList m_Objects;
-    unsigned m_ObjectCount;
+    unsigned m_LastObjectNumber;
+    bool m_FreeObjectsInvalidated;
     PdfFreeObjectList m_FreeObjects;
-    ObjectNumSet m_unavailableObjects;
-    ObjectNumSet m_compressedObjectStreams;
+    PdfObjectNumSet m_UnavailableObjects;
+    PdfObjectNumSet m_compressedObjectStreams;
 
     ObserverList m_observers;
     StreamFactory* m_StreamFactory;

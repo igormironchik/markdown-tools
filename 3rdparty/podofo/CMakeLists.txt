@@ -18,12 +18,7 @@ else()
     message(WARNING "You are using an unsupported compiler!")
 endif()
 
-set(PODOFO_VERSION_MAJOR "1" CACHE STRING "Major part of podofo version number")
-set(PODOFO_VERSION_MINOR "0" CACHE STRING "Minor part of podofo version number")
-set(PODOFO_VERSION_PATCH "3" CACHE STRING "Patchlevel part of podofo version number")
-set(PODOFO_VERSION "${PODOFO_VERSION_MAJOR}.${PODOFO_VERSION_MINOR}.${PODOFO_VERSION_PATCH}")
-set(PODOFO_SOVERSION "3")
-
+include(PoDoFoVersion.cmake)
 set(DOXYGEN_PROJECT_NUMBER "${PODOFO_VERSION}")
 
 configure_file(
@@ -33,6 +28,7 @@ configure_file(
 )
 
 message("PoDoFo version: ${PODOFO_VERSION}")
+message("PoDoFo SO version: ${PODOFO_SOVERSION}")
 message("Host system: ${CMAKE_HOST_SYSTEM}")
 message("C++ compiler ID: ${CMAKE_CXX_COMPILER_ID}")
 message("C++ compiler version: ${CMAKE_CXX_COMPILER_VERSION}")
@@ -94,6 +90,12 @@ if (DEFINED PODOFO_BUILD_SHARED)
 endif()
 
 option(PODOFO_BUILD_STATIC "Build static libraries (.a/.lib)" FALSE)
+option(PODOFO_WITH_AFDKO "Enable AFDKO support" ON)
+
+if(PODOFO_WITH_AFDKO)
+    set(PODOFO_ENABLE_AFDKO TRUE)
+endif()
+
 if(PODOFO_BUILD_STATIC)
     set(PODOFO_BUILD_SHARED FALSE)
     add_compile_definitions(PODOFO_STATIC)
@@ -131,7 +133,7 @@ set(CMAKE_CXX_EXTENSIONS ON)
 if (MSVC)
     # Set the compiler less permissive and add some warnings
     # /we4287: unsigned/negative constant mismatch
-    add_compile_options($<$<COMPILE_LANGUAGE:CXX>:/std:c++17> $<$<COMPILE_LANGUAGE:CXX>:/Zc:__cplusplus> /permissive- /utf-8 /we4287 /W4)
+    add_compile_options($<$<COMPILE_LANGUAGE:CXX>:/std:c++17> $<$<COMPILE_LANGUAGE:CXX>:/Zc:__cplusplus> /permissive- /utf-8 /we4287 /we4552 /W4)
 
     # Microsoft deprecate certain POSIX functions that we use.
     # for now, turn off these warnings.
@@ -160,21 +162,26 @@ else()
     endif()
 endif()
 
+set(PODOFO_3RDPARTY_INCLUDES
+    "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/adobe"
+    "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/chromium"
+)
+
 find_package(ZLIB REQUIRED)
 message("Found zlib headers in ${ZLIB_INCLUDE_DIR}, library at ${ZLIB_LIBRARIES}")
 
 find_package(OpenSSL REQUIRED)
-message("OPENSSL_LIBRARIES: ${OPENSSL_LIBRARIES}")
+message("Found OpenSSL headers in ${OPENSSL_INCLUDE_DIR}, libraries at ${OPENSSL_LIBRARIES}")
 
 if (PODOFO_WANT_LCMS2)
-find_package(LCMS2)
-if(LCMS2_FOUND)
-    message("Found little-cms2 headers in ${LCMS2_INCLUDE_DIR}, library at ${LCMS2_LIBRARIES}")
-    set(PODOFO_HAVE_LCMS2 TRUE)
-    message("little-cms2 found. ICC profile reading support will be enabled")
-else()
-    message("little-cms2 not found. ICC profile reading support will be disabled")
-endif()
+    find_package(LCMS2)
+    if(LCMS2_FOUND)
+        message("Found little-cms2 headers in ${LCMS2_INCLUDE_DIR}, library at ${LCMS2_LIBRARIES}")
+        set(PODOFO_HAVE_LCMS2 TRUE)
+        message("little-cms2 found. ICC profile reading support will be enabled")
+    else()
+        message("little-cms2 not found. ICC profile reading support will be disabled")
+    endif()
 endif()
 
 find_package(JPEG)
@@ -223,6 +230,48 @@ endif()
 find_package(LibXml2 REQUIRED)
 message("Found libxml2 library at ${LIBXML2_LIBRARIES}, headers ${LIBXML2_INCLUDE_DIRS}")
 
+# Enable RelaxNG validation recovery for LibXml2 >= 2.15
+# See https://gitlab.gnome.org/GNOME/libxml2/-/merge_requests/334
+if(LIBXML2_VERSION_STRING VERSION_GREATER_EQUAL "2.15.0")
+    set(PODOFO_HAVE_RNG_VALIDATION_RECOVERY TRUE)
+endif()
+
+if (PODOFO_DEVENDOR_FMT_HEADER_ONLY)
+    # Implies PODOFO_DEVENDOR_FMT
+    set(PODOFO_DEVENDOR_FMT TRUE)
+endif()
+
+if (PODOFO_DEVENDOR_TCBSPAN)
+    find_package(TcbSpan REQUIRED)
+else()
+    list(APPEND PODOFO_3RDPARTY_INCLUDES "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/tcbspan")
+endif()
+if (PODOFO_DEVENDOR_DATE)
+    find_package(date CONFIG REQUIRED)
+else()
+    list(APPEND PODOFO_3RDPARTY_INCLUDES "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/date")
+endif()
+if (PODOFO_DEVENDOR_FASTFLOAT)
+    find_package(FastFloat CONFIG REQUIRED)
+else()
+    list(APPEND PODOFO_3RDPARTY_INCLUDES "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/fastfloat")
+endif()
+if (PODOFO_DEVENDOR_FMT)
+    find_package(fmt CONFIG REQUIRED)
+else()
+    list(APPEND PODOFO_3RDPARTY_INCLUDES "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/fmtlib")
+endif()
+if (PODOFO_DEVENDOR_UTF8CPP)
+    find_package(utf8cpp CONFIG REQUIRED)
+else()
+    list(APPEND PODOFO_3RDPARTY_INCLUDES "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/utf8cpp")
+endif()
+if (PODOFO_DEVENDOR_UTF8PROC)
+    find_package(utf8proc CONFIG REQUIRED)
+else()
+    list(APPEND PODOFO_3RDPARTY_INCLUDES "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/utf8proc")
+endif()
+
 # The podofo library needs to be linked to these libraries
 # NOTE: Be careful when adding/removing: the order may be
 # platform sensible, so don't modify the current order
@@ -253,6 +302,29 @@ if(JPEG_FOUND)
 endif()
 list(APPEND PODOFO_LIB_DEPENDS ZLIB::ZLIB)
 string(APPEND PODOFO_PKGCONFIG_REQUIRES_PRIVATE " zlib")
+if (PODOFO_DEVENDOR_TCBSPAN)
+    list(APPEND PODOFO_LIB_DEPENDS $<COMPILE_ONLY:tcbspan::tcbspan>)
+endif()
+if (PODOFO_DEVENDOR_DATE)
+    list(APPEND PODOFO_LIB_DEPENDS $<COMPILE_ONLY:date::date>)
+endif()
+if (PODOFO_DEVENDOR_FASTFLOAT)
+    list(APPEND PODOFO_LIB_DEPENDS $<COMPILE_ONLY:FastFloat::fast_float>)
+endif()
+if (PODOFO_DEVENDOR_FMT)
+    if (PODOFO_DEVENDOR_FMT_HEADER_ONLY)
+        list(APPEND PODOFO_LIB_DEPENDS $<COMPILE_ONLY:fmt::fmt-header-only>)
+    else()
+        list(APPEND PODOFO_LIB_DEPENDS fmt::fmt)
+    endif()
+endif()
+if (PODOFO_DEVENDOR_UTF8CPP)
+    list(APPEND PODOFO_LIB_DEPENDS $<COMPILE_ONLY:utf8cpp::utf8cpp>)
+endif()
+if (PODOFO_DEVENDOR_UTF8PROC)
+    list(APPEND PODOFO_LIB_DEPENDS utf8proc::utf8proc)
+    string(APPEND PODOFO_PKGCONFIG_REQUIRES_PRIVATE " libutf8proc")
+endif()
 list(APPEND PODOFO_LIB_DEPENDS ${PLATFORM_SYSTEM_LIBRARIES})
 
 if(LCMS2_FOUND)

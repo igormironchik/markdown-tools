@@ -1,10 +1,6 @@
-/**
- * Copyright (C) 2007 by Dominik Seichter <domseichter@web.de>
- * Copyright (C) 2021 by Francesco Pretto <ceztko@gmail.com>
- *
- * Licensed under GNU Library General Public 2.0 or later.
- * Some rights reserved. See COPYING, AUTHORS.
- */
+// SPDX-FileCopyrightText: 2007 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2021 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: MIT-0
 
 /*
     Notes:
@@ -54,6 +50,7 @@ namespace PoDoFo
         static void TestIsPdfFile();
         static void TestNestedArrays();
         static void TestNestedDictionaries();
+        static void TestInvalidXRefEntries();
 
         void ReadXRefContents(size_t offset, bool skipFollowPrevious)
         {
@@ -77,12 +74,17 @@ namespace PoDoFo
 
         void ReadObjects()
         {
-            PdfParser::ReadObjects(*m_device);
+            PdfParser::ReadObjectEntries(*m_device);
         }
 
-        bool IsPdfFile()
+        void ReadHeader()
         {
-            return PdfParser::IsPdfFile(*m_device);
+            PdfParser::ReadHeader(*m_device);
+        }
+
+        void ReadObjectsInternal()
+        {
+            PdfParser::ReadObjectsInternal(*m_device);
         }
 
         const shared_ptr<InputStreamDevice>& GetDevice() { return m_device; }
@@ -103,6 +105,7 @@ METHOD_AS_TEST_CASE(PdfParserTest::TestReadXRefStreamContents, "TestReadXRefStre
 METHOD_AS_TEST_CASE(PdfParserTest::TestIsPdfFile, "TestIsPdfFile");
 METHOD_AS_TEST_CASE(PdfParserTest::TestNestedArrays, "TestNestedArrays");
 METHOD_AS_TEST_CASE(PdfParserTest::TestNestedDictionaries, "TestNestedDictionaries");
+METHOD_AS_TEST_CASE(PdfParserTest::TestInvalidXRefEntries, "TestInvalidXRefEntries");
 
 TEST_CASE("TestRemoveStream")
 {
@@ -112,10 +115,61 @@ TEST_CASE("TestRemoveStream")
     auto& resources = page.GetResources();
     auto& imageObj = *resources.GetResource(PdfResourceType::XObject, "XOb5");
     REQUIRE(imageObj.HasStream());
+    (void)imageObj.MustGetStream();
     REQUIRE(!imageObj.IsDirty());
     imageObj.RemoveStream();
     REQUIRE(imageObj.IsDirty());
     REQUIRE(!imageObj.HasStream());
+}
+
+TEST_CASE("TestXRefRecovery1")
+{
+    PdfMemDocument doc;
+    doc.Load(TestUtils::GetTestInputFilePath("TestXRefRecovery1.pdf"));
+
+    auto testDoc = [](PdfDocument& doc) {
+        auto& page = doc.GetPages().GetPageAt(0);
+        vector<PdfTextEntry> entries;
+        page.ExtractTextTo(entries);
+
+        REQUIRE(entries[0].Text == "Hello world");
+        ASSERT_EQUAL(entries[0].X, 148.90299999999999);
+        ASSERT_EQUAL(entries[0].Y, 722.75699999999995);
+        ASSERT_EQUAL(entries[0].Length, 57.372);
+    };
+
+    testDoc(doc);
+    doc.Save(TestUtils::GetTestOutputFilePath("TestXRefRecovery1.pdf"));
+    doc.Load(TestUtils::GetTestOutputFilePath("TestXRefRecovery1.pdf"));
+    testDoc(doc);
+}
+
+TEST_CASE("TestXRefRecovery2")
+{
+    PdfMemDocument doc;
+    doc.Load(TestUtils::GetTestInputFilePath("TestXRefRecovery2.pdf"));
+
+    auto testDoc = [](PdfDocument& doc) {
+        auto& page = doc.GetPages().GetPageAt(0);
+        vector<PdfTextEntry> entries;
+        page.ExtractTextTo(entries);
+
+        REQUIRE(entries[0].Text == "PDF:B");
+        ASSERT_EQUAL(entries[0].X, 56.799999999999997);
+        ASSERT_EQUAL(entries[0].Y, 724.60000000000002);
+        ASSERT_EQUAL(entries[0].Length, 33.324000000000005);
+
+        auto& obj = doc.GetObjects().MustGetObject(PdfReference(9, 0));
+        unique_ptr<PdfImage> image;
+        REQUIRE(PdfImage::TryCreateFromObject(obj, image));
+        REQUIRE(image->GetWidth() == 156);
+        REQUIRE(image->GetHeight() == 140);
+    };
+
+    testDoc(doc);
+    doc.Save(TestUtils::GetTestOutputFilePath("TestXRefRecovery2.pdf"));
+    doc.Load(TestUtils::GetTestOutputFilePath("TestXRefRecovery2.pdf"));
+    testDoc(doc);
 }
 
 void PdfParserTest::TestMaxObjectCount()
@@ -1172,7 +1226,7 @@ void PdfParserTest::TestReadXRefStreamContents()
         auto device = std::make_shared<SpanStreamDevice>(inputStr);
         PdfMemDocument doc;
         // Parse a doc using XRef stream with invalid /W entries
-        doc.Load(device);
+        doc.Load(device, PdfLoadOptions::SkipXRefRecovery);
         FAIL("Should throw exception");
     }
     catch (PdfError& error)
@@ -1225,7 +1279,7 @@ void PdfParserTest::TestReadXRefStreamContents()
         auto device = std::make_shared<SpanStreamDevice>(inputStr);
         PdfMemDocument doc;
         // Parse a doc using XRef stream with invalid /W entries
-        doc.Load(device);
+        doc.Load(device, PdfLoadOptions::SkipXRefRecovery);
         FAIL("Should throw exception");
     }
     catch (PdfError& error)
@@ -1277,7 +1331,7 @@ void PdfParserTest::TestReadXRefStreamContents()
         auto device = std::make_shared<SpanStreamDevice>(inputStr);
         PdfMemDocument doc;
         // Parse a doc using XRef stream with invalid /W entries
-        doc.Load(device);
+        doc.Load(device, PdfLoadOptions::SkipXRefRecovery);
         FAIL("Should throw exception");
     }
     catch (PdfError& error)
@@ -1329,7 +1383,7 @@ void PdfParserTest::TestReadXRefStreamContents()
         auto device = std::make_shared<SpanStreamDevice>(inputStr);
         PdfMemDocument doc;
         // Parse a doc using XRef stream with invalid /W entries
-        doc.Load(device);
+        doc.Load(device, PdfLoadOptions::SkipXRefRecovery);
         FAIL("Should throw exception");
     }
     catch (PdfError& error)
@@ -1378,7 +1432,7 @@ void PdfParserTest::TestReadXRefStreamContents()
         auto device = std::make_shared<SpanStreamDevice>(inputStr);
         PdfMemDocument doc;
         // Parse a doc using XRef stream with invalid /W entries
-        doc.Load(device);
+        doc.Load(device, PdfLoadOptions::SkipXRefRecovery);
         FAIL("Should throw exception");
     }
     catch (PdfError& error)
@@ -1477,7 +1531,7 @@ void PdfParserTest::TestReadXRefStreamContents()
         PdfXRefEntries offsets;
         auto device = std::make_shared<SpanStreamDevice>(inputStr);
         PdfMemDocument doc;
-        doc.Load(device);
+        doc.Load(device, PdfLoadOptions::SkipXRefRecovery);
         FAIL("Should throw exception");
     }
     catch (PdfError& error)
@@ -1529,7 +1583,7 @@ void PdfParserTest::TestReadXRefStreamContents()
         PdfXRefEntries offsets;
         auto device = std::make_shared<SpanStreamDevice>(inputStr);
         PdfMemDocument doc;
-        doc.Load(device);
+        doc.Load(device, PdfLoadOptions::SkipXRefRecovery);
         FAIL("Should throw exception");
     }
     catch (PdfError& error)
@@ -1581,7 +1635,7 @@ void PdfParserTest::TestReadXRefStreamContents()
         PdfXRefEntries offsets;
         auto device = std::make_shared<SpanStreamDevice>(inputStr);
         PdfMemDocument doc;
-        doc.Load(device);
+        doc.Load(device, PdfLoadOptions::SkipXRefRecovery);
         FAIL("Should throw exception");
     }
     catch (PdfError& error)
@@ -1633,7 +1687,7 @@ void PdfParserTest::TestReadXRefStreamContents()
         PdfXRefEntries offsets;
         auto device = std::make_shared<SpanStreamDevice>(inputStr);
         PdfMemDocument doc;
-        doc.Load(device);
+        doc.Load(device, PdfLoadOptions::SkipXRefRecovery);
         FAIL("Should throw exception");
     }
     catch (PdfError& error)
@@ -1685,7 +1739,7 @@ void PdfParserTest::TestReadXRefStreamContents()
         PdfXRefEntries offsets;
         auto device = std::make_shared<SpanStreamDevice>(inputStr);
         PdfMemDocument doc;
-        doc.Load(device);
+        doc.Load(device, PdfLoadOptions::SkipXRefRecovery);
         FAIL("Should throw exception");
     }
     catch (PdfError& error)
@@ -1737,7 +1791,7 @@ void PdfParserTest::TestReadXRefStreamContents()
         PdfXRefEntries offsets;
         auto device = std::make_shared<SpanStreamDevice>(inputStr);
         PdfMemDocument doc;
-        doc.Load(device);
+        doc.Load(device, PdfLoadOptions::SkipXRefRecovery);
         FAIL("Should throw exception");
     }
     catch (PdfError& error)
@@ -1787,7 +1841,7 @@ void PdfParserTest::TestReadXRefStreamContents()
         PdfXRefEntries offsets;
         auto device = std::make_shared<SpanStreamDevice>(inputStr);
         PdfMemDocument doc;
-        doc.Load(device);
+        doc.Load(device, PdfLoadOptions::SkipXRefRecovery);
         FAIL("Should throw exception");
     }
     catch (PdfError& error)
@@ -1831,18 +1885,20 @@ void PdfParserTest::TestReadObjects()
 
 void PdfParserTest::TestIsPdfFile()
 {
+    bool expectedFail;
+
     try
     {
         string strInput = "%PDF-1.0";
         PdfIndirectObjectList objects;
         PdfParserTest parser(objects, strInput);
-        REQUIRE(parser.IsPdfFile());
+        parser.ReadHeader();
     }
     catch (PdfError&)
     {
         FAIL("Unexpected PdfError");
     }
-    catch (exception&)
+    catch (...)
     {
         FAIL("Wrong exception type");
     }
@@ -1852,13 +1908,13 @@ void PdfParserTest::TestIsPdfFile()
         string strInput = "%PDF-1.1";
         PdfIndirectObjectList objects;
         PdfParserTest parser(objects, strInput);
-        REQUIRE(parser.IsPdfFile());
+        parser.ReadHeader();
     }
     catch (PdfError&)
     {
         FAIL("Unexpected PdfError");
     }
-    catch (exception&)
+    catch (...)
     {
         FAIL("Wrong exception type");
     }
@@ -1868,29 +1924,13 @@ void PdfParserTest::TestIsPdfFile()
         string strInput = "%PDF-1.7";
         PdfIndirectObjectList objects;
         PdfParserTest parser(objects, strInput);
-        REQUIRE(parser.IsPdfFile());
+        parser.ReadHeader();
     }
     catch (PdfError&)
     {
         FAIL("Unexpected PdfError");
     }
-    catch (exception&)
-    {
-        FAIL("Wrong exception type");
-    }
-
-    try
-    {
-        string strInput = "%PDF-1.9";
-        PdfIndirectObjectList objects;
-        PdfParserTest parser(objects, strInput);
-        REQUIRE(!parser.IsPdfFile());
-    }
-    catch (PdfError&)
-    {
-        FAIL("Unexpected PdfError");
-    }
-    catch (exception&)
+    catch (...)
     {
         FAIL("Wrong exception type");
     }
@@ -1900,7 +1940,7 @@ void PdfParserTest::TestIsPdfFile()
         string strInput = "%PDF-2.0";
         PdfIndirectObjectList objects;
         PdfParserTest parser(objects, strInput);
-        REQUIRE(parser.IsPdfFile());
+        parser.ReadHeader();
     }
     catch (PdfError&)
     {
@@ -1911,101 +1951,62 @@ void PdfParserTest::TestIsPdfFile()
         FAIL("Wrong exception type");
     }
 
+    expectedFail = true;
+    try
+    {
+        string strInput = "%PDF-1.9";
+        PdfIndirectObjectList objects;
+        PdfParserTest parser(objects, strInput);
+        parser.ReadHeader();
+        expectedFail = false;
+    }
+    catch (PdfError&)
+    {
+        // OK
+    }
+    catch (exception&)
+    {
+        FAIL("Wrong exception type");
+    }
+    REQUIRE(expectedFail);
+
+    expectedFail = true;
     try
     {
         string strInput = "%!PS-Adobe-2.0";
         PdfIndirectObjectList objects;
         PdfParserTest parser(objects, strInput);
-        REQUIRE(!parser.IsPdfFile());
+        parser.ReadHeader();
+        expectedFail = false;
     }
     catch (PdfError&)
     {
-        FAIL("Unexpected PdfError");
+        // OK
     }
     catch (exception&)
     {
         FAIL("Wrong exception type");
     }
+    REQUIRE(expectedFail);
 
+    expectedFail = true;
     try
     {
         string strInput = "GIF89a";
         PdfIndirectObjectList objects;
         PdfParserTest parser(objects, strInput);
-        REQUIRE(!parser.IsPdfFile());
+        parser.ReadHeader();
+        expectedFail = false;
     }
     catch (PdfError&)
     {
-        FAIL("Unexpected PdfError");
+        // OK
     }
     catch (exception&)
     {
         FAIL("Wrong exception type");
     }
-}
-
-TEST_CASE("TestSaveIncrementalRoundTrip")
-{
-    ostringstream oss;
-    oss << "%PDF-1.1\n";
-    unsigned currObj = 1;
-    streamoff objPos[20];
-
-    // Pages
-
-    unsigned pagesObj = currObj;
-    objPos[currObj] = oss.tellp();
-    oss << currObj++ << " 0 obj\n";
-    oss << "<</Type /Pages /Count 0 /Kids []>>\n";
-    oss << "endobj\n";
-
-    // Root catalog
-
-    unsigned rootObj = currObj;
-    objPos[currObj] = oss.tellp();
-    oss << currObj++ << " 0 obj\n";
-    oss << "<</Type /Catalog /Pages " << pagesObj << " 0 R>>\n";
-    oss << "endobj\n";
-
-    // ID
-    unsigned idObj = currObj;
-    objPos[currObj] = oss.tellp();
-    oss << currObj++ << " 0 obj\n";
-    oss << "[<F1E375363A6314E3766EDF396D614748> <F1E375363A6314E3766EDF396D614748>]\n";
-    oss << "endobj\n";
-
-    streamoff xrefPos = oss.tellp();
-    oss << "xref\n";
-    oss << "0 " << currObj << "\n";
-    oss << "0000000000 65535 f \n";
-    for (unsigned i = 1; i < currObj; i++)
-        oss << utls::Format("{:010d} 00000 n \n", objPos[i]);
-
-    oss << "trailer <<\n"
-        << "  /Size " << currObj << "\n"
-        << "  /Root " << rootObj << " 0 R\n"
-        << "  /ID " << idObj << " 0 R\n" // indirect ID
-        << ">>\n"
-        << "startxref\n"
-        << xrefPos << "\n"
-        << "%%EOF\n";
-
-    string docBuff = oss.str();
-    try
-    {
-        PdfMemDocument doc;
-        // load for update
-        doc.LoadFromBuffer(docBuff);
-
-        StringStreamDevice outDev(docBuff);
-
-        doc.SaveUpdate(outDev);
-        doc.LoadFromBuffer(docBuff);
-    }
-    catch (PdfError&)
-    {
-        FAIL("Unexpected PdfError");
-    }
+    REQUIRE(expectedFail);
 }
 
 // CVE-2018-8002, CVE-2021-30470
@@ -2224,6 +2225,33 @@ void PdfParserTest::TestNestedDictionaries()
     {
         // this must match the error value thrown by PdfRecursionGuard
         REQUIRE(error.GetCode() == PdfErrorCode::MaxRecursionReached);
+    }
+}
+
+void PdfParserTest::TestInvalidXRefEntries()
+{
+    auto currentLogSeverity = PdfCommon::GetMaxLoggingSeverity();
+    try
+    {
+        // Test invalid entries
+        PdfCommon::SetMaxLoggingSeverity(PdfLogSeverity::None);
+        string strInput =
+            "0000000000 65535 n\r\n"
+            "0000000001 65536 n\r\n"
+            "0000000003 00000 f\r\n"
+            "0000000000 65536 f\r\n";
+        PdfIndirectObjectList objects;
+        PdfParserTest parser(objects, strInput);
+        parser.ReadXRefSubsection(0, 4);
+        parser.ReadObjectsInternal();
+        PdfCommon::SetMaxLoggingSeverity(currentLogSeverity);
+        REQUIRE(objects.GetSize() == 0);
+        REQUIRE(objects.GetFreeObjects().size() == 0);
+    }
+    catch (...)
+    {
+        PdfCommon::SetMaxLoggingSeverity(currentLogSeverity);
+        FAIL("should not throw");
     }
 }
 
@@ -2842,11 +2870,37 @@ TEST_CASE("TestEdgeCases")
     PdfMemDocument doc;
     vector<string_view> test = { "512.pdf"sv, "513.pdf"sv, "514.pdf"sv, "big1.pdf"sv, "big2.pdf"sv, "false.pdf"sv };
     for (unsigned i = 0; i < test.size(); i++)
-        doc.Load(TestUtils::GetTestInputFilePath("ParserTests", test[i]));
+        doc.Load(TestUtils::GetTestInputFilePath("ParserTests", test[i]), PdfLoadOptions::SkipXRefRecovery);
 
-    // NOTE: This test doesn't work in 1.0.x series
     // This just really requires recovery as it has the trailer preceding the xref sections
-    //doc.Load(TestUtils::GetTestInputFilePath("ParserTests", "rev.pdf"));
+    doc.Load(TestUtils::GetTestInputFilePath("ParserTests", "rev.pdf"));
+}
+
+// Bug: PdfParser::TakeTrailer move-constructed the trailer PdfObject via
+// the noexcept move constructor, which called DelayedLoadStream().  For a
+// malformed XRef stream (e.g. /Length referencing a non-existent object)
+// this threw PdfErrorCode::InvalidStream inside a noexcept context,
+// triggering std::terminate.
+TEST_CASE("TestXRefStreamMoveNoTerminate")
+{
+    string_view pdf = R"(
+%PDF-1.5
+1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj
+2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj
+3 0 obj<</Type/Page/Parent 2 0 R/MediaBox[0 0 1 1]>>endobj
+4 0 obj
+<</Type/XRef/Size 5/W[1 2 1]/Root 1 0 R/Filter/ASCIIHexDecode/Length 99 0 R>>
+stream
+000000FF0100090001003400010065000100A000
+endstream
+endobj
+startxref
+160
+%%EOF
+)";
+
+    PdfMemDocument doc;
+    REQUIRE_NOTHROW(doc.LoadFromBuffer(pdf));
 }
 
 string generateXRefEntries(size_t count)

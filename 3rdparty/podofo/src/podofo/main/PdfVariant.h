@@ -1,8 +1,6 @@
-/**
- * SPDX-FileCopyrightText: (C) 2005 Dominik Seichter <domseichter@web.de>
- * SPDX-FileCopyrightText: (C) 2020 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2005 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2020 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #ifndef PDF_VARIANT_H
 #define PDF_VARIANT_H
@@ -35,6 +33,7 @@ class PODOFO_API PdfVariant final
     friend class PdfArray;
     friend class PdfDictionary;
     friend class PdfTokenizer;
+    friend class PdfParser;
     PODOFO_PRIVATE_FRIEND(class PdfParserObject);
 
 public:

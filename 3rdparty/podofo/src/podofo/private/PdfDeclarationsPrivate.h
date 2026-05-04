@@ -1,8 +1,6 @@
-/**
- * SPDX-FileCopyrightText: (C) 2005 Dominik Seichter <domseichter@web.de>
- * SPDX-FileCopyrightText: (C) 2020 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2005 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2020 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #ifndef PDF_DEFINES_PRIVATE_H
 #define PDF_DEFINES_PRIVATE_H
@@ -22,6 +20,8 @@
 #include <limits>
 #include <algorithm>
 #include <iostream>
+
+#include "podofo_config_private.h"
 
 #include "Format.h"
 #include "numbers_compat.h"
@@ -332,7 +332,11 @@ namespace utls
     // Write the char to the supplied buffer as hexadecimal code
     void WriteCharHexTo(char buf[2], char ch);
 
-    std::string GetCharHexString(const PoDoFo::bufferview& buff);
+    std::string GetHexString(const PoDoFo::bufferview& buff);
+
+    void WriteHexStringTo(std::string& str, const PoDoFo::bufferview& buff);
+
+    void DecodeHexStringTo(PoDoFo::charbuff& buff, const std::string_view& hexView);
 
     // Append the unicode code point to a big endian encoded utf16 string
     void WriteUtf16BETo(std::u16string& str, char32_t codePoint);
@@ -604,6 +608,7 @@ namespace utls
 
     inline PoDoFo::uint24_t ByteSwap(PoDoFo::uint24_t n)
     {
+        static_assert(std::is_standard_layout_v<PoDoFo::uint24_t>);
         PoDoFo::uint24_t ret;
         // NOTE: The following is safe as uint24_t is internally a uint8_t array
         auto in = (const uint8_t*)&n;

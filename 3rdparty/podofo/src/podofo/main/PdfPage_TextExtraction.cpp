@@ -1,8 +1,5 @@
-/**
- * SPDX-FileCopyrightText: (C) 2021 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- * SPDX-License-Identifier: MPL-2.0
- */
+// SPDX-FileCopyrightText: 2021 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #include <podofo/private/PdfDeclarationsPrivate.h>
 #include "PdfPage.h"
@@ -198,7 +195,8 @@ void PdfPage::ExtractTextTo(vector<PdfTextEntry>& entries, const string_view& pa
 
     // Look FIGURE 4.1 Graphics objects
     PdfContentReaderArgs args;
-    args.Flags = PdfContentReaderFlags::SkipHandleNonFormXObjects; // Images are not needed for text extraction
+    // Images are not needed for text extraction
+    args.Flags = PdfContentReaderFlags::SkipHandleNonFormXObjects | PdfContentReaderFlags::SkipFetchInlineImages;
     PdfContentStreamReader reader(*this, args);
     PdfContent content;
     vector<double> lengths;

@@ -1,8 +1,6 @@
-/**
- * SPDX-FileCopyrightText: (C) 2005 Dominik Seichter <domseichter@web.de>
- * SPDX-FileCopyrightText: (C) 2020 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2005 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2020 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #include <podofo/private/PdfDeclarationsPrivate.h>
 #include "PdfObject.h"
@@ -317,7 +315,9 @@ void PdfObject::RemoveStream()
     // Unconditionally set the stream as already loaded,
     // then just remove it
     m_IsDelayedLoadStreamDone = true;
-    bool hasStream = m_Stream != nullptr || removeStream();
+    // NOTE: First try to remove delayed load object
+    // stream, then check for shallow stream
+    bool hasStream = removeStream() || m_Stream != nullptr;
     m_Stream = nullptr;
     if (hasStream)
         SetDirty();
@@ -390,15 +390,10 @@ PdfObjectStream* PdfObject::getStream()
 
 void PdfObject::DelayedLoadStream() const
 {
-    DelayedLoad();
-    delayedLoadStream();
-}
-
-void PdfObject::delayedLoadStream() const
-{
     if (m_IsDelayedLoadStreamDone)
         return;
 
+    DelayedLoad();
     const_cast<PdfObject&>(*this).delayedLoadStream();
     m_IsDelayedLoadStreamDone = true;
 }
@@ -425,20 +420,18 @@ void PdfObject::copyStreamFrom(const PdfObject& obj)
 {
     // NOTE: Don't call rhs.DelayedLoad() here. It's implicitly
     // called in PdfVariant assignment or copy constructor
-    obj.delayedLoadStream();
+    PODOFO_ASSERT(obj.IsDelayedLoadDone());
+    if (!obj.IsDelayedLoadStreamDone())
+    {
+        const_cast<PdfObject&>(obj).delayedLoadStream();
+        const_cast<PdfObject&>(obj).MakeDelayedLoadingStreamDone();
+    }
+
     if (obj.m_Stream != nullptr)
     {
         auto& stream = getOrCreateStream();
         stream.CopyFrom(*obj.m_Stream);
     }
-}
-
-void PdfObject::moveStreamFrom(PdfObject& obj)
-{
-    obj.DelayedLoadStream();
-    m_Stream = std::move(obj.m_Stream);
-    if (m_Stream != nullptr)
-        m_Stream->SetParent(*this);
 }
 
 void PdfObject::EnableDelayedLoading()
@@ -449,6 +442,11 @@ void PdfObject::EnableDelayedLoading()
 void PdfObject::EnableDelayedLoadingStream()
 {
     m_IsDelayedLoadStreamDone = false;
+}
+
+void PdfObject::MakeDelayedLoadingStreamDone()
+{
+    m_IsDelayedLoadStreamDone = true;
 }
 
 void PdfObject::SetRevised()
@@ -514,21 +512,39 @@ void PdfObject::assign(const PdfObject& rhs)
 {
     rhs.DelayedLoad();
     m_Variant = rhs.m_Variant;
-    m_IsDelayedLoadDone = true;
     SetVariantOwner();
+    m_IsDelayedLoadDone = true;
     copyStreamFrom(rhs);
     m_IsDelayedLoadStreamDone = true;
 }
 
 // NOTE: Don't move parent document/container and indirect reference.
 // Objects being assigned always keep current ownership
-void PdfObject::moveFrom(PdfObject&& rhs)
+void PdfObject::moveFrom(PdfObject&& rhs) noexcept
 {
-    rhs.DelayedLoad();
+    // NOTE: move should not throw, as it's used in "noexcept" moethods
+    try
+    {
+        rhs.DelayedLoadStream();
+    }
+    catch (...)
+    {
+        if (!rhs.IsDelayedLoadDone())
+        {
+            // Reset the variant as well if the data section
+            // didn't complete
+            rhs.m_Variant.Reset();
+        }
+
+        // Unconditionally remove the stream
+        rhs.removeStream();
+    }
     m_Variant = std::move(rhs.m_Variant);
-    m_IsDelayedLoadDone = true;
     SetVariantOwner();
-    moveStreamFrom(rhs);
+    m_IsDelayedLoadDone = true;
+    m_Stream = std::move(rhs.m_Stream);
+    if (m_Stream != nullptr)
+        m_Stream->SetParent(*this);
     m_IsDelayedLoadStreamDone = true;
 }
 

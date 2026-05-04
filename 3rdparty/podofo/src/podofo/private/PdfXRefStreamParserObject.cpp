@@ -1,8 +1,6 @@
-/**
- * SPDX-FileCopyrightText: (C) 2009 Dominik Seichter <domseichter@web.de>
- * SPDX-FileCopyrightText: (C) 2020 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2009 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2020 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #include <podofo/private/PdfDeclarationsPrivate.h>
 #include "PdfXRefStreamParserObject.h"
@@ -25,7 +23,7 @@ PdfXRefStreamParserObject::PdfXRefStreamParserObject(InputStreamDevice& device, 
     : PdfXRefStreamParserObject(nullptr, device, entries) { }
 
 PdfXRefStreamParserObject::PdfXRefStreamParserObject(PdfDocument* doc, InputStreamDevice& device, PdfXRefEntries& entries)
-    : PdfParserObject(doc, PdfReference(), device, -1), m_NextOffset(-1), m_entries(&entries)
+    : PdfParserObject(doc, PdfReference(), device, -1, false), m_NextOffset(-1), m_entries(&entries)
 {
 }
 
@@ -36,7 +34,7 @@ void PdfXRefStreamParserObject::delayedLoad()
     PdfTokenizer tokenizer;
     auto reference = ReadReference(tokenizer);
     SetIndirectReference(reference);
-    PdfParserObject::Parse(tokenizer);
+    PdfParserObject::ParseData(tokenizer);
 
     // Do some very basic error checking
     auto& dict = m_Variant.GetDictionary();
@@ -54,7 +52,13 @@ void PdfXRefStreamParserObject::delayedLoad()
     }
 
     if (dict.HasKey("Prev"))
-        m_NextOffset = static_cast<ssize_t>(dict.FindKeyAsSafe<double>("Prev", 0));
+    {
+        int64_t prev = dict.FindKeyAsSafe<int64_t>("Prev", -1);
+        if (prev < 0 || prev > numeric_limits<ssize_t>::max())
+            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidXRef, "Invalid /Prev offset in XRef stream");
+
+        m_NextOffset = static_cast<ssize_t>(prev);
+    }
 
     if (!this->HasStreamToParse())
         PODOFO_RAISE_ERROR(PdfErrorCode::InvalidXRef);
@@ -125,7 +129,10 @@ void PdfXRefStreamParserObject::parseStream(const int64_t wArray[W_ARRAY_SIZE], 
         if (objectCount < 0)
             PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidXRefStream, "PdfXRefStreamParserObject: Object count is negative");
 
-        if ((offset + (size_t)objectCount * entryLen) > buffer.size())
+        CheckedNumeric<size_t> checkedEnd = CheckedNumeric<size_t>(offset) +
+            CheckedNumeric<size_t>((size_t)objectCount) * CheckedNumeric<size_t>(entryLen);
+        size_t end;
+        if (!checkedEnd.AssignIfValid(&end) || end > buffer.size())
             PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidXRefStream, "Invalid count in XRef stream");
 
         CheckedNumeric first((uint64_t)firstObject);

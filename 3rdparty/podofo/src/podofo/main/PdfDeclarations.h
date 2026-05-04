@@ -1,8 +1,6 @@
-/**
- * SPDX-FileCopyrightText: (C) 2005 Dominik Seichter <domseichter@web.de>
- * SPDX-FileCopyrightText: (C) 2020 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2005 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2020 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #ifndef PDF_DECLARATIONS_H
 #define PDF_DECLARATIONS_H
@@ -492,9 +490,26 @@ enum class PdfSaveOptions
     SaveOnSigning = 64,
 
     /**
+     * This curently applies only during singing, and allows to
+     * sign documents with broken xref sections. Use with caution.
+     */
+    IgnoreXRefErrors = 128, 
+
+    /**
       * \deprecated Use NoMetadataUpdate instead
       */
     NoModifyDateUpdate = NoMetadataUpdate
+};
+
+enum class PdfLoadOptions
+{
+    None = 0,
+    ///< Throw on several PDF syntax violations
+    StrictParsing = 1,
+    ///< Load object streams immediately after parsing cross references sections
+    LoadStreamsEagerly = 2,
+    ///< Skip rebuilding object index on cross reference sections parsing failing
+    SkipXRefRecovery = 4,
 };
 
 enum class PdfAdditionalMetadata : uint8_t
@@ -864,6 +879,7 @@ enum class PdfSignatureEncryption : uint8_t
 {
     Unknown = 0,
     RSA,
+    ECDSA,
 };
 
 enum class PdfHashingAlgorithm : uint8_t
@@ -879,6 +895,7 @@ using PdfFilterList = std::vector<PdfFilterType>;
 };
 
 ENABLE_BITMASK_OPERATORS(PoDoFo::PdfSaveOptions);
+ENABLE_BITMASK_OPERATORS(PoDoFo::PdfLoadOptions);
 ENABLE_BITMASK_OPERATORS(PoDoFo::PdfWriteFlags);
 ENABLE_BITMASK_OPERATORS(PoDoFo::PdfInfoInitial);
 ENABLE_BITMASK_OPERATORS(PoDoFo::PdfFontStyle);

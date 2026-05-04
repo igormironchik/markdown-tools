@@ -1,3 +1,17 @@
+# 1.0.* -> 1.1
+
+- `PdfFontFactory`: Removed, this was a leftover of a removed class,
+  as a friendship declaration
+- `PdfFontMetricsFreetype`: The `GetFaceHandle` can now be accessed only by
+setting `PODOFO_3RDPARTY_INTEROP_ENABLED`. This was forgotten in 1.0 release
+- `PdfCharCodeList`: Removed. This was used only privately and had a big
+CHECK-ME/TODO asking for optimization. This was probably forgotten
+and not migrated to private code
+
+# 1.0.2 -> 1.0.1
+- `PdfSignerCmsParams`: Deprecated `Encryption` field. The encryption is determined
+  from the public key in the X.509 certificate
+
 ## 1.0.1 -> 1.0.2
 - `PdfXMPPacket`: make reserved 3rd party interop `GetDescription` non const, as we
   generally ensure const correctness in all the API (with limited exceptions)
@@ -166,7 +180,7 @@
     Removed from the public API: They have always been for inner use and dangerous to call for the user. For object removal we now rely on garbage collection
   * Renamed `ObjectListComparator` to `PdfObjectInequality` and moved it to PoDoFo namespace
 - `PdfExtGState`:
-  * Costructor is now private, create it through `PdfDocument::CreateExtGState(definition)`
+  * Constructor is now private, create it through `PdfDocument::CreateExtGState(definition)`
   * All methods removed: Retrieve the `PdfExtGStateDefinition` instance
   * Fill opacity -> `PdfExtGStateDefinition::NonStrokingAlpha`
   * Stroke opacity -> `PdfExtGStateDefinition::StrokingAlpha`
@@ -263,7 +277,7 @@ and use move semantics on the stream
 - `PdfXObjectPostScript`: Made the class final
 - `PdfContents`: Made the constructor internal and the class internal
 - `PdfCatalog`: Made the constructor internal
-- `PdfEncoding`: Made the class final, maked `ExportToFont()` internal
+- `PdfEncoding`: Made the class final, made `ExportToFont()` internal
 
 ## 0.10.0 -> 0.10.1
 - `PdfParser::TakeEncrypt()` -> `PdfParser::GetEncrypt()` which now returns `std::shared_ptr`. This change was needed to address a vulnerability concern in #70. Although public, This method is considered to be infrastructural and not called often outside of PoDofo;

@@ -1,4 +1,6 @@
-### After 1.0
+### After 1.1
+- PdfPredictorDecoder: Support BitsPerComponent != 8
+- PdfColorSpaceFilterIndexed::GetSourceScanLineSize() handle bitsPerComponent != 8
 - Cleanup PdfTreeNode
 - Add subsetting of PdfDifferenceEncoding
 - PdfDifferenceList: Validate insertion for the public Add methods (like for example enforce "Adobe Glyph List For New Fonts")
@@ -23,7 +25,7 @@
 - Add version of PdfFont::TryCreateSubstituteFont for rendering
   (metrics/widths of loaded font override metrics found on /FontFile)
 - Add a fallback to search font on the system for text extraction purposes,
-  see #123
+  see https://github.com/podofo/podofo/issues/123
 - Check PdfWriter should really update doc trailer when saving.
   Now the new trailer is written but the doc still has the old one
 - PdfMemDocument: Check the DeviceStream is not empty before doing an incremental update/signing operation
@@ -42,8 +44,6 @@
 - PdfFontManager: Add font hash to cache descriptor
 - Add special SetAppearance for PdfSignature respecting
   "Digital Signature Appearances" document specification
-- PdfParser: Handle invalid startxref by rebuilding the index,
-  similarly to what pdf.js does
 - Add text shaping with Harfbuzz https://github.com/harfbuzz/harfbuzz
 - Add fail safe sign/update mechanism, meaning the stream gets trimmed
   to initial length if there's a crash. Not so easy, especially since
@@ -59,3 +59,4 @@
 - PdfFontManager: Consider also statically caching the queries and filepaths.
   Maybe we could also weakly (weak shared pointer) cache metrics instead of fonts
 - PdfName: Evaluate unescape lazily, or offer a way to debug/inspect the unescaped sequence a posteriori
+- Consider saving/converting to XRef stream by default

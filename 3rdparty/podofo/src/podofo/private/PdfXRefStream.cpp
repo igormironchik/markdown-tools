@@ -1,8 +1,6 @@
-/**
- * SPDX-FileCopyrightText: (C) 2007 Dominik Seichter <domseichter@web.de>
- * SPDX-FileCopyrightText: (C) 2020 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2007 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2020 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #include "PdfDeclarationsPrivate.h"
 #include "PdfXRefStream.h"
@@ -16,16 +14,13 @@ PdfXRefStream::PdfXRefStream(PdfWriter& writer) :
     PdfXRef(writer),
     m_xrefStreamEntryIndex(-1),
     m_xrefStreamObj(&writer.GetObjects().CreateDictionaryObject("XRef"_n)),
-    m_offset(-1)
+    m_offset(0)
 {
 }
 
-uint64_t PdfXRefStream::GetOffset() const
+size_t PdfXRefStream::GetOffset() const
 {
-    if (m_offset < 0)
-        PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InternalLogic, "XRefStm has not been written yet");
-
-    return (uint64_t)m_offset;
+    return m_offset;
 }
 
 bool PdfXRefStream::ShouldSkipWrite(const PdfReference& ref)

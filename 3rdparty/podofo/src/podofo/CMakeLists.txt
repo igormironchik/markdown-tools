@@ -2,16 +2,18 @@ if(NOT PODOFO_MAIN_CMAKELISTS_READ)
     message(FATAL_ERROR "Run cmake on the CMakeLists.txt in the project root, not the one in the 'src' directory. You will need to delete CMakeCache.txt from the current directory.")
 endif()
 
-# Generate our configure file
+# Generate our configure files
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/auxiliary/podofo_config.h.in" "${CMAKE_CURRENT_BINARY_DIR}/podofo/auxiliary/podofo_config.h")
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/private/podofo_config_private.h.in" "${CMAKE_CURRENT_BINARY_DIR}/podofo/private/podofo_config_private.h")
 
 # NOTE: HAS_UNCAUGHT_EXCEPTIONS is needed for <date/date.h>
 add_compile_definitions(HAS_UNCAUGHT_EXCEPTIONS=1 UTF8PROC_STATIC)
 
 set(PODOFO_INCLUDE_DIRS
     "${CMAKE_CURRENT_BINARY_DIR}/podofo/auxiliary"
+    "${CMAKE_CURRENT_BINARY_DIR}/podofo/private"
     "${PROJECT_SOURCE_DIR}/src"
-    "${PROJECT_SOURCE_DIR}/3rdparty"
+    ${PODOFO_3RDPARTY_INCLUDES}
     CACHE INTERNAL "podofo include directories"
 )
 
@@ -47,8 +49,10 @@ foreach(subdir main auxiliary optional staging)
     list(APPEND PODOFO_HEADERS ${HEADER_FILES})
 endforeach()
 
-# Set to install further public 3rdparty headers
-list(APPEND PODOFO_HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/span.hpp")
+if (NOT PODOFO_DEVENDOR_TCBSPAN)
+    # Set to install tcb span.hpp 3rdparty header
+    list(APPEND PODOFO_HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/span.hpp")
+endif()
 
 if(NOT PODOFO_HAVE_FONTCONFIG)
     # Remove FontConfig source if not needed

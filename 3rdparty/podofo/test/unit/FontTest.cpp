@@ -1,15 +1,13 @@
-/**
- * Copyright (C) 2009 by Dominik Seichter <domseichter@web.de>
- * Copyright (C) 2021 by Francesco Pretto <ceztko@gmail.com>
- *
- * Licensed under GNU Library General Public 2.0 or later.
- * Some rights reserved. See COPYING, AUTHORS.
- */
+// SPDX-FileCopyrightText: 2009 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2021 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: MIT-0
 
 #include <PdfTest.h>
 
 #include <podofo/private/FreetypePrivate.h>
-#include <podofo/private/FontUtils.h>
+#ifdef PODOFO_ENABLE_AFDKO
+#include <podofo/private/FontUtilsAFDKO.h>
+#endif
 
 using namespace std;
 using namespace PoDoFo;
@@ -70,6 +68,7 @@ TEST_CASE("TestFontConfigMatch")
     }
 }
 
+#ifdef PODOFO_ENABLE_AFDKO
 TEST_CASE("TestConversionPBF2CFF")
 {
     {
@@ -77,7 +76,7 @@ TEST_CASE("TestConversionPBF2CFF")
         utls::ReadTo(font1, TestUtils::GetTestInputFilePath("FontsType1", "Lato-Regular.pfb"));
 
         charbuff cff;
-        PoDoFo::ConvertFontType1ToCFF(font1, cff);
+        afdko::ConvertFontType1ToCFF(font1, cff);
 
         TestUtils::IsBufferEqual(cff, TestUtils::GetTestInputFilePath("FontsType1", "ConvCFF", "Lato-Regular.cff"));
     }
@@ -87,7 +86,7 @@ TEST_CASE("TestConversionPBF2CFF")
         utls::ReadTo(font1, TestUtils::GetTestInputFilePath("FontsType1", "lmb10.pfb"));
 
         charbuff cff;
-        PoDoFo::ConvertFontType1ToCFF(font1, cff);
+        afdko::ConvertFontType1ToCFF(font1, cff);
 
         TestUtils::IsBufferEqual(cff, TestUtils::GetTestInputFilePath("FontsType1", "ConvCFF", "lmb10.cff"));
     }
@@ -108,10 +107,11 @@ TEST_CASE("TestSubsetCFFDegenerate")
     cidInfo.Supplement = 0;
 
     charbuff cff;
-    PoDoFo::SubsetFontCFF(*metrics, subsetInfos, cidInfo, cff);
+    afdko::SubsetFontCFF(*metrics, subsetInfos, cidInfo, cff);
 
     TestUtils::IsBufferEqual(cff, TestUtils::GetTestInputFilePath("FontsType1", "SubsetDegenerate1Glyph.cff"));
 }
+#endif
 
 // Disable load all fonts for now
 TEST_CASE("TestFonts", "[.]")

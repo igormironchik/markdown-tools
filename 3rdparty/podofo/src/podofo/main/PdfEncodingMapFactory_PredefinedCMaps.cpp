@@ -1,15 +1,15 @@
 // This file was generated. DO NOT EDIT!
-/**
- * SPDX-FileCopyrightText: (C) 2024 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- * SPDX-License-Identifier: MPL-2.0
- */
+// SPDX-FileCopyrightText: 2024 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 #include <podofo/private/PdfDeclarationsPrivate.h>
 #include "PdfEncodingMapFactory.h"
 #include <podofo/private/PdfFilterFactory.h>
 
 using namespace std;
 using namespace PoDoFo;
+
+// NOTE: The mappings in this file were generated using the
+// "staging/BuildPredefinedCMaps.cpp" script
 
 static void buildMappings(const string_view& serialized, CodeUnitMap& mappings, CodeUnitRanges& ranges);
 

@@ -1,8 +1,6 @@
-/**
- * SPDX-FileCopyrightText: (C) 2006 Dominik Seichter <domseichter@web.de>
- * SPDX-FileCopyrightText: (C) 2020 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2006 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2020 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #include <podofo/private/PdfDeclarationsPrivate.h>
 #include <podofo/private/XMPUtils.h>
@@ -101,30 +99,31 @@ void PdfDocument::AppendDocumentPages(const PdfDocument& doc)
 
 void PdfDocument::append(const PdfDocument& doc, bool appendAll)
 {
-    // CHECK-ME: The following is fishy. We switched from m_Objects.GetSize() to m_Objects.GetObjectCount()
+    // CHECK-ME: The following is fishy. We switched from m_Objects.GetSize() to m_Objects.GetLastObjectNumber()
     // to not fall in overlaps in case of removed objects (see https://github.com/podofo/podofo/issues/253),
     // but in this way free objects should be already taken into account. We'll eventually fix it by not
     // relying on computing a static difference between inserted objects and objects being inserted but just
     // inserting objects normally and remapping them with a support map
-    unsigned difference = static_cast<unsigned>(m_Objects.GetObjectCount() + m_Objects.GetFreeObjects().size());
+    unsigned difference = static_cast<unsigned>(m_Objects.GetLastObjectNumber() + m_Objects.GetFreeObjects().size());
 
     // create all free objects again, to have a clean free object list
     for (auto& ref : doc.GetObjects().GetFreeObjects())
-        m_Objects.AddFreeObject(PdfReference(ref.ObjectNumber() + difference, ref.GenerationNumber()));
+        m_Objects.AddFreeObjectUnchecked(PdfReference(ref.ObjectNumber() + difference, ref.GenerationNumber()));
 
     // append all objects first and fix their references
     for (auto& obj : doc.GetObjects())
     {
         PdfReference ref(static_cast<uint32_t>(obj->GetIndirectReference().ObjectNumber() + difference), obj->GetIndirectReference().GenerationNumber());
-        auto newObj = new PdfObject(PdfDictionary());
+        unique_ptr<PdfObject> newObj(new PdfObject(PdfDictionary()));
         newObj->setDirty();
         newObj->SetIndirectReference(ref);
-        m_Objects.PushObject(newObj);
-        *newObj = *obj;
+        auto& newObjRef = *newObj;
+        m_Objects.PushObject(std::move(newObj));
+        newObjRef = *obj;
 
         PoDoFo::LogMessage(PdfLogSeverity::Debug, "Fixing references in {} {} R by {}",
-            newObj->GetIndirectReference().ObjectNumber(), newObj->GetIndirectReference().GenerationNumber(), difference);
-        fixObjectReferences(*newObj, difference);
+            newObjRef.GetIndirectReference().ObjectNumber(), newObjRef.GetIndirectReference().GenerationNumber(), difference);
+        fixObjectReferences(newObjRef, difference);
     }
 
     if (appendAll)
@@ -187,32 +186,33 @@ void PdfDocument::append(const PdfDocument& doc, bool appendAll)
 
 void PdfDocument::InsertDocumentPageAt(unsigned atIndex, const PdfDocument& doc, unsigned pageIndex)
 {
-    // CHECK-ME: The following is fishy. We switched from m_Objects.GetSize() to m_Objects.GetObjectCount()
+    // CHECK-ME: The following is fishy. We switched from m_Objects.GetSize() to m_Objects.GetLastObjectNumber()
     // to not fall in overlaps in case of removed objects (see https://github.com/podofo/podofo/issues/253),
     // but in this way free objects should be already taken into account. We'll eventually fix it by not
     // relying on computing a static difference between inserted objects and objects being inserted but just
     // inserting objects normally and remapping them with a support map
-    unsigned difference = static_cast<unsigned>(m_Objects.GetObjectCount() + m_Objects.GetFreeObjects().size());
+    unsigned difference = static_cast<unsigned>(m_Objects.GetLastObjectNumber() + m_Objects.GetFreeObjects().size());
 
     // create all free objects again, to have a clean free object list
     for (auto& freeObj : doc.GetObjects().GetFreeObjects())
     {
-        m_Objects.AddFreeObject(PdfReference(freeObj.ObjectNumber() + difference, freeObj.GenerationNumber()));
+        m_Objects.AddFreeObjectUnchecked(PdfReference(freeObj.ObjectNumber() + difference, freeObj.GenerationNumber()));
     }
 
     // append all objects first and fix their references
     for (auto& obj : doc.GetObjects())
     {
         PdfReference ref(static_cast<uint32_t>(obj->GetIndirectReference().ObjectNumber() + difference), obj->GetIndirectReference().GenerationNumber());
-        auto newObj = new PdfObject(PdfDictionary());
+        unique_ptr<PdfObject> newObj(new PdfObject(PdfDictionary()));
         newObj->setDirty();
         newObj->SetIndirectReference(ref);
-        m_Objects.PushObject(newObj);
-        *newObj = *obj;
+        auto& newObjRef = *newObj;
+        m_Objects.PushObject(std::move(newObj));
+        newObjRef = *obj;
 
         PoDoFo::LogMessage(PdfLogSeverity::Debug, "Fixing references in {} {} R by {}",
-            newObj->GetIndirectReference().ObjectNumber(), newObj->GetIndirectReference().GenerationNumber(), difference);
-        fixObjectReferences(*newObj, difference);
+            newObjRef.GetIndirectReference().ObjectNumber(), newObjRef.GetIndirectReference().GenerationNumber(), difference);
+        fixObjectReferences(newObjRef, difference);
     }
 
     const PdfName inheritableAttributes[] = {
@@ -350,12 +350,12 @@ Rect PdfDocument::FillXObjectFromPage(PdfXObjectForm& xobj, const PdfPage& page,
     auto& sourceDoc = page.GetDocument();
     if (this != &sourceDoc)
     {
-        // CHECK-ME: The following is fishy. We switched from m_Objects.GetSize() to m_Objects.GetObjectCount()
+        // CHECK-ME: The following is fishy. We switched from m_Objects.GetSize() to m_Objects.GetLastObjectNumber()
         // to not fall in overlaps in case of removed objects (see https://github.com/podofo/podofo/issues/253),
         // but in this way free objects should be already taken into account. We'll eventually fix it by not
         // relying on computing a static difference between inserted objects and objects being inserted but just
         // inserting objects normally and remapping them with a support map
-        difference = static_cast<unsigned>(m_Objects.GetObjectCount() + m_Objects.GetFreeObjects().size());
+        difference = static_cast<unsigned>(m_Objects.GetLastObjectNumber() + m_Objects.GetFreeObjects().size());
         append(sourceDoc, false);
     }
 
@@ -375,6 +375,15 @@ Rect PdfDocument::FillXObjectFromPage(PdfXObjectForm& xobj, const PdfPage& page,
     // link resources from external doc to x-object
     if (pageObj.IsDictionary() && pageObj.GetDictionary().HasKey("Resources"))
         xobj.GetDictionary().AddKey("Resources"_n, *pageObj.GetDictionary().GetKey("Resources"));
+
+    // without /Group the viewer resets to default compositing, dropping the
+    // page's isolated/knockout flags and color space (ISO 32000-2:2020 11.6.6 "Transparency group XObjects")
+    if (pageObj.IsDictionary())
+    {
+        auto* groupObj = pageObj.GetDictionary().GetKey("Group");
+        if (groupObj != nullptr)
+            xobj.GetDictionary().AddKey("Group"_n, *groupObj);
+    }
 
     // copy top-level content from external doc to x-object
     if (pageObj.IsDictionary() && pageObj.GetDictionary().HasKey("Contents"))
@@ -551,42 +560,42 @@ bool PdfDocument::IsEncrypted() const
 
 bool PdfDocument::IsPrintAllowed() const
 {
-    return GetEncrypt() == nullptr ? true : GetEncrypt()->IsPrintAllowed();
+    return GetEncrypt() == nullptr || GetEncrypt()->IsPrintAllowed() || HasOwnerPermissions();
 }
 
 bool PdfDocument::IsEditAllowed() const
 {
-    return GetEncrypt() == nullptr ? true : GetEncrypt()->IsEditAllowed();
+    return GetEncrypt() == nullptr || GetEncrypt()->IsEditAllowed() || HasOwnerPermissions();
 }
 
 bool PdfDocument::IsCopyAllowed() const
 {
-    return GetEncrypt() == nullptr ? true : GetEncrypt()->IsCopyAllowed();
+    return GetEncrypt() == nullptr || GetEncrypt()->IsCopyAllowed() || HasOwnerPermissions();
 }
 
 bool PdfDocument::IsEditNotesAllowed() const
 {
-    return GetEncrypt() == nullptr ? true : GetEncrypt()->IsEditNotesAllowed();
+    return GetEncrypt() == nullptr || GetEncrypt()->IsEditNotesAllowed() || HasOwnerPermissions();
 }
 
 bool PdfDocument::IsFillAndSignAllowed() const
 {
-    return GetEncrypt() == nullptr ? true : GetEncrypt()->IsFillAndSignAllowed();
+    return GetEncrypt() == nullptr || GetEncrypt()->IsFillAndSignAllowed() || HasOwnerPermissions();
 }
 
 bool PdfDocument::IsAccessibilityAllowed() const
 {
-    return GetEncrypt() == nullptr ? true : GetEncrypt()->IsAccessibilityAllowed();
+    return GetEncrypt() == nullptr || GetEncrypt()->IsAccessibilityAllowed() || HasOwnerPermissions();
 }
 
 bool PdfDocument::IsDocAssemblyAllowed() const
 {
-    return GetEncrypt() == nullptr ? true : GetEncrypt()->IsDocAssemblyAllowed();
+    return GetEncrypt() == nullptr || GetEncrypt()->IsDocAssemblyAllowed() || HasOwnerPermissions();
 }
 
 bool PdfDocument::IsHighPrintAllowed() const
 {
-    return GetEncrypt() == nullptr ? true : GetEncrypt()->IsHighPrintAllowed();
+    return GetEncrypt() == nullptr || GetEncrypt()->IsHighPrintAllowed() || HasOwnerPermissions();
 }
 
 void PdfDocument::PushPdfExtension(const PdfExtension& extension)

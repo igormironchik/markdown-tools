@@ -1,8 +1,6 @@
-/**
- * SPDX-FileCopyrightText: (C) 2007 Dominik Seichter <domseichter@web.de>
- * SPDX-FileCopyrightText: (C) 2020 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2007 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2020 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #ifndef PDF_XREF_STREAM_H
 #define PDF_XREF_STREAM_H
@@ -21,21 +19,16 @@ namespace PoDoFo {
  */
 class PdfXRefStream final : public PdfXRef
 {
-    friend class PdfWriter;
-    friend class PdfImmediateWriter;
-
-private:
+public:
     /** Create a new XRef table
      *
      *  \param writer is needed to fill the trailer directory
      *                 correctly which is included into the XRef
-     *  \param parent a vector of PdfObject is required
-     *                 to create a PdfObject for the XRef
      */
     PdfXRefStream(PdfWriter& writer);
 
 public:
-    uint64_t GetOffset() const override;
+    size_t GetOffset() const override;
 
     bool ShouldSkipWrite(const PdfReference& ref) override;
 
@@ -63,7 +56,7 @@ private:
     int m_xrefStreamEntryIndex;
     PdfObject* m_xrefStreamObj;
     PdfArray m_indices;
-    int64_t m_offset;
+    size_t m_offset;
 };
 
 };

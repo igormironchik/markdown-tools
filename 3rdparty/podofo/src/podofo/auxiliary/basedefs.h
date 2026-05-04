@@ -1,8 +1,6 @@
-/**
- * SPDX-FileCopyrightText: (C) 2005 Dominik Seichter <domseichter@web.de>
- * SPDX-FileCopyrightText: (C) 2020 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2005 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2020 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #ifndef PODOFO_BASE_DEFS_H
 #define PODOFO_BASE_DEFS_H
@@ -26,15 +24,6 @@
  * };
  *
  * bool PODOFO_API doThatThing();
- *
- * For an exception type that may be thrown across a DSO boundary, you must
- * use:
- *
- * class PODOFO_EXCEPTION_API(PODOFO_API) MyException
- * {
- *     ...
- * };
- *
  */
 
 // Sanity check, can't compile both shared and static library
@@ -56,6 +45,7 @@
 #if defined(_MSC_VER)
     #define PODOFO_EXPORT __declspec(dllexport)
     #define PODOFO_IMPORT __declspec(dllimport)
+    #define PODOFO_DEPRECATED
 #else
     // NOTE: In non MSVC compilers https://gcc.gnu.org/wiki/Visibility,
     // it's not necessary to distinct between exporting and importing
@@ -64,6 +54,33 @@
     // the library. The symbol will not be re-exported by other libraries
     #define PODOFO_EXPORT __attribute__ ((visibility("default")))
     #define PODOFO_IMPORT __attribute__ ((visibility("default")))
+    #define PODOFO_DEPRECATED __attribute__((__deprecated__))
+#endif
+
+// If detected, undefine some macros that are defined by Windows
+// headers and that may cause errors when consuming PoDoFo. To
+// avoid this behavior, define PODOFO_WIN32_SKIP_UNDEF_MACROS
+// before including PoDoFo headers.
+#if defined(_WIN32) && !defined(PODOFO_WIN32_SKIP_UNDEF_MACROS)
+#ifdef min
+#undef min
+#endif // min
+
+#ifdef max
+#undef max
+#endif // max
+
+#ifdef GetObject
+#undef GetObject
+#endif // GetObject
+
+#ifdef CreateFont
+#undef CreateFont
+#endif // CreateFont
+
+#ifdef DrawText
+#undef DrawText
+#endif // DrawText
 #endif
 
 #if defined(PODOFO_BUILD)
@@ -74,31 +91,7 @@
 
 #endif
 
-// Throwable classes must always be exported by all binaries when
-// using gcc. Marking exception classes with PODOFO_EXCEPTION_API
-// ensures this.
-#ifdef _WIN32
-  #define PODOFO_EXCEPTION_API(api) api
-#else
-  #define PODOFO_EXCEPTION_API(api) PODOFO_API
-#endif
-
 // Set up some other compiler-specific but not platform-specific macros
-
-#ifdef __GNU__
-  #define PODOFO_HAS_GCC_ATTRIBUTE_DEPRECATED 1
-#elif defined(__has_attribute)
-  #if __has_attribute(__deprecated__)
-    #define PODOFO_HAS_GCC_ATTRIBUTE_DEPRECATED 1
-  #endif
-#endif
-
-#ifdef PODOFO_HAS_GCC_ATTRIBUTE_DEPRECATED
-    // gcc (or compat. clang) will issue a warning if a function or variable so annotated is used
-    #define PODOFO_DEPRECATED __attribute__((__deprecated__))
-#else
-    #define PODOFO_DEPRECATED
-#endif
 
 /** Specify the friend identifier is defined in private symbols only
  */

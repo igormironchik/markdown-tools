@@ -1,8 +1,5 @@
-/**
- * SPDX-FileCopyrightText: (C) 2022 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- * SPDX-License-Identifier: MPL-2.0
- */
+// SPDX-FileCopyrightText: 2022 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #ifndef PDF_ENCRYPT_SESSION
 #define PDF_ENCRYPT_SESSION
@@ -10,7 +7,7 @@
 #include "PdfEncrypt.h"
 
 namespace PoDoFo {
-    
+
 /**
  * A bundle of the encrypt object together a context
  */
@@ -30,6 +27,8 @@ private:
 public:
     PdfEncrypt& GetEncrypt() { return *m_Encrypt; }
     PdfEncryptContext& GetContext() { return m_Context; }
+
+    bool HasOwnerPermissions() { return m_Context.GetAuthResult() == PdfAuthResult::Owner; }
 
 private:
     PdfEncryptSession& operator=(const PdfEncryptSession&) = delete;

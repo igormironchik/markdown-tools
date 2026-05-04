@@ -1,8 +1,5 @@
-/**
- * SPDX-FileCopyrightText: (C) 2021 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- * SPDX-License-Identifier: MPL-2.0
- */
+// SPDX-FileCopyrightText: 2021 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #ifndef PDF_ENCODING_H
 #define PDF_ENCODING_H
@@ -93,8 +90,8 @@ namespace PoDoFo
         /** Encoding with an external encoding map storage
          * Used by PdfFont in case of dynamic encoding requested
          */
-        static std::unique_ptr<PdfEncoding> CreateDynamicEncoding(const std::shared_ptr<PdfCharCodeMap>& cidMap,
-            const std::shared_ptr<PdfCharCodeMap>& toUnicodeMap, PdfFont& font);
+        static std::unique_ptr<PdfEncoding> CreateDynamicEncoding(std::shared_ptr<PdfCharCodeMap>&& cidMap,
+            std::shared_ptr<PdfCharCodeMap>&& toUnicodeMap, PdfFont& font);
 
     public:
         /**

@@ -1,8 +1,6 @@
-/**
- * SPDX-FileCopyrightText: (C) 2007 Dominik Seichter <domseichter@web.de>
- * SPDX-FileCopyrightText: (C) 2021 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2007 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2021 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #ifndef PDF_XOBJECT_FORM_H
 #define PDF_XOBJECT_FORM_H
@@ -32,7 +30,8 @@ private:
 
 public:
     /** Create a new XObject from a page of another document
-     *  in a given document
+     *  in a given document. /BBox is set in form space (the content-stream
+     *  coordinate system); /Matrix applies the source page's /Rotate if present.
      *
      *  \param page the document to create the XObject from
      *	\param useTrimBox if true try to use trimbox for size of xobject
@@ -73,7 +72,6 @@ private:
     PdfObjectStream& ResetContentsStream() override;
     void CopyContentsTo(OutputStream& stream) const override;
     void initXObject(const Rect& rect);
-    void initAfterPageInsertion(const PdfPage& page);
 
 private:
     // Remove some PdfCanvas methods to maintain the class API surface clean

@@ -1,9 +1,5 @@
-/**
- * Copyright (C) 2006 by Dominik Seichter <domseichter@web.de>
- *
- * Licensed under GNU General Public License 2.0 or later.
- * Some rights reserved. See COPYING, AUTHORS.
- */
+// SPDX-FileCopyrightText: 2006 Dominik Seichter <domseichter@web.de>
+// SPDX-License-Identifier: MIT-0
 
 // Include the standard headers for cout to write
 // some output to the console.
@@ -83,7 +79,7 @@ void HelloWorld(const string_view& filename)
         // You could set a different color than black to draw
         // the text.
         // 
-        // painter.SetColor(1.0, 0.0, 0.0);
+        // painter.GraphicsState.SetNonStrokingColor(PdfColor(1.0, 0.0, 0.0));
 
         // Actually draw the line "Hello World!" on to the PdfPage at
         // the position 2cm,2cm from the top left corner.

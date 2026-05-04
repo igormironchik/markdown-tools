@@ -1,8 +1,6 @@
-/**
- * SPDX-FileCopyrightText: (C) 2007 Dominik Seichter <domseichter@web.de>
- * SPDX-FileCopyrightText: (C) 2020 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2007 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2020 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #ifndef PDF_SIMPLE_ENCODING_H
 #define PDF_SIMPLE_ENCODING_H
@@ -51,15 +49,11 @@ namespace PoDoFo
      * It is also called CP-1252 encoding.
      * This class may be used as base for derived encodings.
      *
-     * \see PdfWin1250Encoding
-     *
      * \see PdfFont::WinAnsiEncoding
      */
     class PODOFO_API PdfWinAnsiEncoding final : public PdfPredefinedEncoding
     {
         friend class PdfEncodingMapFactory;
-        friend class PdfWin1250Encoding;
-        friend class PdfIso88592Encoding;
 
     private:
         PdfWinAnsiEncoding();

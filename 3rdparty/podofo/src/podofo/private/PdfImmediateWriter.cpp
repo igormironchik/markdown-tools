@@ -1,8 +1,6 @@
-/**
- * SPDX-FileCopyrightText: (C) 2007 Dominik Seichter <domseichter@web.de>
- * SPDX-FileCopyrightText: (C) 2023 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2007 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2023 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #include <podofo/private/PdfDeclarationsPrivate.h>
 #include "PdfImmediateWriter.h"
@@ -17,7 +15,7 @@ using namespace PoDoFo;
 
 PdfImmediateWriter::PdfImmediateWriter(PdfIndirectObjectList& objects, const PdfObject& trailer,
         OutputStreamDevice& device, PdfVersion version, shared_ptr<PdfEncrypt> encrypt, PdfSaveOptions opts) :
-    PdfWriter(objects, trailer),
+    PdfWriter(objects, trailer, 0),
     m_Device(&device),
     m_OpenStream(false)
 {
@@ -45,7 +43,9 @@ PdfImmediateWriter::PdfImmediateWriter(PdfIndirectObjectList& objects, const Pdf
     this->WritePdfHeader(*m_Device);
 
     // Manually prepare the cross-reference table/stream
-    m_xRef.reset(GetUseXRefStream() ? new PdfXRefStream(*this) : new PdfXRef(*this));
+    m_xRef.reset(GetUseXRefStream()
+        ? new PdfXRefStream(*this)
+        : new PdfXRef(*this));
 }
 
 PdfImmediateWriter::~PdfImmediateWriter()

@@ -1,14 +1,12 @@
-/**
- * SPDX-FileCopyrightText: (C) 2025 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: MIT
- */
+// SPDX-FileCopyrightText: (C) 2025 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: MIT
 
 #include "SASLprep.h"
 
 #include <cassert>
 #include <vector>
 
-#include <utf8proc/utf8proc.h>
+#include <utf8proc.h>
 #include <utf8cpp/utf8.h>
 
 #include "SASLprepPrivate.h"

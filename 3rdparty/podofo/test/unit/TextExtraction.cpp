@@ -1,10 +1,6 @@
-/**
- * Copyright (C) 2008 by Dominik Seichter <domseichter@web.de>
- * Copyright (C) 2021 by Francesco Pretto <ceztko@gmail.com>
- *
- * Licensed under GNU Library General Public 2.0 or later.
- * Some rights reserved. See COPYING, AUTHORS.
- */
+// SPDX-FileCopyrightText: 2008 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2021 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: MIT-0
 
 #include <PdfTest.h>
 
@@ -102,7 +98,7 @@ TEST_CASE("TextExtraction5")
     auto& page = doc.GetPages().GetPageAt(0);
     vector<PdfTextEntry> entries;
     page.ExtractTextTo(entries);
-    ASSERT_EQUAL(entries.size(),4);
+    REQUIRE(entries.size() == 4);
     REQUIRE(entries[0].Text == "Line 1");
     ASSERT_EQUAL(entries[0].X, 10.0);
     ASSERT_EQUAL(entries[0].Y, 112.0);

@@ -1,7 +1,5 @@
-/**
- * SPDX-FileCopyrightText: (C) 2006 Dominik Seichter <domseichter@web.de>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2006 Dominik Seichter <domseichter@web.de>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #include <podofo/private/PdfDeclarationsPrivate.h>
 #include "PdfFilter.h"
@@ -76,7 +74,7 @@ void PdfFilter::decodeTo(OutputStream& stream, const bufferview& inBuffer, const
 
 void PdfFilter::BeginEncode(OutputStream& output)
 {
-    PODOFO_RAISE_LOGIC_IF(m_OutputStream != nullptr, "BeginEncode() on failed filter or without EndEncode()");
+    PODOFO_ASSERT(m_OutputStream == nullptr && "BeginEncode() on failed filter or without EndEncode()");
     m_OutputStream = &output;
 
     try
@@ -85,15 +83,14 @@ void PdfFilter::BeginEncode(OutputStream& output)
     }
     catch (...)
     {
-        // Clean up and close stream
-        this->FailEncodeDecode();
+        this->failEncodeDecode();
         throw;
     }
 }
 
 void PdfFilter::EncodeBlock(const bufferview& view)
 {
-    PODOFO_RAISE_LOGIC_IF(m_OutputStream == nullptr, "EncodeBlock() without BeginEncode() or on failed filter");
+    PODOFO_ASSERT(m_OutputStream != nullptr && "EncodeBlock() without BeginEncode() or on failed filter");
 
     try
     {
@@ -101,15 +98,14 @@ void PdfFilter::EncodeBlock(const bufferview& view)
     }
     catch (...)
     {
-        // Clean up and close stream
-        this->FailEncodeDecode();
+        this->failEncodeDecode();
         throw;
     }
 }
 
 void PdfFilter::EndEncode()
 {
-    PODOFO_RAISE_LOGIC_IF(m_OutputStream == nullptr, "EndEncode() without BeginEncode() or on failed filter");
+    PODOFO_ASSERT(m_OutputStream != nullptr && "EndEncode() without BeginEncode() or on failed filter");
 
     try
     {
@@ -117,18 +113,16 @@ void PdfFilter::EndEncode()
     }
     catch (...)
     {
-        // Clean up and close stream
-        this->FailEncodeDecode();
+        this->failEncodeDecode();
         throw;
     }
 
-    m_OutputStream->Flush();
-    m_OutputStream = nullptr;
+    closeEncodeDecode();
 }
 
 void PdfFilter::BeginDecode(OutputStream& output, const PdfDictionary* decodeParms)
 {
-    PODOFO_RAISE_LOGIC_IF(m_OutputStream != nullptr, "BeginDecode() on failed filter or without EndDecode()");
+    PODOFO_ASSERT(m_OutputStream == nullptr && "BeginDecode() on failed filter or without EndDecode()");
     m_OutputStream = &output;
 
     try
@@ -137,15 +131,14 @@ void PdfFilter::BeginDecode(OutputStream& output, const PdfDictionary* decodePar
     }
     catch (...)
     {
-        // Clean up and close stream
-        this->FailEncodeDecode();
+        this->failEncodeDecode();
         throw;
     }
 }
 
 void PdfFilter::DecodeBlock(const bufferview& view)
 {
-    PODOFO_RAISE_LOGIC_IF(m_OutputStream == nullptr, "DecodeBlock() without BeginDecode() or on failed filter")
+    PODOFO_ASSERT(m_OutputStream != nullptr && "DecodeBlock() without BeginDecode() or on failed filter")
 
     try
     {
@@ -153,48 +146,59 @@ void PdfFilter::DecodeBlock(const bufferview& view)
     }
     catch (...)
     {
-        // Clean up and close stream
-        this->FailEncodeDecode();
+        this->failEncodeDecode();
         throw;
     }
 }
 
 void PdfFilter::EndDecode()
 {
-    PODOFO_RAISE_LOGIC_IF(m_OutputStream == nullptr, "EndDecode() without BeginDecode() or on failed filter")
+    PODOFO_ASSERT(m_OutputStream != nullptr && "EndDecode() without BeginDecode() or on failed filter")
 
     try
     {
         EndDecodeImpl();
     }
-    catch (PdfError& e)
+    catch (...)
     {
-        PODOFO_PUSH_FRAME(e);
-        // Clean up and close stream
-        this->FailEncodeDecode();
+        this->failEncodeDecode();
         throw;
     }
+
+    closeEncodeDecode();
+}
+
+void PdfFilter::failEncodeDecode()
+{
     try
     {
-        if (m_OutputStream != nullptr)
-        {
-            m_OutputStream->Flush();
-            m_OutputStream = nullptr;
-        }
+        m_OutputStream->Flush();
+    }
+    catch (...)
+    {
+        // Ignore errors flushing the stream, we're already in an
+        // error state and just want to clean up as best we can
+    }
+    m_OutputStream = nullptr;
+}
+
+void PdfFilter::closeEncodeDecode()
+{
+    try
+    {
+        m_OutputStream->Flush();
     }
     catch (PdfError& e)
     {
-        PODOFO_PUSH_FRAME_INFO(e, "Exception caught closing filter's output stream");
-        // Closing stream failed, just get rid of it
+        PODOFO_PUSH_FRAME_INFO(e, "Exception caught flushing filter's output stream");
         m_OutputStream = nullptr;
         throw;
     }
-}
-
-void PdfFilter::FailEncodeDecode()
-{
-    if (m_OutputStream != nullptr)
-        m_OutputStream->Flush();
+    catch (...)
+    {
+        m_OutputStream = nullptr;
+        throw;
+    }
 
     m_OutputStream = nullptr;
 }

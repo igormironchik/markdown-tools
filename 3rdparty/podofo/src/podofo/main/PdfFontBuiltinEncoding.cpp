@@ -1,8 +1,5 @@
-/**
- * SPDX-FileCopyrightText: (C) 2021 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- * SPDX-License-Identifier: MPL-2.0
- */
+// SPDX-FileCopyrightText: 2021 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #include <podofo/private/PdfDeclarationsPrivate.h>
 #include "PdfFontMetricsObject.h"
@@ -10,6 +7,7 @@
 #include <podofo/private/PdfEncodingPrivate.h>
 #include <podofo/private/FreetypePrivate.h>
 
+#include "PdfFont.h"
 #include "PdfIdentityEncoding.h"
 #include "PdfEncodingMapFactory.h"
 #include "PdfDifferenceEncoding.h"
@@ -27,6 +25,7 @@ namespace PoDoFo
         PdfFontBuiltinType1Encoding(PdfCharCodeMap&& map)
             : PdfEncodingMapSimple(map.GetLimits()), m_charMap(std::move(map)) { }
 
+    protected:
         bool tryGetCharCodeSpan(const unicodeview& codePoints, PdfCharCode& codeUnit) const override
         {
             return m_charMap.TryGetCharCode(codePoints, codeUnit);
@@ -43,9 +42,9 @@ namespace PoDoFo
             return m_charMap.TryGetCodePoints(code, codePoints);
         }
 
-        void AppendToUnicodeEntries(OutputStream& stream, charbuff& temp) const override
+        void AppendToUnicodeEntries(OutputStream& stream, const PdfFont& font, charbuff& temp) const override
         {
-            PoDoFo::AppendToUnicodeEntriesTo(stream, m_charMap, temp);
+            PoDoFo::AppendToUnicodeEntriesTo(stream, m_charMap, font.GetCharCodeSubset().get(), temp);
         }
 
         void AppendCIDMappingEntries(OutputStream& stream, const PdfFont& font, charbuff& temp) const override
@@ -64,7 +63,7 @@ PdfEncodingMapConstPtr PdfFontMetrics::getFontType1BuiltInEncoding(FT_Face face)
     // 9.6.5 Character encoding
     // "In PDF, a font is classified as either nonsymbolic or symbolic according to whether all of its characters
     // are members of the standard Latin character set; see D.2, "Latin character set and encodings". This
-    // shall be indicated by flags in the font descriptor; see 9.8.2, "Font descriptor flags".Symbolic fonts
+    // shall be indicated by flags in the font descriptor; see 9.8.2, "Font descriptor flags". Symbolic fonts
     // contain other character sets, to which the encodings mentioned previously ordinarily do not apply.
     // Such font programs have built - in encodings that are usually unique to each font"
 
@@ -80,45 +79,46 @@ PdfEncodingMapConstPtr PdfFontMetrics::getFontType1BuiltInEncoding(FT_Face face)
     if ((GetFlags() & PdfFontDescriptorFlags::NonSymbolic) != PdfFontDescriptorFlags::None)
         return PdfEncodingMapFactory::GetStandardEncodingInstancePtr();
 
-    FT_ULong code;
-    FT_UInt index;
-    PdfCharCodeMap codeMap;
-    if (FT_Select_Charmap(face, FT_ENCODING_ADOBE_CUSTOM) == 0)
+    if (FT_Select_Charmap(face, FT_ENCODING_UNICODE) == 0)
     {
-        if (!FT_HAS_GLYPH_NAMES(face))
-            return nullptr;
+        // NOTE: It's enough to try to select an unicode charmap,
+        // as freetype generates a unicode charmap for Type1 fonts
+        // even if they do not contain one using the Adobe Glyph List (AGL)
+        // https://gitlab.freedesktop.org/freetype/freetype/-/blob/master/devel/ftoption.h?ref_type=85c8efe0afa5ad0df35114e317a065f544943c52#L339
+        // TODO: Make a fallback in case FT_CONFIG_OPTION_ADOBE_GLYPH_LIST is not defined
+        // This requires selecting FT_ENCODING_ADOBE_STANDARD or FT_ENCODING_ADOBE_STANDARD,
+        // iterate all codes to 0xFF, get the glyph name for the selected glyph and
+        // convert to unicode with PdfDifferenceEncoding::TryGetCodePointsFromCharName()
 
-        FT_Error rc;
-        char buffer[64];
+        FT_UInt index;
+        PdfCharCodeMap codeMap;
         CodePointSpan codepoints;
-        code = FT_Get_First_Char(face, &index);
-        while (index != 0)
+
+        // NOTE: It's safe to assume the base encoding is a one byte encoding.
+        // Iterate all the range, as the base encoding may be narrow
+        auto& standardEncoding = PdfEncodingMapFactory::GetStandardEncodingInstance();
+        for (unsigned code = 0; code <= 0xFFU; code++)
         {
-            rc = FT_Get_Glyph_Name(face, index, buffer, (FT_UInt)std::size(buffer));
-            if (rc != 0 || !PdfDifferenceEncoding::TryGetCodePointsFromCharName(
-                (const char*)buffer, codepoints))
+            index = FT_Get_Char_Index(face, code);
+            if (index != 0)
             {
-                goto Continue;
+                // If the match succeeded then by definition the code
+                // is a also a valid Unicode code point, so we can just
+                // add an identity mapping
+                codeMap.PushMapping(PdfCharCode(code, 1), (char32_t)code);
+                continue;
             }
 
+            // If the character is not mapped by this char map, we use
+            // the standard encoding as a fallback. This is not documented
+            // in the specification but it's been tested with Adobe Acrobat
+            if (!standardEncoding.TryGetCodePoints(PdfCharCode(code, 1), codepoints))
+                continue;
+
             codeMap.PushMapping(PdfCharCode(code, 1), codepoints);
-        Continue:
-            code = FT_Get_Next_Char(face, code, &index);
         }
 
         return PdfEncodingMapConstPtr(new PdfFontBuiltinType1Encoding(std::move(codeMap)));
-    }
-    else if (FT_Select_Charmap(face, FT_ENCODING_UNICODE) == 0)
-    {
-        // CHECK-ME: The following is fishy
-        // NOTE: Some very strange CFF fonts just supply an unicode map
-        // For these, we just assume code identity with Unicode codepoint
-        code = FT_Get_First_Char(face, &index);
-        while (index != 0)
-        {
-            codeMap.PushMapping(PdfCharCode(code), (char32_t)code);
-            code = FT_Get_Next_Char(face, code, &index);
-        }
     }
 
     return nullptr;

@@ -1,8 +1,5 @@
-/**
- * SPDX-FileCopyrightText: (C) 2022 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- * SPDX-License-Identifier: MPL-2.0
- */
+// SPDX-FileCopyrightText: 2022 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #ifndef PDF_CONTENT_READER_H
 #define PDF_CONTENT_READER_H
@@ -44,6 +41,7 @@ enum class PdfContentErrors : uint16_t
     None = 0,
     InvalidOperator = 1,                ///< Unknown operator or insufficient operand count. Applies to Operator
     InvalidXObject = 2,                 ///< Invalid or not found XObject
+    UnexpectedToken = 4,                ///< Token encountered in an invalid context (e.g., misplaced PostScript brace delimiter '{' or '}')
 };
 
 /** Content as read from content streams
@@ -112,6 +110,7 @@ enum class PdfContentReaderFlags
     ThrowOnWarnings = 1,
     SkipFollowFormXObjects = 2,     ///< Don't follow Form XObject 
     SkipHandleNonFormXObjects = 4,  ///< Don't handle non Form XObjects (PdfImage, PdfXObjectPostScript). Doesn't influence traversing of Form XObject(s)
+    SkipFetchInlineImages = 8,      ///< Don't fetch inline images data, just skip it
 };
 
 /** Custom handler for inline images
@@ -153,7 +152,7 @@ private:
 
     bool tryReadInlineImgDict(PdfContent& content);
 
-    bool tryReadInlineImgData(charbuff& data);
+    bool tryReadInlineImgData(charbuff& data, const PdfDictionary& imageDict, bool skipSaveImage);
 
     bool tryHandleXObject(PdfContent& content);
 

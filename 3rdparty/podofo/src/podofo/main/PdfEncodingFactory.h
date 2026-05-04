@@ -1,8 +1,5 @@
-/**
- * SPDX-FileCopyrightText: (C) 2021 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- * SPDX-License-Identifier: MPL-2.0
- */
+// SPDX-FileCopyrightText: 2021 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #ifndef PDF_ENCODING_FACTORY_H
 #define PDF_ENCODING_FACTORY_H
@@ -37,8 +34,6 @@ public:
      *  of WinAnsiEncoding.
      *
      *  \returns global instance of WinAnsiEncoding
-     *
-     *  \see GlobalWin1250EncodingInstance, GlobalIso88592EncodingInstance
      */
     static PdfEncoding CreateWinAnsiEncoding();
 

@@ -1,8 +1,6 @@
-/**
- * SPDX-FileCopyrightText: (C) 2009 Dominik Seichter <domseichter@web.de>
- * SPDX-FileCopyrightText: (C) 2020 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2009 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2020 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #ifndef PDF_XREF_STREAM_PARSER_OBJECT_H
 #define PDF_XREF_STREAM_PARSER_OBJECT_H
@@ -17,10 +15,6 @@ namespace PoDoFo
 /**
  * A utility class for PdfParser that can parse
  * an XRef stream object.
- *
- * It is mainly here to make PdfParser more modular.
- * This is only marked PODOFO_API for the benefit of the tests,
- * the class is for internal use only.
  */
 class PdfXRefStreamParserObject final : public PdfParserObject
 {

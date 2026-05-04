@@ -1,8 +1,5 @@
-/**
- * SPDX-FileCopyrightText: (C) 2021 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- * SPDX-License-Identifier: MPL-2.0
- */
+// SPDX-FileCopyrightText: 2021 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #ifndef PDF_SIGNER_H
 #define PDF_SIGNER_H
@@ -88,6 +85,24 @@ namespace PoDoFo
          * Should return the signature /Type. It can be "Sig" or "DocTimeStamp"
          */
         virtual std::string GetSignatureType() const = 0;
+
+        /**
+         * Return the number of signer identities, if the signer supports multiple
+         * \remarks by default it returns 1
+         */
+        virtual unsigned GetSignerIdentityCount() const;
+
+        /**
+         * Unpack intermediate results, if the signer supports multiple signer identities
+         * \remarks by default we just do a simple copy of the input to the output
+         */
+        virtual void UnpackIntermediateResult(const bufferview& processedResult, unsigned signerIdx, charbuff& result);
+
+        /**
+         * Assemble processed results handling multiple signer identities (if the signer supports it)
+         * \remarks by default we just do a simple copy of the input to the output
+         */
+        virtual void AssembleProcessedResult(const bufferview& processedResult, unsigned signerIdx, charbuff& result);
 
     private:
         PdfSigner(const PdfSigner&) = delete;

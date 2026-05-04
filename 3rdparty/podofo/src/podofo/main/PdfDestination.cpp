@@ -1,7 +1,5 @@
-/**
- * SPDX-FileCopyrightText: (C) 2006 Dominik Seichter <domseichter@web.de>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2006 Dominik Seichter <domseichter@web.de>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #include <podofo/private/PdfDeclarationsPrivate.h>
 #include "PdfDestination.h"
@@ -97,14 +95,7 @@ bool PdfDestination::TryCreateFromObject(PdfObject& obj, unique_ptr<PdfDestinati
     }
     else if (obj.GetDataType() == PdfDataType::Name)
     {
-        auto memDoc = dynamic_cast<PdfMemDocument*>(&doc);
-        if (memDoc == nullptr)
-        {
-            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidHandle,
-                "For reading from a document, only use PdfMemDocument");
-        }
-
-        auto dests = memDoc->GetCatalog().GetDictionary().FindKey("Dests");
+        auto dests = doc.GetCatalog().GetDictionary().FindKey("Dests");
         if (dests == nullptr)
         {
             // The error code has been chosen for its distinguishability.

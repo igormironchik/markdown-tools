@@ -1,13 +1,12 @@
-/**
- * SPDX-FileCopyrightText: (C) 2007 Dominik Seichter <domseichter@web.de>
- * SPDX-FileCopyrightText: (C) 2021 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2007 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2021 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #include <podofo/private/PdfDeclarationsPrivate.h>
 #include "PdfXObjectForm.h"
 #include "PdfDictionary.h"
 #include "PdfDocument.h"
+#include "PdfMath.h"
 #include "PdfPage.h"
 
 using namespace std;
@@ -37,9 +36,46 @@ PdfXObjectForm::PdfXObjectForm(PdfObject& obj)
 
 void PdfXObjectForm::FillFromPage(const PdfPage& page, bool useTrimBox)
 {
-    // After filling set correct BBox, independent of rotation
+    // After filling, set correct BBox and Matrix accounting for page rotation
     m_Rect = GetDocument().FillXObjectFromPage(*this, page, useTrimBox);
-    initAfterPageInsertion(page);
+
+    // BBox must be in form space (ISO 32000-2:2020 8.10.2 "Form dictionaries"),
+    // but m_Rect arrives post-rotation from GetMediaBox() with W/H already swapped
+    switch (page.GetRotation())
+    {
+        case 90:
+        case 270:
+        {
+            double temp = m_Rect.Width;
+            m_Rect.Width = m_Rect.Height;
+            m_Rect.Height = temp;
+            break;
+        }
+        default:
+            break;
+    }
+
+    PdfArray bbox;
+    m_Rect.ToArray(bbox);
+    GetDictionary().AddKey("BBox"_n, bbox);
+
+    // Account for page rotation in form's /Matrix, so that content is drawn with the
+    // same orientation as on the page. Also account for page's position on the media box,
+    // if not at the origin
+    double teta;
+    if (page.TryGetRotationRadians(teta))
+    {
+        auto matrix = GetFrameRotationTransform(m_Rect, teta);
+        if (m_Rect.X != 0 || m_Rect.Y != 0)
+            matrix = matrix * Matrix::CreateTranslation(Vector2(-m_Rect.X, -m_Rect.Y));
+
+        SetMatrix(matrix);
+    }
+    else
+    {
+        if (m_Rect.X != 0 || m_Rect.Y != 0)
+            SetMatrix(Matrix::CreateTranslation(Vector2(-m_Rect.X, -m_Rect.Y)));
+    }
 }
 
 bool PdfXObjectForm::TryGetRotationRadians(double& teta) const
@@ -153,78 +189,4 @@ void PdfXObjectForm::initXObject(const Rect& rect)
     GetDictionary().AddKey("BBox"_n, bbox);
     GetDictionary().AddKey("FormType"_n, PdfVariant(static_cast<int64_t>(1))); // only 1 is only defined in the specification.
     GetDictionary().AddKey("Matrix"_n, arr);
-}
-
-void PdfXObjectForm::initAfterPageInsertion(const PdfPage& page)
-{
-    PdfArray bbox;
-    m_Rect.ToArray(bbox);
-    GetDictionary().AddKey("BBox"_n, bbox);
-
-    int rotation = page.GetRotation();
-    // Swap offsets/width/height for vertical rotation
-    switch (rotation)
-    {
-        case 90:
-        case 270:
-        {
-            double temp;
-
-            temp = m_Rect.Width;
-            m_Rect.Width = m_Rect.Height;
-            m_Rect.Height = temp;
-
-            temp = m_Rect.X;
-            m_Rect.X = m_Rect.Y;
-            m_Rect.Y = temp;
-        }
-        break;
-
-        default:
-            break;
-    }
-
-    // Build matrix for rotation and cropping
-    double alpha = -rotation / 360.0 * 2.0 * numbers::pi;
-
-    double a, b, c, d, e, f;
-
-    a = cos(alpha);
-    b = sin(alpha);
-    c = -sin(alpha);
-    d = cos(alpha);
-
-    switch (rotation)
-    {
-        case 90:
-            e = -m_Rect.X;
-            f = m_Rect.Y + m_Rect.Height;
-            break;
-
-        case 180:
-            e = m_Rect.X + m_Rect.Width;
-            f = m_Rect.Y + m_Rect.Height;
-            break;
-
-        case 270:
-            e = m_Rect.X + m_Rect.Width;
-            f = -m_Rect.Y;
-            break;
-
-        case 0:
-        default:
-            e = -m_Rect.X;
-            f = -m_Rect.Y;
-            break;
-    }
-
-    PdfArray matrix;
-    matrix.Add(PdfObject(a));
-    matrix.Add(PdfObject(b));
-    matrix.Add(PdfObject(c));
-    matrix.Add(PdfObject(d));
-    matrix.Add(PdfObject(e));
-    matrix.Add(PdfObject(f));
-
-    GetDictionary().AddKey("Matrix"_n, matrix);
 }

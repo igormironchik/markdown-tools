@@ -1,8 +1,6 @@
-/**
- * SPDX-FileCopyrightText: (C) 2008 Dominik Seichter <domseichter@web.de>
- * SPDX-FileCopyrightText: (C) 2020 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2008 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2020 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #ifndef PDF_DIFFERENCE_ENCODING_H
 #define PDF_DIFFERENCE_ENCODING_H
@@ -88,9 +86,6 @@ public:
     const_iterator end() const { return m_differences.end(); }
 
 private:
-    /**
-     * \param explicitNames if true, the unicode value is set to nCode as name is meaningless (Type3 fonts)
-     */
     void AddDifference(unsigned char code, const std::string_view& name);
 
     void addDifference(unsigned char code, const codepointview& codepoints, const PdfName& name);

@@ -8,12 +8,13 @@
 6.  [Doxygen Documentation](#doxygen-documentation)
 7.  [Software life cycle and API stability](#software-life-cycle-and-api-stability)
 8.  [String encoding and buffer conventions](#string-encoding-and-buffer-conventions)
-9.  [PoDoFo tools](#podofo-tools)
-10.  [TODO](#todo)
-11.  [FAQ](#faq)
-12.  [No warranty](#no-warranty)
-13.  [Contributions](#contributions)
-14.  [Authors](#authors)
+9.  [Thread safety](#thread-safety)
+11.  [PoDoFo tools](#podofo-tools)
+12.  [TODO](#todo)
+13.  [FAQ](#faq)
+14.  [No warranty](#no-warranty)
+15.  [Contributions](#contributions)
+16.  [Authors](#authors)
 
 ## What is PoDoFo?
 
@@ -29,7 +30,8 @@ PoDoFo has a modern and user-friendly C++17 API that features:
 
 - PDF parsing with high-level entity inspection (annotations, form fields and others)
 - PDF writing with support for incremental updates
-- PDF signing with PAdES-B compliance and support for asynchronous/deferred signing
+- PDF signing with [PAdES-B](https://en.wikipedia.org/wiki/PAdES) compliance,
+  RSA/ECDSA encryption and asynchronous/deferred signing
 - Text drawing with automatic CID encoding generation and font subsetting
 - Full-featured low-level Unicode text extraction
 - Advanced CJK language support (text extraction and automatic multi-byte encoding)
@@ -43,7 +45,7 @@ is also limited as it currently does not perform proper text shaping/kerning.
 ## Requirements
 
 To build PoDoFo lib you'll need a c++17 compiler,
-CMake 3.16 and the following libraries (tentative minimum versions indicated):
+CMake 3.23 and the following libraries (tentative minimum versions indicated):
 
 * freetype2 (2.11)
 * fontconfig (2.13.94, required for Unix platforms, optional for Windows)
@@ -74,8 +76,11 @@ GCC 8.1 support [broke](https://github.com/podofo/podofo/issues/116), but it cou
 
 ## Licensing
 
-PoDoFo library is licensed under the [LGPL 2.0](https://spdx.org/licenses/LGPL-2.0-or-later.html) or later terms.
-PoDoFo tools are licensed under the [GPL 2.0](https://spdx.org/licenses/GPL-2.0-or-later.html) or later terms.
+The PoDoFo library is licensed under the [LGPL 2.0 or later](https://spdx.org/licenses/LGPL-2.0-or-later.html) terms or, at your option, [MPL 2.0](https://spdx.org/licenses/MPL-2.0.html).
+
+PoDoFo tools are licensed under the [GPL 2.0 or later](https://spdx.org/licenses/GPL-2.0-or-later.html) terms.
+
+Please refer to the [NOTICE](https://github.com/podofo/podofo/blob/master/NOTICE) file for the use of 3rd party components. Consider disabling the [AFDKO](https://github.com/adobe-type-tools/afdko) integration if you plan to distribute the PoDoFo library with [GPL 2.0-only](https://spdx.org/licenses/GPL-2.0-only.html) projects.
 
 ## Development quickstart
 
@@ -110,7 +115,7 @@ Install [brew](https://brew.sh/), then from the source root run:
 brew install fontconfig freetype openssl libxml2 jpeg-turbo libpng libtiff cmake
 mkdir build
 cd build
-cmake  -DCMAKE_BUILD_TYPE=Debug -DCMAKE_FIND_FRAMEWORK=NEVER -DCMAKE_PREFIX_PATH=`brew --prefix` -DFontconfig_INCLUDE_DIR=`brew --prefix fontconfig`/include -DOPENSSL_ROOT_DIR=`brew --prefix openssl@3` ..
+cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_FIND_FRAMEWORK=NEVER -DCMAKE_PREFIX_PATH=`brew --prefix` -DFontconfig_INCLUDE_DIR=`brew --prefix fontconfig`/include -DOPENSSL_ROOT_DIR=`brew --prefix openssl@3` ..
 cmake --build . --config Debug
 ```
 
@@ -130,16 +135,15 @@ cmake --build . --config Debug
 
 Follow the vcpkg [quickstart](https://vcpkg.io/en/getting-started.html) guide to setup the package manager repository first.
 In Windows, it may be also useful to set the environment variable `VCPKG_DEFAULT_TRIPLET` to `x64-windows` to default installing 64 bit dependencies
-and define a `VCPKG_INSTALLATION_ROOT` variable with the location of the repository as created in the quickstart.
+and define a `VCPKG_ROOT` variable with the location of the repository as created in the quickstart.
 
 Then from source root run:
 
 ```
-vcpkg install fontconfig freetype libxml2 openssl libjpeg-turbo libpng tiff zlib
+vcpkg install
 mkdir build
-cd build
-cmake -DCMAKE_TOOLCHAIN_FILE=C:\vcpkg\scripts\buildsystems\vcpkg.cmake -DCMAKE_BUILD_TYPE=Debug ..
-cmake --build . --config Debug
+cmake "-DCMAKE_TOOLCHAIN_FILE=vcpkg.cmake" -DCMAKE_BUILD_TYPE=Debug -B build
+cmake --build build --config Debug
 ```
 
 ### Consume PoDoFo from package managers with CMake
@@ -183,7 +187,23 @@ the relevant [section](https://github.com/podofo/podofo/#podofo-tools) in the Re
 This unconditionally disable building tests, examples and tools;
 
 - `PODOFO_BUILD_STATIC`: If TRUE, build the library as a static object and use it in tests,
-examples and tools. By default a shared library is built.
+examples and tools. By default a shared library is built;
+
+- `PODOFO_WITH_AFDKO`: Enable the [Adobe Font Development Kit for OpenType](https://github.com/adobe-type-tools/afdko) integration (used in Type1/OpenType font subsetting), defaults to ON;
+
+- `PODOFO_DEVENDOR_TCBSPAN`: If TRUE, the [`tcb::span`](https://github.com/tcbrindle/span) library will be devendored;
+
+- `PODOFO_DEVENDOR_DATE`: If TRUE, the [`date`](https://github.com/howardhinnant/date) library will be devendored;
+
+- `PODOFO_DEVENDOR_FASTFLOAT`: If TRUE, the [`fast_float`](https://github.com/fastfloat/fast_float) library will be devendored;
+
+- `PODOFO_DEVENDOR_FMT`: If TRUE, the [`fmt`](https://github.com/fmtlib/fmt) library will be devendored;
+
+- `PODOFO_DEVENDOR_FMT_HEADER_ONLY`: Implies `PODOFO_DEVENDOR_FMT`, but uses the `fmt::fmt-header-only` library flavour;
+
+- `PODOFO_DEVENDOR_UTF8CPP`: If TRUE, the [`utf8cpp`](https://github.com/nemtrif/utfcpp) library will be devendored;
+
+- `PODOFO_DEVENDOR_UTF8PROC`: If TRUE, the [`utf8proc`](https://juliastrings.github.io/utf8proc/) library will be devendored.
 
 ### Static linking
 
@@ -199,7 +219,7 @@ target_link_libraries(MyTarget podofo::podofo)
 
 If you are linking against a precompiled static build of PoDoFo this is a scenario where the support is limited, as you are really supposed to be able to identify and fix linking errors. The general steps are:
 * Add `PODOFO_STATIC` compilation definition to your project, or before including `podofo.h`;
-* Link the libraries `podofo.a`, `podofo_private.a` (or `podofo.lib`, `podofo_private.lib` with MSVC) and all the [dependent](https://github.com/podofo/podofo/blob/5a07b90f24747a5aafe6f6fd062ee81f4783ab22/CMakeLists.txt#L203C5-L203C24) libraries.
+* Link the libraries `podofo.a`, `podofo_private.a`, `podofo_3rdparty.a` (`podofo.lib`, `podofo_private.lib`, `podofo_3rdparty.lib` in MSVC) and all the [dependent](https://github.com/podofo/podofo/blob/5a07b90f24747a5aafe6f6fd062ee81f4783ab22/CMakeLists.txt#L203C5-L203C24) libraries.
 
 ## Doxygen Documentation
 
@@ -230,8 +250,14 @@ At this [page](https://github.com/podofo/podofo/blob/master/API-MIGRATION.md) yo
 All `std::strings` or `std::string_view` in the library are intended
 to hold UTF-8 encoded string content. `PdfString` and `PdfName` constructors
 accept UTF-8 encoded strings by default (`PdfName` accept only characters in the
-`PdfDocEncoding` char set, though). `charbuff` abd `bufferview`
+`PdfDocEncoding` char set, though). `charbuff` and `bufferview`
 instead represent a generic octet buffer.
+
+## Thread safety
+
+For the most part PoDoFo is not a thread safe library. As a general rule: use any object on the same thread it was created on.
+Alternatively: guard access to objects obtained through a `PdfDocument` using a mutex. Explicit support is provided for freeing
+object instances in different threads, as is done in modern garbage collected languages.
 
 ## PoDoFo Tools
 
@@ -254,7 +280,7 @@ at the [issue](https://github.com/podofo/podofo/issues) tracker.
 **Q: PoDoFo compilation requires a CMake version higher than what is present in my system, can you lower the requirement?<a id='faq-cmake'></a>**
 
 **A:** No, CMake 2.23 introduced a functionality that makes it very easy to create [CMake packages](https://cmake.org/cmake/help/latest/manual/cmake-packages.7.html) that
-is too conventient to ignore. In Windows it's easy to upgrade the CMake version to latest, while in MacOs it's the same thanks to the official KitWare installer or `brew`.
+is too convenient to ignore. In Windows it's easy to upgrade the CMake version to latest, while in MacOS it's the same thanks to the official KitWare installer or `brew`.
 In a linux system it's also quite easy to install an upgraded parallel CMake installation. Just run the following script:
 
 ```
@@ -324,7 +350,7 @@ for following operations, meaning the mechanism was bugged/unreliable.
 
 An alternative strategy that makes clearer the fact that the incremental update
 must be performed on the same file from where the document was loaded, or that underlying
-buffer will grow its mememory consumption following subsequent operations in case of
+buffer will grow its memory consumption following subsequent operations in case of
 buffer loaded documents, is available. It follows a couple of examples showing the
 correct operations to update a document, loaded from file or buffer:
 
@@ -359,7 +385,7 @@ Signing documents can be done with same technique, read the other questions for 
 **Q: Can I sign a document a second time?<a id='faq-sign-second'></a>**
 
 **A:** Yes, this is tested, but to make sure this will work you'll to re-parse the document a second time,
-as re-using the already loaded document is still untested (this may change later). For example you can
+as reusing the already loaded document is still untested (this may change later). For example you can
 do as it follows:
 
 ```cpp
@@ -400,7 +426,7 @@ high-quality patches.
 
 Please subscribe to the project mailing [list](https://sourceforge.net/projects/podofo/lists/podofo-users)
 which is still followed by several of the original developers of PoDoFo.
-A gitter [community](https://gitter.im/podofo/community) has also been created to ease some more informal chatter.
+A Discord [server](https://discord.gg/t9xX77ZrHr) has also been created to ease some more informal chatter.
 If you find a bug and know how to fix it, or you want to add a small feature, you're welcome to send a [pull request](https://github.com/podofo/podofo/pulls),
 providing it follows the [coding style](https://github.com/podofo/podofo/blob/master/CODING-STYLE.md)
 of the project. As a minimum requisite, any contribution should be:

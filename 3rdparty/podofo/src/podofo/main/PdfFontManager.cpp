@@ -1,8 +1,6 @@
-/**
- * SPDX-FileCopyrightText: (C) 2007 Dominik Seichter <domseichter@web.de>
- * SPDX-FileCopyrightText: (C) 2020 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2007 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2020 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #include <podofo/private/PdfDeclarationsPrivate.h>
 #include "PdfFontManager.h"
@@ -389,8 +387,7 @@ unique_ptr<const PdfFontMetrics> PdfFontManager::searchFontMetrics(const string_
         if (data != nullptr)
         {
             // NOTE: The font has been already extracted from collections at this point
-            unique_ptr<FT_FaceRec_, decltype(&FT_Done_Face)> face(FT::CreateFaceFromBuffer(*data), FT_Done_Face);
-
+            auto face = FT::CreateFaceFromBuffer(*data);
             ret = PdfFontMetrics::CreateFromFace(face.get(), std::move(data), refMetrics, skipNormalization);
             (void)face.release();
         }
@@ -456,8 +453,7 @@ PdfFont& PdfFontManager::GetOrCreateFont(HFONT font, const PdfFontCreateParams& 
         PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidFontData, "Could not retrieve buffer for font!");
 
     // NOTE: The font has been already extracted from collections at this point
-    unique_ptr<FT_FaceRec_, decltype(&FT_Done_Face)> face(FT::CreateFaceFromBuffer(*data), FT_Done_Face);
-
+    auto face = FT::CreateFaceFromBuffer(*data);
     auto metrics = PdfFontMetrics::CreateFromFace(face.get(), std::move(data), nullptr, false);
     (void)face.release();
     if (metrics == nullptr)

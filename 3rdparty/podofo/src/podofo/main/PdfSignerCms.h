@@ -1,8 +1,5 @@
-/**
- * SPDX-FileCopyrightText: (C) 2023 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- * SPDX-License-Identifier: MPL-2.0
- */
+// SPDX-FileCopyrightText: 2023 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #ifndef PDF_SIGNER_CMS_H
 #define PDF_SIGNER_CMS_H
@@ -12,8 +9,11 @@
 
 extern "C"
 {
-    // OpenSSL forward 
+    // OpenSSL forward declaration
     struct evp_pkey_st;
+    // libxml2 forward declaration
+    typedef struct _xmlNode xmlNode;
+    typedef xmlNode* xmlNodePtr;
 }
 
 namespace PoDoFo
@@ -23,13 +23,13 @@ namespace PoDoFo
     using PdfSigningService = std::function<void(bufferview hashToSign, bool dryrun, charbuff& signedHash)>;
     using PdfSignedHashHandler = std::function<void(bufferview signedhHash, bool dryrun)>;
 
-    enum class PdfSignerCmsFlags
+    enum class PdfSignerCmsFlags : uint32_t
     {
         None = 0,
         ///< When supplying a PdfSigningService, specify if the service
         ///< expects a bare digest (the default), or if should be wrapped
         ///< in a ASN.1 structure with encryption and hashing type (PKCS#1 v1.5
-        ///< encpasulation), and the signing service will just perform an
+        ///< encapsulation), and the signing service will just perform an
         ///< encryption with private key
         ServiceDoWrapDigest = 1,
         ///< When supplying an external PdfSigningService, specify if
@@ -40,6 +40,7 @@ namespace PoDoFo
     struct PODOFO_API PdfSignerCmsParams final
     {
         PdfSignatureType SignatureType = PdfSignatureType::PAdES_B;
+        [[deprecated("Encryption should be automatically detected from the public key in the certificate")]]
         PdfSignatureEncryption Encryption = PdfSignatureEncryption::RSA;
         PdfHashingAlgorithm Hashing = PdfHashingAlgorithm::SHA256;
         PdfSigningService SigningService;
@@ -48,7 +49,7 @@ namespace PoDoFo
         PdfSignerCmsFlags Flags = PdfSignerCmsFlags::None;
     };
 
-    enum class PdfSignatureAttributeFlags
+    enum class PdfSignatureAttributeFlags : uint32_t
     {
         None = 0,
         ///< The attribute is a signed attribute. By default, it is unsigned
@@ -61,6 +62,7 @@ namespace PoDoFo
      */
     class PODOFO_API PdfSignerCms : public PdfSigner
     {
+        friend class PdfSigningContext;
     public:
         /** Load X.509 certificate and supply a ASN.1 DER encoded private key
          * \param cert ASN.1 DER encoded X.509 certificate
@@ -78,6 +80,11 @@ namespace PoDoFo
         PdfSignerCms(const bufferview& cert, const PdfSignerCmsParams& parameters = { });
 
         ~PdfSignerCms();
+
+    private:
+        /** This is used for deserialization by PdfSigningContext
+         */
+        PdfSignerCms();
 
     public:
         void AppendData(const bufferview& data) override;
@@ -103,8 +110,14 @@ namespace PoDoFo
         void ReserveAttributeSize(unsigned attrSize);
 
     public:
+        unsigned GetSignedHashSize() const;
+
         const PdfSignerCmsParams& GetParameters() const { return m_parameters; }
 
+    private:
+        // Called by PdfSigningContext
+        void Dump(xmlNodePtr signerElem, std::string& temp);
+        void Restore(xmlNodePtr signerElem, charbuff& temp);
     private:
         void ensureEventBasedSigning();
         void ensureDeferredSigning();
@@ -112,6 +125,7 @@ namespace PoDoFo
         void ensureContextInitialized();
         void resetContext();
         void doSign(const bufferview& input, charbuff& output);
+        void tryEnlargeSignatureContents(charbuff& contents);
     private:
         nullable<bool> m_deferredSigning;
         charbuff m_certificate;

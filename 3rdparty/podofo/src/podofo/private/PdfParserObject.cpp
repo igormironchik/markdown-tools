@@ -1,8 +1,6 @@
-/**
- * SPDX-FileCopyrightText: (C) 2005 Dominik Seichter <domseichter@web.de>
- * SPDX-FileCopyrightText: (C) 2020 Francesco Pretto <ceztko@gmail.com>
- * SPDX-License-Identifier: LGPL-2.0-or-later
- */
+// SPDX-FileCopyrightText: 2005 Dominik Seichter <domseichter@web.de>
+// SPDX-FileCopyrightText: 2020 Francesco Pretto <ceztko@gmail.com>
+// SPDX-License-Identifier: LGPL-2.0-or-later OR MPL-2.0
 
 #include <podofo/private/PdfDeclarationsPrivate.h>
 #include "PdfParserObject.h"
@@ -12,35 +10,48 @@
 
 #include "PdfFilterFactory.h"
 
+namespace
+{
+    enum class EndStreamToken : uint8_t
+    {
+        Undetermined = 0,
+        Endstream,
+        Endobj,
+    };
+}
+
 using namespace PoDoFo;
 using namespace std;
 
+static size_t determineStreamSize(InputStreamDevice& device, size_t streamOffset);
+static bool readObjectStreamEnd(int ch, unsigned& cursoridx, EndStreamToken& endStreamWord);
+
 PdfParserObject::PdfParserObject(PdfDocument& doc, const PdfReference& indirectReference, InputStreamDevice& device, ssize_t offset)
-    : PdfParserObject(&doc, indirectReference, device, offset)
+    : PdfParserObject(&doc, indirectReference, device, offset, false)
 {
     if (!indirectReference.IsIndirect())
         PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidHandle, "Indirect reference must be valid");
 }
 
 PdfParserObject::PdfParserObject(PdfDocument& doc, InputStreamDevice& device, ssize_t offset)
-    : PdfParserObject(&doc, PdfReference(), device, offset)
+    : PdfParserObject(&doc, PdfReference(), device, offset, true)
 {
 }
 
 PdfParserObject::PdfParserObject(InputStreamDevice& device,
-    const PdfReference& indirectReference, ssize_t offset)
-    : PdfParserObject(nullptr, indirectReference, device, offset) { }
+        const PdfReference& indirectReference, ssize_t offset)
+    : PdfParserObject(nullptr, indirectReference, device, offset, false) { }
 
 PdfParserObject::PdfParserObject(InputStreamDevice& device, ssize_t offset)
-    : PdfParserObject(nullptr, PdfReference(), device, offset) { }
+    : PdfParserObject(nullptr, PdfReference(), device, offset, false) { }
 
 PdfParserObject::PdfParserObject(PdfDocument* doc, const PdfReference& indirectReference,
-    InputStreamDevice& device, ssize_t offset) :
+        InputStreamDevice& device, ssize_t offset, bool isLegacyTrailer) :
     PdfObject(PdfVariant(), indirectReference, true),
     m_device(&device),
     m_Offset(offset < 0 ? device.GetPosition() : offset),
     m_StreamOffset(0),
-    m_IsTrailer(false),
+    m_isLegacyTrailer(isLegacyTrailer),
     m_HasStream(false),
     m_IsRevised(false)
 {
@@ -55,26 +66,46 @@ PdfParserObject::PdfParserObject(PdfDocument* doc, const PdfReference& indirectR
 }
 
 
-void PdfParserObject::Parse()
+void PdfParserObject::ParseData()
 {
     // It's really just a call to DelayedLoad
     DelayedLoad();
 }
 
-void PdfParserObject::ParseStream()
+void PdfParserObject::ParseFull()
 {
-    // It's really just a call to DelayedLoad
-    DelayedLoadStream();
+    DelayedLoad();
+    ParseStream(false);
+}
+
+void PdfParserObject::ParseStreamDryRun()
+{
+    PODOFO_ASSERT(IsDelayedLoadDone());
+    PODOFO_ASSERT(!IsDelayedLoadStreamDone());
+    if (m_HasStream)
+        parseStream(true, true);
+}
+
+void PdfParserObject::ParseStream(bool shallow)
+{
+    PODOFO_ASSERT(IsDelayedLoadDone());
+    if (IsDelayedLoadStreamDone())
+        return;
+
+    if (m_HasStream)
+        parseStream(shallow, false);
+
+    MakeDelayedLoadingStreamDone();
 }
 
 void PdfParserObject::delayedLoad()
 {
     PdfTokenizer tokenizer;
     m_device->Seek(m_Offset);
-    if (!m_IsTrailer)
+    if (!m_isLegacyTrailer)
         checkReference(tokenizer);
 
-    Parse(tokenizer);
+    ParseData(tokenizer);
 }
 
 void PdfParserObject::delayedLoadStream()
@@ -82,19 +113,19 @@ void PdfParserObject::delayedLoadStream()
     PODOFO_ASSERT(getStream() == nullptr);
 
     // Note: we can't use HasStream() here because it'll call DelayedLoad()
-    if (HasStreamToParse())
+    if (!m_HasStream)
+        return;
+    
+    try
     {
-        try
-        {
-            parseStream();
-        }
-        catch (PdfError& e)
-        {
-            PODOFO_PUSH_FRAME_INFO(e, "Unable to parse the stream for object {} {} R",
-                GetIndirectReference().ObjectNumber(),
-                GetIndirectReference().GenerationNumber());
-            throw;
-        }
+        parseStream(false, false);
+    }
+    catch (PdfError& e)
+    {
+        PODOFO_PUSH_FRAME_INFO(e, "Unable to parse the stream for object {} {} R",
+            GetIndirectReference().ObjectNumber(),
+            GetIndirectReference().GenerationNumber());
+        throw;
     }
 }
 
@@ -120,7 +151,7 @@ PdfReference PdfParserObject::ReadReference(PdfTokenizer& tokenizer)
 // Only called via the demand loading mechanism
 // Be very careful to avoid recursive demand loads via PdfVariant
 // or PdfObject method calls here.
-void PdfParserObject::Parse(PdfTokenizer& tokenizer)
+void PdfParserObject::ParseData(PdfTokenizer& tokenizer)
 {
     unique_ptr<PdfStatefulEncrypt> encrypt;
     if (m_Encrypt != nullptr)
@@ -142,7 +173,7 @@ void PdfParserObject::Parse(PdfTokenizer& tokenizer)
     {
         tokenizer.ReadNextVariant(*m_device, token, tokenType, m_Variant, encrypt.get());
 
-        if (!m_IsTrailer)
+        if (!m_isLegacyTrailer)
         {
             gotToken = tokenizer.TryReadNextToken(*m_device, token);
             if (!gotToken)
@@ -174,16 +205,16 @@ bool PdfParserObject::HasStreamToParse() const
 // Only called during delayed loading. Must be careful to avoid
 // triggering recursive delay loading due to use of accessors of
 // PdfVariant or PdfObject.
-void PdfParserObject::parseStream()
+void PdfParserObject::parseStream(bool shallow, bool dryRun)
 {
     PODOFO_ASSERT(IsDelayedLoadDone());
 
-    int64_t size = -1;
     char ch;
-
-    auto& lengthObj = this->m_Variant.GetDictionaryUnsafe().MustFindKey("Length");
-    if (!lengthObj.TryGetNumber(size))
-        PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidStream, "Invlid stream length");
+    ssize_t size;
+    if (shallow)
+        size = (ssize_t)this->m_Variant.GetDictionaryUnsafe().GetKeyAsSafe<int64_t>("Length", -1);
+    else
+        size = (ssize_t)this->m_Variant.GetDictionaryUnsafe().FindKeyAsSafe<int64_t>("Length", -1);
 
     m_device->Seek(m_StreamOffset);
 
@@ -200,8 +231,10 @@ void PdfParserObject::parseStream()
             // but certain PDFs have additional whitespaces
             case ' ':
             case '\t':
+            {
                 (void)m_device->ReadChar();
                 break;
+            }
             // From PDF 32000:2008 7.3.8.1 General
             // "The keyword stream that follows the stream dictionary shall be
             // followed by an end-of-line marker consisting of either a CARRIAGE
@@ -210,6 +243,7 @@ void PdfParserObject::parseStream()
             // followed by a non-newline character, see the discussion in
             // https://github.com/qpdf/qpdf/discussions/1413
             case '\r':
+            {
                 (void)m_device->ReadChar();
                 streamOffset = m_device->GetPosition();
                 if (!m_device->Peek(ch))
@@ -219,14 +253,19 @@ void PdfParserObject::parseStream()
                     streamOffset++;
 
                 goto ReadStream;
+            }
             case '\n':
+            {
                 (void)m_device->ReadChar();
                 streamOffset = m_device->GetPosition();
                 goto ReadStream;
+            }
             // Assume malformed PDF with no whitespaces after the stream keyword
             default:
+            {
                 streamOffset = m_device->GetPosition();
                 goto ReadStream;
+            }
         }
     }
 
@@ -235,25 +274,44 @@ ReadStream:
     // the following operation may also adjust the position
     auto filters = PdfFilterFactory::CreateFilterList(*this);
 
-    m_device->Seek(streamOffset);	// reset it before reading!
-
-    // Set stream raw data without marking the object dirty
-    // NOTE: /Metadata objects may be unencrypted even if the
-    // whole document is encrypted
-    const PdfName* type;
-    if (m_Encrypt != nullptr && (m_Encrypt->GetEncrypt().IsMetadataEncrypted()
-        || !this->m_Variant.GetDictionaryUnsafe().TryFindKeyAs("Type", type)
-        || *type != "Metadata"))
+    if (size < 0)
     {
-        auto input = m_Encrypt->GetEncrypt().CreateEncryptionInputStream(*m_device, static_cast<size_t>(size), m_Encrypt->GetContext(), GetIndirectReference());
-        getOrCreateStream().InitData(*input, static_cast<ssize_t>(size), std::move(filters));
-        // Release the encrypt object after loading the stream.
-        // It's not needed for serialization here
-        m_Encrypt = nullptr;
+        m_device->Seek(streamOffset);
+        if (!shallow)
+        {
+            PoDoFo::LogMessage(PdfLogSeverity::Warning, "Oject {} {} R has invalid stream length",
+                GetIndirectReference().ObjectNumber(), GetIndirectReference().GenerationNumber());
+        }
+
+        size = (ssize_t)determineStreamSize(*m_device, streamOffset);
+    }
+
+    if (dryRun)
+    {
+        m_device->Seek(streamOffset + size);
     }
     else
     {
-        getOrCreateStream().InitData(*m_device, static_cast<ssize_t>(size), std::move(filters));
+        m_device->Seek(streamOffset);
+
+        // Set stream raw data without marking the object dirty
+        // NOTE: /Metadata objects may be unencrypted even if the
+        // whole document is encrypted
+        const PdfName* type;
+        if (m_Encrypt != nullptr && (m_Encrypt->GetEncrypt().IsMetadataEncrypted()
+            || !this->m_Variant.GetDictionaryUnsafe().TryFindKeyAs("Type", type)
+            || *type != "Metadata"))
+        {
+            auto input = m_Encrypt->GetEncrypt().CreateEncryptionInputStream(*m_device, static_cast<size_t>(size), m_Encrypt->GetContext(), GetIndirectReference());
+            getOrCreateStream().InitData(*input, static_cast<ssize_t>(size), std::move(filters));
+            // Release the encrypt object after loading the stream.
+            // It's not needed for serialization here
+            m_Encrypt = nullptr;
+        }
+        else
+        {
+            getOrCreateStream().InitData(*m_device, static_cast<ssize_t>(size), std::move(filters));
+        }
     }
 }
 
@@ -304,4 +362,156 @@ bool PdfParserObject::TryUnload()
     EnableDelayedLoading();
     EnableDelayedLoadingStream();
     return true;
+}
+
+size_t determineStreamSize(InputStreamDevice& device, size_t streamOffset)
+{
+    char ch;
+    unsigned i = 0;
+    EndStreamToken endStreamToken;
+    while (true)
+    {
+        if (device.Read(ch))
+        {
+            if (readObjectStreamEnd(ch, i, endStreamToken))
+                goto AdjustSize;
+        }
+        else
+        {
+            if (readObjectStreamEnd(-1, i, endStreamToken))
+                goto AdjustSize;
+
+            goto Fail;
+        }
+    }
+
+AdjustSize:
+    // NOTE: Ignore newline characters before end stream token. We assume
+    // they will either being skipped/ignored by the stream filter
+    switch (endStreamToken)
+    {
+        case EndStreamToken::Endstream:
+            return device.GetPosition() - streamOffset - 10;
+        case EndStreamToken::Endobj:
+            return device.GetPosition() - streamOffset - 7;
+        default:
+            PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InternalLogic, "Unexpected flow");
+    }
+
+Fail:
+    PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InvalidStream, "Unable to determine size of the stream");
+}
+
+// Try to read "endstream" or "endobj", followed by a delimiter or EOF
+bool readObjectStreamEnd(int ch, unsigned& cursoridx, EndStreamToken& endStreamToken)
+{
+    switch (cursoridx)
+    {
+        case 0:
+            if (ch == 'e') goto Advance; break;
+        case 1:
+            if (ch == 'n') goto Advance; break;
+        case 2:
+            if (ch == 'd') goto Advance; break;
+        case 3:
+            if (ch == 's')
+            {
+                endStreamToken = EndStreamToken::Endstream;
+                goto Advance;
+            }
+            else if (ch == 'o')
+            {
+                endStreamToken = EndStreamToken::Endobj;
+                goto Advance;
+            }
+
+            break;
+        case 4:
+            switch (endStreamToken)
+            {
+                case EndStreamToken::Endstream:
+                    if (ch == 't') goto Advance; break;
+                case EndStreamToken::Endobj:
+                    if (ch == 'b') goto Advance; break;
+                default:
+                    goto Unexpected;
+            }
+
+            break;
+        case 5:
+            switch (endStreamToken)
+            {
+                case EndStreamToken::Endstream:
+                    if (ch == 'r') goto Advance; break;
+                case EndStreamToken::Endobj:
+                    if (ch == 'j') goto Advance; break;
+                default:
+                    goto Unexpected;
+            }
+
+            break;
+        case 6:
+            switch (endStreamToken)
+            {
+                case EndStreamToken::Endstream:
+                    if (ch == 'e') goto Advance; break;
+                case EndStreamToken::Endobj:
+                    if (ch == -1 || PoDoFo::IsCharWhitespace((char)ch))
+                        return true;
+
+                    break;
+                default:
+                    goto Unexpected;
+            }
+
+            break;
+        case 7:
+            switch (endStreamToken)
+            {
+                case EndStreamToken::Endstream:
+                    if (ch == 'a') goto Advance; break;
+                default:
+                    goto Unexpected;
+            }
+
+            break;
+        case 8:
+            switch (endStreamToken)
+            {
+                case EndStreamToken::Endstream:
+                    if (ch == 'm') goto Advance; break;
+                default:
+                    goto Unexpected;
+            }
+
+            break;
+        case 9:
+            switch (endStreamToken)
+            {
+                case EndStreamToken::Endstream:
+                    if (ch == -1 || PoDoFo::IsCharWhitespace((char)ch))
+                        return true;
+
+                    break;
+                default:
+                    goto Unexpected;
+            }
+
+            break;
+        default:
+            goto Unexpected;
+    }
+
+    // Reset cursors
+    cursoridx = 0;
+    endStreamToken = EndStreamToken::Undetermined;
+    return false;
+
+Advance:
+    // Advance cursor
+    cursoridx++;
+    return false;
+
+Unexpected:
+    PODOFO_RAISE_ERROR_INFO(PdfErrorCode::InternalLogic, "Unexpected flow");
 }
