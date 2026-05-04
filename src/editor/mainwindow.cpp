@@ -2814,6 +2814,7 @@ void MainWindow::onShowLicenses()
     msg.addLicense(s_highlightBlockquoteName, s_highlightBlockquoteLicense);
     msg.addLicense(s_sonnetName, s_sonnetLicense);
     msg.addLicense(s_md4qtName, s_md4qtLicense);
+    msg.addLicense(s_kwidgetsaddonsName, s_kwidgetsaddonsLicense);
 
     msg.exec();
 }

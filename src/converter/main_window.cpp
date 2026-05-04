@@ -754,6 +754,7 @@ void MainWindow::licenses()
     msg.addLicense(s_resvgName, s_resvgLicense);
     msg.addLicense(s_microtexName, s_microtexLicense);
     msg.addLicense(s_md4qtName, s_md4qtLicense);
+    msg.addLicense(s_kwidgetsaddonsName, s_kwidgetsaddonsLicense);
 
     msg.exec();
 }
