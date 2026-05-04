@@ -10,6 +10,12 @@ SPDX-FileCopyrightText = "none"
 SPDX-License-Identifier = "BSD-3-Clause"
 
 [[annotations]]
+path = "3rdparty/KDE/kwidgetsaddons/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "none"
+SPDX-License-Identifier = "LGPL-2.0-or-later"
+
+[[annotations]]
 path = "3rdparty/KDE/syntax-highlighting/**"
 precedence = "override"
 SPDX-FileCopyrightText = "2020 Christoph Cullmann <cullmann@kde.org>"
