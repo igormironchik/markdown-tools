@@ -60,6 +60,7 @@ To build these applications first of all install dependencies:
  * `extra-cmake-modules`
  * `kf6-syntax-highlighting`
  * `kf6-sonnet`
+ * `kf6-kwidgetsaddons`
  * `Qt >= 6.7`
  * `tinyxml2`
 
