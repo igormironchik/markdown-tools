@@ -1,0 +1,110 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR This file is copyright:
+# This file is distributed under the same license as the kdecoration package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: kdecoration\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2026-01-13 08:42+0000\n"
+"PO-Revision-Date: 2026-01-17 03:24+0100\n"
+"Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
+"Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
+"Language: ka\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.8\n"
+
+#: decorationbutton.cpp:325
+#, kde-format
+msgctxt ""
+"@info:tooltip The Name of the menu that appears when you click a window's "
+"app icon"
+msgid "Window menu"
+msgstr "ფანჯრის მენიუ"
+
+#: decorationbutton.cpp:327
+#, kde-format
+msgid "Application menu"
+msgstr "პროგრამის მენიუ"
+
+#: decorationbutton.cpp:330
+#, kde-format
+msgid "On one desktop"
+msgstr "1 სამუშაო მაგიდაზე"
+
+#: decorationbutton.cpp:332
+#, kde-format
+msgid "On all desktops"
+msgstr "ყველა სამუშაო მაგიდაზე"
+
+#: decorationbutton.cpp:334
+#, kde-format
+msgid "Minimize"
+msgstr "ჩაკეცვა"
+
+#: decorationbutton.cpp:337
+#, kde-format
+msgid "Restore"
+msgstr "აღდგენა"
+
+#: decorationbutton.cpp:339
+#, kde-format
+msgid "Maximize"
+msgstr "გადიდება"
+
+#: decorationbutton.cpp:341
+#, kde-format
+msgid "Close"
+msgstr "დახურვა"
+
+#: decorationbutton.cpp:343
+#, kde-format
+msgid "Context help"
+msgstr "კონტექსტური დახმარება"
+
+#: decorationbutton.cpp:346
+#, kde-format
+msgid "Unshade"
+msgstr "განჩრდილვა"
+
+#: decorationbutton.cpp:348
+#, kde-format
+msgid "Shade"
+msgstr "დაჩრდილვა"
+
+#: decorationbutton.cpp:351
+#, kde-format
+msgid "Don't keep below other windows"
+msgstr "დანარჩენი ფანჯრების ქვემოთ ქონის გამორთვა"
+
+#: decorationbutton.cpp:353
+#, kde-format
+msgid "Keep below other windows"
+msgstr "დანარჩენი ფანჯრების ქვემოთ ქონა"
+
+#: decorationbutton.cpp:356
+#, kde-format
+msgid "Don't keep above other windows"
+msgstr "დანარჩენი ფანჯრების ზემოთ ქონის გამორთვა"
+
+#: decorationbutton.cpp:358
+#, kde-format
+msgid "Keep above other windows"
+msgstr "დანარჩენი ფანჯრების ზემოთ ქონა"
+
+#: decorationbutton.cpp:361
+#, kde-format
+msgid "The window is hidden from Screencast. Press to make it visible"
+msgstr "ფანჯარა დამალულია ეკრანის გადაცემიდან. დააჭირეთ, რომ ის ხილული გახდეს"
+
+#: decorationbutton.cpp:363
+#, kde-format
+msgid "Hide from Screencast"
+msgstr "დამალვა ეკრანის გადაცემიდან"
+
+#~ msgid "More actions for this window"
+#~ msgstr "მეტი ქმედება ამ ფანჯრისთვის"

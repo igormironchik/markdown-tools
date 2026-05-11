@@ -1,0 +1,23 @@
+/*!
+    \page kcmutils-index.html
+    \title KCMUtils
+
+    KCMUtils is a collection of convenience classes and widgets to create config modules.
+
+    \section1 Using the Module
+
+    \include {module-use.qdocinc} {using the c++ api}
+
+    \section2 Building with CMake
+
+    \include {module-use.qdocinc} {building with cmake} {KF6} {KCMUtils} {KF6::KCMUtils}
+
+    \section1 API Reference
+
+    \list
+        \li \l{KCMUtils C++ Classes}
+        \li \l{KCMUtils Core C++ Classes}
+        \li \l{KCMUtils Quick C++ Classes}
+        \li \l{KCMUtils QML Types}
+    \endlist
+*/

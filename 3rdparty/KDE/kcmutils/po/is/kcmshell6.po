@@ -1,0 +1,113 @@
+# Copyright (C) 2025 This file is copyright:
+# This file is distributed under the same license as the kcmutils package.
+#
+# SPDX-FileCopyrightText: 2025 Sveinn í Felli <sv1@fellsnet.is>
+msgid ""
+msgstr ""
+"Project-Id-Version: kcmutils\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2025-11-17 11:49+0000\n"
+"PO-Revision-Date: 2025-11-24 13:20+0000\n"
+"Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
+"Language-Team: Icelandic\n"
+"Language: is\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 23.08.5\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Sveinn í Felli"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "sv1@fellsnet.is"
+
+#: main.cpp:99
+#, kde-format
+msgid "A tool to start single system settings modules"
+msgstr "Tól til að ræsa stakar kerfisstillingareiningar"
+
+#: main.cpp:101
+#, kde-format
+msgid "(c) 1999-2023, The KDE Developers"
+msgstr "(c) 1999-2023, KDE þróunarhópurinn"
+
+#: main.cpp:103
+#, kde-format
+msgid "Frans Englich"
+msgstr "Frans Englich"
+
+#: main.cpp:103
+#, kde-format
+msgid "Maintainer"
+msgstr "Umsjónarmaður"
+
+#: main.cpp:104
+#, kde-format
+msgid "Daniel Molkentin"
+msgstr "Daniel Molkentin"
+
+#: main.cpp:105
+#, kde-format
+msgid "Matthias Hoelzer-Kluepfel"
+msgstr "Matthias Hoelzer-Kluepfel"
+
+#: main.cpp:106
+#, kde-format
+msgid "Matthias Elter"
+msgstr "Matthias Elter"
+
+#: main.cpp:107
+#, kde-format
+msgid "Matthias Ettrich"
+msgstr "Matthias Ettrich"
+
+#: main.cpp:108
+#, kde-format
+msgid "Waldo Bastian"
+msgstr "Waldo Bastian"
+
+#: main.cpp:114
+#, kde-format
+msgid "List all possible modules"
+msgstr "Sýna allar mögulegar einingar"
+
+#: main.cpp:115
+#, kde-format
+msgid "Configuration module to open"
+msgstr "Stillingaeining sem á að opna"
+
+#: main.cpp:116
+#, kde-format
+msgid "Space separated arguments for the module"
+msgstr "Viðföng fyrir eininguna, aðgreind með bilum"
+
+#: main.cpp:117
+#, kde-format
+msgid "Use a specific icon for the window"
+msgstr "Nota sérstaka táknmynd fyrir gluggann"
+
+#: main.cpp:118
+#, kde-format
+msgid "Use a specific caption for the window"
+msgstr "Nota sérstaka skýringu fyrir gluggann"
+
+#: main.cpp:119
+#, kde-format
+msgid "Show an indicator when settings have changed from their default value"
+msgstr "Sýna merki þegar stillingum hefur verið breytt frá sjálfgefnum gildum"
+
+#: main.cpp:127
+#, kde-format
+msgid "The following modules are available:"
+msgstr "Eftirfarandi einingar eru í boði:"
+
+#: main.cpp:144
+#, kde-format
+msgid "No description available"
+msgstr "Engin lýsing tiltæk"

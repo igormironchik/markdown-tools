@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 16 16"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="kdeconnect-tray.svg"
+   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="40.106213"
+     inkscape:cx="1.5832958"
+     inkscape:cy="10.384925"
+     inkscape:window-width="3440"
+     inkscape:window-height="1371"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg1" />
+  <defs
+     id="defs3051">
+    <style
+       type="text/css"
+       id="current-color-scheme">
+      .ColorScheme-Text {
+        color:#232629;
+      }
+      </style>
+  </defs>
+  <g
+     transform="matrix(0.72727028,0,0,0.72727028,-574.15491,-1295.7644)"
+     id="16-16-kdeconnect-3"
+     style="fill:#000000;fill-opacity:1">
+    <rect
+       width="22.000002"
+       height="21.999971"
+       rx="0"
+       ry="0"
+       x="789.4657"
+       y="1781.6821"
+       id="rect2996-6"
+       style="opacity:0.01;fill:#000000;fill-opacity:1;stroke:none" />
+    <path
+       sodipodi:nodetypes="cccccccccc"
+       style="fill:currentColor;fill-opacity:1;stroke:none"
+       d="M 4.1249442,2.7499644 V 19.249957 H 17.87499 V 2.7499644 Z M 5.4999597,4.1250967 H 16.499955 V 17.875143 H 5.4999597 Z"
+       transform="translate(789.4657,1781.6821)"
+       id="path3130-7"
+       class="ColorScheme-Text"
+       inkscape:connector-curvature="0" />
+  </g>
+  <path
+     style="fill:currentColor;fill-opacity:1;stroke:none"
+     d="m 4.9995095,4 v 8 H 10.99951 l 9.81e-4,-7.997254 z m 2.259694,1.653644 v 1.935238 l 1.39591,-1.903514 1.142109,0.253802 -1.459361,1.903514 1.459361,1.998689 -1.142109,0.348979 -1.39591,-2.062141 V 10 l -1.078658,0.158627 V 5.748819 Z"
+     id="path3005-8-5"
+     class="ColorScheme-Text"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="ccccccccccccccccc" />
+</svg>

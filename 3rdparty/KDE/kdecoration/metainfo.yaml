@@ -1,0 +1,18 @@
+maintainer: graesslin
+fancyname: KDecoration3
+description: Plugin based library to create window decorations.
+irc: kwin
+mailinglist: kwin
+type: integration
+platforms:
+    - name: Linux
+    - name: FreeBSD
+portingAid: false
+deprecated: false
+release: false
+libraries:
+    - cmake: KDecoration3::KDecoration
+cmakename: KDecoration3
+group: plasma
+
+public_lib: true
