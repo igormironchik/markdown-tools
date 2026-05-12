@@ -10,6 +10,8 @@ echo %cwd%
 
 set PATH=%PATH%;%cwd%/Qt/%qt_version%/%qt_arch%/bin
 
+set PKG_CONFIG_PATH=%cwd%/../builds/conan
+
 conan install . -of ../builds/conan -s build_type=Release --build=missing --deployer=runtime_deploy
 
 IF %ERRORLEVEL% NEQ 0 (
@@ -32,7 +34,7 @@ IF %ERRORLEVEL% NEQ 0 (
 
 @echo on
 
-cmake -S 3rdparty/KDE/extra-cmake-modules -B ../builds/build-extra-cmake-modules -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -DBUILD_HTML_DOCS=OFF -DBUILD_MAN_DOCS=OFF -DCMAKE_INSTALL_PREFIX=../KDE -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE" -G "NMake Makefiles"
+cmake -S 3rdparty/KDE/extra-cmake-modules -B ../builds/build-extra-cmake-modules -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -DBUILD_HTML_DOCS=OFF -DBUILD_MAN_DOCS=OFF -DCMAKE_INSTALL_PREFIX=../KDE -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE;%cwd%/../builds/conan" -G "NMake Makefiles"
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
@@ -68,9 +70,7 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-set PKG_CONFIG_PATH=%cwd%/../build-sonnet
-
-cmake -S 3rdparty/KDE/sonnet -B ../builds/build-sonnet -DCMAKE_BUILD_TYPE=Release -DCMAKE_MODULE_PATH=%cwd%/../builds/conan -DCMAKE_INSTALL_PREFIX=../KDE -DBUILD_TESTING=OFF -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE" -G "NMake Makefiles"
+cmake -S 3rdparty/KDE/sonnet -B ../builds/build-sonnet -DCMAKE_BUILD_TYPE=Release -DCMAKE_MODULE_PATH=%cwd%/../builds/conan -DCMAKE_INSTALL_PREFIX=../KDE -DBUILD_TESTING=OFF -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE;%cwd%/../builds/conan" -G "NMake Makefiles"
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
@@ -88,7 +88,7 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-cmake -S 3rdparty/KDE/kwidgetsaddons -B ../builds/build-kwidgetsaddons -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE" -DBUILD_PYTHON_BINDINGS=False -G "NMake Makefiles"
+cmake -S 3rdparty/KDE/kwidgetsaddons -B ../builds/build-kwidgetsaddons -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE;%cwd%/../builds/conan" -DBUILD_PYTHON_BINDINGS=False -G "NMake Makefiles"
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
@@ -106,7 +106,7 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-cmake -S 3rdparty/KDE/kconfig -B ../builds/build-kconfig -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE" -DBUILD_TESTING=OFF -G "NMake Makefiles"
+cmake -S 3rdparty/KDE/kconfig -B ../builds/build-kconfig -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE;%cwd%/../builds/conan" -DBUILD_TESTING=OFF -G "NMake Makefiles"
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
@@ -124,7 +124,7 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-cmake -S 3rdparty/KDE/kcoreaddons -B ../builds/build-kcoreaddons -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE" -DBUILD_TESTING=OFF -G "NMake Makefiles"
+cmake -S 3rdparty/KDE/kcoreaddons -B ../builds/build-kcoreaddons -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE;%cwd%/../builds/conan" -DBUILD_TESTING=OFF -G "NMake Makefiles"
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
@@ -142,7 +142,7 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-cmake -S 3rdparty/KDE/ki18n -B ../builds/build-ki18n -DCMAKE_BUILD_TYPE=Release -DCMAKE_MODULE_PATH=%cwd%/../builds/conan -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE" -DBUILD_TESTING=OFF -G "NMake Makefiles"
+cmake -S 3rdparty/KDE/ki18n -B ../builds/build-ki18n -DCMAKE_BUILD_TYPE=Release -DCMAKE_MODULE_PATH=%cwd%/../builds/conan -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE;%cwd%/../builds/conan" -DBUILD_TESTING=OFF -G "NMake Makefiles"
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
@@ -160,25 +160,25 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-cmake -S 3rdparty/KDE/kdoctools -B ../builds/build-kdoctools -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE" -DBUILD_TESTING=OFF -G "NMake Makefiles"
+cmake -S 3rdparty/KDE/karchive -B ../builds/build-karchive -DCMAKE_BUILD_TYPE=Release -DOPENSSL_ROOT_DIR=%cwd%/Qt/Tools/OpenSSLv3/Win_x64 -DCMAKE_MODULE_PATH=%cwd%/../builds/conan -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE;%cwd%/../builds/conan" -DBUILD_TESTING=OFF -G "NMake Makefiles"
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-cmake --build ../builds/build-kdoctools --config Release -j 3
+cmake --build ../builds/build-karchive --config Release -j 3
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-cmake --install ../builds/build-kdoctools --prefix ../KDE
+cmake --install ../builds/build-karchive --prefix ../KDE
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-cmake -S 3rdparty/KDE/kservice -B ../builds/build-kservice -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE" -DBUILD_TESTING=OFF -G "NMake Makefiles"
+cmake -S 3rdparty/KDE/kservice -B ../builds/build-kservice -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE;%cwd%/../builds/conan" -DBUILD_TESTING=OFF -G "NMake Makefiles"
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
@@ -196,7 +196,7 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-cmake -S 3rdparty/KDE/solid -B ../builds/build-solid -DCMAKE_BUILD_TYPE=Release -DCMAKE_MODULE_PATH="%cwd/../builds/conan;%cwd%/win_cmake" -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE" -DBUILD_TESTING=OFF -G "NMake Makefiles"
+cmake -S 3rdparty/KDE/solid -B ../builds/build-solid -DCMAKE_BUILD_TYPE=Release -DCMAKE_MODULE_PATH="%cwd%/../builds/conan;%cwd%/win_cmake" -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE;%cwd%/../builds/conan" -DBUILD_TESTING=OFF -G "NMake Makefiles"
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
@@ -214,7 +214,7 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-cmake -S 3rdparty/KDE/kcrash -B ../builds/build-kcrash -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE" -DBUILD_TESTING=OFF -G "NMake Makefiles"
+cmake -S 3rdparty/KDE/kcrash -B ../builds/build-kcrash -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE;%cwd%/../builds/conan" -DBUILD_TESTING=OFF -G "NMake Makefiles"
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
@@ -232,7 +232,7 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-cmake -S 3rdparty/KDE/kio -B ../builds/build-kio -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE" -DBUILD_TESTING=OFF -G "NMake Makefiles"
+cmake -S 3rdparty/KDE/kio -B ../builds/build-kio -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE;%cwd%/../builds/conan" -DBUILD_TESTING=OFF -G "NMake Makefiles"
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
@@ -250,7 +250,7 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-cmake -S 3rdparty/KDE/kcmutils -B ../builds/build-kcmutils -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE" -G "NMake Makefiles"
+cmake -S 3rdparty/KDE/kcmutils -B ../builds/build-kcmutils -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE;%cwd%/../builds/conan" -G "NMake Makefiles"
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
@@ -268,7 +268,7 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-cmake -S 3rdparty/KDE/kdecoration -B ../builds/build-kdecoration -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE" -G "NMake Makefiles"
+cmake -S 3rdparty/KDE/kdecoration -B ../builds/build-kdecoration -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE;%cwd%/../builds/conan" -G "NMake Makefiles"
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
@@ -286,7 +286,7 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-cmake -S 3rdparty/KDE/breeze-icons -B ../builds/build-breeze-icons -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE" -G "NMake Makefiles"
+cmake -S 3rdparty/KDE/breeze-icons -B ../builds/build-breeze-icons -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE;%cwd%/../builds/conan" -G "NMake Makefiles"
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
@@ -304,7 +304,7 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-cmake -S 3rdparty/KDE/breeze -B ../builds/build-breeze -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE" -G "NMake Makefiles"
+cmake -S 3rdparty/KDE/breeze -B ../builds/build-breeze -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE;%cwd%/../builds/conan" -G "NMake Makefiles"
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
