@@ -1,0 +1,342 @@
+<?xml version="1.0" ?>
+<!DOCTYPE refentry PUBLIC "-//KDE//DTD DocBook XML V4.5-Based Variant V1.1//EN" "dtd/kdedbx45.dtd" [
+  <!ENTITY % Slovenian "INCLUDE"
+><!-- change language only here -->
+]>
+
+<refentry lang="&language;">
+
+<refentryinfo>
+<title
+>meinproc6 Uporabniški priročnik</title>
+<!-- There is no author in the meinproc.cpp file 
+Also, based on the information from http://olympus.het.brown.edu/cgi-bin/man/man2html?meinproc+1
+
+<author>
+<firstname
+>Matthias </firstname>
+<surname
+>Hoelzer-Kluepfel</surname>
+<affiliation>
+<address
+><email
+>hoelzer@kde.org</email
+></address>
+</affiliation>
+</author>
+
+<author>
+<firstname
+>Stephan</firstname>
+<surname
+>Kulow</surname>
+<affiliation>
+<address
+><email
+>coolo@kde.org</email
+></address>
+</affiliation>
+</author>
+
+<author>
+<firstname
+>Cornelius</firstname>
+<surname
+>Schumacher</surname>
+<affiliation>
+<address
+><email
+>schumacher@kde.org</email
+></address>
+</affiliation>
+</author>
+-->
+<date
+>8.5.2014</date>
+<releaseinfo
+>Ogrodja 5.0</releaseinfo>
+<productname
+>Ogrodja KDE</productname>
+
+</refentryinfo>
+
+<refmeta>
+<refentrytitle
+><command
+>meinproc6</command
+></refentrytitle>
+<manvolnum
+>1</manvolnum>
+</refmeta>
+
+<refnamediv>
+<refname
+><command
+>meinproc6</command
+></refname>
+<refpurpose
+>&kde; prevajalnik za &XML;</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<title
+>Povzetek</title>
+
+<cmdsynopsis
+><command
+>meinproc6</command
+> <arg choice="opt"
+>-h, --help</arg
+> <arg choice="opt"
+>-v, --version</arg
+> <arg choice="opt"
+>--cache<replaceable
+> file</replaceable
+></arg
+> <arg choice="opt"
+>--check</arg
+> <arg choice="opt"
+>--srcdir<replaceable
+> dir</replaceable
+></arg
+> <arg choice="opt"
+>--param <replaceable
+>key</replaceable
+>=<replaceable
+>value</replaceable
+></arg
+> <group
+> <group
+> <arg
+>-o</arg
+> <arg
+>--output</arg
+> </group
+> <replaceable
+> file</replaceable
+> </group
+> <arg choice="opt"
+>--stdout</arg
+> <arg choice="opt"
+>--stylesheet<replaceable
+> xsl</replaceable
+></arg
+> <arg choice="plain"
+>docbook_file</arg
+> </cmdsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title
+>Opis</title>
+
+<para
+><command
+>meinproc6</command
+> pretvori DocBook datoteke v &HTML;. </para>
+</refsect1>
+
+<refsect1>
+<title
+>Splošne možnosti</title>
+<para>
+<variablelist>
+
+<varlistentry>
+  <term
+><option
+>-h</option
+><option
+>--help</option
+></term>
+<listitem>
+<para
+>Pokaži pomoč o možnostih. </para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-v</option
+><option
+>--version</option
+></term>
+<listitem>
+<para
+>Prikaži informacije o različici. </para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</para>
+</refsect1>
+
+<refsect1>
+<title
+>Možnosti aplikacije</title>
+<variablelist>
+
+<varlistentry>
+<term
+><option
+>--cache</option
+> <parameter
+>file</parameter
+></term>
+<listitem>
+<para
+>Ustvarite predpomnilniško datoteko za dokument. </para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--check</option
+></term>
+<listitem>
+<para
+>Preverite veljavnost dokumenta.</para>
+<screen
+>Rezultat je lahko nekoliko zastrašujoč, saj lahko ena majhna napaka povzroči niz napak.
+Trik je v tem, da pogledate prvo napako, jo popravite, shranite datoteko in znova zaženete <command
+>meinproc6</command
+>.
+</screen>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-o</option
+>, <option
+>--output</option
+><parameter
+> file</parameter
+></term>
+<listitem>
+<para
+>Izpis celotnega dokumenta v <parameter
+>datoteko</parameter
+>. </para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--stdout</option
+></term>
+<listitem>
+<para
+>Izhod celotnega dokumenta v stdout. </para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--stylesheet</option
+> <parameter
+>xsl</parameter
+></term>
+<listitem>
+<para
+>Slogovna tabela za uporabo. </para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--srcdir</option
+> <parameter
+>dir</parameter
+></term>
+<listitem>
+<para
+>Nastavite korenski imenik za iskanje kdoctools. </para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--param</option
+> key=value</term>
+<listitem>
+<para
+>Nastavite parametre za prenos v slogovno tabelo. </para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+
+</refsect1>
+
+<refsect1>
+<title
+>Uporaba</title>
+<para
+>Najpogostejši način za zagon <command
+>meinproc6</command
+> je preprosto kot <literallayout>
+<userinput
+><command
+>meinproc6</command
+> <replaceable
+>docbook-file</replaceable>
+</userinput>
+</literallayout
+>, kjer je <replaceable
+>docbook-file</replaceable
+> običajno index.docbook. Ta ukaz ustvari &HTML; strani iz datoteke DocBook. Upoštevajte, da so te strani vidne samo v brskalnikih, ki temeljijo na &kde; (kot je &konqueror;). </para>
+<para
+>Če si želite ogledati &HTML; izpis v drugem brskalniku (na primer, če ga postavljate na splet), uporabite <literallayout>
+<userinput
+><command
+>meinproc6</command
+> --stylesheet <replaceable
+>stylesheet-name</replaceable
+> <replaceable
+>docbook-file</replaceable>
+</userinput>
+</literallayout
+> kjer je <replaceable
+>stylesheet-name</replaceable
+> polna pot do enega od &XSL; slogovne tabele v &lt;kdoctools_installation_prefix&gt;/share/kf5/kdoctools/customization/. Za izdelavo izhoda, primernega za splet, lahko uporabite <command
+>kde-web.xsl</command
+> ali <command
+>kde-chunk-online.xsl</command
+>. Za več podrobnosti glejte datoteko <filename
+>README</filename
+> v tem imeniku. </para>
+
+</refsect1>
+
+<refsect1>
+<title
+>Poglej tudi</title>
+<para
+><replaceable
+>kf6options</replaceable
+>(7), <replaceable
+>qt6options</replaceable
+>(7)</para>
+</refsect1>
+
+<refsect1>
+<title
+>Napake</title>
+<para
+>Za poročanje o napakah uporabite <ulink url="https://bugs.kde.org"
+>&kde;jev sledilnik napak</ulink
+>.</para>
+</refsect1>
+
+</refentry>
+
+
+

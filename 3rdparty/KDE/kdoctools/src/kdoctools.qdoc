@@ -1,0 +1,11 @@
+/*!
+    \module KDocTools
+    \title KDocTools C++ Classes
+    \ingroup modules
+    \cmakepackage KF6
+    \cmakecomponent DocTools
+
+    \brief Create documentation from DocBook.
+
+    Provides tools to generate documentation in various format from DocBook files.
+*/

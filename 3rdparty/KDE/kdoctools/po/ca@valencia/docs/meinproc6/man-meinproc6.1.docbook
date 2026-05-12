@@ -1,0 +1,342 @@
+<?xml version="1.0" ?>
+<!DOCTYPE refentry PUBLIC "-//KDE//DTD DocBook XML V4.5-Based Variant V1.1//EN" "dtd/kdedbx45.dtd" [
+  <!ENTITY % Catalan-Valencian "INCLUDE"
+><!-- change language only here -->
+]>
+
+<refentry lang="&language;">
+
+<refentryinfo>
+<title
+>Manual d'usuari de meinproc6</title>
+<!-- There is no author in the meinproc.cpp file 
+Also, based on the information from http://olympus.het.brown.edu/cgi-bin/man/man2html?meinproc+1
+
+<author>
+<firstname
+>Matthias </firstname>
+<surname
+>Hoelzer-Kluepfel</surname>
+<affiliation>
+<address
+><email
+>hoelzer@kde.org</email
+></address>
+</affiliation>
+</author>
+
+<author>
+<firstname
+>Stephan</firstname>
+<surname
+>Kulow</surname>
+<affiliation>
+<address
+><email
+>coolo@kde.org</email
+></address>
+</affiliation>
+</author>
+
+<author>
+<firstname
+>Cornelius</firstname>
+<surname
+>Schumacher</surname>
+<affiliation>
+<address
+><email
+>schumacher@kde.org</email
+></address>
+</affiliation>
+</author>
+-->
+<date
+>8 de maig de 2014</date>
+<releaseinfo
+>Frameworks 5.0</releaseinfo>
+<productname
+>Frameworks de KDE</productname>
+
+</refentryinfo>
+
+<refmeta>
+<refentrytitle
+><command
+>meinproc6</command
+></refentrytitle>
+<manvolnum
+>1</manvolnum>
+</refmeta>
+
+<refnamediv>
+<refname
+><command
+>meinproc6</command
+></refname>
+<refpurpose
+>Traductor &kde; per a &XML;</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<title
+>Sinopsi</title>
+
+<cmdsynopsis
+><command
+>meinproc6</command
+> <arg choice="opt"
+>-h, --help</arg
+> <arg choice="opt"
+>-v, --version</arg
+> <arg choice="opt"
+>--cache<replaceable
+> fitxer</replaceable
+></arg
+> <arg choice="opt"
+>--check</arg
+> <arg choice="opt"
+>--srcdir<replaceable
+> dir</replaceable
+></arg
+> <arg choice="opt"
+>--param<replaceable
+> clau</replaceable
+>=<replaceable
+>valor</replaceable
+></arg
+> <group
+> <group
+> <arg
+>-o</arg
+> <arg
+>--output</arg
+> </group
+> <replaceable
+> fitxer</replaceable
+> </group
+> <arg choice="opt"
+>--stdout</arg
+> <arg choice="opt"
+>--stylesheet<replaceable
+> xsl</replaceable
+></arg
+> <arg choice="plain"
+>fitxer_docbook</arg
+> </cmdsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title
+>Descripció</title>
+
+<para
+><command
+>meinproc6</command
+> convertix fitxers en DocBook a &HTML;. </para>
+</refsect1>
+
+<refsect1>
+<title
+>Opcions genèriques</title>
+<para>
+<variablelist>
+
+<varlistentry>
+  <term
+><option
+>-h</option
+><option
+>--help</option
+></term>
+<listitem>
+<para
+>Mostra ajuda quant a les opcions. </para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-v</option
+><option
+>--version</option
+></term>
+<listitem>
+<para
+>Mostra la informació sobre la versió. </para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</para>
+</refsect1>
+
+<refsect1>
+<title
+>Opcions de l'aplicació</title>
+<variablelist>
+
+<varlistentry>
+<term
+><option
+>--cache</option
+> <parameter
+>fitxer</parameter
+></term>
+<listitem>
+<para
+>Crea un fitxer de cau per al document. </para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--check</option
+></term>
+<listitem>
+<para
+>Comprova la validesa del document.</para>
+<screen
+>L'eixida pot ser una mica intimidatòria, ja que una xicoteta equivocació pot causar una cascada d'errors. 
+El truc és mirar en el primer error, corregir-lo, guardeu el fitxer, i executeu <command
+>meinproc6</command
+> de nou.
+</screen>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-o</option
+>, <option
+>--output</option
+><parameter
+> fitxer</parameter
+></term>
+<listitem>
+<para
+>Envia tot el document cap a un <parameter
+>fitxer</parameter
+>. </para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--stdout</option
+></term>
+<listitem>
+<para
+>Envia tot el document cap a stdout. </para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--stylesheet</option
+> <parameter
+>xsl</parameter
+></term>
+<listitem>
+<para
+>Full d'estil que s'utilitzarà. </para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--srcdir</option
+> <parameter
+>dir</parameter
+></term>
+<listitem>
+<para
+>Establix el directori arrel per a la busca de les kdoctools. </para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--param</option
+> clau=valor</term>
+<listitem>
+<para
+>Establix els paràmetres que es passaran al full d'estil. </para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+
+</refsect1>
+
+<refsect1>
+<title
+>Ús</title>
+<para
+>La manera més habitual d'executar <command
+>meinproc6</command
+> és senzillament com <literallayout>
+<userinput
+><command
+>meinproc6</command
+> <replaceable
+>fitxer-docbook</replaceable>
+</userinput>
+</literallayout
+> a on <replaceable
+>fitxer-docbook</replaceable
+> generalment serà index.docbook. Esta ordre crea pàgines &HTML; del fitxer en DocBook. Cal tindre en compte que estes pàgines només són visibles en els navegadors basats en &kde; (com &konqueror;). </para>
+<para
+>Si necessiteu veure l'eixida &HTML; en un altre navegador (per exemple, si el feu disponible en línia), utilitzeu <literallayout>
+<userinput
+><command
+>meinproc6</command
+> --stylesheet <replaceable
+>nom-full-estil</replaceable
+> <replaceable
+>fitxer-docbook</replaceable>
+</userinput>
+</literallayout
+> a on <replaceable
+>nom-full-estil</replaceable
+> serà el camí complet cap a un dels fulls d'estil XSL en &lt;prefix_instal·lació_kdoctools&gt;/share/kf5/kdoctools/customization/. Per a generar una eixida adequada per a la web, podeu utilitzar <command
+>kde-web.xsl</command
+> o <command
+>kde-chunk-online.xsl</command
+>. Per a més detalls, vegeu el fitxer <filename
+>README</filename
+> en esta carpeta. </para>
+
+</refsect1>
+
+<refsect1>
+<title
+>Vegeu també</title>
+<para
+><replaceable
+>kf6options</replaceable
+>(7), <replaceable
+>qt6options</replaceable
+>(7)</para>
+</refsect1>
+
+<refsect1>
+<title
+>Errors</title>
+<para
+>Utilitzeu el <ulink url="https://bugs.kde.org"
+>Seguidor d'errors de &kde;</ulink
+> (escriviu-hi en anglés) per a informar dels errors.</para>
+</refsect1>
+
+</refentry>
+
+
+

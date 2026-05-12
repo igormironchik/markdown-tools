@@ -1,0 +1,342 @@
+<?xml version="1.0" ?>
+<!DOCTYPE refentry PUBLIC "-//KDE//DTD DocBook XML V4.5-Based Variant V1.1//EN" "dtd/kdedbx45.dtd" [
+  <!ENTITY % Brazilian-Portuguese "INCLUDE"
+><!-- change language only here -->
+]>
+
+<refentry lang="&language;">
+
+<refentryinfo>
+<title
+>Manual do Usuário do meinproc6</title>
+<!-- There is no author in the meinproc.cpp file 
+Also, based on the information from http://olympus.het.brown.edu/cgi-bin/man/man2html?meinproc+1
+
+<author>
+<firstname
+>Matthias </firstname>
+<surname
+>Hoelzer-Kluepfel</surname>
+<affiliation>
+<address
+><email
+>hoelzer@kde.org</email
+></address>
+</affiliation>
+</author>
+
+<author>
+<firstname
+>Stephan</firstname>
+<surname
+>Kulow</surname>
+<affiliation>
+<address
+><email
+>coolo@kde.org</email
+></address>
+</affiliation>
+</author>
+
+<author>
+<firstname
+>Cornelius</firstname>
+<surname
+>Schumacher</surname>
+<affiliation>
+<address
+><email
+>schumacher@kde.org</email
+></address>
+</affiliation>
+</author>
+-->
+<date
+>08/05/2014</date>
+<releaseinfo
+>Frameworks 5.0</releaseinfo>
+<productname
+>KDE Frameworks</productname>
+
+</refentryinfo>
+
+<refmeta>
+<refentrytitle
+><command
+>meinproc6</command
+></refentrytitle>
+<manvolnum
+>1</manvolnum>
+</refmeta>
+
+<refnamediv>
+<refname
+><command
+>meinproc6</command
+></refname>
+<refpurpose
+>Tradutor do &kde; para o &XML;</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<title
+>Sintaxe</title>
+
+<cmdsynopsis
+><command
+>meinproc6</command
+> <arg choice="opt"
+>-h, --help</arg
+> <arg choice="opt"
+>-v, --version</arg
+> <arg choice="opt"
+>--cache<replaceable
+> arquivo</replaceable
+></arg
+> <arg choice="opt"
+>--check</arg
+> <arg choice="opt"
+>--srcdir<replaceable
+> dir</replaceable
+></arg
+> <arg choice="opt"
+>--param <replaceable
+>chave</replaceable
+>=<replaceable
+>valor</replaceable
+></arg
+> <group
+> <group
+> <arg
+>-o</arg
+> <arg
+>--output</arg
+> </group
+> <replaceable
+> arquivo</replaceable
+> </group
+> <arg choice="opt"
+>--stdout</arg
+> <arg choice="opt"
+>--stylesheet<replaceable
+> xsl</replaceable
+></arg
+> <arg choice="plain"
+>arquivo-docbook</arg
+> </cmdsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title
+>Descrição</title>
+
+<para
+>O <command
+>meinproc6</command
+> converte arquivos DocBook para &HTML;. </para>
+</refsect1>
+
+<refsect1>
+<title
+>Opções genéricas</title>
+<para>
+<variablelist>
+
+<varlistentry>
+  <term
+><option
+>-h</option
+><option
+>--help</option
+></term>
+<listitem>
+<para
+>Mostra a ajuda sobre as opções. </para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-v</option
+><option
+>--version</option
+></term>
+<listitem>
+<para
+>Mostra informações sobre a versão. </para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</para>
+</refsect1>
+
+<refsect1>
+<title
+>Opções do aplicativo</title>
+<variablelist>
+
+<varlistentry>
+<term
+><option
+>--cache</option
+> <parameter
+>arquivo</parameter
+></term>
+<listitem>
+<para
+>Cria um arquivo de cache para o documento. </para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--check</option
+></term>
+<listitem>
+<para
+>Verifica a validade do documento.</para>
+<screen
+>O resultado poderá ser bastante exaustivo, uma vez que um pequeno erro poderá gerar uma enorme cascata de erros. 
+O truque é olhar para o primeiro erro, corrigi-lo, salvar o arquivo e executar o <command
+>meinproc6</command
+> novamente.
+</screen>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-o</option
+>, <option
+>--output</option
+><parameter
+> arquivo</parameter
+></term>
+<listitem>
+<para
+>Envia o documento inteiro para o <parameter
+>arquivo</parameter
+>. </para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--stdout</option
+></term>
+<listitem>
+<para
+>Envia todo o documento para o 'stdout' (tela). </para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--stylesheet</option
+> <parameter
+>xsl</parameter
+></term>
+<listitem>
+<para
+>Folha de estilo a ser usada. </para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--srcdir</option
+> <parameter
+>pasta</parameter
+></term>
+<listitem>
+<para
+>Configura a pasta de topo onde procurar o kdoctools. </para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--param</option
+> chave=valor</term>
+<listitem>
+<para
+>Define os parâmetros a passar à folha de estilo. </para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+
+</refsect1>
+
+<refsect1>
+<title
+>Utilização</title>
+<para
+>A forma mais comum de executar o <command
+>meinproc6</command
+> é tão simples como <literallayout>
+<userinput
+><command
+>meinproc6</command
+> <replaceable
+>arquivo-docbook</replaceable>
+</userinput>
+</literallayout
+>, onde o <replaceable
+>arquivo-docbook</replaceable
+> é normalmente 'index.docbook'. Este comando cria páginas &HTML; a partir do arquivo DocBook. Lembre-se de que estas páginas só são visíveis em navegadores baseados no &kde; (como o &konqueror;). </para>
+<para
+>Se você precisar ver o resultado em &HTML; em outro navegador (por exemplo, se quiser colocá-lo online), use <literallayout>
+<userinput
+><command
+>meinproc6</command
+> --stylesheet <replaceable
+>nome-folha-estilo</replaceable
+> <replaceable
+>arquivo-docbook</replaceable>
+</userinput>
+</literallayout
+>, onde o <replaceable
+>nome-folha-estilo</replaceable
+> é a localização completa de uma das folhas de estilo &XSL; em &lt;kdoctools_installation_prefix&gt;/share/kf5/kdoctools/customization/. Para produzir um resultado adequado para a Web, você poderá usar o <command
+>kde-web.xsl</command
+> ou o <command
+>kde-chunk-online.xsl</command
+>. Veja o arquivo <filename
+>README</filename
+> dessa pasta para mais detalhes. </para>
+
+</refsect1>
+
+<refsect1>
+<title
+>Veja também</title>
+<para
+><replaceable
+>kf6options</replaceable
+>(7), <replaceable
+>qt6options</replaceable
+>(7)</para>
+</refsect1>
+
+<refsect1>
+<title
+>Erros</title>
+<para
+>Use o <ulink url="https://bugs.kde.org"
+>sistema de gerenciamento de erros do &kde;</ulink
+> para relatar erros.</para>
+</refsect1>
+
+</refentry>
+
+
+

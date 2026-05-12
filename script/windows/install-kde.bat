@@ -160,6 +160,24 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
+cmake -S 3rdparty/KDE/kdoctools -B ../builds/build-kdoctools -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE" -DBUILD_TESTING=OFF -G "NMake Makefiles"
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+cmake --build ../builds/build-kdoctools --config Release -j 3
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+cmake --install ../builds/build-kdoctools --prefix ../KDE
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
 cmake -S 3rdparty/KDE/kservice -B ../builds/build-kservice -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE" -DBUILD_TESTING=OFF -G "NMake Makefiles"
 
 IF %ERRORLEVEL% NEQ 0 (
@@ -191,6 +209,24 @@ IF %ERRORLEVEL% NEQ 0 (
 )
 
 cmake --install ../builds/build-solid --prefix ../KDE
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+cmake -S 3rdparty/KDE/kcrash -B ../builds/build-kcrash -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE" -DBUILD_TESTING=OFF -G "NMake Makefiles"
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+cmake --build ../builds/build-kcrash --config Release -j 3
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+cmake --install ../builds/build-kcrash --prefix ../KDE
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%

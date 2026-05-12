@@ -1,0 +1,33 @@
+include($KDE_DOCS/global/qt-module-defaults.qdocconf)
+
+project = KDocTools
+description = Create documentation from DocBook
+
+documentationinheaders = true
+
+headerdirs += .
+sourcedirs += .
+
+outputformats = HTML
+
+depends += \
+    kde \
+    qtcore \
+
+navigation.landingpage = "KDocTools"
+
+qhp.projects            = KDocTools
+
+qhp.KDocTools.file                = kdoctools.qhp
+qhp.KDocTools.namespace           = org.kde.kdoctools.$QT_VERSION_TAG
+qhp.KDocTools.virtualFolder       = kdoctools
+qhp.KDocTools.indexTitle          = KDocTools
+qhp.KDocTools.indexRoot           =
+
+qhp.KDocTools.subprojects         = classes
+qhp.KDocTools.subprojects.classes.title = C++ Classes
+qhp.KDocTools.subprojects.classes.indexTitle = KDocTools C++ Classes
+qhp.KDocTools.subprojects.classes.selectors = class fake:headerfile
+qhp.KDocTools.subprojects.classes.sortPages = true
+
+tagfile = kdoctools.tags

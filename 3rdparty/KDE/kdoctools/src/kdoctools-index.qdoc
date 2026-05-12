@@ -1,0 +1,22 @@
+/*!
+    \page kdoctools-index.html
+    \title KDocTools
+
+    Create documentation from DocBook
+
+    Provides tools to generate documentation in various format from DocBook files.
+
+    \section1 Using the Module
+
+    \include {module-use.qdocinc} {using the c++ api}
+
+    \section2 Building with CMake
+
+    \include {module-use.qdocinc} {building with cmake} {KF6} {DocTools} {KF6::DocTools}
+
+    \section1 API Reference
+
+    \list
+        \li \l{KDocTools C++ Classes}
+    \endlist
+*/

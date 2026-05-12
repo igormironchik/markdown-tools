@@ -1,0 +1,74 @@
+<?xml version="1.0" ?>
+<!DOCTYPE refentry PUBLIC "-//KDE//DTD DocBook XML V4.5-Based Variant V1.1//EN" "dtd/kdedbx45.dtd" [
+<!ENTITY % Slovenian "INCLUDE">
+]>
+
+<refentry lang="&language;">
+<refentryinfo>
+<title
+>uporabniški priročnik za checkXML6</title>
+<author
+><personname
+><firstname
+>Lauri</firstname
+><surname
+>Watts</surname
+></personname
+><email
+>lauri@kde.org</email
+></author>
+<date
+>4.3.2014</date>
+<releaseinfo
+>Ogrodja 6.0</releaseinfo>
+<productname
+>Ogrodja KDE</productname>
+</refentryinfo>
+
+<refmeta>
+<refentrytitle
+><command
+>checkXML6</command
+></refentrytitle>
+<manvolnum
+>1</manvolnum>
+</refmeta>
+
+<refnamediv>
+<refname
+><command
+>checkXML6</command
+></refname>
+<refpurpose
+>&XML; program za odpravljanje napak v &kde; DocBook &XML; dokumentih</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<cmdsynopsis
+><command
+>checkXML6</command
+> <arg
+><replaceable
+>filename</replaceable
+></arg
+> </cmdsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title
+>Opis</title>
+
+<para
+><command
+>checkXML6</command
+> je orodje za preverjanje sintaktičnih napak v datotekah &kde; DocBook &XML;. Uporablja se lahko tudi za druge datoteke &XML;, ki temeljijo na DocBooku, vendar morate uporabiti manj specifično orodje xmllint(1), če ne pišete ali kako drugače delate na dokumentaciji &kde;.</para>
+</refsect1>
+
+<refsect1>
+<title
+>Poglej tudi</title>
+<para
+>meinproc6(1) xmllint(1)</para>
+</refsect1>
+</refentry>
+

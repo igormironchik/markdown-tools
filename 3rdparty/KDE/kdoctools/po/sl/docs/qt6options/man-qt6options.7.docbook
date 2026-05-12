@@ -1,0 +1,461 @@
+<?xml version="1.0" ?>
+<!DOCTYPE refentry PUBLIC "-//KDE//DTD DocBook XML V4.5-Based Variant V1.1//EN" "dtd/kdedbx45.dtd" [
+<!ENTITY % Slovenian "INCLUDE">
+]>
+
+<refentry lang="&language;">
+<refentryinfo>
+<title
+>&Qt; Dokumentacija ukazne vrstice</title>
+<author
+>&Lauri.Watts; &Lauri.Watts.mail;</author>
+<author
+>&Burkhard.Lueck; &Burkhard.Lueck.mail;</author>
+<date
+>4.6.2016</date>
+<releaseinfo
+>Qt 6</releaseinfo>
+<productname
+>Ogrodja KDE</productname>
+</refentryinfo>
+
+<refmeta>
+<refentrytitle
+>qt6options</refentrytitle>
+<manvolnum
+>7</manvolnum>
+</refmeta>
+
+<refnamediv>
+<refname
+>qt6options</refname>
+<refpurpose
+>Pogoste možnosti ukazne vrstice za vse aplikacije, ki temeljijo na &Qt; kompletu orodij</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<cmdsynopsis
+><command
+><replaceable
+>Qt aplikacija</replaceable
+></command
+> <arg choice="opt"
+><option
+>-style=</option
+> <replaceable
+>style</replaceable
+> / <option
+>-style</option
+> <replaceable
+>style</replaceable
+></arg
+> <arg choice="opt"
+><option
+>-stylesheet=</option
+> <replaceable
+>stylesheet</replaceable
+> / <option
+>-stylesheet</option
+> <replaceable
+>stylesheet</replaceable
+></arg
+> <arg choice="opt"
+><option
+>-widgetcount</option
+></arg
+> <arg choice="opt"
+><option
+>-reverse</option
+></arg
+> <arg choice="opt"
+><option
+>-qmljsdebugger=</option
+> <replaceable
+>port</replaceable
+></arg
+> <arg choice="opt"
+><option
+>-platform</option
+> <replaceable
+>platformName[:options]</replaceable
+></arg
+> <arg choice="opt"
+><option
+>-platformpluginpath</option
+> <replaceable
+>path</replaceable
+></arg
+> <arg choice="opt"
+><option
+>-platformtheme</option
+> <replaceable
+>platformTheme</replaceable
+></arg
+> <arg choice="opt"
+><option
+>-plugin</option
+> <replaceable
+>plugin</replaceable
+></arg
+> <arg choice="opt"
+><option
+>-qwindowgeometry</option
+> <replaceable
+>geometry</replaceable
+></arg
+> <arg choice="opt"
+><option
+>-qwindowicon</option
+> <replaceable
+>icon</replaceable
+></arg
+> <arg choice="opt"
+><option
+>-qwindowtitle</option
+> <replaceable
+>title</replaceable
+></arg
+> <arg choice="opt"
+><option
+>-reverse</option
+></arg
+> <arg choice="opt"
+><option
+>-session</option
+> <replaceable
+>session</replaceable
+></arg
+> <arg choice="opt"
+><option
+>-display</option
+> <replaceable
+>hostname:screen_number</replaceable
+></arg
+> <arg choice="opt"
+><option
+>-geometry</option
+> <replaceable
+>geometry</replaceable
+></arg
+> <arg choice="opt"
+><option
+>-dialogs=</option
+> <replaceable
+>[xp|none]</replaceable
+></arg
+> <arg choice="opt"
+><option
+>-fontengine=</option
+> <replaceable
+>freetype</replaceable
+></arg
+> <arg choice="opt"
+><option
+>-h, --help in -? na &Windows;</option
+></arg
+> <arg choice="opt"
+><option
+>-v --version</option
+></arg
+> </cmdsynopsis>
+</refsynopsisdiv>
+
+
+<refsect1>
+<title
+>Možnosti</title>
+
+<para
+>Naslednje možnosti veljajo za vse &Qt; aplikacije:</para>
+
+<variablelist>
+<!--https://doc.qt.io/qt-5/qapplication.html#QApplication-->
+<varlistentry>
+<term
+><option
+>-style=</option
+> <replaceable
+>style</replaceable
+> / <option
+>-style</option
+> <replaceable
+>style</replaceable
+> </term>
+<listitem
+><para
+>Nastavite stil aplikacije &GUI;. Možne vrednosti so odvisne od konfiguracije sistema. Če je &Qt; preveden z dodatnimi slogi ali ima dodatne sloge kot vtičnike, ti bodo na voljo možnosti ukazne vrstice <option
+>-style</option
+>.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-stylesheet=</option
+> <replaceable
+>stylesheet</replaceable
+> / <option
+>-stylesheet</option
+> <replaceable
+>stylesheet</replaceable
+> </term>
+<listitem
+><para
+>Nastavite slogovno tabelo aplikacije. Vrednost mora biti pot do datoteke, ki vsebuje slogovno datoteko. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term>
+<option
+>-widgetcount</option>
+</term>
+<listitem
+><para
+>Na koncu natisnite sporočilo o odpravljanju napak o številu pripomočkov, ki so ostali neuničeni in največjem številu pripomočkov, ki so obstajali hkrati. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term>
+<option
+>-reverse</option>
+</term>
+<listitem
+><para
+>Nastavite smer postavitve aplikacije na <methodname
+>Qt::RightToLeft</methodname
+>. Ta možnost je namenjena pomoči pri odpravljanju napak in se je ne sme uporabljati v proizvodnji. Privzeta vrednost je samodejno zaznana iz uporabnikovih področnih nastavitev (glejte tudi <methodname
+>QLocale::textDirection()</methodname
+>). </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-qmljsdebugger=</option
+> <replaceable
+>port</replaceable
+> </term>
+<listitem
+><para
+>Aktivirajte odpravljalnik napak QML/JS z določenimi vrati. Vrednost mora biti v formatu vrata:1234[,blok], kjer je blok neobvezen in bo poskrbel, da bo aplikacija čakala, dokler se z njo ne poveže razhroščevalnik. </para
+></listitem>
+</varlistentry>
+<!--https://doc.qt.io/qt-5/qguiapplication.html#QGuiApplication-->
+<varlistentry>
+<term
+><option
+>-platform</option
+> <replaceable
+>platformName[:options]</replaceable
+> </term>
+<listitem
+><para
+>Določite &Qt; vtičnik abstrakcije platforme (QPA). </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-platformpluginpath</option
+> <replaceable
+>path</replaceable
+> </term>
+<listitem
+><para
+>Določite pot do vtičnikov platforme. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-platformtheme</option
+> <replaceable
+>platformTheme</replaceable
+> </term>
+<listitem
+><para
+>Določite temo platforme. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-plugin</option
+> <replaceable
+>plugin</replaceable
+> </term>
+<listitem
+><para
+>Določite dodatne vtičnike za nalaganje. Argument se lahko pojavi večkrat. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-qwindowgeometry</option
+> <replaceable
+>geometry</replaceable
+> </term>
+<listitem
+><para
+>Določite geometrijo okna za glavno okno s &X11;-sintakso. Na primer: -qwindowgeometry 100x100+50+50 </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-qwindowicon</option
+> <replaceable
+>icon</replaceable
+> </term>
+<listitem
+><para
+>Nastavite privzeto ikono okna. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-qwindowtitle</option
+> <replaceable
+>title</replaceable
+> </term>
+<listitem
+><para
+>Nastavite naslov prvega okna. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-session</option
+> <replaceable
+>session</replaceable
+> </term>
+<listitem
+><para
+>Obnovite aplikacijo iz prejšnje seje. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-display</option
+> <replaceable
+>hostname:screen_number</replaceable
+> </term>
+<listitem
+><para
+>Vklopite zaslon na &X11;. Preglasi spremenljivko okolja <envar
+>DISPLAY</envar
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-geometry</option
+> <replaceable
+>geometry</replaceable
+> </term>
+<listitem
+><para
+>Določite geometrijo okna za glavno okno na &X11;. Na primer: -geometrija 100x100+50+50 </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-dialogs=</option
+> <replaceable
+>[xp|none]</replaceable
+> </term>
+<listitem
+><para
+>Na voljo samo za &Windows; platformo. XP uporablja pogovorna okna v izvirnem slogu in jih noben ne onemogoči.</para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-fontengine=</option
+> <replaceable
+>freetype</replaceable
+> </term>
+<listitem
+><para
+>Uporabite mehanizem pisave FreeType. </para
+></listitem>
+</varlistentry>
+
+<!--https://doc.qt.io/qt-5/qcommandlineparser.html -->
+<varlistentry>
+<term>
+<option
+>-h, --help in -? na &Windows;</option>
+</term>
+<listitem
+><para
+>Natisnite vse možnosti in opis aplikacije. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term>
+<option
+>-v --version</option>
+</term>
+<listitem
+><para
+>Prikažite niz različice aplikacije. </para
+></listitem>
+</varlistentry>
+
+</variablelist>
+
+</refsect1>
+
+
+<refsect1>
+<title
+>Poglej tudi</title>
+<para
+><replaceable
+>kf6options</replaceable
+>(7)</para>
+
+</refsect1>
+
+<refsect1>
+<title
+>Avtorji</title>
+<para
+>Man stran, prvotno napisana s strani &Lauri.Watts; &Lauri.Watts.mail;</para>
+<para
+>Posodobljeno na &frameworks; 5 avtor &Burkhard.Lueck; &Burkhard.Lueck.mail;</para>
+<para
+>Podatki za to stran priročnika so iz <ulink url="https://doc.qt.io/qt-6/qapplication.html#QApplication"
+>dokumentacije QApplication</ulink
+>, <ulink url="https:// doc.qt.io/qt-6/qguiapplication.html#QGuiApplication"
+>Dokumentacija QGuiApplication</ulink
+> in <ulink url="https://doc.qt.io/qt-6/qcommandlineparser.html"
+>Dokumentacija QCommandLineParser </ulink
+>.</para>
+</refsect1>
+
+</refentry>

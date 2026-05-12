@@ -1,0 +1,74 @@
+<?xml version="1.0" ?>
+<!DOCTYPE refentry PUBLIC "-//KDE//DTD DocBook XML V4.5-Based Variant V1.1//EN" "dtd/kdedbx45.dtd" [
+<!ENTITY % Brazilian-Portuguese "INCLUDE">
+]>
+
+<refentry lang="&language;">
+<refentryinfo>
+<title
+>Manual do Usuário do checkXML6</title>
+<author
+><personname
+><firstname
+>Lauri</firstname
+><surname
+>Watts</surname
+></personname
+><email
+>lauri@kde.org</email
+></author>
+<date
+>04/03/2014</date>
+<releaseinfo
+>Frameworks 6.0</releaseinfo>
+<productname
+>KDE Frameworks</productname>
+</refentryinfo>
+
+<refmeta>
+<refentrytitle
+><command
+>checkXML6</command
+></refentrytitle>
+<manvolnum
+>1</manvolnum>
+</refmeta>
+
+<refnamediv>
+<refname
+><command
+>checkXML6</command
+></refname>
+<refpurpose
+>Uma ferramenta de validação de &XML; para os documentos de DocBook em &XML;</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<cmdsynopsis
+><command
+>checkXML6</command
+> <arg
+><replaceable
+>arquivo</replaceable
+></arg
+> </cmdsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title
+>Descrição</title>
+
+<para
+>O <command
+>checkXML6</command
+> é uma ferramenta para verificar erros de sintaxe em arquivos &XML; de DocBook do &kde;. Ele também pode ser usado para outros arquivos &XML; baseados em DocBook, mas nesse caso, deverá usar a ferramenta menos específica xmllint(1) se você não estiver escrevendo ou trabalhando com documentação do &kde;.</para>
+</refsect1>
+
+<refsect1>
+<title
+>Veja também</title>
+<para
+>meinproc6(1) xmllint(1)</para>
+</refsect1>
+</refentry>
+

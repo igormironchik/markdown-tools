@@ -1,0 +1,161 @@
+<?xml version="1.0" ?>
+<!DOCTYPE refentry PUBLIC "-//KDE//DTD DocBook XML V4.5-Based Variant V1.1//EN" "dtd/kdedbx45.dtd" [
+<!ENTITY % Slovenian "INCLUDE">
+]>
+
+<refentry lang="&language;">
+<refentryinfo>
+<title
+>&frameworks; Dokumentacija ukazne vrstice</title>
+<author
+>&Lauri.Watts; &Lauri.Watts.mail;</author>
+<date
+>13.5.2016</date>
+<releaseinfo
+>Ogrodja 6.0</releaseinfo>
+<productname
+>Ogrodja KDE</productname>
+</refentryinfo>
+
+<refmeta>
+<refentrytitle
+>kf6options</refentrytitle>
+<manvolnum
+>7</manvolnum>
+</refmeta>
+
+<refnamediv>
+<refname
+>kf6options</refname>
+<refpurpose
+>Pogoste možnosti ukazne vrstice za vse aplikacije, ki temeljijo na &kf6-full;</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<cmdsynopsis
+><command
+><replaceable
+>KDE aplikacija</replaceable
+></command
+> <arg choice="opt"
+><option
+>-h, --help</option
+></arg
+> <arg choice="opt"
+><option
+>-v, --version</option
+></arg
+> <arg choice="opt"
+><option
+>--author</option
+></arg
+> <arg choice="opt"
+><option
+>--license</option
+></arg
+> <arg choice="opt"
+><option
+>--desktopfile</option
+> <replaceable
+>file name</replaceable
+></arg
+> </cmdsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title
+>Možnosti</title>
+
+<para
+>Naslednje možnosti veljajo za vse &kde; aplikacije:</para>
+
+<variablelist>
+<varlistentry>
+<term
+><option
+>-h</option
+> <option
+>--help</option
+></term>
+<listitem
+><para
+>To navaja možnosti, ki so na voljo v ukazni vrstici.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-v</option
+> <option
+>--version</option
+></term>
+<listitem>
+<para
+>Navaja informacije o različici za <replaceable
+>aplikacijo KDE</replaceable
+>.</para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--author</option
+></term>
+<listitem
+><para
+>Navede avtorje <replaceable
+>aplikacije KDE</replaceable
+> v terminalskem oknu.</para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--license</option
+></term>
+<listitem
+><para
+>Prikazuje informacije o licenci.</para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--desktopfile</option
+> <replaceable
+>ime datoteke</replaceable
+></term>
+<listitem
+><para
+>Osnovno ime datoteke vnosa iz namizja za to aplikacijo.</para>
+<para
+>To je še posebej uporabno za aplikacije ovojnice in aplikacije, ki imajo na splošno več namiznih datotek. Tako lahko vsaka namizna datoteka vnese svoje ime v ukaz exec. </para
+></listitem>
+</varlistentry>
+
+</variablelist>
+
+</refsect1>
+
+<refsect1>
+<title
+>Poglej tudi</title>
+<para
+>qt6options(7)</para>
+
+</refsect1>
+
+<refsect1>
+<title
+>Avtorji</title>
+<para
+>Man stran, ki jo je prvotno napisala &Lauri.Watts; &Lauri.Watts.mail; za kdelibs4</para>
+<para
+>Posodobljeno na &frameworks; 5 s strani &Burkhard.Lueck; &Burkhard.Lueck.mail;</para>
+</refsect1>
+
+</refentry>

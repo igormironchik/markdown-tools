@@ -1,0 +1,10 @@
+<l:i18n xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0">
+<l:l10n language="sq" english-language-name="Albanian">
+
+   <l:gentext key="nav-home" text="Lëndë"/>
+
+   <l:gentext key="footer-doc-comment" text="Doni të bëni një koment, apo të kontribuoni me një përditësim te kjo faqe?"/>
+   <l:gentext key="footer-doc-feedback" text="Dërgoni përshtypje te "/>
+   <l:gentext key="footer-doc-teamname" text="Ekipi i Dokumentimit të KDE-së"/>
+</l:l10n>
+</l:i18n>
