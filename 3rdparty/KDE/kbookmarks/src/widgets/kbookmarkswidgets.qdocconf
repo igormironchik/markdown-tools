@@ -1,0 +1,35 @@
+include($KDE_DOCS/global/qt-module-defaults.qdocconf)
+
+project = KBookmarksWidgets
+description = Widgets for Bookmark Handling
+
+documentationinheaders = true
+
+headerdirs += .
+sourcedirs += .
+
+outputformats = HTML
+
+navigation.landingpage  = "KBookmarks"
+
+depends += \
+    kde \
+    qtcore \
+    kbookmarks \
+    kwidgetsaddons
+
+qhp.projects            = KBookmarksWidgets
+
+qhp.KBookmarksWidgets.file                = kbookmarkswidgets.qhp
+qhp.KBookmarksWidgets.namespace           = org.kde.kbookmarkswidgets.$QT_VERSION_TAG
+qhp.KBookmarksWidgets.virtualFolder       = kbookmarkswidgets
+qhp.KBookmarksWidgets.indexTitle          = KBookmarksWidgets
+qhp.KBookmarksWidgets.indexRoot           =
+
+qhp.KBookmarksWidgets.subprojects         = classes
+qhp.KBookmarksWidgets.subprojects.classes.title = C++ Classes
+qhp.KBookmarksWidgets.subprojects.classes.indexTitle = KBookmarksWidgets C++ Classes
+qhp.KBookmarksWidgets.subprojects.classes.selectors = class fake:headerfile
+qhp.KBookmarksWidgets.subprojects.classes.sortPages = true
+
+tagfile = kbookmarkswidgets.tags

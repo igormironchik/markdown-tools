@@ -1,0 +1,16 @@
+/*!
+    \module KWindowSystem
+    \title KWindowSystem C++ Classes
+    \ingroup modules
+    \cmakepackage KF6
+    \cmakecomponent KWindowSystem
+
+    \brief Access to the windowing system.
+
+*/
+
+/*!
+   \qmlmodule org.kde.kwindowsystem
+   \title KWindowSystem QML Types
+   \brief Access to the windowing system
+ */

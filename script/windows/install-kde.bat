@@ -232,6 +232,42 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
+cmake -S 3rdparty/KDE/kwindowsystem -B ../builds/build-kwindowsystem -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE;%cwd%/../builds/conan" -DBUILD_TESTING=OFF -G "NMake Makefiles"
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+cmake --build ../builds/build-kwindowsystem --config Release -j 3
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+cmake --install ../builds/build-kwindowsystem --prefix ../KDE
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+cmake -S 3rdparty/KDE/kbookmarks -B ../builds/build-kbookmarks -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE;%cwd%/../builds/conan" -DBUILD_TESTING=OFF -G "NMake Makefiles"
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+cmake --build ../builds/build-kbookmarks --config Release -j 3
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+cmake --install ../builds/build-kbookmarks --prefix ../KDE
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
 cmake -S 3rdparty/KDE/kio -B ../builds/build-kio -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE;%cwd%/../builds/conan" -DBUILD_TESTING=OFF -G "NMake Makefiles"
 
 IF %ERRORLEVEL% NEQ 0 (

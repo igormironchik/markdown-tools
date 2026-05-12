@@ -1,0 +1,5538 @@
+# translation of kio4.po to
+# translation of kdelibs.po to
+# translation of kdelibs.po to
+# translation of kdelibs.po to
+# translation of kdelibs.po to
+# Ostatnie poprawki przed 2.0 Jacek Stolarczyk <jstolarz@kde.org>
+# Jacek Stolarczyk <jstolarz@kde.org>, 2001.
+# Piotr Roszatycki <dexter@debian.org>, 1997-2000.
+# Artur Górniak <artur_gorniak@software.pl>, 2000.
+# Michał Rudolf <mrudolf@kdewebdev.org>, 2002.
+# Krzysztof Lichota <lichota@mimuw.edu.pl>, 2002, 2005, 2006.
+# Michal Rudolf <mrudolf@kdewebdev.org>, 2003, 2004, 2005.
+# Mikolaj Machowski <mikmach@wp.pl>, 2003, 2004, 2005.
+# Robert Gomulka <rgom@o2.pl>, 2006, 2007.
+# Robert Gomulka <carramba@epf.pl>, 2007, 2008.
+# Marta Rybczyńska <kde-i18n@rybczynska.net>, 2007, 2008, 2009, 2010, 2011.
+# Artur Chłond <eugenewolfe@o2.pl>, 2010.
+# SPDX-FileCopyrightText: 2011, 2012, 2014, 2016, 2017, 2021, 2022, 2023, 2024 Łukasz Wojniłowicz <lukasz.wojnilowicz@gmail.com>
+msgid ""
+msgstr ""
+"Project-Id-Version: kio4\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2014-03-28 02:03+0000\n"
+"PO-Revision-Date: 2024-05-12 08:42+0200\n"
+"Last-Translator: Łukasz Wojniłowicz <lukasz.wojnilowicz@gmail.com>\n"
+"Language-Team: Polish <kde-i18n-doc@kde.org>\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
+"X-Qt-Contexts: true\n"
+
+#: kbookmark.cpp:316
+msgctxt "KBookmark|Bookmark separator"
+msgid "--- separator ---"
+msgstr "--- element oddzielający ---"
+
+#: kbookmarkmanager.cpp:267
+#, qt-format
+msgctxt "KBookmarkManager|"
+msgid ""
+"Unable to save bookmarks in %1. Reported error was: %2. This error message "
+"will only be shown once. The cause of the error needs to be fixed as quickly "
+"as possible, which is most likely a full hard drive."
+msgstr ""
+"Nie można zapisać zakładek w %1. Zgłoszony błąd: %2. Ta wiadomość błędu "
+"zostanie pokazana tylko raz. Przyczyna błędu powinna być naprawiona tak "
+"szybko jak to tylko możliwe - jest to najprawdopodobniej zapełniony dysk "
+"twardy."
+
+#: keditbookmarks.cpp:59
+msgctxt "QObject|"
+msgid "keditbookmarks could not be started"
+msgstr "Nie można uruchomić keditbookmarks"
+
+#: keditbookmarks.cpp:66
+msgctxt "QObject|"
+msgid "The keditbookmarks executable was not found"
+msgstr "Nie znaleziono pliku wykonywalnego keditbookmarks"
+
+#: widgets/kbookmarkcontextmenu.cpp:53
+msgctxt "KBookmarkContextMenu|@action:inmenu"
+msgid "Add Bookmark Here"
+msgstr "Tutaj dodaj zakładkę"
+
+#: widgets/kbookmarkcontextmenu.cpp:59
+msgctxt "KBookmarkContextMenu|@action:inmenu"
+msgid "Open Folder in Bookmark Editor"
+msgstr "Otwórz katalog w edytorze zakładek"
+
+#: widgets/kbookmarkcontextmenu.cpp:62
+msgctxt "KBookmarkContextMenu|@action:inmenu"
+msgid "Delete Folder"
+msgstr "Usuń katalog"
+
+#: widgets/kbookmarkcontextmenu.cpp:67
+msgctxt "KBookmarkContextMenu|@action:inmenu"
+msgid "Properties"
+msgstr "Właściwości"
+
+#: widgets/kbookmarkcontextmenu.cpp:72
+msgctxt "KBookmarkContextMenu|@action:inmenu"
+msgid "Copy Link Address"
+msgstr "Skopiuj adres odnośnika"
+
+#: widgets/kbookmarkcontextmenu.cpp:75
+msgctxt "KBookmarkContextMenu|@action:inmenu"
+msgid "Delete Bookmark"
+msgstr "Usuń zakładkę"
+
+#: widgets/kbookmarkcontextmenu.cpp:81
+msgctxt "KBookmarkContextMenu|@action:inmenu"
+msgid "Open Folder in Tabs"
+msgstr "Otwórz katalog w kartach"
+
+#: widgets/kbookmarkcontextmenu.cpp:112
+msgctxt "KBookmarkContextMenu|@info"
+msgid "Cannot add bookmark with empty URL."
+msgstr "Nie można dodać zakładki o pustym adresie URL."
+
+#: widgets/kbookmarkcontextmenu.cpp:141
+msgctxt "KBookmarkContextMenu|@title:window"
+msgid "Bookmark Folder Deletion"
+msgstr "Usunięcie katalogu zakładki"
+
+#: widgets/kbookmarkcontextmenu.cpp:141
+msgctxt "KBookmarkContextMenu|@title:window"
+msgid "Bookmark Deletion"
+msgstr "Usunięcie zakładki"
+
+#: widgets/kbookmarkcontextmenu.cpp:142
+#, qt-format
+msgctxt "KBookmarkContextMenu|"
+msgid ""
+"Are you sure you wish to remove the bookmark folder\n"
+"\"%1\"?"
+msgstr ""
+"Czy na pewno chcesz usunąć katalog zakładek\n"
+"\"%1\"?"
+
+#: widgets/kbookmarkcontextmenu.cpp:143
+#, qt-format
+msgctxt "KBookmarkContextMenu|"
+msgid ""
+"Are you sure you wish to remove the bookmark\n"
+"\"%1\"?"
+msgstr ""
+"Czy na pewno chcesz usunąć zakładki\n"
+"\"%1\"?"
+
+#: widgets/kbookmarkdialog.cpp:56
+msgctxt "KBookmarkDialog|@label:textbox"
+msgid "Name:"
+msgstr "Nazwa:"
+
+#: widgets/kbookmarkdialog.cpp:61
+msgctxt "KBookmarkDialog|@label:textbox"
+msgid "Location:"
+msgstr "Położenie:"
+
+#: widgets/kbookmarkdialog.cpp:66
+msgctxt "KBookmarkDialog|@label:textbox"
+msgid "Comment:"
+msgstr "Uwagi:"
+
+#: widgets/kbookmarkdialog.cpp:177
+msgctxt "KBookmarkDialog|@action:button"
+msgid "Update"
+msgstr "Uaktualnij"
+
+#: widgets/kbookmarkdialog.cpp:178
+msgctxt "KBookmarkDialog|@title:window"
+msgid "Bookmark Properties"
+msgstr "Właściwości zakładek"
+
+#: widgets/kbookmarkdialog.cpp:208 widgets/kbookmarkdialog.cpp:246
+#: widgets/kbookmarkdialog.cpp:280
+msgctxt "KBookmarkDialog|@action:button"
+msgid "&New Folder…"
+msgstr "&Nowy katalog…"
+
+#: widgets/kbookmarkdialog.cpp:212 widgets/kbookmarkdialog.cpp:250
+msgctxt "KBookmarkDialog|@action:button"
+msgid "Add"
+msgstr "Dodaj"
+
+#: widgets/kbookmarkdialog.cpp:213
+msgctxt "KBookmarkDialog|@title:window"
+msgid "Add Bookmark"
+msgstr "Dodaj zakładkę"
+
+#: widgets/kbookmarkdialog.cpp:251
+msgctxt "KBookmarkDialog|@title:window"
+msgid "Add Bookmarks"
+msgstr "Dodaj zakładki"
+
+#: widgets/kbookmarkdialog.cpp:284
+msgctxt "KBookmarkDialog|@title:window"
+msgid "Select Folder"
+msgstr "Wybierz katalog"
+
+#: widgets/kbookmarkdialog.cpp:312
+msgctxt "KBookmarkDialog|@title:window"
+msgid "New Folder"
+msgstr "Nowy katalog"
+
+#: widgets/kbookmarkdialog.cpp:342
+msgctxt "KBookmarkDialog|@title:window"
+msgid "Create New Bookmark Folder"
+msgstr "Utwórz nowy katalog zakładek"
+
+#: widgets/kbookmarkdialog.cpp:343
+#, qt-format
+msgctxt "KBookmarkDialog|@title:window"
+msgid "Create New Bookmark Folder in %1"
+msgstr "Utwórz nowy katalog zakładek w %1"
+
+#: widgets/kbookmarkdialog.cpp:345
+msgctxt "KBookmarkDialog|@label:textbox"
+msgid "New folder:"
+msgstr "Nowy katalog:"
+
+#: widgets/kbookmarkdialog.cpp:366
+msgctxt "KBookmarkDialog|name of the container of all browser bookmarks"
+msgid "Bookmarks"
+msgstr "Zakładki"
+
+#: widgets/kbookmarkmenu.cpp:291
+msgctxt "KBookmarkMenu|@action:inmenu"
+msgid "Open Folder in Tabs"
+msgstr "Otwórz katalog w kartach"
+
+#: widgets/kbookmarkmenu.cpp:295
+msgctxt "KBookmarkMenu|@info:tooltip"
+msgid "Open all bookmarks in this folder as a new tab"
+msgstr "Otwórz wszystkie zakładki w tym katalogu jako nową kartę"
+
+#: widgets/kbookmarkmenu.cpp:311
+msgctxt "KBookmarkMenu|@action:inmenu"
+msgid "Bookmark Tabs as Folder…"
+msgstr "Karty zakładek jako katalog…"
+
+#: widgets/kbookmarkmenu.cpp:319
+msgctxt "KBookmarkMenu|@info:tooltip"
+msgid "Add a folder of bookmarks for all open tabs"
+msgstr "Dodaj katalog zakładek dla wszystkich otwartych kart"
+
+#: widgets/kbookmarkmenu.cpp:358
+msgctxt "KBookmarkMenu|@info:tooltip"
+msgid "Edit your bookmark collection in a separate window"
+msgstr "Edytuj swój zbiór zakładek w osobnym oknie"
+
+#: widgets/kbookmarkmenu.cpp:380
+msgctxt "KBookmarkMenu|@action:inmenu"
+msgid "New Bookmark Folder…"
+msgstr "Nowy katalog zakładek…"
+
+#: widgets/kbookmarkmenu.cpp:382
+msgctxt "KBookmarkMenu|@info:tooltip"
+msgid "Create a new bookmark folder in this menu"
+msgstr "Utwórz nowy katalog zakładek w tym menu"
+
+#~ msgctxt "KBookmarkDialog|@action:button"
+#~ msgid "&New Folder..."
+#~ msgstr "&Nowy katalog..."
+
+#~ msgctxt "KBookmarkManager|"
+#~ msgid ""
+#~ "Cannot launch keditbookmarks.\n"
+#~ "\n"
+#~ "Most likely you do not have keditbookmarks currently installed"
+#~ msgstr ""
+#~ "Nie można uruchomić edytora zakładek.\n"
+#~ "\n"
+#~ "Najprawdopodobniej nie masz wgranego keditbookmarks"
+
+#~ msgctxt "KNSBookmarkImporterImpl|"
+#~ msgid "HTML Files (*.html)"
+#~ msgstr "Pliki HTML (*.html)"
+
+#~ msgctxt "KNSBookmarkImporterImpl|"
+#~ msgid "*.html|HTML Files (*.html)"
+#~ msgstr "*.html|Pliki HTML (*.html)"
+
+#~ msgctxt "KNSBookmarkImporterImpl|"
+#~ msgid ""
+#~ "Could not find %1. Netscape is probably not installed. Aborting the "
+#~ "export."
+#~ msgstr ""
+#~ "Nie można znaleźć %1. Netscape jest prawdopodobnie niezainstalowany. "
+#~ "Przerwano eksportowanie."
+
+#~ msgctxt "KNSBookmarkImporterImpl|"
+#~ msgid "Netscape not found"
+#~ msgstr "Nie znaleziono Netscape"
+
+#~ msgctxt "KNSBookmarkImporterImpl|"
+#~ msgid "<!-- This file was generated by Konqueror -->"
+#~ msgstr "<!-- Plik ten został utworzony przez Konqueror -->"
+
+#~ msgctxt "KNSBookmarkImporterImpl|"
+#~ msgid "Bookmarks"
+#~ msgstr "Zakładki"
+
+#~ msgctxt "KOperaBookmarkImporterImpl|"
+#~ msgid "Opera Bookmark Files (*.adr)"
+#~ msgstr "Pliki zakładek Opery (*.adr)"
+
+#~ msgctxt "KOperaBookmarkImporterImpl|"
+#~ msgid "*.adr|Opera Bookmark Files (*.adr)"
+#~ msgstr "*.adr|Pliki zakładek Opery (*.adr)"
+
+#~ msgctxt "KonqBookmarkContextMenu|@action:inmenu"
+#~ msgid "Hide in Toolbar"
+#~ msgstr "Ukryj na pasku narzędzi"
+
+#~ msgctxt "KonqBookmarkContextMenu|@action:inmenu"
+#~ msgid "Show in Toolbar"
+#~ msgstr "Pokaż na pasku narzędzi"
+
+#~ msgctxt "KonqBookmarkContextMenu|@action:inmenu"
+#~ msgid "Open in New Window"
+#~ msgstr "Otwórz w nowym oknie"
+
+#~ msgctxt "KonqBookmarkContextMenu|@action:inmenu"
+#~ msgid "Open in New Tab"
+#~ msgstr "Otwórz w nowej karcie"
+
+#~ msgctxt "KBookmarkMenu|"
+#~ msgid "Open Folder in Tabs"
+#~ msgstr "Otwórz katalog w kartach"
+
+#~ msgctxt "NAME OF TRANSLATORS"
+#~ msgid "Your names"
+#~ msgstr "Michał Rudolf, Łukasz Wojniłowicz"
+
+#~ msgctxt "EMAIL OF TRANSLATORS"
+#~ msgid "Your emails"
+#~ msgstr "mrudolf@kdewebdev.org, lukasz.wojnilowicz@gmail.com"
+
+#~ msgid "A file or folder named %1 already exists."
+#~ msgstr "Plik lub katalog o nazwie %1 już istnieje."
+
+#~ msgid "You do not have permission to create that folder."
+#~ msgstr "Nie masz praw do utworzenia tego katalogu."
+
+#~ msgid "You did not select a file to delete."
+#~ msgstr "Nie wybrałeś pliku do usunięcia."
+
+#~ msgid "Nothing to Delete"
+#~ msgstr "Nie ma czego usuwać"
+
+#~ msgid ""
+#~ "<qt>Do you really want to delete\n"
+#~ " <b>'%1'</b>?</qt>"
+#~ msgstr ""
+#~ "<qt>Czy na pewno chcesz usunąć\n"
+#~ " <b>'%1'</b>?</qt>"
+
+#~ msgid "Delete File"
+#~ msgstr "Usuń plik"
+
+#~ msgid "Do you really want to delete this item?"
+#~ msgid_plural "Do you really want to delete these %1 items?"
+#~ msgstr[0] "Czy na pewno usunąć ten %1 element?"
+#~ msgstr[1] "Czy na pewno usunąć te %1 elementy?"
+#~ msgstr[2] "Czy na pewno usunąć tych %1 elementów?"
+
+#~ msgid "Delete Files"
+#~ msgstr "Usuń pliki"
+
+#~ msgid "You did not select a file to trash."
+#~ msgstr "Nie wybrałeś pliku do wyrzucenia do kosza."
+
+#~ msgid "Nothing to Trash"
+#~ msgstr "Nie ma czego wyrzucić do kosza"
+
+#~ msgid ""
+#~ "<qt>Do you really want to trash\n"
+#~ " <b>'%1'</b>?</qt>"
+#~ msgstr ""
+#~ "<qt>Czy na pewno chcesz wyrzucić do kosza\n"
+#~ " <b>'%1'</b>?</qt>"
+
+#~ msgid "Trash File"
+#~ msgstr "Wyrzucanie pliku do kosza"
+
+#~ msgctxt "to trash"
+#~ msgid "&Trash"
+#~ msgstr "&Kosz"
+
+#~ msgid "translators: not called for n == 1"
+#~ msgid_plural "Do you really want to trash these %1 items?"
+#~ msgstr[0] "Czy na pewno chcesz wyrzucić do kosza %1 element?"
+#~ msgstr[1] "Czy na pewno chcesz wyrzucić do kosza %1 elementy?"
+#~ msgstr[2] "Czy na pewno chcesz wyrzucić do kosza %1 elementów?"
+
+#~ msgid "Trash Files"
+#~ msgstr "Wyrzucanie plików do kosza"
+
+#~ msgid "The specified folder does not exist or was not readable."
+#~ msgstr "Wybrany katalog nie istnieje lub brak praw do odczytu."
+
+#~ msgid "Menu"
+#~ msgstr "Menu"
+
+#~ msgid "Parent Folder"
+#~ msgstr "Katalog wyżej"
+
+#~ msgid "Home Folder"
+#~ msgstr "Katalog domowy"
+
+#~ msgid "Reload"
+#~ msgstr "Wczytaj ponownie"
+
+#~ msgid "New Folder..."
+#~ msgstr "Nowy katalog..."
+
+#~ msgid "Move to Trash"
+#~ msgstr "Przenieś do kosza"
+
+#~ msgid "Delete"
+#~ msgstr "Usuń"
+
+#~ msgid "Sorting"
+#~ msgstr "Sortowanie"
+
+#~ msgid "By Name"
+#~ msgstr "Według nazwy"
+
+#~ msgid "By Size"
+#~ msgstr "Według rozmiaru"
+
+#~ msgid "By Date"
+#~ msgstr "Według daty"
+
+#~ msgid "By Type"
+#~ msgstr "Według rodzaju"
+
+#~ msgid "Descending"
+#~ msgstr "Malejąco"
+
+#~ msgid "Folders First"
+#~ msgstr "Najpierw katalogi"
+
+#~ msgid "Icon Position"
+#~ msgstr "Położenie ikon"
+
+#~ msgid "Next to File Name"
+#~ msgstr "Obok nazwy pliku"
+
+#~ msgid "Above File Name"
+#~ msgstr "Nad nazwą pliku"
+
+#~ msgid "Short View"
+#~ msgstr "Widok skrócony"
+
+#~ msgid "Detailed View"
+#~ msgstr "Widok szczegółowy"
+
+#~ msgid "Tree View"
+#~ msgstr "Widok drzewa"
+
+#~ msgid "Detailed Tree View"
+#~ msgstr "Widok szczegółowy drzewa"
+
+#~ msgid "Show Hidden Files"
+#~ msgstr "Wyświetlaj ukryte pliki"
+
+#~ msgid "Show Aside Preview"
+#~ msgstr "Pokaż podgląd z boku"
+
+#~ msgid "Show Preview"
+#~ msgstr "Pokaż podgląd"
+
+#~ msgid "Open File Manager"
+#~ msgstr "Otwórz zarządcę plików"
+
+#~ msgid "&View"
+#~ msgstr "&Widok"
+
+#~ msgctxt "@title:window"
+#~ msgid "New Folder"
+#~ msgstr "Nowy katalog"
+
+#~ msgctxt "@label:textbox"
+#~ msgid ""
+#~ "Create new folder in:\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Utwórz nowy katalog w:\n"
+#~ "%1"
+
+#~ msgctxt "@action:button"
+#~ msgid "New Folder..."
+#~ msgstr "Nowy katalog..."
+
+#~ msgctxt "@action:inmenu"
+#~ msgid "New Folder..."
+#~ msgstr "Nowy katalog..."
+
+#~ msgctxt "@action:inmenu"
+#~ msgid "Move to Trash"
+#~ msgstr "Przenieś do kosza"
+
+#~ msgctxt "@action:inmenu"
+#~ msgid "Delete"
+#~ msgstr "Usuń"
+
+#~ msgctxt "@option:check"
+#~ msgid "Show Hidden Folders"
+#~ msgstr "Pokaż ukryte katalogi"
+
+#~ msgctxt "@action:inmenu"
+#~ msgid "Properties"
+#~ msgstr "Właściwości"
+
+#~ msgid "*|All Files"
+#~ msgstr "*|Wszystkie pliki"
+
+#~ msgid "All Supported Files"
+#~ msgstr "Wszystkie obsługiwane pliki"
+
+#~ msgid "All Files"
+#~ msgstr "Wszystkie pliki"
+
+#~ msgid "Add Places Entry"
+#~ msgstr "Dodaj wpisy lokalizacji"
+
+#~ msgid "Edit Places Entry"
+#~ msgstr "Zmień wpis szybkiego dostępu"
+
+#~ msgid ""
+#~ "<qt>This is the text that will appear in the Places panel.<br /><br />The "
+#~ "label should consist of one or two words that will help you remember what "
+#~ "this entry refers to. If you do not enter a label, it will be derived "
+#~ "from the location's URL.</qt>"
+#~ msgstr ""
+#~ "<qt>Tekst wyświetlany w panelu Miejsca.<br /><br /> Opis powinien składać "
+#~ "się z jednego lub dwóch słów, kojarzących się z lokalizacją, do której "
+#~ "prowadzi skrót. Jeśli nie wpiszesz żadnej etykiety, będzie ona pochodziła "
+#~ "od adresu miejsca.</qt>"
+
+#~ msgid "L&abel:"
+#~ msgstr "&Etykieta:"
+
+#~ msgid "Enter descriptive label here"
+#~ msgstr "Proszę wpisać opisową etykietę"
+
+#~ msgid ""
+#~ "<qt>This is the location associated with the entry. Any valid URL may be "
+#~ "used. For example:<br /><br />%1<br />http://www.kde.org<br />ftp://ftp."
+#~ "kde.org/pub/kde/stable<br /><br />By clicking on the button next to the "
+#~ "text edit box you can browse to an appropriate URL.</qt>"
+#~ msgstr ""
+#~ "<qt>Lokalizacja związana ze skrótem. Możliwe jest użycie dowolnego "
+#~ "poprawnego URL, na przykład <br /><br />%1<br />http://www.kde.org<br /> "
+#~ "ftp://ftp.kde.org/pub/kde/stable<br /><br />Przycisk obok pola edycyjnego "
+#~ "pozwala wybrać odpowiedni URL.</qt>"
+
+#~ msgid "&Location:"
+#~ msgstr "&Miejsce:"
+
+#~ msgid ""
+#~ "<qt>This is the icon that will appear in the Places panel.<br /><br /"
+#~ ">Click on the button to select a different icon.</qt>"
+#~ msgstr ""
+#~ "<qt>Ikona wyświetlana w Panelu szybkiego dostępu.<br /><br />Naciśnij "
+#~ "przycisk, by wybrać inną ikonę.</qt>"
+
+#~ msgid "Choose an &icon:"
+#~ msgstr "Wybierz &ikonę:"
+
+#~ msgid "&Only show when using this application (%1)"
+#~ msgstr "&Tylko dla tego programu (%1)"
+
+#~ msgid ""
+#~ "<qt>Select this setting if you want this entry to show only when using "
+#~ "the current application (%1).<br /><br />If this setting is not selected, "
+#~ "the entry will be available in all applications.</qt>"
+#~ msgstr ""
+#~ "<qt> Wybierz tę opcję, jeśli chcesz, by pozycja dotyczyła tylko tego "
+#~ "programu (%1).<br /><br />W przeciwnym razie będzie dostępna we "
+#~ "wszystkich programach.</qt>"
+
+#~ msgctxt "KFile System Bookmarks"
+#~ msgid "Home"
+#~ msgstr "Katalog domowy"
+
+#~ msgctxt "KFile System Bookmarks"
+#~ msgid "Network"
+#~ msgstr "Sieć"
+
+#~ msgctxt "KFile System Bookmarks"
+#~ msgid "Root"
+#~ msgstr "Katalog główny"
+
+#~ msgctxt "KFile System Bookmarks"
+#~ msgid "Trash"
+#~ msgstr "Kosz"
+
+#~ msgid "&Release '%1'"
+#~ msgstr "O&dmontuj '%1'"
+
+#~ msgid "&Safely Remove '%1'"
+#~ msgstr "Usuń &bezpiecznie '%1'"
+
+#~ msgid "&Unmount '%1'"
+#~ msgstr "O&dmontuj '%1'"
+
+#~ msgid "&Eject '%1'"
+#~ msgstr "W&ysuń '%1'"
+
+#~ msgid "The device '%1' is not a disk and cannot be ejected."
+#~ msgstr "Urządzenie '%1' to nie dysk i nie można go wysunąć."
+
+#~ msgid "An error occurred while accessing '%1', the system responded: %2"
+#~ msgstr "Błąd podczas próby uzyskania dostępu do '%1', system zgłosił: %2"
+
+#~ msgid "An error occurred while accessing '%1'"
+#~ msgstr "Błąd podczas próby uzyskania dostępu do '%1'"
+
+#~ msgctxt "@action:inmenu"
+#~ msgid "Empty Trash"
+#~ msgstr "Opróżnij kosz"
+
+#~ msgid "Add Entry..."
+#~ msgstr "Dodaj wpis..."
+
+#~ msgid "&Edit Entry '%1'..."
+#~ msgstr "&Zmień wpis \"%1\"..."
+
+#~ msgid "&Hide Entry '%1'"
+#~ msgstr "&Ukryj wpis \"%1\""
+
+#~ msgid "&Show All Entries"
+#~ msgstr "Wyświetl &wszystkie pozycje"
+
+#~ msgid "&Remove Entry '%1'"
+#~ msgstr "&Usuń wpis \"%1\""
+
+#~ msgctxt "@info"
+#~ msgid "Do you really want to empty the Trash? All items will be deleted."
+#~ msgstr "Czy na pewno opróżnić kosz? Wszystkie elementy zostaną skasowane."
+
+#~ msgctxt "@action:button"
+#~ msgid "Empty Trash"
+#~ msgstr "Opróżnij kosz"
+
+#~ msgid "Show Hidden Folders"
+#~ msgstr "Pokaż ukryte katalogi"
+
+#~ msgid ""
+#~ "<qt>While typing in the text area, you may be presented with possible "
+#~ "matches. This feature can be controlled by clicking with the right mouse "
+#~ "button and selecting a preferred mode from the <b>Text Completion</b> "
+#~ "menu.</qt>"
+#~ msgstr ""
+#~ "<qt>W tym oknie tekstowym podczas pisania mogą pojawiać się możliwe "
+#~ "dopasowania. Ta funkcja jest kontrolowana z menu pod prawym przyciskiem "
+#~ "myszy (wybór preferowanego trybu z menu <b>Dopełnianie tekstu</b>).</qt>"
+
+#~ msgid "Drive: %1"
+#~ msgstr "Napęd: %1"
+
+#~ msgid ""
+#~ "<qt>Click this button to enter the parent folder.<br /><br />For "
+#~ "instance, if the current location is file:/home/%1 clicking this button "
+#~ "will take you to file:/home.</qt>"
+#~ msgstr ""
+#~ "<qt>Naciśnij ten przycisk, by wejść do katalogu nadrzędnego.<br /><br /> "
+#~ "Na przykład jeśli aktualny katalog to file:/home/%1, wciśnięcie tego "
+#~ "przycisku przeniesie do file:/home.</qt>"
+
+#~ msgid ""
+#~ "Click this button to move backwards one step in the browsing history."
+#~ msgstr "Kliknij tu myszką, by przejść do poprzedniej przeglądanej strony."
+
+#~ msgid "Click this button to move forward one step in the browsing history."
+#~ msgstr "Kliknij tu myszką, by przejść do następnej przeglądanej strony."
+
+#~ msgid "Click this button to reload the contents of the current location."
+#~ msgstr "Kliknij ten przycisk, by ponownie wczytać przeglądaną stronę."
+
+#~ msgid "Click this button to create a new folder."
+#~ msgstr "Kliknij przycisk, by utworzyć nowy katalog."
+
+#~ msgid "Show Places Navigation Panel"
+#~ msgstr "Pokaż panel szybkiego dostępu"
+
+#~ msgid "Show Bookmarks"
+#~ msgstr "Pokazuj zakładki"
+
+#~ msgid "Options"
+#~ msgstr "Opcje"
+
+#~ msgid ""
+#~ "<qt>This is the preferences menu for the file dialog. Various options can "
+#~ "be accessed from this menu including: <ul><li>how files are sorted in the "
+#~ "list</li><li>types of view, including icon and list</li><li>showing of "
+#~ "hidden files</li><li>the Places navigation panel</li><li>file previews</"
+#~ "li><li>separating folders from files</li></ul></qt>"
+#~ msgstr ""
+#~ "<qt>To jest menu konfiguracji okna wyboru plików. W menu dostępne m.in. "
+#~ "opcje określające: <ul><li>sposób sortowania plików</li><li>typ widoku "
+#~ "(ikony/lista)</li><li>wyświetlanie ukrytych plików</li><li>panel "
+#~ "szybkiego dostępu</li><li>podgląd plików</li><li>oddzielanie katalogów od "
+#~ "plików</li></ul></qt>"
+
+#~ msgid "Zoom out"
+#~ msgstr "Oddal"
+
+#~ msgid "Zoom in"
+#~ msgstr "Zbliż"
+
+#~ msgid "&Name:"
+#~ msgstr "&Nazwa:"
+
+#~ msgid ""
+#~ "<qt>This is the filter to apply to the file list. File names that do not "
+#~ "match the filter will not be shown.<p>You may select from one of the "
+#~ "preset filters in the drop down menu, or you may enter a custom filter "
+#~ "directly into the text area.</p><p>Wildcards such as * and ? are allowed."
+#~ "</p></qt>"
+#~ msgstr ""
+#~ "<qt>To jest filtr, stosowany do listy plików. Pliki, których nazwy nie "
+#~ "pasują do listy, nie będą wyświetlane.<p> Możesz wybrać jeden z "
+#~ "dostępnych filtrów z listy rozwijanej lub wpisać własny filtr "
+#~ "bezpośrednio w polu edycyjnym.</p><p>Obsługiwane są znaki specjalne, "
+#~ "takie jak * i ?.</p></qt>"
+
+#~ msgid "&Filter:"
+#~ msgstr "&Filtr:"
+
+#~ msgid "You can only select one file"
+#~ msgstr "Można zaznaczyć tylko jeden plik"
+
+#~ msgid "More than one file provided"
+#~ msgstr "Dostarczono więcej niż jeden plik"
+
+#~ msgid "You can only select local files"
+#~ msgstr "Można wybrać tylko pliki lokalne"
+
+#~ msgid "Remote files not accepted"
+#~ msgstr "Zdalne pliki odrzucone"
+
+#~ msgid ""
+#~ "More than one folder has been selected and this dialog does not accept "
+#~ "folders, so it is not possible to decide which one to enter. Please "
+#~ "select only one folder to list it."
+#~ msgstr ""
+#~ "Wybrano więcej niż jeden folder, a to okno dialogowe nie obsługuje tylko "
+#~ "jeden. Proszę wybrać tylko jeden folder."
+
+#~ msgid "More than one folder provided"
+#~ msgstr "Dostarczono więcej niż jeden folder"
+
+#~ msgid ""
+#~ "At least one folder and one file has been selected. Selected files will "
+#~ "be ignored and the selected folder will be listed"
+#~ msgstr ""
+#~ "Wybrano co najmniej jeden plik i folder. Wybrane pliki zostaną "
+#~ "zignorowane, a zawartość wybranego folderu będzie pokazana"
+
+#~ msgid "Files and folders selected"
+#~ msgstr "Zaznaczono pliki i foldery"
+
+#~ msgid "The file \"%1\" could not be found"
+#~ msgstr "Nie można znaleźć pliku \"%1\""
+
+#~ msgid "Cannot open file"
+#~ msgstr "Nie można otworzyć pliku"
+
+#~ msgid "This is the name to save the file as."
+#~ msgstr "To jest nazwa, pod jaką zostanie zapisany plik."
+
+#~ msgid ""
+#~ "This is the list of files to open. More than one file can be specified by "
+#~ "listing several files, separated by spaces."
+#~ msgstr ""
+#~ "To jest lista plików do otwarcia. Można podać kilka plików, rozdzielając "
+#~ "nazwy je spacjami."
+
+#~ msgid "This is the name of the file to open."
+#~ msgstr "To jest nazwa pliku do otwarcia."
+
+#~ msgctxt "@title:window"
+#~ msgid "Places"
+#~ msgstr "Miejsca"
+
+#~ msgid "The file \"%1\" already exists. Do you wish to overwrite it?"
+#~ msgstr "Plik \"%1\" już istnieje. Czy chcesz go zastąpić?"
+
+#~ msgid "Overwrite File?"
+#~ msgstr "Zastąpić plik?"
+
+#~ msgid ""
+#~ "The chosen filenames do not\n"
+#~ "appear to be valid."
+#~ msgstr ""
+#~ "Wybrane nazwy plików\n"
+#~ "nie wyglądają na poprawne."
+
+#~ msgid "Invalid Filenames"
+#~ msgstr "Nieprawidłowe nazwy plików"
+
+#~ msgid "You can only select local files."
+#~ msgstr "Można wybrać tylko pliki lokalne."
+
+#~ msgid "Remote Files Not Accepted"
+#~ msgstr "Zdalne pliki odrzucone"
+
+#~ msgid "*|All Folders"
+#~ msgstr "*|Wszystkie katalogi"
+
+#~ msgid "&Open"
+#~ msgstr "&Otwórz"
+
+#~ msgid "Icon size: %1 pixels (standard size)"
+#~ msgstr "Wielkość ikon: %1 pikseli (rozmiar standardowy)"
+
+#~ msgid "Icon size: %1 pixels"
+#~ msgstr "Wielkość ikon: %1 pikseli"
+
+#~ msgid "Automatically select filename e&xtension (%1)"
+#~ msgstr "Automatycznie wybierz &rozszerzenie nazwy pliku (%1)"
+
+#~ msgid "the extension <b>%1</b>"
+#~ msgstr "rozszerzenie <b>%1</b>"
+
+#~ msgid "Automatically select filename e&xtension"
+#~ msgstr "Automatycznie wybierz &rozszerzenie nazwy pliku"
+
+#~ msgid "a suitable extension"
+#~ msgstr "odpowiadające rozszerzenie"
+
+#~ msgid ""
+#~ "This option enables some convenient features for saving files with "
+#~ "extensions:<br /><ol><li>Any extension specified in the <b>%1</b> text "
+#~ "area will be updated if you change the file type to save in.<br /><br /></"
+#~ "li><li>If no extension is specified in the <b>%2</b> text area when you "
+#~ "click <b>Save</b>, %3 will be added to the end of the filename (if the "
+#~ "filename does not already exist). This extension is based on the file "
+#~ "type that you have chosen to save in.<br /><br />If you do not want KDE "
+#~ "to supply an extension for the filename, you can either turn this option "
+#~ "off or you can suppress it by adding a period (.) to the end of the "
+#~ "filename (the period will be automatically removed).</li></ol>If unsure, "
+#~ "keep this option enabled as it makes your files more manageable."
+#~ msgstr ""
+#~ "Opcja udostępnia kilka cech pożytecznych dla zachowywania plików z "
+#~ "rozszerzeniami: <br /> <ol><li>Każde rozszerzenie określone w polu "
+#~ "tekstowym <b>%1</b> będzie uaktualnione, jeśli zmienisz typ pliku.<br /"
+#~ "><br /></li><li>Jeśli nie określono rozszerzenia w polu tekstowym <b>%2</"
+#~ "b> kiedy klikniesz <b>Zapisz</b>, %3 zostanie dodane na końcu nazwy pliku "
+#~ "(o ile plik o tej nazwie nie istnieje). Rozszerzenie jest określone na "
+#~ "podstawie typu pliku, jaki wybrałeś do zapisania. <br /><br />Jeśli nie "
+#~ "chcesz, by KDE dodawało rozszerzenie do nazwy pliku możesz albo wyłączyć "
+#~ "opcję, albo dodać kropkę (.) na końcu nazwy pliku (kropka będzie "
+#~ "automatycznie usunięta).</li></ol> Jeśli nie jesteś pewien, włącz opcję, "
+#~ "w ten sposób pliki będą łatwiejsze do zarządzania."
+
+#~ msgid ""
+#~ "<qt>This button allows you to bookmark specific locations. Click on this "
+#~ "button to open the bookmark menu where you may add, edit or select a "
+#~ "bookmark.<br /><br />These bookmarks are specific to the file dialog, but "
+#~ "otherwise operate like bookmarks elsewhere in KDE.</qt>"
+#~ msgstr ""
+#~ "<qt>Ten przycisk pozwala dodać zakładkę do aktualnej lokalizacji. "
+#~ "Naciśnięcie przycisku włączy menu zakładek, pozwalające na dodawanie, "
+#~ "modyfikację i wybór zakładek.<br /><br /> Zakładki są przypisane do okna "
+#~ "wyboru plików, ale poza tym działają tak, jak zwykłe zakładki w KDE.</qt>"
+
+#~ msgid "Sorry"
+#~ msgstr "Przepraszamy"
+
+#~ msgid "<qt>The template file <b>%1</b> does not exist.</qt>"
+#~ msgstr "<qt>Plik szablonu <b>%1</b> nie istnieje.</qt>"
+
+#~ msgctxt "@action:button"
+#~ msgid "Create directory"
+#~ msgstr "Utwórz katalog"
+
+#~ msgctxt "@action:button"
+#~ msgid "Enter a different name"
+#~ msgstr "Podaj inną nazwę"
+
+#~ msgid "Create hidden directory?"
+#~ msgstr "Utworzyć ukryty katalog?"
+
+#~ msgid ""
+#~ "The name \"%1\" starts with a dot, so the directory will be hidden by "
+#~ "default."
+#~ msgstr ""
+#~ "Nazwa \"%1\" zaczyna się od kropki, więc katalog będzie domyślnie ukryty."
+
+#~ msgid "Do not ask again"
+#~ msgstr "Nie pytaj ponownie"
+
+#~ msgid "File name:"
+#~ msgstr "Nazwa pliku:"
+
+#~ msgid "Create Symlink"
+#~ msgstr "Utwórz jako dowiązanie symboliczne"
+
+#~ msgid "Create link to URL"
+#~ msgstr "Stwórz link do URL"
+
+#~ msgctxt "@item:inmenu Create New"
+#~ msgid "%1"
+#~ msgstr "%1"
+
+#~ msgid ""
+#~ "Basic links can only point to local files or directories.\n"
+#~ "Please use \"Link to Location\" for remote URLs."
+#~ msgstr ""
+#~ "Standardowe dowiązania mogą wskazywać tylko na lokalne pliki lub "
+#~ "katalogi.\n"
+#~ "Aby utworzyć dowiązanie do zdalnego adresu trzeba użyć \"Dowiązanie do "
+#~ "lokalizacji\"."
+
+#~ msgid "Create New"
+#~ msgstr "Utwórz nowy"
+
+#~ msgid "Link to Device"
+#~ msgstr "Dowiązanie do urządzenia"
+
+#~ msgctxt "Default name for a new folder"
+#~ msgid "New Folder"
+#~ msgstr "Nowy katalog"
+
+#~ msgid ""
+#~ "Create new folder in:\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Utwórz nowy katalog w:\n"
+#~ "%1"
+
+#~ msgid "Copy"
+#~ msgstr "Kopiuj"
+
+#~ msgid "Paste"
+#~ msgstr "Wklej"
+
+#~ msgid "Edit"
+#~ msgstr "Edytuj"
+
+#~ msgid "Navigate"
+#~ msgstr "Nawiguj"
+
+#~ msgid "Show Full Path"
+#~ msgstr "Pokaż pełną ścieżkę"
+
+#~ msgid "Custom Path"
+#~ msgstr "Własna ścieżka"
+
+#~ msgctxt "@action:inmenu"
+#~ msgid "More"
+#~ msgstr "Więcej"
+
+#~ msgctxt "@item:inmenu"
+#~ msgid "Devices"
+#~ msgstr "Urządzenia"
+
+#~ msgctxt "@item:inmenu"
+#~ msgid "Subversion"
+#~ msgstr "Subversion"
+
+#~ msgctxt "@item:inmenu"
+#~ msgid "Other"
+#~ msgstr "Inne"
+
+#~ msgid "Click for Location Navigation"
+#~ msgstr "Kliknij w celu nawigacji po lokalizacjach"
+
+#~ msgid "Click to Edit Location"
+#~ msgstr "Kliknij w celu edycji lokalizacji"
+
+#~ msgid "Setting ACL for %1"
+#~ msgstr "Ustawianie ACL dla %1"
+
+#~ msgid ""
+#~ "Could not change permissions for\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Nie można zmienić praw do\n"
+#~ "%1"
+
+#~ msgid "No Media inserted or Media not recognized."
+#~ msgstr "Nośnik nie został włożony lub nie został rozpoznany."
+
+#~ msgid "\"vold\" is not running."
+#~ msgstr "\"vold\" nie jest uruchomiony."
+
+#~ msgid "Could not find program \"mount\""
+#~ msgstr "Nie można znaleźć programu \"mount\""
+
+#~ msgid "mounting is not supported by wince."
+#~ msgstr "montowanie nie jest obsługiwane przez wince."
+
+#~ msgid "Could not find program \"umount\""
+#~ msgstr "Nie można znaleźć programu \"umount\""
+
+#~ msgid "unmounting is not supported by wince."
+#~ msgstr "odmontowanie nie jest wspierane przez wince."
+
+#~ msgid "Cannot copy file from %1 to %2. (Errno: %3)"
+#~ msgstr "Nie można skopiować pliku z %1 do %2. (Błąd: %3)"
+
+#~ msgid "No media in device for %1"
+#~ msgstr "Brak nośnika w urządzeniu %1"
+
+#~ msgid "Could not get user id for given user name %1"
+#~ msgstr "Nie można pobrać identyfikatora użytkownika dla danej nazwy %1"
+
+#~ msgid "Could not get group id for given group name %1"
+#~ msgstr "Nie można pobrać identyfikatora grupy dla danej nazwy %1"
+
+#~ msgid "Opening connection to host %1"
+#~ msgstr "Otwarcie połączenia z serwerem %1"
+
+#~ msgid "Connected to host %1"
+#~ msgstr "Połączenie z serwerem %1"
+
+#~ msgid ""
+#~ "%1.\n"
+#~ "\n"
+#~ "Reason: %2"
+#~ msgstr ""
+#~ "%1.\n"
+#~ "\n"
+#~ "Przyczyna: %2"
+
+#~ msgid "Sending login information"
+#~ msgstr "Próba zalogowania się"
+
+#~ msgid ""
+#~ "Message sent:\n"
+#~ "Login using username=%1 and password=[hidden]\n"
+#~ "\n"
+#~ "Server replied:\n"
+#~ "%2\n"
+#~ "\n"
+#~ msgstr ""
+#~ "Wiadomość wysłana:\n"
+#~ "Logowanie użytkownika: %1 z hasłem=[ukrytym]\n"
+#~ "\n"
+#~ "Odpowiedź serwera:\n"
+#~ "%2\n"
+#~ "\n"
+
+#~ msgid "You need to supply a username and a password to access this site."
+#~ msgstr ""
+#~ "Trzeba podać nazwę użytkownika i hasło, by uzyskać dostęp do tej witryny."
+
+#~ msgid "Site:"
+#~ msgstr "Witryna:"
+
+#~ msgid "<b>%1</b>"
+#~ msgstr "<b>%1</b>"
+
+#~ msgid "Login OK"
+#~ msgstr "Logowanie w porządku"
+
+#~ msgid "Could not login to %1."
+#~ msgstr "Nie można się zalogować do %1."
+
+#~ msgid ""
+#~ "You need to supply a username and a password for the proxy server listed "
+#~ "below before you are allowed to access any sites."
+#~ msgstr ""
+#~ "Trzeba podać nazwę użytkownika i hasło dla serwera pośredniczącego "
+#~ "poniżej, zanim uzyska się dostęp do jakichkolwiek stron."
+
+#~ msgid "Proxy:"
+#~ msgstr "Pośrednik:"
+
+#~ msgid "<b>%1</b> at <b>%2</b>"
+#~ msgstr "<b>%1</b> na <b>%2</b>"
+
+#~ msgid "Proxy Authentication Failed."
+#~ msgstr "Uwierzytelnienie na serwerze pośredniczącym nie powiodło się."
+
+#~ msgid "No host specified."
+#~ msgstr "Nie podano serwera."
+
+#~ msgid "Otherwise, the request would have succeeded."
+#~ msgstr "W przeciwnym razie żądanie powiodłoby się."
+
+#~ msgctxt "request type"
+#~ msgid "retrieve property values"
+#~ msgstr "pobranie właściwości"
+
+#~ msgctxt "request type"
+#~ msgid "set property values"
+#~ msgstr "ustawienie właściwości"
+
+#~ msgctxt "request type"
+#~ msgid "create the requested folder"
+#~ msgstr "utworzenie podanego katalogu"
+
+#~ msgctxt "request type"
+#~ msgid "copy the specified file or folder"
+#~ msgstr "skopiowanie podanego pliku lub katalogu"
+
+#~ msgctxt "request type"
+#~ msgid "move the specified file or folder"
+#~ msgstr "przeniesienie podanego pliku lub katalogu"
+
+#~ msgctxt "request type"
+#~ msgid "search in the specified folder"
+#~ msgstr "wyszukiwanie w podanym katalogu"
+
+#~ msgctxt "request type"
+#~ msgid "lock the specified file or folder"
+#~ msgstr "zablokowanie podanego pliku lub katalogu"
+
+#~ msgctxt "request type"
+#~ msgid "unlock the specified file or folder"
+#~ msgstr "odblokowanie podanego pliku lub katalogu"
+
+#~ msgctxt "request type"
+#~ msgid "delete the specified file or folder"
+#~ msgstr "usunięcie podanego pliku lub katalogu"
+
+#~ msgctxt "request type"
+#~ msgid "query the server's capabilities"
+#~ msgstr "sprawdzenie możliwości serwera"
+
+#~ msgctxt "request type"
+#~ msgid "retrieve the contents of the specified file or folder"
+#~ msgstr "pobranie zawartości podanego pliku lub katalogu"
+
+#~ msgctxt "request type"
+#~ msgid "run a report in the specified folder"
+#~ msgstr "uruchomienie raportu w podanym katalogu"
+
+#~ msgctxt "%1: code, %2: request type"
+#~ msgid "An unexpected error (%1) occurred while attempting to %2."
+#~ msgstr "Wystąpił nieoczekiwany błąd (%1) podczas próby %2."
+
+#~ msgid "The server does not support the WebDAV protocol."
+#~ msgstr "Serwer nie obsługuje protokołu WebDAV."
+
+#~ msgctxt "%1: request type, %2: url"
+#~ msgid ""
+#~ "An error occurred while attempting to %1, %2. A summary of the reasons is "
+#~ "below."
+#~ msgstr ""
+#~ "Podczas próby uzyskania dostępu do %1 wystąpił błąd %2. Podsumowanie "
+#~ "przyczyn znajduje się poniżej."
+
+#~ msgctxt "%1: request type"
+#~ msgid "Access was denied while attempting to %1."
+#~ msgstr "Brak dostępu podczas próby %1."
+
+#~ msgid ""
+#~ "A resource cannot be created at the destination until one or more "
+#~ "intermediate collections (folders) have been created."
+#~ msgstr ""
+#~ "Nie można utworzyć zasobu w miejscu docelowym, zanim nie zostanie "
+#~ "utworzona jedna lub więcej kolekcji (katalogów) pośrednich."
+
+#~ msgid ""
+#~ "The server was unable to maintain the liveness of the properties listed "
+#~ "in the propertybehavior XML element or you attempted to overwrite a file "
+#~ "while requesting that files are not overwritten. %1"
+#~ msgstr ""
+#~ "Serwer nie mógł utrzymać właściwości wymienionych w elemencie "
+#~ "XMLpropertybehaviour albo usiłowałeś zastąpić plik, jednocześnie "
+#~ "zabraniając zastępowania plików. %1"
+
+#~ msgid "The requested lock could not be granted. %1"
+#~ msgstr "Żądana blokada nie została przydzielona. %1"
+
+#~ msgid "The server does not support the request type of the body."
+#~ msgstr "Serwer nie obsługuje żądań tego typu."
+
+#~ msgctxt "%1: request type"
+#~ msgid "Unable to %1 because the resource is locked."
+#~ msgstr "Próba %1 nie powiodła się, ponieważ zasób jest zablokowany."
+
+#~ msgid "This action was prevented by another error."
+#~ msgstr "Akcja przerwana innym błędem."
+
+#~ msgctxt "%1: request type"
+#~ msgid ""
+#~ "Unable to %1 because the destination server refuses to accept the file or "
+#~ "folder."
+#~ msgstr ""
+#~ "Próba %1 nie powiodła się, ponieważ serwer docelowy nie zaakceptował "
+#~ "pliku lub katalogu."
+
+#~ msgid ""
+#~ "The destination resource does not have sufficient space to record the "
+#~ "state of the resource after the execution of this method."
+#~ msgstr ""
+#~ "Docelowy zasób nie ma wystarczającej ilości miejsca do przechowania stanu "
+#~ "zasobu po wykonaniu tej metody."
+
+#~ msgid "The resource cannot be deleted."
+#~ msgstr "Nie można skasować tego zasobu."
+
+#~ msgctxt "request type"
+#~ msgid "upload %1"
+#~ msgstr "wysyłanie %1"
+
+#~ msgctxt "%1: response code, %2: request type"
+#~ msgid "An unexpected error (%1) occurred while attempting to %2."
+#~ msgstr "Wystąpił nieoczekiwany błąd (%1) podczas próby %2."
+
+#~ msgid "%1 contacted. Waiting for reply..."
+#~ msgstr "Połączono z %1. Oczekiwanie na odpowiedź..."
+
+#~ msgctxt "@info Security check on url being accessed"
+#~ msgid ""
+#~ "<p>You are about to log in to the site \"%1\" with the username \"%2\", "
+#~ "but the website does not require authentication. This may be an attempt "
+#~ "to trick you.</p><p>Is \"%1\" the site you want to visit?</p>"
+#~ msgstr ""
+#~ "<p>Masz zamiar zalogować się na stronie \"%1\" z nazwą użytkownika "
+#~ "\"%2\", ale strona nie wymaga uwierzytelnienia. To może być próba "
+#~ "oszustwa.</p><p>Czy \"%1\" jest stroną, którą chcesz odwiedzić?</p>"
+
+#~ msgctxt "@title:window"
+#~ msgid "Confirm Website Access"
+#~ msgstr "Potwierdzenie dostępu do strony internetowej"
+
+#~ msgid "Server processing request, please wait..."
+#~ msgstr "Serwer przetwarza żądanie, proszę czekać..."
+
+#~ msgid "Sending data to %1"
+#~ msgstr "Wysyłanie danych do %1"
+
+#~ msgid "Retrieving %1 from %2..."
+#~ msgstr "Pobieranie %1 z %2..."
+
+#~ msgid "Authentication Failed."
+#~ msgstr "Uwierzytelnianie nie powiodło się."
+
+#~ msgid "Authorization failed."
+#~ msgstr "Autoryzacja nie powiodła się."
+
+#~ msgid "Unknown Authorization method."
+#~ msgstr "Nieznana metoda autoryzacji."
+
+#~ msgid "KDE HTTP cache maintenance tool"
+#~ msgstr "KDE narzędzie do zarządzania buforem HTTP"
+
+#~ msgid "Empty the cache"
+#~ msgstr "Wyczyszczenie pamięci podręcznej"
+
+#~ msgid "Display information about cache file"
+#~ msgstr "Wyświetl informację o pliku podręcznym (cache)"
+
+#~ msgid "Cookie Alert"
+#~ msgstr "Zgłoszenie ciasteczka"
+
+#~ msgctxt "%2 hostname, %3 optional cross domain suffix (translated below)"
+#~ msgid ""
+#~ "<p>You received a cookie from<br/><b>%2%3</b><br/>Do you want to accept "
+#~ "or reject this cookie?</p>"
+#~ msgid_plural ""
+#~ "<p>You received %1 cookies from<br/><b>%2%3</b><br/>Do you want to accept "
+#~ "or reject these cookies?</p>"
+#~ msgstr[0] ""
+#~ "<p>Odebrałeś ciasteczko z<br/><b>%2%3</b><br/>Czy chcesz zaakceptować czy "
+#~ "odrzucić to ciasteczko?</p>"
+#~ msgstr[1] ""
+#~ "<p>Odebrałeś %1 ciasteczka z<br/><b>%2%3</b><br/>Czy chcesz zaakceptować "
+#~ "czy odrzucić te ciasteczka?</p>"
+#~ msgstr[2] ""
+#~ "<p>Odebrałeś %1 ciasteczek z<br/><b>%2%3</b><br/>Czy chcesz zaakceptować "
+#~ "czy odrzucić te ciasteczka?</p>"
+
+#~ msgctxt "@item:intext cross domain cookie"
+#~ msgid " [Cross Domain]"
+#~ msgstr " [Domena krzyżowa]"
+
+#~ msgid "Apply Choice To"
+#~ msgstr "Zastosuj wybór do"
+
+#~ msgid "&Only this cookie"
+#~ msgstr "&Tylko to ciasteczko"
+
+#~ msgid "&Only these cookies"
+#~ msgstr "Tylko t&e ciasteczka"
+
+#~ msgid ""
+#~ "Select this option to only accept or reject this cookie. You will be "
+#~ "prompted again if you receive another cookie."
+#~ msgstr ""
+#~ "Wybierz tą opcję tylko do zaakceptowania lub odrzucenia tego ciasteczka. "
+#~ "Zostaniesz zapytany ponownie, jeśli otrzymasz kolejne ciasteczko."
+
+#~ msgid "All cookies from this do&main"
+#~ msgstr "Wszystkie ciasteczka z tej &domeny"
+
+#~ msgid ""
+#~ "Select this option to accept or reject all cookies from this site. "
+#~ "Choosing this option will add a new policy for the site this cookie "
+#~ "originated from. This policy will be permanent until you manually change "
+#~ "it from the System Settings."
+#~ msgstr ""
+#~ "Wybór tej opcji spowoduje zaakceptowanie/odrzucenie wszystkich ciasteczek "
+#~ "z tej witryny/domeny. Polityka względem domeny, z której pochodzi "
+#~ "ciasteczko, zostanie zapamiętana. Nowe ustawienie można zmienić ręcznie w "
+#~ "Ustawieniach systemowych."
+
+#~ msgid "All &cookies"
+#~ msgstr "Wszystkie &ciasteczka"
+
+#~ msgid ""
+#~ "Select this option to accept/reject all cookies from anywhere. Choosing "
+#~ "this option will change the global cookie policy for all cookies until "
+#~ "you manually change it from the System Settings."
+#~ msgstr ""
+#~ "Wybór tej opcji spowoduje zaakceptowanie/odrzucenie wszystkich "
+#~ "ciasteczek, niezależnie od miejsca pochodzenia. Wybranie tej opcji zmieni "
+#~ "globalną politykę względem ciasteczek dla wszystkich ciasteczek do "
+#~ "momentu jej ręcznej zmiany w Ustawieniach systemowych. "
+
+#~ msgid "&Accept"
+#~ msgstr "&Akceptuj"
+
+#~ msgid "Accept for this &session"
+#~ msgstr "Akceptuj dla tej &sesji"
+
+#~ msgid "Accept cookie(s) until the end of the current session"
+#~ msgstr "Akceptuj ciasteczko(a) do końca bieżącej sesji"
+
+#~ msgid "&Reject"
+#~ msgstr "Od&rzuć"
+
+#~ msgid "See or modify the cookie information"
+#~ msgstr "Zobacz lub zmodyfikuj informacje o ciasteczku"
+
+#~ msgid "Cookie Details"
+#~ msgstr "Szczegóły ciasteczka"
+
+#~ msgid "Value:"
+#~ msgstr "Wartość:"
+
+#~ msgid "Expires:"
+#~ msgstr "Wygasa:"
+
+#~ msgid "Path:"
+#~ msgstr "Ścieżka:"
+
+#~ msgid "Domain:"
+#~ msgstr "Domena:"
+
+#~ msgid "Exposure:"
+#~ msgstr "Wygasa:"
+
+#~ msgctxt "Next cookie"
+#~ msgid "&Next >>"
+#~ msgstr "&Następne >>"
+
+#~ msgid "Show details of the next cookie"
+#~ msgstr "Pokaż szczegóły następnego ciasteczka"
+
+#~ msgid "Not specified"
+#~ msgstr "Nieokreślona"
+
+#~ msgid "End of Session"
+#~ msgstr "Koniec sesji"
+
+#~ msgid "Secure servers only"
+#~ msgstr "Tylko bezpieczne serwery"
+
+#~ msgid "Secure servers, page scripts"
+#~ msgstr "Bezpieczne serwery, skrypty stron"
+
+#~ msgid "Servers"
+#~ msgstr "Serwery"
+
+#~ msgid "Servers, page scripts"
+#~ msgstr "Serwery, skrypty stron"
+
+#~ msgid "HTTP Cookie Daemon"
+#~ msgstr "HTTP Cookie Daemon"
+
+#~ msgid "HTTP cookie daemon"
+#~ msgstr "Obsługa ciasteczek HTTP"
+
+#~ msgid "Shut down cookie jar"
+#~ msgstr "Wyłącz obsługę ciasteczek"
+
+#~ msgid "Remove cookies for domain"
+#~ msgstr "Usuń ciasteczka dla domeny"
+
+#~ msgid "Remove all cookies"
+#~ msgstr "Usuń wszystkie ciasteczka"
+
+#~ msgid "Reload configuration file"
+#~ msgstr "Ponownie odczytaj plik konfiguracyjny"
+
+#~ msgid "kio_metainfo"
+#~ msgstr "kio_metainfo"
+
+#~ msgid "No metainfo for %1"
+#~ msgstr "Brak metainformacji dla %1"
+
+#~ msgctxt "@title:window"
+#~ msgid "Add Bookmark"
+#~ msgstr "Dodaj zakładkę"
+
+#~ msgctxt "@label:textbox"
+#~ msgid "Name:"
+#~ msgstr "Nazwa:"
+
+#~ msgctxt "@label:textbox"
+#~ msgid "Location:"
+#~ msgstr "Lokalizacja:"
+
+#~ msgctxt "name of the container of all browser bookmarks"
+#~ msgid "Bookmarks"
+#~ msgstr "Zakładki"
+
+#~ msgid "Receiving corrupt data."
+#~ msgstr "Pobieranie uszkodzonych danych."
+
+#~ msgid "Owner"
+#~ msgstr "Właściciel"
+
+#~ msgid "Owning Group"
+#~ msgstr "Grupa właścicielska"
+
+#~ msgid "Others"
+#~ msgstr "Inni"
+
+#~ msgid "Mask"
+#~ msgstr "Maska"
+
+#~ msgid "Named User"
+#~ msgstr "Nazwany użytkownik"
+
+#~ msgid "Named Group"
+#~ msgstr "Nazwana grupa"
+
+#~ msgid "Edit Entry..."
+#~ msgstr "Zmień wpis..."
+
+#~ msgid "Delete Entry"
+#~ msgstr "Usuń wpis"
+
+#~ msgid " (Default)"
+#~ msgstr " (domyślne)"
+
+#~ msgid "Edit ACL Entry"
+#~ msgstr "Zmień wpis ACL"
+
+#~ msgid "Entry Type"
+#~ msgstr "Typ wpisu"
+
+#~ msgid "Default for new files in this folder"
+#~ msgstr "Domyślny dla nowych plików w tym katalogu"
+
+#~ msgid "Named user"
+#~ msgstr "Nazwany użytkownik"
+
+#~ msgid "Named group"
+#~ msgstr "Nazwana grupa"
+
+#~ msgid "User: "
+#~ msgstr "Użytkownik: "
+
+#~ msgid "Group: "
+#~ msgstr "Grupa: "
+
+#~ msgid "Type"
+#~ msgstr "Typ"
+
+#~ msgid "Name"
+#~ msgstr "Nazwa"
+
+#~ msgctxt "read permission"
+#~ msgid "r"
+#~ msgstr "r"
+
+#~ msgctxt "write permission"
+#~ msgid "w"
+#~ msgstr "w"
+
+#~ msgctxt "execute permission"
+#~ msgid "x"
+#~ msgstr "x"
+
+#~ msgid "Effective"
+#~ msgstr "Efektywne"
+
+#~ msgctxt "@label"
+#~ msgid "Add Comment..."
+#~ msgstr "Dodaj komentarz..."
+
+#~ msgctxt "@label"
+#~ msgid "Change..."
+#~ msgstr "Zmień..."
+
+#~ msgctxt "@title:window"
+#~ msgid "Change Comment"
+#~ msgstr "Zmiana komentarza"
+
+#~ msgctxt "@title:window"
+#~ msgid "Add Comment"
+#~ msgstr "Dodanie komentarza"
+
+#~ msgid "Device name"
+#~ msgstr "Nazwa urządzenia"
+
+#~ msgid "Encoding:"
+#~ msgstr "Kodowanie:"
+
+#~ msgid "Open"
+#~ msgstr "Otwórz"
+
+#~ msgid "Save As"
+#~ msgstr "Zapisz jako"
+
+#~ msgid "*|All files"
+#~ msgstr "*|Wszystkie pliki"
+
+#~ msgctxt "@item:intable"
+#~ msgid "%1 item"
+#~ msgid_plural "%1 items"
+#~ msgstr[0] "%1 element"
+#~ msgstr[1] "%1 elementy"
+#~ msgstr[2] "%1 elementów"
+
+#~ msgctxt "@label"
+#~ msgid "Comment"
+#~ msgstr "Komentarz"
+
+#~ msgctxt "@label"
+#~ msgid "Modified"
+#~ msgstr "Zmodyfikowany"
+
+#~ msgctxt "@label"
+#~ msgid "Owner"
+#~ msgstr "Właściciel"
+
+#~ msgctxt "@label"
+#~ msgid "Permissions"
+#~ msgstr "Prawa dostępu"
+
+#~ msgctxt "@label"
+#~ msgid "Rating"
+#~ msgstr "Ocena"
+
+#~ msgctxt "@label"
+#~ msgid "Size"
+#~ msgstr "Rozmiar"
+
+#~ msgctxt "@label"
+#~ msgid "Tags"
+#~ msgstr "Znaczniki"
+
+#~ msgctxt "@label"
+#~ msgid "Total Size"
+#~ msgstr "Całkowity rozmiar"
+
+#~ msgctxt "@label"
+#~ msgid "Type"
+#~ msgstr "Typ"
+
+#~ msgid "KFileMetaDataReader"
+#~ msgstr "KFileMetaDataReader"
+
+#~ msgid "KFileMetaDataReader can be used to read metadata from a file"
+#~ msgstr "KFileMetaDataReader może być użyty do odczytu metadanych z pliku"
+
+#~ msgid "(C) 2011, Peter Penz"
+#~ msgstr "(C) 2011, Peter Penz"
+
+#~ msgid "Peter Penz"
+#~ msgstr "Peter Penz"
+
+#~ msgid "Current maintainer"
+#~ msgstr "Obecny opiekun"
+
+#~ msgid "Only the meta data that is part of the file is read"
+#~ msgstr "Odczytywana jest tylko metadana, która jest częścią pliku"
+
+#~ msgid "List of URLs where the meta-data should be read from"
+#~ msgstr "Lista adresów URL, z których meta-dana powinna być odczytywana"
+
+#~ msgid "<Error>"
+#~ msgstr "<Błąd>"
+
+#~ msgid "&Share"
+#~ msgstr "&Udostępnij"
+
+#~ msgid "Only folders in your home folder can be shared."
+#~ msgstr "Możesz udostępniać tylko katalogi w Twoim katalogu domowym."
+
+#~ msgid "Not shared"
+#~ msgstr "Nieudostępniany"
+
+#~ msgid "Shared"
+#~ msgstr "Udostępniany"
+
+#~ msgid ""
+#~ "Sharing this folder makes it available under Linux/UNIX (NFS) and Windows "
+#~ "(Samba)."
+#~ msgstr ""
+#~ "Udostępnienie tego katalogu spowoduje, że będzie od dostępny spod Linuksa/"
+#~ "Uniksa (NFS) i Windows (Samba)."
+
+#~ msgid "You can also reconfigure file sharing authorization."
+#~ msgstr "Możesz także skonfigurować autoryzację dzielenia plików."
+
+#~ msgid "Configure File Sharing..."
+#~ msgstr "Konfiguracja współdzielenia plików..."
+
+#~ msgid ""
+#~ "Error running 'filesharelist'. Check if installed and in $PATH or /usr/"
+#~ "sbin."
+#~ msgstr ""
+#~ "Błąd podczas uruchamiania 'filesharelist'. Sprawdź, czy program jest "
+#~ "zainstalowany i znajduje się na ścieżce."
+
+#~ msgid "You need to be authorized to share folders."
+#~ msgstr "Musisz mieć uprawnienia do udostępniania katalogów."
+
+#~ msgid "File sharing is disabled."
+#~ msgstr "Udostępnianie plików jest wyłączone."
+
+#~ msgid "Sharing folder '%1' failed."
+#~ msgstr "Udostępnianie katalogu '%1' nie powiodło się."
+
+#~ msgid ""
+#~ "An error occurred while trying to share folder '%1'. Make sure that the "
+#~ "Perl script 'fileshareset' is set suid root."
+#~ msgstr ""
+#~ "Podczas próby udostępnienia katalogu '%1' wystąpił błąd. Proszę "
+#~ "sprawdzić, czy skrypt perlowy 'fileshareset' ma ustawioną flagę suid root."
+
+#~ msgid "Unsharing folder '%1' failed."
+#~ msgstr "Zakończenie udostępniania katalogu '%1' nie powiodło się."
+
+#~ msgid ""
+#~ "An error occurred while trying to unshare folder '%1'. Make sure that the "
+#~ "Perl script 'fileshareset' is set suid root."
+#~ msgstr ""
+#~ "Podczas próby zakończenia udostępnienia katalogu '%1' wystąpił błąd. "
+#~ "Proszę sprawdzić, czy skrypt perlowy 'fileshareset' ma ustawioną flagę "
+#~ "suid root."
+
+#~ msgid "Select Icon"
+#~ msgstr "Wybierz ikonę"
+
+#~ msgid "Icon Source"
+#~ msgstr "Źródło ikony"
+
+#~ msgid "S&ystem icons:"
+#~ msgstr "Ikony &systemowe:"
+
+#~ msgid "O&ther icons:"
+#~ msgstr "&Inne ikony:"
+
+#~ msgid "&Browse..."
+#~ msgstr "&Przeglądaj..."
+
+#~ msgid "&Search:"
+#~ msgstr "&Znajdź:"
+
+#~ msgid "Search interactively for icon names (e.g. folder)."
+#~ msgstr "Szukaj interaktywnie nazw ikon (np. folderu)."
+
+#~ msgid "Actions"
+#~ msgstr "Działania"
+
+#~ msgid "Animations"
+#~ msgstr "Animacje"
+
+#~ msgid "Applications"
+#~ msgstr "Programy"
+
+#~ msgid "Categories"
+#~ msgstr "Kategorie"
+
+#~ msgid "Devices"
+#~ msgstr "Urządzenia"
+
+#~ msgid "Emblems"
+#~ msgstr "Symbole"
+
+#~ msgid "Emotes"
+#~ msgstr "Emotikony"
+
+#~ msgid "Filesystems"
+#~ msgstr "System plików"
+
+#~ msgid "International"
+#~ msgstr "Międzynarodowe"
+
+#~ msgid "Mimetypes"
+#~ msgstr "Typy MIME"
+
+#~ msgid "Places"
+#~ msgstr "Szybki dostęp"
+
+#~ msgid "Status"
+#~ msgstr "Stan"
+
+#~ msgid "*.png *.xpm *.svg *.svgz|Icon Files (*.png *.xpm *.svg *.svgz)"
+#~ msgstr "*.png *.xpm *.svg *.svgz|Pliki ikon (*.png *.xpm *.svg *.svgz)"
+
+#~ msgctxt "@title:window"
+#~ msgid "Configure Shown Data"
+#~ msgstr "Konfiguracja pokazywanych danych"
+
+#~ msgctxt "@label::textbox"
+#~ msgid "Select which data should be shown:"
+#~ msgstr "Konfiguracja widocznych danych:"
+
+#~ msgctxt "@action:button"
+#~ msgid "Configure..."
+#~ msgstr "Konfiguruj..."
+
+#~ msgctxt "@title:tab"
+#~ msgid "Information"
+#~ msgstr "Informacje"
+
+#~ msgctxt "@label creation date"
+#~ msgid "Created"
+#~ msgstr "Utworzony"
+
+#~ msgctxt "@label file content size"
+#~ msgid "Size"
+#~ msgstr "Rozmiar"
+
+#~ msgctxt "@label file depends from"
+#~ msgid "Depends"
+#~ msgstr "Zależy od"
+
+#~ msgctxt "@label"
+#~ msgid "Description"
+#~ msgstr "Opis"
+
+#~ msgctxt "@label Software used to generate content"
+#~ msgid "Generator"
+#~ msgstr "Generator"
+
+#~ msgctxt ""
+#~ "@label see http://www.semanticdesktop.org/ontologies/2007/01/19/"
+#~ "nie#hasPart"
+#~ msgid "Has Part"
+#~ msgstr "Ma część"
+
+#~ msgctxt ""
+#~ "@label see http://www.semanticdesktop.org/ontologies/2007/01/19/"
+#~ "nie#hasLogicalPart"
+#~ msgid "Has Logical Part"
+#~ msgstr "Posiada części logiczne"
+
+#~ msgctxt "@label parent directory"
+#~ msgid "Part of"
+#~ msgstr "Należy do"
+
+#~ msgctxt "@label"
+#~ msgid "Keyword"
+#~ msgstr "Słowo kluczowe"
+
+#~ msgctxt "@label modified date of file"
+#~ msgid "Modified"
+#~ msgstr "Zmodyfikowany"
+
+#~ msgctxt "@label"
+#~ msgid "MIME Type"
+#~ msgstr "Typ MIME"
+
+#~ msgctxt "@label"
+#~ msgid "Content"
+#~ msgstr "Zawartość"
+
+#~ msgctxt "@label"
+#~ msgid "Related To"
+#~ msgstr "Odniesione do"
+
+#~ msgctxt "@label"
+#~ msgid "Subject"
+#~ msgstr "Temat"
+
+#~ msgctxt "@label music title"
+#~ msgid "Title"
+#~ msgstr "Tytuł"
+
+#~ msgctxt "@label file URL"
+#~ msgid "Location"
+#~ msgstr "Położenie"
+
+#~ msgctxt "@label"
+#~ msgid "Creator"
+#~ msgstr "Autor"
+
+#~ msgctxt "@label"
+#~ msgid "Average Bitrate"
+#~ msgstr "Średnia prędkość bitowa"
+
+#~ msgctxt "@label"
+#~ msgid "Channels"
+#~ msgstr "Kanały"
+
+#~ msgctxt "@label number of characters"
+#~ msgid "Characters"
+#~ msgstr "Znaki"
+
+#~ msgctxt "@label"
+#~ msgid "Codec"
+#~ msgstr "Kodek"
+
+#~ msgctxt "@label"
+#~ msgid "Color Depth"
+#~ msgstr "Głębia koloru"
+
+#~ msgctxt "@label"
+#~ msgid "Duration"
+#~ msgstr "Czas trwania"
+
+#~ msgctxt "@label"
+#~ msgid "Filename"
+#~ msgstr "Nazwa pliku"
+
+#~ msgctxt "@label"
+#~ msgid "Hash"
+#~ msgstr "Hasz"
+
+#~ msgctxt "@label"
+#~ msgid "Height"
+#~ msgstr "Wysokość"
+
+#~ msgctxt "@label"
+#~ msgid "Interlace Mode"
+#~ msgstr "Tryb przeplotu"
+
+#~ msgctxt "@label number of lines"
+#~ msgid "Lines"
+#~ msgstr "Wiersze"
+
+#~ msgctxt "@label"
+#~ msgid "Programming Language"
+#~ msgstr "Język programowania"
+
+#~ msgctxt "@label"
+#~ msgid "Sample Rate"
+#~ msgstr "Prędkość próbkowania"
+
+#~ msgctxt "@label"
+#~ msgid "Width"
+#~ msgstr "Szerokość"
+
+#~ msgctxt "@label number of words"
+#~ msgid "Words"
+#~ msgstr "Słowa"
+
+#~ msgctxt "@label EXIF aperture value"
+#~ msgid "Aperture"
+#~ msgstr "Apertura"
+
+#~ msgctxt "@label EXIF"
+#~ msgid "Exposure Bias Value"
+#~ msgstr "Odchylenie ekspozycji"
+
+#~ msgctxt "@label EXIF"
+#~ msgid "Exposure Time"
+#~ msgstr "Czas ekspozycji"
+
+#~ msgctxt "@label EXIF"
+#~ msgid "Flash"
+#~ msgstr "Lampa błyskowa"
+
+#~ msgctxt "@label EXIF"
+#~ msgid "Focal Length"
+#~ msgstr "Ogniskowa"
+
+#~ msgctxt "@label EXIF"
+#~ msgid "Focal Length 35 mm"
+#~ msgstr "Ogniskowa 35 mm"
+
+#~ msgctxt "@label EXIF"
+#~ msgid "ISO Speed Ratings"
+#~ msgstr "Prędkości ISO"
+
+#~ msgctxt "@label EXIF"
+#~ msgid "Make"
+#~ msgstr "Producent aparatu"
+
+#~ msgctxt "@label EXIF"
+#~ msgid "Metering Mode"
+#~ msgstr "Tryb pomiaru"
+
+#~ msgctxt "@label EXIF"
+#~ msgid "Model"
+#~ msgstr "Model"
+
+#~ msgctxt "@label EXIF"
+#~ msgid "Orientation"
+#~ msgstr "Orientacja"
+
+#~ msgctxt "@label EXIF"
+#~ msgid "White Balance"
+#~ msgstr "Balans bieli"
+
+#~ msgctxt "@label video director"
+#~ msgid "Director"
+#~ msgstr "Reżyser"
+
+#~ msgctxt "@label music genre"
+#~ msgid "Genre"
+#~ msgstr "Rodzaj"
+
+#~ msgctxt "@label music album"
+#~ msgid "Album"
+#~ msgstr "Album"
+
+#~ msgctxt "@label"
+#~ msgid "Performer"
+#~ msgstr "Wykonawca"
+
+#~ msgctxt "@label"
+#~ msgid "Release Date"
+#~ msgstr "Data wydania"
+
+#~ msgctxt "@label music track number"
+#~ msgid "Track"
+#~ msgstr "Ścieżka"
+
+#~ msgctxt "@label resource created time"
+#~ msgid "Resource Created"
+#~ msgstr "Zasób utworzono"
+
+#~ msgctxt "@label"
+#~ msgid "Sub Resource"
+#~ msgstr "Pod-zasób"
+
+#~ msgctxt "@label resource last modified"
+#~ msgid "Resource Modified"
+#~ msgstr "Zasób zmodyfikowano"
+
+#~ msgctxt "@label"
+#~ msgid "Numeric Rating"
+#~ msgstr "Ocena numeryczna"
+
+#~ msgctxt "@label"
+#~ msgid "Copied From"
+#~ msgstr "Skopiowano z"
+
+#~ msgctxt "@label"
+#~ msgid "First Usage"
+#~ msgstr "Pierwsze użycie"
+
+#~ msgctxt "@label"
+#~ msgid "Last Usage"
+#~ msgstr "Ostatnie użycie"
+
+#~ msgctxt "@label"
+#~ msgid "Usage Count"
+#~ msgstr "Licznik użyć"
+
+#~ msgctxt "@label"
+#~ msgid "Unix File Group"
+#~ msgstr "Grupa pliku Unix"
+
+#~ msgctxt "@label"
+#~ msgid "Unix File Mode"
+#~ msgstr "Tryb pliku Unix"
+
+#~ msgctxt "@label"
+#~ msgid "Unix File Owner"
+#~ msgstr "Właściciel pliku Unix"
+
+#~ msgctxt "@label file type"
+#~ msgid "Type"
+#~ msgstr "Typ"
+
+#~ msgctxt "@label Number of fuzzy translations"
+#~ msgid "Fuzzy Translations"
+#~ msgstr "Tłumaczenia niepewne"
+
+#~ msgctxt "@label Name of last translator"
+#~ msgid "Last Translator"
+#~ msgstr "Ostatni tłumacz"
+
+#~ msgctxt "@label Number of obsolete translations"
+#~ msgid "Obsolete Translations"
+#~ msgstr "Tłumaczenia przestarzałe"
+
+#~ msgctxt "@label"
+#~ msgid "Translation Source Date"
+#~ msgstr "Źródło tłumaczenia"
+
+#~ msgctxt "@label Number of total translations"
+#~ msgid "Total Translations"
+#~ msgstr "Tłumaczenia razem"
+
+#~ msgctxt "@label Number of translated strings"
+#~ msgid "Translated"
+#~ msgstr "Przetłumaczone"
+
+#~ msgctxt "@label"
+#~ msgid "Translation Date"
+#~ msgstr "Data tłumaczenia"
+
+#~ msgctxt "@label Number of untranslated strings"
+#~ msgid "Untranslated"
+#~ msgstr "Nieprzetłumaczone"
+
+#~ msgid "Known Applications"
+#~ msgstr "Znane programy"
+
+#~ msgid "Open With"
+#~ msgstr "Otwórz za pomocą"
+
+#~ msgid ""
+#~ "<qt>Select the program that should be used to open <b>%1</b>. If the "
+#~ "program is not listed, enter the name or click the browse button.</qt>"
+#~ msgstr ""
+#~ "<qt>Proszę wybrać program, który powinien otworzyć <b>%1</b>. Jeżeli "
+#~ "program nie jest zamieszczony na liście, proszę wpisać jego nazwę lub "
+#~ "wcisnąć przycisk przeglądania.</qt>"
+
+#~ msgid ""
+#~ "Choose the name of the program with which to open the selected files."
+#~ msgstr "Wybierz program do otwarcia wybranych plików."
+
+#~ msgid "Choose Application for %1"
+#~ msgstr "Wybierz program dla %1"
+
+#~ msgid ""
+#~ "<qt>Select the program for the file type: <b>%1</b>. If the program is "
+#~ "not listed, enter the name or click the browse button.</qt>"
+#~ msgstr ""
+#~ "<qt>Proszę wybrać program dla typu pliku: <b>%1</b>. Jeżeli program nie "
+#~ "jest na liście, proszę wpisać jego nazwę lub wcisnąć przycisk "
+#~ "przeglądania.</qt>"
+
+#~ msgid "Choose Application"
+#~ msgstr "Wybierz program"
+
+#~ msgid ""
+#~ "<qt>Select a program. If the program is not listed, enter the name or "
+#~ "click the browse button.</qt>"
+#~ msgstr ""
+#~ "<qt>Proszę wybrać program. Jeżeli programu nie ma na liście, proszę "
+#~ "wpisać jego nazwę lub wcisnąć przycisk przeglądania.</qt>"
+
+#~ msgid ""
+#~ "Following the command, you can have several place holders which will be "
+#~ "replaced with the actual values when the actual program is run:\n"
+#~ "%f - a single file name\n"
+#~ "%F - a list of files; use for applications that can open several local "
+#~ "files at once\n"
+#~ "%u - a single URL\n"
+#~ "%U - a list of URLs\n"
+#~ "%d - the directory of the file to open\n"
+#~ "%D - a list of directories\n"
+#~ "%i - the icon\n"
+#~ "%m - the mini-icon\n"
+#~ "%c - the comment"
+#~ msgstr ""
+#~ "Po poleceniu możesz umieścić kilka atomów, które zostaną zmienione na "
+#~ "właściwe wartości w czasie uruchomienia programu:\n"
+#~ "%f - nazwa pojedynczego pliku\n"
+#~ "%F - lista plików, użyj dla programów, które mogą otworzyć kilka "
+#~ "lokalnych plików naraz\n"
+#~ "%u - pojedynczy URL\n"
+#~ "%U - lista URL-i\n"
+#~ "%d - katalog pliku do otwarcia\n"
+#~ "%D - lista katalogów\n"
+#~ "%i - ikona\n"
+#~ "%m - mała ikona\n"
+#~ "%c - komentarz"
+
+#~ msgid "Run in &terminal"
+#~ msgstr "Uruchom w &terminalu"
+
+#~ msgid "&Do not close when command exits"
+#~ msgstr "&Nie zamykaj po zakończeniu polecenia"
+
+#~ msgid "&Remember application association for this type of file"
+#~ msgstr "&Zapamiętaj program skojarzony z tym typem pliku"
+
+#~ msgid ""
+#~ "Could not extract executable name from '%1', please type a valid program "
+#~ "name."
+#~ msgstr ""
+#~ "Nie można znaleźć nazwy pliku wykonywalnego w \"%1\". Proszę podać "
+#~ "poprawną nazwę programu."
+
+#~ msgid "'%1' not found, please type a valid program name."
+#~ msgstr "Nie można znaleźć '%1'. Proszę podać poprawną nazwę programu."
+
+#~ msgid "P&review"
+#~ msgstr "Pod&gląd"
+
+#~ msgctxt ""
+#~ "@title:group Title of a group that lets the user choose options about the "
+#~ "terminal when launching a program"
+#~ msgid "Terminal"
+#~ msgstr "Terminal"
+
+#~ msgid ""
+#~ "Check this option if the application you want to run is a text mode "
+#~ "application or if you want the information that is provided by the "
+#~ "terminal emulator window."
+#~ msgstr ""
+#~ "Zaznacz opcję jeśli program, który chcesz uruchomić działa w trybie "
+#~ "tekstowym lub jeśli chcesz uzyskać informację z okna emulatora terminala."
+
+#~ msgid "&Run in terminal"
+#~ msgstr "Uruchom &w terminalu"
+
+#~ msgid "&Terminal options:"
+#~ msgstr "Opcje &terminala:"
+
+#~ msgid ""
+#~ "Check this option if the text mode application offers relevant "
+#~ "information on exit. Keeping the terminal emulator open allows you to "
+#~ "retrieve this information."
+#~ msgstr ""
+#~ "Zaznacz opcję jeśli program trybu tekstowego podaje ważne informacje przy "
+#~ "wyjściu. Zachowanie otwartego emulatora terminala pozwala na uzyskanie "
+#~ "tych informacji."
+
+#~ msgid "Do not &close when command exits"
+#~ msgstr "Nie &zamykaj po zakończeniu polecenia"
+
+#~ msgctxt ""
+#~ "@title:group Title of a group that lets the user choose which user to use "
+#~ "when launching a program"
+#~ msgid "User"
+#~ msgstr "Użytkownik"
+
+#~ msgid ""
+#~ "Check this option if you want to run this application with a different "
+#~ "user id. Every process has a different user id associated with it. This "
+#~ "id code determines file access and other permissions. The password of the "
+#~ "user is required to use this option."
+#~ msgstr ""
+#~ "Zaznacz opcję, jeśli chcesz uruchomić program z prawami innego "
+#~ "użytkownika. Każdy proces ma przypisany odpowiedni identyfikator "
+#~ "użytkownika. Określa on m. in. prawa dostępu do plików. Do użycia tej "
+#~ "opcji wymagane jest hasło użytkownika o danym identyfikatorze."
+
+#~ msgid "Ru&n as a different user"
+#~ msgstr "Uruchom jako &inny użytkownik"
+
+#~ msgid "Enter the user name you want to run the application as."
+#~ msgstr "Podaj nazwę użytkownika pod jaką chcesz uruchomić program."
+
+#~ msgid "&Username:"
+#~ msgstr "&Użytkownik:"
+
+#~ msgid "Enter the user name you want to run the application as here."
+#~ msgstr ""
+#~ "Podaj nazwę użytkownika, z którego uprawnieniami chcesz uruchomić program."
+
+#~ msgctxt ""
+#~ "@title:group Title of a group that lets the user choose options regargin "
+#~ "program startup"
+#~ msgid "Startup"
+#~ msgstr "Start"
+
+#~ msgid ""
+#~ "Check this option if you want to make clear that your application has "
+#~ "started. This visual feedback may appear as a busy cursor or in the "
+#~ "taskbar."
+#~ msgstr ""
+#~ "Zaznacz opcję jeśli chcesz, by było wyraźnie widoczne, że program został "
+#~ "uruchomiony. Wizualne powiadomienie o uruchomieniu może pojawić się jako "
+#~ "specjalny kursor lub na pasku zadań."
+
+#~ msgid "Enable &launch feedback"
+#~ msgstr "Włącz powiadomienie o &uruchomieniu"
+
+#~ msgid ""
+#~ "Check this option if you want to have a system tray handle for your "
+#~ "application."
+#~ msgstr ""
+#~ "Wybierz tę opcję, jeśli chcesz, by ten program był dostępny w tacce "
+#~ "systemowej."
+
+#~ msgid "&Place in system tray"
+#~ msgstr "Umieść na &tacce systemowej"
+
+#~ msgid "&D-Bus registration:"
+#~ msgstr "Rejestracja &D-Bus:"
+
+#~ msgid "None"
+#~ msgstr "Brak"
+
+#~ msgid "Multiple Instances"
+#~ msgstr "Wiele instancji"
+
+#~ msgid "Single Instance"
+#~ msgstr "Pojedyncza instancja"
+
+#~ msgid "Run Until Finished"
+#~ msgstr "Uruchomione do końca"
+
+#~ msgid ""
+#~ "Type the name you want to give to this application here. This application "
+#~ "will appear under this name in the applications menu and in the panel."
+#~ msgstr ""
+#~ "Podaj tu nazwę jaką chcesz nadać programowi. Pokaże się on z tą nazwą w "
+#~ "menu programów i w panelu."
+
+#~ msgid ""
+#~ "Type the description of this application, based on its use, here. "
+#~ "Examples: a dial up application (KPPP) would be \"Dial up tool\"."
+#~ msgstr ""
+#~ "Podaj tu opis programu, na podstawie zastosowania. Przykład: program do "
+#~ "łączenia z siecią przy pomocy dial-up (KPPP) to byłoby \"Narzędzie dial-up"
+#~ "\"."
+
+#~ msgid "&Description:"
+#~ msgstr "&Opis:"
+
+#~ msgid "Type any comment you think is useful here."
+#~ msgstr "Wpisz komentarz jaki uważasz za stosowny."
+
+#~ msgid "Comm&ent:"
+#~ msgstr "Kom&entarz:"
+
+#~ msgid ""
+#~ "Type the command to start this application here.\n"
+#~ "\n"
+#~ "Following the command, you can have several place holders which will be "
+#~ "replaced with the actual values when the actual program is run:\n"
+#~ "%f - a single file name\n"
+#~ "%F - a list of files; use for applications that can open several local "
+#~ "files at once\n"
+#~ "%u - a single URL\n"
+#~ "%U - a list of URLs\n"
+#~ "%d - the directory of the file to open\n"
+#~ "%D - a list of directories\n"
+#~ "%i - the icon\n"
+#~ "%m - the mini-icon\n"
+#~ "%c - the caption"
+#~ msgstr ""
+#~ "Po poleceniu możesz umieścić kilka atomów, które zostaną zmienione na "
+#~ "właściwe wartości w czasie uruchomienia programu:\n"
+#~ "%f - nazwa pojedynczego pliku\n"
+#~ "%F - lista plików, użyj dla programów, które mogą otworzyć kilka "
+#~ "lokalnych plików na raz\n"
+#~ "%u - pojedynczy URL\n"
+#~ "%U - lista URL-i\n"
+#~ "%d - katalog pliku do otwarcia\n"
+#~ "%D - lista katalogów\n"
+#~ "%i - ikona\n"
+#~ "%m - mała ikona\n"
+#~ "%c - tytuł"
+
+#~ msgid "Co&mmand:"
+#~ msgstr "Pole&cenie:"
+
+#~ msgid ""
+#~ "Click here to browse your file system in order to find the desired "
+#~ "executable."
+#~ msgstr ""
+#~ "Kliknij, by przeglądać system plików w poszukiwaniu szukanego programu."
+
+#~ msgid "Sets the working directory for your application."
+#~ msgstr "Ustawia katalog roboczy dla programu."
+
+#~ msgid "&Work path:"
+#~ msgstr "Katalog &roboczy:"
+
+#~ msgid ""
+#~ "<qt><p>This list should show the types of file that your application can "
+#~ "handle. This list is organized by <u>mimetypes</u>.</p>\n"
+#~ "<p>MIME, Multipurpose Internet (e)Mail Extension, is a standard protocol "
+#~ "for identifying the type of data based on filename extensions and "
+#~ "correspondent <u>mimetypes</u>. Example: the \"bmp\" part that comes "
+#~ "after the dot in flower.bmp indicates that it is a specific kind of "
+#~ "image, <u>image/x-bmp</u>. To know which application should open each "
+#~ "type of file, the system should be informed about the abilities of each "
+#~ "application to handle these extensions and mimetypes.</p>\n"
+#~ "<p>If you want to associate this application with one or more mimetypes "
+#~ "that are not in this list, click on the button <b>Add</b> below. If there "
+#~ "are one or more filetypes that this application cannot handle, you may "
+#~ "want to remove them from the list clicking on the button <b>Remove</b> "
+#~ "below.</p></qt>"
+#~ msgstr ""
+#~ "<qt> <p> Ta lista powinna pokazywać typy plików, które ten program może "
+#~ "obsługiwać. Lista jest uporządkowana według <u>typów MIME</u>.</p>\n"
+#~ "<p>MIME, Multipurpose Internet (e)Mail Extension, jest standardowym "
+#~ "protokołem do identyfikacji typów danych na podstawie rozszerzenia nazwy "
+#~ "pliku i odpowiedniego <u>typu MIME</u>. Przykład: \"bmp\" po kropce w "
+#~ "kwiat.bmp wskazuje, że jest to pewien rodzaj obrazka, <u>image/x-bmp</u>. "
+#~ "Żeby wiedzieć, który program powinien otwierać dany typ pliku system "
+#~ "powinien być poinformowany o umiejętnościach każdego programu do obsługi "
+#~ "rozszerzeń i typów MIME.</p> <p> Jeśli chcesz powiązać program z jednym "
+#~ "lub więcej typów MIME, których nie ma na tej liście kliknij przycisk "
+#~ "<b>Dodaj</b>. Jeśli jest jeden lub więcej typy MIME, których ten program "
+#~ "nie potrafi obsłużyć, być może będziesz chciał je usunąć przez kliknięcie "
+#~ "przycisku <b>Usuń</b>.</p></qt>"
+
+#~ msgid "&Supported file types:"
+#~ msgstr "Ob&sługiwane typy plików:"
+
+#~ msgid "Mimetype"
+#~ msgstr "Typy MIME"
+
+#~ msgid "Description"
+#~ msgstr "Opis"
+
+#~ msgid ""
+#~ "Click on this button if you want to add a type of file (mimetype) that "
+#~ "your application can handle."
+#~ msgstr ""
+#~ "Kliknij jeśli chcesz dodać typ plików (typ MIME), który ten program może "
+#~ "obsługiwać."
+
+#~ msgid "Add..."
+#~ msgstr "Dodaj..."
+
+#~ msgid ""
+#~ "If you want to remove a type of file (mimetype) that your application "
+#~ "cannot handle, select the mimetype in the list above and click on this "
+#~ "button."
+#~ msgstr ""
+#~ "Jeśli chcesz usunąć typ pliku (typ MIME), którego ten program nie potrafi "
+#~ "obsłużyć, wybierz typ MIME z listy powyżej i naciśnij ten przycisk."
+
+#~ msgid "Remove"
+#~ msgstr "Usuń"
+
+#~ msgid ""
+#~ "Click here to modify the way this application will run, launch feedback, "
+#~ "D-Bus options or to run it as a different user."
+#~ msgstr ""
+#~ "Kliknij, by zmienić sposób uruchomienia programu, zachowanie podczas "
+#~ "uruchamiania, opcje D-Bus lub uruchomić z prawami innego użytkownika."
+
+#~ msgid "Ad&vanced Options"
+#~ msgstr "Zaa&wansowane opcje"
+
+#~ msgid "Properties for %1"
+#~ msgstr "Właściwości dla %1"
+
+#~ msgid "Properties for 1 item"
+#~ msgid_plural "Properties for %1 Selected Items"
+#~ msgstr[0] "Właściwości %1 elementu"
+#~ msgstr[1] "Właściwości %1 elementów"
+#~ msgstr[2] "Właściwości %1 elementów"
+
+#~ msgctxt "@title:tab File properties"
+#~ msgid "&General"
+#~ msgstr "&Ogólne"
+
+#~ msgid "Type:"
+#~ msgstr "Typ:"
+
+#~ msgid "Create New File Type"
+#~ msgstr "Utwórz nowy typ pliku"
+
+#~ msgid "File Type Options"
+#~ msgstr "Opcje typu pliku"
+
+#~ msgid "Contents:"
+#~ msgstr "Zawartość:"
+
+#~ msgid "Size:"
+#~ msgstr "Rozmiar:"
+
+#~ msgid "Calculate"
+#~ msgstr "Oblicz"
+
+#~ msgid "Stop"
+#~ msgstr "Zatrzymaj"
+
+#~ msgid "Refresh"
+#~ msgstr "Odśwież"
+
+#~ msgid "Points to:"
+#~ msgstr "Wskazuje na:"
+
+#~ msgid "Created:"
+#~ msgstr "Utworzony:"
+
+#~ msgid "Modified:"
+#~ msgstr "Zmodyfikowany:"
+
+#~ msgid "Accessed:"
+#~ msgstr "Ostatnio otworzony:"
+
+#~ msgid "Mounted on:"
+#~ msgstr "Punkt montowania:"
+
+#~ msgid "Device usage:"
+#~ msgstr "Użycie urządzenia:"
+
+#~ msgctxt "Available space out of total partition size (percent used)"
+#~ msgid "%1 free of %2 (%3% used)"
+#~ msgstr "%1 wolnego z %2 (użyte %3%)"
+
+#~ msgid ""
+#~ "Calculating... %1 (%2)\n"
+#~ "%3, %4"
+#~ msgstr ""
+#~ "Obliczanie... %1 (%2)\n"
+#~ "%3, %4"
+
+#~ msgid "1 file"
+#~ msgid_plural "%1 files"
+#~ msgstr[0] "%1 plik"
+#~ msgstr[1] "%1 pliki"
+#~ msgstr[2] "%1 plików"
+
+#~ msgid "1 sub-folder"
+#~ msgid_plural "%1 sub-folders"
+#~ msgstr[0] "%1 katalog"
+#~ msgstr[1] "%1 katalogi"
+#~ msgstr[2] "%1 katalogów"
+
+#~ msgid "Calculating..."
+#~ msgstr "Obliczanie..."
+
+#~ msgid "At least %1"
+#~ msgstr "Przynajmniej %1"
+
+#~ msgid "The new file name is empty."
+#~ msgstr "Nowa nazwa pliku jest pusta."
+
+#~ msgid ""
+#~ "<qt>Could not save properties. You do not have sufficient access to write "
+#~ "to <b>%1</b>.</qt>"
+#~ msgstr ""
+#~ "<qt>Nie można zapisać właściwości. Brak odpowiednich uprawnień do zapisu "
+#~ "<b> %1</b>.</qt>"
+
+#~ msgid "Forbidden"
+#~ msgstr "Zabronione"
+
+#~ msgid "Can Read"
+#~ msgstr "Prawo do odczytu"
+
+#~ msgid "Can Read & Write"
+#~ msgstr "Prawo do zapisu i odczytu"
+
+#~ msgid "Can View Content"
+#~ msgstr "Może zobaczyć zawartość"
+
+#~ msgid "Can View & Modify Content"
+#~ msgstr "Może oglądać i zmieniać zawartość"
+
+#~ msgid "Can View Content & Read"
+#~ msgstr "Może oglądać zawartość i czytać"
+
+#~ msgid "Can View/Read & Modify/Write"
+#~ msgstr "Może oglądać/czytać i zmieniać/zapisywać"
+
+#~ msgid "&Permissions"
+#~ msgstr "&Prawa dostępu"
+
+#~ msgid "Access Permissions"
+#~ msgstr "Prawa dostępu"
+
+#~ msgid "This file is a link and does not have permissions."
+#~ msgid_plural "All files are links and do not have permissions."
+#~ msgstr[0] "Ten plik jest dowiązaniem i nie ma praw dostępu."
+#~ msgstr[1] "Wszystkie pliki są dowiązaniami i nie mają praw dostępu."
+#~ msgstr[2] "Wszystkie pliki są dowiązaniami i nie mają praw dostępu."
+
+#~ msgid "Only the owner can change permissions."
+#~ msgstr "Tylko właściciel może zmienić prawa."
+
+#~ msgid "O&wner:"
+#~ msgstr "&Właściciel:"
+
+#~ msgid "Specifies the actions that the owner is allowed to do."
+#~ msgstr "Określa akcje jakie może wykonywać właściciel."
+
+#~ msgid "Gro&up:"
+#~ msgstr "Gr&upa:"
+
+#~ msgid ""
+#~ "Specifies the actions that the members of the group are allowed to do."
+#~ msgstr "Określa działania jakie mogą podejmować członkowie grupy."
+
+#~ msgid "O&thers:"
+#~ msgstr "I&nni:"
+
+#~ msgid ""
+#~ "Specifies the actions that all users, who are neither owner nor in the "
+#~ "group, are allowed to do."
+#~ msgstr ""
+#~ "Określa działania jakie mogą podejmować użytkownicy nie będący ani "
+#~ "właścicielami, ani członkami grupy."
+
+#~ msgid "Only own&er can rename and delete folder content"
+#~ msgstr "Tylko właścici&el może zmienić nazwę lub zmienić zawartość katalogu"
+
+#~ msgid "Is &executable"
+#~ msgstr "Wy&konywalny"
+
+#~ msgid ""
+#~ "Enable this option to allow only the folder's owner to delete or rename "
+#~ "the contained files and folders. Other users can only add new files, "
+#~ "which requires the 'Modify Content' permission."
+#~ msgstr ""
+#~ "Zaznacz opcję, żeby tylko właściciel katalogu mógł usuwać lub zmieniać "
+#~ "nazwy plików i katalogów w nim zawartych. Inni użytkownicy mogą tylko "
+#~ "dodawać nowe pliki co wymaga uprawnień do modyfikacji zawartości."
+
+#~ msgid ""
+#~ "Enable this option to mark the file as executable. This only makes sense "
+#~ "for programs and scripts. It is required when you want to execute them."
+#~ msgstr ""
+#~ "Zaznacz opcję, żeby oznaczyć plik jako wykonywalny. Ma to sens jedynie "
+#~ "dla programów lub skryptów. Wymagane jeśli chcesz je wykonać."
+
+#~ msgid "A&dvanced Permissions"
+#~ msgstr "Za&awansowane prawa dostępu"
+
+#~ msgid "Ownership"
+#~ msgstr "Właściciel"
+
+#~ msgid "User:"
+#~ msgstr "Użytkownik:"
+
+#~ msgid "Group:"
+#~ msgstr "Grupa:"
+
+#~ msgid "Apply changes to all subfolders and their contents"
+#~ msgstr "Zastosuj zmiany do wszystkich podkatalogów i ich zawartości"
+
+#~ msgid "Advanced Permissions"
+#~ msgstr "Zaawansowane prawa dostępu"
+
+#~ msgid "Class"
+#~ msgstr "Klasa"
+
+#~ msgid ""
+#~ "Show\n"
+#~ "Entries"
+#~ msgstr ""
+#~ "Wyświetlaj\n"
+#~ "pozycje"
+
+#~ msgid "Read"
+#~ msgstr "Odczyt"
+
+#~ msgid "This flag allows viewing the content of the folder."
+#~ msgstr "To prawo pozwala na oglądanie zawartości katalogu."
+
+#~ msgid "The Read flag allows viewing the content of the file."
+#~ msgstr "Prawo Odczyt pozwala na oglądanie zawartości pliku."
+
+#~ msgid ""
+#~ "Write\n"
+#~ "Entries"
+#~ msgstr ""
+#~ "Zapisz\n"
+#~ "pozycje"
+
+#~ msgid "Write"
+#~ msgstr "Zapis"
+
+#~ msgid ""
+#~ "This flag allows adding, renaming and deleting of files. Note that "
+#~ "deleting and renaming can be limited using the Sticky flag."
+#~ msgstr ""
+#~ "To prawo pozwala na dodawanie, zmienianie nazwy lub usuwanie plików. "
+#~ "Pamiętaj, że usuwanie i zmienianie nazw może być ograniczone przy użyciu "
+#~ "SUID."
+
+#~ msgid "The Write flag allows modifying the content of the file."
+#~ msgstr "Prawo do zapisu pozwala na zmienianie zawartości pliku."
+
+#~ msgctxt "Enter folder"
+#~ msgid "Enter"
+#~ msgstr "Otwórz"
+
+#~ msgid "Enable this flag to allow entering the folder."
+#~ msgstr "Ustaw prawa tak, żeby pozwolić na wchodzenie do katalogu."
+
+#~ msgid "Exec"
+#~ msgstr "Uruchomienie"
+
+#~ msgid "Enable this flag to allow executing the file as a program."
+#~ msgstr "Ustal prawa, by pozwolić na wykonywanie pliku jako programu."
+
+#~ msgid "Special"
+#~ msgstr "Specjalny"
+
+#~ msgid ""
+#~ "Special flag. Valid for the whole folder, the exact meaning of the flag "
+#~ "can be seen in the right hand column."
+#~ msgstr ""
+#~ "Specjalne prawo. Ważne dla całego katalogu, dokładne znaczenie prawa "
+#~ "widocznego w kolumnie po prawej stronie."
+
+#~ msgid ""
+#~ "Special flag. The exact meaning of the flag can be seen in the right hand "
+#~ "column."
+#~ msgstr ""
+#~ "Specjalne prawo. Dokładne znaczenie prawa widocznego w kolumnie po prawej "
+#~ "stronie."
+
+#~ msgid "User"
+#~ msgstr "Użytkownik"
+
+#~ msgid "Group"
+#~ msgstr "Grupa"
+
+#~ msgid "Set UID"
+#~ msgstr "Ustaw UID"
+
+#~ msgid ""
+#~ "If this flag is set, the owner of this folder will be the owner of all "
+#~ "new files."
+#~ msgstr ""
+#~ "Jeśli to prawo jest ustawione, właściciel katalogu będzie właścicielem "
+#~ "wszystkich nowych plików."
+
+#~ msgid ""
+#~ "If this file is an executable and the flag is set, it will be executed "
+#~ "with the permissions of the owner."
+#~ msgstr ""
+#~ "Jeśli plik jest wykonywalny i prawo jest ustawione, plik zostanie "
+#~ "wykonany z prawami właściciela."
+
+#~ msgid "Set GID"
+#~ msgstr "Ustaw GID"
+
+#~ msgid ""
+#~ "If this flag is set, the group of this folder will be set for all new "
+#~ "files."
+#~ msgstr ""
+#~ "Jeśli to prawo jest ustawione, grupa tego katalogu będzie ustawiona dla "
+#~ "wszystkich nowych plików."
+
+#~ msgid ""
+#~ "If this file is an executable and the flag is set, it will be executed "
+#~ "with the permissions of the group."
+#~ msgstr ""
+#~ "Jeśli ten plik jest wykonywalny i prawo jest ustawione, plik zostanie "
+#~ "wykonany z prawami grupy."
+
+#~ msgctxt "File permission"
+#~ msgid "Sticky"
+#~ msgstr "Bit lepkości"
+
+#~ msgid ""
+#~ "If the Sticky flag is set on a folder, only the owner and root can delete "
+#~ "or rename files. Otherwise everybody with write permissions can do this."
+#~ msgstr ""
+#~ "Jeśli SUID jest ustawiony dla katalogu, tylko właściciel lub "
+#~ "administrator (root) mogą usunąć pliki lub zmienić ich nazwy. W innym "
+#~ "wypadku może to zrobić każdy z prawem do zapisu."
+
+#~ msgid ""
+#~ "The Sticky flag on a file is ignored on Linux, but may be used on some "
+#~ "systems"
+#~ msgstr ""
+#~ "SUID dla pliku jest ignorowane w Linuksie, ale może być użyteczne w "
+#~ "innych systemach operacyjnych"
+
+#~ msgid "Link"
+#~ msgstr "Dowiązanie"
+
+#~ msgid "Varying (No Change)"
+#~ msgstr "Różne (bez zmian)"
+
+#~ msgid "This file uses advanced permissions"
+#~ msgid_plural "These files use advanced permissions."
+#~ msgstr[0] "Ten plik używa zaawansowanych praw dostępu."
+#~ msgstr[1] "Te pliki używają zaawansowanych praw dostępu."
+#~ msgstr[2] "Te pliki używają zaawansowanych praw dostępu."
+
+#~ msgid "This folder uses advanced permissions."
+#~ msgid_plural "These folders use advanced permissions."
+#~ msgstr[0] "Ten katalog używa zaawansowanych praw dostępu."
+#~ msgstr[1] "Te katalogi używają zaawansowanych praw dostępu."
+#~ msgstr[2] "Te katalogi używają zaawansowanych praw dostępu."
+
+#~ msgid "These files use advanced permissions."
+#~ msgstr "Te pliki używają zaawansowanych praw."
+
+#~ msgid "U&RL"
+#~ msgstr "U&RL"
+
+#~ msgid "URL:"
+#~ msgstr "URL:"
+
+#~ msgid "De&vice"
+#~ msgstr "Urzą&dzenie"
+
+#~ msgid "Device (/dev/fd0):"
+#~ msgstr "Urządzenie (/dev/fd0):"
+
+#~ msgid "Device:"
+#~ msgstr "Urządzenie:"
+
+#~ msgid "Read only"
+#~ msgstr "Tylko do odczytu"
+
+#~ msgid "File system:"
+#~ msgstr "System plików:"
+
+#~ msgid "Mount point (/mnt/floppy):"
+#~ msgstr "Punkt montowania (/mnt/floppy):"
+
+#~ msgid "Mount point:"
+#~ msgstr "Punkt montowania:"
+
+#~ msgid "&Application"
+#~ msgstr "&Program"
+
+#~ msgid "Add File Type for %1"
+#~ msgstr "Dodaj typ pliku dla %1"
+
+#~ msgid "Select one or more file types to add:"
+#~ msgstr "Wybierz jeden lub więcej typów plików do dodania:"
+
+#~ msgid "Only executables on local file systems are supported."
+#~ msgstr "Obsługiwane są jedynie lokalne pliki wykonywalne."
+
+#~ msgid "Advanced Options for %1"
+#~ msgstr "Zaawansowane opcje dla %1"
+
+#~ msgid "Open file dialog"
+#~ msgstr "Okno dialogowe wyboru pliku"
+
+#~ msgid "Blocked request."
+#~ msgstr "Żądanie zablokowane."
+
+#~ msgid "Unknown HTTP verb."
+#~ msgstr "Nieznane wyrażenie HTTP."
+
+#~ msgid ""
+#~ "<qt>Could not modify the ownership of file <b>%1</b>. You have "
+#~ "insufficient access to the file to perform the change.</qt>"
+#~ msgstr ""
+#~ "<qt>Nie można zmienić właściciela pliku <b>%1</b>. Brak odpowiednich praw "
+#~ "dostępu do pliku.</qt>"
+
+#~ msgid "&Skip File"
+#~ msgstr "Po&miń plik"
+
+#~ msgid "Unable to create io-slave: %1"
+#~ msgstr "Nie można utworzyć io-slave: %1"
+
+#~ msgid "Folder Already Exists"
+#~ msgstr "Katalog już istnieje"
+
+#~ msgid "File Already Exists"
+#~ msgstr "Plik już istnieje"
+
+#~ msgid "Already Exists as Folder"
+#~ msgstr "Istnieje już jako katalog"
+
+#~ msgid "Creating directory"
+#~ msgstr "Tworzenie katalogu"
+
+#~ msgid "Directory"
+#~ msgstr "Katalog"
+
+#~ msgid "Moving"
+#~ msgstr "Przenoszenie"
+
+#~ msgctxt "The source of a file operation"
+#~ msgid "Source"
+#~ msgstr "Źródło"
+
+#~ msgctxt "The destination of a file operation"
+#~ msgid "Destination"
+#~ msgstr "Cel"
+
+#~ msgid "Deleting"
+#~ msgstr "Kasowanie"
+
+#~ msgid "File"
+#~ msgstr "Plik"
+
+#~ msgid "Und&o"
+#~ msgstr "&Cofnij"
+
+#~ msgid "Und&o: Copy"
+#~ msgstr "&Cofnij: kopiowanie"
+
+#~ msgid "Und&o: Link"
+#~ msgstr "&Cofnij: odnośnik"
+
+#~ msgid "Und&o: Move"
+#~ msgstr "&Cofnij: przenieś"
+
+#~ msgid "Und&o: Rename"
+#~ msgstr "&Cofnij: zmień nazwę"
+
+#~ msgid "Und&o: Trash"
+#~ msgstr "&Cofnij: do kosza"
+
+#~ msgid "Und&o: Create Folder"
+#~ msgstr "&Cofnij: twórz katalog"
+
+#~ msgid "Und&o: Create File"
+#~ msgstr "&Cofnij: Utwórz plik"
+
+#~ msgid ""
+#~ "The file %1 was copied from %2, but since then it has apparently been "
+#~ "modified at %3.\n"
+#~ "Undoing the copy will delete the file, and all modifications will be "
+#~ "lost.\n"
+#~ "Are you sure you want to delete %4?"
+#~ msgstr ""
+#~ "Plik %1 został skopiowany z %2, ale od tego czasu został zmieniony w %3/\n"
+#~ "Cofnięcie kopiowania spowoduje usunięcie pliku. Wszystkie zmiany zostaną "
+#~ "utracone.\n"
+#~ "Czy na pewno usunąć %4?"
+
+#~ msgid "Undo File Copy Confirmation"
+#~ msgstr "Potwierdzenie cofnięcia kopiowania pliku"
+
+#~ msgid "1 day %2"
+#~ msgid_plural "%1 days %2"
+#~ msgstr[0] "%1 dzień %2"
+#~ msgstr[1] "%1 dni %2"
+#~ msgstr[2] "%1 dni %2"
+
+#~ msgid "%1 Item"
+#~ msgid_plural "%1 Items"
+#~ msgstr[0] "element"
+#~ msgstr[1] "%1 elementy"
+#~ msgstr[2] "%1 elementów"
+
+#~ msgid "1 Folder"
+#~ msgid_plural "%1 Folders"
+#~ msgstr[0] "1 folder"
+#~ msgstr[1] "%1 foldery"
+#~ msgstr[2] "%1 folderów"
+
+#~ msgid "1 File"
+#~ msgid_plural "%1 Files"
+#~ msgstr[0] "%1 plik"
+#~ msgstr[1] "%1 pliki"
+#~ msgstr[2] "%1 plików"
+
+#~ msgctxt "folders, files (size)"
+#~ msgid "%1, %2 (%3)"
+#~ msgstr "%1, %2 (%3)"
+
+#~ msgctxt "folders, files"
+#~ msgid "%1, %2"
+#~ msgstr "%1, %2"
+
+#~ msgctxt "files (size)"
+#~ msgid "%1 (%2)"
+#~ msgstr "%1 (%2)"
+
+#~ msgctxt "items: folders, files (size)"
+#~ msgid "%1: %2"
+#~ msgstr "%1: %2"
+
+#~ msgid "Could not read %1."
+#~ msgstr "Nie można czytać %1."
+
+#~ msgid "Could not write to %1."
+#~ msgstr "Nie można pisać do %1."
+
+#~ msgid "Could not start process %1."
+#~ msgstr "Nie można uruchomić procesu %1."
+
+#~ msgid ""
+#~ "Internal Error\n"
+#~ "Please send a full bug report at http://bugs.kde.org\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Błąd wewnętrzny\n"
+#~ "Proszę zgłosić błąd na stronie http://bugs.kde.org\n"
+#~ "%1"
+
+#~ msgid "Malformed URL %1."
+#~ msgstr "Błędny URL %1."
+
+#~ msgid "The protocol %1 is not supported."
+#~ msgstr "Protokół %1 nie jest obsługiwany."
+
+#~ msgid "The protocol %1 is only a filter protocol."
+#~ msgstr "Protokół %1 jest jedynie protokołem filtrującym."
+
+#~ msgid "%1 is a folder, but a file was expected."
+#~ msgstr "%1 jest katalogiem, a wymagany jest plik."
+
+#~ msgid "%1 is a file, but a folder was expected."
+#~ msgstr "%1 jest plikiem, a wymagany jest katalog."
+
+#~ msgid "The file or folder %1 does not exist."
+#~ msgstr "Plik lub katalog %1 nie istnieje."
+
+#~ msgid "A file named %1 already exists."
+#~ msgstr "Plik o nazwie %1 już istnieje."
+
+#~ msgid "A folder named %1 already exists."
+#~ msgstr "Katalog o nazwie %1 już istnieje."
+
+#~ msgid "No hostname specified."
+#~ msgstr "Nie podano serwera."
+
+#~ msgid "Unknown host %1"
+#~ msgstr "Nieznany serwer %1"
+
+#~ msgid "Access denied to %1."
+#~ msgstr "Brak dostępu do %1."
+
+#~ msgid ""
+#~ "Access denied.\n"
+#~ "Could not write to %1."
+#~ msgstr ""
+#~ "Brak dostępu.\n"
+#~ "Nie można pisać do %1."
+
+#~ msgid "Could not enter folder %1."
+#~ msgstr "Nie można wejść do katalogu %1."
+
+#~ msgid "The protocol %1 does not implement a folder service."
+#~ msgstr "Protokół %1 nie obsługuje katalogów."
+
+#~ msgid "Found a cyclic link in %1."
+#~ msgstr "Wykryto zapętlony odnośnik w %1."
+
+#~ msgid "Found a cyclic link while copying %1."
+#~ msgstr "Podczas kopiowania znaleziono zapętlony odnośnik %1."
+
+#~ msgid "Could not create socket for accessing %1."
+#~ msgstr "Nie można utworzyć gniazdka z dostępem do %1."
+
+#~ msgid "Could not connect to host %1."
+#~ msgstr "Nie można połączyć się z serwerem %1."
+
+#~ msgid "Connection to host %1 is broken."
+#~ msgstr "Połączenie z serwerem %1 zostało przerwane."
+
+#~ msgid "The protocol %1 is not a filter protocol."
+#~ msgstr "Protokół %1 nie jest protokołem filtrującym."
+
+#~ msgid ""
+#~ "Could not mount device.\n"
+#~ "The reported error was:\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Nie można zamontować urządzenia.\n"
+#~ "Otrzymany komunikat błędu:\n"
+#~ "%1"
+
+#~ msgid ""
+#~ "Could not unmount device.\n"
+#~ "The reported error was:\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Nie można odmontować urządzenia.\n"
+#~ "Otrzymany komunikat błędu:\n"
+#~ "%1"
+
+#~ msgid "Could not read file %1."
+#~ msgstr "Nie można czytać pliku %1."
+
+#~ msgid "Could not write to file %1."
+#~ msgstr "Nie można pisać do pliku %1."
+
+#~ msgid "Could not bind %1."
+#~ msgstr "Nie można dołączyć %1."
+
+#~ msgid "Could not listen %1."
+#~ msgstr "Nie można nasłuchiwać z %1."
+
+#~ msgid "Could not accept %1."
+#~ msgstr "Nie można zaakceptować %1."
+
+#~ msgid "Could not access %1."
+#~ msgstr "Brak dostępu do %1."
+
+#~ msgid "Could not terminate listing %1."
+#~ msgstr "Nie można zakończyć nasłuchu z %1."
+
+#~ msgid "Could not make folder %1."
+#~ msgstr "Nie można utworzyć katalogu %1."
+
+#~ msgid "Could not remove folder %1."
+#~ msgstr "Nie można usunąć katalogu %1."
+
+#~ msgid "Could not resume file %1."
+#~ msgstr "Nie można wznowić pobierania pliku %1."
+
+#~ msgid "Could not rename file %1."
+#~ msgstr "Nie można zmienić nazwy pliku %1."
+
+#~ msgid "Could not change permissions for %1."
+#~ msgstr "Nie można zmienić praw do %1."
+
+#~ msgid "Could not change ownership for %1."
+#~ msgstr "Nie można zmienić właściciela %1."
+
+#~ msgid "Could not delete file %1."
+#~ msgstr "Nie można usunąć pliku %1."
+
+#~ msgid "The process for the %1 protocol died unexpectedly."
+#~ msgstr "Proces dla protokołu %1 nieoczekiwanie zakończył działanie."
+
+#~ msgid ""
+#~ "Error. Out of memory.\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Błąd. Brak pamięci.\n"
+#~ "%1"
+
+#~ msgid ""
+#~ "Unknown proxy host\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Nieznany serwer pośredniczący\n"
+#~ "%1"
+
+#~ msgid "Authorization failed, %1 authentication not supported"
+#~ msgstr "Błąd autoryzacji, uwierzytelnianie %1 jest nieobsługiwane"
+
+#~ msgid ""
+#~ "User canceled action\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Użytkownik anulował operację\n"
+#~ "%1"
+
+#~ msgid ""
+#~ "Internal error in server\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Błąd wewnętrzny serwera\n"
+#~ "%1"
+
+#~ msgid ""
+#~ "Timeout on server\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Przekroczony czas operacji na serwerze\n"
+#~ "%1"
+
+#~ msgid ""
+#~ "Unknown error\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Nieznany błąd\n"
+#~ "%1"
+
+#~ msgid ""
+#~ "Unknown interrupt\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Nieznane przerwanie\n"
+#~ "%1"
+
+#~ msgid ""
+#~ "Could not delete original file %1.\n"
+#~ "Please check permissions."
+#~ msgstr ""
+#~ "Nie można usunąć oryginalnego pliku %1.\n"
+#~ "Proszę sprawdzić uprawnienia."
+
+#~ msgid ""
+#~ "Could not delete partial file %1.\n"
+#~ "Please check permissions."
+#~ msgstr ""
+#~ "Nie można usunąć częściowego pliku %1.\n"
+#~ "Proszę sprawdzić uprawnienia."
+
+#~ msgid ""
+#~ "Could not rename original file %1.\n"
+#~ "Please check permissions."
+#~ msgstr ""
+#~ "Nie można zmienić nazwy oryginalnego pliku %1.\n"
+#~ "Proszę sprawdzić uprawnienia."
+
+#~ msgid ""
+#~ "Could not rename partial file %1.\n"
+#~ "Please check permissions."
+#~ msgstr ""
+#~ "Nie można zmienić nazwy częściowego pliku %1.\n"
+#~ "Proszę sprawdzić uprawnienia."
+
+#~ msgid ""
+#~ "Could not create symlink %1.\n"
+#~ "Please check permissions."
+#~ msgstr ""
+#~ "Nie można utworzyć odnośnika symbolicznego %1.\n"
+#~ "Proszę sprawdzić uprawnienia."
+
+#~ msgid ""
+#~ "Could not write file %1.\n"
+#~ "Disk full."
+#~ msgstr ""
+#~ "Nie można zapisać pliku %1.\n"
+#~ "Pełny dysk."
+
+#~ msgid ""
+#~ "The source and destination are the same file.\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Pliki źródłowy i docelowy są takie same.\n"
+#~ "%1"
+
+#~ msgid "%1 is required by the server, but is not available."
+#~ msgstr "Serwer wymaga %1, który nie jest dostępny."
+
+#~ msgid "Access to restricted port in POST denied."
+#~ msgstr "Brak dostępu do ograniczonego portu w POST."
+
+#~ msgid ""
+#~ "The required content size information was not provided for a POST "
+#~ "operation."
+#~ msgstr ""
+#~ "Wymagana informacja o rozmiarze zawartości nie została dostarczona do "
+#~ "operacji POST."
+
+#~ msgid ""
+#~ "Unknown error code %1\n"
+#~ "%2\n"
+#~ "Please send a full bug report at http://bugs.kde.org."
+#~ msgstr ""
+#~ "Nierozpoznany kod błędu %1\n"
+#~ "%2\n"
+#~ "Proszę zgłosić błąd na stronie http://bugs.kde.org."
+
+#~ msgid "Opening connections is not supported with the protocol %1."
+#~ msgstr "Nawiązywanie połączeń nie jest obsługiwane przez protokół %1."
+
+#~ msgid "Closing connections is not supported with the protocol %1."
+#~ msgstr "Zamykanie połączeń nie jest obsługiwane przez protokół %1."
+
+#~ msgid "Accessing files is not supported with the protocol %1."
+#~ msgstr "Protokół %1 nie pozwala na dostęp do plików."
+
+#~ msgid "Writing to %1 is not supported."
+#~ msgstr "Zapisywanie do %1 nie jest obsługiwane."
+
+#~ msgid "There are no special actions available for protocol %1."
+#~ msgstr "Brak specjalnych operacji dostępnych dla protokołu %1."
+
+#~ msgid "Listing folders is not supported for protocol %1."
+#~ msgstr ""
+#~ "Wyświetlanie zawartości katalogów nie jest obsługiwane przez protokół %1."
+
+#~ msgid "Retrieving data from %1 is not supported."
+#~ msgstr "Pobieranie danych z %1 nie jest obsługiwane."
+
+#~ msgid "Retrieving mime type information from %1 is not supported."
+#~ msgstr "Pobieranie informacji o typie MIME z %1 nie jest obsługiwane."
+
+#~ msgid "Renaming or moving files within %1 is not supported."
+#~ msgstr "Zmiana nazwy lub przenoszenie plików w %1 nie jest obsługiwane."
+
+#~ msgid "Creating symlinks is not supported with protocol %1."
+#~ msgstr ""
+#~ "Tworzenie dowiązań symbolicznych nie jest obsługiwane przez protokół %1."
+
+#~ msgid "Copying files within %1 is not supported."
+#~ msgstr "Kopiowanie plików w %1 nie jest obsługiwane."
+
+#~ msgid "Deleting files from %1 is not supported."
+#~ msgstr "Usuwanie plików z %1 nie jest obsługiwane."
+
+#~ msgid "Creating folders is not supported with protocol %1."
+#~ msgstr "Tworzenie katalogów nie jest obsługiwane przez protokół %1."
+
+#~ msgid "Changing the attributes of files is not supported with protocol %1."
+#~ msgstr "Zmiana atrybutów plików nie jest obsługiwana przez protokół %1."
+
+#~ msgid "Changing the ownership of files is not supported with protocol %1."
+#~ msgstr "Zmiana właściciela plików nie jest obsługiwana przez protokół %1."
+
+#~ msgid "Using sub-URLs with %1 is not supported."
+#~ msgstr "Używanie podadresów w %1 nie jest obsługiwane."
+
+#~ msgid "Multiple get is not supported with protocol %1."
+#~ msgstr "Pobieranie wielu plików nie jest obsługiwane przez protokół %1."
+
+#~ msgid "Opening files is not supported with protocol %1."
+#~ msgstr "Otwieranie plików nie jest obsługiwane przez protokół %1."
+
+#~ msgid "Protocol %1 does not support action %2."
+#~ msgstr "Protokół %1 nie obsługuje działania %2."
+
+#~ msgctxt "@info url"
+#~ msgid "(unknown)"
+#~ msgstr "(nieznany)"
+
+#~ msgctxt "@info %1 error name, %2 description"
+#~ msgid "<qt><p><b>%1</b></p><p>%2</p></qt>"
+#~ msgstr "<qt><p><b>%1</b></p><p>%2</p></qt>"
+
+#~ msgid "<b>Technical reason</b>: "
+#~ msgstr "<b>Przyczyny</b>: "
+
+#~ msgid "<b>Details of the request</b>:"
+#~ msgstr "<b>Szczegóły żądania</b>:"
+
+#~ msgid "<li>URL: %1</li>"
+#~ msgstr "<li>URL: %1</li>"
+
+#~ msgid "<li>Protocol: %1</li>"
+#~ msgstr "<li>Protokół: %1</li>"
+
+#~ msgid "<li>Date and time: %1</li>"
+#~ msgstr "<li>Data i czas: %1</li>"
+
+#~ msgid "<li>Additional information: %1</li>"
+#~ msgstr "<li>Dodatkowe informacje: %1</li>"
+
+#~ msgid "<b>Possible causes</b>:"
+#~ msgstr "<b>Możliwe przyczyny</b>:"
+
+#~ msgid "<b>Possible solutions</b>:"
+#~ msgstr "<b>Możliwe rozwiązania</b>:"
+
+#~ msgctxt "@info protocol"
+#~ msgid "(unknown)"
+#~ msgstr "(nieznany)"
+
+#~ msgid ""
+#~ "Contact your appropriate computer support system, whether the system "
+#~ "administrator, or technical support group for further assistance."
+#~ msgstr ""
+#~ "Skontaktuj się z obsługą komputera, administratorem systemu lub pomocą "
+#~ "techniczną."
+
+#~ msgid "Contact the administrator of the server for further assistance."
+#~ msgstr "Skontaktuj się z administratorem serwera."
+
+#~ msgid "Check your access permissions on this resource."
+#~ msgstr "Sprawdź prawa dostępu do zasobu."
+
+#~ msgid ""
+#~ "Your access permissions may be inadequate to perform the requested "
+#~ "operation on this resource."
+#~ msgstr ""
+#~ "Twoje prawa dostępu mogą być niewystarczające do wykonania żądanej "
+#~ "operacji na tym zasobie."
+
+#~ msgid ""
+#~ "The file may be in use (and thus locked) by another user or application."
+#~ msgstr ""
+#~ "Plik może być używany (i zablokowany do użytku) przez innego użytkownika "
+#~ "lub program."
+
+#~ msgid ""
+#~ "Check to make sure that no other application or user is using the file or "
+#~ "has locked the file."
+#~ msgstr ""
+#~ "Sprawdź, czy żaden program i żaden użytkownik nie używa oraz nie blokuje "
+#~ "pliku."
+
+#~ msgid "Although unlikely, a hardware error may have occurred."
+#~ msgstr "Możliwe, choć mało prawdopodobne, że wystąpił błąd sprzętowy."
+
+#~ msgid "You may have encountered a bug in the program."
+#~ msgstr "Być może natrafiłeś na błąd w programie."
+
+#~ msgid ""
+#~ "This is most likely to be caused by a bug in the program. Please consider "
+#~ "submitting a full bug report as detailed below."
+#~ msgstr ""
+#~ "Najprawdopodobniej natrafiłeś na błąd w programie. Jeśli możesz, wyślij "
+#~ "raport o błędzie zgodnie z poniższą instrukcją."
+
+#~ msgid ""
+#~ "Update your software to the latest version. Your distribution should "
+#~ "provide tools to update your software."
+#~ msgstr ""
+#~ "Uaktualnij program do najnowszej wersji. Twoja dystrybucja powinna "
+#~ "zawierać narzędzia do uaktualniania programów."
+
+#~ msgid ""
+#~ "When all else fails, please consider helping the KDE team or the third "
+#~ "party maintainer of this software by submitting a high quality bug "
+#~ "report. If the software is provided by a third party, please contact them "
+#~ "directly. Otherwise, first look to see if the same bug has been submitted "
+#~ "by someone else by searching at the <a href=\"http://bugs.kde.org/\">KDE "
+#~ "bug reporting website</a>. If not, take note of the details given above, "
+#~ "and include them in your bug report, along with as many other details as "
+#~ "you think might help."
+#~ msgstr ""
+#~ "Jeśli wszystko zawiedzie, rozważ wysłanie szczegółowego raportu o błędzie "
+#~ "do Zespołu KDE lub autora tego programu. Jeśli program został dostarczony "
+#~ "przez osoby spoza KDE, skontaktuj się bezpośrednio z nimi. W przeciwnym "
+#~ "razie najpierw sprawdź, czy podobny błąd nie został już zgłoszony w <a "
+#~ "href=\"http://bugs.kde.org/\">Bazie błędów KDE</a>. Jeśli nie, podaj w "
+#~ "raporcie wszystkie szczegóły wymienione poniżej, wraz z innymi "
+#~ "informacjami, które uważasz za użyteczne."
+
+#~ msgid "There may have been a problem with your network connection."
+#~ msgstr "Mogły być problemy z połączeniem sieciowym."
+
+#~ msgid ""
+#~ "There may have been a problem with your network configuration. If you "
+#~ "have been accessing the Internet with no problems recently, this is "
+#~ "unlikely."
+#~ msgstr ""
+#~ "Mogły być problemy z konfiguracją sieci. Jest to jednak mało "
+#~ "prawdopodobne, jeśli ostatnio bez problemów korzystałeś z Internetu."
+
+#~ msgid ""
+#~ "There may have been a problem at some point along the network path "
+#~ "between the server and this computer."
+#~ msgstr ""
+#~ "Być może problemy pojawiły się gdzieś w sieci, między serwerem a Twoim "
+#~ "komputerem."
+
+#~ msgid "Try again, either now or at a later time."
+#~ msgstr "Spróbuj jeszcze raz, teraz albo później."
+
+#~ msgid "A protocol error or incompatibility may have occurred."
+#~ msgstr "Prawdopodobnie nastąpił błąd w protokole lub niekompatybilność."
+
+#~ msgid "Ensure that the resource exists, and try again."
+#~ msgstr "Sprawdź, czy zasób istnieje i spróbuj jeszcze raz."
+
+#~ msgid "The specified resource may not exist."
+#~ msgstr "Możliwe, że podany zasób nie istnieje."
+
+#~ msgid "You may have incorrectly typed the location."
+#~ msgstr "Mogłeś podać błędną lokalizację."
+
+#~ msgid ""
+#~ "Double-check that you have entered the correct location and try again."
+#~ msgstr ""
+#~ "Sprawdź jeszcze raz, czy podałeś prawidłową lokalizację i ponów próbę."
+
+#~ msgid "Check your network connection status."
+#~ msgstr "Sprawdź swoje połączenie sieciowe."
+
+#~ msgid "Cannot Open Resource For Reading"
+#~ msgstr "Nie można otworzyć zasobu do odczytu"
+
+#~ msgid ""
+#~ "This means that the contents of the requested file or folder <strong>%1</"
+#~ "strong> could not be retrieved, as read access could not be obtained."
+#~ msgstr ""
+#~ "Oznacza to, że zawartość żądanego pliku lub katalogu <strong>%1</strong> "
+#~ "nie może zostać pobrana z powodu braku praw do odczytu."
+
+#~ msgid "You may not have permissions to read the file or open the folder."
+#~ msgstr "Możesz nie mieć praw do odczytania pliku lub katalogu."
+
+#~ msgid "Cannot Open Resource For Writing"
+#~ msgstr "Nie można otworzyć zasobu do zapisu"
+
+#~ msgid ""
+#~ "This means that the file, <strong>%1</strong>, could not be written to as "
+#~ "requested, because access with permission to write could not be obtained."
+#~ msgstr ""
+#~ "Może to oznaczać, że plik <strong>%1</strong> nie może zostać zapisany z "
+#~ "powodu braku praw do zapisu."
+
+#~ msgid "Cannot Initiate the %1 Protocol"
+#~ msgstr "Nie można zainicjalizować protokołu %1"
+
+#~ msgid "Unable to Launch Process"
+#~ msgstr "Nie można uruchomić procesu"
+
+#~ msgid ""
+#~ "The program on your computer which provides access to the <strong>%1</"
+#~ "strong> protocol could not be started. This is usually due to technical "
+#~ "reasons."
+#~ msgstr ""
+#~ "Program na Twoim komputerze, obsługujący protokół <strong>%1</strong> nie "
+#~ "uruchomił się. Dzieje się tak zazwyczaj z przyczyn technicznych."
+
+#~ msgid ""
+#~ "The program which provides compatibility with this protocol may not have "
+#~ "been updated with your last update of KDE. This can cause the program to "
+#~ "be incompatible with the current version and thus not start."
+#~ msgstr ""
+#~ "Program kompatybilny z tym protokołem mógł nie zostać przez Ciebie "
+#~ "uaktualniony przy okazji ostatniego uaktualnienia KDE. Wówczas stara "
+#~ "wersja programu nie współpracuje z nowym protokołem i nie uruchamia się."
+
+#~ msgid "Internal Error"
+#~ msgstr "Błąd wewnętrzny"
+
+#~ msgid ""
+#~ "The program on your computer which provides access to the <strong>%1</"
+#~ "strong> protocol has reported an internal error."
+#~ msgstr ""
+#~ "Program zapewniający dostęp do protokołu<strong>%1</strong> zgłosił błąd "
+#~ "wewnętrzny."
+
+#~ msgid "Improperly Formatted URL"
+#~ msgstr "Nieprawidłowo sformatowany URL"
+
+#~ msgid ""
+#~ "The <strong>U</strong>niform <strong>R</strong>esource <strong>L</"
+#~ "strong>ocator (URL) that you entered was not properly formatted. The "
+#~ "format of a URL is generally as follows:<blockquote><strong>protocol://"
+#~ "user:password@www.example.org:port/folder/filename.extension?query=value</"
+#~ "strong></blockquote>"
+#~ msgstr ""
+#~ "Wprowadzony <strong>U</strong>niform <strong>R</strong>esource <strong>L</"
+#~ "strong>ocation (URL) nie był prawidłowo sformatowany. Prawidłowy format "
+#~ "to: <blockquote><strong>protokół://użytkownik@hasło:www.przykład.org:port/"
+#~ "katalog/plik.rozszerzenie?pytanie=wartość</strong></blockquote>"
+
+#~ msgid "Unsupported Protocol %1"
+#~ msgstr "Nieobsługiwany protokół %1"
+
+#~ msgid ""
+#~ "The protocol <strong>%1</strong> is not supported by the KDE programs "
+#~ "currently installed on this computer."
+#~ msgstr ""
+#~ "Protokół <strong>%1</strong> nie jest obsługiwany przez programy KDE "
+#~ "zainstalowane na tym komputerze."
+
+#~ msgid "The requested protocol may not be supported."
+#~ msgstr "Żądany protokół może nie być obsługiwany."
+
+#~ msgid ""
+#~ "The versions of the %1 protocol supported by this computer and the server "
+#~ "may be incompatible."
+#~ msgstr "Wersje protokołu %1 na tym komputerze i na serwerze mogą być różne."
+
+#~ msgid ""
+#~ "You may perform a search on the Internet for a KDE program (called a "
+#~ "kioslave or ioslave) which supports this protocol. Places to search "
+#~ "include <a href=\"http://kde-apps.org/\">http://kde-apps.org/</a> and <a "
+#~ "href=\"http://freshmeat.net/\">http://freshmeat.net/</a>."
+#~ msgstr ""
+#~ "Możesz poszukać w Internecie programu KDE (zwanego kioslave lub ioslave), "
+#~ "obsługującego ten protokół. Najbardziej użyteczne adresy to <a href="
+#~ "\"http://kde-apps.org/\">http://kde-apps.org/</a> i <a href=\"http://"
+#~ "freshmeat.net/\">http://freshmeat.net/</a>."
+
+#~ msgid "URL Does Not Refer to a Resource."
+#~ msgstr "URL nie odnosi się do zasobu."
+
+#~ msgid "Protocol is a Filter Protocol"
+#~ msgstr "Protokół jest protokołem filtrującym"
+
+#~ msgid ""
+#~ "The <strong>U</strong>niform <strong>R</strong>esource <strong>L</"
+#~ "strong>ocator (URL) that you entered did not refer to a specific resource."
+#~ msgstr ""
+#~ "Podany <strong>U</strong>niform <strong>R</strong>esource <strong>L</"
+#~ "strong>ocation (URL) nie odnosi się do żadnego zasobu."
+
+#~ msgid ""
+#~ "KDE is able to communicate through a protocol within a protocol; the "
+#~ "protocol specified is only for use in such situations, however this is "
+#~ "not one of these situations. This is a rare event, and is likely to "
+#~ "indicate a programming error."
+#~ msgstr ""
+#~ "KDE może komunikować się, używając protokołu wewnątrz protokołu; wybrany "
+#~ "protokół jest przeznaczony jedynie do takich sytuacji, innych niż "
+#~ "aktualna. Najprawdopodobniej oznacza to błąd w programie."
+
+#~ msgid "Unsupported Action: %1"
+#~ msgstr "Nieobsługiwana akcja: %1"
+
+#~ msgid ""
+#~ "The requested action is not supported by the KDE program which is "
+#~ "implementing the <strong>%1</strong> protocol."
+#~ msgstr ""
+#~ "Podana akcja nie jest obsługiwana przez program KDE implementujący "
+#~ "protokół <strong>%1</strong>."
+
+#~ msgid ""
+#~ "This error is very much dependent on the KDE program. The additional "
+#~ "information should give you more information than is available to the KDE "
+#~ "input/output architecture."
+#~ msgstr ""
+#~ "Błąd zależy od programu KDE. Dodatkowe szczegóły dostarczą Ci więcej "
+#~ "informacji, niż jest dostępne dla architektury wejścia/wyjścia KDE."
+
+#~ msgid "Attempt to find another way to accomplish the same outcome."
+#~ msgstr "Spróbuj znaleźć inną metodę osiągnięcia tego samego wyniku."
+
+#~ msgid "File Expected"
+#~ msgstr "Oczekiwany plik"
+
+#~ msgid ""
+#~ "The request expected a file, however the folder <strong>%1</strong> was "
+#~ "found instead."
+#~ msgstr "Żądano pliku, ale zwrócony został katalog <strong>%1</strong>."
+
+#~ msgid "This may be an error on the server side."
+#~ msgstr "Być może jest to błąd serwera."
+
+#~ msgid "Folder Expected"
+#~ msgstr "Oczekiwano katalogu"
+
+#~ msgid ""
+#~ "The request expected a folder, however the file <strong>%1</strong> was "
+#~ "found instead."
+#~ msgstr "Żądano katalogu, ale zwrócony został plik <strong>%1</strong>."
+
+#~ msgid "File or Folder Does Not Exist"
+#~ msgstr "Plik lub katalog nie istnieje"
+
+#~ msgid "The specified file or folder <strong>%1</strong> does not exist."
+#~ msgstr "Podany plik lub katalog <strong>%1</strong> nie istnieje."
+
+#~ msgid ""
+#~ "The requested file could not be created because a file with the same name "
+#~ "already exists."
+#~ msgstr ""
+#~ "Żądany plik nie został utworzony, ponieważ plik o tej nazwie już istnieje."
+
+#~ msgid ""
+#~ "Try moving the current file out of the way first, and then try again."
+#~ msgstr ""
+#~ "Spróbuj przenieść poprzedni plik w inne miejsce i spróbuj jeszcze raz."
+
+#~ msgid "Delete the current file and try again."
+#~ msgstr "Usuń poprzedni plik i spróbuj jeszcze raz."
+
+#~ msgid "Choose an alternate filename for the new file."
+#~ msgstr "Wybierz inną nazwę dla nowego pliku."
+
+#~ msgid ""
+#~ "The requested folder could not be created because a folder with the same "
+#~ "name already exists."
+#~ msgstr ""
+#~ "Żądany katalog nie został utworzony, ponieważ katalog o tej nazwie już "
+#~ "istnieje."
+
+#~ msgid ""
+#~ "Try moving the current folder out of the way first, and then try again."
+#~ msgstr ""
+#~ "Spróbuj przenieść katalog bieżący w inne miejsce i spróbuj jeszcze raz."
+
+#~ msgid "Delete the current folder and try again."
+#~ msgstr "Usuń katalog bieżący i spróbuj jeszcze raz."
+
+#~ msgid "Choose an alternate name for the new folder."
+#~ msgstr "Wybierz inną nazwę dla nowego katalogu."
+
+#~ msgid "Unknown Host"
+#~ msgstr "Nieznany serwer"
+
+#~ msgid ""
+#~ "An unknown host error indicates that the server with the requested name, "
+#~ "<strong>%1</strong>, could not be located on the Internet."
+#~ msgstr ""
+#~ "Błąd \"Nieznany serwer\" oznacza, że serwer o podanej nazwie <strong>%1</"
+#~ "strong> nie został znaleziony w Internecie."
+
+#~ msgid ""
+#~ "The name that you typed, %1, may not exist: it may be incorrectly typed."
+#~ msgstr "Podana nazwa, %1, może być błędnie wpisana."
+
+#~ msgid "Access Denied"
+#~ msgstr "Brak dostępu"
+
+#~ msgid "Access was denied to the specified resource, <strong>%1</strong>."
+#~ msgstr "Brak dostępu do zasobu <strong>%1</strong>."
+
+#~ msgid ""
+#~ "You may have supplied incorrect authentication details or none at all."
+#~ msgstr "Być może podano nieprawidłowe szczegóły uwierzytelnienia."
+
+#~ msgid ""
+#~ "Your account may not have permission to access the specified resource."
+#~ msgstr "Możesz nie mieć praw dostępu do tego zasobu."
+
+#~ msgid ""
+#~ "Retry the request and ensure your authentication details are entered "
+#~ "correctly."
+#~ msgstr ""
+#~ "Ponów żądanie i sprawdź, czy dane uwierzytelnienia są podane poprawnie."
+
+#~ msgid "Write Access Denied"
+#~ msgstr "Brak praw do zapisu"
+
+#~ msgid ""
+#~ "This means that an attempt to write to the file <strong>%1</strong> was "
+#~ "rejected."
+#~ msgstr "Próba zapisu do pliku <strong>%1</strong> została odrzucona."
+
+#~ msgid "Unable to Enter Folder"
+#~ msgstr "Nie można wejść do katalogu"
+
+#~ msgid ""
+#~ "This means that an attempt to enter (in other words, to open) the "
+#~ "requested folder <strong>%1</strong> was rejected."
+#~ msgstr ""
+#~ "Oznacza to, że próba otwarcia (wejścia do) żądanego katalogu <strong>%1</"
+#~ "strong> została odrzucona."
+
+#~ msgid "Folder Listing Unavailable"
+#~ msgstr "Pokazanie zawartości katalogu jest niedostępne"
+
+#~ msgid "Protocol %1 is not a Filesystem"
+#~ msgstr "Protokół %1 nie jest systemem plików"
+
+#~ msgid ""
+#~ "This means that a request was made which requires determining the "
+#~ "contents of the folder, and the KDE program supporting this protocol is "
+#~ "unable to do so."
+#~ msgstr ""
+#~ "Oznacza to, że żądanie wymagało ustalenia zawartości katalogu, ale "
+#~ "program KDE, obsługujący ten protokół, nie może tego zrobić."
+
+#~ msgid "Cyclic Link Detected"
+#~ msgstr "Wykryto zapętlone dowiązanie"
+
+#~ msgid ""
+#~ "UNIX environments are commonly able to link a file or folder to a "
+#~ "separate name and/or location. KDE detected a link or series of links "
+#~ "that results in an infinite loop - i.e. the file was (perhaps in a "
+#~ "roundabout way) linked to itself."
+#~ msgstr ""
+#~ "W środowiskach uniksowych można zwykle tworzyć dowiązania do plików i "
+#~ "katalogów pod inną nazwą i/lub w innym katalogu. KDE wykryło takie "
+#~ "dowiązanie lub ciąg dowiązań, powodujące nieskończoną pętlę - tj. plik "
+#~ "był ostatecznie dowiązaniem do siebie."
+
+#~ msgid ""
+#~ "Delete one part of the loop in order that it does not cause an infinite "
+#~ "loop, and try again."
+#~ msgstr ""
+#~ "Usuń część pętli, by przerwać pętlę nieskończoną, a następnie ponów próbę."
+
+#~ msgid "Request Aborted By User"
+#~ msgstr "Żądanie przerwane przez użytkownika"
+
+#~ msgid "The request was not completed because it was aborted."
+#~ msgstr "Żądanie nie zostało zrealizowane, ponieważ je przerwano."
+
+#~ msgid "Retry the request."
+#~ msgstr "Powtórz żądanie."
+
+#~ msgid "Cyclic Link Detected During Copy"
+#~ msgstr "Podczas kopiowania wykryto zapętlone dowiązanie"
+
+#~ msgid ""
+#~ "UNIX environments are commonly able to link a file or folder to a "
+#~ "separate name and/or location. During the requested copy operation, KDE "
+#~ "detected a link or series of links that results in an infinite loop - i."
+#~ "e. the file was (perhaps in a roundabout way) linked to itself."
+#~ msgstr ""
+#~ "W środowiskach uniksowych można zwykle tworzyć dowiązania do plików i "
+#~ "katalogów pod inną nazwą i/lub w innym katalogu. Podczas operacji "
+#~ "kopiowania KDE wykryło takie dowiązanie lub ciąg dowiązań, powodujące "
+#~ "nieskończoną pętlę - tj. plik był ostatecznie dowiązaniem do siebie."
+
+#~ msgid "Could Not Create Network Connection"
+#~ msgstr "Nie można utworzyć połączenia sieciowego"
+
+#~ msgid "Could Not Create Socket"
+#~ msgstr "Nie można utworzyć gniazdka"
+
+#~ msgid ""
+#~ "This is a fairly technical error in which a required device for network "
+#~ "communications (a socket) could not be created."
+#~ msgstr ""
+#~ "Nie można było utworzyć urządzenia do komunikacji sieciowej (gniazdka)."
+
+#~ msgid ""
+#~ "The network connection may be incorrectly configured, or the network "
+#~ "interface may not be enabled."
+#~ msgstr "Sieć może być nieprawidłowo skonfigurowana lub wyłączona."
+
+#~ msgid "Connection to Server Refused"
+#~ msgstr "Połączenie z serwerem odrzucone"
+
+#~ msgid ""
+#~ "The server <strong>%1</strong> refused to allow this computer to make a "
+#~ "connection."
+#~ msgstr ""
+#~ "Serwer <strong>%1</strong> odrzucił próbę połączenia z tego komputera."
+
+#~ msgid ""
+#~ "The server, while currently connected to the Internet, may not be "
+#~ "configured to allow requests."
+#~ msgstr ""
+#~ "Serwer, choć podłączony do Internetu, może nie być skonfigurowany na "
+#~ "przyjmowanie żądań."
+
+#~ msgid ""
+#~ "The server, while currently connected to the Internet, may not be running "
+#~ "the requested service (%1)."
+#~ msgstr ""
+#~ "Serwer, choć podłączony do Internetu, może nie udostępniać żądanej usługi "
+#~ "(%1)."
+
+#~ msgid ""
+#~ "A network firewall (a device which restricts Internet requests), either "
+#~ "protecting your network or the network of the server, may have "
+#~ "intervened, preventing this request."
+#~ msgstr ""
+#~ "Zapora sieciowa (urządzenie, ograniczające dostęp internetowy) albo "
+#~ "zabezpieczająca Twoją sieć, albo sieć serwera, mogła zablokować Twoje "
+#~ "żądanie."
+
+#~ msgid "Connection to Server Closed Unexpectedly"
+#~ msgstr "Połączenie z serwerem zostało niespodziewanie zakończone"
+
+#~ msgid ""
+#~ "Although a connection was established to <strong>%1</strong>, the "
+#~ "connection was closed at an unexpected point in the communication."
+#~ msgstr ""
+#~ "Chociaż połączenie z <strong>%1</strong> zostało nawiązane, przerwano je "
+#~ "później w nieoczekiwanym miejscu."
+
+#~ msgid ""
+#~ "A protocol error may have occurred, causing the server to close the "
+#~ "connection as a response to the error."
+#~ msgstr ""
+#~ "Być może wystąpił błąd w protokole, a serwer przerwał połączenie w "
+#~ "reakcji na ten błąd."
+
+#~ msgid "URL Resource Invalid"
+#~ msgstr "Błędny URL"
+
+#~ msgid "Protocol %1 is not a Filter Protocol"
+#~ msgstr "Protokół %1 nie jest protokołem filtrującym"
+
+#~ msgid ""
+#~ "The <strong>U</strong>niform <strong>R</strong>esource <strong>L</"
+#~ "strong>ocator (URL) that you entered did not refer to a valid mechanism "
+#~ "of accessing the specific resource, <strong>%1%2</strong>."
+#~ msgstr ""
+#~ "<strong>U</strong>niform <strong>R</strong>esource <strong>L</"
+#~ "strong>ocation (URL, Ujednolicony Adres Zasobu), podany przez Ciebie, "
+#~ "zawiera nieznaną metodę dostępu do podanego zasobu, <strong>%1%2</strong>."
+
+#~ msgid ""
+#~ "KDE is able to communicate through a protocol within a protocol. This "
+#~ "request specified a protocol be used as such, however this protocol is "
+#~ "not capable of such an action. This is a rare event, and is likely to "
+#~ "indicate a programming error."
+#~ msgstr ""
+#~ "KDE może komunikować się, używając protokołu wewnątrz protokołu, jednak "
+#~ "wybrany protokół nie jest przeznaczony jedynie do takich sytuacji. "
+#~ "Najprawdopodobniej oznacza to błąd w programie."
+
+#~ msgid "Unable to Initialize Input/Output Device"
+#~ msgstr "Nie można zainicjalizować urządzenia wejścia/wyjścia"
+
+#~ msgid "Could Not Mount Device"
+#~ msgstr "Nie można zamontować urządzenia"
+
+#~ msgid ""
+#~ "The requested device could not be initialized (\"mounted\"). The reported "
+#~ "error was: <strong>%1</strong>"
+#~ msgstr ""
+#~ "Podane urządzenie nie mogło zostać podłączone (\"zamontowane\"). Zwrócony "
+#~ "błąd: <strong>%1</strong>"
+
+#~ msgid ""
+#~ "The device may not be ready, for example there may be no media in a "
+#~ "removable media device (i.e. no CD-ROM in a CD drive), or in the case of "
+#~ "a peripheral/portable device, the device may not be correctly connected."
+#~ msgstr ""
+#~ "Urządzenie może nie być gotowe, np. nie ma płyty w napędzie CD-ROM lub "
+#~ "dyskietki w stacji dysków. Być może urządzenie peryferyjne nie jest "
+#~ "poprawnie podłączone fizycznie."
+
+#~ msgid ""
+#~ "You may not have permissions to initialize (\"mount\") the device. On "
+#~ "UNIX systems, often system administrator privileges are required to "
+#~ "initialize a device."
+#~ msgstr ""
+#~ "Być może nie masz praw do podłączania (\"montowania\") tego urządzenia. W "
+#~ "systemach uniksowych do podłączania urządzeń często wymagane są prawa "
+#~ "administratora."
+
+#~ msgid ""
+#~ "Check that the device is ready; removable drives must contain media, and "
+#~ "portable devices must be connected and powered on.; and try again."
+#~ msgstr ""
+#~ "Sprawdź, czy urządzenie jest gotowe (stacje dysków muszą zawierać "
+#~ "dyskietki, napędy CD-ROM - płyty, zaś urządzenia zewnętrzne muszą być "
+#~ "poprawnie podłączone i włączone) i spróbuj jeszcze raz."
+
+#~ msgid "Unable to Uninitialize Input/Output Device"
+#~ msgstr "Nie można zainicjalizować urządzenia wejścia/wyjścia"
+
+#~ msgid "Could Not Unmount Device"
+#~ msgstr "Nie można odmontować urządzenia"
+
+#~ msgid ""
+#~ "The requested device could not be uninitialized (\"unmounted\"). The "
+#~ "reported error was: <strong>%1</strong>"
+#~ msgstr ""
+#~ "Podane urządzenie nie mogło zostać odłączone (\"odmontowane\"). Zwrócony "
+#~ "błąd: <strong>%1</strong>"
+
+#~ msgid ""
+#~ "The device may be busy, that is, still in use by another application or "
+#~ "user. Even such things as having an open browser window on a location on "
+#~ "this device may cause the device to remain in use."
+#~ msgstr ""
+#~ "Urządzenie może być zajęte, tj. nadal używane przez inny program lub "
+#~ "innego użytkownika. Nawet okno przeglądarki, otwarte na katalogu na tym "
+#~ "urządzeniu, może powodować, że urządzenie jest zajęte."
+
+#~ msgid ""
+#~ "You may not have permissions to uninitialize (\"unmount\") the device. On "
+#~ "UNIX systems, system administrator privileges are often required to "
+#~ "uninitialize a device."
+#~ msgstr ""
+#~ "Być może nie masz praw do odłączania (\"odmontowywania\") tego "
+#~ "urządzenia. W systemach uniksowych do odłączania urządzeń często wymagane "
+#~ "są prawa administratora."
+
+#~ msgid "Check that no applications are accessing the device, and try again."
+#~ msgstr ""
+#~ "Sprawdź, czy żadne programy nie korzystają z urządzenia i spróbuj "
+#~ "ponownie."
+
+#~ msgid "Cannot Read From Resource"
+#~ msgstr "Nie można czytać z zasobu"
+
+#~ msgid ""
+#~ "This means that although the resource, <strong>%1</strong>, was able to "
+#~ "be opened, an error occurred while reading the contents of the resource."
+#~ msgstr ""
+#~ "Oznacza to, że chociaż zasób <strong>%1</strong> został otwarty, podczas "
+#~ "próby czytania z niego wystąpił błąd."
+
+#~ msgid "You may not have permissions to read from the resource."
+#~ msgstr "Brak praw do zapisu do czytania z tego zasobu."
+
+#~ msgid "Cannot Write to Resource"
+#~ msgstr "Nie można pisać do zasobu"
+
+#~ msgid ""
+#~ "This means that although the resource, <strong>%1</strong>, was able to "
+#~ "be opened, an error occurred while writing to the resource."
+#~ msgstr ""
+#~ "Oznacza to, że chociaż zasób <strong>%1</strong> został otwarty, podczas "
+#~ "próby pisania do niego wystąpił błąd."
+
+#~ msgid "You may not have permissions to write to the resource."
+#~ msgstr "Być może nie masz prawa pisania do tego zasobu."
+
+#~ msgid "Could Not Listen for Network Connections"
+#~ msgstr "Nie można nasłuchiwać"
+
+#~ msgid "Could Not Bind"
+#~ msgstr "Nie można przyłączyć"
+
+#~ msgid ""
+#~ "This is a fairly technical error in which a required device for network "
+#~ "communications (a socket) could not be established to listen for incoming "
+#~ "network connections."
+#~ msgstr ""
+#~ "Techniczny błąd oznaczający, że urządzenie wymagane do połączeń "
+#~ "sieciowych nie mogło nasłuchiwać, oczekując na przychodzące połączenia "
+#~ "sieciowe."
+
+#~ msgid "Could Not Listen"
+#~ msgstr "Nie można nasłuchiwać"
+
+#~ msgid "Could Not Accept Network Connection"
+#~ msgstr "Nie można przyjąć połączenia sieciowego"
+
+#~ msgid ""
+#~ "This is a fairly technical error in which an error occurred while "
+#~ "attempting to accept an incoming network connection."
+#~ msgstr ""
+#~ "Techniczny błąd, oznaczający, że nie powiodło się przyjęcie połączenia "
+#~ "sieciowego z zewnątrz."
+
+#~ msgid "You may not have permissions to accept the connection."
+#~ msgstr "Możesz nie mieć praw do przyjęcia tego połączenia."
+
+#~ msgid "Could Not Login: %1"
+#~ msgstr "Nie można się zalogować: %1"
+
+#~ msgid ""
+#~ "An attempt to login to perform the requested operation was unsuccessful."
+#~ msgstr "Próba zalogowania, by wykonać żądaną operację, nie powiodła się."
+
+#~ msgid "Could Not Determine Resource Status"
+#~ msgstr "Nie można ustalić stanu zasobu"
+
+#~ msgid "Could Not Stat Resource"
+#~ msgstr "Nie można pobrać statusu zasobu"
+
+#~ msgid ""
+#~ "An attempt to determine information about the status of the resource "
+#~ "<strong>%1</strong>, such as the resource name, type, size, etc., was "
+#~ "unsuccessful."
+#~ msgstr ""
+#~ "Próba uzyskania informacji o stanie zasobu <strong>%1</strong> (np. o "
+#~ "jego nazwie, typie, rozmiarze itd.) nie powiodła się."
+
+#~ msgid ""
+#~ "The specified resource may not have existed or may not be accessible."
+#~ msgstr "Wybrany zasób nie istnieje lub nie jest dostępny."
+
+#~ msgid "Could Not Cancel Listing"
+#~ msgstr "Nie można anulować listy"
+
+#~ msgid "FIXME: Document this"
+#~ msgstr "UWAGA: Brak dokumentacji"
+
+#~ msgid "Could Not Create Folder"
+#~ msgstr "Nie można utworzyć katalogu"
+
+#~ msgid "An attempt to create the requested folder failed."
+#~ msgstr "Próba utworzenia żądanego katalogu nie powiodła się."
+
+#~ msgid "The location where the folder was to be created may not exist."
+#~ msgstr "Być może miejsce, gdzie miał zostać utworzony katalog nie istnieje."
+
+#~ msgid "Could Not Remove Folder"
+#~ msgstr "Nie można usunąć katalogu"
+
+#~ msgid ""
+#~ "An attempt to remove the specified folder, <strong>%1</strong>, failed."
+#~ msgstr ""
+#~ "Próba usunięcia podanego katalogu, <strong>%1</strong>, nie powiodła się."
+
+#~ msgid "The specified folder may not exist."
+#~ msgstr "Podany katalog może nie istnieć."
+
+#~ msgid "The specified folder may not be empty."
+#~ msgstr "Podany katalog może nie być pusty."
+
+#~ msgid "Ensure that the folder exists and is empty, and try again."
+#~ msgstr ""
+#~ "Upewnij się, że katalog istnieje oraz jest pusty i spróbuj ponownie."
+
+#~ msgid "Could Not Resume File Transfer"
+#~ msgstr "Nie można wznowić transferu"
+
+#~ msgid ""
+#~ "The specified request asked that the transfer of file <strong>%1</strong> "
+#~ "be resumed at a certain point of the transfer. This was not possible."
+#~ msgstr ""
+#~ "Żądanie wznowienia transferu pliku <strong>%1</strong> nie mogło zostać "
+#~ "zrealizowane."
+
+#~ msgid "The protocol, or the server, may not support file resuming."
+#~ msgstr "Protokół lub serwer nie pozwala na wznowienie transferu."
+
+#~ msgid "Retry the request without attempting to resume transfer."
+#~ msgstr "Powtórz żądanie bez próby wznowienia transferu."
+
+#~ msgid "Could Not Rename Resource"
+#~ msgstr "Nie można zmienić nazwy zasobu"
+
+#~ msgid ""
+#~ "An attempt to rename the specified resource <strong>%1</strong> failed."
+#~ msgstr "Próba zmiany nazwy zasobu <strong>%1</strong> nie powiodła się."
+
+#~ msgid "Could Not Alter Permissions of Resource"
+#~ msgstr "Nie można zmienić praw do zasobu"
+
+#~ msgid ""
+#~ "An attempt to alter the permissions on the specified resource <strong>%1</"
+#~ "strong> failed."
+#~ msgstr "Próba zmiany praw zasobu <strong>%1</strong> nie powiodła się."
+
+#~ msgid "Could Not Change Ownership of Resource"
+#~ msgstr "Nie można zmienić właściciela zasobu"
+
+#~ msgid ""
+#~ "An attempt to change the ownership of the specified resource <strong>%1</"
+#~ "strong> failed."
+#~ msgstr ""
+#~ "Próba zmiany właściciela danego zasobu <strong>%1</strong> nie powiodła "
+#~ "się."
+
+#~ msgid "Could Not Delete Resource"
+#~ msgstr "Nie można usunąć zasobu"
+
+#~ msgid ""
+#~ "An attempt to delete the specified resource <strong>%1</strong> failed."
+#~ msgstr ""
+#~ "Próba usunięcia podanego  zasobu <strong>%1</strong> nie powiodła się."
+
+#~ msgid "Unexpected Program Termination"
+#~ msgstr "Niespodziewane zakończenie programu"
+
+#~ msgid ""
+#~ "The program on your computer which provides access to the <strong>%1</"
+#~ "strong> protocol has unexpectedly terminated."
+#~ msgstr ""
+#~ "Program na Twoim komputerze, odpowiadający za dostęp do protokołu <strong>"
+#~ "%1</strong>, nieoczekiwanie zakończył działanie."
+
+#~ msgid "Out of Memory"
+#~ msgstr "Brak pamięci"
+
+#~ msgid ""
+#~ "The program on your computer which provides access to the <strong>%1</"
+#~ "strong> protocol could not obtain the memory required to continue."
+#~ msgstr ""
+#~ "Programowi na Twoim komputerze, odpowiadającemu za dostęp do protokołu "
+#~ "<strong>%1</strong>, zabrakło pamięci niezbędnej do kontynuowania pracy."
+
+#~ msgid "Unknown Proxy Host"
+#~ msgstr "Nieznany serwer pośredniczący (proxy)"
+
+#~ msgid ""
+#~ "While retrieving information about the specified proxy host, <strong>%1</"
+#~ "strong>, an Unknown Host error was encountered. An unknown host error "
+#~ "indicates that the requested name could not be located on the Internet."
+#~ msgstr ""
+#~ "Podczas pobierania informacji o podanym serwerze pośredniczącym <strong>"
+#~ "%1</strong> wystąpił błąd \"Nieznany adres\". Błąd ten oznacza, że w "
+#~ "Internecie nie znaleziono komputera o podanej nazwie."
+
+#~ msgid ""
+#~ "There may have been a problem with your network configuration, "
+#~ "specifically your proxy's hostname. If you have been accessing the "
+#~ "Internet with no problems recently, this is unlikely."
+#~ msgstr ""
+#~ "Być może wystąpił problem z połączeniem sieciowym, na przykład z nazwą "
+#~ "serwera pośredniczącego. Jeśli jednak ostatnio korzystałeś z Internetu "
+#~ "bez problemów, jest to mało prawdopodobne."
+
+#~ msgid "Double-check your proxy settings and try again."
+#~ msgstr "Sprawdź ustawienia serwera pośredniczącego i ponów próbę."
+
+#~ msgid "Authentication Failed: Method %1 Not Supported"
+#~ msgstr "Błąd uwierzytelnienia: metoda %1 nie jest obsługiwana"
+
+#~ msgid ""
+#~ "Although you may have supplied the correct authentication details, the "
+#~ "authentication failed because the method that the server is using is not "
+#~ "supported by the KDE program implementing the protocol %1."
+#~ msgstr ""
+#~ "Chociaż mogłeś podać prawidłowe dane do uwierzytelnienia, nie powiodła "
+#~ "się ono ponieważ metoda, używana przez ten serwer, nie jest obsługiwana "
+#~ "przez program KDE, realizujący protokół %1."
+
+#~ msgid ""
+#~ "Please file a bug at <a href=\"http://bugs.kde.org/\">http://bugs.kde.org/"
+#~ "</a> to inform the KDE team of the unsupported authentication method."
+#~ msgstr ""
+#~ "Proszę wysłać raport o błędzie na adres <a href=\"http://bugs.kde.org/"
+#~ "\">http://bugs.kde.org/</a>, informując Zespół KDE o nieobsługiwanej "
+#~ "metodzie uwierzytelnienia."
+
+#~ msgid "Request Aborted"
+#~ msgstr "Żądanie przerwane"
+
+#~ msgid "Internal Error in Server"
+#~ msgstr "Wewnętrzny błąd serwera"
+
+#~ msgid ""
+#~ "The program on the server which provides access to the <strong>%1</"
+#~ "strong> protocol has reported an internal error: %2."
+#~ msgstr ""
+#~ "Program na serwerze, zapewniający dostęp do protokołu <strong>%1</"
+#~ "strong>, zwrócił błąd wewnętrzny: %2."
+
+#~ msgid ""
+#~ "This is most likely to be caused by a bug in the server program. Please "
+#~ "consider submitting a full bug report as detailed below."
+#~ msgstr ""
+#~ "Najprawdopodobniej jest to spowodowane błędem programu na serwerze. "
+#~ "Proszę rozważyć wysłanie pełnej informacji o błędzie według poniższych "
+#~ "instrukcji."
+
+#~ msgid ""
+#~ "Contact the administrator of the server to advise them of the problem."
+#~ msgstr ""
+#~ "Skontaktuj się z administratorem serwera, by poinformować go o problemie."
+
+#~ msgid ""
+#~ "If you know who the authors of the server software are, submit the bug "
+#~ "report directly to them."
+#~ msgstr ""
+#~ "Jeśli znasz autorów oprogramowania dla tego serwera, wyślij raport o "
+#~ "błędzie bezpośrednio do nich."
+
+#~ msgid "Timeout Error"
+#~ msgstr "Czas minął"
+
+#~ msgid ""
+#~ "Although contact was made with the server, a response was not received "
+#~ "within the amount of time allocated for the request as follows:"
+#~ "<ul><li>Timeout for establishing a connection: %1 seconds</li><li>Timeout "
+#~ "for receiving a response: %2 seconds</li><li>Timeout for accessing proxy "
+#~ "servers: %3 seconds</li></ul>Please note that you can alter these timeout "
+#~ "settings in the KDE System Settings, by selecting Network Settings -> "
+#~ "Connection Preferences."
+#~ msgstr ""
+#~ "Chociaż połączenie z serwerem zostało nawiązane, nie otrzymano odpowiedzi "
+#~ "w wyznaczonym czasie: Aktualne limity czasowe to:<ul><li>czas na "
+#~ "nawiązanie połączenia: %1 s.</li> <li>czas na otrzymanie odpowiedzi: %2 s."
+#~ "</li> <li>czas na połączenie z serwerem pośredniczącym: %3 s.</li></ul> "
+#~ "Wszystkie te ustawienia można zmienić w Ustawieniach systemowych KDE, "
+#~ "wybierając Sieć->Ustawienia->Połączenie."
+
+#~ msgid "The server was too busy responding to other requests to respond."
+#~ msgstr "Serwer był zbyt zajęty, realizując inne żądania."
+
+#~ msgid "Unknown Error"
+#~ msgstr "Nieznany błąd"
+
+#~ msgid ""
+#~ "The program on your computer which provides access to the <strong>%1</"
+#~ "strong> protocol has reported an unknown error: %2."
+#~ msgstr ""
+#~ "Program na Twoim komputerze, umożliwiający dostęp do protokołu <strong>"
+#~ "%1</strong>, zwrócił nieznany błąd: %2."
+
+#~ msgid "Unknown Interruption"
+#~ msgstr "Nieznane przerwanie"
+
+#~ msgid ""
+#~ "The program on your computer which provides access to the <strong>%1</"
+#~ "strong> protocol has reported an interruption of an unknown type: %2."
+#~ msgstr ""
+#~ "Program na Twoim komputerze, umożliwiający dostęp do protokołu <strong>"
+#~ "%1</strong>, zwrócił przerwanie nieznanego typu %2."
+
+#~ msgid "Could Not Delete Original File"
+#~ msgstr "Nie można usunąć oryginalnego pliku"
+
+#~ msgid ""
+#~ "The requested operation required the deleting of the original file, most "
+#~ "likely at the end of a file move operation. The original file <strong>%1</"
+#~ "strong> could not be deleted."
+#~ msgstr ""
+#~ "Żądana operacja wymagała usunięcia oryginalnego pliku (zazwyczaj na końcu "
+#~ "operacji przenoszenia pliku). Niestety, oryginalnego pliku <strong>%1</"
+#~ "strong> nie można było usunąć."
+
+#~ msgid "Could Not Delete Temporary File"
+#~ msgstr "Nie można usunąć pliku tymczasowego"
+
+#~ msgid ""
+#~ "The requested operation required the creation of a temporary file in "
+#~ "which to save the new file while being downloaded. This temporary file "
+#~ "<strong>%1</strong> could not be deleted."
+#~ msgstr ""
+#~ "Żądana operacja wymagała utworzenia pliku tymczasowego, w którym możliwe "
+#~ "byłoby zapisanie ściąganego pliku. Niestety, pliku tymczasowego <strong>"
+#~ "%1</strong> nie udało się utworzyć."
+
+#~ msgid "Could Not Rename Original File"
+#~ msgstr "Nie można zmienić nazwy pliku"
+
+#~ msgid ""
+#~ "The requested operation required the renaming of the original file "
+#~ "<strong>%1</strong>, however it could not be renamed."
+#~ msgstr ""
+#~ "Żądana operacja wymagała zmiany nazwy oryginalnego pliku <strong>%1</"
+#~ "strong>. Niestety, nie udało się zmienić tej nazwy."
+
+#~ msgid "Could Not Rename Temporary File"
+#~ msgstr "Nie można zmienić nazwy pliku tymczasowego"
+
+#~ msgid ""
+#~ "The requested operation required the creation of a temporary file <strong>"
+#~ "%1</strong>, however it could not be created."
+#~ msgstr ""
+#~ "Żądana operacja wymagała utworzenia tymczasowego pliku <strong>%1</"
+#~ "strong>, ale nie udało się go utworzyć."
+
+#~ msgid "Could Not Create Link"
+#~ msgstr "Nie można utworzyć dowiązania"
+
+#~ msgid "Could Not Create Symbolic Link"
+#~ msgstr "Nie można utworzyć dowiązania symbolicznego"
+
+#~ msgid "The requested symbolic link %1 could not be created."
+#~ msgstr "Nie można utworzyć żądanego dowiązania symbolicznego %1."
+
+#~ msgid "No Content"
+#~ msgstr "Brak treści"
+
+#~ msgid "Disk Full"
+#~ msgstr "Dysk pełny"
+
+#~ msgid ""
+#~ "The requested file <strong>%1</strong> could not be written to as there "
+#~ "is inadequate disk space."
+#~ msgstr ""
+#~ "Nie można zapisać żądanego pliku <strong>%1</strong> z powodu braku "
+#~ "miejsca."
+
+#~ msgid ""
+#~ "Free up enough disk space by 1) deleting unwanted and temporary files; 2) "
+#~ "archiving files to removable media storage such as CD-Recordable discs; "
+#~ "or 3) obtain more storage capacity."
+#~ msgstr ""
+#~ "Zwolnij wystarczającą ilość miejsca przez: 1) usunięcie niepotrzebnych i "
+#~ "tymczasowych plików; 2) zarchiwizowanie części danych na innych nośnikach "
+#~ "danych (np. płytach CD); lub 3) zainstalowanie dodatkowego dysku."
+
+#~ msgid "Source and Destination Files Identical"
+#~ msgstr "Pliki źródłowy i docelowy są tym samym plikiem"
+
+#~ msgid ""
+#~ "The operation could not be completed because the source and destination "
+#~ "files are the same file."
+#~ msgstr ""
+#~ "Operacja nie mogła zostać wykonana, ponieważ pliki źródłowy i docelowy są "
+#~ "tym samym plikiem."
+
+#~ msgid "Choose a different filename for the destination file."
+#~ msgstr "Wybierz inną nazwę pliku docelowego."
+
+#~ msgid "Undocumented Error"
+#~ msgstr "Nieudokumentowany błąd"
+
+#~ msgctxt "@title job"
+#~ msgid "Moving"
+#~ msgstr "Przenoszenie"
+
+#~ msgctxt "@title job"
+#~ msgid "Copying"
+#~ msgstr "Kopiowanie"
+
+#~ msgctxt "@title job"
+#~ msgid "Creating directory"
+#~ msgstr "Tworzenie katalogów"
+
+#~ msgctxt "@title job"
+#~ msgid "Deleting"
+#~ msgstr "Kasowanie"
+
+#~ msgctxt "@title job"
+#~ msgid "Examining"
+#~ msgstr "Sprawdzanie"
+
+#~ msgctxt "@title job"
+#~ msgid "Transferring"
+#~ msgstr "Przenoszenie"
+
+#~ msgctxt "@title job"
+#~ msgid "Mounting"
+#~ msgstr "Montowanie"
+
+#~ msgid "Device"
+#~ msgstr "Urządzenie"
+
+#~ msgid "Mountpoint"
+#~ msgstr "Punkt montowania"
+
+#~ msgctxt "@title job"
+#~ msgid "Unmounting"
+#~ msgstr "Odmontowanie"
+
+#~ msgctxt "@info"
+#~ msgid ""
+#~ "Do you want to permanently delete all items from Trash? This action "
+#~ "cannot be undone."
+#~ msgstr "Czy usunąć wszystkie pliki z Kosza? Nie można cofnąć tej akcji."
+
+#~ msgid "Do you really want to move this item to the trash?"
+#~ msgid_plural "Do you really want to move these %1 items to the trash?"
+#~ msgstr[0] "Czy na pewno przenieść ten %1 element do kosza?"
+#~ msgstr[1] "Czy na pewno przenieść te %1 elementy do kosza?"
+#~ msgstr[2] "Czy na pewno przenieść tych %1 elementów do kosza?"
+
+#~ msgctxt "Verb"
+#~ msgid "&Trash"
+#~ msgstr "Do &kosza"
+
+#~ msgid "The peer SSL certificate chain appears to be corrupt."
+#~ msgstr "Wygląda na to, że ciąg certyfikatów SSL jest przekłamany."
+
+#~ msgid "SSL"
+#~ msgstr "SSL"
+
+#~ msgid "Updating System Configuration"
+#~ msgstr "Uaktualnianie konfiguracji systemu"
+
+#~ msgid "Updating system configuration."
+#~ msgstr "Uaktualnianie konfiguracji systemu."
+
+#~ msgid "No service implementing %1"
+#~ msgstr "Żadna usługa nie obsługuje %1"
+
+#~ msgid "The desktop entry file %1 has no Type=... entry."
+#~ msgstr "Plik elementu pulpitu %1 nie zawiera pozycji Type=..."
+
+#~ msgid ""
+#~ "The desktop entry of type\n"
+#~ "%1\n"
+#~ "is unknown."
+#~ msgstr ""
+#~ "Typ %1\n"
+#~ "elementu pulpitu jest nieznany."
+
+#~ msgid ""
+#~ "The desktop entry file\n"
+#~ "%1\n"
+#~ "is of type FSDevice but has no Dev=... entry."
+#~ msgstr ""
+#~ "Plik elementu pulpitu\n"
+#~ "%1\n"
+#~ "opisuje urządzenie, ale nie zawiera pozycji Dev=..."
+
+#~ msgid ""
+#~ "The desktop entry file\n"
+#~ "%1\n"
+#~ "is of type Link but has no URL=... entry."
+#~ msgstr ""
+#~ "Plik elementu pulpitu\n"
+#~ "%1\n"
+#~ "opisuje odnośnik, ale nie zawiera pozycji URL=..."
+
+#~ msgid "Mount"
+#~ msgstr "Montuj"
+
+#~ msgid "Eject"
+#~ msgstr "Wysuń"
+
+#~ msgid "Unmount"
+#~ msgstr "Odmontuj"
+
+#~ msgid ""
+#~ "Malformed URL\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Nieprawidłowy URL\n"
+#~ "%1"
+
+#~ msgid ""
+#~ "URL cannot be listed\n"
+#~ "%1"
+#~ msgstr ""
+#~ "URL nie może zostać wyświetlony\n"
+#~ "%1"
+
+#~ msgctxt "@title:column"
+#~ msgid "Name"
+#~ msgstr "Nazwa"
+
+#~ msgctxt "@title:column"
+#~ msgid "Size"
+#~ msgstr "Rozmiar"
+
+#~ msgctxt "@title:column"
+#~ msgid "Date"
+#~ msgstr "Data"
+
+#~ msgctxt "@title:column"
+#~ msgid "Permissions"
+#~ msgstr "Prawa dostępu"
+
+#~ msgctxt "@title:column"
+#~ msgid "Owner"
+#~ msgstr "Właściciel"
+
+#~ msgctxt "@title:column"
+#~ msgid "Group"
+#~ msgstr "Grupa"
+
+#~ msgctxt "@title:column"
+#~ msgid "Type"
+#~ msgstr "Typ"
+
+#~ msgid "Default"
+#~ msgstr "Domyślne"
+
+#~ msgid "(Symbolic Link to %1)"
+#~ msgstr "(Symboliczny odnośnik do %1)"
+
+#~ msgid "(%1, Link to %2)"
+#~ msgstr "(%1, dowiązanie do %2)"
+
+#~ msgid " (Points to %1)"
+#~ msgstr " (Wskazuje na: %1)"
+
+#~ msgid "Link to %1 (%2)"
+#~ msgstr "Dowiązanie do %1 (%2)"
+
+#~ msgid "Owner:"
+#~ msgstr "Właściciel:"
+
+#~ msgid "Permissions:"
+#~ msgstr "Prawa dostępu:"
+
+#~ msgctxt "@title:menu"
+#~ msgid "&Actions"
+#~ msgstr "Dzi&ałania"
+
+#~ msgid "&Open with %1"
+#~ msgstr "&Otwórz za pomocą: %1"
+
+#~ msgctxt "@title:menu"
+#~ msgid "&Open With"
+#~ msgstr "&Otwórz za pomocą"
+
+#~ msgctxt "@action:inmenu Open With"
+#~ msgid "&Other..."
+#~ msgstr "&Inne..."
+
+#~ msgctxt "@title:menu"
+#~ msgid "&Open With..."
+#~ msgstr "&Otwórz za pomocą..."
+
+#~ msgid "Open &with %1"
+#~ msgstr "Ot&wórz za pomocą: %1"
+
+#~ msgctxt "@item:inmenu Open With, %1 is application name"
+#~ msgid "%1"
+#~ msgstr "%1"
+
+#~ msgctxt "Items in a folder"
+#~ msgid "1 item"
+#~ msgid_plural "%1 items"
+#~ msgstr[0] "%1 elem."
+#~ msgstr[1] "%1 elem."
+#~ msgstr[2] "%1 elem."
+
+#~ msgctxt "@info mimetype"
+#~ msgid "Unknown"
+#~ msgstr "Nieznany"
+
+#~ msgid "All Pictures"
+#~ msgstr "Wszystkie obrazy"
+
+#~ msgid "Mime Type"
+#~ msgstr "Typy MIME"
+
+#~ msgid "Comment"
+#~ msgstr "Komentarz"
+
+#~ msgid "Patterns"
+#~ msgstr "Wzorce"
+
+#~ msgid "&Edit..."
+#~ msgstr "&Edycja..."
+
+#~ msgid "Click this button to display the familiar KDE mime type editor."
+#~ msgstr "Kliknij ten przycisk, by włączyć edytor typów MIME KDE."
+
+#~ msgid ""
+#~ "<qt>Unable to enter <b>%1</b>.\n"
+#~ "You do not have access rights to this location.</qt>"
+#~ msgstr ""
+#~ "<qt>Nie można odczytać <b>%1</b>.\n"
+#~ "Brak uprawnień do tej lokalizacji.</qt>"
+
+#~ msgid ""
+#~ "<qt>The file <b>%1</b> is an executable program. For safety it will not "
+#~ "be started.</qt>"
+#~ msgstr ""
+#~ "<qt>Plik <b>%1</b> jest programem wykonywalnym. Nie zostanie uruchomiony "
+#~ "z powodów bezpieczeństwa.</qt>"
+
+#~ msgid "<qt>You do not have permission to run <b>%1</b>.</qt>"
+#~ msgstr "<qt>Nie masz praw do wykonania <b>%1</b>.</qt>"
+
+#~ msgid "You are not authorized to select an application to open this file."
+#~ msgstr "Nie masz prawa wyboru aplikacji do otworzenia tego pliku."
+
+#~ msgid "Open with:"
+#~ msgstr "Otwórz za pomocą:"
+
+#~ msgid "You are not authorized to execute this file."
+#~ msgstr "Nie masz praw do uruchomienia tego pliku."
+
+#~ msgid "Launching %1"
+#~ msgstr "Uruchamianie %1"
+
+#~ msgid "Error processing Exec field in %1"
+#~ msgstr "Błąd przetwarzania pola Exec w %1"
+
+#~ msgid "You are not authorized to execute this service."
+#~ msgstr "Nie masz praw do uruchomienia tej usługi."
+
+#~ msgctxt "Warning about executing unknown .desktop file"
+#~ msgid "Warning"
+#~ msgstr "Ostrzeżenie"
+
+#~ msgctxt "program name follows in a line edit below"
+#~ msgid "This will start the program:"
+#~ msgstr "To uruchomi program:"
+
+#~ msgid "If you do not trust this program, click Cancel"
+#~ msgstr "Jeśli nie ufasz temu programowi, kliknij Anuluj"
+
+#~ msgid "Unable to make the service %1 executable, aborting execution"
+#~ msgstr "Nie można uruchomić usługi %1 (błąd podczas zmiany uprawnień)"
+
+#~ msgid ""
+#~ "<qt>Unable to run the command specified. The file or folder <b>%1</b> "
+#~ "does not exist.</qt>"
+#~ msgstr ""
+#~ "<qt>Nie można uruchomić polecenia. Plik lub katalog <b>%1</b> nie "
+#~ "istnieje.</qt>"
+
+#~ msgid "Could not find the program '%1'"
+#~ msgstr "Nie można znaleźć programu '%1'"
+
+#~ msgid "Acquire Image"
+#~ msgstr "Pobierz obrazek"
+
+#~ msgid "OCR Image"
+#~ msgstr "Użyj OCR"
+
+#~ msgid "The desktop is offline"
+#~ msgstr "Pulpit jest odłączony"
+
+#~ msgid "File '%1' is not readable"
+#~ msgstr "Nie można czytać pliku '%1'"
+
+#~ msgid "ERROR: Unknown protocol '%1'"
+#~ msgstr "Błąd: Nieznany protokół '%1'"
+
+#~ msgid "Authorization Dialog"
+#~ msgstr "Żądanie autoryzacji"
+
+#~ msgid "Filename for clipboard content:"
+#~ msgstr "Nazwa pliku dla zawartości schowka:"
+
+#~ msgid "%1 (%2)"
+#~ msgstr "%1 (%2)"
+
+#~ msgid ""
+#~ "The clipboard has changed since you used 'paste': the chosen data format "
+#~ "is no longer applicable. Please copy again what you wanted to paste."
+#~ msgstr ""
+#~ "Schowek został zmieniony od czasu, kiedy zostało użyte 'Wklej': wybrany "
+#~ "format danych nie ma teraz zastosowania. Proszę ponownie skopiować to, co "
+#~ "było do wklejenia."
+
+#~ msgid "The clipboard is empty"
+#~ msgstr "Schowek jest pusty"
+
+#~ msgid "&Paste File"
+#~ msgid_plural "&Paste %1 Files"
+#~ msgstr[0] "&Wklej %1 plik"
+#~ msgstr[1] "&Wklej %1 pliki"
+#~ msgstr[2] "&Wklej %1 plików"
+
+#~ msgid "&Paste URL"
+#~ msgid_plural "&Paste %1 URLs"
+#~ msgstr[0] "&Wklej %1 URL"
+#~ msgstr[1] "&Wklej %1 URL-e"
+#~ msgstr[2] "&Wklej %1 URL-i"
+
+#~ msgid "&Paste Clipboard Contents"
+#~ msgstr "&Wklej zawartość schowka"
+
+#~ msgid "Data format:"
+#~ msgstr "Format danych:"
+
+#~ msgid "Appl&y to All"
+#~ msgstr "Zas&tosuj do wszystkich"
+
+#~ msgid ""
+#~ "When this is checked the button pressed will be applied to all subsequent "
+#~ "folder conflicts for the remainder of the current job.\n"
+#~ "Unless you press Skip you will still be prompted in case of a conflict "
+#~ "with an existing file in the directory."
+#~ msgstr ""
+#~ "Kiedy ta opcja jest zaznaczona, naciśnięty przycisk zostanie zastosowany "
+#~ "do wszystkich kolejnych konfliktów katalogów w bieżącym zadaniu.\n"
+#~ "W przypadku konfliktu z istniejącym plikiem nastąpi odpowiednie zapytanie "
+#~ "jeśli nie naciśniesz Pomiń."
+
+#~ msgid ""
+#~ "When this is checked the button pressed will be applied to all subsequent "
+#~ "conflicts for the remainder of the current job."
+#~ msgstr ""
+#~ "Kiedy ta opcja jest zaznaczona, naciśnięty przycisk zostanie zastosowany "
+#~ "do wszystkich kolejnych konfliktów w bieżącym zadaniu."
+
+#~ msgid "&Rename"
+#~ msgstr "Zmień &nazwę"
+
+#~ msgid "Suggest New &Name"
+#~ msgstr "Zasugeruj nową &nazwę"
+
+#~ msgid "&Skip"
+#~ msgstr "&Pomiń"
+
+#~ msgid "Do not copy or move this folder, skip to the next item instead"
+#~ msgstr ""
+#~ "Nie kopiuj ani nie przenoś tego folderu, zamiast tego przejdź do kolejnego"
+
+#~ msgid "Do not copy or move this file, skip to the next item instead"
+#~ msgstr ""
+#~ "Nie kopiuj ani nie przenoś tego pliku, zamiast tego przejdź do kolejnego"
+
+#~ msgctxt "Write files into an existing folder"
+#~ msgid "&Write Into"
+#~ msgstr "&Zapisz do"
+
+#~ msgid "&Overwrite"
+#~ msgstr "&Zastąp"
+
+#~ msgid ""
+#~ "Files and folders will be copied into the existing directory, alongside "
+#~ "its existing contents.\n"
+#~ "You will be prompted again in case of a conflict with an existing file in "
+#~ "the directory."
+#~ msgstr ""
+#~ "Pliki i foldery będą kopiowane do istniejącego katalogu, obok jego "
+#~ "istniejącej zawartości.\n"
+#~ "W przypadku konfliktu z istniejącym plikiem nastąpi odpowiednie zapytanie."
+
+#~ msgid "&Resume"
+#~ msgstr "&Wznów"
+
+#~ msgid ""
+#~ "This action would overwrite '%1' with itself.\n"
+#~ "Please enter a new file name:"
+#~ msgstr ""
+#~ "To działanie spowodowałoby nadpisanie '%1' przez samego siebie.\n"
+#~ "Proszę podać nową nazwę:"
+
+#~ msgid "C&ontinue"
+#~ msgstr "&Kontynuuj"
+
+#~ msgid "This action will overwrite the destination."
+#~ msgstr "To działanie spowoduje nadpisanie docelowej lokalizacji."
+
+#~ msgid "Source"
+#~ msgstr "Źródło"
+
+#~ msgid "Destination"
+#~ msgstr "Cel"
+
+#~ msgid "Warning, the destination is more recent."
+#~ msgstr "Ostrzeżenie, to miejsce docelowe jest nowsze."
+
+#~ msgid "An older item named '%1' already exists."
+#~ msgstr "Starszy plik o nazwie '%1' już istnieje."
+
+#~ msgid "A similar file named '%1' already exists."
+#~ msgstr "Plik o nazwie '%1' już istnieje."
+
+#~ msgid "A more recent item named '%1' already exists."
+#~ msgstr "Nowszy element o nazwie '%1' już istnieje."
+
+#~ msgid "Rename:"
+#~ msgstr "Zmień nazwę:"
+
+#~ msgid "Information"
+#~ msgstr "Informacje"
+
+#~ msgid "Skip"
+#~ msgstr "Pominięcie"
+
+#~ msgid "AutoSkip"
+#~ msgstr "Autopominięcie"
+
+#~ msgid "Unknown protocol '%1'."
+#~ msgstr "Nieznany protokół '%1'."
+
+#~ msgid "Can not find io-slave for protocol '%1'."
+#~ msgstr "Nie można odnaleźć io-slave dla protokołu '%1'."
+
+#~ msgid "Cannot talk to klauncher: %1"
+#~ msgstr "Nie można skomunikować się z programem klauncher: %1"
+
+#~ msgid ""
+#~ "Unable to create io-slave:\n"
+#~ "klauncher said: %1"
+#~ msgstr ""
+#~ "Nie można utworzyć io-slave:\n"
+#~ "Program klauncher zwrócił komunikat: %1"
+
+#~ msgid "&Yes"
+#~ msgstr "&Tak"
+
+#~ msgid "&No"
+#~ msgstr "&Nie"
+
+#~ msgid "&Details"
+#~ msgstr "&Szczegóły"
+
+#~ msgid "&Forever"
+#~ msgstr "Na &zawsze"
+
+#~ msgid "Co&ntinue"
+#~ msgstr "Ko&ntynuuj"
+
+#~ msgid "&Current Session only"
+#~ msgstr "Tylko na &bieżącą sesję"
+
+#~ msgid ""
+#~ "You are about to leave secure mode. Transmissions will no longer be "
+#~ "encrypted.\n"
+#~ "This means that a third party could observe your data in transit."
+#~ msgstr ""
+#~ "Opuszczasz bezpieczny tryb transmisji, dane będą przesyłane bez "
+#~ "szyfrowania.\n"
+#~ "Od tej pory osoby postronne będą mogły obserwować przesyłane przez Ciebie "
+#~ "dane."
+
+#~ msgid "Security Information"
+#~ msgstr "Informacja o bezpieczeństwie"
+
+#~ msgid "C&ontinue Loading"
+#~ msgstr "K&ontynuuj wczytywanie"
+
+#~ msgctxt "%1 is a host name"
+#~ msgid "%1: SSL negotiation failed"
+#~ msgstr "%1: Negocjacja SSL nie powiodła się"
+
+#~ msgid ""
+#~ "You are about to enter secure mode. All transmissions will be encrypted "
+#~ "unless otherwise noted.\n"
+#~ "This means that no third party will be able to easily observe your data "
+#~ "in transit."
+#~ msgstr ""
+#~ "Przełączenie w bezpieczny tryb transmisji. Wszelkie połączenia będą "
+#~ "zaszyfrowane, o ile nie poda się inaczej.\n"
+#~ "Osoby postronne nie będą mogły łatwo przechwycić Twoich danych."
+
+#~ msgid "Display SSL &Information"
+#~ msgstr "Wyświetl &informację SSL"
+
+#~ msgid "C&onnect"
+#~ msgstr "P&ołącz"
+
+#~ msgid "Enter the certificate password:"
+#~ msgstr "Podaj hasło certyfikatu:"
+
+#~ msgid "SSL Certificate Password"
+#~ msgstr "Hasło certyfikatu SSL"
+
+#~ msgid "Unable to open the certificate. Try a new password?"
+#~ msgstr "Nie można otworzyć certyfikatu.  Spróbować innego hasła?"
+
+#~ msgid "The procedure to set the client certificate for the session failed."
+#~ msgstr ""
+#~ "Operacja ustanowienia certyfikatu klienta na tę sesję nie powiodła się."
+
+#~ msgid ""
+#~ "The server failed the authenticity check (%1).\n"
+#~ "\n"
+#~ msgstr ""
+#~ "Serwer nie przeszedł testu uwierzytelnienia (%1).\n"
+#~ "\n"
+
+#~ msgid "Server Authentication"
+#~ msgstr "Uwierzytelnianie serwera"
+
+#~ msgid ""
+#~ "Would you like to accept this certificate forever without being prompted?"
+#~ msgstr ""
+#~ "Czy zaakceptować certyfikat na zawsze, bez konieczności dalszego "
+#~ "potwierdzania?"
+
+#~ msgid ""
+#~ "You have indicated that you wish to accept this certificate, but it is "
+#~ "not issued to the server who is presenting it. Do you wish to continue "
+#~ "loading?"
+#~ msgstr ""
+#~ "Zgłosiłeś chęć przyjęcia tego certyfikatu, ale nie zostało to wysłane do "
+#~ "serwera, który go zgłasza. Kontynuować pobieranie?"
+
+#~ msgid ""
+#~ "SSL certificate is being rejected as requested. You can disable this in "
+#~ "the KDE System Settings."
+#~ msgstr ""
+#~ "Certyfikat SSL został odrzucony zgodnie z życzeniem. Możesz to zmienić w "
+#~ "Ustawieniach systemowych KDE."
+
+#~ msgid "Common name:"
+#~ msgstr "Nazwa ogólna:"
+
+#~ msgid "Acme Co."
+#~ msgstr "Acme Co."
+
+#~ msgid "Organization:"
+#~ msgstr "Organizacja:"
+
+#~ msgid "Acme Sundry Products Company"
+#~ msgstr "Acme Sundry Products Company"
+
+#~ msgid "Organizational unit:"
+#~ msgstr "Jednostka organizacyjna:"
+
+#~ msgid "Fraud Department"
+#~ msgstr "Fraud Department"
+
+#~ msgid "Country:"
+#~ msgstr "Kraj:"
+
+#~ msgid "Canada"
+#~ msgstr "Kanada"
+
+#~ msgid "State:"
+#~ msgstr "Stan:"
+
+#~ msgid "Quebec"
+#~ msgstr "Quebec"
+
+#~ msgid "City:"
+#~ msgstr "Miasto:"
+
+#~ msgid "Lakeridge Meadows"
+#~ msgstr "Lakeridge Meadows"
+
+#~ msgid "Organization / Common Name"
+#~ msgstr "Organizacja / Nazwa"
+
+#~ msgid "Organizational Unit"
+#~ msgstr "Jednostka organizacyjna"
+
+#~ msgid "Display..."
+#~ msgstr "Wyświetlanie..."
+
+#~ msgid "Disable"
+#~ msgstr "Wyłącz"
+
+#~ msgid "Enable"
+#~ msgstr "Włącz"
+
+#~ msgid "System certificates"
+#~ msgstr "Certyfikaty systemu"
+
+#~ msgid "User-added certificates"
+#~ msgstr "Certyfikaty dodane przez użytkownika"
+
+#~ msgid "Pick Certificates"
+#~ msgstr "Pobierz certyfikaty"
+
+#~ msgid "<b>Subject Information</b>"
+#~ msgstr "<b>Informacja</b>"
+
+#~ msgid "<b>Issuer Information</b>"
+#~ msgstr " <b>Informacje emitenta</b>"
+
+#~ msgid "<b>Other</b>"
+#~ msgstr "<b>Inne</b>"
+
+#~ msgid "Validity period"
+#~ msgstr "Okres ważności"
+
+#~ msgid "Serial number"
+#~ msgstr "Numer seryjny"
+
+#~ msgid "MD5 digest"
+#~ msgstr "Skrót MD5"
+
+#~ msgid "SHA1 digest"
+#~ msgstr "Skrót SHA1"
+
+#~ msgctxt "%1 is the effective date of the certificate, %2 is the expiry date"
+#~ msgid "%1 to %2"
+#~ msgstr "od %1 do %2"
+
+#~ msgid "SSL Configuration Module"
+#~ msgstr "Moduł konfiguracji SSL"
+
+#~ msgid "Copyright 2010 Andreas Hartmetz"
+#~ msgstr "Copyright 2010 Andreas Hartmetz"
+
+#~ msgid "Andreas Hartmetz"
+#~ msgstr "Andreas Hartmetz"
+
+#~ msgid "SSL Signers"
+#~ msgstr "Podpisy SSL"
+
+#~ msgid ""
+#~ "You have indicated that you wish to obtain or purchase a secure "
+#~ "certificate. This wizard is intended to guide you through the procedure. "
+#~ "You may cancel at any time, and this will abort the transaction."
+#~ msgstr ""
+#~ "Wybrałeś pobranie lub kupno bezpiecznego certyfikatu. Ten asystent pomoże "
+#~ "Ci w tej operacji. Operację można będzie przerwać w dowolnej chwili."
+
+#~ msgid ""
+#~ "You must now provide a password for the certificate request. Please "
+#~ "choose a very secure password as this will be used to encrypt your "
+#~ "private key."
+#~ msgstr ""
+#~ "Proszę podać hasło dla tego żądania utworzenia certyfikatu. Hasło należy "
+#~ "wybrać tak, by było trudne do odgadnięcia, ponieważ zostanie użyte do "
+#~ "zaszyfrowania Twojego klucza prywatnego."
+
+#~ msgid "&Repeat password:"
+#~ msgstr "&Powtórz hasło:"
+
+#~ msgid "&Choose password:"
+#~ msgstr "&Wybierz hasło:"
+
+#~ msgid "Certificate"
+#~ msgstr "Certyfikat"
+
+#~ msgid "Save selection for this host."
+#~ msgstr "Zapisz wybraną opcję dla tego serwera."
+
+#~ msgid "Send certificate"
+#~ msgstr "Wyślij certyfikat"
+
+#~ msgid "Do not send a certificate"
+#~ msgstr "Nie wysyłaj certyfikatu"
+
+#~ msgid "KDE SSL Certificate Dialog"
+#~ msgstr "Okno dialogowe certyfikatu KDE SSL"
+
+#~ msgid ""
+#~ "The server <b>%1</b> requests a certificate.<br /><br />Select a "
+#~ "certificate to use from the list below:"
+#~ msgstr ""
+#~ "Serwer <b>%1</b> żąda certyfikatu.<br /><br />Proszę wybrać z listy "
+#~ "poniżej certyfikat, który ma zostać użyty:"
+
+#~ msgid "Signature Algorithm: "
+#~ msgstr "Algorytm podpisu: "
+
+#~ msgid "Unknown"
+#~ msgstr "Nieznany"
+
+#~ msgid "Signature Contents:"
+#~ msgstr "Zawartość podpisu:"
+
+#~ msgctxt "Unknown"
+#~ msgid "Unknown key algorithm"
+#~ msgstr "Nieznany"
+
+#~ msgid "Key type: RSA (%1 bit)"
+#~ msgstr "Typ klucza: RSA (%1 bitów)"
+
+#~ msgid "Modulus: "
+#~ msgstr "Współczynnik: "
+
+#~ msgid "Exponent: 0x"
+#~ msgstr "Wykładnik: 0x"
+
+#~ msgid "Key type: DSA (%1 bit)"
+#~ msgstr "Typ klucza: DSA (%1 bitów)"
+
+#~ msgid "Prime: "
+#~ msgstr "Liczba pierwsza: "
+
+#~ msgid "160 bit prime factor: "
+#~ msgstr "160-bitowy czynnik pierwszy: "
+
+#~ msgid "Public key: "
+#~ msgstr "Klucz publiczny: "
+
+#~ msgid "The certificate is valid."
+#~ msgstr "Certyfikat jest ważny."
+
+#~ msgid ""
+#~ "Retrieval of the issuer certificate failed. This means the CA's "
+#~ "(Certificate Authority) certificate can not be found."
+#~ msgstr ""
+#~ "Nie udało się pobrać certyfikatu wystawcy. Oznacza to, że nie można "
+#~ "znaleźć certyfikatu Urzędu certyfikacji (Certificate Authority, CA)."
+
+#~ msgid ""
+#~ "Retrieval of the CRL (Certificate Revocation List) failed. This means the "
+#~ "CA's (Certificate Authority) CRL can not be found."
+#~ msgstr ""
+#~ "Nie udało się pobrać listy unieważnionych certyfikatów (Certificate "
+#~ "Revocation List, CRL). Oznacza to, że CRL Urzędu certyfikacji nie został "
+#~ "znaleziony."
+
+#~ msgid ""
+#~ "The decryption of the certificate's signature failed. This means it could "
+#~ "not even be calculated as opposed to just not matching the expected "
+#~ "result."
+#~ msgstr ""
+#~ "Odszyfrowanie podpisu certyfikatu nie udało się. Oznacza to, że nie nie "
+#~ "można go było spróbować obliczyć, a nie tylko to, że się nie zgodził."
+
+#~ msgid ""
+#~ "The decryption of the CRL's (Certificate Revocation List) signature "
+#~ "failed. This means it could not even be calculated as opposed to just not "
+#~ "matching the expected result."
+#~ msgstr ""
+#~ "Odszyfrowanie podpisu listy unieważnionych certyfikatów (CRL) nie udało "
+#~ "się. Oznacza to, że nie można go było spróbować obliczyć, a nie tylko to, "
+#~ "że się nie zgodził."
+
+#~ msgid ""
+#~ "The decoding of the public key of the issuer failed. This means that the "
+#~ "CA's (Certificate Authority) certificate can not be used to verify the "
+#~ "certificate you wanted to use."
+#~ msgstr ""
+#~ "Nie udało się odkodować klucza publicznego wystawcy. Oznacza to, że nie "
+#~ "można użyć certyfikatu urzędu certyfikacji (CA) do weryfikacji "
+#~ "certyfikatu, którego chcesz użyć."
+
+#~ msgid ""
+#~ "The certificate's signature is invalid. This means that the certificate "
+#~ "can not be verified."
+#~ msgstr ""
+#~ "Podpis certyfikatu jest niepoprawny. Oznacza to, że nie można "
+#~ "zweryfikować tego certyfikatu."
+
+#~ msgid ""
+#~ "The CRL's (Certificate Revocation List) signature is invalid. This means "
+#~ "that the CRL can not be verified."
+#~ msgstr ""
+#~ "Podpis listy unieważnionych certyfikatów jest niepoprawny. Oznacza to, że "
+#~ "nie można zweryfikować CRL-a."
+
+#~ msgid "The certificate is not valid, yet."
+#~ msgstr "Ten certyfikat jeszcze nie jest ważny."
+
+#~ msgid "The certificate is not valid, any more."
+#~ msgstr "Ten certyfikat już nie jest ważny."
+
+#~ msgid "The CRL (Certificate Revocation List) is not valid, yet."
+#~ msgstr "Ten CRL (lista odwołania certyfikatu) jeszcze nie jest ważna."
+
+#~ msgid "The time format of the certificate's 'notBefore' field is invalid."
+#~ msgstr "Nieprawidłowy format czasu pola certyfikatu 'notBefore'."
+
+#~ msgid "The time format of the certificate's 'notAfter' field is invalid."
+#~ msgstr "Nieprawidłowy format czasu pola certyfikatu 'notAfter'."
+
+#~ msgid ""
+#~ "The time format of the CRL's (Certificate Revocation List) 'lastUpdate' "
+#~ "field is invalid."
+#~ msgstr ""
+#~ "Format czasu w polu \"lastUpdate\" listy unieważnionych certyfikatów jest "
+#~ "niepoprawny."
+
+#~ msgid ""
+#~ "The time format of the CRL's (Certificate Revocation List) 'nextUpdate' "
+#~ "field is invalid."
+#~ msgstr ""
+#~ "Format czasu w polu \"nextUpdate\" listy unieważnionych certyfikatów jest "
+#~ "niepoprawny."
+
+#~ msgid "The OpenSSL process ran out of memory."
+#~ msgstr "Procesowi OpenSSL zabrakło pamięci."
+
+#~ msgid ""
+#~ "The certificate is self-signed and not in the list of trusted "
+#~ "certificates. If you want to accept this certificate, import it into the "
+#~ "list of trusted certificates."
+#~ msgstr ""
+#~ "Ten certyfikat jest podpisany przez wystawcę  i nie jest na liście "
+#~ "zaufanych certyfikatów. Jeśli chcesz go zaakceptować, zaimportuj go na "
+#~ "listę zaufanych certyfikatów."
+
+#~ msgid ""
+#~ "The certificate is self-signed. While the trust chain could be built up, "
+#~ "the root CA's (Certificate Authority) certificate can not be found."
+#~ msgstr ""
+#~ "Ten certyfikat jest podpisany przez wystawcę. Można zbudować łańcuch "
+#~ "zaufania, ale nie można znaleźć certyfikatu głównego urzędu certyfikacji "
+#~ "(root CA)."
+
+#~ msgid ""
+#~ "The CA's (Certificate Authority) certificate can not be found. Most "
+#~ "likely, your trust chain is broken."
+#~ msgstr ""
+#~ "Nie można znaleźć certyfikatu urzędu certyfikacji (CA). "
+#~ "Najprawdopodobniej łańcuch zaufania jest złamany."
+
+#~ msgid ""
+#~ "The certificate can not be verified as it is the only certificate in the "
+#~ "trust chain and not self-signed. If you self-sign the certificate, make "
+#~ "sure to import it into the list of trusted certificates."
+#~ msgstr ""
+#~ "Nie można zweryfikować tego certyfikatu, bo jest jedynym certyfikatem na "
+#~ "łańcuchu zaufania i nie jest podpisany przez wystawcę. Jeśli samodzielnie "
+#~ "podpisujesz certyfikat, upewnij się, że został on także dodany na listę "
+#~ "zaufanych certyfikatów."
+
+#~ msgid "The certificate chain is longer than the maximum depth specified."
+#~ msgstr "Długość łańcucha zaufania jest większa od maksymalnej."
+
+#~ msgid "The certificate has been revoked."
+#~ msgstr "Certyfikat został odwołany."
+
+#~ msgid "The certificate's CA (Certificate Authority) is invalid."
+#~ msgstr "Urząd certyfikacji tego certyfikatu jest niepoprawny."
+
+#~ msgid ""
+#~ "The length of the trust chain exceeded one of the CA's (Certificate "
+#~ "Authority) 'pathlength' parameters, making all subsequent signatures "
+#~ "invalid."
+#~ msgstr ""
+#~ "Długość łańcucha zaufania przekracza jeden z parametrów \"pathlen\" "
+#~ "urzędu certyfikacji, co powoduje, że kolejne podpisy są niepoprawne."
+
+#~ msgid ""
+#~ "The certificate has not been signed for the purpose you tried to use it "
+#~ "for. This means the CA (Certificate Authority) does not allow this usage."
+#~ msgstr ""
+#~ "Certyfikat nie został podpisany do działań, jakie próbujesz za jego "
+#~ "pomocą wykonać. Oznacza to, że urząd certyfikacji nie pozwala na takie "
+#~ "użycie certyfikatu."
+
+#~ msgid ""
+#~ "The root CA (Certificate Authority) is not trusted for the purpose you "
+#~ "tried to use this certificate for."
+#~ msgstr ""
+#~ "Główny urząd certyfikacji nie jest zaufany dla działania, jakie próbujesz "
+#~ "przeprowadzić za pomocą tego certyfikatu."
+
+#~ msgid ""
+#~ "The root CA (Certificate Authority) has been marked to be rejected for "
+#~ "the purpose you tried to use it for."
+#~ msgstr ""
+#~ "Główny urząd certyfikacji został oznaczony jako odrzucany dla działania, "
+#~ "jakie próbujesz przeprowadzić za pomocą tego certyfikatu."
+
+#~ msgid ""
+#~ "The certificate's CA (Certificate Authority) does not match the CA name "
+#~ "of the certificate."
+#~ msgstr "Nie zgadza się nazwa urzędu w tym certyfikacie."
+
+#~ msgid ""
+#~ "The CA (Certificate Authority) certificate's key ID does not match the "
+#~ "key ID in the 'Issuer' section of the certificate you are trying to use."
+#~ msgstr ""
+#~ "Identyfikator klucza urzędu certyfikacji nie zgadza się z numerem klucza "
+#~ "w sekcji \"Issuer\" certyfikatu, którego próbujesz użyć."
+
+#~ msgid ""
+#~ "The CA (Certificate Authority) certificate's key ID and name do not match "
+#~ "the key ID and name in the 'Issuer' section of the certificate you are "
+#~ "trying to use."
+#~ msgstr ""
+#~ "Identyfikator klucza oraz nazwa urzędu certyfikacji nie zgadza się z "
+#~ "numerem klucza i nazwą w sekcji \"Issuer\" certyfikatu, którego próbujesz "
+#~ "użyć."
+
+#~ msgid ""
+#~ "The certificate's CA (Certificate Authority) is not allowed to sign "
+#~ "certificates."
+#~ msgstr "Ten urząd certyfikacji ma zabronione podpisywanie certyfikatów."
+
+#~ msgid "OpenSSL could not be verified."
+#~ msgstr "Nie można było zweryfikować OpenSSL."
+
+#~ msgid ""
+#~ "The signature test for this certificate failed. This could mean that the "
+#~ "signature of this certificate or any in its trust path are invalid, could "
+#~ "not be decoded or that the CRL (Certificate Revocation List) could not be "
+#~ "verified. If you see this message, please let the author of the software "
+#~ "you are using know that he or she should use the new, more specific error "
+#~ "messages."
+#~ msgstr ""
+#~ "Nieudane sprawdzenie podpisu tego certyfikatu. Może to oznaczać, że "
+#~ "podpis tego certyfikatu lub inny na jego ścieżce zaufania jest "
+#~ "niepoprawny, nie może być odkodowany lub nie można zweryfikować listy "
+#~ "unieważnionych certyfikatów (CRL). Jeśli widzisz ten komunikat, daj znać "
+#~ "autorowi używanego oprogramowania, że należy użyć nowych, bardziej "
+#~ "szczegółowych komunikatów o błędach."
+
+#~ msgid ""
+#~ "This certificate, any in its trust path or its CA's (Certificate "
+#~ "Authority) CRL (Certificate Revocation List) is not valid. Any of them "
+#~ "could not be valid yet or not valid any more. If you see this message, "
+#~ "please let the author of the software you are using know that he or she "
+#~ "should use the new, more specific error messages."
+#~ msgstr ""
+#~ "Ten certyfikat, lub dowolny na jego ścieżce zaufania, lub lista "
+#~ "unieważnionych certyfikatów urzędu certyfikacji, jest nieważny. Dowolny z "
+#~ "nich może jeszcze lub już nie być ważny. Jeśli widzisz ten komunikat, daj "
+#~ "znać autorowi używanego oprogramowania, że należy użyć nowych, bardziej "
+#~ "szczegółowych komunikatów o błędach."
+
+#~ msgid ""
+#~ "Certificate signing authority root files could not be found so the "
+#~ "certificate is not verified."
+#~ msgstr ""
+#~ "Certyfikat podpisujący centrum autoryzacji certyfikatów nie może zostać "
+#~ "odnaleziony, dlatego certyfikat nie jest zweryfikowany."
+
+#~ msgid "SSL support was not found."
+#~ msgstr "Nie znaleziono obsługi SSL."
+
+#~ msgid "Private key test failed."
+#~ msgstr "Nie powiódł się test klucza prywatnego."
+
+#~ msgid "The certificate has not been issued for this host."
+#~ msgstr "Nie ma certyfikatu dla tego komputera."
+
+#~ msgid "This certificate is not relevant."
+#~ msgstr "Ten certyfikat nie jest ważny."
+
+#~ msgid "The certificate is invalid."
+#~ msgstr "Ten certyfikat nie jest ważny."
+
+#~ msgid "KDE SSL Information"
+#~ msgstr "Informacja o KDE SSL"
+
+#~ msgctxt "The receiver of the SSL certificate"
+#~ msgid "Subject"
+#~ msgstr "Temat"
+
+#~ msgctxt "The authority that issued the SSL certificate"
+#~ msgid "Issuer"
+#~ msgstr "Wystawca"
+
+#~ msgid "Current connection is secured with SSL."
+#~ msgstr "Bieżące połączenie jest zabezpieczone przez SSL."
+
+#~ msgid "Current connection is not secured with SSL."
+#~ msgstr "Bieżące połączenie nie jest zabezpieczone przez SSL."
+
+#~ msgid "SSL support is not available in this build of KDE."
+#~ msgstr "SSL nie jest dostępne w tej wersji KDE."
+
+#~ msgid ""
+#~ "The main part of this document is secured with SSL, but some parts are "
+#~ "not."
+#~ msgstr ""
+#~ "Główna część tego dokumentu jest zabezpieczona SSL, ale niektóre części "
+#~ "nie."
+
+#~ msgid "Some of this document is secured with SSL, but the main part is not."
+#~ msgstr "Części tego dokumentu są zabezpieczone SSL, ale główna część nie."
+
+#~ msgctxt "%1, using %2 bits of a %3 bit key"
+#~ msgid "%1, %2 %3"
+#~ msgstr "%1, %2 %3"
+
+#~ msgctxt "Part of: %1, using %2 bits of a %3 bit key"
+#~ msgid "using %1 bit"
+#~ msgid_plural "using %1 bits"
+#~ msgstr[0] "używając %1 bitu"
+#~ msgstr[1] "używając %1 bitów"
+#~ msgstr[2] "używając %1 bitów"
+
+#~ msgctxt "Part of: %1, using %2 bits of a %3 bit key"
+#~ msgid "of a %1 bit key"
+#~ msgid_plural "of a %1 bit key"
+#~ msgstr[0] "%1 bitowego klucza"
+#~ msgstr[1] "%1 bitowego klucza"
+#~ msgstr[2] "%1 bitowego klucza"
+
+#~ msgctxt "The certificate is not trusted"
+#~ msgid "NO, there were errors:"
+#~ msgstr "Nie, wystąpiły błędy:"
+
+#~ msgctxt "The certificate is trusted"
+#~ msgid "Yes"
+#~ msgstr "Tak"
+
+#~ msgid "KDE Certificate Request"
+#~ msgstr "Żądanie certyfikatu"
+
+#~ msgid "KDE Certificate Request - Password"
+#~ msgstr "Żądanie certyfikatu - hasło"
+
+#~ msgid "Unsupported key size."
+#~ msgstr "Nieobsługiwana wielkość klucza."
+
+#~ msgid "KDE"
+#~ msgstr "KDE"
+
+#~ msgid "Please wait while the encryption keys are generated..."
+#~ msgstr "Proszę czekać na wygenerowanie kluczy szyfrujących..."
+
+#~ msgid "Do you wish to store the passphrase in your wallet file?"
+#~ msgstr "Zapisać hasło w pliku Portfela?"
+
+#~ msgid "Store"
+#~ msgstr "Zapisz"
+
+#~ msgid "Do Not Store"
+#~ msgstr "Nie zapisuj"
+
+#~ msgid "2048 (High Grade)"
+#~ msgstr "2048 (wysoki)"
+
+#~ msgid "1024 (Medium Grade)"
+#~ msgstr "1024 (średni)"
+
+#~ msgid "768  (Low Grade)"
+#~ msgstr "768  (niski)"
+
+#~ msgid "512  (Low Grade)"
+#~ msgstr "512  (niski)"
+
+#~ msgid "No SSL support."
+#~ msgstr "Brak obsługi SSL."
+
+#~ msgid "Certificate password"
+#~ msgstr "Hasło certyfikatu"
+
+#~ msgid "GMT"
+#~ msgstr "GMT"
+
+#~ msgid "[padlock]"
+#~ msgstr "[padlock]"
+
+#~ msgctxt "Web page address"
+#~ msgid "Address:"
+#~ msgstr "Adres:"
+
+#~ msgid "IP address:"
+#~ msgstr "Adres IP:"
+
+#~ msgid "Encryption:"
+#~ msgstr "Szyfrowanie:"
+
+#~ msgid "Details:"
+#~ msgstr "Szczegóły:"
+
+#~ msgid "SSL version:"
+#~ msgstr "Wersja SSL:"
+
+#~ msgid "Certificate chain:"
+#~ msgstr "Łańcuch certyfikatów:"
+
+#~ msgid "Trusted:"
+#~ msgstr "Zaufany:"
+
+#~ msgid "Validity period:"
+#~ msgstr "Okres ważności:"
+
+#~ msgid "Serial number:"
+#~ msgstr "Numer seryjny:"
+
+#~ msgid "MD5 digest:"
+#~ msgstr "Skrót MD5:"
+
+#~ msgid "SHA1 digest:"
+#~ msgstr "Skrót SHA1:"
+
+#~ msgid ""
+#~ "The remote host did not send any SSL certificates.\n"
+#~ "Aborting because the identity of the host cannot be established."
+#~ msgstr ""
+#~ "Zdalny host nie przysłał żadnych ceryfikatów SSL.\n"
+#~ "Następuje przerwanie akcji, bo nie można potwierdzić tożsamości hosta."
+
+#~ msgid "KMailService"
+#~ msgstr "KMailService"
+
+#~ msgid "Mail service"
+#~ msgstr "Serwis poczty"
+
+#~ msgid "Could not find a usable proxy configuration script"
+#~ msgstr ""
+#~ "Nie można znaleźć prawidłowego skryptu konfiguracyjnego serwera "
+#~ "pośredniczącego"
+
+#~ msgid ""
+#~ "Could not download the proxy configuration script:\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Nie można ściągnąć skryptu konfiguracyjnego serwera pośredniczącego:\n"
+#~ "%1"
+
+#~ msgid "Could not download the proxy configuration script"
+#~ msgstr "Nie można ściągnąć skryptu konfiguracyjnego serwera pośredniczącego"
+
+#~ msgid ""
+#~ "The proxy configuration script is invalid:\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Skrypt konfiguracyjny serwera pośredniczącego jest nieprawidłowy:\n"
+#~ "%1"
+
+#~ msgid ""
+#~ "The proxy configuration script returned an error:\n"
+#~ "%1"
+#~ msgstr ""
+#~ "Skrypt konfiguracyjny serwera pośredniczącego zwrócił błąd:\n"
+#~ "%1"
+
+#~ msgid "Could not find 'FindProxyForURL' or 'FindProxyForURLEx'"
+#~ msgstr "Nie można znaleźć 'FindProxyForURL' lub 'FindProxyForURLEx'"
+
+#~ msgid "Got an invalid reply when calling %1"
+#~ msgstr "Uzyskano nieprawidłową odpowiedź podczas wywoływania %1"
+
+#~ msgid "Error connecting to server."
+#~ msgstr "Błąd łączenia z serwerem."
+
+#~ msgid "Not connected."
+#~ msgstr "Brak połączenia."
+
+#~ msgid "Connection timed out."
+#~ msgstr "Połączenie przekroczyło limit czasu."
+
+#~ msgid "Time out waiting for server interaction."
+#~ msgstr "Minął limit czasu oczekiwania na reakcję serwera."
+
+#~ msgid "Server said: \"%1\""
+#~ msgstr "Serwer odpowiedział: \"%1\""
+
+#~ msgid "KSendBugMail"
+#~ msgstr "KSendBugMail"
+
+#~ msgid "Sends a bug report by email"
+#~ msgstr "Wysyła raport o błędzie za pomocą e-maila."
+
+#~ msgid "(c) 2000 Stephan Kulow"
+#~ msgstr "(c) 2000 Stephan Kulow"
+
+#~ msgid "Stephan Kulow"
+#~ msgstr "Stephan Kulow"
+
+#~ msgid "Author"
+#~ msgstr "Autor"
+
+#~ msgid "Subject line"
+#~ msgstr "Temat"
+
+#~ msgid "Recipient"
+#~ msgstr "Odbiorca"
+
+#~ msgid "telnet service"
+#~ msgstr "usługa telnet"
+
+#~ msgid "telnet protocol handler"
+#~ msgstr "obsługa protokołu telnet"
+
+#~ msgid "You do not have permission to access the %1 protocol."
+#~ msgstr "Nie masz praw do użycia protokołu %1."
+
+#~ msgid "Could not read %1"
+#~ msgstr "Nie można czytać %1"
+
+#~ msgid "Edit file type"
+#~ msgstr "Edytuj typ pliku"
+
+#, fuzzy
+#~ msgctxt "@label: multiple cookies"
+#~ msgid "You received %1 cookies from"
+#~ msgstr "Otrzymano %1 ciasteczko z"
+
+#, fuzzy
+#~ msgctxt "@label: single cookie"
+#~ msgid "You received a cookie from"
+#~ msgstr "Otrzymano %1 ciasteczko z"
+
+#~ msgid "'Put' job did not send canResume or 'Get' job did not send data!"
+#~ msgstr ""
+#~ "Zadanie 'Put' nie wysłało canResume lub zadanie 'Get' nie wysłało danych!"
+
+#~ msgid "The specified folder already exists."
+#~ msgstr "Podany katalog już istnieje."
+
+#~ msgid "Retrieving from %1..."
+#~ msgstr "Pobieranie danych z %1..."
+
+#~ msgid "A newer item named '%1' already exists."
+#~ msgstr "Nowszy plik niż '%1' już istnieje."
+
+#~ msgid "TextLabel"
+#~ msgstr "Etykieta tekstowa"
+
+#~ msgid "Requesting data to send"
+#~ msgstr "Pobieranie danych do wysłania"
+
+#~ msgid "This action will overwrite '%1' with a newer file '%2'."
+#~ msgstr "To działanie spowoduje nadpisanie \"%1\" przez nowszy plik \"%2\"."
+
+#~ msgid "This action will overwrite '%1' with a file of the same age '%2'."
+#~ msgstr "To działanie nadpisze \"%1\" przez plik \"%2\" z taką samą datą."
+
+#~ msgctxt "Available space out of total partition size (percent used)"
+#~ msgid "%1 out of %2 (%3% used)"
+#~ msgstr "%1 / %2 (używane %3%)"
+
+#~ msgctxt "@label"
+#~ msgid "Folder"
+#~ msgstr "Katalog"
+
+#~ msgctxt "@item::inlistbox"
+#~ msgid "Type"
+#~ msgstr "Typ"
+
+#~ msgctxt "@item::inlistbox"
+#~ msgid "Size"
+#~ msgstr "Rozmiar"
+
+#~ msgctxt "@item::inlistbox"
+#~ msgid "Modified"
+#~ msgstr "Zmodyfikowany"
+
+#~ msgctxt "@item::inlistbox"
+#~ msgid "Owner"
+#~ msgstr "Właściciel"
+
+#~ msgctxt "@item::inlistbox"
+#~ msgid "Permissions"
+#~ msgstr "Prawa dostępu"
+
+#~ msgid "%1, using %2 bits of a %3 bit key"
+#~ msgstr "%1, przy użyciu %2 bitów z %3 bitów klucza"
+
+#~ msgid "Unmounted Icon"
+#~ msgstr "Ikona odmontowania"
+
+#~ msgid "size %1 (%2)"
+#~ msgstr "rozmiar %1 (%2)"
+
+#~ msgid "modified on %1"
+#~ msgstr "zmodyfikowany %1"
+
+#~ msgid "The source file is '%1'"
+#~ msgstr "Plikiem źródłowym jest '%1'"
+
+#~ msgid "&Auto Skip"
+#~ msgstr "Pomiń &wszystkie"
+
+#~ msgid ""
+#~ "Do not copy or move any folder that already exists in the destination "
+#~ "folder.\n"
+#~ "You will be prompted again in case of a conflict with an existing file "
+#~ "though."
+#~ msgstr ""
+#~ "Nie kopiuj lub przenoś folderów, które istnieją w docelowym folderze.\n"
+#~ "W przypadku konfliktu z istniejącymi plikami nastąpi odpowiednie "
+#~ "zapytanie."
+
+#~ msgid ""
+#~ "Do not copy or move any file that already exists in the destination "
+#~ "folder.\n"
+#~ "You will be prompted again in case of a conflict with an existing "
+#~ "directory though."
+#~ msgstr ""
+#~ "Nie kopiuj lub przenoś folderów, które istnieją w docelowym folderze.\n"
+#~ "W przypadku konfliktu z istniejącymi katalogami nastąpi odpowiednie "
+#~ "zapytanie."
+
+#~ msgctxt "Write files into any existing directory"
+#~ msgid "&Write Into All"
+#~ msgstr "&Zapisz do wszystkich"
+
+#~ msgid "&Overwrite All"
+#~ msgstr "Zastą&p wszystkie"
+
+#~ msgid ""
+#~ "Files and folders will be copied into any existing directory, alongside "
+#~ "its existing contents.\n"
+#~ "You will be prompted again in case of a conflict with an existing file in "
+#~ "a directory, but not in case of another existing directory."
+#~ msgstr ""
+#~ "Pliki i foldery będą kopiowane do istniejącego katalogu, obok jego "
+#~ "istniejącej zawartości.\n"
+#~ "W przypadku konfliktu z istniejącym plikiem, ale nie katalogiem, nastąpi "
+#~ "odpowiednie zapytanie."
+
+#~ msgid "R&esume All"
+#~ msgstr "Wz&nów wszystkie"
+
+#~ msgid "&Meta Info"
+#~ msgstr "&Dodatkowe Informacje"
+
+#~ msgctxt "@action:inmenu"
+#~ msgid "Move to trash"
+#~ msgstr "Przenieś do kosza"
+
+#~ msgid "&Edit '%1'..."
+#~ msgstr "&Edycja '%1'..."
+
+#~ msgid "Sends a short bug report to submit@bugs.kde.org"
+#~ msgstr "Wysyła krótką wiadomość o błędzie do submit@bugs.kde.org"
+
+#~ msgid "size %1"
+#~ msgstr "rozmiar %1"
+
+#~ msgid "0 Items"
+#~ msgstr "Brak elementów"
+
+#~ msgid "Unexpected end of data, some information may be lost."
+#~ msgstr ""
+#~ "Niespodziewany koniec danych, część informacji mogła zostać utracona."

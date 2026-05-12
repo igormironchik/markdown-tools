@@ -1,0 +1,11 @@
+/*!
+    \module KBookmarksWidgets
+    \title KBookmarksWidgets C++ Classes
+    \ingroup modules
+    \cmakepackage KF6
+    \cmakecomponent Bookmarks
+    \cmaketargetitem KF6::BookmarksWidgets
+
+    \brief Widgets for Bookmark Handling.
+
+*/
