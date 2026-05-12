@@ -1,0 +1,25 @@
+/*!
+    \page kservice-index.html
+    \title KService
+    KService allows to query information about installed applications and their associated file types.
+
+    The two relevant classes are:
+    \list
+    \li \l KService: This models an installed application and allows to query various properties about it
+    \li \l KApplicationTrader: This is used to list available applications as well as applications associated with a given file type
+    \endlist
+
+    \section1 Using the Module
+
+    \include {module-use.qdocinc} {using the c++ api}
+
+    \section2 Building with CMake
+
+    \include {module-use.qdocinc} {building with cmake} {KF6} {Service} {KF6::Service}
+
+    \section1 API Reference
+
+    \list
+        \li \l{KService C++ Classes}
+    \endlist
+*/

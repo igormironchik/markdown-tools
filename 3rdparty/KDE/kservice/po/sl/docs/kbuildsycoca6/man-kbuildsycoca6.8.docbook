@@ -1,0 +1,284 @@
+<?xml version="1.0" ?>
+<!DOCTYPE refentry PUBLIC "-//KDE//DTD DocBook XML V4.5-Based Variant V1.1//EN" "dtd/kdedbx45.dtd" [
+  <!ENTITY % Slovenian "INCLUDE"
+><!-- change language only here -->
+]>
+
+<refentry lang="&language;">
+
+<refentryinfo>
+<title
+>&kde-frameworks;: KService</title>
+<author
+><firstname
+>Darian</firstname
+> <surname
+>Lanx</surname
+> <contrib
+>Napisal originalno dokumentacijo.</contrib>
+<affiliation>
+<address
+><email
+>content@openprojects.net</email
+></address>
+</affiliation>
+</author>
+<author
+><firstname
+>Alex</firstname
+> <surname
+>Merry</surname
+> <contrib
+>Posodobil dokumentacijo za &kf5-full;.</contrib>
+<affiliation>
+<address
+><email
+>alexmerry@kde.org</email
+></address>
+</affiliation>
+</author>
+
+<date
+>17.09.2015</date>
+<releaseinfo
+>Frameworks 5.15</releaseinfo>
+<productname
+>KDE Frameworks</productname>
+
+</refentryinfo>
+
+<refmeta>
+<refentrytitle
+><command
+>kbuildsycoca6</command
+></refentrytitle>
+<manvolnum
+>8</manvolnum>
+</refmeta>
+
+<refnamediv>
+<refname
+><command
+>kbuildsycoca6</command
+></refname>
+<refpurpose
+>Ponovno zgradi konfiguracijski predpomnilnik datotečnega sistema namizja KService</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<title
+>Povzetek</title>
+
+<cmdsynopsis
+><command
+>kbuildsycoca6</command
+> <group choice="opt" rep="repeat"
+><replaceable class="option"
+>MOŽNOSTI</replaceable
+></group
+> </cmdsynopsis>
+
+</refsynopsisdiv>
+
+
+
+<refsect1>
+<title
+>Opis</title>
+
+<para
+><command
+>kbuildsycoca6</command
+> zgradi binarni predpomnilnik podatkov shranjenih v <literal role="extension"
+>.desktop</literal
+> in vrsti datotek &MIME; <literal role="extension"
+>.xml</literal
+>, ki jih ogrodje KService uporablja za iskanje vtičnikov, aplikacij in drugih storitev. </para>
+
+<para
+>Knjižice KService uporablja to podatkovno bazo, da učinkovito zagotovi informacije, ki so od nje zahtevane. </para>
+
+<para
+>Uporabnikom ponavadi ni potrebno neposredno zaganjati te aplikacije; če je to potrebno, jo KService zažene sam, ko je spremenjena katerakoli datoteka, katere podatki so v predpomnilniku. </para>
+</refsect1>
+
+
+
+<refsect1>
+<title
+>Možnosti</title>
+<variablelist>
+
+<varlistentry>
+<term
+><option
+>--global</option
+></term>
+<listitem>
+<para
+>Prezre vse datoteke, ki jih je nastavil uporabnik (v <varname
+>XDG_DATA_HOME</varname
+>). Ta lastnost je trenutno podprta le na sistemih &UNIX;.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--noincremental</option
+></term>
+<listitem>
+<para
+>Namesto da se uporablja obstoječi predpomnilnik in posodablja le informacije, ki so bile spremenjene ali dodane, začni raje s praznim predpomnilnikom. Prezrto, če je nastavljen <option
+>--global</option
+>.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--menutest</option
+></term>
+<listitem>
+<para
+>Preizkusi generacijo podatkovne baze aplikacijskega menija. Dejansko ne zgradi predpomnilnika.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--testmode</option
+></term>
+<listitem>
+<para
+>Uporabi "način testiranja" QStandardPaths, da ne pride do posega v podatke. Namenjeno uporabi s testnimi enotami.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--track <replaceable
+>id-menija</replaceable
+></option
+></term>
+<listitem>
+<para
+>Sledi ID menija z namenom razhroščevanja.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--author</option
+></term>
+<listitem>
+<para
+>Prikaži informacije o avtorju. </para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--licence</option
+></term>
+<listitem>
+<para
+>Prikaži informacije o licenci. </para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-h, --help</option
+></term>
+<listitem>
+<para
+>Prikaži kratko besedilo pomoči. </para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-v , --version</option
+></term>
+<listitem>
+<para
+>Prikaži informacije o verziji. </para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</refsect1>
+
+
+
+<refsect1>
+<title
+>Datoteke</title>
+<variablelist>
+<varlistentry>
+<term
+><filename
+><varname
+>cachedir</varname
+>/ksycoca6_[lang]_[sha1-of-dirs]</filename
+></term>
+<listitem>
+<para
+>Predpomnilnik KService je ustvarjen z <command
+>kbuildsycoca6</command
+>. Na sistemih &UNIX; je <varname
+>cachedir</varname
+> ponavadi <filename class="directory"
+><envar
+>XDG_CACHE_HOME</envar
+></filename
+>.</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</refsect1>
+
+
+
+<refsect1>
+<title
+>Glej Tudi</title>
+<para
+><citerefentry
+><refentrytitle
+>kded5</refentrytitle
+><manvolnum
+>8</manvolnum
+></citerefentry
+>, <citerefentry
+><refentrytitle
+>kdeinit5</refentrytitle
+><manvolnum
+>8</manvolnum
+></citerefentry
+> </para>
+</refsect1>
+
+
+
+<refsect1>
+<title
+>Hrošči</title>
+<para
+>Prosimo, uporabite <ulink url="https://bugs.kde.org"
+>&kde;-jev sledilnik hroščev</ulink
+>, da prijavite hrošče.</para>
+</refsect1>
+
+</refentry>
+
+
+
