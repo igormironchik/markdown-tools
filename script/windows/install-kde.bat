@@ -10,6 +10,18 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
+call "..\builds\conan\conanbuild.bat"
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+call "..\builds\conan\conanrun.bat"
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
 cmake -S 3rdparty/KDE/extra-cmake-modules -B ../builds/build-extra-cmake-modules -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -DBUILD_HTML_DOCS=OFF -DBUILD_MAN_DOCS=OFF -DCMAKE_INSTALL_PREFIX=../KDE -DCMAKE_PREFIX_PATH="%CD%/Qt/%qt_version%/%qt_arch%;%CD%/../KDE" -G "NMake Makefiles"
 
 IF %ERRORLEVEL% NEQ 0 (
@@ -120,12 +132,6 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-conan install . -of ../builds/build-ki18n -s build_type=Release --build=missing --deployer=runtime_deploy
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
 cmake -S 3rdparty/KDE/ki18n -B ../builds/build-ki18n -DCMAKE_BUILD_TYPE=Release -DCMAKE_MODULE_PATH=../builds/conan -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%CD%/Qt/%qt_version%/%qt_arch%;%CD%/../KDE" -DBUILD_TESTING=OFF -G "NMake Makefiles"
 
 IF %ERRORLEVEL% NEQ 0 (
@@ -162,13 +168,7 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-conan install . -of ../builds/build-solid -s build_type=Release --build=missing --deployer=runtime_deploy
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
-cmake -S 3rdparty/KDE/solid -B ../builds/build-solid -DCMAKE_BUILD_TYPE=Release -DCMAKE_MODULE_PATH=../builds/conan -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%CD%/Qt/%qt_version%/%qt_arch%;%CD%/../KDE" -DBUILD_TESTING=OFF -G "NMake Makefiles"
+cmake -S 3rdparty/KDE/solid -B ../builds/build-solid -DCMAKE_BUILD_TYPE=Release -DCMAKE_MODULE_PATH="../builds/conan;win_cmake" -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%CD%/Qt/%qt_version%/%qt_arch%;%CD%/../KDE" -DBUILD_TESTING=OFF -G "NMake Makefiles"
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
