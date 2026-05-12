@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ChecksumsWidget</class>
+ <widget class="QWidget" name="ChecksumsWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>485</width>
+    <height>463</height>
+   </rect>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Copy and paste a checksum in the field below.&lt;br/&gt;A checksum is usually provided by the website you downloaded this file from.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+     <property name="textInteractionFlags">
+      <set>Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard</set>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLineEdit" name="lineEdit">
+       <property name="placeholderText">
+        <string extracomment="MD5, SHA1, SHA256 and SHA512 are hashing algorithms">Expected checksum (MD5, SHA1, SHA256 or SHA512)...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pasteButton">
+       <property name="toolTip">
+        <string>Click to paste the checksum from the clipboard to the input field.</string>
+       </property>
+       <property name="text">
+        <string>Paste</string>
+       </property>
+       <property name="icon">
+        <iconset theme="edit-paste"/>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="feedbackLabel">
+     <property name="text">
+      <string notr="true">Feedback</string>
+     </property>
+     <property name="textInteractionFlags">
+      <set>Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard</set>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="KSeparator" name="kseparator"/>
+   </item>
+   <item>
+    <widget class="QWidget" name="calculateWidget" native="true">
+     <layout class="QFormLayout" name="formLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="md5Label">
+        <property name="text">
+         <string extracomment="MD5 is the hashing algorithm">MD5:</string>
+        </property>
+        <property name="buddy">
+         <cstring>md5Button</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="sha1Label">
+        <property name="text">
+         <string extracomment="SHA1 is the hashing algorithm">SHA1:</string>
+        </property>
+        <property name="buddy">
+         <cstring>sha1Button</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="sha256Label">
+        <property name="text">
+         <string extracomment="SHA256 is the hashing algorithm">SHA256:</string>
+        </property>
+        <property name="buddy">
+         <cstring>sha256Button</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="sha512Label">
+        <property name="text">
+         <string extracomment="SHA512 is the hashing algorithm">SHA512:</string>
+        </property>
+        <property name="buddy">
+         <cstring>sha512Button</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout_1">
+        <item>
+         <widget class="QPushButton" name="md5Button">
+          <property name="text">
+           <string>Calculate</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacerMd5">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="md5LineEdit">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+          <property name="visible">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="md5CopyButton">
+          <property name="toolTip">
+           <string>Click to copy the checksum to the clipboard.</string>
+          </property>
+          <property name="text">
+           <string>Copy</string>
+          </property>
+          <property name="icon">
+           <iconset theme="edit-copy"/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QPushButton" name="sha1Button">
+          <property name="text">
+           <string>Calculate</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacerSha1">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="sha1LineEdit">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+          <property name="visible">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="sha1CopyButton">
+          <property name="toolTip">
+           <string>Click to copy the checksum to the clipboard.</string>
+          </property>
+          <property name="text">
+           <string>Copy</string>
+          </property>
+          <property name="icon">
+           <iconset theme="edit-copy"/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="2" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="QPushButton" name="sha256Button">
+          <property name="text">
+           <string>Calculate</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacerSha256">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="sha256LineEdit">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+          <property name="visible">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="sha256CopyButton">
+          <property name="toolTip">
+           <string>Click to copy the checksum to the clipboard.</string>
+          </property>
+          <property name="text">
+           <string>Copy</string>
+          </property>
+          <property name="icon">
+           <iconset theme="edit-copy"/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="3" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
+         <widget class="QPushButton" name="sha512Button">
+          <property name="text">
+           <string>Calculate</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacerSha512">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="sha512LineEdit">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+          <property name="visible">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="sha512CopyButton">
+          <property name="toolTip">
+           <string>Click to copy the checksum to the clipboard.</string>
+          </property>
+          <property name="text">
+           <string>Copy</string>
+          </property>
+          <property name="icon">
+           <iconset theme="edit-copy"/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>KSeparator</class>
+   <extends>QFrame</extends>
+   <header>kseparator.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

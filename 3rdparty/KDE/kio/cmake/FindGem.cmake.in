@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: 2019 Harald Sitter <sitter@kde.org>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
+find_package(RubyExe)
+if(NOT RubyExe_FOUND)
+    message(WARNING "Could not find ruby!")
+    return()
+endif()
+
+execute_process(
+    COMMAND ${RubyExe_EXECUTABLE} -e "require '@GEM_NAME@'"
+    ERROR_VARIABLE ERROR_VAR
+    RESULT_VARIABLE RESULT_VAR
+)
+
+if(RESULT_VAR EQUAL 0)
+    set(@GEM_PACKAGE@_FOUND TRUE)
+else()
+    message(WARNING ${ERROR_VAR})
+endif()
+
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(@GEM_PACKAGE@
+    FOUND_VAR
+        @GEM_PACKAGE@_FOUND
+    REQUIRED_VARS
+        @GEM_PACKAGE@_FOUND
+)

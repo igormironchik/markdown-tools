@@ -1,0 +1,1112 @@
+# Copyright (C) 2003, 2004, 2008 Free Software Foundation, Inc.
+# Claudiu Costin <claudiuc@kde.org>, 2003, 2004.
+# SPDX-FileCopyrightText: 2008, 2020, 2022, 2024, 2025, 2026 Sergiu Bivol <sergiu@cip.md>
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: kwriteconfig\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2014-04-11 02:17+0000\n"
+"PO-Revision-Date: 2026-03-31 13:00+0100\n"
+"Last-Translator: Sergiu Bivol <sergiu@cip.md>\n"
+"Language-Team: Romanian <kde-i18n-ro@kde.org>\n"
+"Language: ro\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
+"20)) ? 1 : 2;\n"
+"X-Generator: Lokalize 25.12.3\n"
+"X-Qt-Contexts: true\n"
+
+#: core/kconfig.cpp:991
+msgctxt "KConfig|"
+msgid "Please contact your system administrator."
+msgstr "Contactați administratorul de sistem."
+
+#: core/kconfigini.cpp:456
+#, qt-format
+msgctxt "KConfigIniBackend|"
+msgid "Configuration file \"%1\" not writable.\n"
+msgstr "Fișierul de configurare „%1” nu poate fi scris.\n"
+
+#: core/kemailsettings.cpp:128 core/kemailsettings.cpp:131
+#: core/kemailsettings.cpp:139
+msgctxt "KEMailSettings|"
+msgid "Default"
+msgstr "Implicit"
+
+#: gui/kstandardactions.cpp:49
+msgctxt "go back|"
+msgid "&Back"
+msgstr "În&apoi"
+
+#: gui/kstandardactions.cpp:56
+msgctxt "go forward|"
+msgid "&Forward"
+msgstr "Înain&te"
+
+#: gui/kstandardactions.cpp:63
+msgctxt "home page|"
+msgid "&Home"
+msgstr "A&casă"
+
+#: gui/kstandardactions_p.h:64
+msgctxt "KStandardActions|"
+msgid "&New"
+msgstr "&Nou"
+
+#: gui/kstandardactions_p.h:64
+msgctxt "KStandardActions|"
+msgid "Create new document"
+msgstr "Creează document nou"
+
+#: gui/kstandardactions_p.h:65
+msgctxt "KStandardActions|"
+msgid "&Open…"
+msgstr "&Deschide…"
+
+#: gui/kstandardactions_p.h:65
+msgctxt "KStandardActions|"
+msgid "Open an existing document"
+msgstr "Deschide un document existent"
+
+#: gui/kstandardactions_p.h:66
+msgctxt "KStandardActions|"
+msgid "Open &Recent"
+msgstr "Deschide &recent"
+
+#: gui/kstandardactions_p.h:66
+msgctxt "KStandardActions|"
+msgid "Open a document which was recently opened"
+msgstr "Deschide un document ce a fost deschis recent"
+
+#: gui/kstandardactions_p.h:67
+msgctxt "KStandardActions|"
+msgid "&Save"
+msgstr "&Salvează"
+
+#: gui/kstandardactions_p.h:67
+msgctxt "KStandardActions|"
+msgid "Save document"
+msgstr "Salvează documentul"
+
+#: gui/kstandardactions_p.h:68
+msgctxt "KStandardActions|"
+msgid "Save &As…"
+msgstr "S&alvează ca…"
+
+#: gui/kstandardactions_p.h:68
+msgctxt "KStandardActions|"
+msgid "Save document under a new name"
+msgstr "Salvează documentul cu denumire nouă"
+
+#: gui/kstandardactions_p.h:69
+msgctxt "KStandardActions|"
+msgid "Re&vert"
+msgstr "An&ulează"
+
+#: gui/kstandardactions_p.h:69
+msgctxt "KStandardActions|"
+msgid "Revert unsaved changes made to document"
+msgstr "Anulează modificările nesalvate făcute asupra documentului"
+
+#: gui/kstandardactions_p.h:70
+msgctxt "KStandardActions|"
+msgid "&Close"
+msgstr "În&chide"
+
+#: gui/kstandardactions_p.h:70
+msgctxt "KStandardActions|"
+msgid "Close document"
+msgstr "Închide documentul"
+
+#: gui/kstandardactions_p.h:71
+msgctxt "KStandardActions|"
+msgid "&Print…"
+msgstr "Ti&părește…"
+
+#: gui/kstandardactions_p.h:71
+msgctxt "KStandardActions|"
+msgid "Print document"
+msgstr "Tipărește documentul"
+
+#: gui/kstandardactions_p.h:72
+msgctxt "KStandardActions|"
+msgid "Print Previe&w"
+msgstr "Previ&zualizare tipărire"
+
+#: gui/kstandardactions_p.h:72
+msgctxt "KStandardActions|"
+msgid "Show a print preview of document"
+msgstr "Arată o previzualizare a tipăririi fișierului"
+
+#: gui/kstandardactions_p.h:73
+msgctxt "KStandardActions|"
+msgid "&Mail…"
+msgstr "Tri&mite prin poștă…"
+
+#: gui/kstandardactions_p.h:73
+msgctxt "KStandardActions|"
+msgid "Send document by mail"
+msgstr "Trimite documentul prin poștă"
+
+#: gui/kstandardactions_p.h:74
+msgctxt "KStandardActions|"
+msgid "&Quit"
+msgstr "&Termină"
+
+#: gui/kstandardactions_p.h:74
+msgctxt "KStandardActions|"
+msgid "Quit application"
+msgstr "Închide aplicația"
+
+#: gui/kstandardactions_p.h:76
+msgctxt "KStandardActions|"
+msgid "&Undo"
+msgstr "&Desfă"
+
+#: gui/kstandardactions_p.h:76
+msgctxt "KStandardActions|"
+msgid "Undo last action"
+msgstr "Desfă ultima acțiune"
+
+#: gui/kstandardactions_p.h:77
+msgctxt "KStandardActions|"
+msgid "Re&do"
+msgstr "&Refă"
+
+#: gui/kstandardactions_p.h:77
+msgctxt "KStandardActions|"
+msgid "Redo last undone action"
+msgstr "Refă ultima acțiune desfăcută"
+
+#: gui/kstandardactions_p.h:78
+msgctxt "KStandardActions|"
+msgid "Cu&t"
+msgstr "&Taie"
+
+#: gui/kstandardactions_p.h:78
+msgctxt "KStandardActions|"
+msgid "Cut selection to clipboard"
+msgstr "Taie selecția în clipboard"
+
+#: gui/kstandardactions_p.h:79
+msgctxt "KStandardActions|"
+msgid "&Copy"
+msgstr "&Copiază"
+
+#: gui/kstandardactions_p.h:79
+msgctxt "KStandardActions|"
+msgid "Copy selection to clipboard"
+msgstr "Copiază selecția în clipboard"
+
+#: gui/kstandardactions_p.h:80
+msgctxt "KStandardActions|"
+msgid "&Paste"
+msgstr "Li&pește"
+
+#: gui/kstandardactions_p.h:80
+msgctxt "KStandardActions|"
+msgid "Paste clipboard content"
+msgstr "Lipește conținutul din clipboard"
+
+#: gui/kstandardactions_p.h:81
+msgctxt "KStandardActions|"
+msgid "C&lear"
+msgstr "C&urăță"
+
+#: gui/kstandardactions_p.h:82
+msgctxt "KStandardActions|"
+msgid "Select &All"
+msgstr "Selecte&ază tot"
+
+#: gui/kstandardactions_p.h:83
+msgctxt "KStandardActions|"
+msgid "Dese&lect"
+msgstr "Dese&lectează"
+
+#: gui/kstandardactions_p.h:84
+msgctxt "KStandardActions|"
+msgid "&Find…"
+msgstr "&Caută…"
+
+#: gui/kstandardactions_p.h:85
+msgctxt "KStandardActions|"
+msgid "Find &Next"
+msgstr "Caută &următor"
+
+#: gui/kstandardactions_p.h:86
+msgctxt "KStandardActions|"
+msgid "Find Pre&vious"
+msgstr "Caută &precedent"
+
+#: gui/kstandardactions_p.h:87
+msgctxt "KStandardActions|"
+msgid "&Replace…"
+msgstr "Î&nlocuiește…"
+
+#: gui/kstandardactions_p.h:89
+msgctxt "KStandardActions|"
+msgid "Zoom to &Actual Size"
+msgstr "&Apropie la dimensiunea reală"
+
+#: gui/kstandardactions_p.h:89
+msgctxt "KStandardActions|"
+msgid "View document at its actual size"
+msgstr "Vizualizează documentul la dimensiunea reală"
+
+#: gui/kstandardactions_p.h:90
+msgctxt "KStandardActions|"
+msgid "&Fit to Page"
+msgstr "Încadrează în &pagină"
+
+#: gui/kstandardactions_p.h:90
+msgctxt "KStandardActions|"
+msgid "Zoom to fit page in window"
+msgstr "Apropie pentru a încadra pagina în fereastră"
+
+#: gui/kstandardactions_p.h:91
+msgctxt "KStandardActions|"
+msgid "Fit to Page &Width"
+msgstr "Încadrează în &lățimea paginii"
+
+#: gui/kstandardactions_p.h:91
+msgctxt "KStandardActions|"
+msgid "Zoom to fit page width in window"
+msgstr "Apropie pentru a încadra lățimea paginii în fereastră"
+
+#: gui/kstandardactions_p.h:92
+msgctxt "KStandardActions|"
+msgid "Fit to Page &Height"
+msgstr "Încadrează în l&ungimea paginii"
+
+#: gui/kstandardactions_p.h:92
+msgctxt "KStandardActions|"
+msgid "Zoom to fit page height in window"
+msgstr "Panoramează pentru a încadra lungimea paginii în fereastră"
+
+#: gui/kstandardactions_p.h:93
+msgctxt "KStandardActions|"
+msgid "Zoom &In"
+msgstr "Aprop&ie"
+
+#: gui/kstandardactions_p.h:94
+msgctxt "KStandardActions|"
+msgid "Zoom &Out"
+msgstr "În&depărtează"
+
+#: gui/kstandardactions_p.h:95
+msgctxt "KStandardActions|"
+msgid "&Zoom…"
+msgstr "&Apropiere…"
+
+#: gui/kstandardactions_p.h:95
+msgctxt "KStandardActions|"
+msgid "Select zoom level"
+msgstr "Alege nivelul de apropiere"
+
+#: gui/kstandardactions_p.h:96
+msgctxt "KStandardActions|"
+msgid "&Refresh"
+msgstr "&Reîmprospătează"
+
+#: gui/kstandardactions_p.h:96
+msgctxt "KStandardActions|"
+msgid "Refresh document"
+msgstr "Reîmprospătează documentul"
+
+#: gui/kstandardactions_p.h:98
+msgctxt "KStandardActions|"
+msgid "&Up"
+msgstr "S&us"
+
+#: gui/kstandardactions_p.h:98
+msgctxt "KStandardActions|"
+msgid "Go up"
+msgstr "Mai sus"
+
+#: gui/kstandardactions_p.h:103
+msgctxt "KStandardActions|"
+msgid "&Previous Page"
+msgstr "Pagina &precedentă"
+
+#: gui/kstandardactions_p.h:103
+msgctxt "KStandardActions|"
+msgid "Go to previous page"
+msgstr "Mergi la pagina precedentă"
+
+#: gui/kstandardactions_p.h:104
+msgctxt "KStandardActions|"
+msgid "&Next Page"
+msgstr "Pagi&na următoare"
+
+#: gui/kstandardactions_p.h:104
+msgctxt "KStandardActions|"
+msgid "Go to next page"
+msgstr "Mergi la pagina următoare"
+
+#: gui/kstandardactions_p.h:105
+msgctxt "KStandardActions|"
+msgid "&Go To…"
+msgstr "Mer&gi la…"
+
+#: gui/kstandardactions_p.h:106
+msgctxt "KStandardActions|"
+msgid "&Go to Page…"
+msgstr "Mer&gi la pagina…"
+
+#: gui/kstandardactions_p.h:107
+msgctxt "KStandardActions|"
+msgid "&Go to Line…"
+msgstr "Mer&gi la linia…"
+
+#: gui/kstandardactions_p.h:108
+msgctxt "KStandardActions|"
+msgid "&First Page"
+msgstr "P&rima pagină"
+
+#: gui/kstandardactions_p.h:108
+msgctxt "KStandardActions|"
+msgid "Go to first page"
+msgstr "Mergi la prima pagină"
+
+#: gui/kstandardactions_p.h:109
+msgctxt "KStandardActions|"
+msgid "&Last Page"
+msgstr "U&ltima pagină"
+
+#: gui/kstandardactions_p.h:109
+msgctxt "KStandardActions|"
+msgid "Go to last page"
+msgstr "Mergi la ultima pagină"
+
+#: gui/kstandardactions_p.h:110
+msgctxt "KStandardActions|"
+msgid "&Back"
+msgstr "În&apoi"
+
+#: gui/kstandardactions_p.h:110
+msgctxt "KStandardActions|"
+msgid "Go back in document"
+msgstr "Mergi înapoi în document"
+
+#: gui/kstandardactions_p.h:111
+msgctxt "KStandardActions|"
+msgid "&Forward"
+msgstr "Înain&te"
+
+#: gui/kstandardactions_p.h:111
+msgctxt "KStandardActions|"
+msgid "Go forward in document"
+msgstr "Mergi înainte în document"
+
+#: gui/kstandardactions_p.h:113
+msgctxt "KStandardActions|"
+msgid "&Add Bookmark"
+msgstr "&Adaugă semn de carte"
+
+#: gui/kstandardactions_p.h:114
+msgctxt "KStandardActions|"
+msgid "&Edit Bookmarks…"
+msgstr "Modifică s&emnele de carte…"
+
+#: gui/kstandardactions_p.h:116
+msgctxt "KStandardActions|"
+msgid "&Spelling…"
+msgstr "&Ortografie…"
+
+#: gui/kstandardactions_p.h:116
+msgctxt "KStandardActions|"
+msgid "Check spelling in document"
+msgstr "Verifică ortografia în document"
+
+#: gui/kstandardactions_p.h:118
+msgctxt "KStandardActions|"
+msgid "Show &Menubar"
+msgstr "Arată bara de &meniu"
+
+#: gui/kstandardactions_p.h:118
+msgctxt "KStandardActions|"
+msgid "Show or hide menubar"
+msgstr "Arată sau ascunde bara de meniu"
+
+#: gui/kstandardactions_p.h:119
+msgctxt "KStandardActions|"
+msgid "Show &Toolbar"
+msgstr "Ara&tă bara de unelte"
+
+#: gui/kstandardactions_p.h:119
+msgctxt "KStandardActions|"
+msgid "Show or hide toolbar"
+msgstr "Arată sau ascunde bara de unelte"
+
+#: gui/kstandardactions_p.h:120
+msgctxt "KStandardActions|"
+msgid "Show St&atusbar"
+msgstr "&Arată bara de stare"
+
+#: gui/kstandardactions_p.h:120
+msgctxt "KStandardActions|"
+msgid "Show or hide statusbar"
+msgstr "Arată sau ascunde bara de stare"
+
+#: gui/kstandardactions_p.h:121
+msgctxt "KStandardActions|"
+msgid "F&ull Screen Mode"
+msgstr "Regim de &ecran complet"
+
+#: gui/kstandardactions_p.h:122
+msgctxt "KStandardActions|"
+msgid "Configure Keyboard S&hortcuts…"
+msgstr "Co&nfigurează scurtături de tastatură…"
+
+#: gui/kstandardactions_p.h:123
+#, qt-format
+msgctxt "KStandardActions|"
+msgid "&Configure %1…"
+msgstr "&Configurează %1…"
+
+#: gui/kstandardactions_p.h:124
+msgctxt "KStandardActions|"
+msgid "Configure Tool&bars…"
+msgstr "Configurează &barele de unelte…"
+
+#: gui/kstandardactions_p.h:125
+msgctxt "KStandardActions|"
+msgid "Configure &Notifications…"
+msgstr "Configurează &notificările…"
+
+#: gui/kstandardactions_p.h:129
+#, qt-format
+msgctxt "KStandardActions|"
+msgid "%1 &Handbook"
+msgstr "&Manualul %1"
+
+#: gui/kstandardactions_p.h:130
+msgctxt "KStandardActions|"
+msgid "What's &This?"
+msgstr "Ce înseamnă aceas&ta?"
+
+#: gui/kstandardactions_p.h:131
+msgctxt "KStandardActions|"
+msgid "&Report Bug…"
+msgstr "&Raportează defect…"
+
+#: gui/kstandardactions_p.h:132
+msgctxt "KStandardActions|"
+msgid "Configure &Language…"
+msgstr "Configurează &limba…"
+
+#: gui/kstandardactions_p.h:133
+#, qt-format
+msgctxt "KStandardActions|"
+msgid "&About %1"
+msgstr "&Despre %1"
+
+#: gui/kstandardactions_p.h:134
+msgctxt "KStandardActions|"
+msgid "About &KDE"
+msgstr "Despre &KDE"
+
+#: gui/kstandardactions_p.h:135
+msgctxt "KStandardActions|"
+msgid "&Delete"
+msgstr "Ș&terge"
+
+#: gui/kstandardactions_p.h:136
+msgctxt "KStandardActions|"
+msgid "&Rename…"
+msgstr "&Redenumește…"
+
+#: gui/kstandardactions_p.h:137
+msgctxt "KStandardActions|"
+msgid "&Move to Trash"
+msgstr "&Mută la gunoi"
+
+#: gui/kstandardactions_p.h:138
+msgctxt "KStandardActions|"
+msgid "&Donate"
+msgstr "&Donează"
+
+#: gui/kstandardactions_p.h:139
+msgctxt "KStandardActions|"
+msgid "Open &Menu"
+msgstr "Deschide &meniul"
+
+#: gui/kstandardshortcut.cpp:73
+msgctxt "KStandardShortcut|@action"
+msgid "Open"
+msgstr "Deschide"
+
+#: gui/kstandardshortcut.cpp:74
+msgctxt "KStandardShortcut|@action"
+msgid "New"
+msgstr "Nouă"
+
+#: gui/kstandardshortcut.cpp:75
+msgctxt "KStandardShortcut|@action"
+msgid "Close"
+msgstr "Închide"
+
+#: gui/kstandardshortcut.cpp:76
+msgctxt "KStandardShortcut|@action"
+msgid "Save"
+msgstr "Salvează"
+
+#: gui/kstandardshortcut.cpp:77
+msgctxt "KStandardShortcut|@action"
+msgid "Print"
+msgstr "Tipărește"
+
+#: gui/kstandardshortcut.cpp:78
+msgctxt "KStandardShortcut|@action"
+msgid "Quit"
+msgstr "Termină"
+
+#: gui/kstandardshortcut.cpp:81
+msgctxt "KStandardShortcut|@action"
+msgid "Undo"
+msgstr "Desfă"
+
+#: gui/kstandardshortcut.cpp:82
+msgctxt "KStandardShortcut|@action"
+msgid "Redo"
+msgstr "Refă"
+
+#: gui/kstandardshortcut.cpp:85
+msgctxt "KStandardShortcut|@action"
+msgid "Cut"
+msgstr "Taie"
+
+#: gui/kstandardshortcut.cpp:86
+msgctxt "KStandardShortcut|@action"
+msgid "Copy"
+msgstr "Copiază"
+
+#: gui/kstandardshortcut.cpp:87
+msgctxt "KStandardShortcut|@action"
+msgid "Paste"
+msgstr "Lipește"
+
+#: gui/kstandardshortcut.cpp:90
+msgctxt "KStandardShortcut|@action"
+msgid "Paste Selection"
+msgstr "Lipește selecția"
+
+#: gui/kstandardshortcut.cpp:97
+msgctxt "KStandardShortcut|@action"
+msgid "Select All"
+msgstr "Selectează tot"
+
+#: gui/kstandardshortcut.cpp:98
+msgctxt "KStandardShortcut|@action"
+msgid "Deselect"
+msgstr "Deselectează"
+
+#: gui/kstandardshortcut.cpp:101
+msgctxt "KStandardShortcut|@action"
+msgid "Delete Word Backwards"
+msgstr "Șterge cuvânt înapoi"
+
+#: gui/kstandardshortcut.cpp:113
+msgctxt "KStandardShortcut|@action"
+msgid "Delete Word Forward"
+msgstr "Șterge cuvânt înainte"
+
+#: gui/kstandardshortcut.cpp:124
+msgctxt "KStandardShortcut|@action"
+msgid "Find"
+msgstr "Caută"
+
+#: gui/kstandardshortcut.cpp:127
+msgctxt "KStandardShortcut|@action"
+msgid "Find Next"
+msgstr "Caută urm."
+
+#: gui/kstandardshortcut.cpp:137
+msgctxt "KStandardShortcut|@action"
+msgid "Find Prev"
+msgstr "Caută prec."
+
+#: gui/kstandardshortcut.cpp:138
+msgctxt "KStandardShortcut|@action"
+msgid "Replace"
+msgstr "Înlocuiește"
+
+#: gui/kstandardshortcut.cpp:143
+msgctxt "KStandardShortcut|@action Go to main page"
+msgid "Home"
+msgstr "Acasă"
+
+#: gui/kstandardshortcut.cpp:151
+msgctxt "KStandardShortcut|@action Beginning of document"
+msgid "Begin"
+msgstr "Început"
+
+#: gui/kstandardshortcut.cpp:163
+msgctxt "KStandardShortcut|@action End of document"
+msgid "End"
+msgstr "Sfârșit"
+
+#: gui/kstandardshortcut.cpp:173
+msgctxt "KStandardShortcut|@action"
+msgid "Prior"
+msgstr "Precedent"
+
+#: gui/kstandardshortcut.cpp:176
+msgctxt "KStandardShortcut|@action Opposite to Prior"
+msgid "Next"
+msgstr "Următor"
+
+#: gui/kstandardshortcut.cpp:183
+msgctxt "KStandardShortcut|@action"
+msgid "Up"
+msgstr "Sus"
+
+#: gui/kstandardshortcut.cpp:186
+msgctxt "KStandardShortcut|@action"
+msgid "Back"
+msgstr "Înapoi"
+
+#: gui/kstandardshortcut.cpp:198
+msgctxt "KStandardShortcut|@action"
+msgid "Forward"
+msgstr "Înainte"
+
+#: gui/kstandardshortcut.cpp:210
+msgctxt "KStandardShortcut|@action"
+msgid "Reload"
+msgstr "Reîncarcă"
+
+#: gui/kstandardshortcut.cpp:219
+msgctxt "KStandardShortcut|@action"
+msgid "Beginning of Line"
+msgstr "Începutul liniei"
+
+#: gui/kstandardshortcut.cpp:231
+msgctxt "KStandardShortcut|@action"
+msgid "End of Line"
+msgstr "Sfârșit de linie"
+
+#: gui/kstandardshortcut.cpp:243
+msgctxt "KStandardShortcut|@action"
+msgid "Go to Line"
+msgstr "Mergi la linie"
+
+#: gui/kstandardshortcut.cpp:255
+msgctxt "KStandardShortcut|@action"
+msgid "Backward Word"
+msgstr "Cuvânt înapoi"
+
+#: gui/kstandardshortcut.cpp:267
+msgctxt "KStandardShortcut|@action"
+msgid "Forward Word"
+msgstr "Cuvânt înainte"
+
+#: gui/kstandardshortcut.cpp:280
+msgctxt "KStandardShortcut|@action"
+msgid "Add Bookmark"
+msgstr "Adaugă semn de carte"
+
+#: gui/kstandardshortcut.cpp:286
+msgctxt "KStandardShortcut|@action"
+msgid "Zoom In"
+msgstr "Apropie"
+
+#: gui/kstandardshortcut.cpp:287
+msgctxt "KStandardShortcut|@action"
+msgid "Zoom Out"
+msgstr "Depărtează"
+
+#: gui/kstandardshortcut.cpp:290
+msgctxt "KStandardShortcut|@action"
+msgid "Full Screen Mode"
+msgstr "Regim ecran complet"
+
+#: gui/kstandardshortcut.cpp:301
+msgctxt "KStandardShortcut|@action"
+msgid "Show Menu Bar"
+msgstr "Arată bara de meniu"
+
+#: gui/kstandardshortcut.cpp:304
+msgctxt "KStandardShortcut|@action"
+msgid "Activate Next Tab"
+msgstr "Activează fila următoare"
+
+#: gui/kstandardshortcut.cpp:312
+msgctxt "KStandardShortcut|@action"
+msgid "Activate Previous Tab"
+msgstr "Activează fila precedentă"
+
+#: gui/kstandardshortcut.cpp:320
+msgctxt "KStandardShortcut|@action"
+msgid "Help"
+msgstr "Ajutor"
+
+#: gui/kstandardshortcut.cpp:321
+msgctxt "KStandardShortcut|@action"
+msgid "What's This"
+msgstr "Ce înseamnă aceasta"
+
+#: gui/kstandardshortcut.cpp:326
+msgctxt "KStandardShortcut|@action"
+msgid "Text Completion"
+msgstr "Completare text"
+
+#: gui/kstandardshortcut.cpp:334
+msgctxt "KStandardShortcut|@action"
+msgid "Previous Completion Match"
+msgstr "Precedenta potrivire de completare"
+
+#: gui/kstandardshortcut.cpp:346
+msgctxt "KStandardShortcut|@action"
+msgid "Next Completion Match"
+msgstr "Următoarea potrivire de completare"
+
+#: gui/kstandardshortcut.cpp:358
+msgctxt "KStandardShortcut|@action"
+msgid "Substring Completion"
+msgstr "Completare subșir"
+
+#: gui/kstandardshortcut.cpp:367
+msgctxt "KStandardShortcut|@action"
+msgid "Previous Item in List"
+msgstr "Precedentul element în listă"
+
+#: gui/kstandardshortcut.cpp:375
+msgctxt "KStandardShortcut|@action"
+msgid "Next Item in List"
+msgstr "Următorul element în listă"
+
+#: gui/kstandardshortcut.cpp:382
+msgctxt "KStandardShortcut|@action"
+msgid "Open Recent"
+msgstr "Deschide recent"
+
+#: gui/kstandardshortcut.cpp:383
+msgctxt "KStandardShortcut|@action"
+msgid "Save As"
+msgstr "Salvează ca"
+
+#: gui/kstandardshortcut.cpp:384
+msgctxt "KStandardShortcut|@action"
+msgid "Revert"
+msgstr "Revenire"
+
+#: gui/kstandardshortcut.cpp:385
+msgctxt "KStandardShortcut|@action"
+msgid "Print Preview"
+msgstr "Previzualizare tipărire"
+
+#: gui/kstandardshortcut.cpp:386
+msgctxt "KStandardShortcut|@action"
+msgid "Mail"
+msgstr "Poștă"
+
+#: gui/kstandardshortcut.cpp:387
+msgctxt "KStandardShortcut|@action"
+msgid "Clear"
+msgstr "Curăță"
+
+#: gui/kstandardshortcut.cpp:390
+msgctxt "KStandardShortcut|@action"
+msgid "Zoom to Actual Size"
+msgstr "Apropie la dimensiunea reală"
+
+#: gui/kstandardshortcut.cpp:396
+msgctxt "KStandardShortcut|@action"
+msgid "Fit To Page"
+msgstr "Încadrează în pagină"
+
+#: gui/kstandardshortcut.cpp:397
+msgctxt "KStandardShortcut|@action"
+msgid "Fit To Width"
+msgstr "Încadrează pe lățime"
+
+#: gui/kstandardshortcut.cpp:398
+msgctxt "KStandardShortcut|@action"
+msgid "Fit To Height"
+msgstr "Încadrează pe înălțime"
+
+#: gui/kstandardshortcut.cpp:399
+msgctxt "KStandardShortcut|@action"
+msgid "Zoom"
+msgstr "Apropiere"
+
+#: gui/kstandardshortcut.cpp:400
+msgctxt "KStandardShortcut|@action"
+msgid "Goto"
+msgstr "Mergi la"
+
+#: gui/kstandardshortcut.cpp:401
+msgctxt "KStandardShortcut|@action"
+msgid "Goto Page"
+msgstr "Mergi la pagină"
+
+#: gui/kstandardshortcut.cpp:404
+msgctxt "KStandardShortcut|@action"
+msgid "Document Back"
+msgstr "Document înapoi"
+
+#: gui/kstandardshortcut.cpp:412
+msgctxt "KStandardShortcut|@action"
+msgid "Document Forward"
+msgstr "Document înainte"
+
+#: gui/kstandardshortcut.cpp:420
+msgctxt "KStandardShortcut|@action"
+msgid "Edit Bookmarks"
+msgstr "Redactează semne de carte"
+
+#: gui/kstandardshortcut.cpp:426
+msgctxt "KStandardShortcut|@action"
+msgid "Spelling"
+msgstr "Ortografie"
+
+#: gui/kstandardshortcut.cpp:427
+msgctxt "KStandardShortcut|@action"
+msgid "Show Toolbar"
+msgstr "Arată bara de unelte"
+
+#: gui/kstandardshortcut.cpp:428
+msgctxt "KStandardShortcut|@action"
+msgid "Show Statusbar"
+msgstr "Arată bara de stare"
+
+#: gui/kstandardshortcut.cpp:431
+msgctxt "KStandardShortcut|@action"
+msgid "Key Bindings"
+msgstr "Asocieri de taste"
+
+#: gui/kstandardshortcut.cpp:439
+msgctxt "KStandardShortcut|@action"
+msgid "Configure Application"
+msgstr "Configurează aplicația"
+
+#: gui/kstandardshortcut.cpp:447
+msgctxt "KStandardShortcut|@action"
+msgid "Configure Toolbars"
+msgstr "Configurează barele de unelte"
+
+#: gui/kstandardshortcut.cpp:455
+msgctxt "KStandardShortcut|@action"
+msgid "Configure Notifications"
+msgstr "Configurează notificările"
+
+#: gui/kstandardshortcut.cpp:461
+msgctxt "KStandardShortcut|@action"
+msgid "Report Bug"
+msgstr "Raportează defect"
+
+#: gui/kstandardshortcut.cpp:464
+msgctxt "KStandardShortcut|@action"
+msgid "Configure Language…"
+msgstr "Configurează limba…"
+
+#: gui/kstandardshortcut.cpp:470
+msgctxt "KStandardShortcut|@action"
+msgid "About Application"
+msgstr "Despre aplicație"
+
+#: gui/kstandardshortcut.cpp:471
+msgctxt "KStandardShortcut|@action"
+msgid "About KDE"
+msgstr "Despre KDE"
+
+#: gui/kstandardshortcut.cpp:474
+msgctxt "KStandardShortcut|@action"
+msgid "Delete"
+msgstr "Șterge"
+
+#: gui/kstandardshortcut.cpp:475
+msgctxt "KStandardShortcut|@action"
+msgid "Rename"
+msgstr "Redenumește"
+
+#: gui/kstandardshortcut.cpp:478
+msgctxt "KStandardShortcut|@action"
+msgid "Move to Trash"
+msgstr "Mută la gunoi"
+
+#: gui/kstandardshortcut.cpp:484
+msgctxt "KStandardShortcut|@action"
+msgid "Donate"
+msgstr "Donează"
+
+#: gui/kstandardshortcut.cpp:487
+msgctxt "KStandardShortcut|@action"
+msgid "Show/Hide Hidden Files"
+msgstr "Arată/ascunde fișierele ascunse"
+
+#: gui/kstandardshortcut.cpp:495
+msgctxt "KStandardShortcut|@action"
+msgid "Create Folder"
+msgstr "Creează dosar"
+
+#: gui/kstandardshortcut.cpp:503
+msgctxt ""
+"KStandardShortcut|@action referring to the menu bar or a hamburger menu"
+msgid "Open Main Menu"
+msgstr "Deschide meniul principal"
+
+#: gui/kstandardshortcut.cpp:511
+msgctxt "KStandardShortcut|@action"
+msgid "Open Context Menu"
+msgstr "Deschide meniul contextual"
+
+#: kconf_update/kconf_update.cpp:368
+msgctxt "main|"
+msgid "KDE Tool for updating user configuration files"
+msgstr ""
+"Unealtă KDE pentru actualizarea fișierelor de configurare ale utilizatorului"
+
+#: kconf_update/kconf_update.cpp:370
+msgctxt "main|"
+msgid "Keep output results from scripts"
+msgstr "Păstrează rezultatele de ieșire din scripturi"
+
+#: kconf_update/kconf_update.cpp:373
+msgctxt "main|"
+msgid ""
+"For unit tests only: do not write the done entries, so that with every re-"
+"run, the scripts are executed again"
+msgstr ""
+"Doar pentru teste unitare: nu scrie înregistrările încheiate, astfel încât "
+"scripturile să fie re-executate la fiecare rulare"
+
+#: kconf_update/kconf_update.cpp:375
+msgctxt "main|"
+msgid "Check whether config file itself requires updating"
+msgstr "Verifică dacă însuși fișierul de configurare necesită actualizat"
+
+#: kconf_update/kconf_update.cpp:378
+msgctxt "main|"
+msgid "File(s) to read update instructions from"
+msgstr "Fișier(e) din care să fie citite instrucțiuni de actualizare"
+
+#: kconfig_compiler/kconfig_compiler.cpp:732
+msgctxt "main|"
+msgid "Directory to generate files in [.]"
+msgstr "Dosar în care să fie generate fișierele [.]"
+
+#: kconfig_compiler/kconfig_compiler.cpp:733
+msgctxt "main|"
+msgid "directory"
+msgstr "dosar"
+
+#: kconfig_compiler/kconfig_compiler.cpp:737
+msgctxt "main|"
+msgid "Display software license."
+msgstr "Afișează licența programului."
+
+#: kreadconfig/kreadconfig.cpp:46 kreadconfig/kwriteconfig.cpp:25
+msgctxt "main|"
+msgid "Use <file> instead of global config"
+msgstr "Utilizează <fișier> în loc de configurația globală"
+
+#: kreadconfig/kreadconfig.cpp:49 kreadconfig/kwriteconfig.cpp:28
+msgctxt "main|"
+msgid ""
+"Group to look in. Use \"<default>\" for the root group, or use repeatedly "
+"for nested groups."
+msgstr ""
+"Grupul de cercetat. Folosiți „<default>” pentru grupul-rădăcină, sau "
+"folosiți repetat pentru grupuri imbricate."
+
+#: kreadconfig/kreadconfig.cpp:52 kreadconfig/kwriteconfig.cpp:31
+msgctxt "main|"
+msgid "Key to look for"
+msgstr "Cheie de căutat"
+
+#: kreadconfig/kreadconfig.cpp:53
+msgctxt "main|"
+msgid "Default value"
+msgstr "Valoarea implicită"
+
+#: kreadconfig/kreadconfig.cpp:54
+msgctxt "main|"
+msgid "Type of variable"
+msgstr "Tipul variabilei"
+
+#: kreadconfig/kreadconfig.cpp:55
+msgctxt "main|"
+msgid "Dump all entries"
+msgstr "Extrage toate înregistrările"
+
+#: kreadconfig/kreadconfig.cpp:58
+msgctxt "main|"
+msgid ""
+"Include globals; by default, the global config files are not read if a file "
+"is specified"
+msgstr ""
+"Include pe cele globale; implicit, fișierele cu configurări globale nu sunt "
+"citite dacă e specificat un fișier"
+
+#: kreadconfig/kreadconfig.cpp:89 kreadconfig/kwriteconfig.cpp:71
+msgctxt "main|"
+msgid "Group name cannot be empty, use \"<default>\" for the root group"
+msgstr ""
+"Denumirea grupului nu poate fi goală. folosiți „<default>” pentru grupul-"
+"rădăcină"
+
+#: kreadconfig/kwriteconfig.cpp:34
+msgctxt "main|"
+msgid ""
+"Type of variable. Use \"bool\" for a boolean, otherwise it is treated as a "
+"string"
+msgstr ""
+"Tipul de variabilă. Utilizați „bool” pentru valoare logică, altfel este "
+"tratată ca șir textual"
+
+#: kreadconfig/kwriteconfig.cpp:36
+msgctxt "main|"
+msgid "Delete the designated key if enabled"
+msgstr "Șterge cheia desemnată dacă e activată"
+
+#: kreadconfig/kwriteconfig.cpp:37
+msgctxt "notify|"
+msgid "Notify applications of the change"
+msgstr "Notifică aplicațiile despre modificare"
+
+#: kreadconfig/kwriteconfig.cpp:38
+msgctxt "main|"
+msgid "The value to write. Mandatory, on a shell use '' for empty"
+msgstr ""
+"Valoarea de scris. Obligatorie. În linia de comandă folosiți '' pentru șir "
+"gol"
+
+#~ msgctxt "KStandardShortcut|@action"
+#~ msgid "Tip Of Day"
+#~ msgstr "Sfatul zilei"
+
+#~ msgctxt "main|"
+#~ msgid ""
+#~ "For unit tests only: use test directories to stay away from the user's "
+#~ "real files"
+#~ msgstr ""
+#~ "Doar pentru teste de unitate: folosește dosare de test pentru a nu atinge "
+#~ "fișierele reale ale utilizatorului"
+
+#~ msgctxt "KStandardShortcut|@action"
+#~ msgid "Save Options"
+#~ msgstr "Salvează opțiunile"
+
+#~ msgid "KWriteConfig"
+#~ msgstr "KWriteConfig"
+
+#~ msgid "Write KConfig entries - for use in shell scripts"
+#~ msgstr ""
+#~ "Scrie înregistrări KConfig - de utilizat în scripturi de interpretor"
+
+#~ msgid "(c) 2001 Red Hat, Inc. & Luís Pedro Coelho"
+#~ msgstr "(c) 2001 Red Hat, Inc. & Luís Pedro Coelho"
+
+#~ msgid "Wrote kreadconfig on which this is based"
+#~ msgstr "Am scris kreadconfig pe care este bazat acesta"
+
+#~ msgid "Luís Pedro Coelho"
+#~ msgstr "Luís Pedro Coelho"
+
+#~ msgid "Bernhard Rosenkraenzer"
+#~ msgstr "Bernhard Rosenkraenzer"

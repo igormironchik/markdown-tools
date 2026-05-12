@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+<typesystem package="KCoreAddons">
+<!--
+SPDX-FileCopyrightText: 2024 Manuel Alcaraz Zambrano <manuelalcarazzam@gmail.com>
+SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
+-->
+    <load-typesystem name="typesystem_core.xml" generate="no"/>
+
+    <namespace-type name="KCoreAddons" />
+    <namespace-type name="KFuzzyMatcher">
+        <enum-type name="RangeType" />
+        <value-type name="Range" />
+        <value-type name="Result" />
+    </namespace-type>
+    <namespace-type name="KProcessList">
+        <value-type name="KProcessInfo" />
+    </namespace-type>
+    <namespace-type name="KSandbox">
+        <object-type name="ProcessContext" />
+        <modify-function signature="startHostProcess(QProcess &amp;, QFlags&lt;QIODeviceBase::OpenModeFlag&gt;)">
+            <modify-argument index="2">
+                <replace-default-expression with="QProcess::ReadWrite" />
+            </modify-argument>
+        </modify-function>
+    </namespace-type>
+    <value-type name="KAboutComponent" />
+    <value-type name="KAboutData" />
+    <value-type name="KAboutLicense">
+        <enum-type name="LicenseKey" />
+        <enum-type name="NameFormat" />
+        <enum-type name="VersionRestriction" />
+    </value-type>
+    <value-type name="KAboutPerson" />
+    <object-type name="KAutoSaveFile" />
+    <namespace-type name="KBackup" />
+    <object-type name="KCharMacroExpander" />
+    <object-type name="KCompositeJob" />
+    <object-type name="KDirWatch">
+        <enum-type name="Method" />
+        <enum-type name="WatchMode" flags="WatchModes" />
+    </object-type>
+    <namespace-type name="KFileSystemType">
+        <enum-type name="Type" />
+    </namespace-type>
+    <namespace-type name="KFileUtils" />
+    <value-type name="KFormat">
+        <enum-type name="BinarySizeUnits" />
+        <enum-type name="BinaryUnitDialect" />
+        <enum-type name="DistanceFormatOption" flags="DistanceFormatOptions" />
+        <enum-type name="DurationFormatOption" flags="DurationFormatOptions" />
+        <enum-type name="Unit" />
+        <enum-type name="UnitPrefix" />
+    </value-type>
+    <value-type name="KGroupId" />
+    <object-type name="KJob">
+        <enum-type name="Capability" flags="Capabilities"  />
+        <enum-type name="KillVerbosity" />
+        <enum-type name="Unit" />
+    </object-type>
+    <object-type name="KJobTrackerInterface" />
+    <object-type name="KJobUiDelegate">
+        <enum-type name="Flag" flags="Flags" />
+    </object-type>
+    <namespace-type name="KJsonUtils" />
+    <namespace-type name="KLibexec" />
+    <object-type name="KListOpenFilesJob">
+        <enum-type name="Error" />
+    </object-type>
+    <namespace-type name="KMacroExpander" />
+    <object-type name="KMacroExpanderBase" />
+    <value-type name="KMemoryInfo" />
+    <object-type name="KNetworkMounts">
+        <enum-type name="KNetworkMountOption" />
+        <enum-type name="KNetworkMountsType" />
+    </object-type>
+    <object-type name="KOSRelease" />
+    <object-type name="KPluginFactory">
+        <enum-type name="ResultErrorReason" />
+    </object-type>
+    <object-type name="KPluginMetaData" hash-function="qHash">
+        <enum-type name="KPluginMetaDataOption" flags="KPluginMetaDataOptions" />
+    </object-type>
+    <object-type name="KProcess">
+        <enum-type name="OutputChannelMode" />
+    </object-type>
+    <namespace-type name="KRandom" />
+    <namespace-type name="KRuntimePlatform" />
+    <object-type name="KSharedDataCache">
+        <enum-type name="EvictionPolicy" />
+    </object-type>
+    <namespace-type name="KShell">
+        <enum-type name="Errors" />
+        <enum-type name="Option" flags="Options" />
+        <modify-function signature="splitArgs(QString, KShell::Options, KShell::Errors*)">
+            <modify-argument index="3">
+                <remove-argument />
+            </modify-argument>
+        </modify-function>
+    </namespace-type>
+    <object-type name="KSignalHandler" />
+    <namespace-type name="KStringHandler" />
+    <namespace-type name="KTextToHTML">
+        <enum-type name="Option" flags="Options" />
+    </namespace-type>
+    <namespace-type name="KUrlMimeData">
+        <enum-type name="DecodeOption" flags="DecodeOptions" />
+    </namespace-type>
+    <value-type name="KUser">
+        <enum-type name="UIDMode" />
+        <enum-type name="UserProperty" />
+    </value-type>
+    <value-type name="KUserGroup" />
+    <value-type name="KUserId" />
+    <object-type name="KWordMacroExpander" />
+
+</typesystem>

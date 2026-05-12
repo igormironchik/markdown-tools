@@ -1,0 +1,128 @@
+[Desktop Entry]
+Name=WineHQ Database
+Name[ar]=قاعدة بيانات WineHQ
+Name[ast]=Base de datos de WineHQ
+Name[az]=WineHQ verilənlər bazası
+Name[be]=База даных WineHQ
+Name[be@latin]=Baza danych WineHQ
+Name[bg]=База данни на WineHQ
+Name[bs]=WineHQ Baza podataka
+Name[ca]=Base de dades de WineHQ
+Name[ca@valencia]=Base de dades de WineHQ
+Name[cs]=Databáze WineHQ
+Name[cy]=Datagronfa WineHQ
+Name[da]=WineHQ-database
+Name[de]=WineHQ-Datenbank
+Name[el]=Βάση δεδομένων WineHQ
+Name[en_GB]=WineHQ Database
+Name[eo]=WineHQ-Datumbazo
+Name[es]=Base de datos de WineHQ
+Name[et]=WineHQ andmebaas
+Name[eu]=WineHQ datu-basea
+Name[fa]=پایگاه دادهٔ واین‌اچ‌کیو
+Name[fi]=WineHQ-tietokanta
+Name[fr]=Base de données de WineHQ
+Name[ga]=Bunachar Sonraí WineHQ
+Name[gl]=Base de datos de WineHQ
+Name[gu]=ટૂંકાનામ ડેટાબેઝ
+Name[he]=מסד הנתונים של WineHQ
+Name[hr]=Baza podataka WineHQ
+Name[hu]=WineHQ adatbázis
+Name[ia]=Base de Datos de WineHQ
+Name[id]=Database WineHQ
+Name[ie]=WineHQ Database
+Name[is]=WineHQ-gagnagrunnur
+Name[it]=Banca dati di WineHQ
+Name[ja]=WineHQ データベース
+Name[ka]=WineHQ -ის ბაზა
+Name[ko]=WineHQ 데이터베이스
+Name[lg]=Ggwanika lya Puloguramu n'ebizifaako erya WineHQ
+Name[lt]=WineHQ duomenų bazė
+Name[lv]=„WineHQ“ datubāze
+Name[my]=WineHQ ဒေတာဘေ့စ်
+Name[nb]=WineHQ-database
+Name[nl]=WineHQ-database
+Name[nn]=WineHQ-database
+Name[pa]=WineHQ ਡਾਟਾਬੇਸ
+Name[pl]=Baza danych WineHQ
+Name[pt]=Base de Dados do WineHQ
+Name[pt_BR]=Banco de dados do WineHQ
+Name[ro]=Bază de date WineHQ
+Name[ru]=База данных WineHQ
+Name[sa]=WineHQ Database
+Name[sk]=Databáza WineHQ
+Name[sl]=Podatkovna zbirka WineHQ
+Name[sq]=Bazë të dhënash WineHQ
+Name[sv]=WineHQ-databas
+Name[th]=ฐานข้อมูล WineHQ
+Name[tr]=WineHQ Veri Tabanı
+Name[ug]=WineHQ ساندان
+Name[uk]=База даних WineHQ
+Name[vi]=Cơ sở dữ liệu WineHQ
+Name[zh_CN]=WineHQ 数据库
+Name[zh_TW]=WineHQ 資料庫
+Type=Service
+Keys=winehq,wine
+Query=https://www.winehq.org/search?q=\\{@}
+Query[ar]=https://www.winehq.org/search?q=\\{@}
+Query[ast]=https://www.winehq.org/search?q=\\{@}
+Query[az]=https://www.winehq.org/search?q=\\{@}
+Query[be]=https://www.winehq.org/search?q=\\{@}
+Query[be@latin]=https://www.winehq.org/search?q=\\{@}
+Query[bg]=https://www.winehq.org/search?q=\\{@}
+Query[bs]=https://www.winehq.org/search?q=\\{@}
+Query[ca]=https://www.winehq.org/search?q=\\{@}
+Query[ca@valencia]=https://www.winehq.org/search?q=\\{@}
+Query[cs]=https://www.winehq.org/search?q=\\{@}
+Query[cy]=https://www.winehq.org/search?q=\\{@}
+Query[da]=https://www.winehq.org/search?q=\\{@}
+Query[de]=https://www.winehq.org/search?q=\\{@}
+Query[el]=https://www.winehq.org/search?q=\\{@}
+Query[en_GB]=https://www.winehq.org/search?q=\\{@}
+Query[eo]=https://www.winehq.org/search?q=\\{@}
+Query[es]=https://www.winehq.org/search?q=\\{@}
+Query[et]=https://www.winehq.org/search?q=\\{@}
+Query[eu]=https://www.winehq.org/search?q=\\{@}
+Query[fa]=https://www.winehq.org/search?q=\\{@}
+Query[fi]=https://www.winehq.org/search?q=\\{@}
+Query[fr]=https://www.winehq.org/search?q=\\{@}
+Query[ga]=https://www.winehq.org/search?q=\\{@}
+Query[gl]=https://www.winehq.org/search?q=\\{@}
+Query[gu]=https://www.winehq.org/search?q=\\{@}
+Query[he]=https://www.winehq.org/search?q=\\{@}
+Query[hr]=https://www.winehq.org/search?q=\\{@}
+Query[hu]=https://www.winehq.org/search?q=\\{@}
+Query[ia]=https://www.winehq.org/search?q=\\{@}
+Query[id]=https://www.winehq.org/search?q=\\{@}
+Query[ie]=https://www.winehq.org/search?q=\\{@}
+Query[is]=https://www.winehq.org/search?q=\\{@}
+Query[it]=https://www.winehq.org/search?q=\\{@}
+Query[ja]=https://www.winehq.org/search?q=\\{@}
+Query[ka]=https://www.winehq.org/search?q=\\{@}
+Query[ko]=https://www.winehq.org/search?q=\\{@}
+Query[lg]=https://www.winehq.org/search?q=\\{@}
+Query[lt]=https://www.winehq.org/search?q=\\{@}
+Query[lv]=https://www.winehq.org/search?q=\\{@}
+Query[my]=https://www.winehq.org/search?q=\\{@}
+Query[nb]=https://www.winehq.org/search?q=\\{@}
+Query[nl]=https://www.winehq.org/search?q=\\{@}
+Query[nn]=https://www.winehq.org/search?q=\\{@}
+Query[pa]=https://www.winehq.org/search?q=\\{@}
+Query[pl]=https://www.winehq.org/search?q=\\{@}
+Query[pt]=https://www.winehq.org/search?q=\\{@}
+Query[pt_BR]=https://www.winehq.org/search?q=\\{@}
+Query[ro]=https://www.winehq.org/search?q=\\{@}
+Query[ru]=https://www.winehq.org/search?q=\\{@}
+Query[sa]=https://www.winehq.org/search?q=\\{@}
+Query[sk]=https://www.winehq.org/search?q=\\{@}
+Query[sl]=https://www.winehq.org/search?q=\\{@}
+Query[sq]=https://www.winehq.org/search?q=\\{@}
+Query[sv]=https://www.winehq.org/search?q=\\{@}
+Query[th]=https://www.winehq.org/search?q=\\{@}
+Query[tr]=https://www.winehq.org/search?q=\\{@}
+Query[ug]=https://www.winehq.org/search?q=\\{@}
+Query[uk]=https://www.winehq.org/search?q=\\{@}
+Query[vi]=https://www.winehq.org/search?q=\\{@}
+Query[zh_CN]=https://www.winehq.org/search?q=\\{@}
+Query[zh_TW]=https://www.winehq.org/search?q=\\{@}
+Icon=wine

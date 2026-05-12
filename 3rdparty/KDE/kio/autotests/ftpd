@@ -1,0 +1,85 @@
+#!/usr/bin/env ruby
+# SPDX-FileCopyrightText: 2019 Harald Sitter <sitter@kde.org>
+#
+# SPDX-License-Identifier: LGPL-2.0-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
+
+require 'ftpd'
+require 'logger'
+require 'tmpdir'
+
+STDOUT.sync = true
+
+# Monkey patch the site handler, it's not implemented so fake it a bit for ftp
+# worker purposes.
+
+# FIXME: and yet I seee kio_ftp(8319)/(kf5.kio.kio_ftp) Ftp::ftpChmod: ftpChmod: CHMOD not supported - disabling
+
+module Ftpd
+  class CmdSite
+    alias cmd_site_orig cmd_site
+    def cmd_site(_argument)
+      # We don't support chmod bugger off.
+      reply '500 cmd_site.'
+    end
+  end
+end
+
+module Ftpd
+  class CmdRest
+    def cmd_rest(_argument)
+      reply "350 cmd_rest."
+    end
+  end
+end
+
+module Ftpd
+  class CmdStor
+    alias cmd_stor_orig cmd_stor
+    def cmd_stor(argument)
+      if argument.include?('__badResume__')
+        reply '550 out of quota'
+      else
+        cmd_stor_orig(argument)
+      end
+    end
+  end
+end
+
+# Add some simulation capabilities to the file system
+class MangledDiskFileSystem < Ftpd::DiskFileSystem
+  def accessible?(path, *args)
+    return false if path.include?('__inaccessiblePath__')
+
+    super(path, *args)
+  end
+end
+
+class Driver
+  def initialize(temp_dir)
+    @temp_dir = temp_dir
+  end
+
+  def authenticate(_user, _password)
+    true
+  end
+
+  def file_system(_user)
+    MangledDiskFileSystem.new(@temp_dir)
+  end
+end
+
+# NB: stderr is used to communicate with the parent!
+
+port = ARGV.fetch(0)
+temp_dir = ARGV.fetch(1)
+
+driver = Driver.new(temp_dir)
+server = Ftpd::FtpServer.new(driver)
+server.port = port
+server.log = Logger.new($stdout)
+server.start
+warn "port = #{server.bound_port}"
+puts "Server listening on port #{server.bound_port}"
+loop do
+  sleep(1)
+end

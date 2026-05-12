@@ -1,0 +1,43 @@
+/*!
+    \page kconfig-index.html
+    \title KConfig
+
+    Persistent platform-independent application settings.
+
+    KConfig provides an advanced configuration system. It is made of two parts:
+    KConfigCore and KConfigGui.
+
+    KConfigCore provides access to the configuration files themselves. It features:
+    \list
+    \li Code generation: describe your configuration in an XML file, and use
+    kconfig_compiler to generate classes that read and write configuration
+    entries.
+    \li Cascading configuration files (global settings overridden by local settings).
+    \li Optional shell expansion support.
+    \li The ability to lock down configuration options.
+    \endlist
+
+    KConfigGui provides a way to hook widgets to the configuration so that they are
+    automatically initialized from the configuration and automatically propagate
+    their changes to their respective configuration files.
+
+    \section1 Using the Module
+
+    \include {module-use.qdocinc} {using the c++ api}
+
+    \section2 Building with CMake
+
+    \include {module-use.qdocinc} {building with cmake} {KF6} {Config} {KF6::ConfigCore}
+
+    \section1 API Reference
+
+    \list
+        \li \l{KConfigCore C++ Classes}
+        \li \l{KConfigGui C++ Classes}
+        \li \l{KConfigQml C++ Classes}
+        \li \l{KConfig QML Types}
+        \li \l{kconf_update Tool}
+        \li \l{The KDE Configuration Compiler}
+        \li \l{Obsolete Classes}
+    \endlist
+*/

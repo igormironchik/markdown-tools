@@ -1,0 +1,81 @@
+METADATA
+========
+
+Applications can provide "metadata" to the workers. Metadata can influence
+the behavior of a worker and is usually protocol dependent. MetaData consists
+of two strings: a "key" and a "value".
+
+The following keys are currently in use:
+
+Key             Value(s)        Description
+----            --------        -----------
+
+referrer        string          The URL from which the request originates. (read by http)
+
+accept          string          List of MIME types to accept separated by a ", ". (read by http)
+
+responsecode    string          Original response code of the web server. (set by http)
+
+UserAgent       string          The user agent name to send to remote host (read by http)
+
+content-type    string          The content type of the data to be uploaded (read and set by http)
+
+window-id       number          winId() of the window the request is associated with.
+
+range-start     number          Try to get the file starting at the given offset (set by file_copy when finding a .part file,
+                                                                                  but can also be set by apps.)
+
+range-end       number          Try to get the file until at the given offset (not set in kdelibs; handled by kio_http).
+
+resume          number          Deprecated compatibility name for range-start
+resume_until    number          Deprecated compatibility name for range-end
+
+content-disposition-type        string Type of Content-Disposition from a HTTP Header Response.
+content-disposition-*           any other valid value sent in a Content-Disposition header (e.g. filename)
+
+cookies         "manual"        Cookies set in "setcookies" are send, received cookies are reported
+                                via "setcookies".
+                "none"          No cookies are sent, received cookies are discarded (default).
+
+setcookies      string          Used to send/receive HTTP cookies when "cookies" is set to "manual".
+
+no-www-auth     bool            Flag that indicates that no HTTP WWW authentication attempts should be made.
+no-proxy-auth   bool            Flag that indicates that no HTTP proxy authentication attempts should be made.
+no-auth-prompt  bool            Flag that indicates that only cached authentication tokens should be used.
+
+ssl_no_ui	bool		Flag to tell TCPworkerBase that no user interaction should take place. Instead of asking security questions the connection will silently fail. This is of particular use to favicon code. (default: false)
+
+PropagateHttpHeader	bool	Whether HTTP headers should be send back (read by http)
+
+HTTP-Headers		string	The HTTP headers, concatenated, \n delimited (set by http)
+                                Requires PropagateHttpHeader to be set.
+
+customHTTPHeader	string	Custom HTTP headers to add to the request (read by http)
+
+textmode		bool	When true, switches FTP up/downloads to ascii transfer mode (read by ftp)
+
+recurse                 bool    When true, del() will be able to delete non-empty directories.  (read by file)
+                                Otherwise, del() is supposed to give an error on non-empty directories.
+
+DefaultRemoteProtocol	string	Protocol to redirect file://<hostname>/ URLs to, default is "smb" (read by file)
+redirect-to-get         bool    If "true", changes a redrirection request to a GET operation regardless of the original operation.
+
+** NOTE: Anything in quotes ("") under Value(s) indicates literal value.
+
+
+Examples:
+
+E.g. the following disables cookies:
+job = KIO::get( QUrl("http://www.kde.org") );
+job->addMetaData("cookies", "none");
+
+If you want to handle cookies yourself, you can do:
+job = KIO::get( QUrl("http://www.kde.org") );
+job->addMetaData("cookies", "manual");
+job->addMetaData("setcookies", "Cookie: foo=bar; gnat=gnork");
+
+The above sends two cookies along with the request, any cookies send back by
+the server can be retrieved with job->queryMetaData("cookies") after
+receiving the mimetype() signal or when the job is finished.
+
+The cookiejar is not used in this case.

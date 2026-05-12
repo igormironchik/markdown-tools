@@ -1,0 +1,20 @@
+/*!
+    \module KConfigCore
+    \title KConfigCore C++ Classes
+    \ingroup modules
+    \cmakepackage KF6
+    \cmakecomponent Config
+    \cmaketargetitem KF6::ConfigCore
+
+    \brief Persistent platform-independent application settings.
+
+    KConfigCore provides access to the configuration files themselves. It features:
+    \list
+    \li Code generation: describe your configuration in an XML file, and use
+    kconfig_compiler to generate classes that read and write configuration
+    entries.
+    \li Cascading configuration files (global settings overridden by local settings).
+    \li Optional shell expansion support.
+    \li The ability to lock down configuration options.
+    \endlist
+*/

@@ -1,0 +1,138 @@
+[Desktop Entry]
+Keys=qwso
+Name=Qwant Social
+Name[ar]=مجتمع Qwant
+Name[ast]=Qwant Social
+Name[az]=Qwant Sosial
+Name[be]=Qwant Social
+Name[be@latin]=Qwant Social
+Name[bg]=Qwant Social
+Name[bs]=Društveni Kvant
+Name[ca]=Tertúlia a Qwant
+Name[ca@valencia]=Tertúlia en Qwant
+Name[cs]=Qwant Social
+Name[cy]=Cymdeithasol Qwant
+Name[da]=Qwant Social
+Name[de]=Qwant-Sozial
+Name[el]=Qwant Κοινωνική δικτύωση
+Name[en_GB]=Qwant Social
+Name[eo]=Qwant Socia
+Name[es]=Qwant Social
+Name[et]=Qwant Social
+Name[eu]=Qwant Soziala
+Name[fa]=اجتماع کیووانت
+Name[fi]=Qwant Social
+Name[fr]=Réseaux sociaux « Qwant »
+Name[ga]=Qwant Social
+Name[gd]=Qwant Social
+Name[gl]=Qwant social
+Name[gu]=ક્વાન્ટ સામાજિક
+Name[he]=Qwant חברתי
+Name[hr]=Qwant Društvene mreže
+Name[hu]=Qwant közösség
+Name[ia]=Qwant Social
+Name[id]=Qwant Social
+Name[ie]=Qwant Social
+Name[is]=Qwant Social
+Name[it]=Rete sociale di Qwant
+Name[ja]=Qwant Social
+Name[ka]=Qwant სოციალური ქსელები
+Name[ko]=Qwant 소셜
+Name[lg]=Noonya Eby'okutabagana ku Qwant
+Name[lt]=Qwant socialinių tinklų įrašai
+Name[lv]=„Qwant Social“
+Name[ml]=ക്വാണ്ട് സോഷ്യൽ
+Name[mr]=क्वांट सामाजिक
+Name[my]=ကွမ့် ဆိုရှယ်
+Name[nb]=Qwant sosialt
+Name[nds]=Qwant-Meenschap
+Name[nl]=Qwant sociaal
+Name[nn]=Qwant sosialt
+Name[pa]=ਕਿਊਵਾਂਟ ਸ਼ੋਸ਼ਲ
+Name[pl]=Qwant - społeczność
+Name[pt]=Qwant Social
+Name[pt_BR]=Qwant Social
+Name[ro]=Qwant Social
+Name[ru]=Qwant: Блоги
+Name[sa]=Qwant Social
+Name[sk]=Qwant sociálne
+Name[sl]=Qwant - družabno
+Name[sq]=Shoqërore Qwant
+Name[sr]=Квант-дружење
+Name[sr@ijekavian]=Квант-дружење
+Name[sr@ijekavianlatin]=Qwant-druženje
+Name[sr@latin]=Qwant-druženje
+Name[sv]=Qwant-social
+Name[tg]=Шабакаи иҷтимоии Qwant
+Name[th]=Qwant Social
+Name[tok]=ilo toki Qwant
+Name[tr]=Qwant Sosyal
+Name[ug]=Qwant ئىجتىمائىي تاراتقۇ
+Name[uk]=Соціальне Qwant
+Name[vi]=Qwant Xã hội
+Name[zh_CN]=Qwant 社交
+Name[zh_TW]=Qwant Social
+Query=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[ar]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[az]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[be]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[be@latin]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[bg]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[bs]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[ca]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[ca@valencia]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[cs]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[cy]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[da]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[de]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[el]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[en_GB]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[eo]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[es]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[et]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[eu]=https://www.qwant.com/single?q=\\{@}&client=kde&source=social
+Query[fa]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[fi]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[fr]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[ga]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[gl]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[gu]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[he]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[hr]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[hu]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[ia]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[id]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[ie]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[is]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[it]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[ja]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[ka]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[ko]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[lg]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[lt]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[lv]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[my]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[nb]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[nl]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[nn]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[pa]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[pl]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[pt]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[pt_BR]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[ro]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[ru]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[sa]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[sk]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[sl]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[sq]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[sv]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[tg]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[th]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[tok]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[tr]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[ug]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[uk]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[vi]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[zh_CN]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Query[zh_TW]=https://www.qwant.com/?q=\\{@}&client=kde&t=social
+Type=Service

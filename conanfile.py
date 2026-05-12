@@ -16,6 +16,8 @@ class DependenciesRecipe(ConanFile):
         self.requires("hunspell/1.7.2")
         if self.settings.os == "Windows":
             self.requires("fontconfig/2.15.0")
+            self.requires("gettext/1.0")
+            self.requires("libgettext/0.26")
 
     def configure(self):
         self.options["freetype"].shared = False
@@ -28,6 +30,8 @@ class DependenciesRecipe(ConanFile):
         self.options["fontconfig"].shared = False
         self.options["tinyxml2"].shared = False
         self.options["hunspell"].shared = True
+        self.options["gettext"].shared = False
+        self.options["libgettext"].shared = False
 
     def imports(self):
         self.copy("*.dll", "bin", "bin")

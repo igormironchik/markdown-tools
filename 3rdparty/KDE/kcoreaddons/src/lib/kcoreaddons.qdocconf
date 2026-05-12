@@ -1,0 +1,34 @@
+include($KDE_DOCS/global/qt-module-defaults.qdocconf)
+
+project = KCoreAddons
+description = Additions to Qt Core
+
+documentationinheaders = true
+
+headerdirs += .
+sourcedirs += .
+
+outputformats = HTML
+
+depends += \
+    kde \
+    qtcore \
+    kcoreaddonsqml
+
+navigation.landingpage = "KCoreAddons"
+
+qhp.projects            = KCoreAddons
+
+qhp.KCoreAddons.file                = kcoreaddons.qhp
+qhp.KCoreAddons.namespace           = org.kde.kcoreaddons.$QT_VERSION_TAG
+qhp.KCoreAddons.virtualFolder       = kcoreaddons
+qhp.KCoreAddons.indexTitle          = KCoreAddons
+qhp.KCoreAddons.indexRoot           =
+
+qhp.KCoreAddons.subprojects         = classes
+qhp.KCoreAddons.subprojects.classes.title = C++ Classes
+qhp.KCoreAddons.subprojects.classes.indexTitle = KCoreAddons C++ Classes
+qhp.KCoreAddons.subprojects.classes.selectors = class fake:headerfile
+qhp.KCoreAddons.subprojects.classes.sortPages = true
+
+tagfile = kcoreaddons.tags

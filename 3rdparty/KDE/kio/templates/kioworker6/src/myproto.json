@@ -1,0 +1,17 @@
+{
+    "KDE-KIO-Protocols": {
+        "myproto": {
+            "ExtraNames": [],
+            "input": "none",
+            "listing": [
+                "Name",
+                "Type",
+                "Size",
+                "Access"
+            ],
+            "output": "filesystem",
+            "protocol": "myproto",
+            "reading": true
+        }
+    }
+}

@@ -1,0 +1,125 @@
+[Desktop Entry]
+Keys=inventmr,invmr,mr
+Name=KDE Invent Merge Requests
+Name[ar]=طلبات الدمج KDE Invent
+Name[ast]=Solicitúes d'amiestu de KDE Invent
+Name[az]=KDE Invent birləşdirmə tələbləri
+Name[be]=Запыты на аб'яднанне KDE Invent
+Name[be@latin]=Zapyty na abjadnannie KDE Invent
+Name[bg]=KDE Invent Merge Requests
+Name[bs]=KDE Izum Zahtjevi za spajanje
+Name[ca]=Peticions de fusió de KDE Invent
+Name[ca@valencia]=Sol·licituds de fusió de KDE Invent
+Name[cy]=Erfyniadau Cydlifo KDE Llifento
+Name[da]=Sammenlægningsanmodninger for KDE Invent
+Name[de]=Merge-Requests auf KDE Invent
+Name[el]=Αιτήματα συγχώνευσης KDE
+Name[en_GB]=KDE Invent Merge Requests
+Name[eo]=KDE Invent Kunfandopetoj
+Name[es]=Solicitudes de fusiones de KDE Invent
+Name[et]=KDE Inventi ühendamistaotlused
+Name[eu]=KDE Invent bateratzeko eskaera
+Name[fa]=درخواست‌های ادغام اختراع KDE
+Name[fi]=KDE Inventin yhdistämispyynnöt
+Name[fr]=Requêtes de fusion de KDE Invent
+Name[ga]=Iarratais Chomhcheangail KDE Invent
+Name[gl]=Solicitudes de inclusión de KDE Invent
+Name[gu]=https://invent.kde.org/search?scope=issues&search=\\{@}
+Name[he]=בקשות מיזוג ב־KDE Invent
+Name[hr]=KDE Invent zahtjevi za spajanje
+Name[hu]=KDE Invent beolvasztási kérések
+Name[ia]=Requestas de fusionar de KDE Invent
+Name[id]=Permintaan Penggabungan KDE Invent
+Name[ie]=KDE Invent Merge Requests
+Name[is]=Samþættingarbeiðnir á KDE Invent
+Name[it]=Richieste di integrazione (MR) su KDE Invent
+Name[ja]=KDE Invent マージリクエスト
+Name[ka]=KDE Invent -ის კოდის განახლების მოთხოვნები
+Name[ko]=KDE Invent 병합 요청
+Name[lg]=Emirimu Egiwedde Egiweeredwayo ku KDE Invent
+Name[lt]=KDE Invent suliejimo užklausos
+Name[lv]=„KDE Invent“ pievienošanas pieprasījumi
+Name[my]=ကေဒီအီး အင်ဗန့် ပေါင်းစပ်ရန်တောင်းဆိုချက်များ
+Name[nb]=KDE Invent-fletteforespørsler
+Name[nl]=KDE-invent samenvoegaanvragen
+Name[nn]=KDE Invent-fletteførespurnadar
+Name[pa]=KDE ਇਨਵੈਂਟ ਮਿਲਾਨ ਬੇਨਤੀਆਂ
+Name[pl]=Żądania Scalenia na KDE Invent
+Name[pt]=Pedidos de 'merge' no KDE Invent
+Name[pt_BR]=Merge Requests do KDE Invent
+Name[ru]=Запросы на слияние KDE Invent
+Name[sa]=KDE Invent Merge Requests
+Name[sk]=Požiadavky na zlúčenie v KDE Invent
+Name[sl]=Zahteve za spajanje KDE Invent
+Name[sq]=Kërkesa Përzierjeje në KDE Invent
+Name[sv]=KDE-Invent sammanfogningsbegäran
+Name[th]=KDE Invent คําขอ Merge
+Name[tr]=KDE Invent Birleştirme İstekleri
+Name[ug]=KDE Invent بىرلەشتۈرۈش ئىلتىماسى
+Name[uk]=Запити щодо об'єднання на KDE Invent
+Name[vi]=Các đề nghị hoà trộn ở Invent KDE
+Name[zh_CN]=KDE Invent 合并请求
+Name[zh_TW]=KDE Invent 合併請求
+Query=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[ar]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[az]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[be]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[be@latin]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[bg]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[bs]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[ca]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[ca@valencia]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[cs]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[cy]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[da]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[de]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[el]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[en_GB]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[eo]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[es]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[et]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[eu]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[fa]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[fi]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[fr]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[ga]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[gl]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[gu]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[he]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[hr]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[hu]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[ia]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[id]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[ie]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[is]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[it]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[ja]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[ka]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[ko]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[lg]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[lt]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[lv]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[my]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[nb]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[nl]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[nn]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[pa]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[pl]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[pt]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[pt_BR]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[ro]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[ru]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[sa]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[sk]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[sl]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[sq]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[sv]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[th]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[tr]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[ug]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[uk]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[vi]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[zh_CN]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Query[zh_TW]=https://invent.kde.org/search?scope=merge_requests&search=\\{@}
+Type=Service
+Icon=kde

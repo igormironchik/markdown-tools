@@ -1,0 +1,6 @@
+ClassName=Test16
+GenerateProperties=true
+Mutators=brightness
+File=test16.kcfg
+QmlRegistration=true
+QmlUncreatable=true

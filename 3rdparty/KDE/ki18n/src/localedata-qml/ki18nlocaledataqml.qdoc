@@ -1,0 +1,8 @@
+/*!
+    \qmlmodule org.kde.i18n.localeData
+    \title KI18nLocaleData QML Types
+    \ingroup qmlmodules
+    \brief Access to data about countries and timezones.
+
+    QML API for access to data about countries and timezones.
+*/

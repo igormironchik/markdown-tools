@@ -15,3 +15,5 @@
 /3rdparty/resvg-*/
 /installer/**/*.xml
 !/3rdparty/resvg*.tar.xz
+Qt
+aqtinstall.log

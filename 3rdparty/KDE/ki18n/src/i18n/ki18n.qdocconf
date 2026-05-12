@@ -1,0 +1,36 @@
+include($KDE_DOCS/global/qt-module-defaults.qdocconf)
+
+project = KI18n
+description = Advanced internationalization framework
+
+documentationinheaders = true
+
+headerdirs += .
+sourcedirs += .
+
+outputformats = HTML
+
+navigation.landingpage = "KI18n"
+
+depends += \
+    kde \
+    qtcore \
+    ki18nqml \
+    ki18nlocaledata \
+    ki18nlocaledataqml
+
+qhp.projects            = KI18n
+
+qhp.KI18n.file                = ki18n.qhp
+qhp.KI18n.namespace           = org.kde.ki18n.$QT_VERSION_TAG
+qhp.KI18n.virtualFolder       = ki18n
+qhp.KI18n.indexTitle          = KI18n
+qhp.KI18n.indexRoot           =
+
+qhp.KI18n.subprojects         = classes
+qhp.KI18n.subprojects.classes.title = C++ Classes
+qhp.KI18n.subprojects.classes.indexTitle = KI18n C++ Classes
+qhp.KI18n.subprojects.classes.selectors = class fake:headerfile
+qhp.KI18n.subprojects.classes.sortPages = true
+
+tagfile = ki18n.tags

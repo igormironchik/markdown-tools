@@ -1,0 +1,317 @@
+{
+    "KDE-KIO-Protocols": {
+        "trash": {
+            "Class": ":local",
+            "ExtraNames": [
+                "Original Path",
+                "Deletion Date"
+            ],
+            "ExtraNames[ar]": [
+                "المسار الأصلي",
+                "تاريخ الحذف"
+            ],
+            "ExtraNames[ast]": [
+                "Camín orixinal",
+                "Data de desaniciu"
+            ],
+            "ExtraNames[az]": [
+                "Orijinal Yol",
+                " Silinmə Tarixi"
+            ],
+            "ExtraNames[be@latin]": [
+                "Aryhinaĺny šliach",
+                " Data vydaliennia"
+            ],
+            "ExtraNames[be]": [
+                "Арыгінальны шлях",
+                " Дата выдалення"
+            ],
+            "ExtraNames[bg]": [
+                "Оригинален път",
+                " Дата на изтриване"
+            ],
+            "ExtraNames[bs]": [
+                "Originalna Putanja",
+                "Datum Brisanja"
+            ],
+            "ExtraNames[ca@valencia]": [
+                "Camí original",
+                "Data d'esborrat"
+            ],
+            "ExtraNames[ca]": [
+                "Camí original",
+                "Data d'esborrat"
+            ],
+            "ExtraNames[cs]": [
+                "Původní cesta",
+                "Datum smazání"
+            ],
+            "ExtraNames[cy]": [
+                "Llwybr Gwreiddiol",
+                "Dyddiad Dilead"
+            ],
+            "ExtraNames[da]": [
+                "Oprindelig sti",
+                "Sletningsdato"
+            ],
+            "ExtraNames[de]": [
+                "Ursprünglicher Pfad",
+                "Löschzeitpunkt"
+            ],
+            "ExtraNames[el]": [
+                "Αρχική διαδρομή",
+                "Ημερομηνία διαγραφής"
+            ],
+            "ExtraNames[en_GB]": [
+                "Original Path",
+                "Deletion Date"
+            ],
+            "ExtraNames[eo]": [
+                "Origina Vojo",
+                "Dato de Forigo"
+            ],
+            "ExtraNames[es]": [
+                "Ruta original",
+                "Fecha de borrado"
+            ],
+            "ExtraNames[et]": [
+                "Algne asukoht",
+                "Kustutamisaeg"
+            ],
+            "ExtraNames[eu]": [
+                "Jatorrizko bide-izena",
+                "ezabatze data"
+            ],
+            "ExtraNames[fa]": [
+                "مسیر اصلی؛زمان دور انداختن"
+            ],
+            "ExtraNames[fi]": [
+                "Alkuperäinen polku",
+                "Alkuperäinen sijainti",
+                "Poistopäivä",
+                "Poistoaika",
+                "Poistopäivämäärä"
+            ],
+            "ExtraNames[fr]": [
+                "Emplacement d'origine",
+                "date de suppression"
+            ],
+            "ExtraNames[ga]": [
+                "Cosán Bunaidh",
+                "Dáta Scriosta"
+            ],
+            "ExtraNames[gd]": [
+                "Slighe thùsail",
+                "Ceann-là an sguabaidh às"
+            ],
+            "ExtraNames[gl]": [
+                "Ruta orixinal",
+                "Data de eliminación"
+            ],
+            "ExtraNames[gu]": [
+                "મૂળ સ્થાન",
+                "બદલાયાની તારીખ"
+            ],
+            "ExtraNames[he]": [
+                "נתיב מקורי",
+                "תאריך מחיקה"
+            ],
+            "ExtraNames[hu]": [
+                "Eredeti elérési út",
+                "Törlési dátum"
+            ],
+            "ExtraNames[ia]": [
+                "Percurso original",
+                " Data de Cancellation"
+            ],
+            "ExtraNames[id]": [
+                "Alur Asli",
+                "Tanggal Penghapusan"
+            ],
+            "ExtraNames[ie]": [
+                "Original rute",
+                "Date de deletion"
+            ],
+            "ExtraNames[is]": [
+                "Upprunaleg slóð",
+                "dagsetning eyðingar"
+            ],
+            "ExtraNames[it]": [
+                "Percorso originale",
+                "Data di eliminazione"
+            ],
+            "ExtraNames[ka]": [
+                "წინა ბილიკი",
+                "წაშლის თარიღი"
+            ],
+            "ExtraNames[ko]": [
+                "원본 경로",
+                "삭제 날짜"
+            ],
+            "ExtraNames[lg]": [
+                "Obwali obusangiro",
+                "Amagyawo"
+            ],
+            "ExtraNames[lt]": [
+                "Pradinis kelias",
+                "Ištrynimo data"
+            ],
+            "ExtraNames[lv]": [
+                "Sākotnējais ceļš",
+                "Dzēšanas datums"
+            ],
+            "ExtraNames[ml]": [
+                "യഥാർത്ഥ പാത",
+                "ഇല്ലാതാക്കിയ തീയതി"
+            ],
+            "ExtraNames[my]": [
+                "နဂိုလမ်းကြောင်း",
+                "ဖျက်ရန်သတ်မှတ်ထားသောရက်စွဲ",
+                "Original Path",
+                "Deletion Data"
+            ],
+            "ExtraNames[nb]": [
+                "Opphavs sti",
+                " slettedato"
+            ],
+            "ExtraNames[nl]": [
+                "Oorspronkelijk pad",
+                "Datum verwijdering"
+            ],
+            "ExtraNames[nn]": [
+                "Opphavleg sti",
+                " slettedato"
+            ],
+            "ExtraNames[pa]": [
+                "ਅਸਲ ਮਾਰਗ",
+                "ਹਟਾਉਣ ਤਾਰੀਖ"
+            ],
+            "ExtraNames[pl]": [
+                "Ścieżka pierwotna",
+                "Data usunięcia"
+            ],
+            "ExtraNames[pt]": [
+                "Caminho Original",
+                "Data de Remoção"
+            ],
+            "ExtraNames[pt_BR]": [
+                "Caminho original",
+                "Data da exclusão"
+            ],
+            "ExtraNames[ro]": [
+                "Cale originală",
+                "Dată ștergere"
+            ],
+            "ExtraNames[ru]": [
+                "Исходный путь",
+                "Дата удаления"
+            ],
+            "ExtraNames[sa]": [
+                "मूलमार्गः ",
+                "विलोपनतिथिः"
+            ],
+            "ExtraNames[sk]": [
+                "Pôvodné umiestnenie",
+                "Dátum vymazania"
+            ],
+            "ExtraNames[sl]": [
+                "Prvotna pot",
+                "Datum izbrisa"
+            ],
+            "ExtraNames[sq]": [
+                "Shteg Origjinal",
+                "Datë Fshirjeje"
+            ],
+            "ExtraNames[sr@ijekavian]": [
+                "изворна путања",
+                "датум брисања"
+            ],
+            "ExtraNames[sr@ijekavianlatin]": [
+                "izvorna putanja",
+                "datum brisanja"
+            ],
+            "ExtraNames[sr@latin]": [
+                "izvorna putanja",
+                "datum brisanja"
+            ],
+            "ExtraNames[sr]": [
+                "изворна путања",
+                "датум брисања"
+            ],
+            "ExtraNames[sv]": [
+                "Ursprunglig sökväg",
+                "Borttagsdatum"
+            ],
+            "ExtraNames[ta]": [
+                "முந்தைய பாதை",
+                "அகற்றப்பட்ட தேதி"
+            ],
+            "ExtraNames[tg]": [
+                "Масири аслӣ",
+                "Санаи несткунӣ"
+            ],
+            "ExtraNames[th]": [
+                "เส้นทางดั้งเดิม",
+                "วันที่ลบ"
+            ],
+            "ExtraNames[tok]": [
+                "nasin pini",
+                "tenpo jaki",
+                "tenpo weka"
+            ],
+            "ExtraNames[tr]": [
+                "Özgün Yol",
+                "Silme Tarihi"
+            ],
+            "ExtraNames[uk]": [
+                "Шлях",
+                "Дата вилучення"
+            ],
+            "ExtraNames[vi]": [
+                "Đường dẫn ban đầu",
+                "Ngày xoá"
+            ],
+            "ExtraNames[zh_CN]": [
+                "原始路径",
+                "删除日期"
+            ],
+            "ExtraNames[zh_TW]": [
+                "原始路徑",
+                "刪除日期"
+            ],
+            "ExtraTypes": [
+                "QString",
+                "QDateTime"
+            ],
+            "Icon": "user-trash-full",
+            "copyFromFile": true,
+            "copyToFile": true,
+            "deleteRecursive": true,
+            "deleting": true,
+            "fileNameUsedForCopying": "DisplayName",
+            "input": "none",
+            "linking": false,
+            "listing": [
+                "Name",
+                "Type",
+                "Size",
+                "Extra1",
+                "Extra2",
+                "Date",
+                "Access",
+                "Owner",
+                "Group",
+                "Link"
+            ],
+            "makedir": false,
+            "maxInstances": 2,
+            "moving": true,
+            "output": "filesystem",
+            "protocol": "trash",
+            "reading": true,
+            "renameFromFile": true,
+            "renameToFile": true,
+            "writing": true
+        }
+    }
+}
