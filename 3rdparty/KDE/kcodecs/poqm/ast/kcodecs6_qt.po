@@ -1,0 +1,354 @@
+# SPDX-FileCopyrightText: 2023 Enol P. <enolp@softastur.org>
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"PO-Revision-Date: 2023-12-15 14:11+0100\n"
+"Last-Translator: Enol P. <enolp@softastur.org>\n"
+"Language-Team: Assamese <alministradores@softastur.org>\n"
+"Language: ast\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Qt-Contexts: true\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 23.08.4\n"
+
+#: kcharsets.cpp:151
+msgctxt "KCharsets|@item Text character set"
+msgid "Western European"
+msgstr "Européu occidental"
+
+#: kcharsets.cpp:157
+msgctxt "KCharsets|@item Text character set"
+msgid "Central European"
+msgstr "Européu central"
+
+#: kcharsets.cpp:160
+msgctxt "KCharsets|@item Text character set"
+msgid "Baltic"
+msgstr "Bálticu"
+
+#: kcharsets.cpp:163
+msgctxt "KCharsets|@item Text character set"
+msgid "South-Eastern Europe"
+msgstr "Européu suroccidental"
+
+#: kcharsets.cpp:166
+msgctxt "KCharsets|@item Text character set"
+msgid "Turkish"
+msgstr "Turcu"
+
+#: kcharsets.cpp:169
+msgctxt "KCharsets|@item Text character set"
+msgid "Cyrillic"
+msgstr "Cirílicu"
+
+#: kcharsets.cpp:175
+msgctxt "KCharsets|@item Text character set"
+msgid "Chinese Traditional"
+msgstr "Chinu tradicional"
+
+#: kcharsets.cpp:178
+msgctxt "KCharsets|@item Text character set"
+msgid "Chinese Simplified"
+msgstr "Chinu simplificáu"
+
+#: kcharsets.cpp:182
+msgctxt "KCharsets|@item Text character set"
+msgid "Korean"
+msgstr "Coreanu"
+
+#: kcharsets.cpp:185
+msgctxt "KCharsets|@item Text character set"
+msgid "Japanese"
+msgstr "Xaponés"
+
+#: kcharsets.cpp:189
+msgctxt "KCharsets|@item Text character set"
+msgid "Greek"
+msgstr "Griegu"
+
+#: kcharsets.cpp:192
+msgctxt "KCharsets|@item Text character set"
+msgid "Arabic"
+msgstr "Árabe"
+
+#: kcharsets.cpp:195
+msgctxt "KCharsets|@item Text character set"
+msgid "Hebrew"
+msgstr "Hebréu"
+
+#: kcharsets.cpp:200
+msgctxt "KCharsets|@item Text character set"
+msgid "Thai"
+msgstr "Tailandés"
+
+#: kcharsets.cpp:203
+msgctxt "KCharsets|@item Text character set"
+msgid "Unicode"
+msgstr "Unicode"
+
+#: kcharsets.cpp:209
+msgctxt "KCharsets|@item Text character set"
+msgid "Other"
+msgstr "Otru conxuntu"
+
+#: kcharsets.cpp:469
+#, qt-format
+msgctxt "KCharsets|@item %1 character set, %2 encoding"
+msgid "%1 ( %2 )"
+msgstr "%1 ( %2 )"
+
+#: kcharsets.cpp:471
+#, qt-format
+msgctxt "KCharsets|@item"
+msgid "Other encoding (%1)"
+msgstr "Otra codificación (%1)"
+
+#: kcharsets.cpp:502
+#, qt-format
+msgctxt "KCharsets|@item Text encoding: %1 character set, %2 encoding"
+msgid "%1 ( %2 )"
+msgstr "%1 ( %2 )"
+
+#: kemailaddress.cpp:508
+msgctxt "QObject|"
+msgid ""
+"The email address you entered is not valid because it contains more than one "
+"@.\n"
+"You will not create valid messages if you do not change your address."
+msgstr ""
+"La direición de corréu electrónicu qu'introduxesti ye inválida porque "
+"contién más d'una @.\n"
+"Nun vas crear mensaxes válidos si nun camudes la direición."
+
+#: kemailaddress.cpp:514
+msgctxt "QObject|"
+msgid ""
+"The email address you entered is not valid because it does not contain a @.\n"
+"You will not create valid messages if you do not change your address."
+msgstr ""
+"La direición de corréu electrónicu qu'introduxesti ye inválida porque nun "
+"contién la @.\n"
+"Nun vas crear mensaxes válidos si nun camudes la direición."
+
+#: kemailaddress.cpp:520
+msgctxt "QObject|"
+msgid "You have to enter something in the email address field."
+msgstr ""
+"Tienes d'introducir daqué nel campu de la direición de corréu electrónicu."
+
+#: kemailaddress.cpp:522
+msgctxt "QObject|"
+msgid ""
+"The email address you entered is not valid because it does not contain a "
+"local part."
+msgstr ""
+"La direición de corréu electrónicu qu'introduxesti ye inválida porque nun "
+"contién la parte llocal."
+
+#: kemailaddress.cpp:526
+msgctxt "QObject|"
+msgid ""
+"The email address you entered is not valid because it does not contain a "
+"domain part."
+msgstr ""
+"La direición de corréu electrónicu qu'introduxesti ye inválida porque nun "
+"contién la parte del dominiu."
+
+#: kemailaddress.cpp:530
+msgctxt "QObject|"
+msgid ""
+"The email address you entered is not valid because it contains unclosed "
+"comments/brackets."
+msgstr ""
+"La direición de corréu electrónicu qu'introduxesti ye inválida porque "
+"contién comentarios/corchetes ensin zarrar."
+
+#: kemailaddress.cpp:534
+msgctxt "QObject|"
+msgid "The email address you entered is valid."
+msgstr "La direición de corréu electrónicu qu'introduxesti ye válida."
+
+#: kemailaddress.cpp:536
+msgctxt "QObject|"
+msgid ""
+"The email address you entered is not valid because it contains an unclosed "
+"angle bracket."
+msgstr ""
+"La direición de corréu electrónicu qu'introduxesti ye inválida porque "
+"contién un corchete angular ensin zarrar."
+
+#: kemailaddress.cpp:540
+msgctxt "QObject|"
+msgid ""
+"The email address you entered is not valid because it contains too many "
+"closing angle brackets."
+msgstr ""
+"La direición de corréu electrónicu qu'introduxesti ye inválida porque "
+"contién milenta corchetes angulares de zarru."
+
+#: kemailaddress.cpp:544
+msgctxt "QObject|"
+msgid ""
+"The email address you have entered is not valid because it contains an "
+"unexpected comma."
+msgstr ""
+"La direición de corréu electrónicu qu'introduxesti ye inválida porque "
+"contién una coma inesperada."
+
+#: kemailaddress.cpp:548
+msgctxt "QObject|"
+msgid ""
+"The email address you entered is not valid because it ended unexpectedly.\n"
+"This probably means you have used an escaping type character like a '\\' as "
+"the last character in your email address."
+msgstr ""
+"La direición de corréu electrónicu qu'introduxesti ye inválida porque acaba "
+"de forma inesperada.\n"
+"Esto probablemente signifique qu'usares un caráuter d'escape del tipu «\\» "
+"como últimu caráuter de la direición de corréu electrónicu."
+
+#: kemailaddress.cpp:554
+msgctxt "QObject|"
+msgid ""
+"The email address you entered is not valid because it contains quoted text "
+"which does not end."
+msgstr ""
+"La direición de corréu electrónicu qu'introduxesti ye inválida porque "
+"contién testu citáu que nun acaba."
+
+#: kemailaddress.cpp:558
+msgctxt "QObject|"
+msgid ""
+"The email address you entered is not valid because it does not seem to "
+"contain an actual email address, i.e. something of the form joe@example.org."
+msgstr ""
+"La direición de corréu electrónicu qu'introduxesti ye inválida porque paez "
+"que nun contién una direición real de corréu electrónicu, daqué del estilu "
+"nel@exemplu.org."
+
+#: kemailaddress.cpp:563
+msgctxt "QObject|"
+msgid ""
+"The email address you entered is not valid because it contains an illegal "
+"character."
+msgstr ""
+"La direición de corréu electrónicu qu'introduxesti ye inválida porque "
+"contién un caráuter illegal."
+
+#: kemailaddress.cpp:567
+msgctxt "QObject|"
+msgid ""
+"The email address you have entered is not valid because it contains an "
+"invalid display name."
+msgstr ""
+"La direición de corréu electrónicu qu'introduxesti ye inválida porque "
+"contién un nome visible inválidu."
+
+#: kemailaddress.cpp:571
+msgctxt "QObject|"
+msgid ""
+"The email address you entered is not valid because it does not contain a "
+"'.'.\n"
+"You will not create valid messages if you do not change your address."
+msgstr ""
+"La direición de corréu electrónicu qu'introduxesti ye inválida porque nun "
+"contién un «.»\n"
+"Nun vas crear mensaxes válidos si nun camudes la direición."
+
+#: kemailaddress.cpp:577
+msgctxt "QObject|"
+msgid "Unknown problem with email address"
+msgstr "Hai un problema desconocíu cola direición de corréu electrónicu"
+
+#: kemailaddress.cpp:637
+msgctxt "QObject|"
+msgid ""
+"The email address you entered is not valid.\n"
+"It does not seem to contain an actual email address, i.e. something of the "
+"form joe@example.org."
+msgstr ""
+"La direición de corréu electrónicu qu'introduxesti ye inválida.\n"
+"Paez que nun contién una direición real de corréu electrónicu, daqué del "
+"estilu nel@exemplu.org."
+
+#: kencodingprober.cpp:238 kencodingprober.cpp:279
+msgctxt "KEncodingProber|@item Text character set"
+msgid "Disabled"
+msgstr ""
+
+#: kencodingprober.cpp:240 kencodingprober.cpp:282
+msgctxt "KEncodingProber|@item Text character set"
+msgid "Universal"
+msgstr "Universal"
+
+#: kencodingprober.cpp:242 kencodingprober.cpp:324
+msgctxt "KEncodingProber|@item Text character set"
+msgid "Unicode"
+msgstr "Unicode"
+
+#: kencodingprober.cpp:244 kencodingprober.cpp:294
+msgctxt "KEncodingProber|@item Text character set"
+msgid "Cyrillic"
+msgstr "Cirílicu"
+
+#: kencodingprober.cpp:246 kencodingprober.cpp:309
+msgctxt "KEncodingProber|@item Text character set"
+msgid "Western European"
+msgstr "Européu occidental"
+
+#: kencodingprober.cpp:248 kencodingprober.cpp:291
+msgctxt "KEncodingProber|@item Text character set"
+msgid "Central European"
+msgstr "Européu central"
+
+#: kencodingprober.cpp:250 kencodingprober.cpp:297
+msgctxt "KEncodingProber|@item Text character set"
+msgid "Greek"
+msgstr "Griegu"
+
+#: kencodingprober.cpp:252 kencodingprober.cpp:300
+msgctxt "KEncodingProber|@item Text character set"
+msgid "Hebrew"
+msgstr "Hebréu"
+
+#: kencodingprober.cpp:254 kencodingprober.cpp:306
+msgctxt "KEncodingProber|@item Text character set"
+msgid "Turkish"
+msgstr "Turcu"
+
+#: kencodingprober.cpp:256 kencodingprober.cpp:303
+msgctxt "KEncodingProber|@item Text character set"
+msgid "Japanese"
+msgstr "Xaponés"
+
+#: kencodingprober.cpp:258 kencodingprober.cpp:288
+msgctxt "KEncodingProber|@item Text character set"
+msgid "Baltic"
+msgstr "Bálticu"
+
+#: kencodingprober.cpp:260 kencodingprober.cpp:312
+msgctxt "KEncodingProber|@item Text character set"
+msgid "Chinese Traditional"
+msgstr "Chinu tradicional"
+
+#: kencodingprober.cpp:262 kencodingprober.cpp:315
+msgctxt "KEncodingProber|@item Text character set"
+msgid "Chinese Simplified"
+msgstr "Chinu simplificáu"
+
+#: kencodingprober.cpp:264 kencodingprober.cpp:318
+msgctxt "KEncodingProber|@item Text character set"
+msgid "Korean"
+msgstr "Coreanu"
+
+#: kencodingprober.cpp:266 kencodingprober.cpp:321
+msgctxt "KEncodingProber|@item Text character set"
+msgid "Thai"
+msgstr "Tailandés"
+
+#: kencodingprober.cpp:268 kencodingprober.cpp:285
+msgctxt "KEncodingProber|@item Text character set"
+msgid "Arabic"
+msgstr "Árabe"

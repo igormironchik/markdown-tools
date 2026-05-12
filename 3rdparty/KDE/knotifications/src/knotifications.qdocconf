@@ -1,0 +1,36 @@
+include($KDE_DOCS/global/qt-module-defaults.qdocconf)
+
+project = KNotifications
+description = Cross-platform Notification Library
+
+documentationinheaders = true
+
+headerdirs += .
+sourcedirs += .
+
+excludedirs = qml
+
+outputformats = HTML
+
+navigation.landingpage = "KNotifications"
+
+depends += \
+    qtcore \
+    qtgui \
+    knotificationsqml
+
+qhp.projects            = KNotifications
+
+qhp.KNotifications.file                = knotifications.qhp
+qhp.KNotifications.namespace           = org.kde.knotifications.$QT_VERSION_TAG
+qhp.KNotifications.virtualFolder       = knotifications
+qhp.KNotifications.indexTitle          = KNotifications
+qhp.KNotifications.indexRoot           =
+
+qhp.KNotifications.subprojects         = classes
+qhp.KNotifications.subprojects.classes.title = C++ Classes
+qhp.KNotifications.subprojects.classes.indexTitle = KNotifications C++ Classes
+qhp.KNotifications.subprojects.classes.selectors = class fake:headerfile
+qhp.KNotifications.subprojects.classes.sortPages = true
+
+tagfile = knotifications.tags

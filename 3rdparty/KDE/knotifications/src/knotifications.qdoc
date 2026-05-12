@@ -1,0 +1,9 @@
+/*!
+    \module KNotifications
+    \title KNotifications C++ Classes
+    \ingroup modules
+    \cmakepackage KF6
+    \cmakecomponent Notifications
+
+    \brief Cross-platform Notification Library.
+*/

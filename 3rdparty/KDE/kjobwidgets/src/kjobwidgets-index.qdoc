@@ -1,0 +1,20 @@
+/*!
+    \page kjobwidgets-index.html
+    \title KJobWidgets
+
+    Widgets for showing progress of asynchronous jobs.
+
+    \section1 Using the Module
+
+    \include {module-use.qdocinc} {using the c++ api}
+
+    \section2 Building with CMake
+
+    \include {module-use.qdocinc} {building with cmake} {KF6} {KJobWidgets} {KF6::JobWidgets}
+
+    \section1 API Reference
+
+    \list
+        \li \l{KJobWidgets C++ Classes}
+    \endlist
+*/

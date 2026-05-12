@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!--
+SPDX-FileCopyrightText: 2025 Fushan Wen <qydwhotmail@gmail.com>
+SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
+-->
+<typesystem package="KJobWidgets">
+    <load-typesystem name="typesystem_core.xml" generate="no"/>
+    <load-typesystem name="typesystem_widgets.xml" generate="no"/> <!--QWidget-->
+    <load-typesystem name="typesystem_kcoreaddons.xml" generate="no"/> <!--KJob-->
+
+    <object-type name="KAbstractWidgetJobTracker" />
+    <object-type name="KDialogJobUiDelegate" />
+    <object-type name="KNotificationJobUiDelegate" />
+    <object-type name="KStatusBarJobTracker">
+        <enum-type name="StatusBarMode" flags="yes"/>
+    </object-type>
+    <object-type name="KUiServerJobTracker" />
+    <object-type name="KUiServerV2JobTracker" />
+    <object-type name="KWidgetJobTracker" />
+</typesystem>

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<typesystem package="KNotifications">
+<!--
+SPDX-FileCopyrightText: 2024 Manuel Alcaraz Zambrano <manuelalcarazzam@gmail.com>
+SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
+-->
+    <load-typesystem name="typesystem_gui.xml" generate="no"/>
+
+    <object-type name="KNotification">
+        <enum-type name="NotificationFlag" flags="NotificationFlags" />
+        <enum-type name="StandardEvent" />
+        <enum-type name="Urgency" />
+    </object-type>
+    <object-type name="KNotificationAction" />
+    <namespace-type name="KNotificationPermission" />
+    <object-type name="KNotificationReplyAction">
+        <enum-type name="FallbackBehavior" />
+    </object-type>
+    <object-type name="KNotifyConfig" />
+
+</typesystem>

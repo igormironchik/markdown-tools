@@ -1,0 +1,9 @@
+/*!
+    \module KCompletion
+    \title KCompletion C++ Classes
+    \ingroup modules
+    \cmakepackage KF6
+    \cmakecomponent Completion
+
+    \brief Text completion helpers and widgets.
+*/

@@ -1,0 +1,20 @@
+/*!
+    \page kcompletion-index.html
+    \title KCompletion
+
+    Text completion helpers and widgets
+
+    \section1 Using the Module
+
+    \include {module-use.qdocinc} {using the c++ api}
+
+    \section2 Building with CMake
+
+    \include {module-use.qdocinc} {building with cmake} {Kf6} {Completion} {KF6::Completion}
+
+    \section1 API Reference
+
+    \list
+        \li \l{KCompletion C++ Classes}
+    \endlist
+*/

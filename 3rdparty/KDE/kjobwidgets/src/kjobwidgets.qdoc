@@ -1,0 +1,8 @@
+/*!
+    \module KJobWidgets
+    \title KJobWidgets C++ Classes
+    \ingroup modules
+    \cmakepackage KF6
+    \cmakecomponent JobWidgets
+    \brief Widgets for showing progress of asynchronous jobs.
+*/

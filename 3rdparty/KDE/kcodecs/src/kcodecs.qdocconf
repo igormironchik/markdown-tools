@@ -1,0 +1,33 @@
+include($KDE_DOCS/global/qt-module-defaults.qdocconf)
+
+project = KCodecs
+description = Text encoding
+
+documentationinheaders = true
+
+headerdirs += .
+sourcedirs += .
+
+outputformats = HTML
+
+depends += \
+    qtcore \
+    qtcore5compat
+
+navigation.landingpage = "KCodecs"
+
+qhp.projects            = KCodecs
+
+qhp.KCodecs.file                = kcodecs.qhp
+qhp.KCodecs.namespace           = org.kde.kcodecs.$QT_VERSION_TAG
+qhp.KCodecs.virtualFolder       = kcodecs
+qhp.KCodecs.indexTitle          = KCodecs
+qhp.KCodecs.indexRoot           =
+
+qhp.KCodecs.subprojects         = classes
+qhp.KCodecs.subprojects.classes.title = C++ Classes
+qhp.KCodecs.subprojects.classes.indexTitle = KCodecs C++ Classes
+qhp.KCodecs.subprojects.classes.selectors = class fake:headerfile
+qhp.KCodecs.subprojects.classes.sortPages = true
+
+tagfile = kcodecs.tags

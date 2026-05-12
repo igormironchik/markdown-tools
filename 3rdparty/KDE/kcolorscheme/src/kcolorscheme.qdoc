@@ -1,0 +1,12 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// SPDX-FileCopyrightText: None
+
+/*!
+    \module KColorScheme
+    \title KColorScheme C++ Classes
+    \ingroup modules
+    \cmakepackage KF6
+    \cmakecomponent ColorScheme
+
+    \brief Classes to interact with KColorScheme.
+*/
