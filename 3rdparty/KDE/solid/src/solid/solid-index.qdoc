@@ -1,0 +1,23 @@
+/*!
+    \page solid-index.html
+    \title Solid
+
+    Solid is a device integration framework.
+
+    It provides a way of querying and
+    interacting with hardware independently of the underlying operating system.
+
+    \section1 Using the Module
+
+    \include {module-use.qdocinc} {using the c++ api}
+
+    \section2 Building with CMake
+
+    \include {module-use.qdocinc} {building with cmake} {KF6} {Solid} {KF6::Solid}
+
+    \section1 API Reference
+
+    \list
+        \li \l{Solid C++ Classes}
+    \endlist
+*/

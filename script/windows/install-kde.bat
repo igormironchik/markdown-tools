@@ -2,7 +2,13 @@ set /P qt_version=<%CD%\script\qt.version
 
 set /P qt_arch=<%CD%\script\qt.arch.win
 
-set PATH=%PATH%;../builds/build-ki18n;%CD%/Qt/%qt_version%/%qt_arch%/bin
+set PATH=%PATH%;%CD%/Qt/%qt_version%/%qt_arch%/bin
+
+conan install . -of ../builds/conan -s build_type=Release --build=missing --deployer=runtime_deploy
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
 
 cmake -S 3rdparty/KDE/extra-cmake-modules -B ../builds/build-extra-cmake-modules -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -DBUILD_HTML_DOCS=OFF -DBUILD_MAN_DOCS=OFF -DCMAKE_INSTALL_PREFIX=../KDE -DCMAKE_PREFIX_PATH="%CD%/Qt/%qt_version%/%qt_arch%;%CD%/../KDE" -G "NMake Makefiles"
 
@@ -40,15 +46,9 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-conan install . -of ../builds/build-sonnet -s build_type=Release --build=missing --deployer=runtime_deploy
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
 set PKG_CONFIG_PATH=%CD%/../build-sonnet
 
-cmake -S 3rdparty/KDE/sonnet -B ../builds/build-sonnet -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../KDE -DBUILD_TESTING=OFF -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%CD%/Qt/%qt_version%/%qt_arch%;%CD%/../KDE" -G "NMake Makefiles"
+cmake -S 3rdparty/KDE/sonnet -B ../builds/build-sonnet -DCMAKE_BUILD_TYPE=Release -DCMAKE_MODULE_PATH=../builds/conan -DCMAKE_INSTALL_PREFIX=../KDE -DBUILD_TESTING=OFF -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%CD%/Qt/%qt_version%/%qt_arch%;%CD%/../KDE" -G "NMake Makefiles"
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
@@ -126,7 +126,7 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-cmake -S 3rdparty/KDE/ki18n -B ../builds/build-ki18n -DCMAKE_BUILD_TYPE=Release -DCMAKE_MODULE_PATH=../build-ki18n -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%CD%/Qt/%qt_version%/%qt_arch%;%CD%/../KDE" -DBUILD_TESTING=OFF -G "NMake Makefiles"
+cmake -S 3rdparty/KDE/ki18n -B ../builds/build-ki18n -DCMAKE_BUILD_TYPE=Release -DCMAKE_MODULE_PATH=../builds/conan -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%CD%/Qt/%qt_version%/%qt_arch%;%CD%/../KDE" -DBUILD_TESTING=OFF -G "NMake Makefiles"
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
@@ -139,12 +139,6 @@ IF %ERRORLEVEL% NEQ 0 (
 )
 
 cmake --install ../builds/build-ki18n --prefix ../KDE
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
-conan install . -of ../builds/build-kservice -s build_type=Release --build=missing --deployer=runtime_deploy
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
@@ -163,6 +157,30 @@ IF %ERRORLEVEL% NEQ 0 (
 )
 
 cmake --install ../builds/build-kservice --prefix ../KDE
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+conan install . -of ../builds/build-solid -s build_type=Release --build=missing --deployer=runtime_deploy
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+cmake -S 3rdparty/KDE/solid -B ../builds/build-solid -DCMAKE_BUILD_TYPE=Release -DCMAKE_MODULE_PATH=../builds/conan -DCMAKE_INSTALL_PREFIX=../KDE -DECM_DIR=../KDE/share/ECM/cmake -DCMAKE_PREFIX_PATH="%CD%/Qt/%qt_version%/%qt_arch%;%CD%/../KDE" -DBUILD_TESTING=OFF -G "NMake Makefiles"
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+cmake --build ../builds/build-solid --config Release
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+cmake --install ../builds/build-solid --prefix ../KDE
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%

@@ -2,7 +2,7 @@ from conan import ConanFile
 
 class DependenciesRecipe(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
-    generators = "CMakeDeps", "PkgConfigDeps"
+    generators = "CMakeDeps", "PkgConfigDeps", "CMakeToolchain"
 
     def requirements(self):
         self.requires("freetype/2.13.2")
@@ -18,6 +18,7 @@ class DependenciesRecipe(ConanFile):
             self.requires("fontconfig/2.15.0")
             self.requires("gettext/1.0")
             self.requires("libgettext/0.26")
+            self.tool_requires("winflexbison/2.5.25")
 
     def configure(self):
         self.options["freetype"].shared = False
