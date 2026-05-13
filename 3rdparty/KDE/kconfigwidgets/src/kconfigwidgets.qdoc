@@ -1,0 +1,12 @@
+/*!
+    \module KConfigWidgets
+    \title KConfigWidgets C++ Classes
+    \ingroup modules
+    \cmakepackage KF6
+    \cmakecomponent ConfigWidgets
+
+    \brief Widgets for configuration dialogs.
+
+    KConfigWidgets provides easy-to-use classes to create configuration dialogs, as
+    well as a set of widgets which uses KConfig to store their settings.
+*/

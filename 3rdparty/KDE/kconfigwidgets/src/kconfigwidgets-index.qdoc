@@ -1,0 +1,21 @@
+/*!
+    \page kconfigwidgets-index.html
+    \title KConfig
+
+    KConfigWidgets provides easy-to-use classes to create configuration dialogs, as
+    well as a set of widgets which uses KConfig to store their settings.
+
+    \section1 Using the Module
+
+    \include {module-use.qdocinc} {using the c++ api}
+
+    \section2 Building with CMake
+
+    \include {module-use.qdocinc} {building with cmake} {KF6} {ConfigWidgets} {KF6::ConfigWidgets}
+
+    \section1 API Reference
+
+    \list
+        \li \l{KConfigWidgets C++ Classes}
+    \endlist
+*/

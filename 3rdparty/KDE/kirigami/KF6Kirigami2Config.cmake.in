@@ -1,0 +1,9 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+message(AUTHOR_WARNING "find_package(KF6Kirigami2) is deprecated, use find_package(KF6Kirigami) instead")
+find_dependency(KF6Kirigami @PROJECT_VERSION@)
+
+if (NOT TARGET KF6::Kirigami2)
+    add_library(KF6::Kirigami2 ALIAS KF6Kirigami)
+endif()

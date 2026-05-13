@@ -1,0 +1,349 @@
+# Alexander Potashev <aspotashev@gmail.com>, 2016, 2017, 2019.
+# SPDX-FileCopyrightText: 2019, 2020, 2021, 2024, 2025, 2026 Alexander Yavorsky <kekcuha@gmail.com>
+# Мария Шикунова <translation-team@basealt.ru>, 2022, 2023.
+# SPDX-FileCopyrightText: 2024, 2025 Olesya Gerasimenko <translation-team@basealt.ru>
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"PO-Revision-Date: 2026-02-17 18:49+0200\n"
+"Last-Translator: Alexander Yavorskiy <kekcuha@gmail.com>\n"
+"Language-Team: Russian <kde-russian@lists.kde.ru>\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Qt-Contexts: true\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 25.12.2\n"
+
+#: controls/AboutItem.qml:166
+#, qt-format
+msgctxt "AboutItem|"
+msgid "%1 (%2)"
+msgstr "%1 (%2)"
+
+#: controls/AboutItem.qml:186
+#, qt-format
+msgctxt "AboutItem|"
+msgid "Send an email to %1"
+msgstr "Отправить письмо по адресу %1"
+
+#: controls/AboutItem.qml:228
+msgctxt "AboutItem|"
+msgid "Get Involved"
+msgstr "Присоединиться к команде"
+
+#: controls/AboutItem.qml:234
+msgctxt "AboutItem|"
+msgid "Donate"
+msgstr "Сделать пожертвование"
+
+#: controls/AboutItem.qml:251
+msgctxt "AboutItem|"
+msgid "Report a Bug"
+msgstr "Сообщить об ошибке"
+
+#: controls/AboutItem.qml:264
+msgctxt "AboutItem|"
+msgid "Copyright"
+msgstr "Авторские права"
+
+#: controls/AboutItem.qml:313
+msgctxt "AboutItem|"
+msgid "License:"
+msgstr "Лицензия:"
+
+#: controls/AboutItem.qml:336
+#, qt-format
+msgctxt "AboutItem|"
+msgid "License: %1"
+msgstr "Лицензия: %1"
+
+#: controls/AboutItem.qml:347
+msgctxt "AboutItem|"
+msgid "Libraries in use"
+msgstr "Используемые библиотеки"
+
+#: controls/AboutItem.qml:379
+msgctxt "AboutItem|"
+msgid "Authors"
+msgstr "Авторы"
+
+#: controls/AboutItem.qml:389
+msgctxt "AboutItem|"
+msgid "Show author photos"
+msgstr "Показать фотографии авторов"
+
+#: controls/AboutItem.qml:400
+msgctxt "AboutItem|"
+msgid "Credits"
+msgstr "Благодарности"
+
+#: controls/AboutItem.qml:412
+msgctxt "AboutItem|"
+msgid "Translators"
+msgstr "Переводчики"
+
+#: controls/AboutPage.qml:103
+#, qt-format
+msgctxt "AboutPage|"
+msgid "About %1"
+msgstr "О программе %1"
+
+#: controls/AbstractApplicationWindow.qml:177
+msgctxt "AbstractApplicationWindow|"
+msgid "Quit"
+msgstr "Выход"
+
+#: controls/ActionToolBar.qml:209
+msgctxt "ActionToolBar|"
+msgid "More Actions"
+msgstr "Больше действий"
+
+#: controls/Chip.qml:45
+msgctxt "Chip|"
+msgid "Remove"
+msgstr "Убрать"
+
+#: controls/ContextDrawer.qml:65
+msgctxt "ContextDrawer|"
+msgid "Actions"
+msgstr "Действия"
+
+#: controls/ContextualHelpButton.qml:59
+msgctxt "ContextualHelpButton|"
+msgid "Show Contextual Help"
+msgstr "Показать контекстную справку"
+
+#: controls/GlobalDrawer.qml:366
+msgctxt "GlobalDrawer|"
+msgid "Back"
+msgstr "Назад"
+
+#: controls/GlobalDrawer.qml:719
+msgctxt "GlobalDrawer|"
+msgid "Close Sidebar"
+msgstr "Закрыть боковую панель"
+
+#: controls/GlobalDrawer.qml:724
+msgctxt "GlobalDrawer|"
+msgid "Open Sidebar"
+msgstr "Открыть боковую панель"
+
+#: controls/LoadingPlaceholder.qml:58
+msgctxt "LoadingPlaceholder|"
+msgid "Loading…"
+msgstr "Загрузка…"
+
+#: controls/PasswordField.qml:43
+msgctxt "PasswordField|"
+msgid "Password"
+msgstr "Пароль"
+
+#: controls/PasswordField.qml:46
+msgctxt "PasswordField|"
+msgid "Hide Password"
+msgstr "Скрыть пароль"
+
+#: controls/PasswordField.qml:46
+msgctxt "PasswordField|"
+msgid "Show Password"
+msgstr "Показать пароль"
+
+#: controls/private/globaltoolbar/HandleButton.qml:24
+msgctxt "HandleButton|"
+msgid "Close menu"
+msgstr "Закрыть меню"
+
+#: controls/private/globaltoolbar/HandleButton.qml:24
+msgctxt "HandleButton|"
+msgid "Open menu"
+msgstr "Открыть меню"
+
+#: controls/private/globaltoolbar/NavigationButtons.qml:102
+msgctxt "NavigationButtons|"
+msgid "Navigate Back"
+msgstr "Перейти назад"
+
+#: controls/private/globaltoolbar/NavigationButtons.qml:119
+msgctxt "NavigationButtons|"
+msgid "Navigate Forward"
+msgstr "Перейти вперёд"
+
+#: controls/private/PrivateActionToolButton.qml:118
+#, qt-format
+msgctxt "@info:tooltip %1 is a keyboard shorcut|"
+msgid "Trigger this action with %1"
+msgstr "Вызвать это действие комбинацией клавиш %1"
+
+#: controls/private/PrivateActionToolButton.qml:125
+#, qt-format
+msgctxt ""
+"@info:tooltip %1 is the tooltip of an action, %2 is its keyboard shorcut|"
+msgid "%1 (%2)"
+msgstr "%1 (%2)"
+
+#: controls/SearchField.qml:88
+msgctxt "SearchField|"
+msgid "Search…"
+msgstr "Поиск…"
+
+#: controls/SearchField.qml:90
+msgctxt "SearchField|"
+msgid "Search"
+msgstr "Поиск"
+
+#: controls/SearchField.qml:100
+msgctxt "SearchField|"
+msgid "Clear search"
+msgstr "Очистить поиск"
+
+#: controls/SelectableLabel.qml:297
+msgctxt "SelectableLabel|"
+msgid "Copy"
+msgstr "Копировать"
+
+#: controls/SelectableLabel.qml:310
+msgctxt "SelectableLabel|"
+msgid "Select All"
+msgstr "Выбрать все"
+
+#: controls/UrlButton.qml:52
+#, qt-format
+msgctxt "UrlButton|@info:whatsthis"
+msgid "Open link %1"
+msgstr "Открыть ссылку %1"
+
+#: controls/UrlButton.qml:53
+msgctxt "UrlButton|@info:whatsthis"
+msgid "Open link"
+msgstr "Открыть ссылку"
+
+#: controls/UrlButton.qml:101
+msgctxt "UrlButton|"
+msgid "Copy Link to Clipboard"
+msgstr "Копировать ссылку в буфер обмена"
+
+#: dialogs/DialogHeaderTopContent.qml:103
+msgctxt "DialogHeaderTopContent|@action:button close dialog"
+msgid "Close"
+msgstr "Закрыть"
+
+#: platform/settings.cpp:219
+#, qt-format
+msgctxt "Kirigami::Platform::Settings|"
+msgid "KDE Frameworks %1"
+msgstr "KDE Frameworks %1"
+
+#: platform/settings.cpp:221
+#, qt-format
+msgctxt "Kirigami::Platform::Settings|"
+msgid "The %1 windowing system"
+msgstr "Платформа графического сервера %1"
+
+#: platform/settings.cpp:222
+#, qt-format
+msgctxt "Kirigami::Platform::Settings|"
+msgid "Qt %2 (built against %3)"
+msgstr "Qt %2 (собрана с версией %3)"
+
+#: templates/InlineMessage.qml:350
+msgctxt "InlineMessage|"
+msgid "Success"
+msgstr "Успешно"
+
+#: templates/InlineMessage.qml:352
+msgctxt "InlineMessage|"
+msgid "Warning"
+msgstr "Предупреждение"
+
+#: templates/InlineMessage.qml:354
+msgctxt "InlineMessage|"
+msgid "Error"
+msgstr "Ошибка"
+
+#: templates/InlineMessage.qml:356
+msgctxt "InlineMessage|"
+msgid "Note"
+msgstr "Примечание"
+
+#: templates/InlineMessage.qml:443
+msgctxt "InlineMessage|"
+msgid "Close"
+msgstr "Закрыть"
+
+#: templates/OverlayDrawer.qml:147
+msgctxt "OverlayDrawer|"
+msgid "Close drawer"
+msgstr "Закрыть панель"
+
+#: templates/OverlayDrawer.qml:153
+msgctxt "OverlayDrawer|"
+msgid "Open drawer"
+msgstr "Открыть панель"
+
+#: templates/OverlaySheet.qml:294
+msgctxt "OverlaySheet|@action:button close dialog"
+msgid "Close"
+msgstr "Закрыть"
+
+#~ msgctxt "Dialog|@action:button close dialog"
+#~ msgid "Close"
+#~ msgstr "Закрыть"
+
+#~ msgctxt "CategorizedSettings|"
+#~ msgid "Settings"
+#~ msgstr "Параметры"
+
+#~ msgctxt "CategorizedSettings|"
+#~ msgid "Settings — %1"
+#~ msgstr "Параметры — %1"
+
+#~ msgctxt "Avatar|"
+#~ msgid "%1 — %2"
+#~ msgstr "%1 — %2"
+
+#~ msgctxt "PageTab|"
+#~ msgid "Current page. Progress: %1 percent."
+#~ msgstr "Текущая страница. Ход выполнения: %1%."
+
+#~ msgctxt "PageTab|"
+#~ msgid "Navigate to %1. Progress: %2 percent."
+#~ msgstr "Переход к %1. Ход выполнения: %2%."
+
+#~ msgctxt "PageTab|"
+#~ msgid "Current page."
+#~ msgstr "Текущая страница."
+
+#~ msgctxt "PageTab|"
+#~ msgid "Navigate to %1. Demanding attention."
+#~ msgstr "Перейти к %1. Требует внимания."
+
+#~ msgctxt "PageTab|"
+#~ msgid "Navigate to %1."
+#~ msgstr "Перейти к %1."
+
+#~ msgctxt "ToolBarApplicationHeader|"
+#~ msgid "More Actions"
+#~ msgstr "Больше действий"
+
+#~ msgctxt "AboutItem|"
+#~ msgid "Visit %1's KDE Store page"
+#~ msgstr "Перейти на страницу %1 в магазине приложений KDE"
+
+#~ msgctxt "UrlButton|"
+#~ msgid "Copy link address"
+#~ msgstr "Скопировать адрес ссылки"
+
+#~ msgctxt "SearchField|"
+#~ msgid "Search..."
+#~ msgstr "Поиск..."
+
+#~ msgctxt "AboutPage|"
+#~ msgid "%1 <%2>"
+#~ msgstr "%1 <%2>"
+
+#~ msgctxt "ToolBarPageHeader|"
+#~ msgid "More Actions"
+#~ msgstr "Больше действий"

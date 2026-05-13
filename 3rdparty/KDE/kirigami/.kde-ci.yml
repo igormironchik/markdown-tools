@@ -1,0 +1,15 @@
+Dependencies:
+ - 'on': ['Linux', 'FreeBSD', 'Windows', 'Android', 'iOS']
+   'require':
+    'frameworks/extra-cmake-modules': '@same'
+
+Options:
+ test-before-installing: True
+ tests-run-in-parallel: True
+ require-passing-tests-on: ['Linux', 'FreeBSD', 'Windows']
+ cmake-options: -DBUILD_EXAMPLES=ON
+ cppcheck-ignore-files: ['templates/']
+ cppcheck-arguments:
+  - '--enable=warning,style,performance'
+  - '--suppress-xml=cppcheck-suppressions.xml'
+ run-qmllint: true

@@ -1,0 +1,355 @@
+# SPDX-FileCopyrightText: 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026 Shinjo Park <kde@peremen.name>
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"PO-Revision-Date: 2026-02-04 00:16+0100\n"
+"Last-Translator: Shinjo Park <kde@peremen.name>\n"
+"Language-Team: Korean <kde-kr@kde.org>\n"
+"Language: ko\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Lokalize 25.08.1\n"
+"X-Qt-Contexts: true\n"
+
+#: controls/AboutItem.qml:166
+#, qt-format
+msgctxt "AboutItem|"
+msgid "%1 (%2)"
+msgstr "%1(%2)"
+
+#: controls/AboutItem.qml:186
+#, qt-format
+msgctxt "AboutItem|"
+msgid "Send an email to %1"
+msgstr "%1(으)로 이메일 보내기"
+
+#: controls/AboutItem.qml:228
+msgctxt "AboutItem|"
+msgid "Get Involved"
+msgstr "참여하기"
+
+#: controls/AboutItem.qml:234
+msgctxt "AboutItem|"
+msgid "Donate"
+msgstr "기부하기"
+
+#: controls/AboutItem.qml:251
+msgctxt "AboutItem|"
+msgid "Report a Bug"
+msgstr "버그 보고"
+
+#: controls/AboutItem.qml:264
+msgctxt "AboutItem|"
+msgid "Copyright"
+msgstr "저작권"
+
+#: controls/AboutItem.qml:313
+msgctxt "AboutItem|"
+msgid "License:"
+msgstr "라이선스:"
+
+#: controls/AboutItem.qml:336
+#, qt-format
+msgctxt "AboutItem|"
+msgid "License: %1"
+msgstr "라이선스: %1"
+
+#: controls/AboutItem.qml:347
+msgctxt "AboutItem|"
+msgid "Libraries in use"
+msgstr "사용하는 라이브러리"
+
+#: controls/AboutItem.qml:379
+msgctxt "AboutItem|"
+msgid "Authors"
+msgstr "작성자"
+
+#: controls/AboutItem.qml:389
+msgctxt "AboutItem|"
+msgid "Show author photos"
+msgstr "작성자 사진 표시"
+
+#: controls/AboutItem.qml:400
+msgctxt "AboutItem|"
+msgid "Credits"
+msgstr "제작진"
+
+#: controls/AboutItem.qml:412
+msgctxt "AboutItem|"
+msgid "Translators"
+msgstr "번역자"
+
+#: controls/AboutPage.qml:103
+#, qt-format
+msgctxt "AboutPage|"
+msgid "About %1"
+msgstr "%1 정보"
+
+#: controls/AbstractApplicationWindow.qml:177
+msgctxt "AbstractApplicationWindow|"
+msgid "Quit"
+msgstr "끝내기"
+
+#: controls/ActionToolBar.qml:209
+msgctxt "ActionToolBar|"
+msgid "More Actions"
+msgstr "더 많은 동작"
+
+#: controls/Chip.qml:45
+msgctxt "Chip|"
+msgid "Remove"
+msgstr "삭제"
+
+#: controls/ContextDrawer.qml:65
+msgctxt "ContextDrawer|"
+msgid "Actions"
+msgstr "동작"
+
+#: controls/ContextualHelpButton.qml:59
+msgctxt "ContextualHelpButton|"
+msgid "Show Contextual Help"
+msgstr "문맥 도움말 표시"
+
+#: controls/GlobalDrawer.qml:366
+msgctxt "GlobalDrawer|"
+msgid "Back"
+msgstr "뒤로"
+
+#: controls/GlobalDrawer.qml:719
+msgctxt "GlobalDrawer|"
+msgid "Close Sidebar"
+msgstr "사이드바 닫기"
+
+#: controls/GlobalDrawer.qml:724
+msgctxt "GlobalDrawer|"
+msgid "Open Sidebar"
+msgstr "사이드바 열기"
+
+#: controls/LoadingPlaceholder.qml:58
+msgctxt "LoadingPlaceholder|"
+msgid "Loading…"
+msgstr "불러오는 중…"
+
+#: controls/PasswordField.qml:43
+msgctxt "PasswordField|"
+msgid "Password"
+msgstr "암호"
+
+#: controls/PasswordField.qml:46
+msgctxt "PasswordField|"
+msgid "Hide Password"
+msgstr "암호 숨기기"
+
+#: controls/PasswordField.qml:46
+msgctxt "PasswordField|"
+msgid "Show Password"
+msgstr "암호 표시"
+
+#: controls/private/globaltoolbar/HandleButton.qml:24
+msgctxt "HandleButton|"
+msgid "Close menu"
+msgstr "메뉴 닫기"
+
+#: controls/private/globaltoolbar/HandleButton.qml:24
+msgctxt "HandleButton|"
+msgid "Open menu"
+msgstr "메뉴 열기"
+
+#: controls/private/globaltoolbar/NavigationButtons.qml:102
+msgctxt "NavigationButtons|"
+msgid "Navigate Back"
+msgstr "이전 탐색"
+
+#: controls/private/globaltoolbar/NavigationButtons.qml:119
+msgctxt "NavigationButtons|"
+msgid "Navigate Forward"
+msgstr "다음 탐색"
+
+#: controls/private/PrivateActionToolButton.qml:118
+#, qt-format
+msgctxt "@info:tooltip %1 is a keyboard shorcut|"
+msgid "Trigger this action with %1"
+msgstr ""
+
+#: controls/private/PrivateActionToolButton.qml:125
+#, fuzzy, qt-format
+#| msgctxt "AboutItem|"
+#| msgid "%1 (%2)"
+msgctxt ""
+"@info:tooltip %1 is the tooltip of an action, %2 is its keyboard shorcut|"
+msgid "%1 (%2)"
+msgstr "%1(%2)"
+
+#: controls/SearchField.qml:88
+msgctxt "SearchField|"
+msgid "Search…"
+msgstr "검색…"
+
+#: controls/SearchField.qml:90
+msgctxt "SearchField|"
+msgid "Search"
+msgstr "검색"
+
+#: controls/SearchField.qml:100
+msgctxt "SearchField|"
+msgid "Clear search"
+msgstr "검색 지우기"
+
+#: controls/SelectableLabel.qml:297
+msgctxt "SelectableLabel|"
+msgid "Copy"
+msgstr "복사"
+
+#: controls/SelectableLabel.qml:310
+msgctxt "SelectableLabel|"
+msgid "Select All"
+msgstr "모두 선택"
+
+#: controls/UrlButton.qml:52
+#, qt-format
+msgctxt "UrlButton|@info:whatsthis"
+msgid "Open link %1"
+msgstr "%1 링크 열기"
+
+#: controls/UrlButton.qml:53
+msgctxt "UrlButton|@info:whatsthis"
+msgid "Open link"
+msgstr "링크 열기"
+
+#: controls/UrlButton.qml:101
+msgctxt "UrlButton|"
+msgid "Copy Link to Clipboard"
+msgstr "클립보드에 링크 복사"
+
+#: dialogs/DialogHeaderTopContent.qml:103
+msgctxt "DialogHeaderTopContent|@action:button close dialog"
+msgid "Close"
+msgstr "닫기"
+
+#: platform/settings.cpp:219
+#, qt-format
+msgctxt "Kirigami::Platform::Settings|"
+msgid "KDE Frameworks %1"
+msgstr "KDE 프레임워크 %1"
+
+#: platform/settings.cpp:221
+#, qt-format
+msgctxt "Kirigami::Platform::Settings|"
+msgid "The %1 windowing system"
+msgstr "%1 창 시스템"
+
+#: platform/settings.cpp:222
+#, qt-format
+msgctxt "Kirigami::Platform::Settings|"
+msgid "Qt %2 (built against %3)"
+msgstr "Qt %2(%3(으)로 빌드됨)"
+
+#: templates/InlineMessage.qml:350
+msgctxt "InlineMessage|"
+msgid "Success"
+msgstr "성공"
+
+#: templates/InlineMessage.qml:352
+msgctxt "InlineMessage|"
+msgid "Warning"
+msgstr "경고"
+
+#: templates/InlineMessage.qml:354
+msgctxt "InlineMessage|"
+msgid "Error"
+msgstr "오류"
+
+#: templates/InlineMessage.qml:356
+msgctxt "InlineMessage|"
+msgid "Note"
+msgstr "메모"
+
+#: templates/InlineMessage.qml:443
+msgctxt "InlineMessage|"
+msgid "Close"
+msgstr "닫기"
+
+#: templates/OverlayDrawer.qml:147
+msgctxt "OverlayDrawer|"
+msgid "Close drawer"
+msgstr "서랍 닫기"
+
+#: templates/OverlayDrawer.qml:153
+msgctxt "OverlayDrawer|"
+msgid "Open drawer"
+msgstr "서랍 열기"
+
+#: templates/OverlaySheet.qml:294
+msgctxt "OverlaySheet|@action:button close dialog"
+msgid "Close"
+msgstr "닫기"
+
+#~ msgctxt "Dialog|@action:button close dialog"
+#~ msgid "Close"
+#~ msgstr "닫기"
+
+#~ msgctxt "CategorizedSettings|"
+#~ msgid "Settings"
+#~ msgstr "설정"
+
+#~ msgctxt "CategorizedSettings|"
+#~ msgid "Settings — %1"
+#~ msgstr "설정 — %1"
+
+#~ msgctxt "Avatar|"
+#~ msgid "%1 — %2"
+#~ msgstr "%1 — %2"
+
+#~ msgctxt "PageTab|"
+#~ msgid "Current page. Progress: %1 percent."
+#~ msgstr "현재 쪽입니다. 진행 상황: %1퍼센트."
+
+#~ msgctxt "PageTab|"
+#~ msgid "Navigate to %1. Progress: %2 percent."
+#~ msgstr "%1(으)로 탐색합니다. 진행 상황: %2퍼센트."
+
+#~ msgctxt "PageTab|"
+#~ msgid "Current page."
+#~ msgstr "현재 쪽입니다."
+
+#~ msgctxt "PageTab|"
+#~ msgid "Navigate to %1. Demanding attention."
+#~ msgstr "%1(으)로 탐색합니다. 주목을 기다립니다."
+
+#~ msgctxt "PageTab|"
+#~ msgid "Navigate to %1."
+#~ msgstr "%1(으)로 탐색합니다."
+
+#~ msgctxt "ToolBarApplicationHeader|"
+#~ msgid "More Actions"
+#~ msgstr "더 많은 동작"
+
+#~ msgctxt "AboutItem|"
+#~ msgid "Visit %1's KDE Store page"
+#~ msgstr "%1의 KDE 스토어 페이지 방문"
+
+#~ msgctxt "UrlButton|"
+#~ msgid "Copy link address"
+#~ msgstr "링크 주소 복사"
+
+#~ msgctxt "LoadingPlaceholder|"
+#~ msgid "Still loading, please wait."
+#~ msgstr "불러오고 있습니다. 잠시 기다려 주십시오."
+
+#~ msgctxt "AboutItem|"
+#~ msgid "(%1)"
+#~ msgstr "(%1)"
+
+#~ msgctxt "SearchField|"
+#~ msgid "Search..."
+#~ msgstr "찾기..."
+
+#~ msgctxt "AboutPage|"
+#~ msgid "%1 <%2>"
+#~ msgstr "%1 <%2>"
+
+#~ msgctxt "ToolBarPageHeader|"
+#~ msgid "More Actions"
+#~ msgstr "더 많은 동작"

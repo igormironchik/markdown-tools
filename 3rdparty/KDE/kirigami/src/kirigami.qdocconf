@@ -1,0 +1,54 @@
+include($KDE_DOCS/global/qt-module-defaults.qdocconf)
+
+project = Kirigami
+description = Components for Convergent Applications
+
+documentationinheaders = true
+
+headerdirs += .
+sourcedirs += . ../docs/includes
+imagedirs = . ../docs/pics
+exampledirs = . ../examples primitives/examples
+
+depends = kde qtcore qtqml qtquick qtquickcontrols kcoreaddons kirigamiplatform
+
+excludedirs = platform
+
+navigation.landingpage  = "Kirigami"
+
+qhp.projects            = Kirigami
+
+qhp.Kirigami.file          = kirigami.qhp
+qhp.Kirigami.namespace     = org.kde.kirigami.$QT_VERSION_TAG
+qhp.Kirigami.virtualFolder = kirigami
+qhp.Kirigami.indexTitle    = Kirigami
+qhp.Kirigami.indexRoot     =
+
+qhp.Kirigami.subprojects = controls delegates dialogs layouts primitives
+
+qhp.Kirigami.subprojects.controls.title = Kirigami QML Types
+qhp.Kirigami.subprojects.controls.indexTitle = Kirigami QML Types
+qhp.Kirigami.subprojects.controls.selectors = qmlmodule:org.kde.kirigami
+qhp.Kirigami.subprojects.controls.sortPages = true
+
+qhp.Kirigami.subprojects.delegates.title = Kirigami Delegates QML Types
+qhp.Kirigami.subprojects.delegates.indexTitle = Kirigami Delegates QML Types
+qhp.Kirigami.subprojects.delegates.selectors = qmlmodule:org.kde.kirigami.delegates
+qhp.Kirigami.subprojects.delegates.sortPages = true
+
+qhp.Kirigami.subprojects.dialogs.title = Kirigami Dialogs QML Types
+qhp.Kirigami.subprojects.dialogs.indexTitle = Kirigami Dialogs QML Types
+qhp.Kirigami.subprojects.dialogs.selectors = qmlmodule:org.kde.kirigami.dialogs
+qhp.Kirigami.subprojects.dialogs.sortPages = true
+
+qhp.Kirigami.subprojects.layouts.title = Kirigami Layouts QML Types
+qhp.Kirigami.subprojects.layouts.indexTitle = Kirigami Layouts QML Types
+qhp.Kirigami.subprojects.layouts.selectors = qmlmodule:org.kde.kirigami.layouts
+qhp.Kirigami.subprojects.layouts.sortPages = true
+
+qhp.Kirigami.subprojects.primitives.title = Kirigami Primitives QML Types
+qhp.Kirigami.subprojects.primitives.indexTitle = Kirigami Primitives QML Types
+qhp.Kirigami.subprojects.primitives.selectors = qmlmodule:org.kde.kirigami.primitives
+qhp.Kirigami.subprojects.primitives.sortPages = true
+
+tagfile = kirigami.tags

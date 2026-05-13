@@ -1,0 +1,527 @@
+# Sanskrit translations for kconfigwidgets package.
+# Copyright (C) 2024 This file is copyright:
+# This file is distributed under the same license as the kconfigwidgets package.
+# Kali <EMAIL@ADDRESS>, 2024.
+#
+# SPDX-FileCopyrightText: 2024 kali <skkalwar999@gmail.com>
+msgid ""
+msgstr ""
+"Project-Id-Version: kconfigwidgets\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2026-02-25 00:42+0000\n"
+"PO-Revision-Date: 2024-12-24 20:39+0530\n"
+"Last-Translator: kali <shreekantkalwar@gmail.com>\n"
+"Language-Team: Sanskrit <kde-i18n-doc@kde.org>\n"
+"Language: sa\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n>2);\n"
+"X-Generator: Lokalize 24.08.2\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "श्रीकान्त् कलवार्"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "skkalwar999@gmail.com"
+
+#: kcodecaction.cpp:62
+#, kde-format
+msgctxt "Encodings menu"
+msgid "Default"
+msgstr "मूलभूतम्‌"
+
+#: kcodecaction.cpp:70
+#, kde-format
+msgctxt "Encodings menu"
+msgid "Autodetect"
+msgstr "ऑटोडिटेक्ट्"
+
+#: kcolorschememenu.cpp:24
+#, kde-format
+msgid "Color Scheme"
+msgstr "रङ्ग योजना"
+
+#: kcommandbar.cpp:660
+#, kde-format
+msgid "No commands to display"
+msgstr "प्रदर्शयितुं आदेशाः नास्ति"
+
+#: kcommandbar.cpp:662
+#, kde-format
+msgid "No commands matching the filter"
+msgstr "फ़िल्टरस्य मेलनं कुर्वन्तः आदेशाः नास्ति"
+
+#: kconfigdialog.cpp:37
+#, kde-format
+msgctxt "@title:window"
+msgid "Configure"
+msgstr "विन्यस्तं कुर्वन्तु"
+
+#: khamburgermenu.cpp:125
+#, kde-format
+msgctxt "@action:inmenu General purpose menu"
+msgid "&Menu"
+msgstr "&मेनू"
+
+#: khamburgermenu.cpp:325
+#, kde-format
+msgctxt "@action:inmenu A menu item that advertises and enables the menubar"
+msgid "Show &Menubar with All Actions"
+msgstr "सर्वेषां क्रियाभिः सह &Menubar दर्शयतु"
+
+#: khamburgermenu.cpp:351
+#, kde-format
+msgctxt "@action:inmenu A menu text advertising its contents (more features)."
+msgid "More"
+msgstr "अधिकः"
+
+#: khamburgermenu.cpp:352
+#, kde-format
+msgctxt ""
+"@action:inmenu A section heading advertising the contents of the menu bar"
+msgid "More Actions"
+msgstr "अधिकानि क्रियाः"
+
+#: krecentfilesaction.cpp:78
+#, kde-format
+msgid "No Entries"
+msgstr "प्रविष्टयः नास्ति"
+
+#: krecentfilesaction.cpp:84
+#, kde-format
+msgid "Clear List"
+msgstr "स्पष्ट सूची"
+
+#: kstandardaction.cpp:157
+#, kde-format
+msgctxt "go back"
+msgid "&Back"
+msgstr "&पृष्ठभागः"
+
+#: kstandardaction.cpp:164
+#, kde-format
+msgctxt "go forward"
+msgid "&Forward"
+msgstr "&अग्रतः"
+
+#: kstandardaction.cpp:171
+#, kde-format
+msgctxt "home page"
+msgid "&Home"
+msgstr "&गृहम्‌"
+
+#: kstandardaction.cpp:230
+#, kde-format
+msgid "Show Menubar<p>Shows the menubar again after it has been hidden</p>"
+msgstr "मेनूबारं दर्शयतु<p> मेनूपट्टिकां गोपितस्य अनन्तरं पुनः दर्शयति</p>"
+
+#: kstandardaction.cpp:251
+#, kde-format
+msgid ""
+"Show Statusbar<p>Shows the statusbar, which is the bar at the bottom of the "
+"window used for status information.</p>"
+msgstr ""
+"स्थितिपट्टिकां दर्शयतु<p> स्थितिपट्टिकां दर्शयति, यत् स्थितिसूचनार्थं प्रयुक्तं विण्डो इत्यस्य "
+"अधः स्थितं पट्टिका अस्ति ।</p>"
+
+#: kstandardaction_p.h:63
+msgid "&New"
+msgstr "&नूतनम्‌"
+
+#: kstandardaction_p.h:63
+msgid "Create new document"
+msgstr "नूतनं दस्तावेजं रचयन्तु"
+
+#: kstandardaction_p.h:64
+msgid "&Open…"
+msgstr "&उद्घाटित…"
+
+#: kstandardaction_p.h:64
+msgid "Open an existing document"
+msgstr "विद्यमानं दस्तावेजं उद्घाटयन्तु"
+
+#: kstandardaction_p.h:65
+msgid "Open &Recent"
+msgstr "Open &Recent"
+
+#: kstandardaction_p.h:65
+msgid "Open a document which was recently opened"
+msgstr "एकं दस्तावेजं उद्घाटयन्तु यत् अद्यैव उद्घाटितम् आसीत्"
+
+#: kstandardaction_p.h:66
+msgid "&Save"
+msgstr "&रक्ष्"
+
+#: kstandardaction_p.h:66
+msgid "Save document"
+msgstr "दस्तावेजं रक्षन्तु"
+
+#: kstandardaction_p.h:67
+msgid "Save &As…"
+msgstr "Save &As…"
+
+#: kstandardaction_p.h:67
+msgid "Save document under a new name"
+msgstr "दस्तावेजं नूतननाम्ना रक्षन्तु"
+
+#: kstandardaction_p.h:68
+msgid "Re&vert"
+msgstr "Re&vert"
+
+#: kstandardaction_p.h:68
+msgid "Revert unsaved changes made to document"
+msgstr "दस्तावेजे कृतानि असरक्षितानि परिवर्तनानि प्रत्यागच्छतु"
+
+#: kstandardaction_p.h:69
+msgid "&Close"
+msgstr "&पिधानं करोतु"
+
+#: kstandardaction_p.h:69
+msgid "Close document"
+msgstr "दस्तावेजं बन्दं कुर्वन्तु"
+
+#: kstandardaction_p.h:70
+msgid "&Print…"
+msgstr "&मुद्रण…"
+
+#: kstandardaction_p.h:70
+msgid "Print document"
+msgstr "दस्तावेजं मुद्रयन्तु"
+
+#: kstandardaction_p.h:71
+msgid "Print Previe&w"
+msgstr "मुद्रण पूर्वावलोकन&w"
+
+#: kstandardaction_p.h:71
+msgid "Show a print preview of document"
+msgstr "दस्तावेजस्य मुद्रणपूर्वावलोकनं दर्शयतु"
+
+#: kstandardaction_p.h:72
+msgid "&Mail…"
+msgstr "&मेल…"
+
+#: kstandardaction_p.h:72
+msgid "Send document by mail"
+msgstr "मेलद्वारा दस्तावेजं प्रेषयन्तु"
+
+#: kstandardaction_p.h:73
+msgid "&Quit"
+msgstr "&परिजहातु"
+
+#: kstandardaction_p.h:73
+msgid "Quit application"
+msgstr "अनुप्रयोगं त्यजतु"
+
+#: kstandardaction_p.h:75
+msgid "&Undo"
+msgstr "&Undo"
+
+#: kstandardaction_p.h:75
+msgid "Undo last action"
+msgstr "अन्तिमक्रिया पूर्ववर्ती"
+
+#: kstandardaction_p.h:76
+msgid "Re&do"
+msgstr "पुनः&कर"
+
+#: kstandardaction_p.h:76
+msgid "Redo last undone action"
+msgstr "अन्तिम अकृत क्रिया पुनः करो"
+
+#: kstandardaction_p.h:77
+msgid "Cu&t"
+msgstr "सह&t"
+
+#: kstandardaction_p.h:77
+msgid "Cut selection to clipboard"
+msgstr "चयनं क्लिप्बोर्डं प्रति कटयन्तु"
+
+#: kstandardaction_p.h:78
+msgid "&Copy"
+msgstr "&प्रतिलिपि"
+
+#: kstandardaction_p.h:78
+msgid "Copy selection to clipboard"
+msgstr "चयनं क्लिप्बोर्ड् प्रति प्रतिलिख्यताम्"
+
+#: kstandardaction_p.h:79
+msgid "&Paste"
+msgstr "&पेस्ट"
+
+#: kstandardaction_p.h:79
+msgid "Paste clipboard content"
+msgstr "क्लिपबोर्ड सामग्रीं चिनोतु"
+
+#: kstandardaction_p.h:80
+msgid "C&lear"
+msgstr "स्पष्टः"
+
+#: kstandardaction_p.h:81
+msgid "Select &All"
+msgstr "&All इति चयनं कुर्वन्तु"
+
+#: kstandardaction_p.h:82
+msgid "Dese&lect"
+msgstr "Des&lect"
+
+#: kstandardaction_p.h:83
+msgid "&Find…"
+msgstr "&अन्वेषय…"
+
+#: kstandardaction_p.h:84
+msgid "Find &Next"
+msgstr "Find &Next"
+
+#: kstandardaction_p.h:85
+msgid "Find Pre&vious"
+msgstr "पूर्व&पूर्वं ज्ञातव्यम्"
+
+#: kstandardaction_p.h:86
+msgid "&Replace…"
+msgstr "&प्रत्याहृ…"
+
+#: kstandardaction_p.h:88
+msgid "Zoom to &Actual Size"
+msgstr "&Actual Size इत्यत्र जूम कुर्वन्तु"
+
+#: kstandardaction_p.h:88
+msgid "View document at its actual size"
+msgstr "दस्तावेजं तस्य वास्तविक आकारे पश्यन्तु"
+
+#: kstandardaction_p.h:89
+msgid "&Fit to Page"
+msgstr "&पृष्ठं प्रति उपयुक्तम्"
+
+#: kstandardaction_p.h:89
+msgid "Zoom to fit page in window"
+msgstr "विण्डो मध्ये पृष्ठं फिट् कर्तुं जूम कुर्वन्तु"
+
+#: kstandardaction_p.h:90
+msgid "Fit to Page &Width"
+msgstr "पृष्ठ & चौड़ाई अनुकूल"
+
+#: kstandardaction_p.h:90
+msgid "Zoom to fit page width in window"
+msgstr "विण्डो मध्ये पृष्ठविस्तारं युक्तं कर्तुं जूम कुर्वन्तु"
+
+#: kstandardaction_p.h:91
+msgid "Fit to Page &Height"
+msgstr "पृष्ठं &उच्चतां प्रति उपयुक्तम्"
+
+#: kstandardaction_p.h:91
+msgid "Zoom to fit page height in window"
+msgstr "विण्डो मध्ये पृष्ठस्य ऊर्ध्वतां युक्तुं जूम् कुर्वन्तु"
+
+#: kstandardaction_p.h:92
+msgid "Zoom &In"
+msgstr "जूम &In"
+
+#: kstandardaction_p.h:93
+msgid "Zoom &Out"
+msgstr "जूम &आउट"
+
+#: kstandardaction_p.h:94
+msgid "&Zoom…"
+msgstr "&ज़ूम…"
+
+#: kstandardaction_p.h:94
+msgid "Select zoom level"
+msgstr "जूम स्तरं चिनोतु"
+
+#: kstandardaction_p.h:95
+msgid "&Refresh"
+msgstr "&ताजगी"
+
+#: kstandardaction_p.h:95
+msgid "Refresh document"
+msgstr "दस्तावेजं ताजगीं कुर्वन्तु"
+
+#: kstandardaction_p.h:97
+msgid "&Up"
+msgstr "&उपरि"
+
+#: kstandardaction_p.h:97
+msgid "Go up"
+msgstr "उपरि गच्छतु"
+
+#: kstandardaction_p.h:102
+msgid "&Previous Page"
+msgstr "&पूर्व पृष्ठ"
+
+#: kstandardaction_p.h:102
+msgid "Go to previous page"
+msgstr "पूर्वपृष्ठं गच्छन्तु"
+
+#: kstandardaction_p.h:103
+msgid "&Next Page"
+msgstr "&अगला पृष्ठ"
+
+#: kstandardaction_p.h:103
+msgid "Go to next page"
+msgstr "अग्रिमपृष्ठं गच्छन्तु"
+
+#: kstandardaction_p.h:104
+msgid "&Go To…"
+msgstr "&Go To…"
+
+#: kstandardaction_p.h:105
+msgid "&Go to Page…"
+msgstr "&पृष्ठं गच्छन्तु…"
+
+#: kstandardaction_p.h:106
+msgid "&Go to Line…"
+msgstr "&रेखायां गच्छन्तु…"
+
+#: kstandardaction_p.h:107
+msgid "&First Page"
+msgstr "&प्रथम पृष्ठ"
+
+#: kstandardaction_p.h:107
+msgid "Go to first page"
+msgstr "प्रथमपृष्ठं गच्छन्तु"
+
+#: kstandardaction_p.h:108
+msgid "&Last Page"
+msgstr "&अन्तिम पृष्ठ"
+
+#: kstandardaction_p.h:108
+msgid "Go to last page"
+msgstr "अन्तिमपृष्ठं गच्छन्तु"
+
+#: kstandardaction_p.h:109
+msgid "&Back"
+msgstr "&पृष्ठभागः"
+
+#: kstandardaction_p.h:109
+msgid "Go back in document"
+msgstr "दस्तावेजे पुनः गच्छन्तु"
+
+#: kstandardaction_p.h:110
+msgid "&Forward"
+msgstr "&अग्रतः"
+
+#: kstandardaction_p.h:110
+msgid "Go forward in document"
+msgstr "दस्तावेजे अग्रे गच्छन्तु"
+
+#: kstandardaction_p.h:112
+msgid "&Add Bookmark"
+msgstr "&बुकमार्कं योजयतु"
+
+#: kstandardaction_p.h:113
+msgid "&Edit Bookmarks…"
+msgstr "&Edit बुकमार्क्स…"
+
+#: kstandardaction_p.h:115
+msgid "&Spelling…"
+msgstr "&वर्तनी…"
+
+#: kstandardaction_p.h:115
+msgid "Check spelling in document"
+msgstr "दस्तावेजे वर्तनीपरीक्षां कुर्वन्तु"
+
+#: kstandardaction_p.h:117
+msgid "Show &Menubar"
+msgstr "शो & मेनूबार"
+
+#: kstandardaction_p.h:117
+msgid "Show or hide menubar"
+msgstr "मेनूपट्टिकां दर्शयतु वा गोपयतु वा"
+
+#: kstandardaction_p.h:118
+msgid "Show &Toolbar"
+msgstr "&Toolbar दर्शयतु"
+
+#: kstandardaction_p.h:118
+msgid "Show or hide toolbar"
+msgstr "साधनपट्टिकां दर्शयतु वा गोपयतु वा"
+
+#: kstandardaction_p.h:119
+msgid "Show St&atusbar"
+msgstr "St&atusbar दर्शयतु"
+
+#: kstandardaction_p.h:119
+msgid "Show or hide statusbar"
+msgstr "स्थितिपट्टिकां दर्शयतु वा गोपयन्तु वा"
+
+#: kstandardaction_p.h:120
+msgid "F&ull Screen Mode"
+msgstr "F&ull स्क्रीन मोड"
+
+#: kstandardaction_p.h:121
+msgid "Configure Keyboard S&hortcuts…"
+msgstr "कीबोर्ड S&hortcuts विन्यस्तं कुर्वन्तु…"
+
+#: kstandardaction_p.h:122
+#, kde-format
+msgid "&Configure %1…"
+msgstr "&%1 विन्यस्तं कुर्वन्तु…"
+
+#: kstandardaction_p.h:123
+msgid "Configure Tool&bars…"
+msgstr "Tool&bars विन्यस्तं कुर्वन्तु…"
+
+#: kstandardaction_p.h:124
+msgid "Configure &Notifications…"
+msgstr "&सूचनाः विन्यस्तं कुर्वन्तु…"
+
+#: kstandardaction_p.h:128
+#, kde-format
+msgid "%1 &Handbook"
+msgstr "%1 &हस्तपुस्तिका"
+
+#: kstandardaction_p.h:129
+msgid "What's &This?"
+msgstr "किम् &इदम् ?"
+
+#: kstandardaction_p.h:130
+msgid "&Report Bug…"
+msgstr "&रिपोर्ट बग…"
+
+#: kstandardaction_p.h:131
+msgid "Configure &Language…"
+msgstr "&Language विन्यस्तं कुर्वन्तु…"
+
+#: kstandardaction_p.h:132
+#, kde-format
+msgid "&About %1"
+msgstr "&%1 इत्यस्य विषये"
+
+#: kstandardaction_p.h:133
+msgid "About &KDE"
+msgstr "विषये & WHERE इति"
+
+#: kstandardaction_p.h:134
+msgid "&Delete"
+msgstr "&लुप्"
+
+#: kstandardaction_p.h:135
+msgid "&Rename…"
+msgstr "&नाम पुनर्नाम…"
+
+#: kstandardaction_p.h:136
+msgid "&Move to Trash"
+msgstr "&कचरा प्रति गच्छतु"
+
+#: kstandardaction_p.h:137
+msgid "&Donate"
+msgstr "&वितरणं"
+
+#: kstandardaction_p.h:138
+msgid "Open &Menu"
+msgstr "&Menu उद्घाटयन्तु"
+
+#: kstylemanager.cpp:74
+#, kde-format
+msgid "Application Style"
+msgstr "अनुप्रयोगशैली"
+
+#: kstylemanager.cpp:78
+#, kde-format
+msgid "Default"
+msgstr "मूलभूतम्‌"

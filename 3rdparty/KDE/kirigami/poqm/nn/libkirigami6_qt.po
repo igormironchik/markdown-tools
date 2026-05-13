@@ -1,0 +1,289 @@
+# Translation of libkirigami6_qt to Norwegian Nynorsk
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"PO-Revision-Date: 2026-02-26 18:46+0100\n"
+"Last-Translator: Karl Ove Hufthammer <karl@huftis.org>\n"
+"Language-Team: Norwegian Nynorsk <l10n-no@lister.huftis.org>\n"
+"Language: nn\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 26.03.70\n"
+"X-Environment: kde\n"
+"X-Accelerator-Marker: &\n"
+"X-Text-Markup: qtrich\n"
+"X-Qt-Contexts: true\n"
+
+#: controls/AboutItem.qml:166
+#, qt-format
+msgctxt "AboutItem|"
+msgid "%1 (%2)"
+msgstr "%1 (%2)"
+
+#: controls/AboutItem.qml:186
+#, qt-format
+msgctxt "AboutItem|"
+msgid "Send an email to %1"
+msgstr "Send e-post til %1"
+
+#: controls/AboutItem.qml:228
+msgctxt "AboutItem|"
+msgid "Get Involved"
+msgstr "Vert med"
+
+#: controls/AboutItem.qml:234
+msgctxt "AboutItem|"
+msgid "Donate"
+msgstr "Gje pengegåve"
+
+#: controls/AboutItem.qml:251
+msgctxt "AboutItem|"
+msgid "Report a Bug"
+msgstr "Meld frå om feil"
+
+#: controls/AboutItem.qml:264
+msgctxt "AboutItem|"
+msgid "Copyright"
+msgstr "Opphavsrett"
+
+#: controls/AboutItem.qml:313
+msgctxt "AboutItem|"
+msgid "License:"
+msgstr "Lisens:"
+
+#: controls/AboutItem.qml:336
+#, qt-format
+msgctxt "AboutItem|"
+msgid "License: %1"
+msgstr "Lisens: %1"
+
+#: controls/AboutItem.qml:347
+msgctxt "AboutItem|"
+msgid "Libraries in use"
+msgstr "Brukte bibliotek"
+
+#: controls/AboutItem.qml:379
+msgctxt "AboutItem|"
+msgid "Authors"
+msgstr "Opphavspersonar"
+
+#: controls/AboutItem.qml:389
+msgctxt "AboutItem|"
+msgid "Show author photos"
+msgstr "Vis bilete av opphavspersonane"
+
+#: controls/AboutItem.qml:400
+msgctxt "AboutItem|"
+msgid "Credits"
+msgstr "Kreditering"
+
+#: controls/AboutItem.qml:412
+msgctxt "AboutItem|"
+msgid "Translators"
+msgstr "Omsetjarar"
+
+#: controls/AboutPage.qml:103
+#, qt-format
+msgctxt "AboutPage|"
+msgid "About %1"
+msgstr "Om %1"
+
+#: controls/AbstractApplicationWindow.qml:177
+msgctxt "AbstractApplicationWindow|"
+msgid "Quit"
+msgstr "Avslutt"
+
+#: controls/ActionToolBar.qml:209
+msgctxt "ActionToolBar|"
+msgid "More Actions"
+msgstr "Fleire handlingar"
+
+#: controls/Chip.qml:45
+msgctxt "Chip|"
+msgid "Remove"
+msgstr "Fjern"
+
+#: controls/ContextDrawer.qml:65
+msgctxt "ContextDrawer|"
+msgid "Actions"
+msgstr "Handlingar"
+
+#: controls/ContextualHelpButton.qml:59
+msgctxt "ContextualHelpButton|"
+msgid "Show Contextual Help"
+msgstr "Vis emnehjelp"
+
+#: controls/GlobalDrawer.qml:366
+msgctxt "GlobalDrawer|"
+msgid "Back"
+msgstr "Tilbake"
+
+#: controls/GlobalDrawer.qml:719
+msgctxt "GlobalDrawer|"
+msgid "Close Sidebar"
+msgstr "Lukk sidestolpen"
+
+#: controls/GlobalDrawer.qml:724
+msgctxt "GlobalDrawer|"
+msgid "Open Sidebar"
+msgstr "Opna sidestolpe"
+
+#: controls/LoadingPlaceholder.qml:58
+msgctxt "LoadingPlaceholder|"
+msgid "Loading…"
+msgstr "Lastar …"
+
+#: controls/PasswordField.qml:43
+msgctxt "PasswordField|"
+msgid "Password"
+msgstr "Passord"
+
+#: controls/PasswordField.qml:46
+msgctxt "PasswordField|"
+msgid "Hide Password"
+msgstr "Gøym passord"
+
+#: controls/PasswordField.qml:46
+msgctxt "PasswordField|"
+msgid "Show Password"
+msgstr "Vis passord"
+
+#: controls/private/globaltoolbar/HandleButton.qml:24
+msgctxt "HandleButton|"
+msgid "Close menu"
+msgstr "Lukk meny"
+
+#: controls/private/globaltoolbar/HandleButton.qml:24
+msgctxt "HandleButton|"
+msgid "Open menu"
+msgstr "Opna meny"
+
+#: controls/private/globaltoolbar/NavigationButtons.qml:102
+msgctxt "NavigationButtons|"
+msgid "Navigate Back"
+msgstr "Naviger tilbake"
+
+#: controls/private/globaltoolbar/NavigationButtons.qml:119
+msgctxt "NavigationButtons|"
+msgid "Navigate Forward"
+msgstr "Naviger fram"
+
+#: controls/private/PrivateActionToolButton.qml:118
+#, qt-format
+msgctxt "@info:tooltip %1 is a keyboard shorcut|"
+msgid "Trigger this action with %1"
+msgstr "Utløys handlinga med %1"
+
+#: controls/private/PrivateActionToolButton.qml:125
+#, qt-format
+msgctxt ""
+"@info:tooltip %1 is the tooltip of an action, %2 is its keyboard shorcut|"
+msgid "%1 (%2)"
+msgstr "%1 (%2)"
+
+#: controls/SearchField.qml:88
+msgctxt "SearchField|"
+msgid "Search…"
+msgstr "Søk …"
+
+#: controls/SearchField.qml:90
+msgctxt "SearchField|"
+msgid "Search"
+msgstr "Søk"
+
+#: controls/SearchField.qml:100
+msgctxt "SearchField|"
+msgid "Clear search"
+msgstr "Tøm søkjefelt"
+
+#: controls/SelectableLabel.qml:297
+msgctxt "SelectableLabel|"
+msgid "Copy"
+msgstr "Kopier"
+
+#: controls/SelectableLabel.qml:310
+msgctxt "SelectableLabel|"
+msgid "Select All"
+msgstr "Merk alle"
+
+#: controls/UrlButton.qml:52
+#, qt-format
+msgctxt "UrlButton|@info:whatsthis"
+msgid "Open link %1"
+msgstr "Opna lenkja %1"
+
+#: controls/UrlButton.qml:53
+msgctxt "UrlButton|@info:whatsthis"
+msgid "Open link"
+msgstr "Opna lenkja"
+
+#: controls/UrlButton.qml:101
+msgctxt "UrlButton|"
+msgid "Copy Link to Clipboard"
+msgstr "Kopier lenkja til utklippstavla"
+
+#: dialogs/DialogHeaderTopContent.qml:103
+msgctxt "DialogHeaderTopContent|@action:button close dialog"
+msgid "Close"
+msgstr "Lukk"
+
+#: platform/settings.cpp:219
+#, qt-format
+msgctxt "Kirigami::Platform::Settings|"
+msgid "KDE Frameworks %1"
+msgstr "KDE Frameworks %1"
+
+#: platform/settings.cpp:221
+#, qt-format
+msgctxt "Kirigami::Platform::Settings|"
+msgid "The %1 windowing system"
+msgstr "Vindaugssystemet %1"
+
+#: platform/settings.cpp:222
+#, qt-format
+msgctxt "Kirigami::Platform::Settings|"
+msgid "Qt %2 (built against %3)"
+msgstr "Qt %2 (bygd mot %3)"
+
+#: templates/InlineMessage.qml:350
+msgctxt "InlineMessage|"
+msgid "Success"
+msgstr "Vellukka"
+
+#: templates/InlineMessage.qml:352
+msgctxt "InlineMessage|"
+msgid "Warning"
+msgstr "Åtvaring"
+
+#: templates/InlineMessage.qml:354
+msgctxt "InlineMessage|"
+msgid "Error"
+msgstr "Feil"
+
+#: templates/InlineMessage.qml:356
+msgctxt "InlineMessage|"
+msgid "Note"
+msgstr "Merknad"
+
+#: templates/InlineMessage.qml:443
+msgctxt "InlineMessage|"
+msgid "Close"
+msgstr "Lukk"
+
+#: templates/OverlayDrawer.qml:147
+msgctxt "OverlayDrawer|"
+msgid "Close drawer"
+msgstr "Lukk skuff"
+
+#: templates/OverlayDrawer.qml:153
+msgctxt "OverlayDrawer|"
+msgid "Open drawer"
+msgstr "Opna skuff"
+
+#: templates/OverlaySheet.qml:294
+msgctxt "OverlaySheet|@action:button close dialog"
+msgid "Close"
+msgstr "Lukk"

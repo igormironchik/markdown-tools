@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<typesystem package="KXmlGui">
+<!--
+SPDX-FileCopyrightText: 2024 Manuel Alcaraz Zambrano <manuelalcarazzam@gmail.com>
+SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
+-->
+    <load-typesystem name="typesystem_widgets.xml" generate="no"/>
+
+    <object-type name="KAboutApplicationDialog">
+        <enum-type name="Option" flags="Options" />
+    </object-type>
+    <object-type name="KAboutPluginDialog">
+        <enum-type name="Option" flags="Options" />
+    </object-type>
+    <object-type name="KActionCategory" />
+    <object-type name="KActionCollection" />
+    <object-type name="KBugReport">
+        <modify-function signature="sendBugReport()" remove="all" />
+    </object-type>
+    <object-type name="KEditToolBar" />
+    <object-type name="KHelpMenu">
+        <enum-type name="MenuId" />
+    </object-type>
+    <object-type name="KKeySequenceWidget">
+        <enum-type name="Validation" />
+        <enum-type name="ShortcutType" flags="ShortcutTypes" />
+    </object-type>
+    <object-type name="KMainWindow" />
+    <object-type name="KShortcutsDialog" />
+    <object-type name="KShortcutsEditor">
+        <enum-type name="ActionType" flags="ActionTypes" />
+        <enum-type name="LetterShortcuts" />
+    </object-type>
+    <object-type name="KShortcutWidget" />
+    <object-type name="KToggleToolBarAction" />
+    <object-type name="KToolBar" />
+    <object-type name="KToolTipHelper" />
+    <namespace-type name="KUndoActions" />
+    <object-type name="KXMLGUIBuilder">
+        <modify-function signature="virtual_hook(int,void*)" remove="all" />
+    </object-type>
+    <object-type name="KXMLGUIClient">
+        <enum-type name="ReverseStateChange" />
+        <modify-function signature="virtual_hook(int,void*)" remove="all" />
+    </object-type>
+    <object-type name="KXMLGUIFactory" />
+    <object-type name="KXmlGuiWindow">
+        <enum-type name="StandardWindowOption" flags="StandardWindowOptions" />
+    </object-type>
+
+</typesystem>
