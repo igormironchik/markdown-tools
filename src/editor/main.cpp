@@ -11,6 +11,10 @@
 #include <QTranslator>
 #include <QWebEngineUrlScheme>
 
+#ifdef Q_OS_WIN
+#include <QStyleFactory>
+#endif
+
 // md-editor include.
 #include "mainwindow.h"
 
@@ -29,6 +33,10 @@ int main(int argc,
     app.setOrganizationName(QStringLiteral("Igor Mironchik"));
     app.setOrganizationDomain(QStringLiteral("github.com/igormironchik"));
     app.setApplicationName(QStringLiteral("Markdown Editor"));
+
+#ifdef Q_OS_WIN
+    app.setStyle(QStyleFactory::create("Breeze"));
+#endif
 
     QCommandLineParser parser;
     parser.setApplicationDescription(QStringLiteral("Markdown editor and viewer."));
