@@ -99,14 +99,6 @@ BorderRadius BorderOutline::radius() const
     return m_radius;
 }
 
-class DecorationStateData : public QSharedData
-{
-public:
-    QMarginsF borders;
-    BorderRadius borderRadius;
-    BorderOutline borderOutline;
-};
-
 DecorationState::DecorationState()
     : d(new DecorationStateData)
 {

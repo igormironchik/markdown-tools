@@ -29,8 +29,13 @@ class DecorationPrivate;
 class DecoratedWindow;
 class DecorationButton;
 class DecorationSettings;
-class DecorationStateData;
 class PositionerData;
+
+class PositionerData : public QSharedData
+{
+public:
+    QRectF anchorRect;
+};
 
 /**
  * \brief Decoration corner radius.
@@ -42,7 +47,7 @@ public:
     explicit BorderRadius(qreal radius);
     explicit BorderRadius(qreal topLeft, qreal topRight, qreal bottomRight, qreal bottomLeft);
 
-    bool operator<=>(const BorderRadius &other) const = default;
+    auto operator<=>(const BorderRadius &other) const = default;
 
     qreal topLeft() const;
     qreal topRight() const;
@@ -78,6 +83,14 @@ private:
     qreal m_thickness = 0;
     QColor m_color = Qt::transparent;
     BorderRadius m_radius;
+};
+
+class DecorationStateData : public QSharedData
+{
+public:
+    QMarginsF borders;
+    BorderRadius borderRadius;
+    BorderOutline borderOutline;
 };
 
 /**

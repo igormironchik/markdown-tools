@@ -55,10 +55,4 @@ private:
     Decoration *q;
 };
 
-class PositionerData : public QSharedData
-{
-public:
-    QRectF anchorRect;
-};
-
 } // namespace
