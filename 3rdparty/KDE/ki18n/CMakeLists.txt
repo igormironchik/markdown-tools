@@ -9,7 +9,7 @@ find_package(ECM 6.25.0  NO_MODULE)
 set_package_properties(ECM PROPERTIES TYPE REQUIRED DESCRIPTION "Extra CMake Modules." URL "https://commits.kde.org/extra-cmake-modules")
 feature_summary(WHAT REQUIRED_PACKAGES_NOT_FOUND FATAL_ON_MISSING_REQUIRED_PACKAGES)
 
-list(APPEND CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${KI18n_SOURCE_DIR}/cmake ${KI18n_BINARY_DIR}/cmake)
+set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${KI18n_SOURCE_DIR}/cmake ${KI18n_BINARY_DIR}/cmake)
 
 include(KDEInstallDirs)
 include(KDECMakeSettings)
@@ -45,7 +45,11 @@ if(BUILD_WITH_QML)
     find_package(Qt6Qml ${REQUIRED_QT_VERSION} CONFIG REQUIRED)
 endif()
 
-find_package(Intl REQUIRED)
+find_package(LibIntl)
+set_package_properties(LibIntl PROPERTIES TYPE REQUIRED
+    URL "http://gnuwin32.sourceforge.net/packages/libintl.htm"
+    PURPOSE "Needed for building KI18n unless glibc is the system libc implementation"
+)
 
 find_package(IsoCodes)
 set_package_properties(IsoCodes PROPERTIES TYPE RUNTIME

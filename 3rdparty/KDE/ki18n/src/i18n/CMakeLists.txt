@@ -61,7 +61,7 @@ target_include_directories(KF6I18n
 
 target_link_libraries(KF6I18n PUBLIC Qt6::Core)
 # This is only required for platforms which don't use glibc (with glibc LibIntl_LIBRARIES will be empty)
-target_link_libraries(KF6I18n PRIVATE Intl::Intl)
+target_link_libraries(KF6I18n PRIVATE ${LibIntl_LIBRARIES})
 if (ANDROID)
     target_link_libraries(KF6I18n PRIVATE android)
 endif()

@@ -6,9 +6,9 @@ set "current_dir=%CD%"
 
 set "cwd=%current_dir:\=/%"
 
-set PATH=%PATH%;%cwd%/Qt/%qt_version%/%qt_arch%/bin
+set "PATH=%PATH%;%cwd%/Qt/%qt_version%/%qt_arch%/bin"
 
-set PKG_CONFIG_PATH=%cwd%/../builds/conan
+set "PKG_CONFIG_PATH=%cwd%/../builds/conan"
 
 conan install . -of ../builds/conan -s build_type=Release --build=missing --deployer=runtime_deploy
 
@@ -31,6 +31,14 @@ IF %ERRORLEVEL% NEQ 0 (
 )
 
 @echo on
+
+for /f "tokens=*" %%i in ('pkg-config.exe --variable=prefix libgettext') do (set gettext_prefix=%%i & goto :next)
+
+:next
+
+set INCLUDE=%INCLUDE%;%gettext_prefix%/include
+
+set LIB=%INCLUDE%;%gettext_prefix%/lib
 
 cmake -S 3rdparty/KDE/extra-cmake-modules -B ../builds/build-extra-cmake-modules -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -DBUILD_HTML_DOCS=OFF -DBUILD_MAN_DOCS=OFF -DCMAKE_INSTALL_PREFIX=../KDE -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE;%cwd%/../builds/conan" -G "NMake Makefiles"
 

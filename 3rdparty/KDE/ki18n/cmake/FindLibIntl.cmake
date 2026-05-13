@@ -20,7 +20,7 @@
 #=============================================================================
 
 find_path(LibIntl_INCLUDE_DIRS NAMES libintl.h)
-find_library(LibIntl_LIBRARIES NAMES intl libintl)
+find_library(LibIntl_LIBRARIES NAMES intl libintl gnuintl)
 
 include(CheckCXXSymbolExists)
 include(CMakePushCheckState)
