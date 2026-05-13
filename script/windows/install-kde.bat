@@ -6,8 +6,6 @@ set "current_dir=%CD%"
 
 set "cwd=%current_dir:\=/%"
 
-echo %cwd%
-
 set PATH=%PATH%;%cwd%/Qt/%qt_version%/%qt_arch%/bin
 
 set PKG_CONFIG_PATH=%cwd%/../builds/conan
