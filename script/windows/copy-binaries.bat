@@ -170,7 +170,13 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-copy /Y %CD%\..\KDE\lib\plugins\kf6\sonnet\sonnet_hunspell.dll installer\packages\mironchik.igor.markdown\data\plugins\kf6\sonnet\sonnet_hunspell.dll
+xcopy %CD%\..\KDE\lib\plugins\kf6 installer\packages\mironchik.igor.markdown\data\plugins\kf6 /S /Y
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+del /Q installer\packages\mironchik.igor.markdown\data\plugins\kf6\sonnet\sonnet_ispellchecker.dll
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
@@ -188,31 +194,25 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-copy /Y %CD%\..\build-sonnet\hunspell.dll installer\packages\mironchik.igor.markdown\data\bin\hunspell.dll
+copy /Y %CD%\..\builds\conan\hunspell.dll installer\packages\mironchik.igor.markdown\data\bin\hunspell.dll
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-xcopy %CD%\..\KDE\lib\plugins\kf6 installer\packages\mironchik.igor.markdown\data\plugins\kf6 /S/ Y
+xcopy %CD%\..\KDE\lib\plugins\kiconthemes6 installer\packages\mironchik.igor.markdown\data\plugins\kiconthemes6 /S /Y
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-xcopy %CD%\..\KDE\lib\plugins\kiconthemes6 installer\packages\mironchik.igor.markdown\data\plugins\kiconthemes6 /S/ Y
+xcopy %CD%\..\KDE\lib\plugins\styles installer\packages\mironchik.igor.markdown\data\plugins\styles /S /Y
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-xcopy %CD%\..\KDE\lib\plugins\styles installer\packages\mironchik.igor.markdown\data\plugins\styles /S/ Y
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
-xcopy %CD%\..\KDE\bin\*.dll installer\packages\mironchik.igor.markdown\data\bin /S/ Y
+xcopy %CD%\..\KDE\bin\*.dll installer\packages\mironchik.igor.markdown\data\bin /S /Y
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
