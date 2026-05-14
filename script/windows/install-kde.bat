@@ -38,7 +38,7 @@ for /f "tokens=*" %%i in ('pkg-config.exe --variable=prefix libgettext') do (set
 
 set "INCLUDE=%INCLUDE%;%gettext_prefix%/include"
 
-set "LIB=%INCLUDE%;%gettext_prefix%/lib"
+set "LIB=%LIB%;%gettext_prefix%/lib"
 
 cmake -S 3rdparty/KDE/extra-cmake-modules -B ../builds/build-extra-cmake-modules -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -DBUILD_HTML_DOCS=OFF -DBUILD_MAN_DOCS=OFF -DCMAKE_INSTALL_PREFIX=../KDE -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE;%cwd%/../builds/conan" -G "NMake Makefiles"
 
