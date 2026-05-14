@@ -10,7 +10,7 @@ set "PATH=%PATH%;%cwd%/Qt/%qt_version%/%qt_arch%/bin"
 
 set "PKG_CONFIG_PATH=%cwd%/../builds/conan"
 
-conan install . -of ../builds/conan -s build_type=Release --build=missing --deployer=runtime_deploy
+conan install . -of ../builds/conan -s build_type=Release --build=missing --deployer=runtime_deploy -c tools.cmake.cmaketoolchain:generator="NMake Makefiles"
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
