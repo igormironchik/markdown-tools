@@ -182,12 +182,6 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-copy /Y %CD%\..\KDE\bin\snoretoast.exe installer\packages\mironchik.igor.markdown\data\bin\snoretoast.exe
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
 copy /Y %CD%\..\KDE\bin\kioworker.exe installer\packages\mironchik.igor.markdown\data\bin\kioworker.exe
 
 IF %ERRORLEVEL% NEQ 0 (
