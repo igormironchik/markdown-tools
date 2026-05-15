@@ -35,41 +35,31 @@
         </size>
        </property>
        <property name="horizontalScrollBarPolicy">
-        <enum>Qt::ScrollBarAlwaysOff</enum>
+        <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
        </property>
        <property name="widgetResizable">
         <bool>true</bool>
        </property>
        <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+        <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
        </property>
        <widget class="QWidget" name="scrollAreaWidgetContents_2">
         <property name="geometry">
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>33</width>
-          <height>439</height>
+          <width>35</width>
+          <height>438</height>
          </rect>
         </property>
        </widget>
       </widget>
      </item>
      <item>
-      <widget class="QScrollArea" name="m_scrollArea">
-       <property name="widgetResizable">
-        <bool>true</bool>
+      <widget class="QStackedWidget" name="m_stack">
+       <property name="currentIndex">
+        <number>-1</number>
        </property>
-       <widget class="QWidget" name="scrollAreaWidgetContents">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>625</width>
-          <height>439</height>
-         </rect>
-        </property>
-       </widget>
       </widget>
      </item>
     </layout>
@@ -79,7 +69,7 @@
      <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+        <enum>Qt::Orientation::Horizontal</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
