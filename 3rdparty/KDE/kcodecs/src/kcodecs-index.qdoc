@@ -1,0 +1,25 @@
+/*!
+    \page kcodecs-index.html
+    \title KCodecs
+
+    KCodecs provide a collection of methods to manipulate strings using various
+    encodings.
+
+    It can automatically determine the charset of a string, translate XML entities,
+    validate email addresses, and find encodings by name in a more tolerant way than QTextCodec
+    (useful e.g. for data coming from the Internet).
+
+    \section1 Using the Module
+
+    \include {module-use.qdocinc} {using the c++ api}
+
+    \section2 Building with CMake
+
+    \include {module-use.qdocinc} {building with cmake} {KF6} {Codecs} {KF6::Codecs}
+
+    \section1 API Reference
+
+    \list
+        \li \l{KCodecs C++ Classes}
+    \endlist
+*/

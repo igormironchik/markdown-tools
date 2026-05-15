@@ -1,0 +1,129 @@
+[Desktop Entry]
+Keys=inventrepo,invrepo,repo
+Name=KDE Invent Repositories
+Name[ar]=مستودعات KDE Invent
+Name[ast]=Depósitos de KDE Invent
+Name[az]=KDE Invent Anbarları
+Name[be]=Рэпазіторыі KDE Invent
+Name[be@latin]=Repazitoryi KDE Invent
+Name[bg]=KDE Invent Repositories
+Name[bs]=KDE Izum Spremišta
+Name[ca]=Repositoris de KDE Invent
+Name[ca@valencia]=Repositoris de KDE Invent
+Name[cs]=Repozitáře KDE Invent
+Name[cy]=Cadwrfeydd Llifento KDE
+Name[da]=KDE Invent-depoter
+Name[de]=Repositories auf KDE Invent
+Name[el]=Αποθετήρια KDE Invent
+Name[en_GB]=KDE Invent Repositories
+Name[eo]=KDE Invent Deponejoj
+Name[es]=Repositorios de KDE Invent
+Name[et]=KDE Inventi hoidlad
+Name[eu]=KDE Invent gordetegiak
+Name[fa]=مخازن اختراع KDE
+Name[fi]=KDE Invent -tietovarastot
+Name[fr]=Dépôts de KDE Invent
+Name[ga]=Stórtha Invent KDE
+Name[gl]=Repositorios de KDE Invent
+Name[gu]=KDE ઇન્વેન્ટ રેપોસિટોરી
+Name[he]=מאגרים ב־KDE Invent
+Name[hr]=KDE Invent repozitoriji
+Name[hu]=KDE Invent adattárak
+Name[ia]=Repositorios de KDE Invent
+Name[id]=Repositori KDE Invent
+Name[ie]=Repositorias del KDE Invent
+Name[is]=KDE Invent hugbúnaðarsöfn
+Name[it]=Depositi su KDE Invent
+Name[ja]=KDE Invent リポジトリ
+Name[ka]=KDE Invent რეპოზიტორები
+Name[ko]=KDE Invent 저장소
+Name[lg]=Noonya Puloguramu ku KDE Invent
+Name[lt]=KDE Invent saugyklos
+Name[lv]=„KDE Invent“ krātuves
+Name[my]=ကေဒီအီး အင်ဗန့် ရီပိုစစ်တိုရီများ
+Name[nb]=KDE Invent-pakkebrønner
+Name[nl]=Opslagruimtes van KDE-invent
+Name[nn]=KDE Invent-pakkebrønnar
+Name[pa]=KDE ਇਨਵੈਂਟ ਰਿਪੋਜ਼ਟਰੀਆਂ
+Name[pl]=Repozytoria KDE Invent
+Name[pt]=Repositórios do KDE Invent
+Name[pt_BR]=Repositórios do KDE Invent
+Name[ro]=Depozite KDE Invent
+Name[ru]=Репозитории KDE Invent
+Name[sa]=KDE Invent Repositories
+Name[sk]=Repozitáre služby KDE Invent
+Name[sl]=Skladišča KDE Invent
+Name[sq]=Depo KDE Invent
+Name[sv]=KDE-Invent arkiv
+Name[th]=ที่เก็บข้อมูล KDE Invent
+Name[tok]=tomo lon ma tomo pali KDE Invent
+Name[tr]=KDE Invent Depoları
+Name[ug]=KDE Invent خەزىنە
+Name[uk]=Сховища KDE Invent
+Name[vi]=Các kho ở Invent KDE
+Name[zh_CN]=KDE Invent 仓库
+Name[zh_TW]=KDE Invent 軟體庫
+Query=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[ar]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[az]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[be]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[be@latin]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[bg]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[bs]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[ca]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[ca@valencia]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[cs]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[cy]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[da]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[de]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[el]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[en_GB]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[eo]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[es]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[et]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[eu]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[fa]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[fi]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[fr]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[ga]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[gl]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[gu]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[he]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[hr]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[hu]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[ia]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[id]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[ie]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[is]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[it]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[ja]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[ka]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[ko]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[lg]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[lt]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[lv]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[my]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[nb]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[nl]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[nn]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[pa]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[pl]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[pt]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[pt_BR]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[ro]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[ru]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[sa]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[sk]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[sl]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[sq]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[sv]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[th]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[tok]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[tr]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[ug]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[uk]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[vi]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[zh_CN]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Query[zh_TW]=https://invent.kde.org/explore/projects/starred?name=\\{@}
+Type=Service
+Icon=kde

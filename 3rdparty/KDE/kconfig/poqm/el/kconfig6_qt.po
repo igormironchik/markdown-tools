@@ -1,0 +1,1122 @@
+# translation of kwriteconfig.po to Greek
+# Copyright (C) 2003, 2004, 2007, 2008 Free Software Foundation, Inc.
+#
+# Stergios Dramis <sdramis@egnatia.ee.auth.gr>, 2003-2004.
+# Spiros Georgaras <sng@hellug.gr>, 2007.
+# Spiros Georgaras <sngeorgaras@otenet.gr>, 2008.
+# Dimitris Kardarakos <dimkard@gmail.com>, 2015, 2016.
+# Stelios <sstavra@gmail.com>, 2020, 2023.
+# SPDX-FileCopyrightText: 2024 George Stefanakis <george.stefanakis@gmail.com>
+# Antonis Geralis <capoiosct@gmail.com>, 2024.
+msgid ""
+msgstr ""
+"Project-Id-Version: kwriteconfig\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2014-04-11 02:17+0000\n"
+"PO-Revision-Date: 2024-09-07 21:11+0300\n"
+"Last-Translator: Αντώνης Γέραλης <capoiosct@gmail.com>\n"
+"Language-Team: Greek <kde-i18n-doc@kde.org>\n"
+"Language: el\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 24.08.0\n"
+"X-Qt-Contexts: true\n"
+
+#: core/kconfig.cpp:991
+msgctxt "KConfig|"
+msgid "Please contact your system administrator."
+msgstr "Επικοινωνήστε με τον διαχειριστή του συστήματός σας."
+
+#: core/kconfigini.cpp:456
+#, qt-format
+msgctxt "KConfigIniBackend|"
+msgid "Configuration file \"%1\" not writable.\n"
+msgstr "Το αρχείο διαμόρφωσης \"%1\" δεν είναι εγγράψιμο.\n"
+
+#: core/kemailsettings.cpp:128 core/kemailsettings.cpp:131
+#: core/kemailsettings.cpp:139
+msgctxt "KEMailSettings|"
+msgid "Default"
+msgstr "Προκαθορισμένο"
+
+#: gui/kstandardactions.cpp:49
+msgctxt "go back|"
+msgid "&Back"
+msgstr "&Πίσω"
+
+#: gui/kstandardactions.cpp:56
+msgctxt "go forward|"
+msgid "&Forward"
+msgstr "&Μπροστά"
+
+#: gui/kstandardactions.cpp:63
+msgctxt "home page|"
+msgid "&Home"
+msgstr "&Αρχική"
+
+#: gui/kstandardactions_p.h:64
+msgctxt "KStandardActions|"
+msgid "&New"
+msgstr "&Νέο"
+
+#: gui/kstandardactions_p.h:64
+msgctxt "KStandardActions|"
+msgid "Create new document"
+msgstr "Δημιουργία νέου εγγράφου"
+
+#: gui/kstandardactions_p.h:65
+msgctxt "KStandardActions|"
+msgid "&Open…"
+msgstr "Άνοι&γμα…"
+
+#: gui/kstandardactions_p.h:65
+msgctxt "KStandardActions|"
+msgid "Open an existing document"
+msgstr "Άνοιγμα υπάρχοντος εγγράφου"
+
+#: gui/kstandardactions_p.h:66
+msgctxt "KStandardActions|"
+msgid "Open &Recent"
+msgstr "Άνοιγμα &πρόσφατου"
+
+#: gui/kstandardactions_p.h:66
+msgctxt "KStandardActions|"
+msgid "Open a document which was recently opened"
+msgstr "Άνοιγμα ενός εγγράφου που ανοίχτηκε πρόσφατα"
+
+#: gui/kstandardactions_p.h:67
+msgctxt "KStandardActions|"
+msgid "&Save"
+msgstr "&Αποθήκευση"
+
+#: gui/kstandardactions_p.h:67
+msgctxt "KStandardActions|"
+msgid "Save document"
+msgstr "Αποθήκευση εγγράφου"
+
+#: gui/kstandardactions_p.h:68
+msgctxt "KStandardActions|"
+msgid "Save &As…"
+msgstr "Αποθήκευση &ως…"
+
+#: gui/kstandardactions_p.h:68
+msgctxt "KStandardActions|"
+msgid "Save document under a new name"
+msgstr "Αποθήκευση εγγράφου με νέο όνομα"
+
+#: gui/kstandardactions_p.h:69
+msgctxt "KStandardActions|"
+msgid "Re&vert"
+msgstr "Επαναφο&ρά"
+
+#: gui/kstandardactions_p.h:69
+msgctxt "KStandardActions|"
+msgid "Revert unsaved changes made to document"
+msgstr "Επαναφορά μη αποθηκευμένων αλλαγών στο έγγραφο"
+
+#: gui/kstandardactions_p.h:70
+msgctxt "KStandardActions|"
+msgid "&Close"
+msgstr "&Κλείσιμο"
+
+#: gui/kstandardactions_p.h:70
+msgctxt "KStandardActions|"
+msgid "Close document"
+msgstr "Κλείσιμο εγγράφου"
+
+#: gui/kstandardactions_p.h:71
+msgctxt "KStandardActions|"
+msgid "&Print…"
+msgstr "&Εκτύπωση…"
+
+#: gui/kstandardactions_p.h:71
+msgctxt "KStandardActions|"
+msgid "Print document"
+msgstr "Εκτύπωση εγγράφου"
+
+#: gui/kstandardactions_p.h:72
+msgctxt "KStandardActions|"
+msgid "Print Previe&w"
+msgstr "Προεπισκόπηση ε&κτύπωσης"
+
+#: gui/kstandardactions_p.h:72
+msgctxt "KStandardActions|"
+msgid "Show a print preview of document"
+msgstr "Εμφάνιση προεπισκόπησης εκτύπωσης του εγγράφου"
+
+#: gui/kstandardactions_p.h:73
+msgctxt "KStandardActions|"
+msgid "&Mail…"
+msgstr "&Αλληλογραφία…"
+
+#: gui/kstandardactions_p.h:73
+msgctxt "KStandardActions|"
+msgid "Send document by mail"
+msgstr "Αποστολή εγγράφου μέσω ταχυδρομείου"
+
+#: gui/kstandardactions_p.h:74
+msgctxt "KStandardActions|"
+msgid "&Quit"
+msgstr "Έ&ξοδος"
+
+#: gui/kstandardactions_p.h:74
+msgctxt "KStandardActions|"
+msgid "Quit application"
+msgstr "Κλείσιμο εφαρμογής"
+
+#: gui/kstandardactions_p.h:76
+msgctxt "KStandardActions|"
+msgid "&Undo"
+msgstr "&Αναίρεση"
+
+#: gui/kstandardactions_p.h:76
+msgctxt "KStandardActions|"
+msgid "Undo last action"
+msgstr "Αναίρεση της τελευταίας ενέργειας"
+
+#: gui/kstandardactions_p.h:77
+msgctxt "KStandardActions|"
+msgid "Re&do"
+msgstr "Επαναφορά"
+
+#: gui/kstandardactions_p.h:77
+msgctxt "KStandardActions|"
+msgid "Redo last undone action"
+msgstr "Επανάληψη της τελευταίας ενέργειας που ακυρώθηκε"
+
+#: gui/kstandardactions_p.h:78
+msgctxt "KStandardActions|"
+msgid "Cu&t"
+msgstr "Αποκο&πή"
+
+#: gui/kstandardactions_p.h:78
+msgctxt "KStandardActions|"
+msgid "Cut selection to clipboard"
+msgstr "Αποκοπή επιλογής στο πρόχειρο"
+
+#: gui/kstandardactions_p.h:79
+msgctxt "KStandardActions|"
+msgid "&Copy"
+msgstr "&Αντιγραφή"
+
+#: gui/kstandardactions_p.h:79
+msgctxt "KStandardActions|"
+msgid "Copy selection to clipboard"
+msgstr "Αντιγραφή επιλογής στο πρόχειρο"
+
+#: gui/kstandardactions_p.h:80
+msgctxt "KStandardActions|"
+msgid "&Paste"
+msgstr "&Επικόλληση"
+
+#: gui/kstandardactions_p.h:80
+msgctxt "KStandardActions|"
+msgid "Paste clipboard content"
+msgstr "Επικόλληση περιεχομένου πρόχειρου"
+
+#: gui/kstandardactions_p.h:81
+msgctxt "KStandardActions|"
+msgid "C&lear"
+msgstr "Εκκα&θάριση"
+
+#: gui/kstandardactions_p.h:82
+msgctxt "KStandardActions|"
+msgid "Select &All"
+msgstr "Επι&λογή όλων"
+
+#: gui/kstandardactions_p.h:83
+msgctxt "KStandardActions|"
+msgid "Dese&lect"
+msgstr "Αποεπιλ&ογή"
+
+#: gui/kstandardactions_p.h:84
+msgctxt "KStandardActions|"
+msgid "&Find…"
+msgstr "&Εύρεση…"
+
+#: gui/kstandardactions_p.h:85
+msgctxt "KStandardActions|"
+msgid "Find &Next"
+msgstr "Εύρεση &επόμενου"
+
+#: gui/kstandardactions_p.h:86
+msgctxt "KStandardActions|"
+msgid "Find Pre&vious"
+msgstr "Εύρεση προη&γούμενου"
+
+#: gui/kstandardactions_p.h:87
+msgctxt "KStandardActions|"
+msgid "&Replace…"
+msgstr "&Αντικατάσταση…"
+
+#: gui/kstandardactions_p.h:89
+msgctxt "KStandardActions|"
+msgid "Zoom to &Actual Size"
+msgstr "Εστίαση σε &πραγματικό μέγεθος"
+
+#: gui/kstandardactions_p.h:89
+msgctxt "KStandardActions|"
+msgid "View document at its actual size"
+msgstr "Προβολή του εγγράφου στο πραγματικό του μέγεθος"
+
+#: gui/kstandardactions_p.h:90
+msgctxt "KStandardActions|"
+msgid "&Fit to Page"
+msgstr "&Προσαρμογή στη σελίδα"
+
+#: gui/kstandardactions_p.h:90
+msgctxt "KStandardActions|"
+msgid "Zoom to fit page in window"
+msgstr "Εστίαση για προσαρμογή σελίδας στο παράθυρο"
+
+#: gui/kstandardactions_p.h:91
+msgctxt "KStandardActions|"
+msgid "Fit to Page &Width"
+msgstr "Προσαρμογή στο &πλάτος σελίδας"
+
+#: gui/kstandardactions_p.h:91
+msgctxt "KStandardActions|"
+msgid "Zoom to fit page width in window"
+msgstr "Εστίαση για προσαρμογή πλάτους σελίδας στο παράθυρο"
+
+#: gui/kstandardactions_p.h:92
+msgctxt "KStandardActions|"
+msgid "Fit to Page &Height"
+msgstr "Προσαρμογή στο ύ&ψος σελίδας"
+
+#: gui/kstandardactions_p.h:92
+msgctxt "KStandardActions|"
+msgid "Zoom to fit page height in window"
+msgstr "Εστίαση για προσαρμογή ύψους σελίδας στο παράθυρο"
+
+#: gui/kstandardactions_p.h:93
+msgctxt "KStandardActions|"
+msgid "Zoom &In"
+msgstr "&Μεγέθυνση"
+
+#: gui/kstandardactions_p.h:94
+msgctxt "KStandardActions|"
+msgid "Zoom &Out"
+msgstr "&Σμίκρυνση"
+
+#: gui/kstandardactions_p.h:95
+msgctxt "KStandardActions|"
+msgid "&Zoom…"
+msgstr "Εσ&τίαση…"
+
+#: gui/kstandardactions_p.h:95
+msgctxt "KStandardActions|"
+msgid "Select zoom level"
+msgstr "Επιλογή επιπέδου εστίασης"
+
+#: gui/kstandardactions_p.h:96
+msgctxt "KStandardActions|"
+msgid "&Refresh"
+msgstr "&Ανανέωση"
+
+#: gui/kstandardactions_p.h:96
+msgctxt "KStandardActions|"
+msgid "Refresh document"
+msgstr "Ανανέωση εγγράφου"
+
+#: gui/kstandardactions_p.h:98
+msgctxt "KStandardActions|"
+msgid "&Up"
+msgstr "&Πάνω"
+
+#: gui/kstandardactions_p.h:98
+msgctxt "KStandardActions|"
+msgid "Go up"
+msgstr "Μετάβαση πάνω"
+
+#: gui/kstandardactions_p.h:103
+msgctxt "KStandardActions|"
+msgid "&Previous Page"
+msgstr "&Προηγούμενη σελίδα"
+
+#: gui/kstandardactions_p.h:103
+msgctxt "KStandardActions|"
+msgid "Go to previous page"
+msgstr "Μετάβαση στην προηγούμενη σελίδα"
+
+#: gui/kstandardactions_p.h:104
+msgctxt "KStandardActions|"
+msgid "&Next Page"
+msgstr "&Επόμενη σελίδα"
+
+#: gui/kstandardactions_p.h:104
+msgctxt "KStandardActions|"
+msgid "Go to next page"
+msgstr "Μετάβαση στην επόμενη σελίδα"
+
+#: gui/kstandardactions_p.h:105
+msgctxt "KStandardActions|"
+msgid "&Go To…"
+msgstr "&Μετάβαση σε…"
+
+#: gui/kstandardactions_p.h:106
+msgctxt "KStandardActions|"
+msgid "&Go to Page…"
+msgstr "&Μετάβαση στη σελίδα…"
+
+#: gui/kstandardactions_p.h:107
+msgctxt "KStandardActions|"
+msgid "&Go to Line…"
+msgstr "&Μετάβαση στη γραμμή…"
+
+#: gui/kstandardactions_p.h:108
+msgctxt "KStandardActions|"
+msgid "&First Page"
+msgstr "&Πρώτη σελίδα"
+
+#: gui/kstandardactions_p.h:108
+msgctxt "KStandardActions|"
+msgid "Go to first page"
+msgstr "Μετάβαση στην πρώτη σελίδα"
+
+#: gui/kstandardactions_p.h:109
+msgctxt "KStandardActions|"
+msgid "&Last Page"
+msgstr "&Τελευταία σελίδα"
+
+#: gui/kstandardactions_p.h:109
+msgctxt "KStandardActions|"
+msgid "Go to last page"
+msgstr "Μετάβαση στην τελευταία σελίδα"
+
+#: gui/kstandardactions_p.h:110
+msgctxt "KStandardActions|"
+msgid "&Back"
+msgstr "&Πίσω"
+
+#: gui/kstandardactions_p.h:110
+msgctxt "KStandardActions|"
+msgid "Go back in document"
+msgstr "Μετάβαση πίσω στο έγγραφο"
+
+#: gui/kstandardactions_p.h:111
+msgctxt "KStandardActions|"
+msgid "&Forward"
+msgstr "&Μπροστά"
+
+#: gui/kstandardactions_p.h:111
+msgctxt "KStandardActions|"
+msgid "Go forward in document"
+msgstr "Μετάβαση προς τα εμπρός στο έγγραφο"
+
+#: gui/kstandardactions_p.h:113
+msgctxt "KStandardActions|"
+msgid "&Add Bookmark"
+msgstr "&Προσθήκη σελιδοδείκτη"
+
+#: gui/kstandardactions_p.h:114
+msgctxt "KStandardActions|"
+msgid "&Edit Bookmarks…"
+msgstr "&Επεξεργασία σελιδοδεικτών…"
+
+#: gui/kstandardactions_p.h:116
+msgctxt "KStandardActions|"
+msgid "&Spelling…"
+msgstr "&Ορθογραφία…"
+
+#: gui/kstandardactions_p.h:116
+msgctxt "KStandardActions|"
+msgid "Check spelling in document"
+msgstr "Έλεγχος ορθογραφίας στο έγγραφο"
+
+#: gui/kstandardactions_p.h:118
+msgctxt "KStandardActions|"
+msgid "Show &Menubar"
+msgstr "Εμφάνιση &γραμμής μενού"
+
+#: gui/kstandardactions_p.h:118
+msgctxt "KStandardActions|"
+msgid "Show or hide menubar"
+msgstr "Εμφάνιση ή απόκρυψη της γραμμής μενού"
+
+#: gui/kstandardactions_p.h:119
+msgctxt "KStandardActions|"
+msgid "Show &Toolbar"
+msgstr "Εμφάνιση &γραμμής εργαλείων"
+
+#: gui/kstandardactions_p.h:119
+msgctxt "KStandardActions|"
+msgid "Show or hide toolbar"
+msgstr "Εμφάνιση ή απόκρυψη γραμμής εργαλείων"
+
+#: gui/kstandardactions_p.h:120
+msgctxt "KStandardActions|"
+msgid "Show St&atusbar"
+msgstr "Εμφάνιση γραμμής κατάστασης"
+
+#: gui/kstandardactions_p.h:120
+msgctxt "KStandardActions|"
+msgid "Show or hide statusbar"
+msgstr "Εμφάνιση ή απόκρυψη γραμμής κατάστασης"
+
+#: gui/kstandardactions_p.h:121
+msgctxt "KStandardActions|"
+msgid "F&ull Screen Mode"
+msgstr "Λειτουργία πλήρους οθόνης"
+
+#: gui/kstandardactions_p.h:122
+msgctxt "KStandardActions|"
+msgid "Configure Keyboard S&hortcuts…"
+msgstr "Διαμόρφωση συν&τομεύσεων πληκτρολογίου…"
+
+#: gui/kstandardactions_p.h:123
+#, qt-format
+msgctxt "KStandardActions|"
+msgid "&Configure %1…"
+msgstr "&Διαμόρφωση %1…"
+
+#: gui/kstandardactions_p.h:124
+msgctxt "KStandardActions|"
+msgid "Configure Tool&bars…"
+msgstr "Διαμόρφωση εργαλείων &γραμμών…"
+
+#: gui/kstandardactions_p.h:125
+msgctxt "KStandardActions|"
+msgid "Configure &Notifications…"
+msgstr "Διαμόρφωση &ειδοποιήσεων…"
+
+#: gui/kstandardactions_p.h:129
+#, qt-format
+msgctxt "KStandardActions|"
+msgid "%1 &Handbook"
+msgstr "%1 &εγχειρίδιο"
+
+#: gui/kstandardactions_p.h:130
+msgctxt "KStandardActions|"
+msgid "What's &This?"
+msgstr "Τι είναι αυτό?"
+
+#: gui/kstandardactions_p.h:131
+msgctxt "KStandardActions|"
+msgid "&Report Bug…"
+msgstr "&Αναφορά σφάλματος…"
+
+#: gui/kstandardactions_p.h:132
+msgctxt "KStandardActions|"
+msgid "Configure &Language…"
+msgstr "Διαμόρφωση γ&λώσσας…"
+
+#: gui/kstandardactions_p.h:133
+#, qt-format
+msgctxt "KStandardActions|"
+msgid "&About %1"
+msgstr "Σ&χετικά με το %1"
+
+#: gui/kstandardactions_p.h:134
+msgctxt "KStandardActions|"
+msgid "About &KDE"
+msgstr "Σχετικά με το &KDE"
+
+#: gui/kstandardactions_p.h:135
+msgctxt "KStandardActions|"
+msgid "&Delete"
+msgstr "&Διαγραφή"
+
+#: gui/kstandardactions_p.h:136
+msgctxt "KStandardActions|"
+msgid "&Rename…"
+msgstr "&Μετονομασία…"
+
+#: gui/kstandardactions_p.h:137
+msgctxt "KStandardActions|"
+msgid "&Move to Trash"
+msgstr "Μετακίνηση στα απορρίμματα"
+
+#: gui/kstandardactions_p.h:138
+msgctxt "KStandardActions|"
+msgid "&Donate"
+msgstr "&Δωρεά"
+
+#: gui/kstandardactions_p.h:139
+msgctxt "KStandardActions|"
+msgid "Open &Menu"
+msgstr "Άνο&ιγμα κυρίως μενού"
+
+#: gui/kstandardshortcut.cpp:73
+msgctxt "KStandardShortcut|@action"
+msgid "Open"
+msgstr "Άνοιγμα"
+
+#: gui/kstandardshortcut.cpp:74
+msgctxt "KStandardShortcut|@action"
+msgid "New"
+msgstr "Νέο"
+
+#: gui/kstandardshortcut.cpp:75
+msgctxt "KStandardShortcut|@action"
+msgid "Close"
+msgstr "Κλείσιμο"
+
+#: gui/kstandardshortcut.cpp:76
+msgctxt "KStandardShortcut|@action"
+msgid "Save"
+msgstr "Αποθήκευση"
+
+#: gui/kstandardshortcut.cpp:77
+msgctxt "KStandardShortcut|@action"
+msgid "Print"
+msgstr "Εκτύπωση"
+
+#: gui/kstandardshortcut.cpp:78
+msgctxt "KStandardShortcut|@action"
+msgid "Quit"
+msgstr "Έξοδος"
+
+#: gui/kstandardshortcut.cpp:81
+msgctxt "KStandardShortcut|@action"
+msgid "Undo"
+msgstr "Αναίρεση"
+
+#: gui/kstandardshortcut.cpp:82
+msgctxt "KStandardShortcut|@action"
+msgid "Redo"
+msgstr "Επανάληψη"
+
+#: gui/kstandardshortcut.cpp:85
+msgctxt "KStandardShortcut|@action"
+msgid "Cut"
+msgstr "Αποκοπή"
+
+#: gui/kstandardshortcut.cpp:86
+msgctxt "KStandardShortcut|@action"
+msgid "Copy"
+msgstr "Αντιγραφή"
+
+#: gui/kstandardshortcut.cpp:87
+msgctxt "KStandardShortcut|@action"
+msgid "Paste"
+msgstr "Επικόλληση"
+
+#: gui/kstandardshortcut.cpp:90
+msgctxt "KStandardShortcut|@action"
+msgid "Paste Selection"
+msgstr "Επικόλληση επιλογής"
+
+#: gui/kstandardshortcut.cpp:97
+msgctxt "KStandardShortcut|@action"
+msgid "Select All"
+msgstr "Επιλογή όλων"
+
+#: gui/kstandardshortcut.cpp:98
+msgctxt "KStandardShortcut|@action"
+msgid "Deselect"
+msgstr "Αποεπιλογή"
+
+#: gui/kstandardshortcut.cpp:101
+msgctxt "KStandardShortcut|@action"
+msgid "Delete Word Backwards"
+msgstr "Διαγραφή λέξης προς τα πίσω"
+
+#: gui/kstandardshortcut.cpp:113
+msgctxt "KStandardShortcut|@action"
+msgid "Delete Word Forward"
+msgstr "Διαγραφή λέξης μπροστά"
+
+#: gui/kstandardshortcut.cpp:124
+msgctxt "KStandardShortcut|@action"
+msgid "Find"
+msgstr "Εύρεση"
+
+#: gui/kstandardshortcut.cpp:127
+msgctxt "KStandardShortcut|@action"
+msgid "Find Next"
+msgstr "Εύρεση επόμενου"
+
+#: gui/kstandardshortcut.cpp:137
+msgctxt "KStandardShortcut|@action"
+msgid "Find Prev"
+msgstr "Εύρεση προηγούμενου"
+
+#: gui/kstandardshortcut.cpp:138
+msgctxt "KStandardShortcut|@action"
+msgid "Replace"
+msgstr "Αντικατάσταση"
+
+#: gui/kstandardshortcut.cpp:143
+msgctxt "KStandardShortcut|@action Go to main page"
+msgid "Home"
+msgstr "Αρχική"
+
+#: gui/kstandardshortcut.cpp:151
+msgctxt "KStandardShortcut|@action Beginning of document"
+msgid "Begin"
+msgstr "Αρχή"
+
+#: gui/kstandardshortcut.cpp:163
+msgctxt "KStandardShortcut|@action End of document"
+msgid "End"
+msgstr "Τέλος"
+
+#: gui/kstandardshortcut.cpp:173
+msgctxt "KStandardShortcut|@action"
+msgid "Prior"
+msgstr "Προηγούμενο"
+
+#: gui/kstandardshortcut.cpp:176
+msgctxt "KStandardShortcut|@action Opposite to Prior"
+msgid "Next"
+msgstr "Επόμενο"
+
+#: gui/kstandardshortcut.cpp:183
+msgctxt "KStandardShortcut|@action"
+msgid "Up"
+msgstr "Πάνω"
+
+#: gui/kstandardshortcut.cpp:186
+msgctxt "KStandardShortcut|@action"
+msgid "Back"
+msgstr "Πίσω"
+
+#: gui/kstandardshortcut.cpp:198
+msgctxt "KStandardShortcut|@action"
+msgid "Forward"
+msgstr "Μπροστά"
+
+#: gui/kstandardshortcut.cpp:210
+msgctxt "KStandardShortcut|@action"
+msgid "Reload"
+msgstr "Επαναφόρτωση"
+
+#: gui/kstandardshortcut.cpp:219
+msgctxt "KStandardShortcut|@action"
+msgid "Beginning of Line"
+msgstr "Αρχή γραμμής"
+
+#: gui/kstandardshortcut.cpp:231
+msgctxt "KStandardShortcut|@action"
+msgid "End of Line"
+msgstr "Τέλος γραμμής"
+
+#: gui/kstandardshortcut.cpp:243
+msgctxt "KStandardShortcut|@action"
+msgid "Go to Line"
+msgstr "Μετάβαση στη γραμμή"
+
+#: gui/kstandardshortcut.cpp:255
+msgctxt "KStandardShortcut|@action"
+msgid "Backward Word"
+msgstr "Λέξη προς τα πίσω"
+
+#: gui/kstandardshortcut.cpp:267
+msgctxt "KStandardShortcut|@action"
+msgid "Forward Word"
+msgstr "Λέξη μπροστά"
+
+#: gui/kstandardshortcut.cpp:280
+msgctxt "KStandardShortcut|@action"
+msgid "Add Bookmark"
+msgstr "Προσθήκη σελιδοδείκτη"
+
+#: gui/kstandardshortcut.cpp:286
+msgctxt "KStandardShortcut|@action"
+msgid "Zoom In"
+msgstr "Μεγέθυνση"
+
+#: gui/kstandardshortcut.cpp:287
+msgctxt "KStandardShortcut|@action"
+msgid "Zoom Out"
+msgstr "Σμίκρυνση"
+
+#: gui/kstandardshortcut.cpp:290
+msgctxt "KStandardShortcut|@action"
+msgid "Full Screen Mode"
+msgstr "Λειτουργία πλήρους οθόνης"
+
+#: gui/kstandardshortcut.cpp:301
+msgctxt "KStandardShortcut|@action"
+msgid "Show Menu Bar"
+msgstr "Εμφάνιση γραμμής μενού"
+
+#: gui/kstandardshortcut.cpp:304
+msgctxt "KStandardShortcut|@action"
+msgid "Activate Next Tab"
+msgstr "Ενεργοποίηση της επόμενης καρτέλας"
+
+#: gui/kstandardshortcut.cpp:312
+msgctxt "KStandardShortcut|@action"
+msgid "Activate Previous Tab"
+msgstr "Ενεργοποίηση προηγούμενης καρτέλας"
+
+#: gui/kstandardshortcut.cpp:320
+msgctxt "KStandardShortcut|@action"
+msgid "Help"
+msgstr "Βοήθεια"
+
+#: gui/kstandardshortcut.cpp:321
+msgctxt "KStandardShortcut|@action"
+msgid "What's This"
+msgstr "Τι είναι αυτό"
+
+#: gui/kstandardshortcut.cpp:326
+msgctxt "KStandardShortcut|@action"
+msgid "Text Completion"
+msgstr "Συμπλήρωση κειμένου"
+
+#: gui/kstandardshortcut.cpp:334
+msgctxt "KStandardShortcut|@action"
+msgid "Previous Completion Match"
+msgstr "Προηγούμενο ταίριασμα συμπλήρωσης"
+
+#: gui/kstandardshortcut.cpp:346
+msgctxt "KStandardShortcut|@action"
+msgid "Next Completion Match"
+msgstr "Επόμενο ταίριασμα συμπλήρωσης"
+
+#: gui/kstandardshortcut.cpp:358
+msgctxt "KStandardShortcut|@action"
+msgid "Substring Completion"
+msgstr "Συμπλήρωση υποσυμβολοσειράς"
+
+#: gui/kstandardshortcut.cpp:367
+msgctxt "KStandardShortcut|@action"
+msgid "Previous Item in List"
+msgstr "Προηγούμενο αντικείμενο στη λίστα"
+
+#: gui/kstandardshortcut.cpp:375
+msgctxt "KStandardShortcut|@action"
+msgid "Next Item in List"
+msgstr "Επόμενο αντικείμενο στη λίστα"
+
+#: gui/kstandardshortcut.cpp:382
+msgctxt "KStandardShortcut|@action"
+msgid "Open Recent"
+msgstr "Άνοιγμα πρόσφατου"
+
+#: gui/kstandardshortcut.cpp:383
+msgctxt "KStandardShortcut|@action"
+msgid "Save As"
+msgstr "Αποθήκευση ως"
+
+#: gui/kstandardshortcut.cpp:384
+msgctxt "KStandardShortcut|@action"
+msgid "Revert"
+msgstr "Επαναφορά"
+
+#: gui/kstandardshortcut.cpp:385
+msgctxt "KStandardShortcut|@action"
+msgid "Print Preview"
+msgstr "Προεπισκόπηση εκτύπωσης"
+
+#: gui/kstandardshortcut.cpp:386
+msgctxt "KStandardShortcut|@action"
+msgid "Mail"
+msgstr "Αλληλογραφία"
+
+#: gui/kstandardshortcut.cpp:387
+msgctxt "KStandardShortcut|@action"
+msgid "Clear"
+msgstr "Εκκαθάριση"
+
+#: gui/kstandardshortcut.cpp:390
+msgctxt "KStandardShortcut|@action"
+msgid "Zoom to Actual Size"
+msgstr "Εστίαση στο πραγματικό μέγεθος"
+
+#: gui/kstandardshortcut.cpp:396
+msgctxt "KStandardShortcut|@action"
+msgid "Fit To Page"
+msgstr "Προσαρμογή στη σελίδα"
+
+#: gui/kstandardshortcut.cpp:397
+msgctxt "KStandardShortcut|@action"
+msgid "Fit To Width"
+msgstr "Προσαρμογή στο πλάτος"
+
+#: gui/kstandardshortcut.cpp:398
+msgctxt "KStandardShortcut|@action"
+msgid "Fit To Height"
+msgstr "Προσαρμογή στο ύψος"
+
+#: gui/kstandardshortcut.cpp:399
+msgctxt "KStandardShortcut|@action"
+msgid "Zoom"
+msgstr "Εστίαση"
+
+#: gui/kstandardshortcut.cpp:400
+msgctxt "KStandardShortcut|@action"
+msgid "Goto"
+msgstr "Μετάβαση"
+
+#: gui/kstandardshortcut.cpp:401
+msgctxt "KStandardShortcut|@action"
+msgid "Goto Page"
+msgstr "Μετάβαση σε σελίδα"
+
+#: gui/kstandardshortcut.cpp:404
+msgctxt "KStandardShortcut|@action"
+msgid "Document Back"
+msgstr "Έγγραφο πίσω"
+
+#: gui/kstandardshortcut.cpp:412
+msgctxt "KStandardShortcut|@action"
+msgid "Document Forward"
+msgstr "Έγγραφο μπροστά"
+
+#: gui/kstandardshortcut.cpp:420
+msgctxt "KStandardShortcut|@action"
+msgid "Edit Bookmarks"
+msgstr "Επεξεργασία σελιδοδεικτών"
+
+#: gui/kstandardshortcut.cpp:426
+msgctxt "KStandardShortcut|@action"
+msgid "Spelling"
+msgstr "Ορθογραφία"
+
+#: gui/kstandardshortcut.cpp:427
+msgctxt "KStandardShortcut|@action"
+msgid "Show Toolbar"
+msgstr "Εμφάνιση γραμμής εργαλείων"
+
+#: gui/kstandardshortcut.cpp:428
+msgctxt "KStandardShortcut|@action"
+msgid "Show Statusbar"
+msgstr "Εμφάνιση γραμμής κατάστασης"
+
+#: gui/kstandardshortcut.cpp:431
+msgctxt "KStandardShortcut|@action"
+msgid "Key Bindings"
+msgstr "Πλήκτρα συνδυασμών"
+
+#: gui/kstandardshortcut.cpp:439
+msgctxt "KStandardShortcut|@action"
+msgid "Configure Application"
+msgstr "Διαμόρφωση εφαρμογής"
+
+#: gui/kstandardshortcut.cpp:447
+msgctxt "KStandardShortcut|@action"
+msgid "Configure Toolbars"
+msgstr "Διαμόρφωση γραμμών εργαλείων"
+
+#: gui/kstandardshortcut.cpp:455
+msgctxt "KStandardShortcut|@action"
+msgid "Configure Notifications"
+msgstr "Διαμόρφωση ειδοποιήσεων"
+
+#: gui/kstandardshortcut.cpp:461
+msgctxt "KStandardShortcut|@action"
+msgid "Report Bug"
+msgstr "Αναφορά σφάλματος"
+
+#: gui/kstandardshortcut.cpp:464
+msgctxt "KStandardShortcut|@action"
+msgid "Configure Language…"
+msgstr "Διαμόρφωση γλώσσας..."
+
+#: gui/kstandardshortcut.cpp:470
+msgctxt "KStandardShortcut|@action"
+msgid "About Application"
+msgstr "Σχετικά με την εφαρμογή"
+
+#: gui/kstandardshortcut.cpp:471
+msgctxt "KStandardShortcut|@action"
+msgid "About KDE"
+msgstr "Σχετικά με το KDE"
+
+#: gui/kstandardshortcut.cpp:474
+msgctxt "KStandardShortcut|@action"
+msgid "Delete"
+msgstr "Διαγραφή"
+
+#: gui/kstandardshortcut.cpp:475
+msgctxt "KStandardShortcut|@action"
+msgid "Rename"
+msgstr "Μετονομασία"
+
+#: gui/kstandardshortcut.cpp:478
+msgctxt "KStandardShortcut|@action"
+msgid "Move to Trash"
+msgstr "Μετακίνηση στα απορρίμματα"
+
+#: gui/kstandardshortcut.cpp:484
+msgctxt "KStandardShortcut|@action"
+msgid "Donate"
+msgstr "Δωρεά"
+
+#: gui/kstandardshortcut.cpp:487
+msgctxt "KStandardShortcut|@action"
+msgid "Show/Hide Hidden Files"
+msgstr "Εμφάνιση/απόκρυψη κρυφών αρχείων"
+
+#: gui/kstandardshortcut.cpp:495
+msgctxt "KStandardShortcut|@action"
+msgid "Create Folder"
+msgstr "Δημιουργία φακέλου"
+
+#: gui/kstandardshortcut.cpp:503
+msgctxt ""
+"KStandardShortcut|@action referring to the menu bar or a hamburger menu"
+msgid "Open Main Menu"
+msgstr "Άνοιγμα κυρίως μενού"
+
+#: gui/kstandardshortcut.cpp:511
+msgctxt "KStandardShortcut|@action"
+msgid "Open Context Menu"
+msgstr "Άνοιγμα κυρίως μενού"
+
+#: kconf_update/kconf_update.cpp:368
+msgctxt "main|"
+msgid "KDE Tool for updating user configuration files"
+msgstr "Εργαλείο του KDE για ενημέρωση των αρχείων διαμόρφωσης των χρηστών"
+
+#: kconf_update/kconf_update.cpp:370
+msgctxt "main|"
+msgid "Keep output results from scripts"
+msgstr "Διατήρηση των αποτελεσμάτων των σεναρίων κελύφους"
+
+#: kconf_update/kconf_update.cpp:373
+msgctxt "main|"
+msgid ""
+"For unit tests only: do not write the done entries, so that with every re-"
+"run, the scripts are executed again"
+msgstr ""
+"Μόνο για τις δοκιμές μονάδας: μην γράφετε τις καταχωρήσεις done, έτσι ώστε "
+"σε κάθε επανεκτέλεση, τα σενάρια να εκτελούνται ξανά"
+
+#: kconf_update/kconf_update.cpp:375
+msgctxt "main|"
+msgid "Check whether config file itself requires updating"
+msgstr ""
+"Έλεγχος για το αν αυτό καθαυτό το αρχείο διαμόρφωσης χρειάζεται ενημέρωση"
+
+#: kconf_update/kconf_update.cpp:378
+msgctxt "main|"
+msgid "File(s) to read update instructions from"
+msgstr "Αρχείο(α) για ανάγνωση εντολών ενημέρωσης"
+
+#: kconfig_compiler/kconfig_compiler.cpp:732
+msgctxt "main|"
+msgid "Directory to generate files in [.]"
+msgstr "Ο κατάλογος όπου θα δημιουργηθούν τα αρχεία [.]"
+
+#: kconfig_compiler/kconfig_compiler.cpp:733
+msgctxt "main|"
+msgid "directory"
+msgstr "κατάλογος"
+
+#: kconfig_compiler/kconfig_compiler.cpp:737
+msgctxt "main|"
+msgid "Display software license."
+msgstr "Εμφάνιση άδειας χρήσης λογισμικού."
+
+#: kreadconfig/kreadconfig.cpp:46 kreadconfig/kwriteconfig.cpp:25
+msgctxt "main|"
+msgid "Use <file> instead of global config"
+msgstr "Χρήση <αρχείου> αντί καθολικής διαμόρφωσης"
+
+#: kreadconfig/kreadconfig.cpp:49 kreadconfig/kwriteconfig.cpp:28
+msgctxt "main|"
+msgid ""
+"Group to look in. Use \"<default>\" for the root group, or use repeatedly "
+"for nested groups."
+msgstr ""
+"Ομάδα στην οποία θα γίνει η αναζήτηση. Χρησιμοποιήστε \"<default>\" για την "
+"ομάδα του root ή επαναληπτικά για εμφωλευμένες ομάδες."
+
+#: kreadconfig/kreadconfig.cpp:52 kreadconfig/kwriteconfig.cpp:31
+msgctxt "main|"
+msgid "Key to look for"
+msgstr "Κλειδί για αναζήτηση"
+
+#: kreadconfig/kreadconfig.cpp:53
+msgctxt "main|"
+msgid "Default value"
+msgstr "Προκαθορισμένη τιμή"
+
+#: kreadconfig/kreadconfig.cpp:54
+msgctxt "main|"
+msgid "Type of variable"
+msgstr "Τύπος μεταβλητής"
+
+#: kreadconfig/kreadconfig.cpp:55
+msgctxt "main|"
+msgid "Dump all entries"
+msgstr ""
+
+#: kreadconfig/kreadconfig.cpp:58
+msgctxt "main|"
+msgid ""
+"Include globals; by default, the global config files are not read if a file "
+"is specified"
+msgstr ""
+
+#: kreadconfig/kreadconfig.cpp:89 kreadconfig/kwriteconfig.cpp:71
+msgctxt "main|"
+msgid "Group name cannot be empty, use \"<default>\" for the root group"
+msgstr ""
+"Το όνομα της ομάδας δεν μπορεί να είναι κενό, χρησιμοποιήστε \"<default>\" "
+"για την ομάδα του root"
+
+#: kreadconfig/kwriteconfig.cpp:34
+msgctxt "main|"
+msgid ""
+"Type of variable. Use \"bool\" for a boolean, otherwise it is treated as a "
+"string"
+msgstr ""
+"Τύπος μεταβλητής. Χρησιμοποιήστε \"bool\" για boolean, αλλιώς "
+"αντιμετωπίζεται ως συμβολοσειρά"
+
+#: kreadconfig/kwriteconfig.cpp:36
+msgctxt "main|"
+msgid "Delete the designated key if enabled"
+msgstr "Να διαγραφεί το σημειωμένο κλειδί αν είναι ενεργό"
+
+#: kreadconfig/kwriteconfig.cpp:37
+msgctxt "notify|"
+msgid "Notify applications of the change"
+msgstr ""
+
+#: kreadconfig/kwriteconfig.cpp:38
+msgctxt "main|"
+msgid "The value to write. Mandatory, on a shell use '' for empty"
+msgstr ""
+"Η τιμή για εγγραφή. Υποχρεωτική, σε ένα κέλυφος χρησιμοποιήστε '' για κενό"
+
+#~ msgctxt "KStandardShortcut|@action"
+#~ msgid "Tip Of Day"
+#~ msgstr "Συμβουλή της ημέρας"
+
+#~ msgctxt "main|"
+#~ msgid ""
+#~ "For unit tests only: use test directories to stay away from the user's "
+#~ "real files"
+#~ msgstr ""
+#~ "Για ελέγχους από τον προγραμματιστή και μόνο: χρησιμοποιήστε "
+#~ "δοκιμαστικούς καταλόγους για να μείνετε μακρυά από τα πραγματικά αρχεία "
+#~ "του χρήστη"
+
+#~ msgctxt "KStandardShortcut|@action"
+#~ msgid "Save Options"
+#~ msgstr "Επιλογές αποθήκευσης"
+
+#~ msgctxt "KStandardShortcut|@action"
+#~ msgid "Switch Application Language"
+#~ msgstr "Εναλλαγή γλώσσας εφαρμογής"
+
+#~ msgctxt "KStandardShortcut|@action"
+#~ msgid "Preferences"
+#~ msgstr "Προτιμήσεις"
+
+#~ msgid "KWriteConfig"
+#~ msgstr "KWriteConfig"
+
+#~ msgid "Write KConfig entries - for use in shell scripts"
+#~ msgstr "Εγγραφή καταχωρήσεων KConfig - για χρήση σε σενάρια κελύφους"
+
+#~ msgid "(c) 2001 Red Hat, Inc. & Luís Pedro Coelho"
+#~ msgstr "(c) 2001 Red Hat, Inc. & Luís Pedro Coelho"
+
+#~ msgid "Wrote kreadconfig on which this is based"
+#~ msgstr "Έγραψε το kreadconfig, στο οποίο βασίζεται αυτό"
+
+#~ msgid "Luís Pedro Coelho"
+#~ msgstr "Luís Pedro Coelho"
+
+#~ msgid "Bernhard Rosenkraenzer"
+#~ msgstr "Bernhard Rosenkraenzer"

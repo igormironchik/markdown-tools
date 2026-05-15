@@ -1,0 +1,154 @@
+[Desktop Entry]
+Type=Service
+Name=Ask Jeeves
+Name[af]=Vra Jeeves
+Name[ar]=Ask Jeeves
+Name[as]=Ask Jeeves
+Name[az]=Ask Jeeves
+Name[be]=Ask Jeeves
+Name[be@latin]=Ask Jeeves
+Name[bg]=Ask Jeeves
+Name[bn]=Ask Jeeves
+Name[bn_IN]=Ask Jeeves
+Name[br]=Klask digant Jeeves
+Name[bs]=Pitajte Dživsa
+Name[ca]=Ask Jeeves
+Name[ca@valencia]=Ask Jeeves
+Name[cs]=Ask Jeeves
+Name[csb]=Ask Jeeves - spëtôj ò cos
+Name[cy]=Ask Jeeves
+Name[da]=Ask Jeeves
+Name[de]=Ask Jeeves
+Name[el]=Ask Jeeves
+Name[en_GB]=Ask Jeeves
+Name[eo]=Demandu Jeeves
+Name[es]=Ask Jeeves
+Name[et]=Ask Jeeves
+Name[eu]=Ask Jeeves
+Name[fa]=پرسیدن Jeeves
+Name[fi]=Ask Jeeves
+Name[fr]=Ask Jeeves
+Name[fy]=Ask Jeeves
+Name[ga]=Ask Jeeves
+Name[gd]=Ask Jeeves
+Name[gl]=Pregúntalle a Jeeves
+Name[gu]=જીવ્સને પૂછો
+Name[he]=Ask Jeeves
+Name[hi]=आस्क जीव्स
+Name[hne]=आस्क जीव्स
+Name[hr]=Pitajte Jeevesa
+Name[hsb]=Ask Jeeves
+Name[hu]=Ask Jeeves
+Name[ia]=Ask Jeeves
+Name[id]=Ask Jeeves
+Name[ie]=Ask Jeeves
+Name[is]=Ask Jeeves
+Name[it]=Ask Jeeves
+Name[ja]=Ask Jeeves
+Name[ka]=Ask Jeeves
+Name[kk]=Ask Jeeves
+Name[km]=សួរ Jeeves
+Name[kn]=ಜೀವಿಸ್ ನನ್ನುಕೇಳು (ಆಸ್ಕ್ ಜೀವಿಸ್)
+Name[ko]=Ask Jeeves
+Name[ku]=Ask Jeeves
+Name[lg]=Ask Jeeves
+Name[lt]=Ask Jeeves
+Name[lv]=Ask Jeeves
+Name[mai]=आस्क जीव्स
+Name[mk]=Прашајте го Jeeves
+Name[ml]=ആസ്ക് ജീവ്സ്
+Name[mr]=आस्क जीव्स
+Name[ms]=Ask Jeeves
+Name[my]=ဂျီစ်ကိုမေးရန်
+Name[nb]=Ask Jeeves
+Name[nds]=Fraag Jeeves
+Name[ne]=आस्क जीभेज
+Name[nl]=Ask Jeeves
+Name[nn]=Ask Jeeves
+Name[pa]=Ask Jeeves
+Name[pl]=Ask Jeeves - zapytaj o coś
+Name[pt]=Ask Jeeves
+Name[pt_BR]=Ask Jeeves
+Name[ro]=Ask Jeeves
+Name[ru]=Ask Jeeves
+Name[sa]=Ask Jeeves
+Name[se]=Ask Jeeves
+Name[si]=Ask Jeeves
+Name[sk]=Ask Jeeves
+Name[sl]=Ask Jeeves
+Name[sq]=Ask Jeeves
+Name[sr]=Питај Џивса
+Name[sr@ijekavian]=Питај Џивса
+Name[sr@ijekavianlatin]=Pitaj Jeevesa
+Name[sr@latin]=Pitaj Jeevesa
+Name[sv]=Fråga Jeeves
+Name[te]=Ask Jeeves
+Name[tg]=Аз Jeeves пурсед
+Name[th]=บริการ Ask Jeeves
+Name[tok]=ilo alasa Ask Jeeves
+Name[tr]=Ask Jeeves
+Name[ug]=Jeeves دىن سورا
+Name[uk]=Ask Jeeves
+Name[uz]=Ask Jeeves
+Name[uz@cyrillic]=Ask Jeeves
+Name[vi]=Hỏi Jeeves
+Name[wa]=Ask Jeeves
+Name[xh]=Ask Jeeves
+Name[zh_CN]=Ask Jeeves
+Name[zh_TW]=Ask Jeeves
+Keys=ask,jeeves
+Query=https://www.ask.com/web?q=\\{@}
+Query[ar]=https://www.ask.com/web?q=\\{@}
+Query[ast]=https://www.ask.com/web?q=\\{@}
+Query[az]=https://www.ask.com/web?q=\\{@}
+Query[be]=https://www.ask.com/web?q=\\{@}
+Query[bg]=https://www.ask.com/web?q=\\{@}
+Query[ca]=https://www.ask.com/web?q=\\{@}
+Query[ca@valencia]=https://www.ask.com/web?q=\\{@}
+Query[cs]=https://www.ask.com/web?q=\\{@}
+Query[da]=https://www.ask.com/web?q=\\{@}
+Query[de]=https://www.ask.com/web?q=\\{@}
+Query[el]=https://www.ask.com/web?q=\\{@}
+Query[en_GB]=https://www.ask.com/web?q=\\{@}
+Query[eo]=https://www.ask.com/web?q=\\{@}
+Query[es]=https://www.ask.com/web?q=\\{@}
+Query[eu]=https://www.ask.com/web?q=\\{@}
+Query[fi]=https://www.ask.com/web?q=\\{@}
+Query[fr]=https://www.ask.com/web?q=\\{@}
+Query[ga]=https://www.ask.com/web?q=\\{@}
+Query[gl]=https://www.ask.com/web?q=\\{@}
+Query[gu]=https://www.ask.com/web?q=\\{@}
+Query[he]=https://www.ask.com/web?q=\\{@}
+Query[hr]=https://www.ask.com/web?q=\\{@}
+Query[hu]=https://www.ask.com/web?q=\\{@}
+Query[ia]=https://www.ask.com/web?q=\\{@}
+Query[is]=https://www.ask.com/web?q=\\{@}
+Query[it]=https://www.ask.com/web?q=\\{@}
+Query[ja]=https://www.ask.com/web?q=\\{@}
+Query[ka]=https://www.ask.com/web?q=\\{@}
+Query[ko]=https://www.ask.com/web?q=\\{@}
+Query[lg]=https://www.ask.com/web?q=\\{@}
+Query[lt]=https://www.ask.com/web?q=\\{@}
+Query[lv]=https://www.ask.com/web?q=\\{@}
+Query[my]=https://www.ask.com/web?q=\\{@}
+Query[nb]=https://www.ask.com/web?q=\\{@}
+Query[nl]=https://www.ask.com/web?q=\\{@}
+Query[nn]=https://www.ask.com/web?q=\\{@}
+Query[pa]=https://www.ask.com/web?q=\\{@}
+Query[pl]=https://www.ask.com/web?q=\\{@}
+Query[pt]=https://www.ask.com/web?q=\\{@}
+Query[pt_BR]=https://www.ask.com/web?q=\\{@}
+Query[ro]=https://www.ask.com/web?q=\\{@}
+Query[ru]=https://www.ask.com/web?q=\\{@}
+Query[sa]=https://www.ask.com/web?q=\\{@}
+Query[sk]=https://www.ask.com/web?q=\\{@}
+Query[sl]=https://www.ask.com/web?q=\\{@}
+Query[sq]=https://www.ask.com/web?q=\\{@}
+Query[sv]=https://www.ask.com/web?q=\\{@}
+Query[th]=https://www.ask.com/web?q=\\{@}
+Query[tr]=https://www.ask.com/web?q=\\{@}
+Query[ug]=https://www.ask.com/web?q=\\{@}
+Query[uk]=https://www.ask.com/web?q=\\{@}
+Query[vi]=https://www.ask.com/web?q=\\{@}
+Query[zh_CN]=https://www.ask.com/web?q=\\{@}
+Query[zh_TW]=https://www.ask.com/web?q=\\{@}

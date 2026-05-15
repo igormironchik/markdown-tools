@@ -1,0 +1,14 @@
+/*!
+    \module KConfigGui
+    \title KConfigGui C++ Classes
+    \ingroup modules
+    \cmakepackage KF6
+    \cmakecomponent Config
+    \cmaketargetitem KF6::ConfigGui
+
+    \brief Persistent platform-independent application settings.
+
+    KConfigGui provides a way to hook widgets to the configuration so that they are
+    automatically initialized from the configuration and automatically propagate
+    their changes to their respective configuration files.
+*/

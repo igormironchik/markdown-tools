@@ -1,23 +1,19 @@
 set /P qt_version=<%CD%\script\qt.version
 set /P qt_arch=<%CD%\script\qt.arch.win
 
+set "current_dir=%CD%"
+
+set "cwd=%current_dir:\=/%"
+
 echo "Building markdown-tools..."
 
-mkdir build-markdown-tools
-
-conan install . -of build-markdown-tools -s build_type=Release --build=missing
+cmake -DCMAKE_BUILD_TYPE=Release -S . -B "%cwd%/../builds/build-markdown-tools" -DBUILD_MDPDF_TESTS=OFF -DCMAKE_MODULE_PATH="%cwd%/../builds/conan" -DCMAKE_PREFIX_PATH="%cwd%/Qt/%qt_version%/%qt_arch%;%cwd%/../KDE;%cwd%/../builds/conan" -DECM_DIR="%cwd%/../KDE/share/ECM/cmake" -DOPENSSL_ROOT_DIR="%cwd%/Qt/Tools/OpenSSLv3/Win_x64" -G "NMake Makefiles"
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-cmake -DCMAKE_BUILD_TYPE=Release -S . -B build-markdown-tools -DBUILD_MDPDF_TESTS=OFF -DCMAKE_PREFIX_PATH=%CD%\Qt\%qt_version%\%qt_arch% -DECM_DIR=%CD%\..\KDE\share\ECM\cmake -DKF6SyntaxHighlighting_DIR=%CD%\..\KDE\lib\cmake\KF6SyntaxHighlighting -DKF6WidgetsAddons_DIR=%CD%\..\KDE\lib\cmake\KF6WidgetsAddons -DKF6Sonnet_DIR=%CD%\..\KDE\lib\cmake\KF6Sonnet -DOPENSSL_ROOT_DIR=%CD%\Qt\Tools\OpenSSLv3\Win_x64 -G "NMake Makefiles"
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
-cmake --build build-markdown-tools --config Release
+cmake --build ..\builds\build-markdown-tools --config Release -j 3
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%

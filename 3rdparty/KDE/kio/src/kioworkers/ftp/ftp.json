@@ -1,0 +1,32 @@
+{
+    "KDE-KIO-Protocols": {
+        "ftp": {
+            "Class": ":internet",
+            "Icon": "folder-remote",
+            "X-DocPath": "kioworker6/ftp/index.html",
+            "copyFromFile": true,
+            "copyToFile": true,
+            "deleting": true,
+            "input": "none",
+            "listing": [
+                "Name",
+                "Type",
+                "Size",
+                "Date",
+                "Access",
+                "Owner",
+                "Group",
+                "Link",
+                ""
+            ],
+            "makedir": true,
+            "maxInstances": 20,
+            "maxInstancesPerHost": 5,
+            "moving": true,
+            "output": "filesystem",
+            "protocol": "ftp",
+            "reading": true,
+            "writing": true
+        }
+    }
+}

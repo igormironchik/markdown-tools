@@ -1,0 +1,19 @@
+# Ignore the following files
+*.kdev4
+*.directory
+*.bak
+*thumbs.db
+dist
+node_modules
+/.vscode/
+/.kateproject.*
+CMakeLists.txt.user*
+.cmake/
+/.clang-format
+/compile_commands.json
+build/
+xmlerrors
+.clangd
+.idea
+/cmake-build*
+.cache

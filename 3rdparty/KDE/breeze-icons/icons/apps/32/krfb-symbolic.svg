@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="svg1" width="32" height="32" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+   <defs id="defs1">
+     <style id="current-color-scheme" type="text/css">
+        .ColorScheme-Text {
+            color:#232629;
+        }
+        .ColorScheme-Background {
+            color:#eff0f1;
+        }
+        .ColorScheme-PositiveText {
+            color:#27ae60;
+        }
+        .ColorScheme-NeutralText {
+            color:#f67400;
+        }
+        .ColorScheme-NegativeText {
+            color:#da4453;
+        }</style>
+    </defs>
+    <g id="preferences-desktop-display-randr" transform="translate(-26,10)"><rect id="rect3832-6" x="26" y="-10" width="32" height="32" fill-opacity="0"/><path id="rect7235-7" class="ColorScheme-Text" d="m36.011 15h11.978l0.011249 2h-11.978zm3.9888-2h4v2h-4zm-9-18v18h22v-18zm1 1h20v14h-20z" fill="currentColor" stroke-width="0"/><path id="path1" class="ColorScheme-Text" d="m20.581-5.6358c-0.61463 0-1.1129 0.49826-1.1129 1.1129 0 0.61463 0.49826 1.1129 1.1129 1.1129 0.61463 0 1.1129-0.49826 1.1129-1.1129 0-0.61463-0.49826-1.1129-1.1129-1.1129zm-2.2258 2.2258c-0.20488 0-0.37096 0.16609-0.37096 0.37096 0 0.20488 0.16609 0.37096 0.37096 0.37096 0.20488 0 0.37096-0.16609 0.37096-0.37096 0-0.20488-0.16609-0.37096-0.37096-0.37096zm-1.4839 0.74193c-0.20488 0-0.37096 0.16609-0.37096 0.37096 0 0.20488 0.16609 0.37096 0.37096 0.37096s0.37096-0.16609 0.37096-0.37096c0-0.20488-0.16609-0.37096-0.37096-0.37096zm-2.2258 0.74193c-0.61463 0-1.1129 0.49826-1.1129 1.1129 0 0.61463 0.49826 1.1129 1.1129 1.1129 0.61463 0 1.1129-0.49826 1.1129-1.1129 0-0.61463-0.49826-1.1129-1.1129-1.1129zm2.2258 2.2258c-0.20488 0-0.37096 0.16609-0.37096 0.37096 0 0.20488 0.16609 0.37096 0.37096 0.37096s0.37096-0.16609 0.37096-0.37096c0-0.20488-0.16609-0.37096-0.37096-0.37096zm1.4839 0.74193c-0.20488 0-0.37096 0.16609-0.37096 0.37096 0 0.20488 0.16609 0.37096 0.37096 0.37096 0.20488 0 0.37096-0.16609 0.37096-0.37096 0-0.20488-0.16609-0.37096-0.37096-0.37096zm2.2258 0c-0.61463 0-1.1129 0.49826-1.1129 1.1129 0 0.61463 0.49826 1.1129 1.1129 1.1129 0.61463 0 1.1129-0.49826 1.1129-1.1129 0-0.61463-0.49826-1.1129-1.1129-1.1129z" fill="currentColor" stroke-width="0"/></g><g id="g11" transform="matrix(.91042 0 0 .91042 1.3158 .80502)" fill="currentColor" stroke-width="1.0984"><circle id="circle1" class="ColorScheme-Text" cx="19.992" cy="8.895" r="1.5"/><circle id="circle2" class="ColorScheme-Text" cx="16.992" cy="10.895" r=".5"/><circle id="circle3" class="ColorScheme-Text" cx="14.992" cy="11.895" r=".5"/><circle id="circle4" class="ColorScheme-Text" cx="11.992" cy="13.895" r="1.5"/><circle id="circle5" class="ColorScheme-Text" cx="14.992" cy="15.895" r=".5"/><circle id="circle6" class="ColorScheme-Text" cx="16.992" cy="16.895" r=".5"/><circle id="circle7" class="ColorScheme-Text" cx="19.992" cy="17.895" r="1.5"/></g></svg>

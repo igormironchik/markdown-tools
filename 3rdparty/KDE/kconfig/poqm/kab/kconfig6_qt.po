@@ -1,0 +1,1086 @@
+# translation of kconfig.po to Kabyle
+# Athmane MOKRAOUI <butterflyoffire@protonmail.com>, 2024.
+# ButterflyOfFire <butterflyoffire@protonmail.com>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: kwriteconfig\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2014-04-11 02:17+0000\n"
+"PO-Revision-Date: 2024-12-08 16:19+0100\n"
+"Last-Translator: ButterflyOfFire <butterflyoffire@protonmail.com>\n"
+"Language-Team: Kabyle\n"
+"Language: kab\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n>1;\n"
+"X-Generator: Gtranslator 47.1\n"
+"X-Qt-Contexts: true\n"
+
+#: core/kconfig.cpp:991
+msgctxt "KConfig|"
+msgid "Please contact your system administrator."
+msgstr "Ttxil-k·m nermes anedbal-ik·im n unagraw."
+
+#: core/kconfigini.cpp:456
+#, qt-format
+msgctxt "KConfigIniBackend|"
+msgid "Configuration file \"%1\" not writable.\n"
+msgstr "Afaylu n uswel \"%1\" ur yelli ara i tira.\n"
+
+#: core/kemailsettings.cpp:128 core/kemailsettings.cpp:131
+#: core/kemailsettings.cpp:139
+msgctxt "KEMailSettings|"
+msgid "Default"
+msgstr "Amezwar"
+
+#: gui/kstandardactions.cpp:49
+msgctxt "go back|"
+msgid "&Back"
+msgstr "Uɣa&l"
+
+#: gui/kstandardactions.cpp:56
+msgctxt "go forward|"
+msgid "&Forward"
+msgstr "Uḍ&fir"
+
+#: gui/kstandardactions.cpp:63
+msgctxt "home page|"
+msgid "&Home"
+msgstr "A&gejdan"
+
+#: gui/kstandardactions_p.h:64
+msgctxt "KStandardActions|"
+msgid "&New"
+msgstr "Amay&nut"
+
+#: gui/kstandardactions_p.h:64
+msgctxt "KStandardActions|"
+msgid "Create new document"
+msgstr "Asnulfu n yisemli amaynut"
+
+#: gui/kstandardactions_p.h:65
+msgctxt "KStandardActions|"
+msgid "&Open…"
+msgstr "&Ldi…"
+
+#: gui/kstandardactions_p.h:65
+msgctxt "KStandardActions|"
+msgid "Open an existing document"
+msgstr "Ldi isemli yellan"
+
+#: gui/kstandardactions_p.h:66
+msgctxt "KStandardActions|"
+msgid "Open &Recent"
+msgstr "Ldi i&neggura"
+
+#: gui/kstandardactions_p.h:66
+msgctxt "KStandardActions|"
+msgid "Open a document which was recently opened"
+msgstr "Ldi isemli d-yettwaldin tagara kan"
+
+#: gui/kstandardactions_p.h:67
+msgctxt "KStandardActions|"
+msgid "&Save"
+msgstr "&Sekles"
+
+#: gui/kstandardactions_p.h:67
+msgctxt "KStandardActions|"
+msgid "Save document"
+msgstr "Sekles isemli"
+
+#: gui/kstandardactions_p.h:68
+msgctxt "KStandardActions|"
+msgid "Save &As…"
+msgstr "Sekles &am…"
+
+#: gui/kstandardactions_p.h:68
+msgctxt "KStandardActions|"
+msgid "Save document under a new name"
+msgstr "Sekles isemli s yisem amaynut"
+
+#: gui/kstandardactions_p.h:69
+msgctxt "KStandardActions|"
+msgid "Re&vert"
+msgstr "Erre&d"
+
+#: gui/kstandardactions_p.h:69
+msgctxt "KStandardActions|"
+msgid "Revert unsaved changes made to document"
+msgstr ""
+
+#: gui/kstandardactions_p.h:70
+msgctxt "KStandardActions|"
+msgid "&Close"
+msgstr "&Mdel"
+
+#: gui/kstandardactions_p.h:70
+msgctxt "KStandardActions|"
+msgid "Close document"
+msgstr "Sekkeṛ isemli"
+
+#: gui/kstandardactions_p.h:71
+msgctxt "KStandardActions|"
+msgid "&Print…"
+msgstr "Sigge&z…"
+
+#: gui/kstandardactions_p.h:71
+msgctxt "KStandardActions|"
+msgid "Print document"
+msgstr "Siggez isemli"
+
+#: gui/kstandardactions_p.h:72
+msgctxt "KStandardActions|"
+msgid "Print Previe&w"
+msgstr "Siggez tas&kant"
+
+#: gui/kstandardactions_p.h:72
+msgctxt "KStandardActions|"
+msgid "Show a print preview of document"
+msgstr "Sken-d taskant send asiggez n yisemli"
+
+#: gui/kstandardactions_p.h:73
+msgctxt "KStandardActions|"
+msgid "&Mail…"
+msgstr "I&mayl…"
+
+#: gui/kstandardactions_p.h:73
+msgctxt "KStandardActions|"
+msgid "Send document by mail"
+msgstr "Ceyyeɛ isemli s yimayl"
+
+#: gui/kstandardactions_p.h:74
+msgctxt "KStandardActions|"
+msgid "&Quit"
+msgstr "&Ffeɣ"
+
+#: gui/kstandardactions_p.h:74
+msgctxt "KStandardActions|"
+msgid "Quit application"
+msgstr "Ffeɣ seg usnas"
+
+#: gui/kstandardactions_p.h:76
+msgctxt "KStandardActions|"
+msgid "&Undo"
+msgstr "E&rr-d"
+
+#: gui/kstandardactions_p.h:76
+msgctxt "KStandardActions|"
+msgid "Undo last action"
+msgstr "Sefsex tigawt taneggarut"
+
+#: gui/kstandardactions_p.h:77
+msgctxt "KStandardActions|"
+msgid "Re&do"
+msgstr "Ale&s"
+
+#: gui/kstandardactions_p.h:77
+msgctxt "KStandardActions|"
+msgid "Redo last undone action"
+msgstr "Ales-as i tigawt taneggarut yettwasefsxen"
+
+#: gui/kstandardactions_p.h:78
+msgctxt "KStandardActions|"
+msgid "Cu&t"
+msgstr "&Gzem"
+
+#: gui/kstandardactions_p.h:78
+msgctxt "KStandardActions|"
+msgid "Cut selection to clipboard"
+msgstr "Gzem afran-nni ɣer tfelwit"
+
+#: gui/kstandardactions_p.h:79
+msgctxt "KStandardActions|"
+msgid "&Copy"
+msgstr "&Nɣel"
+
+#: gui/kstandardactions_p.h:79
+msgctxt "KStandardActions|"
+msgid "Copy selection to clipboard"
+msgstr "Nɣel afran-nni ɣer tfelwit"
+
+#: gui/kstandardactions_p.h:80
+msgctxt "KStandardActions|"
+msgid "&Paste"
+msgstr "&Senṭeḍ"
+
+#: gui/kstandardactions_p.h:80
+msgctxt "KStandardActions|"
+msgid "Paste clipboard content"
+msgstr "Senṭeḍ agbur n tfelwit"
+
+#: gui/kstandardactions_p.h:81
+msgctxt "KStandardActions|"
+msgid "C&lear"
+msgstr "S&feḍ"
+
+#: gui/kstandardactions_p.h:82
+msgctxt "KStandardActions|"
+msgid "Select &All"
+msgstr "Fren-iten &akk"
+
+#: gui/kstandardactions_p.h:83
+msgctxt "KStandardActions|"
+msgid "Dese&lect"
+msgstr "Kkes tafra&yt"
+
+#: gui/kstandardactions_p.h:84
+msgctxt "KStandardActions|"
+msgid "&Find…"
+msgstr "A&f-d…"
+
+#: gui/kstandardactions_p.h:85
+msgctxt "KStandardActions|"
+msgid "Find &Next"
+msgstr "Nadi uḍfi&r"
+
+#: gui/kstandardactions_p.h:86
+msgctxt "KStandardActions|"
+msgid "Find Pre&vious"
+msgstr "Nadi u&zwir"
+
+#: gui/kstandardactions_p.h:87
+msgctxt "KStandardActions|"
+msgid "&Replace…"
+msgstr "Se&mselsi…"
+
+#: gui/kstandardactions_p.h:89
+msgctxt "KStandardActions|"
+msgid "Zoom to &Actual Size"
+msgstr "Semɣer ɣer teɣzi t&amirant"
+
+#: gui/kstandardactions_p.h:89
+msgctxt "KStandardActions|"
+msgid "View document at its actual size"
+msgstr "Sken-d isemli deg lqedd-is amiran"
+
+#: gui/kstandardactions_p.h:90
+msgctxt "KStandardActions|"
+msgid "&Fit to Page"
+msgstr "&Amwati n tiddi akken yella usebter"
+
+#: gui/kstandardactions_p.h:90
+msgctxt "KStandardActions|"
+msgid "Zoom to fit page in window"
+msgstr "Semɣeṛ akken ad d-yezg akked tiddi n usfaylu"
+
+#: gui/kstandardactions_p.h:91
+msgctxt "KStandardActions|"
+msgid "Fit to Page &Width"
+msgstr ""
+
+#: gui/kstandardactions_p.h:91
+msgctxt "KStandardActions|"
+msgid "Zoom to fit page width in window"
+msgstr ""
+
+#: gui/kstandardactions_p.h:92
+msgctxt "KStandardActions|"
+msgid "Fit to Page &Height"
+msgstr ""
+
+#: gui/kstandardactions_p.h:92
+msgctxt "KStandardActions|"
+msgid "Zoom to fit page height in window"
+msgstr ""
+
+#: gui/kstandardactions_p.h:93
+msgctxt "KStandardActions|"
+msgid "Zoom &In"
+msgstr "Se&mɣeṛ"
+
+#: gui/kstandardactions_p.h:94
+msgctxt "KStandardActions|"
+msgid "Zoom &Out"
+msgstr "S&imẓi"
+
+#: gui/kstandardactions_p.h:95
+msgctxt "KStandardActions|"
+msgid "&Zoom…"
+msgstr "Se&mɣeṛ…"
+
+#: gui/kstandardactions_p.h:95
+msgctxt "KStandardActions|"
+msgid "Select zoom level"
+msgstr "Fren aswir n usimɣeṛ"
+
+#: gui/kstandardactions_p.h:96
+msgctxt "KStandardActions|"
+msgid "&Refresh"
+msgstr "Smi&ren"
+
+#: gui/kstandardactions_p.h:96
+msgctxt "KStandardActions|"
+msgid "Refresh document"
+msgstr ""
+
+#: gui/kstandardactions_p.h:98
+msgctxt "KStandardActions|"
+msgid "&Up"
+msgstr "&Asawen"
+
+#: gui/kstandardactions_p.h:98
+msgctxt "KStandardActions|"
+msgid "Go up"
+msgstr "Ali"
+
+#: gui/kstandardactions_p.h:103
+msgctxt "KStandardActions|"
+msgid "&Previous Page"
+msgstr "Ase&bter uzwir"
+
+#: gui/kstandardactions_p.h:103
+msgctxt "KStandardActions|"
+msgid "Go to previous page"
+msgstr "Ddu ɣer usebter yezrin"
+
+#: gui/kstandardactions_p.h:104
+msgctxt "KStandardActions|"
+msgid "&Next Page"
+msgstr "Asebter uḍ&fir"
+
+#: gui/kstandardactions_p.h:104
+msgctxt "KStandardActions|"
+msgid "Go to next page"
+msgstr "Ddu ɣer usebter uḍfir"
+
+#: gui/kstandardactions_p.h:105
+msgctxt "KStandardActions|"
+msgid "&Go To…"
+msgstr "&Ddu ɣer…"
+
+#: gui/kstandardactions_p.h:106
+msgctxt "KStandardActions|"
+msgid "&Go to Page…"
+msgstr "&Ddu ɣer usebter…"
+
+#: gui/kstandardactions_p.h:107
+msgctxt "KStandardActions|"
+msgid "&Go to Line…"
+msgstr "Ddu ɣer i&zirig…"
+
+#: gui/kstandardactions_p.h:108
+msgctxt "KStandardActions|"
+msgid "&First Page"
+msgstr "Asebter a&menzu"
+
+#: gui/kstandardactions_p.h:108
+msgctxt "KStandardActions|"
+msgid "Go to first page"
+msgstr "Ddu ɣer usebter amezwaru"
+
+#: gui/kstandardactions_p.h:109
+msgctxt "KStandardActions|"
+msgid "&Last Page"
+msgstr "Asebter a&neggaru"
+
+#: gui/kstandardactions_p.h:109
+msgctxt "KStandardActions|"
+msgid "Go to last page"
+msgstr "Ddu ɣer usebter aneggaru"
+
+#: gui/kstandardactions_p.h:110
+msgctxt "KStandardActions|"
+msgid "&Back"
+msgstr "Uɣa&l"
+
+#: gui/kstandardactions_p.h:110
+msgctxt "KStandardActions|"
+msgid "Go back in document"
+msgstr "Tuɣalin ɣer deffir deg isemli"
+
+#: gui/kstandardactions_p.h:111
+msgctxt "KStandardActions|"
+msgid "&Forward"
+msgstr "Uḍ&fir"
+
+#: gui/kstandardactions_p.h:111
+msgctxt "KStandardActions|"
+msgid "Go forward in document"
+msgstr "Ddu ɣer zdat deg isemli"
+
+#: gui/kstandardactions_p.h:113
+msgctxt "KStandardActions|"
+msgid "&Add Bookmark"
+msgstr "Rnu t&acreḍt"
+
+#: gui/kstandardactions_p.h:114
+msgctxt "KStandardActions|"
+msgid "&Edit Bookmarks…"
+msgstr "Ẓr&eg ticraḍ…"
+
+#: gui/kstandardactions_p.h:116
+msgctxt "KStandardActions|"
+msgid "&Spelling…"
+msgstr ""
+
+#: gui/kstandardactions_p.h:116
+msgctxt "KStandardActions|"
+msgid "Check spelling in document"
+msgstr "Ssefqed tirawt deg isemli"
+
+#: gui/kstandardactions_p.h:118
+msgctxt "KStandardActions|"
+msgid "Show &Menubar"
+msgstr "Sken afeggag n wu&muɣ"
+
+#: gui/kstandardactions_p.h:118
+msgctxt "KStandardActions|"
+msgid "Show or hide menubar"
+msgstr "Sken neɣ ffer afeggag n wumuɣ"
+
+#: gui/kstandardactions_p.h:119
+msgctxt "KStandardActions|"
+msgid "Show &Toolbar"
+msgstr "Sken-d &tafeggagt n yifecka"
+
+#: gui/kstandardactions_p.h:119
+msgctxt "KStandardActions|"
+msgid "Show or hide toolbar"
+msgstr "Sken-d neɣ ffer tafeggagt n yifecka"
+
+#: gui/kstandardactions_p.h:120
+msgctxt "KStandardActions|"
+msgid "Show St&atusbar"
+msgstr ""
+
+#: gui/kstandardactions_p.h:120
+msgctxt "KStandardActions|"
+msgid "Show or hide statusbar"
+msgstr ""
+
+#: gui/kstandardactions_p.h:121
+msgctxt "KStandardActions|"
+msgid "F&ull Screen Mode"
+msgstr "As&kar n ugdil aččuran"
+
+#: gui/kstandardactions_p.h:122
+msgctxt "KStandardActions|"
+msgid "Configure Keyboard S&hortcuts…"
+msgstr "S&wel inegzumen n unasiw…"
+
+#: gui/kstandardactions_p.h:123
+#, qt-format
+msgctxt "KStandardActions|"
+msgid "&Configure %1…"
+msgstr "Swe&l %1…"
+
+#: gui/kstandardactions_p.h:124
+msgctxt "KStandardActions|"
+msgid "Configure Tool&bars…"
+msgstr "S&wel ifeggagen n yifecka…"
+
+#: gui/kstandardactions_p.h:125
+msgctxt "KStandardActions|"
+msgid "Configure &Notifications…"
+msgstr "Swe&l ilɣa…"
+
+#: gui/kstandardactions_p.h:129
+#, qt-format
+msgctxt "KStandardActions|"
+msgid "%1 &Handbook"
+msgstr "Tasemlit n useqdac n %1"
+
+#: gui/kstandardactions_p.h:130
+msgctxt "KStandardActions|"
+msgid "What's &This?"
+msgstr "D acu-&t wa?"
+
+#: gui/kstandardactions_p.h:131
+msgctxt "KStandardActions|"
+msgid "&Report Bug…"
+msgstr "A&zen abug…"
+
+#: gui/kstandardactions_p.h:132
+msgctxt "KStandardActions|"
+msgid "Configure &Language…"
+msgstr "Swel tutlayt…"
+
+#: gui/kstandardactions_p.h:133
+#, qt-format
+msgctxt "KStandardActions|"
+msgid "&About %1"
+msgstr "Ɣ&ef %1"
+
+#: gui/kstandardactions_p.h:134
+msgctxt "KStandardActions|"
+msgid "About &KDE"
+msgstr "Ɣef &KDE"
+
+#: gui/kstandardactions_p.h:135
+msgctxt "KStandardActions|"
+msgid "&Delete"
+msgstr "&Kkes"
+
+#: gui/kstandardactions_p.h:136
+msgctxt "KStandardActions|"
+msgid "&Rename…"
+msgstr "Sen&fel isem…"
+
+#: gui/kstandardactions_p.h:137
+msgctxt "KStandardActions|"
+msgid "&Move to Trash"
+msgstr "Si&weḍ-it ɣer tqecwalt"
+
+#: gui/kstandardactions_p.h:138
+msgctxt "KStandardActions|"
+msgid "&Donate"
+msgstr "Mu&dd tawsa"
+
+#: gui/kstandardactions_p.h:139
+msgctxt "KStandardActions|"
+msgid "Open &Menu"
+msgstr "Ldi u&muɣ"
+
+#: gui/kstandardshortcut.cpp:73
+msgctxt "KStandardShortcut|@action"
+msgid "Open"
+msgstr "Ldi"
+
+#: gui/kstandardshortcut.cpp:74
+msgctxt "KStandardShortcut|@action"
+msgid "New"
+msgstr "Amynut"
+
+#: gui/kstandardshortcut.cpp:75
+msgctxt "KStandardShortcut|@action"
+msgid "Close"
+msgstr "Mdel"
+
+#: gui/kstandardshortcut.cpp:76
+msgctxt "KStandardShortcut|@action"
+msgid "Save"
+msgstr "Sekles"
+
+#: gui/kstandardshortcut.cpp:77
+msgctxt "KStandardShortcut|@action"
+msgid "Print"
+msgstr "Siggez"
+
+#: gui/kstandardshortcut.cpp:78
+msgctxt "KStandardShortcut|@action"
+msgid "Quit"
+msgstr "Ffeɣ"
+
+#: gui/kstandardshortcut.cpp:81
+msgctxt "KStandardShortcut|@action"
+msgid "Undo"
+msgstr "Err-d"
+
+#: gui/kstandardshortcut.cpp:82
+msgctxt "KStandardShortcut|@action"
+msgid "Redo"
+msgstr "Err-d"
+
+#: gui/kstandardshortcut.cpp:85
+msgctxt "KStandardShortcut|@action"
+msgid "Cut"
+msgstr "Gzem"
+
+#: gui/kstandardshortcut.cpp:86
+msgctxt "KStandardShortcut|@action"
+msgid "Copy"
+msgstr "Nɣel"
+
+#: gui/kstandardshortcut.cpp:87
+msgctxt "KStandardShortcut|@action"
+msgid "Paste"
+msgstr "Senṭeḍ"
+
+#: gui/kstandardshortcut.cpp:90
+msgctxt "KStandardShortcut|@action"
+msgid "Paste Selection"
+msgstr "Senṭeḍ tafrant"
+
+#: gui/kstandardshortcut.cpp:97
+msgctxt "KStandardShortcut|@action"
+msgid "Select All"
+msgstr "Fren-iten akk"
+
+#: gui/kstandardshortcut.cpp:98
+msgctxt "KStandardShortcut|@action"
+msgid "Deselect"
+msgstr "Kkes tafrayt"
+
+#: gui/kstandardshortcut.cpp:101
+msgctxt "KStandardShortcut|@action"
+msgid "Delete Word Backwards"
+msgstr "Kkes awal ɣer deffir"
+
+#: gui/kstandardshortcut.cpp:113
+msgctxt "KStandardShortcut|@action"
+msgid "Delete Word Forward"
+msgstr "Kkes awal ɣer zdat"
+
+#: gui/kstandardshortcut.cpp:124
+msgctxt "KStandardShortcut|@action"
+msgid "Find"
+msgstr "Af-d"
+
+#: gui/kstandardshortcut.cpp:127
+msgctxt "KStandardShortcut|@action"
+msgid "Find Next"
+msgstr "Nadi uḍfir"
+
+#: gui/kstandardshortcut.cpp:137
+msgctxt "KStandardShortcut|@action"
+msgid "Find Prev"
+msgstr "Nadi uzwir"
+
+#: gui/kstandardshortcut.cpp:138
+msgctxt "KStandardShortcut|@action"
+msgid "Replace"
+msgstr "Semselsi"
+
+#: gui/kstandardshortcut.cpp:143
+msgctxt "KStandardShortcut|@action Go to main page"
+msgid "Home"
+msgstr "Agejdan"
+
+#: gui/kstandardshortcut.cpp:151
+msgctxt "KStandardShortcut|@action Beginning of document"
+msgid "Begin"
+msgstr "Tazwara"
+
+#: gui/kstandardshortcut.cpp:163
+msgctxt "KStandardShortcut|@action End of document"
+msgid "End"
+msgstr "Tagara"
+
+#: gui/kstandardshortcut.cpp:173
+msgctxt "KStandardShortcut|@action"
+msgid "Prior"
+msgstr ""
+
+#: gui/kstandardshortcut.cpp:176
+msgctxt "KStandardShortcut|@action Opposite to Prior"
+msgid "Next"
+msgstr "Uḍfir"
+
+#: gui/kstandardshortcut.cpp:183
+msgctxt "KStandardShortcut|@action"
+msgid "Up"
+msgstr "Asawen"
+
+#: gui/kstandardshortcut.cpp:186
+msgctxt "KStandardShortcut|@action"
+msgid "Back"
+msgstr "Ɣer deffir"
+
+#: gui/kstandardshortcut.cpp:198
+msgctxt "KStandardShortcut|@action"
+msgid "Forward"
+msgstr "Ɣer zdat"
+
+#: gui/kstandardshortcut.cpp:210
+msgctxt "KStandardShortcut|@action"
+msgid "Reload"
+msgstr "Smiren"
+
+#: gui/kstandardshortcut.cpp:219
+msgctxt "KStandardShortcut|@action"
+msgid "Beginning of Line"
+msgstr "Tazwara n yizirig"
+
+#: gui/kstandardshortcut.cpp:231
+msgctxt "KStandardShortcut|@action"
+msgid "End of Line"
+msgstr "Taggara n yizirig"
+
+#: gui/kstandardshortcut.cpp:243
+msgctxt "KStandardShortcut|@action"
+msgid "Go to Line"
+msgstr "Ddu ɣer izirig"
+
+#: gui/kstandardshortcut.cpp:255
+msgctxt "KStandardShortcut|@action"
+msgid "Backward Word"
+msgstr "Sɛeddi awal ɣer deffir"
+
+#: gui/kstandardshortcut.cpp:267
+msgctxt "KStandardShortcut|@action"
+msgid "Forward Word"
+msgstr "Sɛeddi awal ɣer zdat"
+
+#: gui/kstandardshortcut.cpp:280
+msgctxt "KStandardShortcut|@action"
+msgid "Add Bookmark"
+msgstr "Rnu tacreḍt n usebter"
+
+#: gui/kstandardshortcut.cpp:286
+msgctxt "KStandardShortcut|@action"
+msgid "Zoom In"
+msgstr "Semɣeṛ"
+
+#: gui/kstandardshortcut.cpp:287
+msgctxt "KStandardShortcut|@action"
+msgid "Zoom Out"
+msgstr "Simẓi"
+
+#: gui/kstandardshortcut.cpp:290
+msgctxt "KStandardShortcut|@action"
+msgid "Full Screen Mode"
+msgstr "Askar n ugdil aččuran"
+
+#: gui/kstandardshortcut.cpp:301
+msgctxt "KStandardShortcut|@action"
+msgid "Show Menu Bar"
+msgstr "Sken afeggag n wumuɣ"
+
+#: gui/kstandardshortcut.cpp:304
+msgctxt "KStandardShortcut|@action"
+msgid "Activate Next Tab"
+msgstr "Rmed iccer d-iteddun"
+
+#: gui/kstandardshortcut.cpp:312
+msgctxt "KStandardShortcut|@action"
+msgid "Activate Previous Tab"
+msgstr "Rmed iccer yezrin"
+
+#: gui/kstandardshortcut.cpp:320
+msgctxt "KStandardShortcut|@action"
+msgid "Help"
+msgstr "Tallalt"
+
+#: gui/kstandardshortcut.cpp:321
+msgctxt "KStandardShortcut|@action"
+msgid "What's This"
+msgstr "D acu-t wa?"
+
+#: gui/kstandardshortcut.cpp:326
+msgctxt "KStandardShortcut|@action"
+msgid "Text Completion"
+msgstr "Akemmel n uḍris"
+
+#: gui/kstandardshortcut.cpp:334
+msgctxt "KStandardShortcut|@action"
+msgid "Previous Completion Match"
+msgstr ""
+
+#: gui/kstandardshortcut.cpp:346
+msgctxt "KStandardShortcut|@action"
+msgid "Next Completion Match"
+msgstr ""
+
+#: gui/kstandardshortcut.cpp:358
+msgctxt "KStandardShortcut|@action"
+msgid "Substring Completion"
+msgstr ""
+
+#: gui/kstandardshortcut.cpp:367
+msgctxt "KStandardShortcut|@action"
+msgid "Previous Item in List"
+msgstr "Aferdis yezrin n tebdart"
+
+#: gui/kstandardshortcut.cpp:375
+msgctxt "KStandardShortcut|@action"
+msgid "Next Item in List"
+msgstr "Aferdis i d-iteddun deg tebdart"
+
+#: gui/kstandardshortcut.cpp:382
+msgctxt "KStandardShortcut|@action"
+msgid "Open Recent"
+msgstr "Ldi ineggura"
+
+#: gui/kstandardshortcut.cpp:383
+msgctxt "KStandardShortcut|@action"
+msgid "Save As"
+msgstr "Sekles am"
+
+#: gui/kstandardshortcut.cpp:384
+msgctxt "KStandardShortcut|@action"
+msgid "Revert"
+msgstr "Err-d"
+
+#: gui/kstandardshortcut.cpp:385
+msgctxt "KStandardShortcut|@action"
+msgid "Print Preview"
+msgstr "Siggez taskant"
+
+#: gui/kstandardshortcut.cpp:386
+msgctxt "KStandardShortcut|@action"
+msgid "Mail"
+msgstr "Imayl"
+
+#: gui/kstandardshortcut.cpp:387
+msgctxt "KStandardShortcut|@action"
+msgid "Clear"
+msgstr "Sfeḍ"
+
+#: gui/kstandardshortcut.cpp:390
+msgctxt "KStandardShortcut|@action"
+msgid "Zoom to Actual Size"
+msgstr "Semɣeṛ ɣer teɣzi tamirant"
+
+#: gui/kstandardshortcut.cpp:396
+msgctxt "KStandardShortcut|@action"
+msgid "Fit To Page"
+msgstr "Amwati n tiddi akken yella usebter"
+
+#: gui/kstandardshortcut.cpp:397
+msgctxt "KStandardShortcut|@action"
+msgid "Fit To Width"
+msgstr ""
+
+#: gui/kstandardshortcut.cpp:398
+msgctxt "KStandardShortcut|@action"
+msgid "Fit To Height"
+msgstr ""
+
+#: gui/kstandardshortcut.cpp:399
+msgctxt "KStandardShortcut|@action"
+msgid "Zoom"
+msgstr "Semɣeṛ"
+
+#: gui/kstandardshortcut.cpp:400
+msgctxt "KStandardShortcut|@action"
+msgid "Goto"
+msgstr "Ddu ɣer"
+
+#: gui/kstandardshortcut.cpp:401
+msgctxt "KStandardShortcut|@action"
+msgid "Goto Page"
+msgstr "Ddu ɣer usebter"
+
+#: gui/kstandardshortcut.cpp:404
+msgctxt "KStandardShortcut|@action"
+msgid "Document Back"
+msgstr "Uɣal ɣer deffir de isemli"
+
+#: gui/kstandardshortcut.cpp:412
+msgctxt "KStandardShortcut|@action"
+msgid "Document Forward"
+msgstr "Ddu ɣer zdat deg isemli"
+
+#: gui/kstandardshortcut.cpp:420
+msgctxt "KStandardShortcut|@action"
+msgid "Edit Bookmarks"
+msgstr "Ẓreg ticraḍ"
+
+#: gui/kstandardshortcut.cpp:426
+msgctxt "KStandardShortcut|@action"
+msgid "Spelling"
+msgstr "Taɣdira"
+
+#: gui/kstandardshortcut.cpp:427
+msgctxt "KStandardShortcut|@action"
+msgid "Show Toolbar"
+msgstr "Sken tafeggagt n ifecka"
+
+#: gui/kstandardshortcut.cpp:428
+msgctxt "KStandardShortcut|@action"
+msgid "Show Statusbar"
+msgstr "Ssken-d afeggag n waddad"
+
+#: gui/kstandardshortcut.cpp:431
+msgctxt "KStandardShortcut|@action"
+msgid "Key Bindings"
+msgstr "Inegzumen n unasiw"
+
+#: gui/kstandardshortcut.cpp:439
+msgctxt "KStandardShortcut|@action"
+msgid "Configure Application"
+msgstr "Swel asnas"
+
+#: gui/kstandardshortcut.cpp:447
+msgctxt "KStandardShortcut|@action"
+msgid "Configure Toolbars"
+msgstr "Swel ifeggagen n yifecka"
+
+#: gui/kstandardshortcut.cpp:455
+msgctxt "KStandardShortcut|@action"
+msgid "Configure Notifications"
+msgstr "Swel ilɣa"
+
+#: gui/kstandardshortcut.cpp:461
+msgctxt "KStandardShortcut|@action"
+msgid "Report Bug"
+msgstr "Azen abug"
+
+#: gui/kstandardshortcut.cpp:464
+msgctxt "KStandardShortcut|@action"
+msgid "Configure Language…"
+msgstr "Swel tutlayt…"
+
+#: gui/kstandardshortcut.cpp:470
+msgctxt "KStandardShortcut|@action"
+msgid "About Application"
+msgstr "Ɣef usnas"
+
+#: gui/kstandardshortcut.cpp:471
+msgctxt "KStandardShortcut|@action"
+msgid "About KDE"
+msgstr "Ɣef KDE"
+
+#: gui/kstandardshortcut.cpp:474
+msgctxt "KStandardShortcut|@action"
+msgid "Delete"
+msgstr "Kkes"
+
+#: gui/kstandardshortcut.cpp:475
+msgctxt "KStandardShortcut|@action"
+msgid "Rename"
+msgstr "Beddel isem"
+
+#: gui/kstandardshortcut.cpp:478
+msgctxt "KStandardShortcut|@action"
+msgid "Move to Trash"
+msgstr "Siweḍ-it ɣer tqecwalt"
+
+#: gui/kstandardshortcut.cpp:484
+msgctxt "KStandardShortcut|@action"
+msgid "Donate"
+msgstr "Mudd tawsa"
+
+#: gui/kstandardshortcut.cpp:487
+msgctxt "KStandardShortcut|@action"
+msgid "Show/Hide Hidden Files"
+msgstr "Sken / Ffer ifuyla yeffren"
+
+#: gui/kstandardshortcut.cpp:495
+msgctxt "KStandardShortcut|@action"
+msgid "Create Folder"
+msgstr "Snulfu-d akaram"
+
+#: gui/kstandardshortcut.cpp:503
+msgctxt ""
+"KStandardShortcut|@action referring to the menu bar or a hamburger menu"
+msgid "Open Main Menu"
+msgstr "Ldi umuɣ agejdan"
+
+#: gui/kstandardshortcut.cpp:511
+msgctxt "KStandardShortcut|@action"
+msgid "Open Context Menu"
+msgstr ""
+
+#: kconf_update/kconf_update.cpp:368
+msgctxt "main|"
+msgid "KDE Tool for updating user configuration files"
+msgstr "Afecku KDE i uleqqem n yifuyla n twila n useqdac"
+
+#: kconf_update/kconf_update.cpp:370
+msgctxt "main|"
+msgid "Keep output results from scripts"
+msgstr "Eǧǧ igmaḍ n tuffɣa n yisekripten"
+
+#: kconf_update/kconf_update.cpp:373
+msgctxt "main|"
+msgid ""
+"For unit tests only: do not write the done entries, so that with every re-"
+"run, the scripts are executed again"
+msgstr ""
+
+#: kconf_update/kconf_update.cpp:375
+msgctxt "main|"
+msgid "Check whether config file itself requires updating"
+msgstr "Senqed ma yella afaylu n uswel yesra aleqqem"
+
+#: kconf_update/kconf_update.cpp:378
+msgctxt "main|"
+msgid "File(s) to read update instructions from"
+msgstr ""
+
+#: kconfig_compiler/kconfig_compiler.cpp:732
+msgctxt "main|"
+msgid "Directory to generate files in [.]"
+msgstr ""
+
+#: kconfig_compiler/kconfig_compiler.cpp:733
+msgctxt "main|"
+msgid "directory"
+msgstr "akaram"
+
+#: kconfig_compiler/kconfig_compiler.cpp:737
+msgctxt "main|"
+msgid "Display software license."
+msgstr "Sken-d turagt n useɣẓan."
+
+#: kreadconfig/kreadconfig.cpp:46 kreadconfig/kwriteconfig.cpp:25
+msgctxt "main|"
+msgid "Use <file> instead of global config"
+msgstr ""
+
+#: kreadconfig/kreadconfig.cpp:49 kreadconfig/kwriteconfig.cpp:28
+msgctxt "main|"
+msgid ""
+"Group to look in. Use \"<default>\" for the root group, or use repeatedly "
+"for nested groups."
+msgstr ""
+
+#: kreadconfig/kreadconfig.cpp:52 kreadconfig/kwriteconfig.cpp:31
+msgctxt "main|"
+msgid "Key to look for"
+msgstr "Tasarut i unadi"
+
+#: kreadconfig/kreadconfig.cpp:53
+msgctxt "main|"
+msgid "Default value"
+msgstr "Azal amezwaru"
+
+#: kreadconfig/kreadconfig.cpp:54
+msgctxt "main|"
+msgid "Type of variable"
+msgstr ""
+
+#: kreadconfig/kreadconfig.cpp:55
+msgctxt "main|"
+msgid "Dump all entries"
+msgstr ""
+
+#: kreadconfig/kreadconfig.cpp:58
+msgctxt "main|"
+msgid ""
+"Include globals; by default, the global config files are not read if a file "
+"is specified"
+msgstr ""
+
+#: kreadconfig/kreadconfig.cpp:89 kreadconfig/kwriteconfig.cpp:71
+msgctxt "main|"
+msgid "Group name cannot be empty, use \"<default>\" for the root group"
+msgstr ""
+
+#: kreadconfig/kwriteconfig.cpp:34
+msgctxt "main|"
+msgid ""
+"Type of variable. Use \"bool\" for a boolean, otherwise it is treated as a "
+"string"
+msgstr ""
+
+#: kreadconfig/kwriteconfig.cpp:36
+msgctxt "main|"
+msgid "Delete the designated key if enabled"
+msgstr "Kkes tasarut yettwafernen ma yella tettwarmed"
+
+#: kreadconfig/kwriteconfig.cpp:37
+msgctxt "notify|"
+msgid "Notify applications of the change"
+msgstr ""
+
+#: kreadconfig/kwriteconfig.cpp:38
+msgctxt "main|"
+msgid "The value to write. Mandatory, on a shell use '' for empty"
+msgstr ""
+
+#~ msgctxt "KStandardShortcut|@action"
+#~ msgid "Save Options"
+#~ msgstr "Sekles iɣewwaṛen"
+
+#~ msgctxt "KStandardShortcut|@action"
+#~ msgid "Switch Application Language"
+#~ msgstr "Beddel tutlayt n usnas"
+
+#~ msgctxt "KStandardShortcut|@action"
+#~ msgid "Preferences"
+#~ msgstr "Ismenyifen"
+
+#~ msgid "(c) 2001 Red Hat, Inc. & LuÃ­s Pedro Coelho"
+#~ msgstr "(c) 2001 Red Hat, Inc. & LuÃ­s Pedro Coelho"
+
+#~ msgctxt "NAME OF TRANSLATORS"
+#~ msgid "Your names"
+#~ msgstr "Ismawen-inek·inem"
+
+#~ msgctxt "EMAIL OF TRANSLATORS"
+#~ msgid "Your emails"
+#~ msgstr "Imaylen-inek.inem"

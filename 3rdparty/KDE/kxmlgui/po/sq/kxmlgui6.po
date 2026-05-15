@@ -1,0 +1,1604 @@
+# Albanian translation for kxmlgui5
+# Copyright (C) 2025 This file is copyright:
+# This file is distributed under the same license as the kxmlgui5 package.
+# SPDX-FileCopyrightText: 2012, 2025 Agron Selimaj <as9902613@gmail.com>
+# Besnik Bleta <besnik@programeshqip.org>, 2023,2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: kde4libs\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2026-03-14 00:40+0000\n"
+"PO-Revision-Date: 2025-08-29 22:19-0400\n"
+"Last-Translator: Agron Selimaj <as9902613@gmail.com>\n"
+"Language-Team: sq\n"
+"Language: sq\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Launchpad-Export-Date: 2010-11-24 03:19+0000\n"
+"X-Generator: Lokalize 25.04.3\n"
+
+#: kaboutapplicationdialog.cpp:60 kaboutplugindialog.cpp:65
+#, kde-format
+msgctxt "@title:window"
+msgid "About %1"
+msgstr "Rreth %1"
+
+#: kaboutapplicationdialog.cpp:88 kaboutplugindialog.cpp:84
+#, kde-format
+msgctxt "@title:tab"
+msgid "About"
+msgstr "Rreth"
+
+#: kaboutapplicationdialog.cpp:94
+#, kde-format
+msgctxt "@title:tab"
+msgid "Components"
+msgstr "Përbërës"
+
+#: kaboutapplicationdialog.cpp:104 kaboutplugindialog.cpp:92
+#, kde-format
+msgctxt "@title:tab"
+msgid "Author"
+msgid_plural "Authors"
+msgstr[0] "Autor"
+msgstr[1] "Autorë"
+
+#: kaboutapplicationdialog.cpp:111 kaboutplugindialog.cpp:99
+#, kde-format
+msgctxt "@title:tab"
+msgid "Thanks To"
+msgstr "Falënderime Për"
+
+#: kaboutapplicationdialog.cpp:118 kaboutplugindialog.cpp:105
+#, kde-format
+msgctxt "@title:tab"
+msgid "Translation"
+msgstr "Përkthim"
+
+#: kaboutkdedialog_p.cpp:31
+#, kde-format
+msgctxt "@title:window"
+msgid "About KDE"
+msgstr "Mbi KDE-në"
+
+#: kaboutkdedialog_p.cpp:34
+#, kde-format
+msgid "<html><font size=\"5\">KDE</font><br />Be Free!</html>"
+msgstr "<html><font size=\"5\">KDE</font><br />Lirohu!</html>"
+
+#: kaboutkdedialog_p.cpp:45
+#, kde-format
+msgid ""
+"<html><b>KDE</b> is a world-wide community of software engineers, artists, "
+"writers, translators and creators who are committed to <a href=\"%1\">Free "
+"Software</a> development. KDE produces the Plasma desktop environment, "
+"hundreds of applications, and the many software libraries that support them."
+"<br /><br />KDE is a cooperative enterprise: no single entity controls its "
+"direction or products. Instead, we work together to achieve the common goal "
+"of building the world's finest Free Software. Everyone is welcome to <a href="
+"\"%2\">join and contribute</a> to KDE, including you.<br /><br />Visit <a "
+"href=\"%3\">%3</a> for more information about the KDE community and the "
+"software we produce.</html>"
+msgstr ""
+"<html><b>KDE</b>-ja është një bashkësi mbarëbotërore inxhinierësh software-"
+"i, artistësh, shkruesish, përkthyesish dhe krijuesish që i janë përkushtuar "
+"zhvillimit të <a href=\"%1\">Software-it të Lirë</a>. KDE-ja prodhon "
+"mjedisin desktop Plasma, qindra aplikacione dhe mjaft biblioteka software-i "
+"që i mbulojnë ato.<br /><br />KDE-ja është një sipërmarrje kooperativiste: "
+"s’ka ndonjë njësi të vetme që kontrollon drejtimin apo produktet e saj. "
+"Përkundrazi, punojmë tok për të arritur synimin e përbashkët të krijimit të "
+"Software-it të Lirë më të mirë në botë. Gjithkush është i mirëpritur të <a "
+"href=\"%2\">bëhet pjesë dhe të kontribuojë</a> në KDE, përfshi ju.<br /><br /"
+">Për më tepër hollësi rreth bashkësisë KDE dhe software-it që prodhojmë, "
+"vizitoni <a href=\"%3\">%3</a>.</html>"
+
+#: kaboutkdedialog_p.cpp:66
+#, kde-format
+msgid ""
+"<html>Software can always be improved, and the KDE team is ready to do so. "
+"However, you - the user - must tell us when something does not work as "
+"expected or could be done better.<br /><br />KDE has a bug tracking system. "
+"Visit <a href=\"%1\">%1</a> or use the \"Report Bug...\" dialog from the "
+"\"Help\" menu to report bugs.<br /><br />If you have a suggestion for "
+"improvement then you are welcome to use the bug tracking system to register "
+"your wish. Make sure you use the severity called \"Wishlist\".</html>"
+msgstr ""
+"<html>Software-i gjithmonë mund të përmirësohet dhe ekipi i KDE-së është "
+"gati të bëjë kështu. Por, ju - përdoruesi - duhet të na tregoni kur diçka "
+"s’funksionon siç pritet, ose mund të bëhej më mirë.<br /><br />KDE-ja ka një "
+"sistem ndjekjesh të metash. Që të njoftoni të meta, vizitoni <a href=\"%1\">"
+"%1</a>, ose përdorni dialogun “Njoftoni të metë…” që prej menusë “Ndihmë”."
+"<br /><br />Nëse keni një sugjerim për përmirësim, atëherë jeni i mirëpritur "
+"të përdorni sistemin e ndjekjes së të metave që të regjistroni dëshirën "
+"tuaj. Mos harroni të përdorni etiketën “Wishlist” për rëndësinë.</html>"
+
+#: kaboutkdedialog_p.cpp:85
+#, kde-format
+msgid ""
+"<html>You do not have to be a software developer to be a member of the KDE "
+"team. You can join the language teams that translate program interfaces. You "
+"can provide graphics, themes, sounds, and improved documentation. You decide!"
+"<br /><br />Visit <a href=\"%1\">%1</a> for information on some projects in "
+"which you can participate.<br /><br />If you need more information or "
+"documentation, then a visit to <a href=\"%2\">%2</a> will provide you with "
+"what you need.</html>"
+msgstr ""
+"<html>S’duhet doemos të jeni zhvillues software-i, që të jeni një anëtar i "
+"ekipit KDE. Mund të bëheni pjesë e ekipeve gjuhësore që përkthejnë ndërfaqe "
+"programesh. Mund të kontribuoni art grafik, tema, tinguj dhe dokumentim të "
+"përmirësuar. Vendoseni vetë!<br /><br />Për informacion mbi disa projekte në "
+"të cilët mund të merrni pjesë, vizitoni <a href=\"%1\">%1</a>.<br /><br /"
+">Nëse ju duhet më tepër informacion ose dokumentim, atëherë një vizitë te <a "
+"href=\"%2\">%2</a> do t’ju japë ç’ju duhet.</html>"
+
+#: kaboutkdedialog_p.cpp:108
+#, kde-format
+msgid ""
+"<html>KDE software is and will always be available free of charge, however "
+"creating it is not free.<br /><br />To support development the KDE community "
+"has formed the KDE e.V., a non-profit organization legally founded in "
+"Germany. KDE e.V. represents the KDE community in legal and financial "
+"matters. See <a href=\"%1\">%1</a> for information on KDE e.V.<br /><br /"
+">KDE benefits from many kinds of contributions, including financial. We use "
+"the funds to reimburse members and others for expenses they incur when "
+"contributing. Further funds are used for legal support and organizing "
+"conferences and meetings. <br /> <br />We would like to encourage you to "
+"support our efforts with a financial donation, using one of the ways "
+"described at <a href=\"%2\">%2</a>.<br /><br />Thank you very much in "
+"advance for your support.</html>"
+msgstr ""
+"<html>Software-i KDE është dhe do të jetë përherë pa pagesë, por krijimi i "
+"tij s’është falas.<br /><br />Për përkrahjen e zhvillimit, bashkësia KDE ka "
+"formuar KDE e.V., një ent jofitimprurës, regjistruar ligjërisht në Gjermani. "
+"KDE e.V. përfaqëson bashkësinë KDE në çështje ligjore dhe financiare. Për "
+"hollësi mbi KDE e.V., shihni <a href=\"%1\">%1</a><br /><br />KDE-ja "
+"përfiton nga mjaft lloje kontributesh, përfshi financiare. Fondet i përdorim "
+"për të rimbursuar anëtarë dhe për shpenzime të tjera që dalin kur jepet "
+"kontribut. Fonde të tjera përdoren për asistencë ligjore dhe për organizim "
+"konferencash dhe takimesh. <br /> <br />Do të donim t’ju nxisnim të "
+"përkrahni përpjekjet tona me një dhurim financiar, duke përdorur një nga "
+"rrugët e përshkruara te <a href=\"%2\">%2</a>.<br /><br />Shumë faleminderit "
+"paraprakisht për përkrahjen tuaj.</html>"
+
+#: kaboutkdedialog_p.cpp:128
+#, kde-format
+msgctxt "@title:tab About KDE"
+msgid "&About"
+msgstr "&Rreth"
+
+#: kaboutkdedialog_p.cpp:129
+#, kde-format
+msgctxt "@title:tab"
+msgid "&Report Bugs or Wishes"
+msgstr "&Njoftoni të Meta, ose Shprehni Dëshira"
+
+#: kaboutkdedialog_p.cpp:130
+#, kde-format
+msgctxt "@title:tab"
+msgid "&Join KDE"
+msgstr "&Bëhuni Pjesë e KDE-së"
+
+#: kaboutkdedialog_p.cpp:131
+#, kde-format
+msgctxt "@title:tab"
+msgid "&Support KDE"
+msgstr "&Përkrahni KDE-në"
+
+#: kabstractaboutdialog_p.cpp:47
+#, kde-format
+msgctxt "Version version-number"
+msgid "Version %1"
+msgstr "Version %1"
+
+#: kabstractaboutdialog_p.cpp:91
+#, kde-format
+msgid "License: %1"
+msgstr "Licencë: %1"
+
+#: kabstractaboutdialog_p.cpp:118
+#, kde-format
+msgctxt "@info Platform name"
+msgid "%1 (%2)"
+msgstr "%1 (%2)"
+
+#: kabstractaboutdialog_p.cpp:123
+#, kde-format
+msgid "KDE Frameworks"
+msgstr "KDE Frameworks"
+
+#: kabstractaboutdialog_p.cpp:124
+#, kde-format
+msgctxt "@info"
+msgid "Collection of libraries created by the KDE Community to extend Qt."
+msgstr ""
+"Koleksion bibliotekash të krijuara nga Bashkësia KDE për të zgjeruar Qt-në."
+
+#: kabstractaboutdialog_p.cpp:128
+#, kde-format
+msgid "Qt"
+msgstr "Qt"
+
+#: kabstractaboutdialog_p.cpp:129
+#, kde-format
+msgctxt "@info"
+msgid "Cross-platform application development framework."
+msgstr "Kuadër ndërplatformësh zhvillimi aplikacionesh."
+
+#: kabstractaboutdialog_p.cpp:130
+#, kde-format
+msgid "Using %1 and built against %2"
+msgstr "Me përdorim të %1 dhe montuar kundrejt %2"
+
+#: kabstractaboutdialog_p.cpp:136
+#, kde-format
+msgctxt "Linux packaging format"
+msgid "Flatpak"
+msgstr "Flatpak"
+
+#: kabstractaboutdialog_p.cpp:139
+#, kde-format
+msgctxt "Linux packaging format"
+msgid "Snap"
+msgstr "Snap"
+
+#: kabstractaboutdialog_p.cpp:142
+#, kde-format
+msgctxt "Linux packaging format"
+msgid "AppImage"
+msgstr "AppImage"
+
+#: kabstractaboutdialog_p.cpp:145
+#, kde-format
+msgctxt "@info"
+msgid "Distribution method."
+msgstr "Metoda shpërndarjes."
+
+#: kabstractaboutdialog_p.cpp:148
+#, kde-format
+msgctxt "@info"
+msgid "Underlying platform."
+msgstr "Platforma nën të."
+
+#: kabstractaboutdialog_p.cpp:176
+#, kde-format
+msgctxt "@action:button"
+msgid "Visit component's homepage"
+msgstr "Vizitoni faqen hyrëse të përbërësit"
+
+#: kabstractaboutdialog_p.cpp:177
+#, kde-format
+msgctxt "@info:tooltip"
+msgid ""
+"Visit components's homepage\n"
+"%1"
+msgstr ""
+"Vizitoni faqen hyrëse të përbërësit\n"
+"%1"
+
+#: kabstractaboutdialog_p.cpp:199
+#, kde-format
+msgctxt "@action:button"
+msgid "Copy to Clipboard"
+msgstr "Kopjoje në të Papastër"
+
+#: kabstractaboutdialog_p.cpp:259
+#, kde-format
+msgctxt "@action:button"
+msgid "Visit author's homepage"
+msgstr "Vizitoni faqen hyrëse të autorit"
+
+#: kabstractaboutdialog_p.cpp:260
+#, kde-format
+msgctxt "@info:tooltip"
+msgid ""
+"Visit author's homepage\n"
+"%1"
+msgstr ""
+"Vizitoni faqen hyrëse të kontribuesit\n"
+"%1"
+
+#: kabstractaboutdialog_p.cpp:274
+#, kde-format
+msgctxt "@action:button Send an email to a contributor"
+msgid "Email contributor"
+msgstr "Dërgoju email kontribuesve"
+
+#: kabstractaboutdialog_p.cpp:275
+#, kde-format
+msgctxt "@info:tooltip"
+msgid "Email contributor: %1"
+msgstr "Dërgojuni email kontribuesve: %1"
+
+#: kabstractaboutdialog_p.cpp:314
+#, kde-format
+msgctxt "Reference to website"
+msgid ""
+"Please use %1 to report bugs.<br/>If you have questions or need help, please "
+"visit %2.<br/>"
+msgstr ""
+"Ju lutemi përdorni %1 për të raportuar defektet.<br/>Nëse keni pyetje ose "
+"keni nevojë për ndihmë, ju lutemi vizitoni %2.<br/>"
+
+#: kabstractaboutdialog_p.cpp:324
+#, kde-format
+msgctxt "Reference to email address"
+msgid "Please report bugs to %1.\n"
+msgstr "Ju lutemi, të metat njoftojini te %1.\n"
+
+#: kactionconflictdetector_p.h:37
+#, kde-format
+msgid ""
+"The key sequence '%1' is ambiguous. Use 'Configure Keyboard Shortcuts'\n"
+"from the 'Settings' menu to solve the ambiguity.\n"
+"No action will be triggered."
+msgstr ""
+"Vargu i tasteve “%1” është i dykuptimtë. Për zgjidhjen e dykuptimësisë,\n"
+"përdorni “Formësoni Shkurtore”, që prej menusë së Rregullimeve. \n"
+"S’do të shkaktohet ndonjë veprim."
+
+#: kactionconflictdetector_p.h:41
+#, kde-format
+msgctxt "@title:window"
+msgid "Ambiguous shortcut detected"
+msgstr "U pikas shkurtore e dykuptimtë"
+
+#: kbugreport.cpp:67
+#, kde-format
+msgctxt "@title:window"
+msgid "Submit Bug Report"
+msgstr "Parashtroni Njoftim të Mete"
+
+#: kbugreport.cpp:89
+#, kde-format
+msgid "Submit Bug Report"
+msgstr "Parashtroni Njoftim të Mete"
+
+#: kbugreport.cpp:101
+#, kde-format
+msgid ""
+"The application for which you wish to submit a bug report - if incorrect, "
+"please use the Report Bug menu item of the correct application"
+msgstr ""
+"Aplikacioni për të cilin dëshironi të dërgoni një njoftim të mete - në qoftë "
+"i pasaktë, ju lutemi, përdorni zërin e menusë Njoftoni të Metë që prej "
+"aplikacionit të saktë"
+
+#: kbugreport.cpp:102
+#, kde-format
+msgid "Application: "
+msgstr "Aplikacion: "
+
+#: kbugreport.cpp:112
+#, kde-format
+msgid ""
+"The version of this application - please make sure that no newer version is "
+"available before sending a bug report"
+msgstr ""
+"Versioni i këtij aplikacioni - ju lutemi, sigurohuni se nuk ka version më të "
+"ri, përpara se të dërgoni një njoftim të metash"
+
+#: kbugreport.cpp:113
+#, kde-format
+msgid "Version:"
+msgstr "Versioni:"
+
+#: kbugreport.cpp:118
+#, kde-format
+msgid "no version set (programmer error)"
+msgstr "pa version të caktuar (gabim programuesi)"
+
+#: kbugreport.cpp:122
+#, kde-format
+msgctxt "%1 is the program version, %2 is the kde framework version"
+msgid "%1 with KDE Frameworks %2"
+msgstr "%1 with KDE Frameworks %2"
+
+#: kbugreport.cpp:130
+#, kde-format
+msgid "OS:"
+msgstr "OS:"
+
+#: kbugreport.cpp:135
+#, kde-format
+msgctxt ""
+"%1 is the operating system name, e.g. 'Windows 10', %2 is the CPU "
+"architecture, e.g. 'x86_64'"
+msgid "%1 (%2)"
+msgstr "%1 (%2)"
+
+#: kbugreport.cpp:142
+#, kde-format
+msgctxt ""
+"%1 is the operating system name, e.g. 'Fedora Linux', %2 is the operating "
+"system version, e.g. '35', %3 is the CPU architecture, e.g. 'x86_64'"
+msgid "%1 %2 (%3)"
+msgstr "%1 %2 (%3)"
+
+#: kbugreport.cpp:148
+#, kde-format
+msgctxt ""
+"%1 is the operating system name, e.g. 'Fedora Linux', %2 is the CPU "
+"architecture, e.g. 'x86_64'"
+msgid "%1 (%2)"
+msgstr "%1 (%2)"
+
+#: kbugreport.cpp:162
+#, kde-format
+msgid ""
+"<qt>To submit a bug report, click on the button below. This will open a web "
+"browser window on <a href=\"https://bugs.kde.org\">https://bugs.kde.org</a> "
+"where you will find a form to fill in. The information displayed above will "
+"be transferred to that server.</qt>"
+msgstr ""
+"<qt>Që të parashtroni një njoftim të metash, klikoni mbi butonin më poshtë. "
+"Kjo do të hapë një dritare të re shfletuesi me <a href=\"https://bugs.kde.org"
+"\">https://bugs.kde.org</a>, ku do të gjeni një formular për të plotësuar. "
+"Hollësitë e shfaqura më sipër do të shpërngulen te ai shërbyes.</qt>"
+
+#: kbugreport.cpp:168
+#, kde-format
+msgid ""
+"<qt>To submit a bug report, click on the button below. This will open a web "
+"browser window on <a href=\"%1\">%2</a>.</qt>"
+msgstr ""
+"<qt>Që të parashtroni një njoftim të metash, klikoni mbi butonin më poshtë. "
+"Kjo do të hapë një dritare të re shfletuesi me <a href=\"%1\">%2</a>.</qt>"
+
+#: kbugreport.cpp:185
+#, kde-format
+msgctxt "@action:button"
+msgid "&Launch Bug Report Wizard"
+msgstr "&Nis Ndihmësin e Njoftimit të të Metave"
+
+#: kbugreport.cpp:187
+#, kde-format
+msgctxt "@action:button"
+msgid "&Submit Bug Report"
+msgstr "&Parashtroni Njoftim të Metash"
+
+#: kcheckaccelerators.cpp:121
+#, kde-format
+msgctxt "@title:window"
+msgid "Dr. Klash' Accelerator Diagnosis"
+msgstr "Diagnozë Përshpejtuesish e Dr. Klash-it"
+
+#: kcheckaccelerators.cpp:128
+#, kde-format
+msgctxt "@option:check"
+msgid "Disable automatic checking"
+msgstr "Çaktivizo kontrollin automatik"
+
+#: kcheckaccelerators.cpp:174
+#, kde-format
+msgid "<h2>Accelerators changed</h2>"
+msgstr "<h2>Përshpejtuesit ndryshuan</h2>"
+
+#: kcheckaccelerators.cpp:178 kcheckaccelerators.cpp:182
+#, kde-format
+msgid "Old Text"
+msgstr "Teksti i Vjetër"
+
+#: kcheckaccelerators.cpp:178 kcheckaccelerators.cpp:187
+#, kde-format
+msgid "New Text"
+msgstr "Tekst i Ri"
+
+#: kcheckaccelerators.cpp:182
+#, kde-format
+msgid "<h2>Accelerators removed</h2>"
+msgstr "<h2>Përshpejtuesit u hoqën</h2>"
+
+#: kcheckaccelerators.cpp:186
+#, kde-format
+msgid "<h2>Accelerators added (just for your info)</h2>"
+msgstr "<h2>U shtuan përshpejtues (thjesht për ta ditur)</h2>"
+
+#: kedittoolbar.cpp:332
+#, kde-format
+msgctxt "@title:window"
+msgid "Change Text"
+msgstr "Ndryshoni Tekstin"
+
+#: kedittoolbar.cpp:342
+#, kde-format
+msgid "Icon te&xt:"
+msgstr "Te&kst ikone:"
+
+#: kedittoolbar.cpp:347
+#, kde-format
+msgctxt "@option:check"
+msgid "&Hide text when toolbar shows text alongside icons"
+msgstr "&Fshihen tekstin, kur paneli shfaq tekst tok me ikona"
+
+#: kedittoolbar.cpp:596
+#, kde-format
+msgctxt "@title:window"
+msgid "Configure Toolbars"
+msgstr "Formësoni Panele"
+
+#: kedittoolbar.cpp:659
+#, kde-format
+msgid ""
+"Do you really want to reset all toolbars of this application to their "
+"default? The changes will be applied immediately."
+msgstr ""
+"Doni vërtet të rikthehen te parazgjedhjet krejt panelet e këtij aplikacioni? "
+"Ndryshimet do të aplikohen menjëherë."
+
+#: kedittoolbar.cpp:660
+#, kde-format
+msgid "Reset Toolbars"
+msgstr "Rikthe Panelet te Parazgjedhjet"
+
+#: kedittoolbar.cpp:661
+#, kde-format
+msgid "Reset"
+msgstr "Riktheji te parazgjedhjet"
+
+#: kedittoolbar.cpp:980
+#, kde-format
+msgid "&Toolbar:"
+msgstr "&Panel:"
+
+#. i18n("&New"), this);
+#. new_toolbar->setPixmap(BarIcon("document-new", KIconLoader::SizeSmall));
+#. new_toolbar->setEnabled(false); // disabled until implemented
+#. QPushButton *del_toolbar = new QPushButton(i18n("&Delete"), this);
+#. del_toolbar->setPixmap(BarIcon("edit-delete", KIconLoader::SizeSmall));
+#. del_toolbar->setEnabled(false); // disabled until implemented
+#. our list of inactive actions
+#: kedittoolbar.cpp:996
+#, kde-format
+msgid "A&vailable actions:"
+msgstr "&Veprime të mundshme:"
+
+#: kedittoolbar.cpp:1017 kedittoolbar.cpp:1042
+#, kde-format
+msgid "Filter"
+msgstr "Filtroji"
+
+#: kedittoolbar.cpp:1020
+#, kde-format
+msgid "Curr&ent actions:"
+msgstr "Vepr&imet e tanishme:"
+
+#: kedittoolbar.cpp:1045
+#, kde-format
+msgctxt "@action:button"
+msgid "Change &Icon…"
+msgstr "Ndryshoni &Ikonën…"
+
+#: kedittoolbar.cpp:1054
+#, kde-format
+msgctxt "@action:button"
+msgid "Change Te&xt…"
+msgstr "Ndryshoni Te&kstin…"
+
+#: kedittoolbar.cpp:1196
+#, kde-format
+msgid "--- separator ---"
+msgstr "--- ndarës ---"
+
+#: kedittoolbar.cpp:1197
+#, kde-format
+msgid "--- expanding spacer ---"
+msgstr "--- hapësirë zgjeruese ---"
+
+#: kedittoolbar.cpp:1219
+#, kde-format
+msgctxt "@item:intable Action name in toolbar editor"
+msgid "%1"
+msgstr "%1"
+
+#: kedittoolbar.cpp:1247
+#, kde-format
+msgid ""
+"This element will be replaced with all the elements of an embedded component."
+msgstr ""
+"Ky element do të zëvendësohet me krejt elementët e një përbërësi të "
+"trupëzuar."
+
+#: kedittoolbar.cpp:1249
+#, kde-format
+msgid "<Merge>"
+msgstr "<Përzieji>"
+
+#: kedittoolbar.cpp:1251
+#, kde-format
+msgid "<Merge %1>"
+msgstr "<Përzieje %1>"
+
+#: kedittoolbar.cpp:1261
+#, kde-format
+msgid ""
+"This is a dynamic list of actions. You can move it, but if you remove it you "
+"will not be able to re-add it."
+msgstr ""
+"Kjo është një listë dinamike veprimesh. Mund ta lëvizni, por po e hoqët, "
+"s’do të jeni në gjendje ta rishtoni."
+
+#: kedittoolbar.cpp:1262
+#, kde-format
+msgid "ActionList: %1"
+msgstr "Listë Veprimesh: %1"
+
+#: kedittoolbar.cpp:1363 kedittoolbar.cpp:1388
+#, kde-format
+msgctxt "@label Action tooltip in toolbar editor, below the action list"
+msgid "%1"
+msgstr "%1"
+
+#: kedittoolbar.cpp:1616
+#, kde-format
+msgid "Change Icon"
+msgstr "Ndrysho Ikonën"
+
+#. i18n: ectx: Menu (help)
+#: khelpmenu.cpp:167 ui_standards.rc:179
+#, kde-format
+msgid "&Help"
+msgstr "&Ndihmë"
+
+#: kkeysequencewidget.cpp:146
+#, kde-format
+msgctxt "@info:tooltip"
+msgid ""
+"Click on the button, then enter the shortcut like you would in the program.\n"
+"Example for Ctrl+A: hold the Ctrl key and press A."
+msgstr ""
+"Klikoni mbi butonin, mandej jepni shkurtoren siç do të bënit te programi.\n"
+"Shembull për Ctrl+A: mbani të shtypur tastin Ctrl dhe shtypni tastin A."
+
+#: kkeysequencewidget.cpp:150
+#, kde-format
+msgctxt "@action:button"
+msgid "Clear"
+msgstr ""
+
+#: kkeysequencewidget.cpp:169
+#, kde-format
+msgctxt "%1 is the number of conflicts"
+msgid "Shortcut Conflict"
+msgid_plural "Shortcut Conflicts"
+msgstr[0] "Përplasje Shkurtoresh"
+msgstr[1] "Përplasje Shkurtoresh"
+
+#: kkeysequencewidget.cpp:173
+#, kde-format
+msgid "Shortcut '%1' for action '%2'\n"
+msgstr "Shkurtore “%1”, për veprimin “%2”\n"
+
+#: kkeysequencewidget.cpp:178
+#, kde-format
+msgctxt "%1 is the number of ambiguous shortcut clashes (hidden)"
+msgid ""
+"The \"%2\" shortcut is ambiguous with the following shortcut.\n"
+"Do you want to assign an empty shortcut to this action?\n"
+"%3"
+msgid_plural ""
+"The \"%2\" shortcut is ambiguous with the following shortcuts.\n"
+"Do you want to assign an empty shortcut to these actions?\n"
+"%3"
+msgstr[0] ""
+"Shkurtorja “%2” është e dykuptimtë me shkurtoren vijuese.\n"
+"Doni t’i caktohet një shkurtore e zbrazët këtij veprimi?\n"
+"%3"
+msgstr[1] ""
+"Shkurtorja “%2” është e dykuptimtë me shkurtoret vijuese.\n"
+"Doni t’i caktohet një shkurtore e zbrazët këtyre veprimeve?\n"
+"%3"
+
+#: kkeysequencewidget.cpp:188 kkeysequencewidget.cpp:295
+#: kkeysequencewidget.cpp:357
+#, kde-format
+msgctxt "@action:button"
+msgid "Reassign"
+msgstr "Ricaktojani dikujt"
+
+#: kkeysequencewidget.cpp:193
+#, kde-format
+msgctxt "@title:window"
+msgid "Shortcut conflict"
+msgstr "Përplasje shkurtoresh"
+
+#: kkeysequencewidget.cpp:195
+#, kde-format
+msgid ""
+"<qt>The '%1' key combination is already used by the <b>%2</b> action."
+"<br>Please select a different one.</qt>"
+msgstr ""
+"<qt>Kombinimi “%1” i tasteve është tashmë në përdorim nga veprimi <b>%2</b>."
+"<br>Ju lutemi, përzgjidhni një tjetër.</qt>"
+
+#: kkeysequencewidget.cpp:275
+#, kde-format
+msgid "Shortcut '%1' in Application '%2' for action '%3'\n"
+msgstr "Shkurtore “%1” në Aplikacionin “%2”, për veprimin “%3”\n"
+
+#: kkeysequencewidget.cpp:284
+#, kde-format
+msgctxt ""
+"%1 is the number of conflicts (hidden), %2 is the key sequence of the "
+"shortcut that is problematic"
+msgid "The shortcut '%2' conflicts with the following key combination:\n"
+msgid_plural ""
+"The shortcut '%2' conflicts with the following key combinations:\n"
+msgstr[0] "Shkurtorja “%2” përplaset me kombinimin vijues të tasteve:\n"
+msgstr[1] ""
+"Shkurtorja “%2” përplaset me kombinimet vijues të tasteve:\n"
+"\n"
+
+#: kkeysequencewidget.cpp:291
+#, kde-format
+msgctxt "%1 is the number of shortcuts with which there is a conflict"
+msgid "Conflict with Registered Global Shortcut"
+msgid_plural "Conflict with Registered Global Shortcuts"
+msgstr[0] "Përplasje me Shkurtore Globale të Regjistruar"
+msgstr[1] "Përplasje me Shkurtore Globale të Regjistruara"
+
+#: kkeysequencewidget.cpp:304
+#, kde-format
+msgid "Reserved Shortcut"
+msgstr "Shkurtore e Rezervuar"
+
+#: kkeysequencewidget.cpp:306
+#, kde-format
+msgid ""
+"The F12 key is reserved on Windows, so cannot be used for a global "
+"shortcut.\n"
+"Please choose another one."
+msgstr ""
+"Tasti F12 është i rezervuar në Windows, ndaj s’mund të përdoret për një "
+"shkurtore globale.\n"
+"Ju lutemi, zgjidhni një tjetër."
+
+#: kkeysequencewidget.cpp:349
+#, kde-format
+msgctxt "@title:window"
+msgid "Conflict with Standard Application Shortcut"
+msgstr "Përplasje me Shkurtore Standarde Aplikacionesh"
+
+#: kkeysequencewidget.cpp:351
+#, kde-format
+msgid ""
+"The '%1' key combination is also used for the standard action \"%2\" that "
+"some applications use.\n"
+"Do you really want to use it as a global shortcut as well?"
+msgstr ""
+"Kombinimi “%1” i tasteve përdoret gjithashtu për veprimin standard “%2”, të "
+"cilin e përdorin disa aplikacione.\n"
+"Doni vërtet të përdoret edhe si një shkurtore globale?"
+
+#: kkeysequencewidget.cpp:395
+#, kde-format
+msgctxt "What the user inputs now will be taken as the new shortcut"
+msgid "Input"
+msgstr "Ç’jepet"
+
+#: kkeysequencewidget.cpp:397 kshortcuteditwidget.cpp:51
+#, kde-format
+msgctxt "No shortcut defined"
+msgid "None"
+msgstr "Asnjë"
+
+#: klicensedialog_p.cpp:33
+#, kde-format
+msgctxt "@title:window"
+msgid "License Agreement"
+msgstr "Marrëveshje Licence"
+
+#: kmainwindow.cpp:257
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Besnik Bleta"
+
+#: kmainwindow.cpp:258
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "besnik@programeshqip.org"
+
+#: kmenumenuhandler_p.cpp:37
+#, kde-format
+msgid "Add to Toolbar"
+msgstr "Shtoje te Paneli"
+
+#: kmenumenuhandler_p.cpp:224
+#, kde-format
+msgctxt "@action:inmenu"
+msgid "Configure Shortcut…"
+msgstr "Formësoni Shkurtore…"
+
+#: kshortcuteditwidget.cpp:55
+#, kde-format
+msgctxt "@option:radio"
+msgid "Default:"
+msgstr "Parazgjedhje:"
+
+#: kshortcuteditwidget.cpp:62
+#, kde-format
+msgctxt "@option:radio"
+msgid "Custom:"
+msgstr "Vetjake:"
+
+#: kshortcutschemeseditor.cpp:32
+#, kde-format
+msgctxt "@title:group"
+msgid "Shortcut Schemes"
+msgstr "Skema Shkurtoresh"
+
+#: kshortcutschemeseditor.cpp:37
+#, kde-format
+msgid "Current scheme:"
+msgstr "Skema e tanishme:"
+
+#: kshortcutschemeseditor.cpp:47
+#, kde-format
+msgctxt "@action:button"
+msgid "New…"
+msgstr "I ri…"
+
+#: kshortcutschemeseditor.cpp:50
+#, kde-format
+msgctxt "@action:button"
+msgid "Delete"
+msgstr "Fshije"
+
+#: kshortcutschemeseditor.cpp:53
+#, kde-format
+msgctxt "@action:button"
+msgid "More Actions"
+msgstr "Më Tepër Veprime"
+
+#: kshortcutschemeseditor.cpp:58
+#, kde-format
+msgctxt "@action:inmenu"
+msgid "Save shortcuts to scheme"
+msgstr "Ruaji shkurtoret te skemë"
+
+#: kshortcutschemeseditor.cpp:62
+#, kde-format
+msgctxt "@action:inmenu"
+msgid "Export Scheme…"
+msgstr "Eksportoni Skemë…"
+
+#: kshortcutschemeseditor.cpp:66
+#, kde-format
+msgctxt "@action:inmenu"
+msgid "Import Scheme…"
+msgstr "Importoni Skemë…"
+
+#: kshortcutschemeseditor.cpp:115
+#, kde-format
+msgctxt "@title:window"
+msgid "Name for New Scheme"
+msgstr "Emër për Skemën e Re"
+
+#: kshortcutschemeseditor.cpp:115
+#, kde-format
+msgid "Name for new scheme:"
+msgstr "Emër për skemën e re:"
+
+#: kshortcutschemeseditor.cpp:115
+#, kde-format
+msgid "New Scheme"
+msgstr "Skemë e Re"
+
+#: kshortcutschemeseditor.cpp:121
+#, kde-format
+msgid "A scheme with this name already exists."
+msgstr "Ka tashmë një skemë me këtë emër."
+
+#: kshortcutschemeseditor.cpp:151
+#, kde-format
+msgid ""
+"Do you really want to delete the scheme %1?\n"
+"Note that this will not remove any system wide shortcut schemes."
+msgstr ""
+"Doni vërtet të fshihet skema %1?\n"
+"Kini parasysh se kjo s’do të heqë ndonjë skemë shkurtoresh të vlefshme për "
+"gjithë sistemin."
+
+#: kshortcutschemeseditor.cpp:187
+#, kde-format
+msgctxt "@title:window"
+msgid "Export Shortcuts"
+msgstr "Eksporto Shkurtore"
+
+#: kshortcutschemeseditor.cpp:187 kshortcutschemeseditor.cpp:198
+#, kde-format
+msgid "Shortcuts (*.shortcuts)"
+msgstr "Shkurtore (*.shortcuts)"
+
+#: kshortcutschemeseditor.cpp:198
+#, kde-format
+msgctxt "@title:window"
+msgid "Import Shortcuts"
+msgstr "Importo Shkurtore"
+
+#: kshortcutschemeseditor.cpp:209
+#, kde-format
+msgid "Shortcut scheme successfully saved."
+msgstr "Skema e shkurtoreve u ruajt me sukses."
+
+#: kshortcutschemeseditor.cpp:212
+#, kde-format
+msgid "Error saving the shortcut scheme."
+msgstr "Gabim në ruajtjen e skemës së shkurtoreve."
+
+#: kshortcutsdialog.cpp:70
+#, kde-format
+msgid ""
+"The current shortcut scheme is modified. Save before switching to the new "
+"one?"
+msgstr ""
+"Skema e tanishme e shkurtoreve u ndryshua. Të ruhet, para se të kalohet e "
+"reja?"
+
+#: kshortcutsdialog.cpp:124
+#, kde-format
+msgid "Manage &Schemes"
+msgstr "Administroni &Skema"
+
+#: kshortcutsdialog.cpp:149
+#, kde-format
+msgctxt "@title:window"
+msgid "Configure Keyboard Shortcuts"
+msgstr "Formësoni Shkurtore Tastiere"
+
+#. i18n: ectx: property (whatsThis), widget (KTreeWidgetSearchLineWidget, searchFilter)
+#: kshortcutsdialog.ui:16
+#, kde-format
+msgid ""
+"Search interactively for shortcut names (e.g. Copy) or combination of keys "
+"(e.g. Ctrl+C) by typing them here."
+msgstr ""
+"Kërkoni në mënyrë ndërvepruese për emra shkurtoresh (p.sh., Kopjoje), ose "
+"për kombinime tastesh (p.sh., Ctrl+C), duke i shtypur ata këtu."
+
+#. i18n: ectx: property (whatsThis), widget (QTreeWidget, list)
+#: kshortcutsdialog.ui:23
+#, kde-format
+msgid ""
+"Here you can see a list of key bindings, i.e. associations between actions "
+"(e.g. 'Copy') shown in the left column and keys or combination of keys (e.g. "
+"Ctrl+V) shown in the right column."
+msgstr ""
+"Këtu mund të shihni një listë përshoqërimesh tastesh, pra, përshoqërime mes "
+"veprimesh (p.sh., 'Kopjo') shfaqur në shtyllën e majtë dhe tastesh ose "
+"kombinime tastesh (p.sh., Ctrl+V) shfaqur në shtyllën e djathtë."
+
+#. i18n: ectx: property (text), widget (QTreeWidget, list)
+#: kshortcutsdialog.ui:33
+#, kde-format
+msgid "Action"
+msgstr "Veprim"
+
+#. i18n: ectx: property (text), widget (QTreeWidget, list)
+#: kshortcutsdialog.ui:38
+#, kde-format
+msgid "Shortcut"
+msgstr "Shkurtore"
+
+#. i18n: ectx: property (text), widget (QTreeWidget, list)
+#: kshortcutsdialog.ui:43
+#, kde-format
+msgid "Alternate"
+msgstr "Alternativë"
+
+#. i18n: ectx: property (text), widget (QTreeWidget, list)
+#: kshortcutsdialog.ui:48
+#, kde-format
+msgid "Global"
+msgstr "Globale"
+
+#. i18n: ectx: property (text), widget (QTreeWidget, list)
+#: kshortcutsdialog.ui:53
+#, kde-format
+msgid "Global Alternate"
+msgstr "Alternativë Globale"
+
+#. i18n: ectx: property (text), widget (QTreeWidget, list)
+#: kshortcutsdialog.ui:58
+#, kde-format
+msgid "Mouse Button Gesture"
+msgstr "Gjeste Butonash Miu"
+
+#. i18n: ectx: property (text), widget (QTreeWidget, list)
+#: kshortcutsdialog.ui:63
+#, kde-format
+msgid "Mouse Shape Gesture"
+msgstr "Gjeste Forme Miu"
+
+#: kshortcutseditor.cpp:521
+#, kde-format
+msgctxt "header for an applications shortcut list"
+msgid "Shortcuts for %1"
+msgstr "Shkurtore për %1"
+
+#. i18n: ectx: property (text), widget (QLabel, priLabel)
+#: kshortcutseditor.cpp:541 kshortcutwidget.ui:22
+#, kde-format
+msgid "Main:"
+msgstr "Kryesor:"
+
+#. i18n: ectx: property (text), widget (QLabel, altLabel)
+#: kshortcutseditor.cpp:542 kshortcutwidget.ui:52
+#, kde-format
+msgid "Alternate:"
+msgstr "Alternativ:"
+
+#: kshortcutseditor.cpp:543
+#, kde-format
+msgid "Global:"
+msgstr "Globale:"
+
+#: kshortcutseditor.cpp:544
+#, kde-format
+msgid "Global alternate:"
+msgstr "Alternativë globale:"
+
+#: kshortcutseditor.cpp:560
+#, kde-format
+msgid "Action Name"
+msgstr "Emër Veprimi"
+
+#: kshortcutseditor.cpp:564
+#, kde-format
+msgid "Shortcuts"
+msgstr "Shkurtore"
+
+#: kshortcutseditor.cpp:568
+#, kde-format
+msgid "Description"
+msgstr "Përshkrim"
+
+#: kshortcutseditoritem.cpp:33
+#, kde-format
+msgctxt "@item:intable Action name in shortcuts configuration"
+msgid "%1"
+msgstr "%1"
+
+#: kswitchlanguagedialog_p.cpp:137
+#, kde-format
+msgctxt "@title:window"
+msgid "Configure Language"
+msgstr "Formësoni Gjuhë"
+
+#: kswitchlanguagedialog_p.cpp:141
+#, kde-format
+msgid "Please choose the language which should be used for this application:"
+msgstr "Ju lutemi, përzgjidhni gjuhën që duhet përdorur për këtë aplikacion:"
+
+#: kswitchlanguagedialog_p.cpp:168
+#, kde-format
+msgctxt "@action:button"
+msgid "Add Fallback Language"
+msgstr "Shtoni Gjuhë Rrugëzgjidhje"
+
+#: kswitchlanguagedialog_p.cpp:169
+#, kde-format
+msgctxt "@info:tooltip"
+msgid ""
+"Adds one more language which will be used if other translations do not "
+"contain a proper translation."
+msgstr ""
+"Shton edhe një gjuhë tjetër, e cila do të përdoret nëse përkthime të tjera "
+"s’përmbajnë një përkthim siç duhet."
+
+#: kswitchlanguagedialog_p.cpp:261 kswitchlanguagedialog_p.cpp:282
+#, kde-format
+msgid ""
+"The language for this application has been changed. The change will take "
+"effect the next time the application is started."
+msgstr ""
+"Gjuha për këtë aplikacion u ndryshua. Ndryshimi do të hyjë në fuqi herës "
+"tjetër që do të niset aplikacioni."
+
+#: kswitchlanguagedialog_p.cpp:262
+#, kde-format
+msgctxt "@title:window"
+msgid "Application Language Changed"
+msgstr "Gjuha e Aplikacionit Ndryshoi"
+
+#: kswitchlanguagedialog_p.cpp:283
+#, kde-format
+msgid "Application Language Changed"
+msgstr "Gjuha e Aplikacionit Ndryshoi"
+
+#: kswitchlanguagedialog_p.cpp:368
+#, kde-format
+msgid "Primary language:"
+msgstr "Gjuha parësore:"
+
+#: kswitchlanguagedialog_p.cpp:368
+#, kde-format
+msgid "Fallback language:"
+msgstr "Gjuha dytësore:"
+
+#: kswitchlanguagedialog_p.cpp:383
+#, kde-format
+msgctxt "@action:button"
+msgid "Remove"
+msgstr "Hiqe"
+
+#: kswitchlanguagedialog_p.cpp:389
+#, kde-format
+msgctxt "@info:tooltip"
+msgid ""
+"This is the main application language which will be used first, before any "
+"other languages."
+msgstr ""
+"Kjo është gjuha kryesore e aplikacionit, e cila do të përdoret e para, para "
+"cilësdo gjuhë tjetër."
+
+#: kswitchlanguagedialog_p.cpp:390
+#, kde-format
+msgctxt "@info:tooltip"
+msgid ""
+"This is the language which will be used if any previous languages do not "
+"contain a proper translation."
+msgstr ""
+"Kjo është gjuha që do të përdoret, nëse çfarëdo gjuhësh të mëparshme nuk "
+"përmbajnë një përkthim siç duhet."
+
+#: ktoolbar.cpp:309 ktoolbar.cpp:316
+#, kde-format
+msgctxt "@title:menu"
+msgid "Toolbar Settings"
+msgstr "Rregullime Paneli"
+
+#: ktoolbar.cpp:311
+#, kde-format
+msgctxt "@title:menu"
+msgid "Show Text"
+msgstr "Shfaqni Tekst"
+
+#: ktoolbar.cpp:318
+#, kde-format
+msgctxt "Toolbar orientation"
+msgid "Orientation"
+msgstr "Orientim"
+
+#: ktoolbar.cpp:320
+#, kde-format
+msgctxt "toolbar position string"
+msgid "Top"
+msgstr "Në krye"
+
+#: ktoolbar.cpp:324
+#, kde-format
+msgctxt "toolbar position string"
+msgid "Left"
+msgstr "Majtas"
+
+#: ktoolbar.cpp:327
+#, kde-format
+msgctxt "toolbar position string"
+msgid "Right"
+msgstr "Djathtas"
+
+#: ktoolbar.cpp:330
+#, kde-format
+msgctxt "toolbar position string"
+msgid "Bottom"
+msgstr "Në fund"
+
+#: ktoolbar.cpp:341
+#, kde-format
+msgid "Text Position"
+msgstr "Pozicion Teksti"
+
+#: ktoolbar.cpp:343
+#, kde-format
+msgctxt "@item:inmenu"
+msgid "Icons Only"
+msgstr "Vetëm Ikona"
+
+#: ktoolbar.cpp:346
+#, kde-format
+msgctxt "@item:inmenu"
+msgid "Text Only"
+msgstr "Vetëm Tekst"
+
+#: ktoolbar.cpp:349
+#, kde-format
+msgctxt "@item:inmenu"
+msgid "Text Alongside Icons"
+msgstr "Tekst Tok Me Ikona"
+
+#: ktoolbar.cpp:352
+#, kde-format
+msgctxt "@item:inmenu"
+msgid "Text Under Icons"
+msgstr "Tekst Nën Ikona"
+
+#: ktoolbar.cpp:363
+#, kde-format
+msgid "Icon Size"
+msgstr "Madhësi Ikonash"
+
+#: ktoolbar.cpp:365
+#, kde-format
+msgctxt "@item:inmenu Icon size"
+msgid "Default"
+msgstr "Parazgjedhje"
+
+#: ktoolbar.cpp:385 ktoolbar.cpp:409
+#, kde-format
+msgid "Small (%1x%2)"
+msgstr "Të vogla (%1x%2)"
+
+#: ktoolbar.cpp:387 ktoolbar.cpp:411
+#, kde-format
+msgid "Medium (%1x%2)"
+msgstr "Mesatare (%1x%2)"
+
+#: ktoolbar.cpp:389 ktoolbar.cpp:413
+#, kde-format
+msgid "Large (%1x%2)"
+msgstr "Të mëdha (%1x%2)"
+
+#: ktoolbar.cpp:391 ktoolbar.cpp:415
+#, kde-format
+msgid "Huge (%1x%2)"
+msgstr "Të stërmëdha (%1x%2)"
+
+#: ktoolbar.cpp:441
+#, kde-format
+msgid "Lock Toolbar Positions"
+msgstr "Kyç Pozicione Paneli"
+
+#: ktoolbarhandler.cpp:93
+#, kde-format
+msgid "Toolbars Shown"
+msgstr "Me Panele të Shfaqur"
+
+#: ktooltiphelper.cpp:211
+#, kde-format
+msgctxt ""
+"@info:tooltip %1 is the tooltip of an action, %2 is its keyboard shorcut"
+msgid "%1 (%2)"
+msgstr "%1 (%2)"
+
+#: ktooltiphelper.cpp:279
+#, kde-format
+msgctxt "@info:tooltip"
+msgid ""
+"<small><font color=\"%1\">Press <b>Shift</b> for more Info.</font></small>"
+msgstr ""
+"<small><font color=\"%1\">Për më tepër Hollësi, shtypni <b>Shift</b>.</"
+"font></small>"
+
+#: ktooltiphelper.cpp:295
+#, kde-format
+msgctxt "@info:tooltip keep short"
+msgid ""
+"%1<br/><small><font color=\"%2\">Press <b>Shift</b> for more.</font></small>"
+msgstr ""
+"%1<br/><small><font color=\"%2\">Për më tepër, shtypni <b>Shift</b>.</font></"
+"small>"
+
+#: kundoactions.cpp:30
+#, kde-format
+msgid "Redo"
+msgstr "Ribëje"
+
+#: kundoactions.cpp:49
+#, kde-format
+msgid "Undo"
+msgstr "Zhbëje"
+
+#: kxmlguibuilder.cpp:173 kxmlguibuilder.cpp:352
+#, kde-format
+msgid "No text"
+msgstr "Pa tekst"
+
+#: kxmlguiwindow.cpp:191
+#, kde-format
+msgid "Find Action…"
+msgstr "Gjeni Veprim…"
+
+#: kxmlguiwindow.cpp:561
+#, kde-format
+msgid ""
+"There are two actions (%1, %2) that want to use the same shortcut (%3). This "
+"is most probably a bug. Please report it in <a href='https://bugs.kde."
+"org'>bugs.kde.org</a>"
+msgstr ""
+"Ka dy veprime (%1, %2) që duan të përdorin të njëjtën shkurtore (%3). Ka "
+"shumë mundësi që kjo të jetë një e metë. Ju lutemi, njoftojeni te <a "
+"href='https://bugs.kde.org'>bugs.kde.org</a>"
+
+#: kxmlguiwindow.cpp:566
+#, kde-format
+msgid "Ambiguous Shortcuts"
+msgstr "Shkurtore të Dykuptimta"
+
+#. i18n: ectx: Menu (file)
+#: ui_standards.rc:5
+#, kde-format
+msgid "&File"
+msgstr "&Kartelë"
+
+#. i18n: ectx: Menu (game)
+#: ui_standards.rc:34
+#, kde-format
+msgid "&Game"
+msgstr "&Lojë"
+
+#. i18n: ectx: Menu (edit)
+#: ui_standards.rc:61
+#, kde-format
+msgid "&Edit"
+msgstr "&Përpunojeni"
+
+#. i18n: ectx: Menu (move)
+#: ui_standards.rc:84
+#, kde-format
+msgctxt "@title:menu Game move"
+msgid "&Move"
+msgstr "&Zhvendose"
+
+#. i18n: ectx: Menu (view)
+#: ui_standards.rc:102
+#, kde-format
+msgid "&View"
+msgstr "&Shiheni"
+
+#. i18n: ectx: Menu (go)
+#: ui_standards.rc:122
+#, kde-format
+msgid "&Go"
+msgstr "Shk&o"
+
+#. i18n: ectx: Menu (bookmarks)
+#: ui_standards.rc:143
+#, kde-format
+msgid "&Bookmarks"
+msgstr "&Faqerojtës"
+
+#. i18n: ectx: Menu (tools)
+#: ui_standards.rc:149
+#, kde-format
+msgid "&Tools"
+msgstr "&Mjete"
+
+#. i18n: ectx: Menu (settings)
+#: ui_standards.rc:153
+#, kde-format
+msgid "&Settings"
+msgstr "&Rregullime"
+
+#. i18n: ectx: ToolBar (mainToolBar)
+#: ui_standards.rc:195
+#, kde-format
+msgid "Main Toolbar"
+msgstr "Paneli Kryesor"
+
+#~ msgctxt "Reference to website"
+#~ msgid "Please use %1 to report bugs.\n"
+#~ msgstr "Ju lutemi, për njoftim të metash përdorni %1.\n"
+
+#~| msgctxt "@item Contributor name in about dialog."
+#~| msgid "%1"
+#~ msgctxt "@item Component name in about dialog."
+#~ msgid "%1"
+#~ msgstr "%1"
+
+#~| msgctxt "Version version-number"
+#~| msgid "Version %1"
+#~ msgid "Version %1"
+#~ msgstr "Version %1"
+
+#~ msgctxt "@info:tooltip"
+#~ msgid ""
+#~ "Visit contributor's profile on %1\n"
+#~ "%2"
+#~ msgstr ""
+#~ "Vizitoni profilin e kontribuesit, te %1\n"
+#~ "%2"
+
+#~ msgctxt "@item Contributor name in about dialog."
+#~ msgid "%1"
+#~ msgstr "%1"
+
+#~ msgid "The <em>%1</em> windowing system"
+#~ msgstr "Sistemi <em>%1</em> i dritareve"
+
+#~ msgid "Show author photos"
+#~ msgstr "Shfaq foto autorësh"
+
+#~ msgid "Enabling this will fetch images from an online location"
+#~ msgstr ""
+#~ "Aktivizimi i kësaj do të shkaktojë sjellje figurash prej një "
+#~ "vendndodhjeje internetore"
+
+#~ msgid ""
+#~ "Your email address. If incorrect, use the Configure Email button to "
+#~ "change it"
+#~ msgstr ""
+#~ "Adresa juaj email. Në qoftë e pasaktë, përdorni butonin Formësoni Email "
+#~ "që ta ndryshoni"
+
+#~ msgctxt "Email sender address"
+#~ msgid "From:"
+#~ msgstr "Nga:"
+
+#~ msgctxt "@action:button"
+#~ msgid "Configure Email..."
+#~ msgstr "Formësoni Email-in…"
+
+#~ msgid "The email address this bug report is sent to."
+#~ msgstr "Adresa email ku do të dërgohet ky njoftim të mete."
+
+#~ msgctxt "Email receiver address"
+#~ msgid "To:"
+#~ msgstr "Për:"
+
+#~ msgctxt "@action:button"
+#~ msgid "&Send"
+#~ msgstr "&Dërgoje"
+
+#~ msgctxt "@info:tooltip"
+#~ msgid "Send bug report."
+#~ msgstr "Dërgoni njoftim të mete."
+
+#~ msgctxt "@info:whatsthis"
+#~ msgid "Send this bug report to %1."
+#~ msgstr "Dërgoje këtë njoftim të mete te %1."
+
+#~ msgctxt "@title:group"
+#~ msgid "Se&verity"
+#~ msgstr "&Rëndësi"
+
+#~ msgctxt "bug severity"
+#~ msgid "Critical"
+#~ msgstr "Kritike"
+
+#~ msgctxt "bug severity"
+#~ msgid "Grave"
+#~ msgstr "E rëndë"
+
+#~ msgctxt "bug severity"
+#~ msgid "Normal"
+#~ msgstr "Normale"
+
+#~ msgctxt "bug severity"
+#~ msgid "Wishlist"
+#~ msgstr "Listë Dëshirash"
+
+#~ msgctxt "bug severity"
+#~ msgid "Translation"
+#~ msgstr "Përkthim"
+
+#~ msgid "S&ubject: "
+#~ msgstr "S&ubjekt: "
+
+#~ msgid ""
+#~ "Enter the text (in English if possible) that you wish to submit for the "
+#~ "bug report.\n"
+#~ "If you press \"Send\", a mail message will be sent to the maintainer of "
+#~ "this program.\n"
+#~ msgstr ""
+#~ "Jepni tekstin (në anglisht, nëse është e mundur) që doni të parashtroni "
+#~ "për njoftimin e të metës.\n"
+#~ "Nëse klikoni “Dërgoje”, mirëmbajtësit të këtij programi do t’i dërgohet "
+#~ "një mesazh email.\n"
+
+#~ msgctxt ""
+#~ "The second arg is 'kde-cli-tools' which is the package that contains "
+#~ "kcmshell5 (the first arg)"
+#~ msgid ""
+#~ "Could not find <application>%1</application> executable (usually it's "
+#~ "part of the \"%2\" package)."
+#~ msgstr ""
+#~ "S’u gjet dot i ekzekutueshëm <application>%1</application> (zakonisht "
+#~ "është pjesë e paketës “%2”)."
+
+#~ msgid ""
+#~ "You must specify both a subject and a description before the report can "
+#~ "be sent."
+#~ msgstr ""
+#~ "Duhet të specifikoni si një subjekt, ashtu edhe një përshkrim, para se të "
+#~ "mund të dërgohet njoftimi."
+
+#~ msgid ""
+#~ "<p>You chose the severity <b>Critical</b>. Please note that this severity "
+#~ "is intended only for bugs that:</p><ul><li>break unrelated software on "
+#~ "the system (or the whole system)</li><li>cause serious data loss</"
+#~ "li><li>introduce a security hole on the system where the affected package "
+#~ "is installed</li></ul>\n"
+#~ "<p>Does the bug you are reporting cause any of the above damage? If it "
+#~ "does not, please select a lower severity. Thank you.</p>"
+#~ msgstr ""
+#~ "<p>Si rëndësi zgjodhët <b>Kritike</b>. Ju lutemi, kini parasysh se kjo "
+#~ "rëndësi është menduar vetëm për të meta që:</p><ul><li>dëmtojnë "
+#~ "<em>software</em> jo të sistemit (ose krejt sistemin)</li><li>shkaktojnë "
+#~ "humbje serioze të dhënash</li><li>fusin një të çarë sigurie te sistemi në "
+#~ "të cilin është instaluar paketa e prekur</li></ul>\n"
+#~ "<p>A shkakton e meta që po njoftoni ndonjë nga dëmet më sipër? Nëse jo, "
+#~ "ju lutemi, përzgjidhni një rëndësi më të ulët. Faleminderit.</p>"
+
+#~ msgid ""
+#~ "<p>You chose the severity <b>Grave</b>. Please note that this severity is "
+#~ "intended only for bugs that:</p><ul><li>make the package in question "
+#~ "unusable or mostly so</li><li>cause data loss</li><li>introduce a "
+#~ "security hole allowing access to the accounts of users who use the "
+#~ "affected package</li></ul>\n"
+#~ "<p>Does the bug you are reporting cause any of the above damage? If it "
+#~ "does not, please select a lower severity. Thank you.</p>"
+#~ msgstr ""
+#~ "<p>Si rëndësi zgjodhët <b>E rëndë</b>. Ju lutemi, kini parasysh se kjo "
+#~ "rëndësi është menduar vetëm për të meta që:</p><ul><li>e bëjnë paketën në "
+#~ "fjalë të papërdorshme ose thuajse të tillë</li><li>shkaktojnë humbje të "
+#~ "dhënash</li><li>fusin një të çarë sigurie e cila lejon hyrje te llogaritë "
+#~ "e përdoruesve të cilët përdorin paketën e prekur</li></ul>\n"
+#~ "<p>A shkakton e meta që po njoftoni ndonjë nga dëmet më sipër? Nëse jo, "
+#~ "ju lutemi, përzgjidhni një rëndësi më të ulët. Faleminderit.</p>"
+
+#~ msgid ""
+#~ "Unable to send the bug report.\n"
+#~ "Please submit a bug report manually....\n"
+#~ "See https://bugs.kde.org/ for instructions."
+#~ msgstr ""
+#~ "S’arrihet të dërgohet njoftimi i të metës.\n"
+#~ "Ju lutemi, parashtroni një njoftim të metash dorazi…\n"
+#~ "Për udhëzime, shihni https://bugs.kde.org/."
+
+#~ msgid "Bug report sent, thank you for your input."
+#~ msgstr "Njoftimi i të metës u dërgua, faleminderit për sinjalizimin."
+
+#~ msgid ""
+#~ "Close and discard\n"
+#~ "edited message?"
+#~ msgstr ""
+#~ "Të mbyllet dhe të hidhet tej\n"
+#~ "mesazhi i përpunuar?"
+
+#~ msgctxt "@title:window"
+#~ msgid "Close Message"
+#~ msgstr "Mbylle Mesazhin"
+
+#~ msgctxt "@action:button"
+#~ msgid "Change &Icon..."
+#~ msgstr "Ndryshoni &Ikonë…"
+
+#~ msgctxt "@action:button"
+#~ msgid "Change Te&xt..."
+#~ msgstr "Ndryshoni &Tekst…"
+
+#~ msgid "About %1"
+#~ msgstr "Rreth %1"
+
+#~ msgid "Error connecting to server."
+#~ msgstr "Gabim gjatë lidhjes me shërbyesin."
+
+#~ msgid "Not connected."
+#~ msgstr "Jo i lidhur."
+
+#~ msgid "Connection timed out."
+#~ msgstr "Lidhjes i mbaroi koha."
+
+#~ msgid "Time out waiting for server interaction."
+#~ msgstr "Mbarim kohe, teksa pritej për ndërveprim shërbyesi."
+
+#~ msgid "Server said: \"%1\""
+#~ msgstr "Shërbyesi tha: “%1”"
+
+#~ msgid "Sends a bug report by email."
+#~ msgstr "Dërgon një njoftim të mete me email."
+
+#~ msgid "The subject line of the email."
+#~ msgstr "Rreshti i subjektit të email-it."
+
+#~ msgid "The email address to send the bug report to."
+#~ msgstr "Adresa email ku të dërgohet njoftimi i të metës."
+
+#~ msgctxt "@action:button"
+#~ msgid "New..."
+#~ msgstr "I ri…"

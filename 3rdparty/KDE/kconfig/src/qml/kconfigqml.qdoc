@@ -1,0 +1,18 @@
+/*!
+  \module KConfigQml
+  \title KConfigQml C++ Classes
+  \ingroup modules
+  \cmakepackage KF6
+  \cmakecomponent Config
+  \cmaketargetitem KF6::ConfigQml
+
+  \brief Persistent platform-independent application settings.
+
+ */
+
+/*!
+    \qmlmodule org.kde.config
+    \title KConfig QML Types
+
+    \brief Persistent platform-independent application settings.
+*/

@@ -1,0 +1,128 @@
+[Desktop Entry]
+Charset=
+Hidden=false
+Keys=kdestore,kdelook,klook,kdel
+Name=KDE Store
+Name[ar]=متجر كِيدِي
+Name[az]=KDE mağazası
+Name[be]=Крама KDE
+Name[be@latin]=Krama KDE
+Name[bg]=Магазин на KDE
+Name[bs]=KDE Prodavnica
+Name[ca]=KDE Store
+Name[ca@valencia]=KDE Store
+Name[cs]=Obchod KDE
+Name[cy]=Ystorfa KDE
+Name[da]=KDE Butik
+Name[de]=KDE Store
+Name[el]=Κατάστημα KDE
+Name[en_GB]=KDE Store
+Name[eo]=KDE-Vendejo
+Name[es]=KDE Store
+Name[et]=KDE Store
+Name[eu]=KDE biltegia
+Name[fa]=فروشگاه KDE
+Name[fi]=KDE Store
+Name[fr]=Boutique de KDE
+Name[ga]=Siopa KDE
+Name[gl]=KDE Store
+Name[gu]=KDEનુ બજાર
+Name[he]=חנות KDE
+Name[hr]=KDE trgovina
+Name[hu]=KDE Store
+Name[ia]=KDE Store (Immagazina de KDE)
+Name[id]=KDE Store
+Name[ie]=KDE Store
+Name[is]=KDE Store
+Name[it]=KDE Store
+Name[ja]=KDE Store
+Name[ka]=KDE -ის მაღაზია
+Name[ko]=KDE 스토어
+Name[lg]=Dduuka Lya KDE
+Name[lt]=KDE parduotuvė
+Name[lv]=KDE veikals
+Name[my]=ကေဒီအီး စတိုး
+Name[nb]=KDE-nettbutikken
+Name[nl]=KDE Store
+Name[nn]=KDE-nettbutikken
+Name[pa]=KDE ਸਟੋਰ
+Name[pl]=Sklep KDE
+Name[pt]=Loja KDE
+Name[pt_BR]=KDE Store
+Name[ro]=Magazin KDE
+Name[ru]=Магазин приложений KDE
+Name[sa]=KDE Store
+Name[sk]=Obchod KDE
+Name[sl]=Trgovina KDE
+Name[sq]=KDE Store
+Name[sv]=KDE-butik
+Name[th]=KDE Store
+Name[tr]=KDE Mağazası
+Name[ug]=KDE دۇكىنى
+Name[uk]=Крамниця KDE
+Name[vi]=Cửa hàng KDE
+Name[zh_CN]=KDE 商店
+Name[zh_TW]=KDE Store
+Query=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[ar]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[az]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[be]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[be@latin]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[bg]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[bs]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[ca]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[ca@valencia]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[cs]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[cy]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[da]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[de]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[el]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[en_GB]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[eo]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[es]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[et]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[eu]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[fa]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[fi]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[fr]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[ga]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[gl]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[gu]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[he]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[hr]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[hu]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[ia]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[id]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[ie]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[is]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[it]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[ja]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[ka]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[ko]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[lg]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[lt]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[lv]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[my]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[nb]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[nl]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[nn]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[pa]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[pl]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[pt]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[pt_BR]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[ro]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[ru]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[sa]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[sk]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[sl]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[sq]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[sv]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[th]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[tr]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[ug]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[uk]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[vi]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[zh_CN]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Query[zh_TW]=https://store.kde.org/content/search.php?search=Search&name=\\{@}
+Type=Service
+Icon=kde

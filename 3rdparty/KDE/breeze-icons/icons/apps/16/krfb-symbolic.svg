@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16" height="16" version="1.1" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <style id="current-color-scheme" type="text/css">.ColorScheme-Text {
+      color:#232629;
+      }
+      .ColorScheme-Background {
+      color:#eff0f1;
+      }
+      .ColorScheme-PositiveText {
+      color:#27ae60;
+      }
+      .ColorScheme-NeutralText {
+      color:#f67400;
+      }
+      .ColorScheme-NegativeText {
+      color:#da4453;
+      }</style>
+ </defs>
+ <g transform="matrix(.66667 0 0 .66667 .33332 0)">
+  <g transform="matrix(.36075 0 0 .36075 7.5317 5.7817)" fill="currentColor" stroke-width="4.158">
+   <circle class="ColorScheme-Text" cx="16" cy="5" r="2.079"/>
+   <circle class="ColorScheme-Text" cx="11.5" cy="7.5" r=".51975"/>
+   <circle class="ColorScheme-Text" cx="9.5" cy="8.5" r=".51975"/>
+   <ellipse class="ColorScheme-Text" cx="6" cy="11" rx="2" ry="2.079"/>
+   <circle class="ColorScheme-Text" cx="9.5" cy="13.5" r=".51975"/>
+   <circle class="ColorScheme-Text" cx="11.5" cy="14.5" r=".51975"/>
+   <circle class="ColorScheme-Text" cx="16" cy="17" r="2.079"/>
+  </g>
+  <g>
+   <path d="m19 4.5h-15v12l6 1e-6v1.5h-3v1.5h9v-1.5h-3v-1.5l6-1e-6 -1e-6 -12-1.5 1.5v7.5l-12 1e-6v-7.5l12 1e-7z" fill="#232629" stroke-width="0"/>
+  </g>
+ </g>
+</svg>

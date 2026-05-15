@@ -1,0 +1,31 @@
+include($KDE_DOCS/global/qt-module-defaults.qdocconf)
+
+project = KCMUtilsCore
+description = Utilities for KDE System Settings modules
+
+documentationinheaders = true
+
+headerdirs += .
+sourcedirs += .
+
+navigation.landingpage = "KCMUtils"
+
+outputformats = HTML
+
+depends += kde qtcore qtquick qtquickcontrols qtgui qtwidgets qtxml kcoreaddons kconfig
+
+qhp.projects            = KCMUtilsCore
+
+qhp.KCMUtilsCore.file                = kcmutilscore.qhp
+qhp.KCMUtilsCore.namespace           = org.kde.kcmutilscore.$QT_VERSION_TAG
+qhp.KCMUtilsCore.virtualFolder       = kcmutilscore
+qhp.KCMUtilsCore.indexTitle          = KCMUtils Core
+qhp.KCMUtilsCore.indexRoot           =
+
+qhp.KCMUtilsCore.subprojects         = classes
+qhp.KCMUtilsCore.subprojects.classes.title = C++ Classes
+qhp.KCMUtilsCore.subprojects.classes.indexTitle = KCMUtils Core C++ Classes
+qhp.KCMUtilsCore.subprojects.classes.selectors = class fake:headerfile
+qhp.KCMUtilsCore.subprojects.classes.sortPages = true
+
+tagfile = kcmutilscore.tags

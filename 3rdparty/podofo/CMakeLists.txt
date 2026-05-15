@@ -34,6 +34,8 @@ message("C++ compiler ID: ${CMAKE_CXX_COMPILER_ID}")
 message("C++ compiler version: ${CMAKE_CXX_COMPILER_VERSION}")
 message("CMake version: ${CMAKE_VERSION}")
 
+set(CMAKE_FIND_PACKAGE_PREFER_CONFIG TRUE)
+
 find_package(Doxygen)
 if (DOXYGEN_FOUND)
     # TODO: Add doxygen target

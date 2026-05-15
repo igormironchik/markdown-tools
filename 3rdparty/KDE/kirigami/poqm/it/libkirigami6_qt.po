@@ -1,0 +1,349 @@
+# SPDX-FileCopyrightText: 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026 Vincenzo Reale <smart2128vr@gmail.com>
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"PO-Revision-Date: 2026-02-16 18:31+0100\n"
+"Last-Translator: Vincenzo Reale <smart2128vr@gmail.com>\n"
+"Language-Team: Italian <kde-i18n-it@kde.org>\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 25.12.2\n"
+"X-Qt-Contexts: true\n"
+
+#: controls/AboutItem.qml:166
+#, qt-format
+msgctxt "AboutItem|"
+msgid "%1 (%2)"
+msgstr "%1 (%2)"
+
+#: controls/AboutItem.qml:186
+#, qt-format
+msgctxt "AboutItem|"
+msgid "Send an email to %1"
+msgstr "Invia un messaggio di posta elettronica a %1"
+
+#: controls/AboutItem.qml:228
+msgctxt "AboutItem|"
+msgid "Get Involved"
+msgstr "Partecipa"
+
+#: controls/AboutItem.qml:234
+msgctxt "AboutItem|"
+msgid "Donate"
+msgstr "Fai una donazione"
+
+#: controls/AboutItem.qml:251
+msgctxt "AboutItem|"
+msgid "Report a Bug"
+msgstr "Segnala un bug"
+
+#: controls/AboutItem.qml:264
+msgctxt "AboutItem|"
+msgid "Copyright"
+msgstr "Copyright"
+
+#: controls/AboutItem.qml:313
+msgctxt "AboutItem|"
+msgid "License:"
+msgstr "Licenza:"
+
+#: controls/AboutItem.qml:336
+#, qt-format
+msgctxt "AboutItem|"
+msgid "License: %1"
+msgstr "Licenza: %1"
+
+#: controls/AboutItem.qml:347
+msgctxt "AboutItem|"
+msgid "Libraries in use"
+msgstr "Librerie in uso"
+
+#: controls/AboutItem.qml:379
+msgctxt "AboutItem|"
+msgid "Authors"
+msgstr "Autori"
+
+#: controls/AboutItem.qml:389
+msgctxt "AboutItem|"
+msgid "Show author photos"
+msgstr "Mostra le foto degli autori"
+
+#: controls/AboutItem.qml:400
+msgctxt "AboutItem|"
+msgid "Credits"
+msgstr "Riconoscimenti"
+
+#: controls/AboutItem.qml:412
+msgctxt "AboutItem|"
+msgid "Translators"
+msgstr "Traduttori"
+
+#: controls/AboutPage.qml:103
+#, qt-format
+msgctxt "AboutPage|"
+msgid "About %1"
+msgstr "Informazioni su %1"
+
+#: controls/AbstractApplicationWindow.qml:177
+msgctxt "AbstractApplicationWindow|"
+msgid "Quit"
+msgstr "Esci"
+
+#: controls/ActionToolBar.qml:209
+msgctxt "ActionToolBar|"
+msgid "More Actions"
+msgstr "Altre azioni"
+
+#: controls/Chip.qml:45
+msgctxt "Chip|"
+msgid "Remove"
+msgstr "Rimuovi"
+
+#: controls/ContextDrawer.qml:65
+msgctxt "ContextDrawer|"
+msgid "Actions"
+msgstr "Azioni"
+
+#: controls/ContextualHelpButton.qml:59
+msgctxt "ContextualHelpButton|"
+msgid "Show Contextual Help"
+msgstr "Mostra la guida contestuale"
+
+#: controls/GlobalDrawer.qml:366
+msgctxt "GlobalDrawer|"
+msgid "Back"
+msgstr "Indietro"
+
+#: controls/GlobalDrawer.qml:719
+msgctxt "GlobalDrawer|"
+msgid "Close Sidebar"
+msgstr "Chiudi la barra laterale"
+
+#: controls/GlobalDrawer.qml:724
+msgctxt "GlobalDrawer|"
+msgid "Open Sidebar"
+msgstr "Apri la barra laterale"
+
+#: controls/LoadingPlaceholder.qml:58
+msgctxt "LoadingPlaceholder|"
+msgid "Loading…"
+msgstr "Caricamento…"
+
+#: controls/PasswordField.qml:43
+msgctxt "PasswordField|"
+msgid "Password"
+msgstr "Password"
+
+#: controls/PasswordField.qml:46
+msgctxt "PasswordField|"
+msgid "Hide Password"
+msgstr "Nascondi la password"
+
+#: controls/PasswordField.qml:46
+msgctxt "PasswordField|"
+msgid "Show Password"
+msgstr "Mostra la password"
+
+#: controls/private/globaltoolbar/HandleButton.qml:24
+msgctxt "HandleButton|"
+msgid "Close menu"
+msgstr "Chiudi il menu"
+
+#: controls/private/globaltoolbar/HandleButton.qml:24
+msgctxt "HandleButton|"
+msgid "Open menu"
+msgstr "Apri il menu"
+
+#: controls/private/globaltoolbar/NavigationButtons.qml:102
+msgctxt "NavigationButtons|"
+msgid "Navigate Back"
+msgstr "Naviga indietro"
+
+#: controls/private/globaltoolbar/NavigationButtons.qml:119
+msgctxt "NavigationButtons|"
+msgid "Navigate Forward"
+msgstr "Naviga in avanti"
+
+#: controls/private/PrivateActionToolButton.qml:118
+#, qt-format
+msgctxt "@info:tooltip %1 is a keyboard shorcut|"
+msgid "Trigger this action with %1"
+msgstr "Attiva questa azione con %1"
+
+#: controls/private/PrivateActionToolButton.qml:125
+#, qt-format
+msgctxt ""
+"@info:tooltip %1 is the tooltip of an action, %2 is its keyboard shorcut|"
+msgid "%1 (%2)"
+msgstr "%1 (%2)"
+
+#: controls/SearchField.qml:88
+msgctxt "SearchField|"
+msgid "Search…"
+msgstr "Cerca…"
+
+#: controls/SearchField.qml:90
+msgctxt "SearchField|"
+msgid "Search"
+msgstr "Cerca"
+
+#: controls/SearchField.qml:100
+msgctxt "SearchField|"
+msgid "Clear search"
+msgstr "Cancella la ricerca"
+
+#: controls/SelectableLabel.qml:297
+msgctxt "SelectableLabel|"
+msgid "Copy"
+msgstr "Copia"
+
+#: controls/SelectableLabel.qml:310
+msgctxt "SelectableLabel|"
+msgid "Select All"
+msgstr "Seleziona tutto"
+
+#: controls/UrlButton.qml:52
+#, qt-format
+msgctxt "UrlButton|@info:whatsthis"
+msgid "Open link %1"
+msgstr "Apri il collegamento %1"
+
+#: controls/UrlButton.qml:53
+msgctxt "UrlButton|@info:whatsthis"
+msgid "Open link"
+msgstr "Apri il collegamento"
+
+#: controls/UrlButton.qml:101
+msgctxt "UrlButton|"
+msgid "Copy Link to Clipboard"
+msgstr "Copia il collegamento negli appunti"
+
+#: dialogs/DialogHeaderTopContent.qml:103
+msgctxt "DialogHeaderTopContent|@action:button close dialog"
+msgid "Close"
+msgstr "Chiudi"
+
+#: platform/settings.cpp:219
+#, qt-format
+msgctxt "Kirigami::Platform::Settings|"
+msgid "KDE Frameworks %1"
+msgstr "KDE Frameworks %1"
+
+#: platform/settings.cpp:221
+#, qt-format
+msgctxt "Kirigami::Platform::Settings|"
+msgid "The %1 windowing system"
+msgstr "Il sistema di gestione delle finestre %1"
+
+#: platform/settings.cpp:222
+#, qt-format
+msgctxt "Kirigami::Platform::Settings|"
+msgid "Qt %2 (built against %3)"
+msgstr "Qt %2 (compilato con %3)"
+
+#: templates/InlineMessage.qml:350
+msgctxt "InlineMessage|"
+msgid "Success"
+msgstr "Successo"
+
+#: templates/InlineMessage.qml:352
+msgctxt "InlineMessage|"
+msgid "Warning"
+msgstr "Avviso"
+
+#: templates/InlineMessage.qml:354
+msgctxt "InlineMessage|"
+msgid "Error"
+msgstr "Errore"
+
+#: templates/InlineMessage.qml:356
+msgctxt "InlineMessage|"
+msgid "Note"
+msgstr "Nota"
+
+#: templates/InlineMessage.qml:443
+msgctxt "InlineMessage|"
+msgid "Close"
+msgstr "Chiudi"
+
+#: templates/OverlayDrawer.qml:147
+msgctxt "OverlayDrawer|"
+msgid "Close drawer"
+msgstr "Chiudi il cassetto"
+
+#: templates/OverlayDrawer.qml:153
+msgctxt "OverlayDrawer|"
+msgid "Open drawer"
+msgstr "Apri il cassetto"
+
+#: templates/OverlaySheet.qml:294
+msgctxt "OverlaySheet|@action:button close dialog"
+msgid "Close"
+msgstr "Chiudi"
+
+#~ msgctxt "Dialog|@action:button close dialog"
+#~ msgid "Close"
+#~ msgstr "Chiudi"
+
+#~ msgctxt "CategorizedSettings|"
+#~ msgid "Settings"
+#~ msgstr "Impostazioni"
+
+#~ msgctxt "CategorizedSettings|"
+#~ msgid "Settings — %1"
+#~ msgstr "Impostazioni — %1"
+
+#~ msgctxt "Avatar|"
+#~ msgid "%1 — %2"
+#~ msgstr "%1 — %2"
+
+#~ msgctxt "PageTab|"
+#~ msgid "Current page. Progress: %1 percent."
+#~ msgstr "Pagina attuale. Avanzamento: %1 percento."
+
+#~ msgctxt "PageTab|"
+#~ msgid "Navigate to %1. Progress: %2 percent."
+#~ msgstr "Vai a %1. Avanzamento: %2 percento."
+
+#~ msgctxt "PageTab|"
+#~ msgid "Current page."
+#~ msgstr "Pagina attuale."
+
+#~ msgctxt "PageTab|"
+#~ msgid "Navigate to %1. Demanding attention."
+#~ msgstr "Vai a %1. Richiede attenzione."
+
+#~ msgctxt "PageTab|"
+#~ msgid "Navigate to %1."
+#~ msgstr "Vai a %1."
+
+#~ msgctxt "ToolBarApplicationHeader|"
+#~ msgid "More Actions"
+#~ msgstr "Altre azioni"
+
+#~ msgctxt "AboutItem|"
+#~ msgid "Visit %1's KDE Store page"
+#~ msgstr "Visita la pagina del KDE Store di %1"
+
+#~ msgctxt "UrlButton|"
+#~ msgid "Copy link address"
+#~ msgstr "Copia indirizzo del collegamento"
+
+#~ msgctxt "AboutItem|"
+#~ msgid "(%1)"
+#~ msgstr "(%1)"
+
+#~ msgctxt "SearchField|"
+#~ msgid "Search..."
+#~ msgstr "Cerca..."
+
+#~ msgctxt "AboutPage|"
+#~ msgid "%1 <%2>"
+#~ msgstr "%1 <%2>"
+
+#~ msgctxt "ToolBarPageHeader|"
+#~ msgid "More Actions"
+#~ msgstr "Altre azioni"

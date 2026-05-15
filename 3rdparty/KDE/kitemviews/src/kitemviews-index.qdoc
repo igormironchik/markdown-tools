@@ -1,0 +1,24 @@
+/*!
+    \page kitemviews-index.html
+    \title KItemViews
+
+    Set of item views extending the Qt model-view framework.
+
+    KItemViews includes a set of views, which can be used with item models. It
+    includes views for categorizing lists and to add search filters to flat and
+    hierarchical lists.
+
+    \section1 Using the Module
+
+    \include {module-use.qdocinc} {using the c++ api}
+
+    \section2 Building with CMake
+
+    \include {module-use.qdocinc} {building with cmake} {KF6} {ItemViews} {KF6::ItemViews}
+
+    \section1 API Reference
+
+    \list
+        \li \l{KItemViews C++ Classes}
+    \endlist
+*/

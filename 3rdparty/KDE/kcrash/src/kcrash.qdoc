@@ -1,0 +1,8 @@
+/*!
+    \module KCrash
+    \title KCrash C++ Classes
+    \cmakepackage KF6
+    \cmakecomponent Crash
+
+    \brief Crash handling.
+*/

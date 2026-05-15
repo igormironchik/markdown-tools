@@ -1,0 +1,290 @@
+# translation of kjobwidgets6_qt.pot to Esperanto
+# Copyright (C) 1998,2002, 2003, 2004, 2005, 2007, 2008 Free Software Foundation, Inc.
+# Wolfram Diestel <wolfram@steloj.de>, 1998.
+# Heiko Evermann <heiko@evermann.de>, 2002, 2003.
+# Matthias Peick <matthias@peick.de>, 2004, 2005.
+# Oliver Kellogg <olivermkellogg@gmail.com>,2007.
+# Cindy McKee <cfmckee@gmail.com>, 2007, 2008.
+# Axel Rousseau <axel@esperanto-jeunes.org>, 2009.
+# Michael Moroni <michael.moroni@mailoo.org>, 2012.
+#
+# Minuskloj: ĉ ĝ ĵ ĥ ŝ ŭ   Majuskloj: Ĉ Ĝ Ĵ Ĥ Ŝ Ŭ
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: kjobwidgets\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2014-03-23 01:50+0000\n"
+"PO-Revision-Date: 2024-01-04 19:44+0100\n"
+"Last-Translator: Oliver Kellogg <olivermkellogg@gmail.com>\n"
+"Language-Team: Esperanto <kde-i18n-eo@kde.org>\n"
+"Language: eo\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.4\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Qt-Contexts: true\n"
+
+#: kinhibitionjobtracker.cpp:80
+msgctxt "KInhibitionJobTracker|"
+msgid "Job in progress"
+msgstr ""
+
+#: kjobtrackerformatters.cpp:27
+#, qt-format
+msgctxt "KJobTrackerFormatters|@item:intext"
+msgid "%n day(s)"
+msgid_plural "%n day(s)"
+msgstr[0] "%n tago"
+msgstr[1] "%n tagoj"
+
+#: kjobtrackerformatters.cpp:34
+#, qt-format
+msgctxt "KJobTrackerFormatters|@item:intext"
+msgid "%n hour(s)"
+msgid_plural "%n hour(s)"
+msgstr[0] "%n horo"
+msgstr[1] "%n horoj"
+
+#: kjobtrackerformatters.cpp:41
+#, qt-format
+msgctxt "KJobTrackerFormatters|@item:intext"
+msgid "%n minute(s)"
+msgid_plural "%n minute(s)"
+msgstr[0] "%n minuto"
+msgstr[1] "%n minutoj"
+
+#: kjobtrackerformatters.cpp:48
+#, qt-format
+msgctxt "KJobTrackerFormatters|@item:intext"
+msgid "%n second(s)"
+msgid_plural "%n second(s)"
+msgstr[0] "%n sekundo"
+msgstr[1] "%n sekundoj"
+
+#: kjobtrackerformatters.cpp:69
+#, qt-format
+msgctxt "KJobTrackerFormatters|@item:intext days and hours."
+msgid "%1 and %2"
+msgstr "%1 kaj %2"
+
+#: kjobtrackerformatters.cpp:73
+#, qt-format
+msgctxt "KJobTrackerFormatters|@item:intext hours and minutes."
+msgid "%1 and %2"
+msgstr "%1 kaj %2"
+
+#: kjobtrackerformatters.cpp:78
+#, qt-format
+msgctxt "KJobTrackerFormatters|@item:intext minutes and seconds."
+msgid "%1 and %2"
+msgstr "%1 kaj %2"
+
+#. Job name, e.g. Copying has failed
+#: knotificationjobuidelegate.cpp:29
+#, qt-format
+msgctxt "KNotificationJobUiDelegate|"
+msgid "%1 (Failed)"
+msgstr "%1 (Malsukcesa)"
+
+#: knotificationjobuidelegate.cpp:63
+#, qt-format
+msgctxt "KNotificationJobUiDelegate|"
+msgid "An unknown error occurred while executing a job: %1"
+msgstr ""
+
+#: kstatusbarjobtracker.cpp:161
+msgctxt "KStatusBarJobTracker|"
+msgid "Stop"
+msgstr "Haltigi"
+
+#: kstatusbarjobtracker.cpp:240
+msgctxt "KStatusBarJobTracker|"
+msgid " Stalled "
+msgstr " Paraliziĝita "
+
+#: kstatusbarjobtracker.cpp:242
+#, qt-format
+msgctxt "KStatusBarJobTracker|"
+msgid " %1/s "
+msgstr " %1/s "
+
+#: kwidgetjobtracker.cpp:282 kwidgetjobtracker.cpp:290
+#, qt-format
+msgctxt "KWidgetJobTracker|%1 is the label, we add a ':' to it"
+msgid "%1:"
+msgstr "%1:"
+
+#: kwidgetjobtracker.cpp:354
+#, qt-format
+msgctxt "KWidgetJobTracker|"
+msgid "%1 of %2 complete"
+msgid_plural "%1 of %2 complete"
+msgstr[0] "%1 el %2 estas kompleta"
+msgstr[1] "%1 el %2 estas kompletaj"
+
+#: kwidgetjobtracker.cpp:373 kwidgetjobtracker.cpp:391
+#, qt-format
+msgctxt "KWidgetJobTracker|"
+msgid "%1 / %n folder(s)"
+msgid_plural "%1 / %n folder(s)"
+msgstr[0] "%1 / %n dosiero"
+msgstr[1] "%1 / %n dosieroj"
+
+#: kwidgetjobtracker.cpp:377 kwidgetjobtracker.cpp:396
+#, qt-format
+msgctxt "KWidgetJobTracker|"
+msgid "%1 / %n file(s)"
+msgid_plural "%1 / %n file(s)"
+msgstr[0] "%1 / %n dosiero"
+msgstr[1] "%1 / %n dosieroj"
+
+#: kwidgetjobtracker.cpp:408
+#, qt-format
+msgctxt "KWidgetJobTracker|"
+msgid "%1 / %n item(s)"
+msgid_plural "%1 / %n item(s)"
+msgstr[0] "%1 / %n ero(j)"
+msgstr[1] "%1 / %n eroj"
+
+#: kwidgetjobtracker.cpp:424
+#, qt-format
+msgctxt "KWidgetJobTracker|"
+msgid "%1% of %2"
+msgstr "%1% de %2"
+
+#: kwidgetjobtracker.cpp:428
+#, qt-format
+msgctxt "KWidgetJobTracker|"
+msgid "%1% of %n file(s)"
+msgid_plural "%1% of %n file(s)"
+msgstr[0] "%1% de %n dosiero"
+msgstr[1] "%1% de %n dosieroj"
+
+#: kwidgetjobtracker.cpp:430
+#, qt-format
+msgctxt "KWidgetJobTracker|"
+msgid "%1%"
+msgstr "%1%"
+
+#: kwidgetjobtracker.cpp:444
+msgctxt "KWidgetJobTracker|"
+msgid "Stalled"
+msgstr "Paraliziĝita"
+
+#: kwidgetjobtracker.cpp:451
+#, qt-format
+msgctxt "KWidgetJobTracker|"
+msgid "%1/s (%2 remaining)"
+msgid_plural "%1/s (%2 remaining)"
+msgstr[0] "%1/s ( %2 restanta )"
+msgstr[1] "%1/s ( %2 restantaj )"
+
+#: kwidgetjobtracker.cpp:454
+#, qt-format
+msgctxt "KWidgetJobTracker|speed in bytes per second"
+msgid "%1/s"
+msgstr "%1/s "
+
+#: kwidgetjobtracker.cpp:462
+msgctxt "KWidgetJobTracker|"
+msgid "&Close"
+msgstr "F&ermi"
+
+#: kwidgetjobtracker.cpp:464
+msgctxt "KWidgetJobTracker|"
+msgid "Close the current window or document"
+msgstr "Fermi la nunan fenestron aŭ dokumenton"
+
+#: kwidgetjobtracker.cpp:478
+#, qt-format
+msgctxt "KWidgetJobTracker|"
+msgid "%1/s (done)"
+msgstr "%1/s (preta)"
+
+#: kwidgetjobtracker.cpp:484
+msgctxt "KWidgetJobTracker|"
+msgid "&Resume"
+msgstr "Daŭ&rigi"
+
+#: kwidgetjobtracker.cpp:490 kwidgetjobtracker.cpp:563
+msgctxt "KWidgetJobTracker|"
+msgid "&Pause"
+msgstr "&Paŭzi"
+
+#: kwidgetjobtracker.cpp:514
+msgctxt "KWidgetJobTracker|The source url of a job"
+msgid "Source:"
+msgstr "Fonto:"
+
+#: kwidgetjobtracker.cpp:522
+msgctxt "KWidgetJobTracker|The destination url of a job"
+msgid "Destination:"
+msgstr "Celo:"
+
+#: kwidgetjobtracker.cpp:534
+msgctxt ""
+"KWidgetJobTracker|Progress bar percent value, %p is the value, % is the "
+"percent sign. Make sure to include %p in your translation."
+msgid "%p%"
+msgstr "%p%"
+
+#: kwidgetjobtracker.cpp:547 kwidgetjobtracker.cpp:747
+msgctxt "KWidgetJobTracker|"
+msgid "Click this to expand the dialog, to show details"
+msgstr "Alkalku tion por vastigi la dialogon, malkaŝante detalojn"
+
+#: kwidgetjobtracker.cpp:583
+msgctxt "KWidgetJobTracker|"
+msgid "&Keep this window open after transfer is complete"
+msgstr "Daŭri &preni ĉi tiun fenestron malferman post transmeto"
+
+#: kwidgetjobtracker.cpp:592
+msgctxt "KWidgetJobTracker|"
+msgid "Open &File"
+msgstr "Malfermi &Dosieron"
+
+#: kwidgetjobtracker.cpp:598
+msgctxt "KWidgetJobTracker|"
+msgid "Open &Destination"
+msgstr "Malfermi &Celon"
+
+#: kwidgetjobtracker.cpp:606
+msgctxt "KWidgetJobTracker|"
+msgid "&Cancel"
+msgstr "&Rezigni"
+
+#: kwidgetjobtracker.cpp:614
+msgctxt "KWidgetJobTracker|"
+msgid "Progress Dialog"
+msgstr "Progresdialogo"
+
+#: kwidgetjobtracker.cpp:627
+#, qt-format
+msgctxt "KWidgetJobTracker|"
+msgid "%n item(s)"
+msgid_plural "%n item(s)"
+msgstr[0] "%n ero(j)"
+msgstr[1] "%n ero(j)"
+
+#: kwidgetjobtracker.cpp:633
+#, qt-format
+msgctxt "KWidgetJobTracker|"
+msgid "%n folder(s)"
+msgid_plural "%n folder(s)"
+msgstr[0] "%n dosierujo(j)"
+msgstr[1] "%n dosierujo(j)"
+
+#: kwidgetjobtracker.cpp:637
+#, qt-format
+msgctxt "KWidgetJobTracker|"
+msgid "%n file(s)"
+msgid_plural "%n file(s)"
+msgstr[0] "%n dosiero"
+msgstr[1] "%n dosieroj"
+
+#: kwidgetjobtracker.cpp:740
+msgctxt "KWidgetJobTracker|"
+msgid "Click this to collapse the dialog, to hide details"
+msgstr "Alkalku tion por malvastigi la dialogon, kaŝante detalojn"

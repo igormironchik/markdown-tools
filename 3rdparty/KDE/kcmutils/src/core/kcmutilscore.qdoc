@@ -1,0 +1,9 @@
+/*!
+   \module KCMUtilsCore
+   \title KCMUtils Core C++ Classes
+   \ingroup modules
+   \cmakepackage KF6
+   \cmakecomponent KCMUtils
+   \cmaketargetitem KCMUtilsCore
+ */
+

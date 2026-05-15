@@ -1,0 +1,9 @@
+<rules>
+    <dependencies>
+        <lib name="Kirigami">
+            <depends>
+                <bundled file="plugins/kf6/kirigami" />
+            </depends>
+        </lib>
+    </dependencies>
+</rules>

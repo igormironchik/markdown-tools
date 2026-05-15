@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+SPDX-FileCopyrightText: 2024 Volker Krause <vkrause@kde.org>
+SPDX-License-Identifier: BSD-2-Clause
+-->
+<rules>
+    <dependencies>
+        <lib name="KF6GuiAddons">
+            <depends>
+                <jar bundling="1" file="jar/KF6GuiAddons.aar"/>
+            </depends>
+        </lib>
+    </dependencies>
+</rules>

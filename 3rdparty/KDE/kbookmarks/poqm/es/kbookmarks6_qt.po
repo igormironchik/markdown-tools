@@ -1,0 +1,237 @@
+# Spanish translations for kbookmarks6_qt.po package.
+# Copyright (C) 2000-2025 This file is copyright:
+# This file is distributed under the same license as the kbookmarks package.
+#
+# SPDX-FileCopyrightText: 2000-2003 Pablo de Vicente <vicente@oan.es>
+# SPDX-FileCopyrightText: 2004 Pablo de Vicente <pvicentea@wanadoo.es>
+# SPDX-FileCopyrightText: 2004, 2005 Pablo de Vicente <p.devicente@wanadoo.es>
+# SPDX-FileCopyrightText: 2005, 2006, 2007 Pablo de Vicente <pablo.devicente@gmail.com>
+# SPDX-FileCopyrightText: 2007 Enrique Matias Sanchez (aka Quique) <cronopios@gmail.com>
+# SPDX-FileCopyrightText: 2007, 2008, 2009, 2010, 2011, 2012, 2014, 2017, 2020, 2023, 2024, 2025 Eloy Cuadra <ecuadra@eloihr.net>
+# SPDX-FileCopyrightText: 2007 Jaime Robles <jaime@kde.org>
+# SPDX-FileCopyrightText: 2013 Javier Viñal <fjvinal@gmail.com>
+msgid ""
+msgstr ""
+"Project-Id-Version: kbookmarks6_qt\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2014-03-28 02:03+0000\n"
+"PO-Revision-Date: 2025-05-11 22:17+0100\n"
+"Last-Translator: Eloy Cuadra <ecuadra@eloihr.net>\n"
+"Language-Team: Spanish <kde-l10n-es@kde.org>\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"First-Translator: Boris Wesslowski <Boris@Wesslowski.com>\n"
+"X-Generator: Lokalize 24.02.2\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Qt-Contexts: true\n"
+
+#: kbookmark.cpp:316
+msgctxt "KBookmark|Bookmark separator"
+msgid "--- separator ---"
+msgstr "--- separador ---"
+
+#: kbookmarkmanager.cpp:267
+#, qt-format
+msgctxt "KBookmarkManager|"
+msgid ""
+"Unable to save bookmarks in %1. Reported error was: %2. This error message "
+"will only be shown once. The cause of the error needs to be fixed as quickly "
+"as possible, which is most likely a full hard drive."
+msgstr ""
+"Ha sido imposible guardar marcadores en %1. El error informado ha sido: %2. "
+"Este mensaje de error solo se mostrará una vez. La causa del error, "
+"posiblemente un disco duro lleno, necesita ser corregida cuanto antes."
+
+#: keditbookmarks.cpp:59
+msgctxt "QObject|"
+msgid "keditbookmarks could not be started"
+msgstr "No se puede iniciar «keditbookmarks»"
+
+#: keditbookmarks.cpp:66
+msgctxt "QObject|"
+msgid "The keditbookmarks executable was not found"
+msgstr "No se ha encontrado el ejecutable de «keditbookmarks»"
+
+#: widgets/kbookmarkcontextmenu.cpp:53
+msgctxt "KBookmarkContextMenu|@action:inmenu"
+msgid "Add Bookmark Here"
+msgstr "Añadir marcador aquí"
+
+#: widgets/kbookmarkcontextmenu.cpp:59
+msgctxt "KBookmarkContextMenu|@action:inmenu"
+msgid "Open Folder in Bookmark Editor"
+msgstr "Abrir carpeta en el editor de marcadores"
+
+#: widgets/kbookmarkcontextmenu.cpp:62
+msgctxt "KBookmarkContextMenu|@action:inmenu"
+msgid "Delete Folder"
+msgstr "Borrar carpeta"
+
+#: widgets/kbookmarkcontextmenu.cpp:67
+msgctxt "KBookmarkContextMenu|@action:inmenu"
+msgid "Properties"
+msgstr "Propiedades"
+
+#: widgets/kbookmarkcontextmenu.cpp:72
+msgctxt "KBookmarkContextMenu|@action:inmenu"
+msgid "Copy Link Address"
+msgstr "Copiar dirección del enlace"
+
+#: widgets/kbookmarkcontextmenu.cpp:75
+msgctxt "KBookmarkContextMenu|@action:inmenu"
+msgid "Delete Bookmark"
+msgstr "Borrar marcador"
+
+#: widgets/kbookmarkcontextmenu.cpp:81
+msgctxt "KBookmarkContextMenu|@action:inmenu"
+msgid "Open Folder in Tabs"
+msgstr "Abrir carpeta en pestañas"
+
+#: widgets/kbookmarkcontextmenu.cpp:112
+msgctxt "KBookmarkContextMenu|@info"
+msgid "Cannot add bookmark with empty URL."
+msgstr "No se puede añadir un marcador con un URL vacío."
+
+#: widgets/kbookmarkcontextmenu.cpp:141
+msgctxt "KBookmarkContextMenu|@title:window"
+msgid "Bookmark Folder Deletion"
+msgstr "Borrado de carpeta de marcadores"
+
+#: widgets/kbookmarkcontextmenu.cpp:141
+msgctxt "KBookmarkContextMenu|@title:window"
+msgid "Bookmark Deletion"
+msgstr "Borrado de marcador"
+
+#: widgets/kbookmarkcontextmenu.cpp:142
+#, qt-format
+msgctxt "KBookmarkContextMenu|"
+msgid ""
+"Are you sure you wish to remove the bookmark folder\n"
+"\"%1\"?"
+msgstr ""
+"¿Está seguro de que desea eliminar la carpeta de marcadores\n"
+"«%1»?"
+
+#: widgets/kbookmarkcontextmenu.cpp:143
+#, qt-format
+msgctxt "KBookmarkContextMenu|"
+msgid ""
+"Are you sure you wish to remove the bookmark\n"
+"\"%1\"?"
+msgstr ""
+"¿Está seguro de que desea eliminar el marcador\n"
+"«%1»?"
+
+#: widgets/kbookmarkdialog.cpp:56
+msgctxt "KBookmarkDialog|@label:textbox"
+msgid "Name:"
+msgstr "Nombre:"
+
+#: widgets/kbookmarkdialog.cpp:61
+msgctxt "KBookmarkDialog|@label:textbox"
+msgid "Location:"
+msgstr "Ubicación:"
+
+#: widgets/kbookmarkdialog.cpp:66
+msgctxt "KBookmarkDialog|@label:textbox"
+msgid "Comment:"
+msgstr "Comentario:"
+
+#: widgets/kbookmarkdialog.cpp:177
+msgctxt "KBookmarkDialog|@action:button"
+msgid "Update"
+msgstr "Actualizar"
+
+#: widgets/kbookmarkdialog.cpp:178
+msgctxt "KBookmarkDialog|@title:window"
+msgid "Bookmark Properties"
+msgstr "Propiedades del marcador"
+
+#: widgets/kbookmarkdialog.cpp:208 widgets/kbookmarkdialog.cpp:246
+#: widgets/kbookmarkdialog.cpp:280
+msgctxt "KBookmarkDialog|@action:button"
+msgid "&New Folder…"
+msgstr "&Nueva carpeta…"
+
+#: widgets/kbookmarkdialog.cpp:212 widgets/kbookmarkdialog.cpp:250
+msgctxt "KBookmarkDialog|@action:button"
+msgid "Add"
+msgstr "Añadir"
+
+#: widgets/kbookmarkdialog.cpp:213
+msgctxt "KBookmarkDialog|@title:window"
+msgid "Add Bookmark"
+msgstr "Añadir marcador"
+
+#: widgets/kbookmarkdialog.cpp:251
+msgctxt "KBookmarkDialog|@title:window"
+msgid "Add Bookmarks"
+msgstr "Añadir marcadores"
+
+#: widgets/kbookmarkdialog.cpp:284
+msgctxt "KBookmarkDialog|@title:window"
+msgid "Select Folder"
+msgstr "Seleccionar carpeta"
+
+#: widgets/kbookmarkdialog.cpp:312
+msgctxt "KBookmarkDialog|@title:window"
+msgid "New Folder"
+msgstr "Nueva carpeta"
+
+#: widgets/kbookmarkdialog.cpp:342
+msgctxt "KBookmarkDialog|@title:window"
+msgid "Create New Bookmark Folder"
+msgstr "Crear nueva carpeta de marcadores"
+
+#: widgets/kbookmarkdialog.cpp:343
+#, qt-format
+msgctxt "KBookmarkDialog|@title:window"
+msgid "Create New Bookmark Folder in %1"
+msgstr "Crear nueva carpeta de marcadores en %1"
+
+#: widgets/kbookmarkdialog.cpp:345
+msgctxt "KBookmarkDialog|@label:textbox"
+msgid "New folder:"
+msgstr "Nueva carpeta:"
+
+#: widgets/kbookmarkdialog.cpp:366
+msgctxt "KBookmarkDialog|name of the container of all browser bookmarks"
+msgid "Bookmarks"
+msgstr "Marcadores"
+
+#: widgets/kbookmarkmenu.cpp:291
+msgctxt "KBookmarkMenu|@action:inmenu"
+msgid "Open Folder in Tabs"
+msgstr "Abrir carpeta en pestañas"
+
+#: widgets/kbookmarkmenu.cpp:295
+msgctxt "KBookmarkMenu|@info:tooltip"
+msgid "Open all bookmarks in this folder as a new tab"
+msgstr "Abrir todos los marcadores de esta carpeta como nuevas pestañas"
+
+#: widgets/kbookmarkmenu.cpp:311
+msgctxt "KBookmarkMenu|@action:inmenu"
+msgid "Bookmark Tabs as Folder…"
+msgstr "Marcar las pestañas como carpeta…"
+
+#: widgets/kbookmarkmenu.cpp:319
+msgctxt "KBookmarkMenu|@info:tooltip"
+msgid "Add a folder of bookmarks for all open tabs"
+msgstr "Añadir una carpeta de marcadores para todas las pestañas abiertas"
+
+#: widgets/kbookmarkmenu.cpp:358
+msgctxt "KBookmarkMenu|@info:tooltip"
+msgid "Edit your bookmark collection in a separate window"
+msgstr "Editar la colección de marcadores en una ventana separada"
+
+#: widgets/kbookmarkmenu.cpp:380
+msgctxt "KBookmarkMenu|@action:inmenu"
+msgid "New Bookmark Folder…"
+msgstr "Nueva carpeta de marcadores…"
+
+#: widgets/kbookmarkmenu.cpp:382
+msgctxt "KBookmarkMenu|@info:tooltip"
+msgid "Create a new bookmark folder in this menu"
+msgstr "Crear una nueva carpeta de marcadores en este menú"

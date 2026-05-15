@@ -1,0 +1,9 @@
+/*!
+    \module KService
+    \title KService C++ Classes
+    \ingroup modules
+    \cmakepackage KF6
+    \cmakecomponent Service
+
+    \brief KService allows to query information about installed applications and their associated file types.
+*/

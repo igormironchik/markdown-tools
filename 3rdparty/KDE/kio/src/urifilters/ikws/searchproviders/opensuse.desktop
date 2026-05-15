@@ -1,0 +1,125 @@
+[Desktop Entry]
+Name=openSUSE Software
+Name[ar]=برامج أوبن سوزي
+Name[az]=openSUSE proqram təminatı
+Name[be]=Праграмнае забеспячэнне openSUSE
+Name[be@latin]=Prahramnaje zabiespiačennie openSUSE
+Name[bg]=openSUSE Software
+Name[bs]=openSUSE Softver
+Name[ca]=openSUSE Software
+Name[ca@valencia]=openSUSE Software
+Name[cs]=Software openSUSE
+Name[cy]=meddalwedd openSUSE
+Name[da]=openSUSE Software
+Name[de]=openSUSE-Software
+Name[el]=Λογισμικό openSUSE
+Name[en_GB]=openSUSE Software
+Name[eo]=OpenSUSE Programaro
+Name[es]=Software de openSUSE
+Name[et]=openSUSE tarkvara
+Name[eu]=openSUSE softwarea
+Name[fa]=نرم‌افزار اوپن‌سوزه
+Name[fi]=openSUSE Software
+Name[fr]=Logiciels de OpenSUSE
+Name[ga]=bogearraí openSUSE
+Name[gl]=Programas de openSUSE
+Name[gu]=openSUSE Software
+Name[he]=תוכנה ב־openSUSE
+Name[hr]=openSUSE softver
+Name[hu]=openSUSE Software
+Name[ia]=Software de OpenSUSE
+Name[id]=Perangkat Lunak openSUSE
+Name[ie]=openSUSE Software
+Name[is]=openSUSE hugbúnaður
+Name[it]=Software openSUSE
+Name[ja]=openSUSE ソフトウェア
+Name[ka]=openSUSE -ის პროგრამები
+Name[ko]=openSUSE 소프트웨어
+Name[lg]=puloguramu eza openSUSE
+Name[lt]=openSUSE programinė įranga
+Name[lv]=„openSUSE“ programmatūra
+Name[my]=အိုးပန်းဆူဆီ ဆော့ဖ်ဝဲလ်
+Name[nb]=openSUSE-programvare
+Name[nl]=openSUSE-software
+Name[nn]=openSUSE-programvare
+Name[pa]=openSUSE ਸਾਫਟਵੇਅਰ
+Name[pl]=Oprogramowanie openSUSE
+Name[pt]=Software do openSUSE
+Name[pt_BR]=Software do openSUSE
+Name[ro]=openSUSE Software
+Name[ru]=Программы openSUSE
+Name[sa]=openSUSE Software
+Name[sk]=Softvér openSUSE 
+Name[sl]=Programska oprema OpenSUSE
+Name[sq]=Software OpenSUSE
+Name[sv]=openSUSE-programvara
+Name[th]=openSUSE Software
+Name[tr]=openSUSE Yazılım
+Name[ug]=openSUSE يۇمشاق دېتال
+Name[uk]=Програмне забезпечення openSUSE
+Name[vi]=Phần mềm openSUSE
+Name[zh_CN]=openSUSE 软件
+Name[zh_TW]=openSUSE 軟體
+Type=Service
+Keys=opensuse
+Query=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[ar]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[az]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[be]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[be@latin]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[bg]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[bs]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[ca]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[ca@valencia]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[cs]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[cy]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[da]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[de]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[el]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[en_GB]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[eo]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[es]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[et]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[eu]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[fa]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[fi]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[fr]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[ga]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[gl]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[gu]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[he]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[hr]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[hu]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[ia]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[id]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[ie]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[is]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[it]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[ja]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[ka]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[ko]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[lg]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[lt]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[lv]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[my]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[nb]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[nl]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[nn]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[pa]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[pl]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[pt]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[pt_BR]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[ro]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[ru]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[sa]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[sk]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[sl]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[sq]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[sv]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[th]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[tr]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[ug]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[uk]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[vi]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[zh_CN]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}
+Query[zh_TW]=https://software.opensuse.org/search?utf8=%E2%9C%93&q=\\{@}

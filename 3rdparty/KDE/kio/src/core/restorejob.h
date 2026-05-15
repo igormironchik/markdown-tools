@@ -1,0 +1,76 @@
+/*
+    This file is part of the KDE libraries
+    SPDX-FileCopyrightText: 2014 David Faure <faure@kde.org>
+
+    SPDX-License-Identifier: LGPL-2.0-or-later
+*/
+
+#ifndef KIO_RESTOREJOB_H
+#define KIO_RESTOREJOB_H
+
+#include <QObject>
+#include <QUrl>
+
+#include "job_base.h"
+#include "kiocore_export.h"
+
+namespace KIO
+{
+class RestoreJobPrivate;
+/*!
+ * \class KIO::RestoreJob
+ * \inheaderfile KIO/RestoreJob
+ * \inmodule KIOCore
+ *
+ * \brief RestoreJob is used to restore files from the trash.
+ *
+ * Don't create the job directly, but use KIO::restoreFromTrash().
+ *
+ * \sa KIO::trash()
+ * \sa KIO::copy()
+ * \since 5.2
+ */
+class KIOCORE_EXPORT RestoreJob : public Job
+{
+    Q_OBJECT
+
+public:
+    ~RestoreJob() override;
+
+    /*!
+     * Returns the list of trash URLs to restore.
+     */
+    QList<QUrl> trashUrls() const;
+
+Q_SIGNALS:
+
+protected Q_SLOTS:
+    void slotResult(KJob *job) override;
+
+protected:
+    KIOCORE_NO_EXPORT explicit RestoreJob(RestoreJobPrivate &dd);
+
+private:
+    Q_DECLARE_PRIVATE(RestoreJob)
+};
+
+/*!
+ * \relates KIO::RestoreJob
+ *
+ * Restore a set of trashed files or directories.
+ *
+ * \since 5.2
+ *
+ * \a urls the trash:/ URLs to restore. The trash implementation
+ * will know where the files came from and will restore them to their
+ * original location.
+ *
+ * \a flags restoreFromTrash() supports HideProgressInfo.
+ *
+ * Returns the job handling the operation
+ */
+KIOCORE_EXPORT RestoreJob *restoreFromTrash(const QList<QUrl> &urls, JobFlags flags = DefaultFlags);
+
+}
+
+#endif

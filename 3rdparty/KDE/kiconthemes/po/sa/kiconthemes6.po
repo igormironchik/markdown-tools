@@ -1,0 +1,130 @@
+# Sanskrit translations for kiconthemes package.
+# Copyright (C) 2024 This file is copyright:
+# This file is distributed under the same license as the kiconthemes package.
+# Kali <EMAIL@ADDRESS>, 2024.
+#
+# SPDX-FileCopyrightText: 2024 kali <skkalwar999@gmail.com>
+msgid ""
+msgstr ""
+"Project-Id-Version: kiconthemes\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2025-11-17 11:49+0000\n"
+"PO-Revision-Date: 2024-12-14 01:48+0530\n"
+"Last-Translator: kali <skkalwar999@gmail.com>\n"
+"Language-Team: Sanskrit <kde-i18n-doc@kde.org>\n"
+"Language: sa\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n>2);\n"
+"X-Generator: Lokalize 24.08.2\n"
+
+#: widgets/kiconbutton.cpp:83
+#, kde-format
+msgctxt "@info:tooltip"
+msgid "Select Icon…"
+msgstr "चिह्नं चिनोतु…"
+
+#: widgets/kicondialog.cpp:343
+#, kde-format
+msgctxt "@item:inmenu All icons"
+msgid "All"
+msgstr "सर्वे"
+
+#: widgets/kicondialog.cpp:348
+#, kde-format
+msgctxt "@item:inmenu Show only symbolic icons"
+msgid "Only Symbolic"
+msgstr "केवलं प्रतीकात्मकम्"
+
+#: widgets/kicondialog.cpp:352
+#, kde-format
+msgctxt "@item:inmenu Hide symbolic icons"
+msgid "No Symbolic"
+msgstr "न प्रतीकात्मकम्"
+
+#: widgets/kicondialog.cpp:373
+msgid "All"
+msgstr "सर्वे"
+
+#: widgets/kicondialog.cpp:374
+msgid "Actions"
+msgstr "कर्माणि"
+
+#: widgets/kicondialog.cpp:375
+msgid "Applications"
+msgstr "अनुप्रयोगाः"
+
+#: widgets/kicondialog.cpp:376
+msgid "Categories"
+msgstr "श्रेणियाँ"
+
+#: widgets/kicondialog.cpp:377
+msgid "Devices"
+msgstr "यन्त्राणि"
+
+#: widgets/kicondialog.cpp:378
+msgid "Emblems"
+msgstr "प्रतीकाः"
+
+#: widgets/kicondialog.cpp:379
+msgid "Emotes"
+msgstr "इमोट्स"
+
+#: widgets/kicondialog.cpp:380
+msgid "Mimetypes"
+msgstr "अनुकरणप्रकाराः"
+
+#: widgets/kicondialog.cpp:381
+msgid "Places"
+msgstr "स्थानाः"
+
+#: widgets/kicondialog.cpp:382
+msgid "Status"
+msgstr "स्थितिः"
+
+#: widgets/kicondialog.cpp:406
+#, kde-format
+msgctxt "Other icons"
+msgid "Other"
+msgstr "इतर"
+
+#: widgets/kicondialog.cpp:453
+#, kde-format
+msgid "Browse…"
+msgstr "ब्राउज़ करें…"
+
+#: widgets/kicondialog.cpp:655
+#, kde-format
+msgid "No icons matching the search"
+msgstr "अन्वेषणस्य सङ्गतिं न चिह्नानि"
+
+#: widgets/kicondialog.cpp:657
+#, kde-format
+msgid "No icons in this category"
+msgstr "अस्मिन् वर्गे चिह्नानि नास्ति"
+
+#. i18n: ectx: property (windowTitle), widget (QWidget, IconDialog)
+#: widgets/kicondialog.cpp:744 widgets/kicondialog.ui:14
+#, kde-format
+msgid "Select Icon"
+msgstr "चिह्नं चिनोतु"
+
+#: widgets/kicondialog.cpp:744
+#, kde-format
+msgid ""
+"*.ico *.png *.xpm *.svg *.svgz|Icon Files (*.ico *.png *.xpm *.svg *.svgz)"
+msgstr ""
+"*.ico *.png *.xpm *.svg *.svgz|चिह्न सञ्चिकाः (*.ico *.png *.xpm *.svg *.svgz)"
+
+#. i18n: ectx: property (accessibleName), widget (QComboBox, contextCombo)
+#: widgets/kicondialog.ui:24
+#, kde-format
+msgid "Icon category"
+msgstr "चिह्न श्रेणी"
+
+#. i18n: ectx: property (placeholderText), widget (QLineEdit, searchLine)
+#: widgets/kicondialog.ui:44
+#, kde-format
+msgid "Search Icons..."
+msgstr "अन्वेषण चिह्न..."

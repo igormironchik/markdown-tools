@@ -1,0 +1,5 @@
+/*!
+   \qmlmodule org.kde.kcmutils
+   \title KCMUtils QML Types
+   \brief QML types for creating config modules
+ */

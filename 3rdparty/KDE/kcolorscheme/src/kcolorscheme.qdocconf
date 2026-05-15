@@ -1,0 +1,41 @@
+# SPDX-License-Identifier: CC-BY-SA-4.0
+# SPDX-FileCopyrightText: None
+
+include($KDE_DOCS/global/qt-module-defaults.qdocconf)
+
+project = KColorScheme
+description = Classes to interact with KColorScheme.
+
+documentationinheaders = true
+
+headerdirs += .
+sourcedirs += .
+
+navigation.landingpage = "KColorScheme"
+
+outputformats = HTML
+
+depends += \
+    kde \
+    qtcore \
+    qtgui \
+    qtwidgets \
+    kconfigcore \
+    kguiaddons \
+    kconfigwidgets
+
+qhp.projects            = KColorScheme
+
+qhp.KColorScheme.file                = kcolorscheme.qhp
+qhp.KColorScheme.namespace           = org.kde.kcolorscheme.$QT_VERSION_TAG
+qhp.KColorScheme.virtualFolder       = kcolorscheme
+qhp.KColorScheme.indexTitle          = KColorScheme
+qhp.KColorScheme.indexRoot           =
+
+qhp.KColorScheme.subprojects         = classes
+qhp.KColorScheme.subprojects.classes.title = C++ Classes
+qhp.KColorScheme.subprojects.classes.indexTitle = KColorScheme C++ Classes
+qhp.KColorScheme.subprojects.classes.selectors = class fake:headerfile
+qhp.KColorScheme.subprojects.classes.sortPages = true
+
+tagfile = kcolorscheme.tags

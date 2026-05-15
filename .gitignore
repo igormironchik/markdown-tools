@@ -1,6 +1,4 @@
 
-/**/debug/
-/**/release/
 /**/target/
 /lib/
 /build/
@@ -15,3 +13,5 @@
 /3rdparty/resvg-*/
 /installer/**/*.xml
 !/3rdparty/resvg*.tar.xz
+Qt
+aqtinstall.log

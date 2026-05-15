@@ -12,6 +12,10 @@
 #include <QString>
 #include <QTranslator>
 
+#ifdef Q_OS_WIN
+#include <QStyleFactory>
+#endif
+
 // shared include.
 #include "utils.h"
 
@@ -27,6 +31,10 @@ int main(int argc,
     app.setOrganizationName(QStringLiteral("Igor Mironchik"));
     app.setOrganizationDomain(QStringLiteral("github.com/igormironchik"));
     app.setApplicationName(QStringLiteral("Markdown Converter"));
+
+#ifdef Q_OS_WIN
+    app.setStyle(QStyleFactory::create("Breeze"));
+#endif
 
     QCommandLineParser parser;
     parser.setApplicationDescription(QStringLiteral("Markdown converter to PDF."));

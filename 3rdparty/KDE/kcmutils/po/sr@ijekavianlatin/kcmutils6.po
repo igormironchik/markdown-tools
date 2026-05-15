@@ -1,0 +1,449 @@
+# Translation of kcmutils5.po into Serbian.
+# Marko Rosic <roske@kde.org.yu>, 2003.
+# Toplica Tanaskovic <toptan@kde.org.yu>, 2003, 2004, 2005.
+# Chusslove Illich <caslav.ilic@gmx.net>, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017.
+# Dalibor Djuric <daliborddjuric@gmail.com>, 2009, 2010, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: kcmutils5\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2025-12-01 00:39+0000\n"
+"PO-Revision-Date: 2017-09-28 17:57+0200\n"
+"Last-Translator: Chusslove Illich <caslav.ilic@gmx.net>\n"
+"Language-Team: Serbian <kde-i18n-sr@kde.org>\n"
+"Language: sr@ijekavianlatin\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n"
+"%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Accelerator-Marker: &\n"
+"X-Text-Markup: kde4\n"
+"X-Environment: kde\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Toplica Tanasković,Časlav Ilić"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "toptan@kde.org.yu,caslav.ilic@gmx.net"
+
+#: kcmoduleloader.cpp:47
+#, fuzzy, kde-format
+#| msgid ""
+#| "<qt><p>Possible reasons:<ul><li>An error occurred during your last KDE "
+#| "upgrade leaving an orphaned control module</li><li>You have old third "
+#| "party modules lying around.</li></ul></p><p>Check these points carefully "
+#| "and try to remove the module mentioned in the error message. If this "
+#| "fails, consider contacting your distributor or packager.</p></qt>"
+msgid ""
+"<qt><p>Possible reasons:<ul><li>An error occurred during your last system "
+"upgrade, leaving an orphaned control module behind</li><li>You have old "
+"third party modules lying around.</li></ul></p><p>Check these points "
+"carefully and try to remove the module mentioned in the error message. If "
+"this fails, consider contacting your distributor or packager.</p></qt>"
+msgstr ""
+"<qt><p>Mogući razlozi:</p><ul><li>Greška prilikom posljednje nadogradnje "
+"KDE‑a koja je ostavila nepotreban kontrolni modul.</li><li>Upliću se neki "
+"stari kontrolni moduli sa strane.</li></ul><p>Provjerite ove tačke pažljivo "
+"i pokušajte da uklonite modul pomenut u tekstu greške. Ako ovo ne uspije, "
+"mogli biste da se obratite svom distributeru ili paketaru.</p></qt>"
+
+#: kcmoduleloader.cpp:77
+#, kde-format
+msgid "The module %1 is disabled."
+msgstr "Modul %1 je isključen."
+
+#: kcmoduleloader.cpp:77
+#, kde-format
+msgid "The module has been disabled by the system administrator."
+msgstr ""
+
+#: kcmoduleloader.cpp:83
+#, kde-format
+msgid "Error loading QML file."
+msgstr ""
+
+#: kcmultidialog.cpp:45
+#, kde-format
+msgid ""
+"The settings of the current module have changed.\n"
+"Do you want to apply the changes or discard them?"
+msgstr ""
+"Postavke tekućeg modula su izmijenjene.\n"
+"Želite li da primijenite izmjene ili da ih odbacite?"
+
+#: kcmultidialog.cpp:47
+#, kde-format
+msgid "Apply Settings"
+msgstr "Primeni postavke"
+
+#: kcmultidialog.cpp:217 kpluginwidget.cpp:340
+#, kde-format
+msgid "Configure"
+msgstr "Podesi"
+
+#: kcmultidialog.cpp:392
+#, kde-format
+msgctxt "@other accessible name for view that can be scrolled"
+msgid "Scrollable area"
+msgstr ""
+
+#: kpluginwidget.cpp:67
+#, kde-format
+msgid "Search…"
+msgstr ""
+
+#: kpluginwidget.cpp:335
+#, fuzzy, kde-format
+#| msgctxt "Used only for plugins"
+#| msgid "About %1"
+msgid "About"
+msgstr "O %1|/|O $[dat %1]"
+
+#: qml/components/ContextualHelpButton.qml:54
+#, kde-format
+msgctxt "@action:button"
+msgid "Show Contextual Help"
+msgstr ""
+
+#: qml/components/PluginDelegate.qml:111
+#, fuzzy, kde-format
+#| msgctxt "Used only for plugins"
+#| msgid "About %1"
+msgctxt "@info:tooltip"
+msgid "About"
+msgstr "O %1|/|O $[dat %1]"
+
+#: qml/components/PluginDelegate.qml:126
+#, fuzzy, kde-format
+#| msgid "Configure"
+msgctxt "@info:tooltip"
+msgid "Configure…"
+msgstr "Podesi"
+
+#: qml/components/PluginSelector.qml:94
+#, kde-format
+msgid "No matches"
+msgstr ""
+
+#: qml/components/PluginSelector.qml:94
+#, kde-format
+msgid "No plugins found"
+msgstr ""
+
+#: qml/components/private/AboutPlugin.qml:41
+#, kde-format
+msgctxt "Plugin name and plugin version"
+msgid "%1 %2"
+msgstr ""
+
+#: qml/components/private/AboutPlugin.qml:63
+#, kde-format
+msgid "Copyright"
+msgstr ""
+
+#: qml/components/private/AboutPlugin.qml:80
+#, kde-format
+msgid "License:"
+msgstr ""
+
+#: qml/components/private/AboutPlugin.qml:99
+#, kde-format
+msgid "Authors"
+msgstr ""
+
+#: qml/components/private/AboutPlugin.qml:116
+#, kde-format
+msgid "Credits"
+msgstr ""
+
+#: qml/components/private/AboutPlugin.qml:133
+#, kde-format
+msgid "Translators"
+msgstr ""
+
+#: qml/components/private/AboutPlugin.qml:160
+#, kde-format
+msgid "Send an email to %1"
+msgstr ""
+
+#: qml/components/private/GridViewInternal.qml:66
+#, kde-format
+msgid "No items found"
+msgstr ""
+
+#: quick/kquickconfigmodule.cpp:136
+#, kde-format
+msgid "Could not find resource '%1'"
+msgstr ""
+
+#, fuzzy
+#~| msgid "Configure"
+#~ msgctxt "@info:tooltip"
+#~ msgid "Configure..."
+#~ msgstr "Podesi"
+
+#~ msgctxt "Argument is application name"
+#~ msgid "This configuration section is already opened in %1"
+#~ msgstr ""
+#~ "Ovaj odjeljak za podešavanje već je otvoren u %1|/|Ovaj odjeljak za "
+#~ "podešavanje već je otvoren u $[dat %1]"
+
+#~ msgid "The module %1 could not be found."
+#~ msgstr "Ne mogu da nađem modul „%1“."
+
+#~ msgid ""
+#~ "<qt><p>The diagnosis is:<br />The desktop file %1 could not be found.</"
+#~ "p></qt>"
+#~ msgstr ""
+#~ "<qt><p>Dijagnoza:<br />Ne mogu da nađem .desktop fajl <tt>%1</tt>.</p></"
+#~ "qt>"
+
+#~ msgid ""
+#~ "<qt><p>Either the hardware/software the module configures is not "
+#~ "available or the module has been disabled by the administrator.</p></qt>"
+#~ msgstr ""
+#~ "<qt><p>Ili hardver/softver koji modul podešava nije dostupan, ili je "
+#~ "administrator isključio modul.</p></qt>"
+
+#~ msgid "The module %1 is not a valid configuration module."
+#~ msgstr "Modul %1 nije ispravan modul za podešavanje."
+
+#~ msgid ""
+#~ "<qt>The diagnosis is:<br />The desktop file %1 does not specify a library."
+#~ "</qt>"
+#~ msgstr ""
+#~ "<qt>Dijagnoza:<br />.Desktop fajl <tt>%1</tt> ne navodi biblioteku.</qt>"
+
+#~ msgid "Distance between desktop icons"
+#~ msgstr "Rastojanje između ikonica na površi"
+
+#~ msgid "The distance between icons specified in pixels."
+#~ msgstr "Rastojanje između ikonica zadaje se u pikselima."
+
+#~ msgid "Widget style to use"
+#~ msgstr "Željeni stil vidžeta"
+
+#~ msgid ""
+#~ "The name of the widget style, for example \"keramik\" or \"plastik\". "
+#~ "Without quotes."
+#~ msgstr ""
+#~ "Ime stila vidžeta, na primjer „keramik“ ili „plastik“ (bez navodnika)."
+
+#~ msgid "Use the PC speaker"
+#~ msgstr "Koristi sistemski zvučnik"
+
+#~ msgid ""
+#~ "Whether the ordinary PC speaker should be used instead of KDE's own "
+#~ "notifications system."
+#~ msgstr ""
+#~ "Da li koristiti obični sistemski zvučnik umjesto KDE‑ovog sistema za "
+#~ "obavještenja."
+
+#~ msgid "What terminal application to use"
+#~ msgstr "Koji terminalski program koristiti"
+
+#~ msgid ""
+#~ "Whenever a terminal application is launched this terminal emulator "
+#~ "program will be used.\n"
+#~ msgstr ""
+#~ "Kad god se pokrene terminalski program, upotrijebiće se ovaj emulator "
+#~ "terminala.\n"
+
+#~ msgid "Fixed width font"
+#~ msgstr "Font fiksne širine"
+
+#~ msgid ""
+#~ "This font is used when a fixed font is needed. A fixed font has a "
+#~ "constant width.\n"
+#~ msgstr ""
+#~ "Ovaj font se koristi kada je potrebno da su svi znakovi jednake širine.\n"
+
+#~ msgid "System wide font"
+#~ msgstr "Font širom sistema"
+
+#~ msgid "Font for menus"
+#~ msgstr "Font za menije"
+
+#~ msgid "What font to use for menus in applications."
+#~ msgstr "Koji se font koristi za menije u programima."
+
+#~ msgid "Color for links"
+#~ msgstr "Boja za veze"
+
+#~ msgid "What color links should be that have not yet been clicked on"
+#~ msgstr "Koje će boje biti veze na koje još uvijek nije kliknuto."
+
+#~ msgid "Color for visited links"
+#~ msgstr "Boja za posećene veze"
+
+#~ msgid "Font for the taskbar"
+#~ msgstr "Font trake zadataka"
+
+#~ msgid ""
+#~ "What font to use for the panel at the bottom of the screen, where the "
+#~ "currently running applications are."
+#~ msgstr ""
+#~ "Koji font koristiti na panelu pri dnu ekrana, gdje su smješteni programi "
+#~ "koji se trenutno izvršavaju."
+
+#~ msgid "Fonts for toolbars"
+#~ msgstr "Fontovi za trake alatki"
+
+#~ msgid "Shortcut for taking screenshot"
+#~ msgstr "Prečica za snimak ekrana"
+
+#~ msgid "Shortcut for toggling Clipboard Actions on and off"
+#~ msgstr "Prečica za paljenje i gašenje radnji klipborda"
+
+#~ msgid "Shortcut for shutting down the computer without confirmation"
+#~ msgstr "Prečica za gašenje računara bez potvrde"
+
+#~ msgid "Show directories first"
+#~ msgstr "Prikaži fascikle prve"
+
+#~ msgid ""
+#~ "Whether directories should be placed at the top when displaying files"
+#~ msgstr "Treba li smjestiti fascikle pri vrhu u prikazu fajlova"
+
+#~ msgid "The URLs recently visited"
+#~ msgstr "Nedavno posjećeni URL‑ovi"
+
+#~ msgid "Used for auto-completion in file dialogs, for example"
+#~ msgstr "Koristi se, na primjer, za samodopunu u dijalogu fajlova."
+
+#~ msgid "Show file preview in file dialog"
+#~ msgstr "Prikaži pregled fajla u dijalogu fajlova"
+
+#~ msgid "Show hidden files"
+#~ msgstr "Prikaži skrivene fajlove"
+
+#~ msgid ""
+#~ "Whether files starting with a dot (convention for hidden files) should be "
+#~ "shown"
+#~ msgstr ""
+#~ "Treba li prikazivati fajlove koji počinju tačkom (koji se po dogovoru "
+#~ "smatraju skrivenim)"
+
+#~ msgid "Show speedbar"
+#~ msgstr "Prikaži brzotraku"
+
+#~ msgid ""
+#~ "Whether the shortcut icons to the left in the file dialog should be shown"
+#~ msgstr ""
+#~ "Treba li prikazivati ikonice prečica na lijevoj strani dijaloga fajlova"
+
+#~ msgid "What country"
+#~ msgstr "Koja država"
+
+#~ msgid ""
+#~ "Used to determine how to display numbers, currency and time/date, for "
+#~ "example"
+#~ msgstr "Koristi se za prikaz brojeva, valute, i vremena i datuma"
+
+#~ msgid "What language to use to display text"
+#~ msgstr "Na kom jeziku se prikazuje tekst"
+
+#~ msgid "Character used for indicating positive numbers"
+#~ msgstr "Znak kojim se obilježavaju pozitivni brojevi"
+
+#~ msgid "Most countries have no character for this"
+#~ msgstr "Većina država ne koristi nikakav znak za ovo"
+
+#~ msgid "Path to the autostart directory"
+#~ msgstr "Putanja fascikli za samopokretanje"
+
+#~ msgid ""
+#~ "Path to the directory containing executables to be run on session login"
+#~ msgstr ""
+#~ "Putanja do fascikle sa izvršnim fajlovima koje treba pokrenuti pri "
+#~ "prijavi sesije"
+
+#~ msgid "Enable SOCKS support"
+#~ msgstr "Uključi podršku za SOCKS"
+
+#~ msgid "Whether SOCKS version 4 and 5 should be enabled in KDE's sub systems"
+#~ msgstr "Da li uključiti podršku za SOCKS verzije 4 i 5 u KDE podsistemima"
+
+#~ msgid "Path to custom SOCKS library"
+#~ msgstr "Putanja do posebne biblioteke SOCKS‑a"
+
+#~ msgid "Highlight toolbar buttons on mouse over"
+#~ msgstr "Istakni dugmad alatki pri prelasku mišem"
+
+#~ msgid "Show text on toolbar icons "
+#~ msgstr "Prikaži tekst ispod ikonica alatki"
+
+#~ msgid "Whether text should be shown in addition to icons on toolbar icons"
+#~ msgstr "Treba li prikazati i tekst kao dodatak ikonicama na trakama alatki"
+
+#~ msgid "Password echo type"
+#~ msgstr "Tip odjeka lozinke"
+
+#~ msgid "The size of the dialog"
+#~ msgstr "Veličina dijaloga"
+
+#~ msgid ""
+#~ "Automatic changes have been performed due to plugin dependencies. Click "
+#~ "here for further information"
+#~ msgstr ""
+#~ "Izvršene su automatske izmjene usljed zavisnosti priključaka. Kliknite "
+#~ "ovdje za još informacija."
+
+#~ msgid ""
+#~ "Automatic changes have been performed in order to satisfy plugin "
+#~ "dependencies:\n"
+#~ msgstr ""
+#~ "Izvršene su automatske izmjene da bi se zadovoljile zavisnosti "
+#~ "priključaka:\n"
+
+#~ msgid ""
+#~ "\n"
+#~ "    %1 plugin has been automatically checked because of the dependency of "
+#~ "%2 plugin"
+#~ msgstr ""
+#~ "\n"
+#~ "    Priključak „%1“ je automatski uključen zbog zavisnosti priključka "
+#~ "„%2“ od njega"
+
+#~ msgid ""
+#~ "\n"
+#~ "    %1 plugin has been automatically unchecked because of its dependency "
+#~ "on %2 plugin"
+#~ msgstr ""
+#~ "\n"
+#~ "    Priključak „%1“ je automatski isključen zbog svoje zavisnosti od "
+#~ "priključka „%2“"
+
+#~ msgid "Dependency Check"
+#~ msgstr "Provjera zavisnosti"
+
+#~ msgid "%1 plugin automatically added due to plugin dependencies"
+#~ msgid_plural "%1 plugins automatically added due to plugin dependencies"
+#~ msgstr[0] "%1 priključak automatski dodat usljed zavisnosti priključaka"
+#~ msgstr[1] "%1 priključka automatski dodata usljed zavisnosti priključaka"
+#~ msgstr[2] "%1 priključaka automatski dodato usljed zavisnosti priključaka"
+#~ msgstr[3] "Jedan priključak automatski dodat usljed zavisnosti priključaka"
+
+#~ msgid ", "
+#~ msgstr ", "
+
+#~ msgid "%1 plugin automatically removed due to plugin dependencies"
+#~ msgid_plural "%1 plugins automatically removed due to plugin dependencies"
+#~ msgstr[0] "%1 priključak automatski uklonjen usljed zavisnosti priključaka"
+#~ msgstr[1] "%1 priključka automatski uklonjena usljed zavisnosti priključaka"
+#~ msgstr[2] ""
+#~ "%1 priključaka automatski uklonjeno usljed zavisnosti priključaka"
+#~ msgstr[3] ""
+#~ "Jedan priključak automatski uklonjen usljed zavisnosti priključaka"
+
+# >> @title:window
+#~ msgid "Select Components"
+#~ msgstr "Izbor komponente"
+
+#~ msgid "Enable component"
+#~ msgstr "Ugradiva komponenta"

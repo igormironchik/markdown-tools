@@ -1,0 +1,10 @@
+/*!
+    \module KI18nLocaleData
+    \title KI18nLocaleData C++ Classes
+    \ingroup modules
+    \cmakepackage KF6
+    \cmakecomponent I18n
+    \cmaketargetitem KF6::I18nLocaleData
+
+    \brief Access to data about countries and timezones.
+*/

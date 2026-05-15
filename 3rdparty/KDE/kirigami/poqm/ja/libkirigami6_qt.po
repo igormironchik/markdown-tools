@@ -1,0 +1,338 @@
+# Ryuichi Yamada <ryuichi_ya220@outlook.jp>, 2023.
+msgid ""
+msgstr ""
+"Project-Id-Version: libkirigamiplugin_qt\n"
+"PO-Revision-Date: 2023-02-22 22:44+0900\n"
+"Last-Translator: Ryuichi Yamada <ryuichi_ya220@outlook.jp>\n"
+"Language-Team: Japanese <kde-jp@kde.org>\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Accelerator-Marker: &\n"
+"X-Text-Markup: qtrich\n"
+"X-Qt-Contexts: true\n"
+"X-Generator: Lokalize 22.12.2\n"
+
+#: controls/AboutItem.qml:166
+#, qt-format
+msgctxt "AboutItem|"
+msgid "%1 (%2)"
+msgstr "%1 (%2)"
+
+#: controls/AboutItem.qml:186
+#, qt-format
+msgctxt "AboutItem|"
+msgid "Send an email to %1"
+msgstr "%1 にメールを送る"
+
+#: controls/AboutItem.qml:228
+msgctxt "AboutItem|"
+msgid "Get Involved"
+msgstr "参加する"
+
+#: controls/AboutItem.qml:234
+msgctxt "AboutItem|"
+msgid "Donate"
+msgstr "寄付する"
+
+#: controls/AboutItem.qml:251
+msgctxt "AboutItem|"
+msgid "Report a Bug"
+msgstr "バグを報告"
+
+#: controls/AboutItem.qml:264
+msgctxt "AboutItem|"
+msgid "Copyright"
+msgstr "著作権について"
+
+#: controls/AboutItem.qml:313
+msgctxt "AboutItem|"
+msgid "License:"
+msgstr "ライセンス:"
+
+#: controls/AboutItem.qml:336
+#, qt-format
+msgctxt "AboutItem|"
+msgid "License: %1"
+msgstr "ライセンス: %1"
+
+#: controls/AboutItem.qml:347
+msgctxt "AboutItem|"
+msgid "Libraries in use"
+msgstr "使用されているライブラリ"
+
+#: controls/AboutItem.qml:379
+msgctxt "AboutItem|"
+msgid "Authors"
+msgstr "作者"
+
+#: controls/AboutItem.qml:389
+msgctxt "AboutItem|"
+msgid "Show author photos"
+msgstr "作者の写真を表示"
+
+#: controls/AboutItem.qml:400
+msgctxt "AboutItem|"
+msgid "Credits"
+msgstr "クレジット"
+
+#: controls/AboutItem.qml:412
+msgctxt "AboutItem|"
+msgid "Translators"
+msgstr "翻訳者"
+
+#: controls/AboutPage.qml:103
+#, qt-format
+msgctxt "AboutPage|"
+msgid "About %1"
+msgstr "%1 について"
+
+#: controls/AbstractApplicationWindow.qml:177
+msgctxt "AbstractApplicationWindow|"
+msgid "Quit"
+msgstr "終了"
+
+#: controls/ActionToolBar.qml:209
+msgctxt "ActionToolBar|"
+msgid "More Actions"
+msgstr "その他のアクション"
+
+#: controls/Chip.qml:45
+#, fuzzy
+#| msgctxt "Chip|"
+#| msgid "Remove Tag"
+msgctxt "Chip|"
+msgid "Remove"
+msgstr "タグを削除"
+
+#: controls/ContextDrawer.qml:65
+msgctxt "ContextDrawer|"
+msgid "Actions"
+msgstr "アクション"
+
+#: controls/ContextualHelpButton.qml:59
+msgctxt "ContextualHelpButton|"
+msgid "Show Contextual Help"
+msgstr ""
+
+#: controls/GlobalDrawer.qml:366
+msgctxt "GlobalDrawer|"
+msgid "Back"
+msgstr "戻る"
+
+#: controls/GlobalDrawer.qml:719
+msgctxt "GlobalDrawer|"
+msgid "Close Sidebar"
+msgstr "サイドバーを閉じる"
+
+#: controls/GlobalDrawer.qml:724
+msgctxt "GlobalDrawer|"
+msgid "Open Sidebar"
+msgstr "サイドバーを開く"
+
+#: controls/LoadingPlaceholder.qml:58
+msgctxt "LoadingPlaceholder|"
+msgid "Loading…"
+msgstr "読み込み中..."
+
+#: controls/PasswordField.qml:43
+msgctxt "PasswordField|"
+msgid "Password"
+msgstr "パスワード"
+
+#: controls/PasswordField.qml:46
+#, fuzzy
+#| msgctxt "PasswordField|"
+#| msgid "Password"
+msgctxt "PasswordField|"
+msgid "Hide Password"
+msgstr "パスワード"
+
+#: controls/PasswordField.qml:46
+#, fuzzy
+#| msgctxt "PasswordField|"
+#| msgid "Password"
+msgctxt "PasswordField|"
+msgid "Show Password"
+msgstr "パスワード"
+
+#: controls/private/globaltoolbar/HandleButton.qml:24
+#, fuzzy
+#| msgctxt "PageRowGlobalToolBarUI|"
+#| msgid "Close menu"
+msgctxt "HandleButton|"
+msgid "Close menu"
+msgstr "メニューを閉じる"
+
+#: controls/private/globaltoolbar/HandleButton.qml:24
+#, fuzzy
+#| msgctxt "PageRowGlobalToolBarUI|"
+#| msgid "Open menu"
+msgctxt "HandleButton|"
+msgid "Open menu"
+msgstr "メニューを開く"
+
+#: controls/private/globaltoolbar/NavigationButtons.qml:102
+#, fuzzy
+#| msgctxt "BackButton|"
+#| msgid "Navigate Back"
+msgctxt "NavigationButtons|"
+msgid "Navigate Back"
+msgstr "戻る"
+
+#: controls/private/globaltoolbar/NavigationButtons.qml:119
+#, fuzzy
+#| msgctxt "ForwardButton|"
+#| msgid "Navigate Forward"
+msgctxt "NavigationButtons|"
+msgid "Navigate Forward"
+msgstr "進む"
+
+#: controls/private/PrivateActionToolButton.qml:118
+#, qt-format
+msgctxt "@info:tooltip %1 is a keyboard shorcut|"
+msgid "Trigger this action with %1"
+msgstr ""
+
+#: controls/private/PrivateActionToolButton.qml:125
+#, fuzzy, qt-format
+#| msgctxt "AboutItem|"
+#| msgid "%1 (%2)"
+msgctxt ""
+"@info:tooltip %1 is the tooltip of an action, %2 is its keyboard shorcut|"
+msgid "%1 (%2)"
+msgstr "%1 (%2)"
+
+#: controls/SearchField.qml:88
+msgctxt "SearchField|"
+msgid "Search…"
+msgstr "検索..."
+
+#: controls/SearchField.qml:90
+msgctxt "SearchField|"
+msgid "Search"
+msgstr "検索"
+
+#: controls/SearchField.qml:100
+msgctxt "SearchField|"
+msgid "Clear search"
+msgstr "検索をクリア"
+
+#: controls/SelectableLabel.qml:297
+#, fuzzy
+#| msgctxt "AboutItem|"
+#| msgid "Copyright"
+msgctxt "SelectableLabel|"
+msgid "Copy"
+msgstr "著作権について"
+
+#: controls/SelectableLabel.qml:310
+msgctxt "SelectableLabel|"
+msgid "Select All"
+msgstr ""
+
+#: controls/UrlButton.qml:52
+#, qt-format
+msgctxt "UrlButton|@info:whatsthis"
+msgid "Open link %1"
+msgstr ""
+
+#: controls/UrlButton.qml:53
+#, fuzzy
+#| msgctxt "PageRowGlobalToolBarUI|"
+#| msgid "Open menu"
+msgctxt "UrlButton|@info:whatsthis"
+msgid "Open link"
+msgstr "メニューを開く"
+
+#: controls/UrlButton.qml:101
+msgctxt "UrlButton|"
+msgid "Copy Link to Clipboard"
+msgstr "リンクをクリップボードにコピー"
+
+#: dialogs/DialogHeaderTopContent.qml:103
+#, fuzzy
+#| msgctxt "PageRowGlobalToolBarUI|"
+#| msgid "Close menu"
+msgctxt "DialogHeaderTopContent|@action:button close dialog"
+msgid "Close"
+msgstr "メニューを閉じる"
+
+#: platform/settings.cpp:219
+#, fuzzy, qt-format
+#| msgctxt "Settings|"
+#| msgid "KDE Frameworks %1"
+msgctxt "Kirigami::Platform::Settings|"
+msgid "KDE Frameworks %1"
+msgstr "KDE Frameworks %1"
+
+#: platform/settings.cpp:221
+#, fuzzy, qt-format
+#| msgctxt "Settings|"
+#| msgid "The %1 windowing system"
+msgctxt "Kirigami::Platform::Settings|"
+msgid "The %1 windowing system"
+msgstr "%1 ウィンドウシステム"
+
+#: platform/settings.cpp:222
+#, fuzzy, qt-format
+#| msgctxt "Settings|"
+#| msgid "Qt %2 (built against %3)"
+msgctxt "Kirigami::Platform::Settings|"
+msgid "Qt %2 (built against %3)"
+msgstr "Qt %2 (%3 を用いてビルドされました)"
+
+#: templates/InlineMessage.qml:350
+msgctxt "InlineMessage|"
+msgid "Success"
+msgstr ""
+
+#: templates/InlineMessage.qml:352
+msgctxt "InlineMessage|"
+msgid "Warning"
+msgstr ""
+
+#: templates/InlineMessage.qml:354
+msgctxt "InlineMessage|"
+msgid "Error"
+msgstr ""
+
+#: templates/InlineMessage.qml:356
+msgctxt "InlineMessage|"
+msgid "Note"
+msgstr ""
+
+#: templates/InlineMessage.qml:443
+#, fuzzy
+#| msgctxt "PageRowGlobalToolBarUI|"
+#| msgid "Close menu"
+msgctxt "InlineMessage|"
+msgid "Close"
+msgstr "メニューを閉じる"
+
+#: templates/OverlayDrawer.qml:147
+msgctxt "OverlayDrawer|"
+msgid "Close drawer"
+msgstr "ドロアを閉じる"
+
+#: templates/OverlayDrawer.qml:153
+msgctxt "OverlayDrawer|"
+msgid "Open drawer"
+msgstr "ドロアを開く"
+
+#: templates/OverlaySheet.qml:294
+#, fuzzy
+#| msgctxt "PageRowGlobalToolBarUI|"
+#| msgid "Close menu"
+msgctxt "OverlaySheet|@action:button close dialog"
+msgid "Close"
+msgstr "メニューを閉じる"
+
+#, fuzzy
+#~| msgctxt "PageRowGlobalToolBarUI|"
+#~| msgid "Close menu"
+#~ msgctxt "Dialog|@action:button close dialog"
+#~ msgid "Close"
+#~ msgstr "メニューを閉じる"

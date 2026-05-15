@@ -1,0 +1,35 @@
+include($KDE_DOCS/global/qt-module-defaults.qdocconf)
+
+project = KI18nLocaleDataQml
+description = Access to data about countries and timezones
+
+documentationinheaders = true
+
+headerdirs += .
+sourcedirs += .
+
+outputformats = HTML
+
+navigation.landingpage = "KI18n"
+
+depends += \
+    kde \
+    qtcore \
+    ki18nlocaledata \
+    ki18n
+
+qhp.projects            = KI18nLocaleDataQml
+
+qhp.KI18nLocaleDataQml.file                = ki18nlocaledataqml.qhp
+qhp.KI18nLocaleDataQml.namespace           = org.kde.ki18nlocaledataqml.$QT_VERSION_TAG
+qhp.KI18nLocaleDataQml.virtualFolder       = ki18nlocaledataqml
+qhp.KI18nLocaleDataQml.indexTitle          = KI18n LocaleData QML
+qhp.KI18nLocaleDataQml.indexRoot           =
+
+qhp.KI18nLocaleDataQml.subprojects         = qmltypes
+qhp.KI18nLocaleDataQml.subprojects.qmltypes.title = QML Types
+qhp.KI18nLocaleDataQml.subprojects.qmltypes.indexTitle = KI18n LocaleData QML Types
+qhp.KI18nLocaleDataQml.subprojects.qmltypes.selectors = qmltype
+qhp.KI18nLocaleDataQml.subprojects.qmltypes.sortPages = true
+
+tagfile = ki18nlocaledataqml.tags

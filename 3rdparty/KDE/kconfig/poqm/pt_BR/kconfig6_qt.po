@@ -1,0 +1,1100 @@
+# Translation of kconfig5_qt.po to Brazilian Portuguese
+# Copyright (C) 2003, 2007, 2008, 2009, 2014, 2015, 2019 Free Software Foundation, Inc.
+#
+# Lisiane Sztoltz <lisiane@conectiva.com.br>, 2003.
+# Henrique Pinto <stampede@coltec.ufmg.br>, 2003.
+# Diniz Bortolotto <diniz.bortolotto@gmail.com>, 2007.
+# Fernando Boaglio <boaglio@kde.org>, 2008.
+# Luiz Fernando Ranghetti <elchevive@opensuse.org>, 2009, 2016, 2017, 2018, 2020, 2021, 2022, 2023.
+# André Marcelo Alvarenga <alvarenga@kde.org>, 2009, 2014, 2015, 2019.
+# SPDX-FileCopyrightText: 2025, 2026 Guilherme Marçal Silva <guimarcalsilva@gmail.com>
+# SPDX-FileCopyrightText: 2025, 2026 Marcus Gama <marcus.gama@gmail.com>
+msgid ""
+msgstr ""
+"Project-Id-Version: kconfig5_qt\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2014-04-11 02:17+0000\n"
+"PO-Revision-Date: 2026-03-31 06:25-0300\n"
+"Last-Translator: Marcus Gama <marcus.gama@gmail.com>\n"
+"Language-Team: Brazilian Portuguese <kde-i18n-pt_BR@kde.org>\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Lokalize 25.12.3\n"
+"X-Qt-Contexts: true\n"
+
+#: core/kconfig.cpp:991
+msgctxt "KConfig|"
+msgid "Please contact your system administrator."
+msgstr "Contate o administrador do seu sistema."
+
+#: core/kconfigini.cpp:456
+#, qt-format
+msgctxt "KConfigIniBackend|"
+msgid "Configuration file \"%1\" not writable.\n"
+msgstr "Arquivo de configuração \"%1\" não gravável.\n"
+
+#: core/kemailsettings.cpp:128 core/kemailsettings.cpp:131
+#: core/kemailsettings.cpp:139
+msgctxt "KEMailSettings|"
+msgid "Default"
+msgstr "Padrão"
+
+#: gui/kstandardactions.cpp:49
+msgctxt "go back|"
+msgid "&Back"
+msgstr "&Voltar"
+
+#: gui/kstandardactions.cpp:56
+msgctxt "go forward|"
+msgid "&Forward"
+msgstr "&Avançar"
+
+#: gui/kstandardactions.cpp:63
+msgctxt "home page|"
+msgid "&Home"
+msgstr "&Início"
+
+#: gui/kstandardactions_p.h:64
+msgctxt "KStandardActions|"
+msgid "&New"
+msgstr "&Novo"
+
+#: gui/kstandardactions_p.h:64
+msgctxt "KStandardActions|"
+msgid "Create new document"
+msgstr "Criar novo documento"
+
+#: gui/kstandardactions_p.h:65
+msgctxt "KStandardActions|"
+msgid "&Open…"
+msgstr "&Abrir…"
+
+#: gui/kstandardactions_p.h:65
+msgctxt "KStandardActions|"
+msgid "Open an existing document"
+msgstr "Abrir documento existente"
+
+#: gui/kstandardactions_p.h:66
+msgctxt "KStandardActions|"
+msgid "Open &Recent"
+msgstr "Abrir &recente"
+
+#: gui/kstandardactions_p.h:66
+msgctxt "KStandardActions|"
+msgid "Open a document which was recently opened"
+msgstr "Abrir documento que foi recentemente aberto"
+
+#: gui/kstandardactions_p.h:67
+msgctxt "KStandardActions|"
+msgid "&Save"
+msgstr "&Salvar"
+
+#: gui/kstandardactions_p.h:67
+msgctxt "KStandardActions|"
+msgid "Save document"
+msgstr "Salvar documento"
+
+#: gui/kstandardactions_p.h:68
+msgctxt "KStandardActions|"
+msgid "Save &As…"
+msgstr "Salvar &como…"
+
+#: gui/kstandardactions_p.h:68
+msgctxt "KStandardActions|"
+msgid "Save document under a new name"
+msgstr "Salvar documento com novo nome"
+
+#: gui/kstandardactions_p.h:69
+msgctxt "KStandardActions|"
+msgid "Re&vert"
+msgstr "Re&verter"
+
+#: gui/kstandardactions_p.h:69
+msgctxt "KStandardActions|"
+msgid "Revert unsaved changes made to document"
+msgstr "Reverter mudanças não salvas feitas ao documento"
+
+#: gui/kstandardactions_p.h:70
+msgctxt "KStandardActions|"
+msgid "&Close"
+msgstr "&Fechar"
+
+#: gui/kstandardactions_p.h:70
+msgctxt "KStandardActions|"
+msgid "Close document"
+msgstr "Fechar documento"
+
+#: gui/kstandardactions_p.h:71
+msgctxt "KStandardActions|"
+msgid "&Print…"
+msgstr "&Imprimir…"
+
+#: gui/kstandardactions_p.h:71
+msgctxt "KStandardActions|"
+msgid "Print document"
+msgstr "Imprimir documento"
+
+#: gui/kstandardactions_p.h:72
+msgctxt "KStandardActions|"
+msgid "Print Previe&w"
+msgstr "Imprimir pré&via"
+
+#: gui/kstandardactions_p.h:72
+msgctxt "KStandardActions|"
+msgid "Show a print preview of document"
+msgstr "Mostrar uma prévia da impressão do documento"
+
+#: gui/kstandardactions_p.h:73
+msgctxt "KStandardActions|"
+msgid "&Mail…"
+msgstr "&E-mail…"
+
+#: gui/kstandardactions_p.h:73
+msgctxt "KStandardActions|"
+msgid "Send document by mail"
+msgstr "Enviar documento por e-mail"
+
+#: gui/kstandardactions_p.h:74
+msgctxt "KStandardActions|"
+msgid "&Quit"
+msgstr "&Sair"
+
+#: gui/kstandardactions_p.h:74
+msgctxt "KStandardActions|"
+msgid "Quit application"
+msgstr "Sair do aplicativo"
+
+#: gui/kstandardactions_p.h:76
+msgctxt "KStandardActions|"
+msgid "&Undo"
+msgstr "&Desfazer"
+
+#: gui/kstandardactions_p.h:76
+msgctxt "KStandardActions|"
+msgid "Undo last action"
+msgstr "Desfazer última ação"
+
+#: gui/kstandardactions_p.h:77
+msgctxt "KStandardActions|"
+msgid "Re&do"
+msgstr "Refa&zer"
+
+#: gui/kstandardactions_p.h:77
+msgctxt "KStandardActions|"
+msgid "Redo last undone action"
+msgstr "Refazer última ação desfeita"
+
+#: gui/kstandardactions_p.h:78
+msgctxt "KStandardActions|"
+msgid "Cu&t"
+msgstr "Cor&tar"
+
+#: gui/kstandardactions_p.h:78
+msgctxt "KStandardActions|"
+msgid "Cut selection to clipboard"
+msgstr "Cortar seleção para área de transferência"
+
+#: gui/kstandardactions_p.h:79
+msgctxt "KStandardActions|"
+msgid "&Copy"
+msgstr "&Copiar"
+
+#: gui/kstandardactions_p.h:79
+msgctxt "KStandardActions|"
+msgid "Copy selection to clipboard"
+msgstr "Copiar seleção para área de transferência"
+
+#: gui/kstandardactions_p.h:80
+msgctxt "KStandardActions|"
+msgid "&Paste"
+msgstr "Cola&r"
+
+#: gui/kstandardactions_p.h:80
+msgctxt "KStandardActions|"
+msgid "Paste clipboard content"
+msgstr "Colar da área de transferência"
+
+#: gui/kstandardactions_p.h:81
+msgctxt "KStandardActions|"
+msgid "C&lear"
+msgstr "&Limpar"
+
+#: gui/kstandardactions_p.h:82
+msgctxt "KStandardActions|"
+msgid "Select &All"
+msgstr "Selecionar &tudo"
+
+#: gui/kstandardactions_p.h:83
+msgctxt "KStandardActions|"
+msgid "Dese&lect"
+msgstr "&Desmarcar"
+
+#: gui/kstandardactions_p.h:84
+msgctxt "KStandardActions|"
+msgid "&Find…"
+msgstr "&Localizar…"
+
+#: gui/kstandardactions_p.h:85
+msgctxt "KStandardActions|"
+msgid "Find &Next"
+msgstr "Localizar &próxima"
+
+#: gui/kstandardactions_p.h:86
+msgctxt "KStandardActions|"
+msgid "Find Pre&vious"
+msgstr "Localizar &anterior"
+
+#: gui/kstandardactions_p.h:87
+msgctxt "KStandardActions|"
+msgid "&Replace…"
+msgstr "Substitui&r…"
+
+#: gui/kstandardactions_p.h:89
+msgctxt "KStandardActions|"
+msgid "Zoom to &Actual Size"
+msgstr "Zoom para o tamanho &atual"
+
+#: gui/kstandardactions_p.h:89
+msgctxt "KStandardActions|"
+msgid "View document at its actual size"
+msgstr "Visualizar documento em tamanho real"
+
+#: gui/kstandardactions_p.h:90
+msgctxt "KStandardActions|"
+msgid "&Fit to Page"
+msgstr "A&justar à página"
+
+#: gui/kstandardactions_p.h:90
+msgctxt "KStandardActions|"
+msgid "Zoom to fit page in window"
+msgstr "Ajustar página à janela"
+
+#: gui/kstandardactions_p.h:91
+msgctxt "KStandardActions|"
+msgid "Fit to Page &Width"
+msgstr "Ajustar à &largura"
+
+#: gui/kstandardactions_p.h:91
+msgctxt "KStandardActions|"
+msgid "Zoom to fit page width in window"
+msgstr "Ajustar comprimento da página à janela"
+
+#: gui/kstandardactions_p.h:92
+msgctxt "KStandardActions|"
+msgid "Fit to Page &Height"
+msgstr "Ajustar à &altura"
+
+#: gui/kstandardactions_p.h:92
+msgctxt "KStandardActions|"
+msgid "Zoom to fit page height in window"
+msgstr "Ajustar altura da página à janela"
+
+#: gui/kstandardactions_p.h:93
+msgctxt "KStandardActions|"
+msgid "Zoom &In"
+msgstr "A&mpliar"
+
+#: gui/kstandardactions_p.h:94
+msgctxt "KStandardActions|"
+msgid "Zoom &Out"
+msgstr "&Reduzir"
+
+#: gui/kstandardactions_p.h:95
+msgctxt "KStandardActions|"
+msgid "&Zoom…"
+msgstr "&Zoom…"
+
+#: gui/kstandardactions_p.h:95
+msgctxt "KStandardActions|"
+msgid "Select zoom level"
+msgstr "Selecionar nível de zoom"
+
+#: gui/kstandardactions_p.h:96
+msgctxt "KStandardActions|"
+msgid "&Refresh"
+msgstr "Atualiza&r"
+
+#: gui/kstandardactions_p.h:96
+msgctxt "KStandardActions|"
+msgid "Refresh document"
+msgstr "Atualizar documento"
+
+#: gui/kstandardactions_p.h:98
+msgctxt "KStandardActions|"
+msgid "&Up"
+msgstr "&Acima"
+
+#: gui/kstandardactions_p.h:98
+msgctxt "KStandardActions|"
+msgid "Go up"
+msgstr "Ir para cima"
+
+#: gui/kstandardactions_p.h:103
+msgctxt "KStandardActions|"
+msgid "&Previous Page"
+msgstr "&Página anterior"
+
+#: gui/kstandardactions_p.h:103
+msgctxt "KStandardActions|"
+msgid "Go to previous page"
+msgstr "Ir para página anterior"
+
+#: gui/kstandardactions_p.h:104
+msgctxt "KStandardActions|"
+msgid "&Next Page"
+msgstr "Próxima pági&na"
+
+#: gui/kstandardactions_p.h:104
+msgctxt "KStandardActions|"
+msgid "Go to next page"
+msgstr "Ir para a próxima página"
+
+#: gui/kstandardactions_p.h:105
+msgctxt "KStandardActions|"
+msgid "&Go To…"
+msgstr "&Ir para…"
+
+#: gui/kstandardactions_p.h:106
+msgctxt "KStandardActions|"
+msgid "&Go to Page…"
+msgstr "Ir para a pá&gina…"
+
+#: gui/kstandardactions_p.h:107
+msgctxt "KStandardActions|"
+msgid "&Go to Line…"
+msgstr "&Ir para a linha…"
+
+#: gui/kstandardactions_p.h:108
+msgctxt "KStandardActions|"
+msgid "&First Page"
+msgstr "&Primeira Página"
+
+#: gui/kstandardactions_p.h:108
+msgctxt "KStandardActions|"
+msgid "Go to first page"
+msgstr "Ir para a primeira página"
+
+#: gui/kstandardactions_p.h:109
+msgctxt "KStandardActions|"
+msgid "&Last Page"
+msgstr "Última &página"
+
+#: gui/kstandardactions_p.h:109
+msgctxt "KStandardActions|"
+msgid "Go to last page"
+msgstr "Ir para última página"
+
+#: gui/kstandardactions_p.h:110
+msgctxt "KStandardActions|"
+msgid "&Back"
+msgstr "&Voltar"
+
+#: gui/kstandardactions_p.h:110
+msgctxt "KStandardActions|"
+msgid "Go back in document"
+msgstr "Voltar no documento"
+
+#: gui/kstandardactions_p.h:111
+msgctxt "KStandardActions|"
+msgid "&Forward"
+msgstr "&Avançar"
+
+#: gui/kstandardactions_p.h:111
+msgctxt "KStandardActions|"
+msgid "Go forward in document"
+msgstr "Avançar no documento"
+
+#: gui/kstandardactions_p.h:113
+msgctxt "KStandardActions|"
+msgid "&Add Bookmark"
+msgstr "&Adicionar favorito"
+
+#: gui/kstandardactions_p.h:114
+msgctxt "KStandardActions|"
+msgid "&Edit Bookmarks…"
+msgstr "&Editar favoritos…"
+
+#: gui/kstandardactions_p.h:116
+msgctxt "KStandardActions|"
+msgid "&Spelling…"
+msgstr "&Ortografia…"
+
+#: gui/kstandardactions_p.h:116
+msgctxt "KStandardActions|"
+msgid "Check spelling in document"
+msgstr "Verificar ortografia no documento"
+
+#: gui/kstandardactions_p.h:118
+msgctxt "KStandardActions|"
+msgid "Show &Menubar"
+msgstr "Mostrar barra de &menus"
+
+#: gui/kstandardactions_p.h:118
+msgctxt "KStandardActions|"
+msgid "Show or hide menubar"
+msgstr "Mostrar ou ocultar barra de menus"
+
+#: gui/kstandardactions_p.h:119
+msgctxt "KStandardActions|"
+msgid "Show &Toolbar"
+msgstr "Mos&trar barra de ferramentas"
+
+#: gui/kstandardactions_p.h:119
+msgctxt "KStandardActions|"
+msgid "Show or hide toolbar"
+msgstr "Mostrar ou ocultar barra de ferramentas"
+
+#: gui/kstandardactions_p.h:120
+msgctxt "KStandardActions|"
+msgid "Show St&atusbar"
+msgstr "Mostrar b&arra de status"
+
+#: gui/kstandardactions_p.h:120
+msgctxt "KStandardActions|"
+msgid "Show or hide statusbar"
+msgstr "Mostrar ou ocultar barra de status"
+
+#: gui/kstandardactions_p.h:121
+msgctxt "KStandardActions|"
+msgid "F&ull Screen Mode"
+msgstr "Modo de &tela cheia"
+
+#: gui/kstandardactions_p.h:122
+msgctxt "KStandardActions|"
+msgid "Configure Keyboard S&hortcuts…"
+msgstr "Configurar atalho&s do teclado…"
+
+#: gui/kstandardactions_p.h:123
+#, qt-format
+msgctxt "KStandardActions|"
+msgid "&Configure %1…"
+msgstr "&Configurar %1…"
+
+#: gui/kstandardactions_p.h:124
+msgctxt "KStandardActions|"
+msgid "Configure Tool&bars…"
+msgstr "Configurar &barras de ferramentas…"
+
+#: gui/kstandardactions_p.h:125
+msgctxt "KStandardActions|"
+msgid "Configure &Notifications…"
+msgstr "Configurar &notificações…"
+
+#: gui/kstandardactions_p.h:129
+#, qt-format
+msgctxt "KStandardActions|"
+msgid "%1 &Handbook"
+msgstr "&Manual do %1"
+
+#: gui/kstandardactions_p.h:130
+msgctxt "KStandardActions|"
+msgid "What's &This?"
+msgstr "O que é is&to?"
+
+#: gui/kstandardactions_p.h:131
+msgctxt "KStandardActions|"
+msgid "&Report Bug…"
+msgstr "&Relatar bug…"
+
+#: gui/kstandardactions_p.h:132
+msgctxt "KStandardActions|"
+msgid "Configure &Language…"
+msgstr "Configurar &idioma…"
+
+#: gui/kstandardactions_p.h:133
+#, qt-format
+msgctxt "KStandardActions|"
+msgid "&About %1"
+msgstr "&Sobre %1"
+
+#: gui/kstandardactions_p.h:134
+msgctxt "KStandardActions|"
+msgid "About &KDE"
+msgstr "Sobre a &KDE"
+
+#: gui/kstandardactions_p.h:135
+msgctxt "KStandardActions|"
+msgid "&Delete"
+msgstr "&Excluir"
+
+#: gui/kstandardactions_p.h:136
+msgctxt "KStandardActions|"
+msgid "&Rename…"
+msgstr "&Renomear…"
+
+#: gui/kstandardactions_p.h:137
+msgctxt "KStandardActions|"
+msgid "&Move to Trash"
+msgstr "&Mover para a lixeira"
+
+#: gui/kstandardactions_p.h:138
+msgctxt "KStandardActions|"
+msgid "&Donate"
+msgstr "&Doar"
+
+#: gui/kstandardactions_p.h:139
+msgctxt "KStandardActions|"
+msgid "Open &Menu"
+msgstr "Abrir &menu"
+
+#: gui/kstandardshortcut.cpp:73
+msgctxt "KStandardShortcut|@action"
+msgid "Open"
+msgstr "Abrir"
+
+#: gui/kstandardshortcut.cpp:74
+msgctxt "KStandardShortcut|@action"
+msgid "New"
+msgstr "Novo"
+
+#: gui/kstandardshortcut.cpp:75
+msgctxt "KStandardShortcut|@action"
+msgid "Close"
+msgstr "Fechar"
+
+#: gui/kstandardshortcut.cpp:76
+msgctxt "KStandardShortcut|@action"
+msgid "Save"
+msgstr "Salvar"
+
+#: gui/kstandardshortcut.cpp:77
+msgctxt "KStandardShortcut|@action"
+msgid "Print"
+msgstr "Imprimir"
+
+#: gui/kstandardshortcut.cpp:78
+msgctxt "KStandardShortcut|@action"
+msgid "Quit"
+msgstr "Sair"
+
+#: gui/kstandardshortcut.cpp:81
+msgctxt "KStandardShortcut|@action"
+msgid "Undo"
+msgstr "Desfazer"
+
+#: gui/kstandardshortcut.cpp:82
+msgctxt "KStandardShortcut|@action"
+msgid "Redo"
+msgstr "Refazer"
+
+#: gui/kstandardshortcut.cpp:85
+msgctxt "KStandardShortcut|@action"
+msgid "Cut"
+msgstr "Recortar"
+
+#: gui/kstandardshortcut.cpp:86
+msgctxt "KStandardShortcut|@action"
+msgid "Copy"
+msgstr "Copiar"
+
+#: gui/kstandardshortcut.cpp:87
+msgctxt "KStandardShortcut|@action"
+msgid "Paste"
+msgstr "Colar"
+
+#: gui/kstandardshortcut.cpp:90
+msgctxt "KStandardShortcut|@action"
+msgid "Paste Selection"
+msgstr "Colar seleção"
+
+#: gui/kstandardshortcut.cpp:97
+msgctxt "KStandardShortcut|@action"
+msgid "Select All"
+msgstr "Selecionar tudo"
+
+#: gui/kstandardshortcut.cpp:98
+msgctxt "KStandardShortcut|@action"
+msgid "Deselect"
+msgstr "Desmarcar"
+
+#: gui/kstandardshortcut.cpp:101
+msgctxt "KStandardShortcut|@action"
+msgid "Delete Word Backwards"
+msgstr "Excluir palavras anteriores"
+
+#: gui/kstandardshortcut.cpp:113
+msgctxt "KStandardShortcut|@action"
+msgid "Delete Word Forward"
+msgstr "Excluir palavras posteriores"
+
+#: gui/kstandardshortcut.cpp:124
+msgctxt "KStandardShortcut|@action"
+msgid "Find"
+msgstr "Localizar"
+
+#: gui/kstandardshortcut.cpp:127
+msgctxt "KStandardShortcut|@action"
+msgid "Find Next"
+msgstr "Localizar próxima"
+
+#: gui/kstandardshortcut.cpp:137
+msgctxt "KStandardShortcut|@action"
+msgid "Find Prev"
+msgstr "Localizar anterior"
+
+#: gui/kstandardshortcut.cpp:138
+msgctxt "KStandardShortcut|@action"
+msgid "Replace"
+msgstr "Substituir"
+
+#: gui/kstandardshortcut.cpp:143
+msgctxt "KStandardShortcut|@action Go to main page"
+msgid "Home"
+msgstr "Home"
+
+#: gui/kstandardshortcut.cpp:151
+msgctxt "KStandardShortcut|@action Beginning of document"
+msgid "Begin"
+msgstr "Início"
+
+#: gui/kstandardshortcut.cpp:163
+msgctxt "KStandardShortcut|@action End of document"
+msgid "End"
+msgstr "Fim"
+
+#: gui/kstandardshortcut.cpp:173
+msgctxt "KStandardShortcut|@action"
+msgid "Prior"
+msgstr "Anterior"
+
+#: gui/kstandardshortcut.cpp:176
+msgctxt "KStandardShortcut|@action Opposite to Prior"
+msgid "Next"
+msgstr "Próximo"
+
+#: gui/kstandardshortcut.cpp:183
+msgctxt "KStandardShortcut|@action"
+msgid "Up"
+msgstr "Acima"
+
+#: gui/kstandardshortcut.cpp:186
+msgctxt "KStandardShortcut|@action"
+msgid "Back"
+msgstr "Voltar"
+
+#: gui/kstandardshortcut.cpp:198
+msgctxt "KStandardShortcut|@action"
+msgid "Forward"
+msgstr "Avançar"
+
+#: gui/kstandardshortcut.cpp:210
+msgctxt "KStandardShortcut|@action"
+msgid "Reload"
+msgstr "Recarregar"
+
+#: gui/kstandardshortcut.cpp:219
+msgctxt "KStandardShortcut|@action"
+msgid "Beginning of Line"
+msgstr "Início da linha"
+
+#: gui/kstandardshortcut.cpp:231
+msgctxt "KStandardShortcut|@action"
+msgid "End of Line"
+msgstr "Fim da linha"
+
+#: gui/kstandardshortcut.cpp:243
+msgctxt "KStandardShortcut|@action"
+msgid "Go to Line"
+msgstr "Ir para a linha"
+
+#: gui/kstandardshortcut.cpp:255
+msgctxt "KStandardShortcut|@action"
+msgid "Backward Word"
+msgstr "Palavra anterior"
+
+#: gui/kstandardshortcut.cpp:267
+msgctxt "KStandardShortcut|@action"
+msgid "Forward Word"
+msgstr "Palavra posterior"
+
+#: gui/kstandardshortcut.cpp:280
+msgctxt "KStandardShortcut|@action"
+msgid "Add Bookmark"
+msgstr "Adicionar favorito"
+
+#: gui/kstandardshortcut.cpp:286
+msgctxt "KStandardShortcut|@action"
+msgid "Zoom In"
+msgstr "Ampliar"
+
+#: gui/kstandardshortcut.cpp:287
+msgctxt "KStandardShortcut|@action"
+msgid "Zoom Out"
+msgstr "Reduzir"
+
+#: gui/kstandardshortcut.cpp:290
+msgctxt "KStandardShortcut|@action"
+msgid "Full Screen Mode"
+msgstr "Modo de tela cheia"
+
+#: gui/kstandardshortcut.cpp:301
+msgctxt "KStandardShortcut|@action"
+msgid "Show Menu Bar"
+msgstr "Mostrar barra de menus"
+
+#: gui/kstandardshortcut.cpp:304
+msgctxt "KStandardShortcut|@action"
+msgid "Activate Next Tab"
+msgstr "Ativar a próxima aba"
+
+#: gui/kstandardshortcut.cpp:312
+msgctxt "KStandardShortcut|@action"
+msgid "Activate Previous Tab"
+msgstr "Ativar a aba anterior"
+
+#: gui/kstandardshortcut.cpp:320
+msgctxt "KStandardShortcut|@action"
+msgid "Help"
+msgstr "Ajuda"
+
+#: gui/kstandardshortcut.cpp:321
+msgctxt "KStandardShortcut|@action"
+msgid "What's This"
+msgstr "O que é isto"
+
+#: gui/kstandardshortcut.cpp:326
+msgctxt "KStandardShortcut|@action"
+msgid "Text Completion"
+msgstr "Complementação de texto"
+
+#: gui/kstandardshortcut.cpp:334
+msgctxt "KStandardShortcut|@action"
+msgid "Previous Completion Match"
+msgstr "Coincidência de complementação anterior"
+
+#: gui/kstandardshortcut.cpp:346
+msgctxt "KStandardShortcut|@action"
+msgid "Next Completion Match"
+msgstr "Coincidência de complementação seguinte"
+
+#: gui/kstandardshortcut.cpp:358
+msgctxt "KStandardShortcut|@action"
+msgid "Substring Completion"
+msgstr "Complementação de substring"
+
+#: gui/kstandardshortcut.cpp:367
+msgctxt "KStandardShortcut|@action"
+msgid "Previous Item in List"
+msgstr "Item anterior na lista"
+
+#: gui/kstandardshortcut.cpp:375
+msgctxt "KStandardShortcut|@action"
+msgid "Next Item in List"
+msgstr "Próximo item na lista"
+
+#: gui/kstandardshortcut.cpp:382
+msgctxt "KStandardShortcut|@action"
+msgid "Open Recent"
+msgstr "Abrir recente"
+
+#: gui/kstandardshortcut.cpp:383
+msgctxt "KStandardShortcut|@action"
+msgid "Save As"
+msgstr "Salvar como"
+
+#: gui/kstandardshortcut.cpp:384
+msgctxt "KStandardShortcut|@action"
+msgid "Revert"
+msgstr "Reverter"
+
+#: gui/kstandardshortcut.cpp:385
+msgctxt "KStandardShortcut|@action"
+msgid "Print Preview"
+msgstr "Imprimir prévia"
+
+#: gui/kstandardshortcut.cpp:386
+msgctxt "KStandardShortcut|@action"
+msgid "Mail"
+msgstr "E-mail"
+
+#: gui/kstandardshortcut.cpp:387
+msgctxt "KStandardShortcut|@action"
+msgid "Clear"
+msgstr "Limpar"
+
+#: gui/kstandardshortcut.cpp:390
+msgctxt "KStandardShortcut|@action"
+msgid "Zoom to Actual Size"
+msgstr "Zoom para o tamanho atual"
+
+#: gui/kstandardshortcut.cpp:396
+msgctxt "KStandardShortcut|@action"
+msgid "Fit To Page"
+msgstr "Ajustar à página"
+
+#: gui/kstandardshortcut.cpp:397
+msgctxt "KStandardShortcut|@action"
+msgid "Fit To Width"
+msgstr "Ajustar à largura"
+
+#: gui/kstandardshortcut.cpp:398
+msgctxt "KStandardShortcut|@action"
+msgid "Fit To Height"
+msgstr "Ajustar à altura"
+
+#: gui/kstandardshortcut.cpp:399
+msgctxt "KStandardShortcut|@action"
+msgid "Zoom"
+msgstr "Zoom"
+
+#: gui/kstandardshortcut.cpp:400
+msgctxt "KStandardShortcut|@action"
+msgid "Goto"
+msgstr "Ir para"
+
+#: gui/kstandardshortcut.cpp:401
+msgctxt "KStandardShortcut|@action"
+msgid "Goto Page"
+msgstr "Ir para a página"
+
+#: gui/kstandardshortcut.cpp:404
+msgctxt "KStandardShortcut|@action"
+msgid "Document Back"
+msgstr "Recuar no documento"
+
+#: gui/kstandardshortcut.cpp:412
+msgctxt "KStandardShortcut|@action"
+msgid "Document Forward"
+msgstr "Avançar no documento"
+
+#: gui/kstandardshortcut.cpp:420
+msgctxt "KStandardShortcut|@action"
+msgid "Edit Bookmarks"
+msgstr "Editar favoritos"
+
+#: gui/kstandardshortcut.cpp:426
+msgctxt "KStandardShortcut|@action"
+msgid "Spelling"
+msgstr "Ortografia"
+
+#: gui/kstandardshortcut.cpp:427
+msgctxt "KStandardShortcut|@action"
+msgid "Show Toolbar"
+msgstr "Mostrar barra de ferramentas"
+
+#: gui/kstandardshortcut.cpp:428
+msgctxt "KStandardShortcut|@action"
+msgid "Show Statusbar"
+msgstr "Mostrar barra de status"
+
+#: gui/kstandardshortcut.cpp:431
+msgctxt "KStandardShortcut|@action"
+msgid "Key Bindings"
+msgstr "Combinação de teclas"
+
+#: gui/kstandardshortcut.cpp:439
+msgctxt "KStandardShortcut|@action"
+msgid "Configure Application"
+msgstr "Configurar aplicativo"
+
+#: gui/kstandardshortcut.cpp:447
+msgctxt "KStandardShortcut|@action"
+msgid "Configure Toolbars"
+msgstr "Configurar barras de ferramentas"
+
+#: gui/kstandardshortcut.cpp:455
+msgctxt "KStandardShortcut|@action"
+msgid "Configure Notifications"
+msgstr "Configurar notificações"
+
+#: gui/kstandardshortcut.cpp:461
+msgctxt "KStandardShortcut|@action"
+msgid "Report Bug"
+msgstr "Relatar bug"
+
+#: gui/kstandardshortcut.cpp:464
+msgctxt "KStandardShortcut|@action"
+msgid "Configure Language…"
+msgstr "Configurar idioma…"
+
+#: gui/kstandardshortcut.cpp:470
+msgctxt "KStandardShortcut|@action"
+msgid "About Application"
+msgstr "Sobre o aplicativo"
+
+#: gui/kstandardshortcut.cpp:471
+msgctxt "KStandardShortcut|@action"
+msgid "About KDE"
+msgstr "Sobre a KDE"
+
+#: gui/kstandardshortcut.cpp:474
+msgctxt "KStandardShortcut|@action"
+msgid "Delete"
+msgstr "Excluir"
+
+#: gui/kstandardshortcut.cpp:475
+msgctxt "KStandardShortcut|@action"
+msgid "Rename"
+msgstr "Renomear"
+
+#: gui/kstandardshortcut.cpp:478
+msgctxt "KStandardShortcut|@action"
+msgid "Move to Trash"
+msgstr "Mover para a Lixeira"
+
+#: gui/kstandardshortcut.cpp:484
+msgctxt "KStandardShortcut|@action"
+msgid "Donate"
+msgstr "Doar"
+
+#: gui/kstandardshortcut.cpp:487
+msgctxt "KStandardShortcut|@action"
+msgid "Show/Hide Hidden Files"
+msgstr "Mostrar/ocultar arquivos ocultos"
+
+#: gui/kstandardshortcut.cpp:495
+msgctxt "KStandardShortcut|@action"
+msgid "Create Folder"
+msgstr "Criar pasta"
+
+#: gui/kstandardshortcut.cpp:503
+msgctxt ""
+"KStandardShortcut|@action referring to the menu bar or a hamburger menu"
+msgid "Open Main Menu"
+msgstr "Abrir menu principal"
+
+#: gui/kstandardshortcut.cpp:511
+msgctxt "KStandardShortcut|@action"
+msgid "Open Context Menu"
+msgstr "Abrir menu de contexto"
+
+#: kconf_update/kconf_update.cpp:368
+msgctxt "main|"
+msgid "KDE Tool for updating user configuration files"
+msgstr ""
+"Ferramenta do KDE para atualização de arquivos de configuração de usuário"
+
+#: kconf_update/kconf_update.cpp:370
+msgctxt "main|"
+msgid "Keep output results from scripts"
+msgstr "Manter resultados da saída dos scripts"
+
+#: kconf_update/kconf_update.cpp:373
+msgctxt "main|"
+msgid ""
+"For unit tests only: do not write the done entries, so that with every re-"
+"run, the scripts are executed again"
+msgstr ""
+"Somente para testes de unidade: não escreva as entradas concluídas, para "
+"que, a cada nova execução, os scripts sejam executados novamente"
+
+#: kconf_update/kconf_update.cpp:375
+msgctxt "main|"
+msgid "Check whether config file itself requires updating"
+msgstr "Verificar se o próprio arquivo de configuração requer atualização"
+
+#: kconf_update/kconf_update.cpp:378
+msgctxt "main|"
+msgid "File(s) to read update instructions from"
+msgstr "Arquivo(s) para ler instruções de atualização"
+
+#: kconfig_compiler/kconfig_compiler.cpp:732
+msgctxt "main|"
+msgid "Directory to generate files in [.]"
+msgstr "A pasta para onde gerar os arquivos [.]"
+
+#: kconfig_compiler/kconfig_compiler.cpp:733
+msgctxt "main|"
+msgid "directory"
+msgstr "pasta"
+
+#: kconfig_compiler/kconfig_compiler.cpp:737
+msgctxt "main|"
+msgid "Display software license."
+msgstr "Exibir a licença do software."
+
+#: kreadconfig/kreadconfig.cpp:46 kreadconfig/kwriteconfig.cpp:25
+msgctxt "main|"
+msgid "Use <file> instead of global config"
+msgstr "Usar <file> em vez da configuração global"
+
+#: kreadconfig/kreadconfig.cpp:49 kreadconfig/kwriteconfig.cpp:28
+msgctxt "main|"
+msgid ""
+"Group to look in. Use \"<default>\" for the root group, or use repeatedly "
+"for nested groups."
+msgstr ""
+"Grupo para procurar. Use \"<padrão>\" para o grupo raiz ou use repetidamente "
+"para grupos aninhados."
+
+#: kreadconfig/kreadconfig.cpp:52 kreadconfig/kwriteconfig.cpp:31
+msgctxt "main|"
+msgid "Key to look for"
+msgstr "Chave para procurar"
+
+#: kreadconfig/kreadconfig.cpp:53
+msgctxt "main|"
+msgid "Default value"
+msgstr "Valor padrão"
+
+#: kreadconfig/kreadconfig.cpp:54
+msgctxt "main|"
+msgid "Type of variable"
+msgstr "Tipo de variável"
+
+#: kreadconfig/kreadconfig.cpp:55
+msgctxt "main|"
+msgid "Dump all entries"
+msgstr "Despejar todas as entradas"
+
+#: kreadconfig/kreadconfig.cpp:58
+msgctxt "main|"
+msgid ""
+"Include globals; by default, the global config files are not read if a file "
+"is specified"
+msgstr ""
+"Incluir variáveis ​​globais; por padrão, os arquivos de configuração globais "
+"não são lidos se um arquivo for especificado"
+
+#: kreadconfig/kreadconfig.cpp:89 kreadconfig/kwriteconfig.cpp:71
+msgctxt "main|"
+msgid "Group name cannot be empty, use \"<default>\" for the root group"
+msgstr ""
+"O nome do grupo não pode estar vazio, use \"<padrão>\" for the root group"
+
+#: kreadconfig/kwriteconfig.cpp:34
+msgctxt "main|"
+msgid ""
+"Type of variable. Use \"bool\" for a boolean, otherwise it is treated as a "
+"string"
+msgstr ""
+"Tipo de variável. Use \"bool\" para booleana, caso contrário, será tratado "
+"como uma string"
+
+#: kreadconfig/kwriteconfig.cpp:36
+msgctxt "main|"
+msgid "Delete the designated key if enabled"
+msgstr "Excluir a chave designada, caso esteja ativa"
+
+#: kreadconfig/kwriteconfig.cpp:37
+msgctxt "notify|"
+msgid "Notify applications of the change"
+msgstr "Notificar mudança aos aplicativos"
+
+#: kreadconfig/kwriteconfig.cpp:38
+msgctxt "main|"
+msgid "The value to write. Mandatory, on a shell use '' for empty"
+msgstr "O valor a ser escrito. Use, no shell, '' para vazio"
+
+#~ msgctxt "KStandardShortcut|@action"
+#~ msgid "Tip Of Day"
+#~ msgstr "Dica do dia"
+
+#~ msgctxt "main|"
+#~ msgid ""
+#~ "For unit tests only: use test directories to stay away from the user's "
+#~ "real files"
+#~ msgstr ""
+#~ "Apenas para testes unitários: Use as pastas de teste para se afastar dos "
+#~ "arquivos reais do usuário"
+
+#~ msgctxt "KStandardShortcut|@action"
+#~ msgid "Save Options"
+#~ msgstr "Salvar opções"
+
+#~ msgctxt "KStandardShortcut|@action"
+#~ msgid "Switch Application Language"
+#~ msgstr "Mudar o idioma do aplicativo"

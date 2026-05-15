@@ -1,0 +1,9 @@
+/*!
+    \module Solid
+    \title Solid C++ Classes
+    \ingroup modules
+    \cmakepackage KF6
+    \cmakecomponent Solid
+
+    \brief Hardware Abstraction Framework.
+*/

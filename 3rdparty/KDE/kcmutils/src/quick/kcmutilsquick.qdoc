@@ -1,0 +1,8 @@
+/*!
+   \module KCMUtilsQuick
+   \title KCMUtils Quick C++ Classes
+   \ingroup modules
+   \cmakepackage KF6
+   \cmakecomponent KCMUtilsQuick
+ */
+

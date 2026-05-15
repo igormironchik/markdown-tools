@@ -1,0 +1,2244 @@
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Tamas Szanto <taszanto@gmail.com>, 2009.
+# Kristóf Kiszel <ulysses@kubuntu.org>, 2010, 2011, 2014, 2019.
+# Balázs Úr <urbalazs@gmail.com>, 2012, 2013, 2014.
+# Kiszel Kristóf <kiszel.kristof@gmail.com>, 2017, 2018, 2020, 2021.
+# SPDX-FileCopyrightText: 2021, 2024, 2025 Kristof Kiszel <ulysses@fsf.hu>
+msgid ""
+msgstr ""
+"Project-Id-Version: KDE 4.4\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-04-01 01:49+0000\n"
+"PO-Revision-Date: 2025-04-26 22:22+0200\n"
+"Last-Translator: Kristof Kiszel <ulysses@fsf.hu>\n"
+"Language-Team: Hungarian <kde-l10n-hu@kde.org>\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 25.04.0\n"
+"X-Qt-Contexts: true\n"
+
+#: solid/devices/backends/fstab/fstabdevice.cpp:69
+#, qt-format
+msgctxt "%1 is sharename, %2 is servername"
+msgid "%1 on %2"
+msgstr "%1 itt: %2"
+
+#: solid/devices/backends/fstab/fstabdevice.cpp:71
+#, qt-format
+msgctxt "%1 is mountpoint, %2 is fs type"
+msgid "%1 (%2)"
+msgstr "%1 (%2)"
+
+#: solid/devices/backends/fstab/fstabmanager.cpp:80
+msgctxt "Solid::Backends::Fstab::FstabManager|"
+msgid "Filesystem Volumes"
+msgstr "Fájlrendszer-kötetek"
+
+#: solid/devices/backends/fstab/fstabmanager.cpp:81
+msgctxt "Solid::Backends::Fstab::FstabManager|"
+msgid "Mountable filesystems declared in your system"
+msgstr "A rendszerben deklarált felcsatolható fájlrendszerek"
+
+#: solid/devices/backends/imobile/imobiledevice.cpp:90
+msgctxt "imobiledevice|Company name"
+msgid "Apple"
+msgstr "Apple"
+
+#: solid/devices/backends/imobile/imobilemanager.cpp:101
+msgctxt "Solid::Backends::IMobile::Manager|"
+msgid "iDevice"
+msgstr "iDevice"
+
+#: solid/devices/backends/imobile/imobilemanager.cpp:102
+msgctxt "Solid::Backends::IMobile::Manager|"
+msgid "iOS devices"
+msgstr "iOS-eszközök"
+
+#: solid/devices/backends/udev/udevdevice.cpp:147
+msgctxt "Solid::Backends::UDev::UDevDevice|"
+msgid "Computer"
+msgstr "Számítógép"
+
+#: solid/devices/backends/udev/udevdevice.cpp:151
+msgctxt "Solid::Backends::UDev::UDevDevice|"
+msgid "Processor"
+msgstr "Processzor"
+
+#: solid/devices/backends/udev/udevdevice.cpp:162
+msgctxt "Solid::Backends::UDev::UDevDevice|"
+msgid "Portable Media Player"
+msgstr "Hordozható médialejátszó"
+
+#: solid/devices/backends/udev/udevdevice.cpp:165
+msgctxt "Solid::Backends::UDev::UDevDevice|"
+msgid "Camera"
+msgstr "Fényképezőgép"
+
+#: solid/devices/backends/udev/udevmanager.cpp:221
+msgctxt "Solid::Backends::UDev::UDevManager|"
+msgid "Devices"
+msgstr "Eszközök"
+
+#: solid/devices/backends/udev/udevmanager.cpp:222
+msgctxt "Solid::Backends::UDev::UDevManager|"
+msgid "Devices declared in your system"
+msgstr "A rendszerben deklarált eszközök"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:43
+#, qt-format
+msgctxt "udisksdevice|"
+msgid "%1 TiB"
+msgstr "%1 TiB"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:45
+#, qt-format
+msgctxt "udisksdevice|"
+msgid "%1 GiB"
+msgstr "%1 GiB"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:51
+#, qt-format
+msgctxt "udisksdevice|"
+msgid "%1 MiB"
+msgstr "%1 MiB"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:56
+#, qt-format
+msgctxt "udisksdevice|"
+msgid "%1 KiB"
+msgstr "%1 KiB"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:60
+#, qt-format
+msgctxt "udisksdevice|"
+msgid "%1 B"
+msgstr "%1 B"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:64
+msgctxt "udisksdevice|"
+msgid "0 B"
+msgstr "0 B"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:75
+#, qt-format
+msgctxt "QObject|%1 is the size, %2 is the block device name e.g. sda, sda1"
+msgid "%1 External Drive (%2)"
+msgstr "%1-os külső meghajtó (%2)"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:77
+#, qt-format
+msgctxt "QObject|%1 is the size, %2 is the block device name e.g. sda, sda1"
+msgid "%1 Internal Drive (%2)"
+msgstr "%1-os belső meghajtó (%2)"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:81
+#, qt-format
+msgctxt "QObject|%1 is the block device name e.g. sda, sda1"
+msgid "External Drive (%1)"
+msgstr "Külső meghajtó (%1)"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:83
+#, qt-format
+msgctxt "QObject|%1 is the block device name e.g. sda, sda1"
+msgid "Internal Drive (%1)"
+msgstr "Belső meghajtó (%1)"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:236
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "Swap Space"
+msgstr "Lapozóterület"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:258
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "Loop Device"
+msgstr "Hurokeszköz"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:274
+msgctxt "Solid::Backends::UDisks2::Device|First item of %1%2 Drive sentence"
+msgid "CD-ROM"
+msgstr "CD-ROM"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:276
+msgctxt "Solid::Backends::UDisks2::Device|First item of %1%2 Drive sentence"
+msgid "CD-R"
+msgstr "CD-R"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:279
+msgctxt "Solid::Backends::UDisks2::Device|First item of %1%2 Drive sentence"
+msgid "CD-RW"
+msgstr "CD-RW"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:283
+msgctxt "Solid::Backends::UDisks2::Device|Second item of %1%2 Drive sentence"
+msgid "/DVD-ROM"
+msgstr "/DVD-ROM"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:286
+msgctxt "Solid::Backends::UDisks2::Device|Second item of %1%2 Drive sentence"
+msgid "/DVD+R"
+msgstr "/DVD+R"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:289
+msgctxt "Solid::Backends::UDisks2::Device|Second item of %1%2 Drive sentence"
+msgid "/DVD+RW"
+msgstr "/DVD+RW"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:292
+msgctxt "Solid::Backends::UDisks2::Device|Second item of %1%2 Drive sentence"
+msgid "/DVD-R"
+msgstr "/DVD-R"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:295
+msgctxt "Solid::Backends::UDisks2::Device|Second item of %1%2 Drive sentence"
+msgid "/DVD-RW"
+msgstr "/DVD-RW"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:298
+msgctxt "Solid::Backends::UDisks2::Device|Second item of %1%2 Drive sentence"
+msgid "/DVD-RAM"
+msgstr "/DVD-RAM"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:302
+msgctxt "Solid::Backends::UDisks2::Device|Second item of %1%2 Drive sentence"
+msgid "/DVD±R DL"
+msgstr "/DVD±R DL"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:304
+msgctxt "Solid::Backends::UDisks2::Device|Second item of %1%2 Drive sentence"
+msgid "/DVD±R"
+msgstr "/DVD±R"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:309
+msgctxt "Solid::Backends::UDisks2::Device|Second item of %1%2 Drive sentence"
+msgid "/DVD±RW DL"
+msgstr "/DVD±RW DL"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:311
+msgctxt "Solid::Backends::UDisks2::Device|Second item of %1%2 Drive sentence"
+msgid "/DVD±RW"
+msgstr "/DVD±RW"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:315
+msgctxt "Solid::Backends::UDisks2::Device|Second item of %1%2 Drive sentence"
+msgid "/BD-ROM"
+msgstr "/BD-ROM"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:318
+msgctxt "Solid::Backends::UDisks2::Device|Second item of %1%2 Drive sentence"
+msgid "/BD-R"
+msgstr "/BD-R"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:321
+msgctxt "Solid::Backends::UDisks2::Device|Second item of %1%2 Drive sentence"
+msgid "/BD-RE"
+msgstr "/BD-RE"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:324
+msgctxt "Solid::Backends::UDisks2::Device|Second item of %1%2 Drive sentence"
+msgid "/HD DVD-ROM"
+msgstr "/HD DVD-ROM"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:327
+msgctxt "Solid::Backends::UDisks2::Device|Second item of %1%2 Drive sentence"
+msgid "/HD DVD-R"
+msgstr "/HD DVD-R"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:330
+msgctxt "Solid::Backends::UDisks2::Device|Second item of %1%2 Drive sentence"
+msgid "/HD DVD-RW"
+msgstr "/HD DVD-RW"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:334
+#, qt-format
+msgctxt ""
+"Solid::Backends::UDisks2::Device|%1 is CD-ROM/CD-R/etc; %2 is '/DVD-ROM'/'/"
+"DVD-R'/etc (with leading slash)"
+msgid "External %1%2 Drive"
+msgstr "Külső %1%2 meghajtó"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:336
+#, qt-format
+msgctxt ""
+"Solid::Backends::UDisks2::Device|%1 is CD-ROM/CD-R/etc; %2 is '/DVD-ROM'/'/"
+"DVD-R'/etc (with leading slash)"
+msgid "%1%2 Drive"
+msgstr "%1%2 meghajtó"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:344
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "External Floppy Drive"
+msgstr "Külső floppy meghajtó"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:346
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "Floppy Drive"
+msgstr "Floppy meghajtó"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:378
+#, qt-format
+msgctxt ""
+"Solid::Backends::UDisks2::Device|%1 is the vendor, %2 is the model of the "
+"device"
+msgid "%1 %2"
+msgstr "%1 %2"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:384
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "Drive"
+msgstr "Meghajtó"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:414
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "CD-ROM"
+msgstr "CD-ROM"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:419
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "Blank CD-R"
+msgstr "Üres CD-R"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:421
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "CD-R"
+msgstr "CD-R"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:427
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "Blank CD-RW"
+msgstr "Üres CD-RW"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:429
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "CD-RW"
+msgstr "CD-RW"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:434
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "DVD-ROM"
+msgstr "DVD-ROM"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:439
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "Blank DVD-RAM"
+msgstr "Üres DVD-RAM"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:441
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "DVD-RAM"
+msgstr "DVD-RAM"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:447
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "Blank DVD-R"
+msgstr "Üres DVD-R"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:449
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "DVD-R"
+msgstr "DVD-R"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:455
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "Blank DVD+R Dual-Layer"
+msgstr "Üres DVD+R (kétrétegű)"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:457
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "DVD+R Dual-Layer"
+msgstr "DVD+R (kétrétegű)"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:463
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "Blank DVD-RW"
+msgstr "Üres DVD-RW"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:465
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "DVD-RW"
+msgstr "DVD-RW"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:471
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "Blank DVD+R"
+msgstr "Üres DVD+R"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:473
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "DVD+R"
+msgstr "DVD+R"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:479
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "Blank DVD+RW"
+msgstr "Üres DVD+RW"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:481
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "DVD+RW"
+msgstr "DVD+RW"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:487
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "Blank DVD+RW Dual-Layer"
+msgstr "Üres DVD+RW (kétrétegű)"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:489
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "DVD+RW Dual-Layer"
+msgstr "DVD+RW (kétrétegű)"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:494
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "BD-ROM"
+msgstr "BD-ROM"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:499
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "Blank BD-R"
+msgstr "Üres BD-R"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:501
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "BD-R"
+msgstr "BD-R"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:507
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "Blank BD-RE"
+msgstr "Üres BD-RE"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:509
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "BD-RE"
+msgstr "BD-RE"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:514
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "HD DVD-ROM"
+msgstr "HD DVD-ROM"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:519
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "Blank HD DVD-R"
+msgstr "Üres HD DVD-R"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:521
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "HD DVD-R"
+msgstr "HD DVD-R"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:527
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "Blank HD DVD-RW"
+msgstr "Üres HD DVD-RW"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:529
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "HD DVD-RW"
+msgstr "HD DVD-RW"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:536
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "Audio CD"
+msgstr "Hang-CD"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:549
+#, qt-format
+msgctxt "Solid::Backends::UDisks2::Device|%1 is the size"
+msgid "%1 Encrypted Drive"
+msgstr "%1-os titkosított meghajtó"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:551
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "Encrypted Drive"
+msgstr "Titkosított meghajtó"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:556
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "Floppy Disk"
+msgstr "Floppy lemez"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:560
+#, qt-format
+msgctxt "Solid::Backends::UDisks2::Device|%1 is the size"
+msgid "%1 Removable Media"
+msgstr "%1-os cserélhető média"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:562
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "Removable Media"
+msgstr "Cserélhető meghajtó"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:566
+#, qt-format
+msgctxt "Solid::Backends::UDisks2::Device|%1 is the size"
+msgid "%1 Media"
+msgstr "%1-os média"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:568
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "Storage Media"
+msgstr "Tárolóeszköz"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:715
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "You are not authorized to perform this operation"
+msgstr "Nincs jogosultsága a művelet végrehajtásához"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:717
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "The device is currently busy"
+msgstr "Az eszköz jelenleg foglalt"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:719
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "The requested operation has failed"
+msgstr "A kért művelet végrehajtása nem sikerült"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:721
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "The requested operation has been canceled"
+msgstr "A kért művelet megszakításra került"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:723
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "An invalid or malformed option has been given"
+msgstr "Érvénytelen vagy hibás opció lett megadva"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:725
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "The kernel driver for this filesystem type is not available"
+msgstr "Nem érhető el kernel-illesztőprogram ehhez a fájlrendszertípushoz"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:727
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "The device is already mounted"
+msgstr "Az eszköz már csatolva van"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:729
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "The device is not mounted"
+msgstr "Az eszköz nincs csatolva"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:731
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "The device is mounted by another user"
+msgstr "Az eszközt egy másik felhasználó csatolta"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:733
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "The device is already unmounting"
+msgstr "Az eszköz már le van választva"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:735
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "The operation timed out"
+msgstr "A művelet túllépte az időkorlátot"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:737
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "The operation would wake up a disk that is in a deep-sleep state"
+msgstr " A művelet felkeltheti a lemezt, amely mély alvó állapotban van"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:739
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "The operation has already been canceled"
+msgstr "A művelet már megszakításra került"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:741
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid ""
+"Cannot request authentication for this action. The PolicyKit authentication "
+"system appears to be not available."
+msgstr ""
+"Nem lehet hitelesítést kérni ehhez a művelethez. A PolicyKit "
+"hitelesítőrendszer nem érhető el."
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:743
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "The authentication prompt was canceled"
+msgstr "A hitelesítési kérést megszakították"
+
+#: solid/devices/backends/udisks2/udisksdevice.cpp:745
+msgctxt "Solid::Backends::UDisks2::Device|"
+msgid "An unspecified error has occurred"
+msgstr "Meghatározatlan hiba történt"
+
+#: solid/devices/backends/udisks2/udisksmanager.cpp:106
+msgctxt "Solid::Backends::UDisks2::Manager|"
+msgid "Storage"
+msgstr "Tároló"
+
+#: solid/devices/backends/udisks2/udisksmanager.cpp:107
+msgctxt "Solid::Backends::UDisks2::Manager|"
+msgid "Storage devices"
+msgstr "Tárolóeszközök"
+
+#: solid/devices/backends/upower/upowerdevice.cpp:120
+#, qt-format
+msgctxt "Solid::Backends::UPower::UPowerDevice|%1 is battery technology"
+msgid "%1 Battery"
+msgstr "%1 akkumulátor"
+
+#: solid/devices/backends/upower/upowerdevice.cpp:137
+msgctxt "Solid::Backends::UPower::UPowerDevice|battery technology"
+msgid "Lithium Ion"
+msgstr "Lítiumion"
+
+#: solid/devices/backends/upower/upowerdevice.cpp:139
+msgctxt "Solid::Backends::UPower::UPowerDevice|battery technology"
+msgid "Lithium Polymer"
+msgstr "Lítiumpolimer"
+
+#: solid/devices/backends/upower/upowerdevice.cpp:141
+msgctxt "Solid::Backends::UPower::UPowerDevice|battery technology"
+msgid "Lithium Iron Phosphate"
+msgstr "Lítium-vas-foszfát"
+
+#: solid/devices/backends/upower/upowerdevice.cpp:143
+msgctxt "Solid::Backends::UPower::UPowerDevice|battery technology"
+msgid "Lead Acid"
+msgstr "Ólmos-savas"
+
+#: solid/devices/backends/upower/upowerdevice.cpp:145
+msgctxt "Solid::Backends::UPower::UPowerDevice|battery technology"
+msgid "Nickel Cadmium"
+msgstr "Nikkel-kadmium"
+
+#: solid/devices/backends/upower/upowerdevice.cpp:147
+msgctxt "Solid::Backends::UPower::UPowerDevice|battery technology"
+msgid "Nickel Metal Hydride"
+msgstr "Nikkel-fém hibrid"
+
+#: solid/devices/backends/upower/upowermanager.cpp:61
+msgctxt "Solid::Backends::UPower::UPowerManager|"
+msgid "Power Management"
+msgstr "Energiakezelés"
+
+#: solid/devices/backends/upower/upowermanager.cpp:62
+msgctxt "Solid::Backends::UPower::UPowerManager|"
+msgid "Batteries and other sources of power"
+msgstr "Akkumulátorok és egyéb energiaforrások"
+
+#: solid/devices/backends/win/windevice.cpp:158
+msgctxt "Solid::Backends::Win::WinDevice|battery technology"
+msgid "Lithium Ion"
+msgstr "Lítiumion"
+
+#: solid/devices/backends/win/windevice.cpp:161
+msgctxt "Solid::Backends::Win::WinDevice|battery technology"
+msgid "Lead Acid"
+msgstr "Ólmos-savas"
+
+#: solid/devices/backends/win/windevice.cpp:164
+msgctxt "Solid::Backends::Win::WinDevice|battery technology"
+msgid "Nickel Cadmium"
+msgstr "Nikkel-kadmium"
+
+#: solid/devices/backends/win/windevice.cpp:167
+msgctxt "Solid::Backends::Win::WinDevice|battery technology"
+msgid "Nickel Metal Hydride"
+msgstr "Nikkel-fém hibrid"
+
+#: solid/devices/backends/win/windevice.cpp:170
+msgctxt "Solid::Backends::Win::WinDevice|battery technology"
+msgid "Unknown"
+msgstr "Ismeretlen"
+
+#: solid/devices/frontend/deviceinterface.cpp:53
+msgctxt "Solid::DeviceInterface|Unknown device type"
+msgid "Unknown"
+msgstr "Ismeretlen"
+
+#: solid/devices/frontend/deviceinterface.cpp:55
+msgctxt "Solid::DeviceInterface|Generic Interface device type"
+msgid "Generic Interface"
+msgstr "Általános csatoló"
+
+#: solid/devices/frontend/deviceinterface.cpp:57
+msgctxt "Solid::DeviceInterface|Processor device type"
+msgid "Processor"
+msgstr "Processzor"
+
+#: solid/devices/frontend/deviceinterface.cpp:59
+msgctxt "Solid::DeviceInterface|Block device type"
+msgid "Block"
+msgstr "Blokk"
+
+#: solid/devices/frontend/deviceinterface.cpp:61
+msgctxt "Solid::DeviceInterface|Storage Access device type"
+msgid "Storage Access"
+msgstr "Tároló hozzáférés"
+
+#: solid/devices/frontend/deviceinterface.cpp:63
+msgctxt "Solid::DeviceInterface|Storage Drive device type"
+msgid "Storage Drive"
+msgstr "Tároló eszköz"
+
+#: solid/devices/frontend/deviceinterface.cpp:65
+msgctxt "Solid::DeviceInterface|Optical Drive device type"
+msgid "Optical Drive"
+msgstr "Optikai meghajtó"
+
+#: solid/devices/frontend/deviceinterface.cpp:67
+msgctxt "Solid::DeviceInterface|Storage Volume device type"
+msgid "Storage Volume"
+msgstr "Tároló eszköz"
+
+#: solid/devices/frontend/deviceinterface.cpp:69
+msgctxt "Solid::DeviceInterface|Optical Disc device type"
+msgid "Optical Disc"
+msgstr "Optikai lemez"
+
+#: solid/devices/frontend/deviceinterface.cpp:71
+msgctxt "Solid::DeviceInterface|Camera device type"
+msgid "Camera"
+msgstr "Fényképezőgép"
+
+#: solid/devices/frontend/deviceinterface.cpp:73
+msgctxt "Solid::DeviceInterface|Portable Media Player device type"
+msgid "Portable Media Player"
+msgstr "Hordozható médialejátszó"
+
+#: solid/devices/frontend/deviceinterface.cpp:75
+msgctxt "Solid::DeviceInterface|Battery device type"
+msgid "Battery"
+msgstr "Akkumulátor"
+
+#: solid/devices/frontend/deviceinterface.cpp:77
+msgctxt "Solid::DeviceInterface|Network Share device type"
+msgid "Network Share"
+msgstr "Hálózati megosztás"
+
+#: tools/solid-hardware/solid-hardware.cpp:218
+#: tools/solid-hardware/solid-hardware.cpp:341
+msgctxt "solid-hardware|"
+msgid "Device udi"
+msgstr "Eszköz UDI"
+
+#: tools/solid-hardware/solid-hardware.cpp:230
+msgctxt "solid-hardware|"
+msgid "Syntax:"
+msgstr "Szintaxis:"
+
+#: tools/solid-hardware/solid-hardware.cpp:233
+msgctxt "solid-hardware|"
+msgid ""
+"             # List the hardware available in the system.\n"
+"             # - If the 'nonportableinfo' option is specified, the device\n"
+"             # properties are listed (be careful, in this case property "
+"names\n"
+"             # are backend dependent),\n"
+"             # - If the 'details' option is specified, the device "
+"interfaces\n"
+"             # and the corresponding properties are listed in a platform\n"
+"             # neutral fashion,\n"
+"             # - Otherwise only device UDIs are listed.\n"
+msgstr ""
+"             # Kilistázza a rendszer hardvereit.\n"
+"             # - Ha a 'nonportableinfo' opciót megadja, az eszközök\n"
+"             # tulajdonságait listázza (legyen óvatos, ebben az esetben a "
+"tulajdonságnevek\n"
+"             # modulfüggők),\n"
+"             # - Ha a 'details' opciót megadja, az eszközök csatolói\n"
+"             # és kapcsolódó tulajdonságai platformfüggetlen módon\n"
+"             # listázódnak,\n"
+"             # - Egyébként csak az eszköz UDI-kat listázza.\n"
+
+#: tools/solid-hardware/solid-hardware.cpp:245
+msgctxt "solid-hardware|"
+msgid ""
+"             # Display all the interfaces and properties of the device\n"
+"             # corresponding to 'udi' in a platform neutral fashion.\n"
+msgstr ""
+"             # Megjeleníti az „udi” azonosítójú eszköz összes csatolóját\n"
+"             # és tulajdonságát platformfüggetlen módon.\n"
+
+#: tools/solid-hardware/solid-hardware.cpp:251
+msgctxt "solid-hardware|"
+msgid ""
+"             # Display all the properties of the device corresponding to "
+"'udi'\n"
+"             # (be careful, in this case property names are backend "
+"dependent).\n"
+msgstr ""
+"             # Megjeleníti az „udi” azonosítójú eszköz összes csatolóját\n"
+"             # (legyen óvatos, ebben az esetben a tulajdonságnevek "
+"modulfüggők).\n"
+
+#: tools/solid-hardware/solid-hardware.cpp:257
+msgctxt "solid-hardware|"
+msgid ""
+"             # List the UDI of devices corresponding to 'predicate'.\n"
+"             # - If 'parentUdi' is specified, the search is restricted to "
+"the\n"
+"             # branch of the corresponding device,\n"
+"             # - Otherwise the search is done on all the devices.\n"
+msgstr ""
+"             # Listázza 'predicate'-nek megfelelő eszközök UDI-ját.\n"
+"             # - Ha a 'parentUdi' meg van adva, a keresés\n"
+"             # az adott eszköz ágára korlátozódik,\n"
+"             # - Egyébként az összes eszköz közt keres.\n"
+
+#: tools/solid-hardware/solid-hardware.cpp:265
+msgctxt "solid-hardware|"
+msgid ""
+"             # If applicable, mount the device corresponding to 'udi'.\n"
+msgstr ""
+"             # Ha alkalmazható, akkor csatolja az „udi” azonosítójú "
+"eszközt.\n"
+
+#: tools/solid-hardware/solid-hardware.cpp:268
+msgctxt "solid-hardware|"
+msgid ""
+"             # If applicable, unmount the device corresponding to 'udi'.\n"
+msgstr ""
+"             # Ha alkalmazható, akkor leválasztja az „udi” azonosítójú "
+"eszközt.\n"
+
+#: tools/solid-hardware/solid-hardware.cpp:271
+msgctxt "solid-hardware|"
+msgid ""
+"             # If applicable, eject the device corresponding to 'udi'.\n"
+msgstr "             # Ha alkalmazható, kiadja az „udi” azonosítójú eszközt\n"
+
+#: tools/solid-hardware/solid-hardware.cpp:274
+msgctxt "solid-hardware|"
+msgid "             # Listen to all add/remove events on supported hardware.\n"
+msgstr ""
+"             # Az összes hozzáadás/eltávolítás esemény figyelése támogatott "
+"hardveren.\n"
+
+#: tools/solid-hardware/solid-hardware.cpp:277
+msgctxt "solid-hardware|"
+msgid "             # Monitor devices for changes.\n"
+msgstr "             # Eszközök változásainak figyelése.\n"
+
+#: tools/solid-hardware/solid-hardware.cpp:280
+msgctxt "solid-hardware|"
+msgid ""
+"             # Send \"CanCheck\" request to the device corresponding to "
+"'udi'.\n"
+msgstr ""
+"             # „CanCheck” kérés küldése az „uid” azonosítójú eszköznek:\n"
+
+#: tools/solid-hardware/solid-hardware.cpp:283
+msgctxt "solid-hardware|"
+msgid ""
+"             # Send \"Check\" request to the device corresponding to 'udi'.\n"
+msgstr "             # „Check” kérés küldése az „uid” azonosítójú eszköznek:\n"
+
+#: tools/solid-hardware/solid-hardware.cpp:286
+msgctxt "solid-hardware|"
+msgid ""
+"             # Send \"CanRepair\" request to the device corresponding to "
+"'udi'.\n"
+msgstr ""
+"             # „CanRepair” kérés küldése az „uid” azonosítójú eszköznek:\n"
+
+#: tools/solid-hardware/solid-hardware.cpp:289
+msgctxt "solid-hardware|"
+msgid ""
+"             # Send \"Repair\" request to the device corresponding to "
+"'udi'.\n"
+msgstr ""
+"             # „Repair” kérés küldése az „uid” azonosítójú eszköznek:\n"
+
+#: tools/solid-hardware/solid-hardware.cpp:301
+msgctxt "solid-hardware|"
+msgid "KDE tool for querying your hardware from the command line"
+msgstr "KDE segédprogram a hardverek lekérdezésére parancssorból"
+
+#: tools/solid-hardware/solid-hardware.cpp:304
+msgctxt "solid-hardware|"
+msgid "Command to execute"
+msgstr "A végrehajtandó parancs"
+
+#: tools/solid-hardware/solid-hardware.cpp:306
+msgctxt "solid-hardware|"
+msgid "Show available commands"
+msgstr "Parancslista"
+
+#: tools/solid-hardware/solid-hardware.cpp:328
+msgctxt "solid-hardware|"
+msgid "Show device details"
+msgstr "Eszköz adatainak megjelenítése"
+
+#: tools/solid-hardware/solid-hardware.cpp:329
+msgctxt "solid-hardware|"
+msgid "Show non portable information"
+msgstr "Nem hordozható információk megjelenítése"
+
+#: tools/solid-hardware/solid-hardware.cpp:342
+msgctxt "solid-hardware|"
+msgid "Parent device udi"
+msgstr "Szülő eszköz UDI-ja"
+
+#: tools/solid-hardware/solid-hardware.cpp:384
+#, qt-format
+msgctxt "solid-hardware|"
+msgid "Syntax Error: Unknown command '%1'"
+msgstr "Szintaktikai hiba: ismeretlen parancs: „%1”"
+
+#: tools/solid-hardware/solid-hardware.cpp:446
+#, qt-format
+msgctxt "SolidHardware|"
+msgid "Error: %1 does not have the interface StorageAccess."
+msgstr "Hiba: a(z) %1 nem rendelkezik StorageAccess csatolóval."
+
+#: tools/solid-hardware/solid-hardware.cpp:449
+#, qt-format
+msgctxt "SolidHardware|"
+msgid "Error: %1 does not have the interface OpticalDrive."
+msgstr "Hiba: a(z) %1 nem rendelkezik OpticalDrive csatolóval."
+
+#: tools/solid-hardware/solid-hardware.cpp:476
+#, qt-format
+msgctxt "SolidHardware|"
+msgid "Device CanCheck: %1"
+msgstr "CanCheck eredménye: %1"
+
+#: tools/solid-hardware/solid-hardware.cpp:476
+#: tools/solid-hardware/solid-hardware.cpp:491
+msgctxt "SolidHardware|"
+msgid "no"
+msgstr "nem"
+
+#: tools/solid-hardware/solid-hardware.cpp:476
+#: tools/solid-hardware/solid-hardware.cpp:491
+msgctxt "SolidHardware|"
+msgid "yes"
+msgstr "igen"
+
+#: tools/solid-hardware/solid-hardware.cpp:487
+msgctxt "SolidHardware|"
+msgid "Device Check: operation is not supported"
+msgstr "Check: a művelet nem támogatott"
+
+#: tools/solid-hardware/solid-hardware.cpp:491
+#, qt-format
+msgctxt "SolidHardware|"
+msgid "Device CanRepair: %1"
+msgstr "CanRepair eredménye: %1"
+
+#: tools/solid-hardware/solid-hardware.cpp:506
+#, qt-format
+msgctxt "SolidHardware|"
+msgid "Error: %1"
+msgstr "Hiba: %1"
+
+#: tools/solid-hardware/solid-hardware.cpp:577
+#, qt-format
+msgctxt "SolidHardware|"
+msgid "Device check: %1"
+msgstr "Check eredménye: %1"
+
+#: tools/solid-hardware/solid-hardware.cpp:577
+msgctxt "SolidHardware|"
+msgid "no error"
+msgstr "nincs hiba"
+
+#: tools/solid-hardware/solid-hardware.cpp:577
+msgctxt "SolidHardware|"
+msgid "has error"
+msgstr "van hiba"
+
+#~ msgctxt "Solid::Backends::UPower::UPowerDevice|battery technology"
+#~ msgid "Unknown"
+#~ msgstr "Ismeretlen"
+
+#~ msgctxt "solid-power|"
+#~ msgid "Tool to know and set the power management state of your device"
+#~ msgstr ""
+#~ "Segédprogram az eszköz energiakezelési állapotának lekérdezésére és "
+#~ "beállítására"
+
+#~ msgctxt "solid-power|"
+#~ msgid "Command to execute"
+#~ msgstr "A végrehajtandó parancs"
+
+#~ msgctxt "solid-power|"
+#~ msgid "Show available commands"
+#~ msgstr "Parancslista"
+
+#~ msgctxt "solid-power|"
+#~ msgid ""
+#~ "             # Show all the power management information from the "
+#~ "system.\n"
+#~ "             # - acPlugged: whether the device is connected to the AC or "
+#~ "not\n"
+#~ msgstr ""
+#~ "             # Megjeleníti a rendszer összes energiakezelési "
+#~ "jellemzőjét.\n"
+#~ "             # - acPlugged: csatlakoztatva van-e a hálózati töltő vagy "
+#~ "sem\n"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "%1 TiB"
+#~ msgstr "%1 TiB"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "%1 GiB"
+#~ msgstr "%1 GiB"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "%1 MiB"
+#~ msgstr "%1 MiB"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "%1 KiB"
+#~ msgstr "%1 KiB"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "%1 B"
+#~ msgstr "%1 B"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "0 B"
+#~ msgstr "0 B"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "WLAN Interface"
+#~ msgstr "WLAN-csatoló"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "Networking Interface"
+#~ msgstr "Hálózati csatoló"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|First item of %1%2 Drive sentence"
+#~ msgid "CD-ROM"
+#~ msgstr "CD-ROM"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|First item of %1%2 Drive sentence"
+#~ msgid "CD-R"
+#~ msgstr "CD-R"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|First item of %1%2 Drive sentence"
+#~ msgid "CD-RW"
+#~ msgstr "CD-RW"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/DVD-ROM"
+#~ msgstr "/DVD-ROM"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/DVD+R"
+#~ msgstr "/DVD+R"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/DVD+RW"
+#~ msgstr "/DVD+RW"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/DVD-R"
+#~ msgstr "/DVD-R"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/DVD-RW"
+#~ msgstr "/DVD-RW"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/DVD-RAM"
+#~ msgstr "/DVD-RAM"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/DVD±R DL"
+#~ msgstr "/DVD±R DL"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/DVD±R"
+#~ msgstr "/DVD±R"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/DVD±RW DL"
+#~ msgstr "/DVD±RW DL"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/DVD±RW"
+#~ msgstr "/DVD±RW"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/BD-ROM"
+#~ msgstr "/BD-ROM"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/BD-R"
+#~ msgstr "/BD-R"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/BD-RE"
+#~ msgstr "/BD-RE"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/HD DVD-ROM"
+#~ msgstr "/HD DVD-ROM"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/HD DVD-R"
+#~ msgstr "/HD DVD-R"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/HD DVD-RW"
+#~ msgstr "/HD DVD-RW"
+
+#~ msgctxt ""
+#~ "Solid::Backends::Hal::HalDevice|%1 is CD-ROM/CD-R/etc; %2 is '/DVD-ROM'/'/"
+#~ "DVD-R'/etc (with leading slash)"
+#~ msgid "External %1%2 Drive"
+#~ msgstr "Külső %1%2 meghajtó"
+
+#~ msgctxt ""
+#~ "Solid::Backends::Hal::HalDevice|%1 is CD-ROM/CD-R/etc; %2 is '/DVD-ROM'/'/"
+#~ "DVD-R'/etc (with leading slash)"
+#~ msgid "%1%2 Drive"
+#~ msgstr "%1%2 meghajtó"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "External Floppy Drive"
+#~ msgstr "Külső floppy meghajtó"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "Floppy Drive"
+#~ msgstr "Floppy meghajtó"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|%1 is the size"
+#~ msgid "%1 External Hard Drive"
+#~ msgstr "%1-os külső merevlemez"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|%1 is the size"
+#~ msgid "%1 Hard Drive"
+#~ msgstr "%1-os merevlemez"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "External Hard Drive"
+#~ msgstr "Külső merevlemez"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "Hard Drive"
+#~ msgstr "Merevlemez"
+
+#~ msgctxt ""
+#~ "Solid::Backends::Hal::HalDevice|%1 is the vendor, %2 is the model of the "
+#~ "device"
+#~ msgid "%1 %2"
+#~ msgstr "%1 %2"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "Drive"
+#~ msgstr "Meghajtó"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "CD-ROM"
+#~ msgstr "CD-ROM"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "Blank CD-R"
+#~ msgstr "Üres CD-R"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "CD-R"
+#~ msgstr "CD-R"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "Blank CD-RW"
+#~ msgstr "Üres CD-RW"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "CD-RW"
+#~ msgstr "CD-RW"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "DVD-ROM"
+#~ msgstr "DVD-ROM"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "Blank DVD-RAM"
+#~ msgstr "Üres DVD-RAM"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "DVD-RAM"
+#~ msgstr "DVD-RAM"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "Blank DVD-R"
+#~ msgstr "Üres DVD-R"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "DVD-R"
+#~ msgstr "DVD-R"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "Blank DVD+R Dual-Layer"
+#~ msgstr "Üres DVD+R (kétrétegű)"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "DVD+R Dual-Layer"
+#~ msgstr "DVD+R (kétrétegű)"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "Blank DVD-RW"
+#~ msgstr "Üres DVD-RW"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "DVD-RW"
+#~ msgstr "DVD-RW"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "Blank DVD+R"
+#~ msgstr "Üres DVD+R"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "DVD+R"
+#~ msgstr "DVD+R"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "Blank DVD+RW"
+#~ msgstr "Üres DVD+RW"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "DVD+RW"
+#~ msgstr "DVD+RW"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "Blank DVD+RW Dual-Layer"
+#~ msgstr "Üres DVD+RW (kétrétegű)"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "DVD+RW Dual-Layer"
+#~ msgstr "DVD+RW (kétrétegű)"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "BD-ROM"
+#~ msgstr "BD-ROM"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "Blank BD-R"
+#~ msgstr "Üres BD-R"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "BD-R"
+#~ msgstr "BD-R"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "Blank BD-RE"
+#~ msgstr "Üres BD-RE"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "BD-RE"
+#~ msgstr "BD-RE"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "HD DVD-ROM"
+#~ msgstr "HD DVD-ROM"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "Blank HD DVD-R"
+#~ msgstr "Üres HD DVD-R"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "HD DVD-R"
+#~ msgstr "HD DVD-R"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "Blank HD DVD-RW"
+#~ msgstr "Üres HD DVD-RW"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "HD DVD-RW"
+#~ msgstr "HD DVD-RW"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "Audio CD"
+#~ msgstr "Hang-CD"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|%1 is the size"
+#~ msgid "%1 Encrypted Container"
+#~ msgstr "%1-os titkosított konténer"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|"
+#~ msgid "Encrypted Container"
+#~ msgstr "Titkosított konténer"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|%1 is the size"
+#~ msgid "%1 Removable Media"
+#~ msgstr "%1-os cserélhető média"
+
+#~ msgctxt "Solid::Backends::Hal::HalDevice|%1 is the size"
+#~ msgid "%1 Media"
+#~ msgstr "%1-os média"
+
+#~ msgctxt "Solid::Backends::UDisks2::Device|%1 is the size"
+#~ msgid "%1 External Hard Drive"
+#~ msgstr "%1-os külső merevlemez"
+
+#~ msgctxt "Solid::Backends::UDisks2::Device|%1 is the size"
+#~ msgid "%1 Hard Drive"
+#~ msgstr "%1-os merevlemez"
+
+#~ msgctxt "Solid::Backends::UDisks2::Device|"
+#~ msgid "External Hard Drive"
+#~ msgstr "-os külső merevlemez"
+
+#~ msgctxt "Solid::Backends::UDisks2::Device|"
+#~ msgid "Hard Drive"
+#~ msgstr "Merevlemez"
+
+#~ msgctxt "Solid::Backends::Fstab::FstabManager|"
+#~ msgid "Network Shares"
+#~ msgstr "Hálózati megosztások"
+
+#~ msgctxt "Solid::Backends::Fstab::FstabManager|"
+#~ msgid "NFS and SMB shares declared in your system"
+#~ msgstr "A rendszerben deklarált NFS- és SMB-megosztások"
+
+#, fuzzy
+#~| msgctxt "battery technology"
+#~| msgid "Unknown"
+#~ msgctxt "Solid::Backends::Win::WinBattery|battery technology"
+#~ msgid "Unknown"
+#~ msgstr "Ismeretlen"
+
+#, fuzzy
+#~| msgid "%1 TiB"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "%1 TiB"
+#~ msgstr "%1 TiB"
+
+#, fuzzy
+#~| msgid "%1 GiB"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "%1 GiB"
+#~ msgstr "%1 GiB"
+
+#, fuzzy
+#~| msgid "%1 MiB"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "%1 MiB"
+#~ msgstr "%1 MiB"
+
+#, fuzzy
+#~| msgid "%1 KiB"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "%1 KiB"
+#~ msgstr "%1 KiB"
+
+#, fuzzy
+#~| msgid "%1 B"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "%1 B"
+#~ msgstr "%1 B"
+
+#, fuzzy
+#~| msgid "0 B"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "0 B"
+#~ msgstr "0 B"
+
+#, fuzzy
+#~| msgid "CD-ROM"
+#~ msgctxt ""
+#~ "Solid::Backends::UDisks::UDisksDevice|First item of %1%2 Drive sentence"
+#~ msgid "CD-ROM"
+#~ msgstr "CD-ROM"
+
+#, fuzzy
+#~| msgid "CD-R"
+#~ msgctxt ""
+#~ "Solid::Backends::UDisks::UDisksDevice|First item of %1%2 Drive sentence"
+#~ msgid "CD-R"
+#~ msgstr "CD-R"
+
+#, fuzzy
+#~| msgid "CD-RW"
+#~ msgctxt ""
+#~ "Solid::Backends::UDisks::UDisksDevice|First item of %1%2 Drive sentence"
+#~ msgid "CD-RW"
+#~ msgstr "CD-RW"
+
+#, fuzzy
+#~| msgctxt "Second item of %1%2 Drive sentence"
+#~| msgid "/DVD-ROM"
+#~ msgctxt ""
+#~ "Solid::Backends::UDisks::UDisksDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/DVD-ROM"
+#~ msgstr "/DVD-ROM"
+
+#, fuzzy
+#~| msgctxt "Second item of %1%2 Drive sentence"
+#~| msgid "/DVD+R"
+#~ msgctxt ""
+#~ "Solid::Backends::UDisks::UDisksDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/DVD+R"
+#~ msgstr "/DVD+R"
+
+#, fuzzy
+#~| msgctxt "Second item of %1%2 Drive sentence"
+#~| msgid "/DVD+RW"
+#~ msgctxt ""
+#~ "Solid::Backends::UDisks::UDisksDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/DVD+RW"
+#~ msgstr "/DVD+RW"
+
+#, fuzzy
+#~| msgctxt "Second item of %1%2 Drive sentence"
+#~| msgid "/DVD-R"
+#~ msgctxt ""
+#~ "Solid::Backends::UDisks::UDisksDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/DVD-R"
+#~ msgstr "/DVD-R"
+
+#, fuzzy
+#~| msgctxt "Second item of %1%2 Drive sentence"
+#~| msgid "/DVD-RW"
+#~ msgctxt ""
+#~ "Solid::Backends::UDisks::UDisksDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/DVD-RW"
+#~ msgstr "/DVD-RW"
+
+#, fuzzy
+#~| msgctxt "Second item of %1%2 Drive sentence"
+#~| msgid "/DVD-RAM"
+#~ msgctxt ""
+#~ "Solid::Backends::UDisks::UDisksDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/DVD-RAM"
+#~ msgstr "/DVD-RAM"
+
+#, fuzzy
+#~| msgctxt "Second item of %1%2 Drive sentence"
+#~| msgid "/DVD±R DL"
+#~ msgctxt ""
+#~ "Solid::Backends::UDisks::UDisksDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/DVD±R DL"
+#~ msgstr "/DVD±R DL"
+
+#, fuzzy
+#~| msgctxt "Second item of %1%2 Drive sentence"
+#~| msgid "/DVD±R"
+#~ msgctxt ""
+#~ "Solid::Backends::UDisks::UDisksDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/DVD±R"
+#~ msgstr "/DVD±R"
+
+#, fuzzy
+#~| msgctxt "Second item of %1%2 Drive sentence"
+#~| msgid "/DVD±RW DL"
+#~ msgctxt ""
+#~ "Solid::Backends::UDisks::UDisksDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/DVD±RW DL"
+#~ msgstr "/DVD±RW DL"
+
+#, fuzzy
+#~| msgctxt "Second item of %1%2 Drive sentence"
+#~| msgid "/DVD±RW"
+#~ msgctxt ""
+#~ "Solid::Backends::UDisks::UDisksDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/DVD±RW"
+#~ msgstr "/DVD±RW"
+
+#, fuzzy
+#~| msgctxt "Second item of %1%2 Drive sentence"
+#~| msgid "/BD-ROM"
+#~ msgctxt ""
+#~ "Solid::Backends::UDisks::UDisksDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/BD-ROM"
+#~ msgstr "/BD-ROM"
+
+#, fuzzy
+#~| msgctxt "Second item of %1%2 Drive sentence"
+#~| msgid "/BD-R"
+#~ msgctxt ""
+#~ "Solid::Backends::UDisks::UDisksDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/BD-R"
+#~ msgstr "/BD-R"
+
+#, fuzzy
+#~| msgctxt "Second item of %1%2 Drive sentence"
+#~| msgid "/BD-RE"
+#~ msgctxt ""
+#~ "Solid::Backends::UDisks::UDisksDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/BD-RE"
+#~ msgstr "/BD-RE"
+
+#, fuzzy
+#~| msgctxt "Second item of %1%2 Drive sentence"
+#~| msgid "/HD DVD-ROM"
+#~ msgctxt ""
+#~ "Solid::Backends::UDisks::UDisksDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/HD DVD-ROM"
+#~ msgstr "/HD DVD-ROM"
+
+#, fuzzy
+#~| msgctxt "Second item of %1%2 Drive sentence"
+#~| msgid "/HD DVD-R"
+#~ msgctxt ""
+#~ "Solid::Backends::UDisks::UDisksDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/HD DVD-R"
+#~ msgstr "/HD DVD-R"
+
+#, fuzzy
+#~| msgctxt "Second item of %1%2 Drive sentence"
+#~| msgid "/HD DVD-RW"
+#~ msgctxt ""
+#~ "Solid::Backends::UDisks::UDisksDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/HD DVD-RW"
+#~ msgstr "/HD DVD-RW"
+
+#, fuzzy
+#~| msgctxt ""
+#~| "%1 is CD-ROM/CD-R/etc; %2 is '/DVD-ROM'/'/DVD-R'/etc (with leading slash)"
+#~| msgid "External %1%2 Drive"
+#~ msgctxt ""
+#~ "Solid::Backends::UDisks::UDisksDevice|%1 is CD-ROM/CD-R/etc; %2 is '/DVD-"
+#~ "ROM'/'/DVD-R'/etc (with leading slash)"
+#~ msgid "External %1%2 Drive"
+#~ msgstr "Külső %1%2 meghajtó"
+
+#, fuzzy
+#~| msgctxt ""
+#~| "%1 is CD-ROM/CD-R/etc; %2 is '/DVD-ROM'/'/DVD-R'/etc (with leading slash)"
+#~| msgid "%1%2 Drive"
+#~ msgctxt ""
+#~ "Solid::Backends::UDisks::UDisksDevice|%1 is CD-ROM/CD-R/etc; %2 is '/DVD-"
+#~ "ROM'/'/DVD-R'/etc (with leading slash)"
+#~ msgid "%1%2 Drive"
+#~ msgstr "%1%2 meghajtó"
+
+#, fuzzy
+#~| msgid "External Floppy Drive"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "External Floppy Drive"
+#~ msgstr "Külső floppy-meghajtó"
+
+#, fuzzy
+#~| msgid "Floppy Drive"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "Floppy Drive"
+#~ msgstr "Floppy-meghajtó"
+
+#, fuzzy
+#~| msgctxt "%1 is the size"
+#~| msgid "%1 External Hard Drive"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|%1 is the size"
+#~ msgid "%1 External Hard Drive"
+#~ msgstr "%1 külső merevlemez"
+
+#, fuzzy
+#~| msgctxt "%1 is the size"
+#~| msgid "%1 Hard Drive"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|%1 is the size"
+#~ msgid "%1 Hard Drive"
+#~ msgstr "%1 merevlemez"
+
+#, fuzzy
+#~| msgid "External Hard Drive"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "External Hard Drive"
+#~ msgstr "Külső merevlemez"
+
+#, fuzzy
+#~| msgid "Hard Drive"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "Hard Drive"
+#~ msgstr "Merevlemez"
+
+#, fuzzy
+#~| msgctxt "%1 is the vendor, %2 is the model of the device"
+#~| msgid "%1 %2"
+#~ msgctxt ""
+#~ "Solid::Backends::UDisks::UDisksDevice|%1 is the vendor, %2 is the model "
+#~ "of the device"
+#~ msgid "%1 %2"
+#~ msgstr "%1 %2"
+
+#, fuzzy
+#~| msgid "Drive"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "Drive"
+#~ msgstr "Meghajtó"
+
+#, fuzzy
+#~| msgid "CD-ROM"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "CD-ROM"
+#~ msgstr "CD-ROM"
+
+#, fuzzy
+#~| msgid "Blank CD-R"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "Blank CD-R"
+#~ msgstr "Üres CD-R"
+
+#, fuzzy
+#~| msgid "CD-R"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "CD-R"
+#~ msgstr "CD-R"
+
+#, fuzzy
+#~| msgid "Blank CD-RW"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "Blank CD-RW"
+#~ msgstr "Üres CD-RW"
+
+#, fuzzy
+#~| msgid "CD-RW"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "CD-RW"
+#~ msgstr "CD-RW"
+
+#, fuzzy
+#~| msgid "DVD-ROM"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "DVD-ROM"
+#~ msgstr "DVD-ROM"
+
+#, fuzzy
+#~| msgid "Blank DVD-RAM"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "Blank DVD-RAM"
+#~ msgstr "Üres DVD-RAM"
+
+#, fuzzy
+#~| msgid "DVD-RAM"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "DVD-RAM"
+#~ msgstr "DVD-RAM"
+
+#, fuzzy
+#~| msgid "Blank DVD-R"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "Blank DVD-R"
+#~ msgstr "Üres DVD-R"
+
+#, fuzzy
+#~| msgid "DVD-R"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "DVD-R"
+#~ msgstr "DVD-R"
+
+#, fuzzy
+#~| msgid "Blank DVD+R Dual-Layer"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "Blank DVD+R Dual-Layer"
+#~ msgstr "Üres DVD+R (kétrétegű)"
+
+#, fuzzy
+#~| msgid "DVD+R Dual-Layer"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "DVD+R Dual-Layer"
+#~ msgstr "DVD+R (kétrétegű)"
+
+#, fuzzy
+#~| msgid "Blank DVD-RW"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "Blank DVD-RW"
+#~ msgstr "Üres DVD-RW"
+
+#, fuzzy
+#~| msgid "DVD-RW"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "DVD-RW"
+#~ msgstr "DVD-RW"
+
+#, fuzzy
+#~| msgid "Blank DVD+R"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "Blank DVD+R"
+#~ msgstr "Üres DVD+R"
+
+#, fuzzy
+#~| msgid "DVD+R"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "DVD+R"
+#~ msgstr "DVD+R"
+
+#, fuzzy
+#~| msgid "Blank DVD+RW"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "Blank DVD+RW"
+#~ msgstr "Üres DVD+RW"
+
+#, fuzzy
+#~| msgid "DVD+RW"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "DVD+RW"
+#~ msgstr "DVD+RW"
+
+#, fuzzy
+#~| msgid "Blank DVD+RW Dual-Layer"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "Blank DVD+RW Dual-Layer"
+#~ msgstr "Üres DVD+RW (kétrétegű)"
+
+#, fuzzy
+#~| msgid "DVD+RW Dual-Layer"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "DVD+RW Dual-Layer"
+#~ msgstr "DVD+RW (kétrétegű)"
+
+#, fuzzy
+#~| msgid "BD-ROM"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "BD-ROM"
+#~ msgstr "BD-ROM"
+
+#, fuzzy
+#~| msgid "Blank BD-R"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "Blank BD-R"
+#~ msgstr "Üres BD-R"
+
+#, fuzzy
+#~| msgid "BD-R"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "BD-R"
+#~ msgstr "BD-R"
+
+#, fuzzy
+#~| msgid "Blank BD-RE"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "Blank BD-RE"
+#~ msgstr "Üres BD-RE"
+
+#, fuzzy
+#~| msgid "BD-RE"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "BD-RE"
+#~ msgstr "BD-RE"
+
+#, fuzzy
+#~| msgid "HD DVD-ROM"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "HD DVD-ROM"
+#~ msgstr "HD DVD-ROM"
+
+#, fuzzy
+#~| msgid "Blank HD DVD-R"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "Blank HD DVD-R"
+#~ msgstr "Üres HD DVD-R"
+
+#, fuzzy
+#~| msgid "HD DVD-R"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "HD DVD-R"
+#~ msgstr "HD DVD-R"
+
+#, fuzzy
+#~| msgid "Blank HD DVD-RW"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "Blank HD DVD-RW"
+#~ msgstr "Üres HD DVD-RW"
+
+#, fuzzy
+#~| msgid "HD DVD-RW"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "HD DVD-RW"
+#~ msgstr "HD DVD-RW"
+
+#, fuzzy
+#~| msgid "Audio CD"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "Audio CD"
+#~ msgstr "Hang-CD"
+
+#, fuzzy
+#~| msgctxt "%1 is the size"
+#~| msgid "%1 Encrypted Container"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|%1 is the size"
+#~ msgid "%1 Encrypted Container"
+#~ msgstr "%1 titkosított konténer"
+
+#, fuzzy
+#~| msgid "Encrypted Container"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "Encrypted Container"
+#~ msgstr "Titkosított konténer"
+
+#, fuzzy
+#~| msgctxt "%1 is the size"
+#~| msgid "%1 Removable Media"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|%1 is the size"
+#~ msgid "%1 Removable Media"
+#~ msgstr "%1 cserélhető média"
+
+#, fuzzy
+#~| msgctxt "%1 is the size"
+#~| msgid "%1 Media"
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|%1 is the size"
+#~ msgid "%1 Media"
+#~ msgstr "%1 média"
+
+#, fuzzy
+#~| msgid "You are not authorized to perform this operation."
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "You are not authorized to perform this operation."
+#~ msgstr "Nincs jogosultsága a művelet végrehajtásához."
+
+#, fuzzy
+#~| msgid "The device is currently busy."
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "The device is currently busy."
+#~ msgstr "Az eszköz jelenleg foglalt."
+
+#, fuzzy
+#~| msgid "The requested operation has failed."
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "The requested operation has failed."
+#~ msgstr "A kért művelet végrehajtása nem sikerült."
+
+#, fuzzy
+#~| msgid "The requested operation has been canceled."
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "The requested operation has been canceled."
+#~ msgstr "A kért művelet megszakításra került."
+
+#, fuzzy
+#~| msgid "An invalid or malformed option has been given."
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "An invalid or malformed option has been given."
+#~ msgstr "Érvénytelen vagy hibás opció lett megadva."
+
+#, fuzzy
+#~| msgid "The kernel driver for this filesystem type is not available."
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "The kernel driver for this filesystem type is not available."
+#~ msgstr "Nem érhető el kernel-illesztőprogram ehhez a fájlrendszertípushoz."
+
+#, fuzzy
+#~| msgid "An unspecified error has occurred."
+#~ msgctxt "Solid::Backends::UDisks::UDisksDevice|"
+#~ msgid "An unspecified error has occurred."
+#~ msgstr "Meghatározatlan hiba történt."
+
+#, fuzzy
+#~| msgid "Storage"
+#~ msgctxt "Solid::Backends::UDisks::UDisksManager|"
+#~ msgid "Storage"
+#~ msgstr "Tároló"
+
+#, fuzzy
+#~| msgid "Storage devices"
+#~ msgctxt "Solid::Backends::UDisks::UDisksManager|"
+#~ msgid "Storage devices"
+#~ msgstr "Tárolóeszközök"
+
+#, fuzzy
+#~| msgctxt "battery technology"
+#~| msgid "Lead Acid"
+#~ msgctxt "Solid::Backends::Wmi::Battery|battery technology"
+#~ msgid "Lead Acid"
+#~ msgstr "Ólmos-savas"
+
+#, fuzzy
+#~| msgctxt "battery technology"
+#~| msgid "Nickel Cadmium"
+#~ msgctxt "Solid::Backends::Wmi::Battery|battery technology"
+#~ msgid "Nickel Cadmium"
+#~ msgstr "Nikkel-kadmium"
+
+#, fuzzy
+#~| msgctxt "battery technology"
+#~| msgid "Nickel Metal Hydride"
+#~ msgctxt "Solid::Backends::Wmi::Battery|battery technology"
+#~ msgid "Nickel Metal Hydride"
+#~ msgstr "Nikkel-fém hibrid"
+
+#, fuzzy
+#~| msgctxt "battery technology"
+#~| msgid "Lithium Ion"
+#~ msgctxt "Solid::Backends::Wmi::Battery|battery technology"
+#~ msgid "Lithium Ion"
+#~ msgstr "Lítiumion"
+
+#, fuzzy
+#~| msgctxt "battery technology"
+#~| msgid "Lithium Polymer"
+#~ msgctxt "Solid::Backends::Wmi::Battery|battery technology"
+#~ msgid "Lithium Polymer"
+#~ msgstr "Lítiumpolimer"
+
+#, fuzzy
+#~| msgctxt "battery technology"
+#~| msgid "Unknown"
+#~ msgctxt "Solid::Backends::Wmi::Battery|battery technology"
+#~ msgid "Unknown"
+#~ msgstr "Ismeretlen"
+
+#, fuzzy
+#~| msgctxt "%1 is battery technology"
+#~| msgid "%1 Battery"
+#~ msgctxt "Solid::Backends::Wmi::WmiDevice|%1 is battery technology"
+#~ msgid "%1 Battery"
+#~ msgstr "%1 akkumulátor"
+
+#, fuzzy
+#~ msgctxt "InternetGatewayDevice1|"
+#~ msgid "UPnP Internet Gateway Device"
+#~ msgstr "UPnP internetes átjáróeszköz"
+
+#, fuzzy
+#~ msgctxt "MediaServer1|"
+#~ msgid "UPnP Media Server v1"
+#~ msgstr "UPnP médiakiszolgáló v1"
+
+#, fuzzy
+#~ msgctxt "MediaServer2|"
+#~ msgid "UPnP Media Server v2"
+#~ msgstr "UPnP médiakiszolgáló v2"
+
+#, fuzzy
+#~ msgctxt "MediaServer3|"
+#~ msgid "UPnP Media Server v3"
+#~ msgstr "UPnP médiakiszolgáló v3"
+
+#, fuzzy
+#~ msgctxt "Solid::Backends::UDev::UDevDevice|"
+#~ msgid "WLAN Interface"
+#~ msgstr "WLAN-csatoló"
+
+#, fuzzy
+#~ msgctxt "Solid::Backends::UDev::UDevDevice|"
+#~ msgid "Networking Interface"
+#~ msgstr "Hálózati csatoló"
+
+#, fuzzy
+#~ msgctxt "Solid::Backends::UPnP::UPnPDeviceManager|"
+#~ msgid "UPnP Devices"
+#~ msgstr "UPnP-eszközök"
+
+#, fuzzy
+#~ msgctxt "Solid::Backends::UPnP::UPnPDeviceManager|"
+#~ msgid "UPnP devices detected on your network"
+#~ msgstr "A hálózaton észlelt UPnP-eszközök"
+
+#, fuzzy
+#~ msgctxt "Solid::Backends::UPower::UPowerDevice|"
+#~ msgid "A/C Adapter"
+#~ msgstr "Hálózati csatlakozó"
+
+#, fuzzy
+#~ msgctxt "Solid::Backends::Win::WinDevice|"
+#~ msgid "A/C Adapter"
+#~ msgstr "Hálózati csatlakozó"
+
+#, fuzzy
+#~ msgctxt "Solid::Backends::Wmi::WmiDevice|"
+#~ msgid "A/C Adapter"
+#~ msgstr "Hálózati csatlakozó"
+
+#, fuzzy
+#~ msgctxt "Solid::DeviceInterface|Network Interface device type"
+#~ msgid "Network Interface"
+#~ msgstr "Hálózati csatoló"
+
+#, fuzzy
+#~ msgctxt "Solid::DeviceInterface|Ac Adapter device type"
+#~ msgid "Ac Adapter"
+#~ msgstr "Hálózati adapter"
+
+#, fuzzy
+#~ msgctxt "Solid::DeviceInterface|Button device type"
+#~ msgid "Button"
+#~ msgstr "Gomb"
+
+#, fuzzy
+#~ msgctxt "Solid::DeviceInterface|Audio Interface device type"
+#~ msgid "Audio Interface"
+#~ msgstr "Hangcsatoló"
+
+#, fuzzy
+#~ msgctxt "Solid::DeviceInterface|Dvb Interface device type"
+#~ msgid "Dvb Interface"
+#~ msgstr "DVB-csatoló"
+
+#, fuzzy
+#~ msgctxt "Solid::DeviceInterface|Video device type"
+#~ msgid "Video"
+#~ msgstr "Videó"
+
+#, fuzzy
+#~ msgctxt "Solid::DeviceInterface|Serial Interface device type"
+#~ msgid "Serial Interface"
+#~ msgstr "Soros csatoló"
+
+#, fuzzy
+#~ msgctxt "Solid::DeviceInterface|Smart Card Reader device type"
+#~ msgid "Smart Card Reader"
+#~ msgstr "Csipkártyaolvasó"
+
+#, fuzzy
+#~ msgctxt "Solid::DeviceInterface|Internet Gateway device type"
+#~ msgid "Internet Gateway Device"
+#~ msgstr "Internetes átjáróeszköz"
+
+#, fuzzy
+#~ msgctxt "Solid::DeviceInterface|A keyboard"
+#~ msgid "Keyboard"
+#~ msgstr "Billentyűzet"
+
+#, fuzzy
+#~ msgctxt "Solid::DeviceInterface|A pointing device"
+#~ msgid "PointingDevice"
+#~ msgstr "Mutatóeszköz"
+
+#, fuzzy
+#~ msgctxt "Solid::Backends::Hal::HalDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/DVDÂ±R DL"
+#~ msgstr "/DVD±R DL"
+
+#, fuzzy
+#~ msgctxt "Solid::Backends::Hal::HalDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/DVDÂ±R"
+#~ msgstr "/DVD±R"
+
+#, fuzzy
+#~ msgctxt "Solid::Backends::Hal::HalDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/DVDÂ±RW DL"
+#~ msgstr "/DVD±RW DL"
+
+#, fuzzy
+#~ msgctxt "Solid::Backends::Hal::HalDevice|Second item of %1%2 Drive sentence"
+#~ msgid "/DVDÂ±RW"
+#~ msgstr "/DVD±RW"
+
+#~ msgctxt "First item of %1%2 Drive sentence"
+#~ msgid "CD-ROM"
+#~ msgstr "CD-ROM"
+
+#~ msgctxt "First item of %1%2 Drive sentence"
+#~ msgid "CD-R"
+#~ msgstr "CD-R"
+
+#~ msgctxt "First item of %1%2 Drive sentence"
+#~ msgid "CD-RW"
+#~ msgstr "CD-RW"
+
+#~ msgctxt "udisksdevice"
+#~ msgid "%1 TiB"
+#~ msgstr "%1 TiB"
+
+#~ msgctxt "udisksdevice"
+#~ msgid "%1 GiB"
+#~ msgstr "%1 GiB"
+
+#~ msgctxt "udisksdevice"
+#~ msgid "%1 MiB"
+#~ msgstr "%1 MiB"
+
+#~ msgctxt "udisksdevice"
+#~ msgid "%1 KiB"
+#~ msgstr "%1 KiB"
+
+#~ msgctxt "udisksdevice"
+#~ msgid "%1 B"
+#~ msgstr "%1 B"
+
+#~ msgctxt "udisksdevice"
+#~ msgid "0 B"
+#~ msgstr "0 B"
+
+#~ msgctxt "Unknown device type"
+#~ msgid "Unknown"
+#~ msgstr "Ismeretlen"
+
+#~ msgctxt "Processor device type"
+#~ msgid "Processor"
+#~ msgstr "Processzor"
+
+#~ msgctxt "Camera device type"
+#~ msgid "Camera"
+#~ msgstr "Fényképezőgép"
+
+#~ msgctxt "Portable Media Player device type"
+#~ msgid "Portable Media Player"
+#~ msgstr "Hordozható médialejátszó"
+
+#~ msgctxt ""
+#~ msgid "%1 TiB"
+#~ msgstr "%1 TiB"
+
+#~ msgctxt ""
+#~ msgid "%1 GiB"
+#~ msgstr "%1 GiB"
+
+#~ msgctxt ""
+#~ msgid "%1 MiB"
+#~ msgstr "%1 MiB"
+
+#~ msgctxt ""
+#~ msgid "%1 KiB"
+#~ msgstr "%1 KiB"
+
+#~ msgctxt ""
+#~ msgid "%1 B"
+#~ msgstr "%1 B"
+
+#~ msgctxt ""
+#~ msgid "0 B"
+#~ msgstr "0 B"
+
+#~ msgctxt ""
+#~ msgid "External Floppy Drive"
+#~ msgstr "Külső floppy-meghajtó"
+
+#~ msgctxt ""
+#~ msgid "Floppy Drive"
+#~ msgstr "Floppy-meghajtó"
+
+#~ msgctxt ""
+#~ msgid "External Hard Drive"
+#~ msgstr "Külső merevlemez"
+
+#~ msgctxt ""
+#~ msgid "Hard Drive"
+#~ msgstr "Merevlemez"
+
+#~ msgctxt ""
+#~ msgid "Drive"
+#~ msgstr "Meghajtó"
+
+#~ msgctxt ""
+#~ msgid "CD-ROM"
+#~ msgstr "CD-ROM"
+
+#~ msgctxt ""
+#~ msgid "Blank CD-R"
+#~ msgstr "Üres CD-R"
+
+#~ msgctxt ""
+#~ msgid "CD-R"
+#~ msgstr "CD-R"
+
+#~ msgctxt ""
+#~ msgid "Blank CD-RW"
+#~ msgstr "Üres CD-RW"
+
+#~ msgctxt ""
+#~ msgid "CD-RW"
+#~ msgstr "CD-RW"
+
+#~ msgctxt ""
+#~ msgid "DVD-ROM"
+#~ msgstr "DVD-ROM"
+
+#~ msgctxt ""
+#~ msgid "Blank DVD-RAM"
+#~ msgstr "Üres DVD-RAM"
+
+#~ msgctxt ""
+#~ msgid "DVD-RAM"
+#~ msgstr "DVD-RAM"
+
+#~ msgctxt ""
+#~ msgid "Blank DVD-R"
+#~ msgstr "Üres DVD-R"
+
+#~ msgctxt ""
+#~ msgid "DVD-R"
+#~ msgstr "DVD-R"
+
+#~ msgctxt ""
+#~ msgid "Blank DVD+R Dual-Layer"
+#~ msgstr "Üres DVD+R (kétrétegű)"
+
+#~ msgctxt ""
+#~ msgid "DVD+R Dual-Layer"
+#~ msgstr "DVD+R (kétrétegű)"
+
+#~ msgctxt ""
+#~ msgid "Blank DVD-RW"
+#~ msgstr "Üres DVD-RW"
+
+#~ msgctxt ""
+#~ msgid "DVD-RW"
+#~ msgstr "DVD-RW"
+
+#~ msgctxt ""
+#~ msgid "Blank DVD+R"
+#~ msgstr "Üres DVD+R"
+
+#~ msgctxt ""
+#~ msgid "DVD+R"
+#~ msgstr "DVD+R"
+
+#~ msgctxt ""
+#~ msgid "Blank DVD+RW"
+#~ msgstr "Üres DVD+RW"
+
+#~ msgctxt ""
+#~ msgid "DVD+RW"
+#~ msgstr "DVD+RW"
+
+#~ msgctxt ""
+#~ msgid "Blank DVD+RW Dual-Layer"
+#~ msgstr "Üres DVD+RW (kétrétegű)"
+
+#~ msgctxt ""
+#~ msgid "DVD+RW Dual-Layer"
+#~ msgstr "DVD+RW (kétrétegű)"
+
+#~ msgctxt ""
+#~ msgid "BD-ROM"
+#~ msgstr "BD-ROM"
+
+#~ msgctxt ""
+#~ msgid "Blank BD-R"
+#~ msgstr "Üres BD-R"
+
+#~ msgctxt ""
+#~ msgid "BD-R"
+#~ msgstr "BD-R"
+
+#~ msgctxt ""
+#~ msgid "Blank BD-RE"
+#~ msgstr "Üres BD-RE"
+
+#~ msgctxt ""
+#~ msgid "BD-RE"
+#~ msgstr "BD-RE"
+
+#~ msgctxt ""
+#~ msgid "HD DVD-ROM"
+#~ msgstr "HD DVD-ROM"
+
+#~ msgctxt ""
+#~ msgid "Blank HD DVD-R"
+#~ msgstr "Üres HD DVD-R"
+
+#~ msgctxt ""
+#~ msgid "HD DVD-R"
+#~ msgstr "HD DVD-R"
+
+#~ msgctxt ""
+#~ msgid "Blank HD DVD-RW"
+#~ msgstr "Üres HD DVD-RW"
+
+#~ msgctxt ""
+#~ msgid "HD DVD-RW"
+#~ msgstr "HD DVD-RW"
+
+#~ msgctxt ""
+#~ msgid "Audio CD"
+#~ msgstr "Hang-CD"
+
+#~ msgctxt ""
+#~ msgid "Storage"
+#~ msgstr "Tároló"
+
+#~ msgctxt ""
+#~ msgid "Storage devices"
+#~ msgstr "Tárolóeszközök"
+
+#~ msgctxt "battery technology"
+#~ msgid "Nickel  Zinc"
+#~ msgstr "Nikkel  Cink"
+
+#~ msgctxt ""
+#~ msgid "Encrypted Container"
+#~ msgstr "Titkosított konténer"

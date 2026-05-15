@@ -1,0 +1,16 @@
+/*!
+    \module KIconThemes
+    \title KIconThemes C++ Classes
+    \ingroup modules
+    \cmakepackage KF6
+    \cmakecomponent IconThemes
+
+    \brief Icon GUI utilities.
+*/
+
+/*!
+   \qmlmodule org.kde.iconthemes
+   \title KIconThemes QML Types
+   \ingroup qmlmodules
+   \brief Icon GUI utilities.
+ */

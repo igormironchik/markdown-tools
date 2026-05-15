@@ -1,0 +1,36 @@
+include($KDE_DOCS/global/qt-module-defaults.qdocconf)
+
+project = KConfigQml
+description = Persistent platform-independent application settings
+
+documentationinheaders = true
+
+headerdirs += .
+sourcedirs += .
+
+outputformats = HTML
+
+navigation.landingpage = "KConfig"
+
+depends += \
+    kde \
+    qtcore \
+    qtqml \
+    kconfigcore \
+    kconfiggui
+
+qhp.projects            = KConfigQml
+
+qhp.KConfigQml.file                = kconfigqml.qhp
+qhp.KConfigQml.namespace           = org.kde.kconfigqml.$QT_VERSION_TAG
+qhp.KConfigQml.virtualFolder       = kconfigqml
+qhp.KConfigQml.indexTitle          = KConfig QML
+qhp.KConfigQml.indexRoot           =
+
+qhp.KConfigQml.subprojects         = classes
+qhp.KConfigQml.subprojects.classes.title = C++ Classes
+qhp.KConfigQml.subprojects.classes.indexTitle = KConfig QML C++ Classes
+qhp.KConfigQml.subprojects.classes.selectors = class fake:headerfile
+qhp.KConfigQml.subprojects.classes.sortPages = true
+
+tagfile = kconfigqml.tags

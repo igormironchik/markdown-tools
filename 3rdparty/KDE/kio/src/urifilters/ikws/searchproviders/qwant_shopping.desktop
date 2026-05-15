@@ -1,0 +1,137 @@
+[Desktop Entry]
+Keys=qwsh
+Name=Qwant Shopping
+Name[ar]=تسوّق Qwant
+Name[ast]=Qwant Shopping
+Name[az]=Qwant Alış-Veriş
+Name[be]=Куплі Qwant
+Name[be@latin]=Kupli Qwant
+Name[bg]=Пазаруване в Qwant
+Name[bs]=Kvant Šoping
+Name[ca]=Compres de Qwant
+Name[ca@valencia]=Compres de Qwant
+Name[cs]=Qwant Shopping
+Name[cy]=Siopa Qwant
+Name[da]=Qwant Shopping
+Name[de]=Qwant-Shopping
+Name[el]=Qwant Αγορές
+Name[en_GB]=Qwant Shopping
+Name[eo]=Qwant Butikumado
+Name[es]=Qwant Compras
+Name[et]=Qwant Shopping
+Name[eu]=Qwant Erosketak
+Name[fa]=خرید کیووانت
+Name[fi]=Qwant-tuotehaku
+Name[fr]=Magasinage « Qwant »
+Name[ga]=Siopadóireacht Qwant
+Name[gd]=Qwant Shopping
+Name[gl]=Compras en Qwant
+Name[gu]=ક્વાન્ટ ખરીદી
+Name[he]=קניות Qwant
+Name[hr]=Qwant kupovina
+Name[hu]=Qwant vásárlás
+Name[ia]=Qwant Shopping
+Name[id]=Qwant Shopping
+Name[ie]=Qwant Shopping
+Name[is]=Qwant Shopping
+Name[it]=Acquisti di Qwant
+Name[ja]=Qwant Shopping
+Name[ka]=Qwant საყიდლები
+Name[ko]=Qwant 쇼핑
+Name[lg]=Noonya Ebitundibwa ku Qwant
+Name[lt]=Qwant apsipirkimas
+Name[lv]=„Qwant“ iepirkšanās
+Name[mr]=क्वांटखरेदी
+Name[my]=ကွမ့် စျေးဝယ်ထွက်
+Name[nb]=Qwant netthandel
+Name[nds]=Qwant-Inköpen
+Name[nl]=Qwant winkelen
+Name[nn]=Qwant netthandel
+Name[pa]=ਕਿਊਵਾਂਟ ਖਰੀਦਦਾਰੀ
+Name[pl]=Qwant - zakupy
+Name[pt]=Compras do Qwant
+Name[pt_BR]=Compras do Qwant
+Name[ro]=Qwant Cumpărături
+Name[ru]=Qwant: Покупки
+Name[sa]=Qwant Shopping
+Name[sk]=Qwant nakupovanie
+Name[sl]=Qwant - nakupovanje
+Name[sq]=Blerje Qwant
+Name[sr]=Квант-шопинг
+Name[sr@ijekavian]=Квант-шопинг
+Name[sr@ijekavianlatin]=Qwant-šoping
+Name[sr@latin]=Qwant-šoping
+Name[sv]=Qwant-shopping
+Name[tg]=Дукони онлайни Qwant
+Name[th]=Qwant Shopping
+Name[tok]=ilo pi alasa esun Qwant
+Name[tr]=Qwant Alışveriş
+Name[ug]=Qwant سودىلىق
+Name[uk]=Торгівля Qwant
+Name[vi]=Qwant Mua sắm
+Name[zh_CN]=Qwant 购物
+Name[zh_TW]=Qwant Shopping
+Query=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[ar]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[az]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[be]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[be@latin]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[bg]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[bs]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[ca]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[ca@valencia]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[cs]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[cy]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[da]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[de]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[el]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[en_GB]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[eo]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[es]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[et]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[eu]=https://www.qwant.com/single?q=\\{@}&client=kde&source=shopping
+Query[fa]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[fi]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[fr]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[ga]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[gl]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[gu]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[he]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[hr]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[hu]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[ia]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[id]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[ie]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[is]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[it]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[ja]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[ka]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[ko]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[lg]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[lt]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[lv]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[my]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[nb]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[nl]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[nn]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[pa]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[pl]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[pt]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[pt_BR]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[ro]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[ru]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[sa]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[sk]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[sl]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[sq]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[sv]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[tg]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[th]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[tok]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[tr]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[ug]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[uk]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[vi]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[zh_CN]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Query[zh_TW]=https://www.qwant.com/?q=\\{@}&client=kde&t=shopping
+Type=Service

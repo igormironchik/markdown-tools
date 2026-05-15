@@ -1,0 +1,160 @@
+[Desktop Entry]
+Type=Service
+Name=Technorati Tags
+Name[af]=Technorati Tags
+Name[ar]=وسوم Technorati
+Name[as]=Technorati Tags
+Name[az]=Technorati Yarlıqları
+Name[be]=Тэгі Technorati
+Name[be@latin]=Paznaki Technorati
+Name[bg]=Етикети в Technorati
+Name[bn]=টেক্‌নোক্রেটি ট্যাগ
+Name[bn_IN]=Technorati Tags
+Name[br]=Liketennoù Technorati
+Name[bs]=Tehnorati Oznake
+Name[ca]=Etiquetes de Technorati
+Name[ca@valencia]=Etiquetes de Technorati
+Name[cs]=Technorati značky
+Name[csb]=Merczi Technorati
+Name[cy]=Tagiau Technorati
+Name[da]=Technorati mærker
+Name[de]=Technorati-Themen
+Name[el]=Ετικέτες Technorati
+Name[en_GB]=Technorati Tags
+Name[eo]=Technorati-Etikedoj
+Name[es]=Etiquetas de Technorati
+Name[et]=Technorati sildid
+Name[eu]=Technorati etiketak
+Name[fa]=برچسبهای Technorati
+Name[fi]=Technorati-tunnisteet
+Name[fr]=Balises « Technorati »
+Name[fy]=Technorati-markearring
+Name[ga]=Clibeanna Technorati
+Name[gd]=Tagaichean Technorati
+Name[gl]=Etiquetas de Technorati
+Name[gu]=ટેકનોરાતી ટેગ્સ
+Name[he]=תגיות Technorati
+Name[hi]=टेक्नोराती टैग्स
+Name[hne]=टेक्नोराती टैग्स
+Name[hr]=Technorati oznake
+Name[hsb]=Technorati Tags
+Name[hu]=Technorati Tags
+Name[ia]=Technorati Etiquettas
+Name[id]=Tag Technorati
+Name[ie]=Technorati Tags
+Name[is]=Technorati-merki
+Name[it]=Etichette di Technorati
+Name[ja]=Technorati Tags
+Name[ka]=Technorati ჭდეები
+Name[kk]=Technorati Tags
+Name[km]=ស្លាក Technorati
+Name[kn]=ಟೆಕ್ನೋರೆಟಿ ತಲೆಚೀಟಿಗಳು (ಟಾಗ್ಸ್)
+Name[ko]=Technorati 태그
+Name[ku]=Etîketên Technorati
+Name[lg]=Technorati Tags
+Name[lt]=Technorati žymės
+Name[lv]=„Technorati“ birkas
+Name[mai]=टेक्नोराती टैग्स
+Name[mk]=Technorati Tags
+Name[ml]=ടെക്നോരാറ്റി ടാഗുകള്‍
+Name[mr]=टेक्नोराती टैग्स
+Name[my]=တက့်ချ်နိုရာတီ တပ်ဂ်များ
+Name[nb]=Technorati-tagger
+Name[nds]=Technorati-Slötelwöör
+Name[ne]=टेक्नोरती ट्याग
+Name[nl]=Technorati-tags
+Name[nn]=Technorati-taggar
+Name[or]=Technorati Tags
+Name[pa]=Technorati ਟੈਗ
+Name[pl]=Znaczniki Technorati
+Name[pt]=Marcas do Technorati
+Name[pt_BR]=Etiquetas do Technorati
+Name[ro]=Marcaje Technorati
+Name[ru]=Статьи Technorati
+Name[sa]=Technorati Tags
+Name[se]=Technorati gilkorat
+Name[si]=Technorati Tags
+Name[sk]=Technorati Tags
+Name[sl]=Oznake Technorati
+Name[sq]=Technorati Tags
+Name[sr]=Техноратијеве ознаке
+Name[sr@ijekavian]=Техноратијеве ознаке
+Name[sr@ijekavianlatin]=Technoratijeve oznake
+Name[sr@latin]=Technoratijeve oznake
+Name[sv]=Technorati etiketter
+Name[te]=Technorati టాగ్‍స్‌
+Name[tg]=Барчаспҳои Technorati
+Name[th]=Technorati Tags
+Name[tok]=ilo alasa pi nimi lili Technorati
+Name[tr]=Technorati Etiketleri
+Name[ug]=Technorati بەلگە
+Name[uk]=Статті Technorati
+Name[vi]=Các thẻ ở Technorati
+Name[wa]=Tags Technocrati
+Name[zh_CN]=Technorati 标签
+Name[zh_TW]=Technorati Tags
+Keys=tags,tag,technoratitags
+Query=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[ar]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[az]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[be]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[be@latin]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[bg]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[bs]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[ca]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[ca@valencia]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[cs]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[cy]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[da]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[de]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[el]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[en_GB]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[eo]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[es]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[et]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[eu]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[fa]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[fi]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[fr]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[ga]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[gl]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[gu]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[he]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[hr]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[hu]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[ia]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[id]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[ie]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[is]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[it]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[ja]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[ka]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[ko]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[lg]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[lt]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[lv]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[my]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[nb]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[nl]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[nn]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[pa]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[pl]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[pt]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[pt_BR]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[ro]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[ru]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[sa]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[sk]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[sl]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[sq]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[sv]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[tg]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[th]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[tok]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[tr]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[ug]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[uk]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[vi]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[zh_CN]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Query[zh_TW]=https://technorati.com/tag/\\{@}?sourceid=kde-search
+Charset=utf8

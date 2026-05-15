@@ -9,13 +9,20 @@ class DependenciesRecipe(ConanFile):
         self.requires("libjpeg/9e")
         self.requires("tinyxml2/10.0.0")
         self.requires("libpng/1.6.42")
-        self.requires("zlib/1.2.13")
+        self.requires("zlib/1.3.1")
         self.requires("libtiff/4.4.0")
-        self.requires("libxml2/2.10.3")
+        self.requires("libxml2/2.15.2")
         self.requires("libiconv/1.17")
         self.requires("hunspell/1.7.2")
         if self.settings.os == "Windows":
             self.requires("fontconfig/2.15.0")
+            self.requires("gettext/1.0")
+            self.requires("libgettext/0.26")
+            self.tool_requires("winflexbison/2.5.25")
+            self.requires("zstd/1.5.5")
+            self.requires("bzip2/1.0.8")
+            self.requires("xz_utils/5.8.3")
+            self.requires("libxslt/1.1.45")
 
     def configure(self):
         self.options["freetype"].shared = False
@@ -28,6 +35,12 @@ class DependenciesRecipe(ConanFile):
         self.options["fontconfig"].shared = False
         self.options["tinyxml2"].shared = False
         self.options["hunspell"].shared = True
+        self.options["gettext"].shared = False
+        self.options["libgettext"].shared = False
+        self.options["zstd"].shared = False
+        self.options["bzip2"].shared = False
+        self.options["xz_utils"].shared = False
+        self.options["libxslt"].shared = False
 
     def imports(self):
         self.copy("*.dll", "bin", "bin")

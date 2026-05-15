@@ -1,0 +1,26 @@
+/*!
+    \page kcoreaddons-index.html
+    \title KCoreAddons
+
+    KCoreAddons are addons to QtCore
+
+    KCoreAddons provides classes built on top of QtCore to perform various tasks
+    such as manipulating mime types, autosaving files, creating backup files,
+    generating random sequences, performing text manipulations such as macro
+    replacement, accessing user information and many more.
+
+    \section1 Using the Module
+
+    \include {module-use.qdocinc} {using the c++ api}
+
+    \section2 Building with CMake
+
+    \include {module-use.qdocinc} {building with cmake} {KF6} {CoreAddons} {KF6::CoreAddons}
+
+    \section1 API Reference
+
+    \list
+        \li \l{KCoreAddons C++ Classes}
+        \li \l{KCoreAddons QML Types}
+    \endlist
+*/

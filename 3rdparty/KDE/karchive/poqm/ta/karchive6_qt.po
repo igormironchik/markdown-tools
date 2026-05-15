@@ -1,0 +1,497 @@
+# SPDX-FileCopyrightText: 2023, 2025 Kishore G <kishore96@gmail.com>
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"PO-Revision-Date: 2025-09-07 18:07+0530\n"
+"Last-Translator: Kishore G <kishore96@gmail.com>\n"
+"Language-Team: Tamil <kde-l10n-ta@kde.org>\n"
+"Language: ta\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Qt-Contexts: true\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 25.08.0\n"
+
+#: k7zip.cpp:2541
+#, fuzzy
+msgctxt "K7Zip|"
+msgid "Could not get underlying device"
+msgstr "சாதனத்தை அணுக முடியவில்லை"
+
+#: k7zip.cpp:2549
+msgctxt "K7Zip|"
+msgid "Read header failed"
+msgstr "தலைப்புப்புலத்தைப் படிப்பது தோல்வியடைந்தது"
+
+#: k7zip.cpp:2555
+msgctxt "K7Zip|"
+msgid "Check signature failed"
+msgstr "கையொப்ப சரிபார்ப்பு தோல்வியடைந்தது"
+
+#: k7zip.cpp:2578
+msgctxt "K7Zip|"
+msgid "Bad CRC"
+msgstr "தவறான CRC"
+
+#: k7zip.cpp:2587
+msgctxt "K7Zip|"
+msgid "Next header size is too big"
+msgstr "அடுத்த தலைப்புப்புலத்தின் அளவு சரியானதைவிட பெரிதாக உள்ளது"
+
+#: k7zip.cpp:2592
+msgctxt "K7Zip|"
+msgid "Next header size is less than zero"
+msgstr "அடுத்த தலைப்புப்புலத்தின் அளவு சுழியத்தைவிட சிறியதாக உள்ளது"
+
+#: k7zip.cpp:2603
+#, qt-format
+msgctxt "K7Zip|"
+msgid "Failed read next header size; should read %1, read %2"
+msgstr ""
+"அடுத்த தலைப்புப்புலத்தின் அளவைப் படிப்பதில் சிக்கல்; %1 எதிர்பார்க்கப்பட்டது, ஆனால் %2 "
+"பெறப்பட்டது"
+
+#: k7zip.cpp:2616
+msgctxt "K7Zip|"
+msgid "Bad next header CRC"
+msgstr ""
+
+#: k7zip.cpp:2624
+msgctxt "K7Zip|"
+msgid "Error in header"
+msgstr "தலைப்புப்புலத்தில் பிழை"
+
+#: k7zip.cpp:2642 k7zip.cpp:2675
+msgctxt "K7Zip|"
+msgid "Password needed for this archive"
+msgstr "இக்காப்பகத்திற்கு கடவுச்சொல் தேவை"
+
+#: k7zip.cpp:2648
+msgctxt "K7Zip|"
+msgid "Wrong header type"
+msgstr "தவறான தலைப்புப்புல வகை"
+
+#: k7zip.cpp:2658 k7zip.cpp:2664
+#, fuzzy
+msgctxt "K7Zip|"
+msgid "Not implemented"
+msgstr "இதற்கான ஆதரவு நிரலாளர்களால் எழுதப்படவில்லை"
+
+#: k7zip.cpp:2670
+msgctxt "K7Zip|"
+msgid "Error while reading main streams information"
+msgstr ""
+
+#: k7zip.cpp:2693
+msgctxt "K7Zip|"
+msgid "Error while reading header"
+msgstr ""
+
+#: k7zip.cpp:2701 k7zip.cpp:2709
+#, qt-format
+msgctxt "K7Zip|"
+msgid "Archive has %1 files which is more than the supported amount (%2)"
+msgstr ""
+"காப்பகத்தில் %1 கோப்புகள் உள்ளன. இது ஆதரிக்கப்படும் எண்ணிக்கையைவிட அதிகமானது (%2)."
+
+#: k7zip.cpp:2767
+msgctxt "K7Zip|"
+msgid "Error reading modification time"
+msgstr "மாற்றப்பட்ட நேரத்தைப் படிப்பதில் சிக்கல்"
+
+#: k7zip.cpp:2813
+msgctxt "K7Zip|"
+msgid "Error reading MTime"
+msgstr ""
+
+#: k7zip.cpp:2820
+msgctxt "K7Zip|"
+msgid "Invalid"
+msgstr "முறையற்றது"
+
+#: k7zip.cpp:2844
+#, qt-format
+msgctxt "K7Zip|"
+msgid "Read size failed (checkRecordsSize: %1, d->pos - ppp: %2, size: %3)"
+msgstr ""
+
+#: k7zip.cpp:2884
+msgctxt "K7Zip|"
+msgid "contents"
+msgstr ""
+
+#: k7zip.cpp:3079
+msgctxt "K7Zip|"
+msgid "Write error"
+msgstr "எழுதுவதில் சிக்கல்"
+
+#: k7zip.cpp:3109
+msgctxt "K7Zip|"
+msgid "Failed while encoding header"
+msgstr ""
+
+#: k7zip.cpp:3153
+msgctxt "K7Zip|"
+msgid "No file currently selected"
+msgstr "எக்கோப்பும் தேர்ந்தெடுக்கப்படவில்லை"
+
+#: k7zip.cpp:3177 k7zip.cpp:3227 k7zip.cpp:3267
+msgctxt "K7Zip|"
+msgid "Application error: 7-Zip file must be open before being written into"
+msgstr ""
+
+#: k7zip.cpp:3183 k7zip.cpp:3273
+msgctxt "K7Zip|"
+msgid "Application error: attempted to write into non-writable 7-Zip file"
+msgstr ""
+
+#: kar.cpp:53 kar.cpp:60 kar.cpp:67 kar.cpp:74
+msgctxt "KAr|"
+msgid "Cannot write to AR file"
+msgstr "AR கோப்புக்கு எழுத முடியவில்லை"
+
+#: kar.cpp:87
+#, qt-format
+msgctxt "KAr|"
+msgid "Unsupported mode %1"
+msgstr "ஆதரிக்கப்படாத பயன்முறை %1"
+
+#: kar.cpp:98
+msgctxt "KAr|"
+msgid "Invalid main magic"
+msgstr ""
+
+#: kar.cpp:115
+msgctxt "KAr|"
+msgid "Invalid magic"
+msgstr ""
+
+#: kar.cpp:126
+msgctxt "KAr|"
+msgid "Invalid size"
+msgstr "செல்லுபடியாகாத அளவு"
+
+#: kar.cpp:146
+msgctxt "KAr|"
+msgid "Invalid longfilename reference"
+msgstr ""
+
+#: kar.cpp:150
+msgctxt "KAr|"
+msgid "Invalid longfilename position reference"
+msgstr ""
+
+#: karchive.cpp:178
+msgctxt "KArchive|"
+msgid "No filename or device was specified"
+msgstr "கோப்புப்பெயரோ சாதனமோ குறிப்பிடப்படவில்லை"
+
+#: karchive.cpp:183
+#, qt-format
+msgctxt "KArchive|"
+msgid "Could not open device in mode %1"
+msgstr "%1 முறையில் சாதனத்தைத் திறக்க முடியவில்லை"
+
+#: karchive.cpp:210
+#, qt-format
+msgctxt "KArchive|"
+msgid "QSaveFile creation for %1 failed: %2"
+msgstr ""
+
+#: karchive.cpp:229
+#, qt-format
+msgctxt "KArchive|"
+msgid "Unsupported mode %1"
+msgstr ""
+
+#: karchive.cpp:238
+msgctxt "KArchive|"
+msgid "Archive already closed"
+msgstr ""
+
+#: karchive.cpp:287
+#, qt-format
+msgctxt "KArchive|"
+msgid "%1 doesn't exist or is not a regular file."
+msgstr ""
+
+#: karchive.cpp:293
+#, qt-format
+msgctxt "KArchive|"
+msgid ""
+"Failed accessing the file %1 for adding to the archive. The error was: %2"
+msgstr ""
+
+#: karchive.cpp:339
+#, qt-format
+msgctxt "KArchive|"
+msgid "Couldn't open file %1: %2"
+msgstr "%1 கோப்பை திறக்க முடியவில்லை: %2"
+
+#: karchive.cpp:373
+#, qt-format
+msgctxt "KArchive|"
+msgid "Directory %1 does not exist"
+msgstr "%1 எனும் அடைவு இல்லை"
+
+#: karchive.cpp:447
+#, qt-format
+msgctxt "KArchive|"
+msgid "Writing failed: %1"
+msgstr "எழுதுவது தோல்வியடைந்தது: %1"
+
+#: karchive_p.h:59
+msgctxt "QIODevice|"
+msgid "Unknown error"
+msgstr "தெரியாத சிக்கல்"
+
+#: kcompressiondevice.cpp:514
+msgctxt "KCompressionDevice|"
+msgid "Could not write. Partition full?"
+msgstr ""
+
+#: krcc.cpp:83 krcc.cpp:90 krcc.cpp:97 krcc.cpp:104
+msgctxt "KRcc|"
+msgid "Cannot write to RCC file"
+msgstr ""
+
+#: krcc.cpp:117
+#, qt-format
+msgctxt "KRcc|"
+msgid "Unsupported mode %1"
+msgstr "ஆதரிக்கப்படாத பயன்முறை %1"
+
+#: krcc.cpp:124
+#, qt-format
+msgctxt "KRcc|"
+msgid "Failed to register resource %1 under prefix %2"
+msgstr ""
+
+#: ktar.cpp:349
+#, qt-format
+msgctxt "KTar|"
+msgid "File %1 does not exist"
+msgstr "%1 எனும் கோப்பு இல்லை"
+
+#: ktar.cpp:356
+#, qt-format
+msgctxt "KTar|"
+msgid "Archive %1 is corrupt"
+msgstr "காப்பகம் %1 சேதமடைந்துள்ளது"
+
+#: ktar.cpp:360
+msgctxt "KTar|"
+msgid "Disk full"
+msgstr "வட்டு நிறைந்துள்ளது"
+
+#: ktar.cpp:394
+msgctxt "KTar|"
+msgid "Could not get underlying device"
+msgstr ""
+
+#: ktar.cpp:409
+msgctxt "KTar|"
+msgid "Could not read tar header"
+msgstr ""
+
+#: ktar.cpp:592 ktar.cpp:607
+#, qt-format
+msgctxt "KTar|"
+msgid "Failed to write back temp file: %1"
+msgstr ""
+
+#: ktar.cpp:653
+#, qt-format
+msgctxt "KTar|"
+msgid "Couldn't write alignment: %1"
+msgstr ""
+
+#: ktar.cpp:755 ktar.cpp:765
+#, fuzzy, qt-format
+#| msgctxt "KArchive|"
+#| msgid "Couldn't open file %1: %2"
+msgctxt "KTar|"
+msgid "Couldn't write long link: %1"
+msgstr "%1 கோப்பை திறக்க முடியவில்லை: %2"
+
+#: ktar.cpp:786 ktar.cpp:869 ktar.cpp:938
+msgctxt "KTar|"
+msgid "Application error: TAR file must be open before being written into"
+msgstr ""
+
+#: ktar.cpp:792
+msgctxt "KTar|"
+msgid "Application error: attempted to write into non-writable 7-Zip file"
+msgstr ""
+
+#: ktar.cpp:799
+#, qt-format
+msgctxt "KTar|"
+msgid "Application limitation: Can not add file larger than %1 bytes"
+msgstr ""
+
+#: ktar.cpp:853
+#, qt-format
+msgctxt "KTar|"
+msgid "Failed to write header: %1"
+msgstr ""
+
+#: ktar.cpp:875 ktar.cpp:944
+msgctxt "KTar|"
+msgid "Application error: attempted to write into non-writable TAR file"
+msgstr ""
+
+#: kzip.cpp:484 kzip.cpp:509
+#, qt-format
+msgctxt "KZip|"
+msgid "Invalid ZIP file. Unexpected end of file. (Error code: %1)"
+msgstr ""
+
+#: kzip.cpp:535
+msgctxt "KZip|"
+msgid "Invalid ZIP file. Negative name length"
+msgstr ""
+
+#: kzip.cpp:540
+msgctxt "KZip|"
+msgid "Invalid ZIP file. Name not completely read (#2)"
+msgstr ""
+
+#: kzip.cpp:558
+msgctxt "KZip|"
+msgid "Invalid ZIP File. Broken ExtraField."
+msgstr ""
+
+#: kzip.cpp:572 kzip.cpp:595
+msgctxt "KZip|"
+msgid "Could not seek to next header token"
+msgstr ""
+
+#: kzip.cpp:587
+msgctxt "KZip|"
+msgid "Invalid ZIP file. Unexpected end of file. (#5)"
+msgstr ""
+
+#: kzip.cpp:602
+msgctxt "KZip|"
+msgid "Could not seek to file compressed size"
+msgstr ""
+
+#: kzip.cpp:618
+msgctxt "KZip|"
+msgid "Invalid ZIP file. Unexpected end of file. (#1)"
+msgstr ""
+
+#: kzip.cpp:655
+msgctxt "KZip|"
+msgid ""
+"Invalid ZIP file, central entry too short (not long enough for valid entry)"
+msgstr ""
+
+#: kzip.cpp:670
+msgctxt "KZip|"
+msgid "Invalid ZIP file, file path name length is zero"
+msgstr ""
+
+#: kzip.cpp:676
+#, qt-format
+msgctxt "KZip|"
+msgid ""
+"Invalid ZIP file, unable to read %1 + %2 bytes for filename and extra data "
+"at offset %3"
+msgstr ""
+
+#: kzip.cpp:726
+#, qt-format
+msgctxt "KZip|"
+msgid ""
+"Invalid ZIP file, inconsistent Local Header Offset in Central Directory at %1"
+msgstr ""
+
+#: kzip.cpp:761
+msgctxt "KZip|"
+msgid "Invalid ZIP file, found empty entry name"
+msgstr ""
+
+#: kzip.cpp:803
+#, qt-format
+msgctxt "KZip|"
+msgid "File %1 is in folder %2, but %3 is actually a file."
+msgstr ""
+
+#: kzip.cpp:814
+msgctxt "KZip|"
+msgid "Could not seek to next entry"
+msgstr ""
+
+#: kzip.cpp:843
+msgctxt "KZip|"
+msgid "Not a ZIP file, no Local File Header found."
+msgstr ""
+
+#: kzip.cpp:847
+#, qt-format
+msgctxt "KZip|"
+msgid "Invalid ZIP file. Unrecognized header at offset %1"
+msgstr ""
+
+#: kzip.cpp:875
+#, qt-format
+msgctxt "KZip|"
+msgid "Could not seek to next file header: %1"
+msgstr ""
+
+#: kzip.cpp:901 kzip.cpp:995
+#, qt-format
+msgctxt "KZip|"
+msgid "Could not write file header: %1"
+msgstr ""
+
+#: kzip.cpp:1042
+#, qt-format
+msgctxt "KZip|"
+msgid "Could not write central dir record: %1"
+msgstr ""
+
+#: kzip.cpp:1078
+msgctxt "KZip|"
+msgid "Application error: ZIP file must be open before being written into"
+msgstr ""
+
+#: kzip.cpp:1084
+msgctxt "KZip|"
+msgid "Application error: attempted to write into non-writable ZIP file"
+msgstr ""
+
+#: kzip.cpp:1090
+msgctxt "KZip|"
+msgid "Cannot create a device. Disk full?"
+msgstr ""
+
+#: kzip.cpp:1096
+msgctxt "KZip|"
+msgid "Cannot seek in ZIP file. Disk full?"
+msgstr ""
+
+#: kzip.cpp:1240
+msgctxt "KZip|"
+msgid "Could not write to the archive. Disk full?"
+msgstr "காப்பகத்திற்கு எழுத முடியவில்லை. வட்டில் இடமுள்ளதா?"
+
+#: kzip.cpp:1259
+#, qt-format
+msgctxt "KZip|"
+msgid "Could not open compression device: %1"
+msgstr "சுருக்க சாதனத்தை திறக்க முடியவில்லை: %1"
+
+#: kzip.cpp:1346
+msgctxt "KZip|"
+msgid "No file or device"
+msgstr "கோப்போ சாதனமோ இல்லை"
+
+#: kzip.cpp:1359
+#, qt-format
+msgctxt "KZip|"
+msgid "Error writing data: %1"
+msgstr "தரவை எழுதுவதில் சிக்கல்: %1"
