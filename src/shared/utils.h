@@ -41,6 +41,9 @@ void setPlugins(MD::Parser &parser,
                 const MdShared::PluginsCfg &cfg,
                 bool enableEmoji = false);
 
+//! Check whether English language is presented in list of languages.
+bool hasEnglish(const QStringList &langs);
+
 static const QString s_oxygenName = QStringLiteral("The Oxygen Icon Theme");
 static const QString s_oxygenLicense = QStringLiteral(
     "<p><b>The Oxygen Icon Theme</b>\n\n</p>"

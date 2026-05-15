@@ -63,7 +63,7 @@ int main(int argc,
     QTranslator appTranslator;
     const auto locale = QLocale::system();
 
-    if (locale.language() != QLocale::English) {
+    if (!hasEnglish(locale.uiLanguages())) {
         if (appTranslator.load(locale, QStringLiteral("md_"), QString(), QStringLiteral(":/tr/"))) {
             QApplication::installTranslator(&appTranslator);
         }

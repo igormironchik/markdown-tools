@@ -200,3 +200,21 @@ void setPlugins(MD::Parser &parser,
     parser.setBlockParsers(blockParsers);
     parser.setInlineParsers(inlineParsers);
 }
+
+static const QChar s_dash = QLatin1Char('-');
+static const QString s_english = QStringLiteral("en");
+
+bool hasEnglish(const QStringList &langs)
+{
+    for (const auto &lang : langs) {
+        const auto i = lang.indexOf(s_dash);
+
+        if (i != -1) {
+            if (lang.left(i).toLower() == s_english) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
