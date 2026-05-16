@@ -6,8 +6,10 @@
 #pragma once
 
 // Qt include.
+#include <QFile>
 #include <QMainWindow>
 #include <QScopedPointer>
+#include <QSharedPointer>
 
 QT_BEGIN_NAMESPACE
 class QTreeWidgetItem;
@@ -139,6 +141,10 @@ private:
                                        bool modifyStack = true);
     //! Ask about unsaved file.
     bool askAboutUnsavedFile();
+    //! Get file.
+    QPair<QSharedPointer<QFile>,
+          bool>
+    getFile(const QString &path);
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event) override;

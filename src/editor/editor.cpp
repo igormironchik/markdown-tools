@@ -5,6 +5,7 @@
 
 // md-editor include.
 #include "editor.h"
+#include "const.h"
 #include "find.h"
 #include "mainwindow.h"
 #include "settings.h"
@@ -548,6 +549,8 @@ struct EditorPrivate {
     bool m_isContentChangedByKey = false;
     //! Is left mouse button pressed?
     bool m_leftMouseBtnPressed = false;
+    //! Is auto saving enabled?
+    bool m_autosavingEnabled = true;
     //! Settings.
     Settings m_settings;
     //! Current link.
@@ -1581,10 +1584,33 @@ void Editor::onEmojiCompletionActivated(const QString &emoji)
     setTextCursor(tc);
 }
 
+void Editor::fileWasSaved()
+{
+    if (m_d->m_autosavingEnabled && !m_d->m_docName.isEmpty() && m_d->m_docName != s_defaultFileName) {
+        if (QFileInfo::exists(m_d->m_docName + s_autosaveExtension)) {
+            QFile::remove(m_d->m_docName + s_autosaveExtension);
+        }
+    }
+}
+
+void Editor::enableAutoSave(bool on)
+{
+    m_d->m_autosavingEnabled = on;
+}
+
 void Editor::onContentChanged()
 {
     const auto md = toPlainText();
     QFileInfo info(m_d->m_docName);
+
+    if (m_d->m_autosavingEnabled && !m_d->m_docName.isEmpty() && m_d->m_docName != s_defaultFileName) {
+        QFile f(m_d->m_docName + s_autosaveExtension);
+        if (f.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            QTextStream str(&f);
+            str << md;
+            f.close();
+        }
+    }
 
     if (m_d->m_currentParsingCounter == std::numeric_limits<unsigned long long int>::max()) {
         m_d->m_currentParsingCounter = 0;

@@ -6,6 +6,7 @@
 // md-editor include.
 #include "mainwindow.h"
 #include "colorsdlg.h"
+#include "const.h"
 #include "editor.h"
 #include "find.h"
 #include "findweb.h"
@@ -1283,32 +1284,68 @@ void MainWindow::showEvent(QShowEvent *e)
     e->accept();
 }
 
+QPair<QSharedPointer<QFile>,
+      bool>
+MainWindow::getFile(const QString &path)
+{
+    QString fileName = path;
+    bool autosavedLoaded = false;
+
+    if (QFileInfo::exists(path + s_autosaveExtension)) {
+        const auto ret = QMessageBox::question(
+            this,
+            windowTitle(),
+            tr("Would you like to open auto saved content of this file?\n\nFile: \"%1\"").arg(path));
+
+        if (ret == QMessageBox::Yes) {
+            autosavedLoaded = true;
+            fileName.append(s_autosaveExtension);
+        } else {
+            QFile::remove(path + s_autosaveExtension);
+        }
+    }
+
+    QSharedPointer<QFile> f(new QFile(fileName));
+    if (!f->open(QIODevice::ReadOnly)) {
+        QMessageBox::warning(this,
+                             windowTitle(),
+                             tr("Could not open file %1: %2").arg(QDir::toNativeSeparators(path), f->errorString()));
+        return {};
+    }
+
+    return {f, autosavedLoaded};
+}
+
 void MainWindow::openFile(const QString &path)
 {
     if (m_d->m_loadAllFlag) {
         loadAllLinkedFilesImpl();
     }
 
-    QFile f(path);
-    if (!f.open(QIODevice::ReadOnly)) {
-        QMessageBox::warning(this,
-                             windowTitle(),
-                             tr("Could not open file %1: %2").arg(QDir::toNativeSeparators(path), f.errorString()));
+    QSharedPointer<QFile> f;
+    bool autosavedLoaded = false;
+
+    std::tie(f, autosavedLoaded) = getFile(path);
+
+    if (!f) {
         return;
     }
 
     m_d->m_preview->stop();
     m_d->m_isDefaultFile = false;
+    m_d->m_editor->enableAutoSave(false);
     m_d->m_editor->setDocName(path);
     const auto wd = QFileInfo(path).absoluteDir().absolutePath();
     m_d->m_workingDirectoryWidget->setWorkingDirectory(wd);
     onWorkingDirectoryChange(wd);
 
-    m_d->m_editor->setText(f.readAll());
-    f.close();
+    m_d->m_editor->setText(f->readAll());
+    m_d->m_editor->enableAutoSave(true);
+    f->close();
     updateWindowTitle();
     m_d->m_editor->setFocus();
     m_d->m_editor->document()->clearUndoRedoStacks();
+    m_d->m_editor->document()->setModified(autosavedLoaded);
     onCursorPositionChanged();
     m_d->m_loadAllAction->setEnabled(true);
     m_d->m_rootFilePath = path;
@@ -1321,7 +1358,7 @@ void MainWindow::openFile(const QString &path)
     updateLoadAllLinkedFilesMenuText();
     m_d->initMarkdownMenu();
 
-    setWindowModified(false);
+    setWindowModified(autosavedLoaded);
 }
 
 void MainWindow::openInPreviewMode()
@@ -1331,7 +1368,7 @@ void MainWindow::openInPreviewMode()
 
 bool MainWindow::isModified() const
 {
-    return m_d->m_editor->document()->isModified();
+    return m_d->m_editor->document()->isModified() || isWindowModified();
 }
 
 void MainWindow::onFileNew()
@@ -1351,7 +1388,7 @@ void MainWindow::onFileNew()
 
     m_d->m_preview->stop();
     m_d->m_isDefaultFile = true;
-    m_d->m_editor->setDocName(QStringLiteral("default.md"));
+    m_d->m_editor->setDocName(s_defaultFileName);
     m_d->m_editor->setText({});
     m_d->m_editor->document()->setModified(false);
     m_d->m_editor->document()->clearUndoRedoStacks();
@@ -1433,6 +1470,7 @@ void MainWindow::onFileSave()
     f.close();
 
     m_d->m_editor->document()->setModified(false);
+    m_d->m_editor->fileWasSaved();
     m_d->m_editor->clearUserStateOnAllBlocks();
 
     updateWindowTitle();
@@ -1453,6 +1491,7 @@ void MainWindow::onFileSaveAs()
         return;
     }
 
+    m_d->m_editor->fileWasSaved();
     m_d->m_isDefaultFile = false;
     m_d->m_editor->setDocName(dialog.selectedFiles().constFirst());
     const auto wd = QFileInfo(m_d->m_editor->docName()).absoluteDir().absolutePath();
@@ -1487,6 +1526,8 @@ void MainWindow::closeEvent(QCloseEvent *e)
         if (button != QMessageBox::Yes) {
             e->ignore();
             stopPreview = false;
+        } else {
+            m_d->m_editor->fileWasSaved();
         }
     }
 
@@ -2479,22 +2520,27 @@ void MainWindow::openFileFromNavigationToolbar(const QString &path,
             return;
         }
 
-        QFile f(path);
-        if (!f.open(QIODevice::ReadOnly)) {
-            QMessageBox::warning(this,
-                                 windowTitle(),
-                                 tr("Could not open file %1: %2").arg(QDir::toNativeSeparators(path), f.errorString()));
+        QSharedPointer<QFile> f;
+        bool autosavedLoaded = false;
+
+        std::tie(f, autosavedLoaded) = getFile(path);
+
+        if (!f) {
             return;
         }
 
         m_d->m_editor->setDocName(path);
-        m_d->m_editor->setText(f.readAll());
-        f.close();
+        m_d->m_editor->enableAutoSave(false);
+        m_d->m_editor->setText(f->readAll());
+        m_d->m_editor->enableAutoSave(true);
+        f->close();
 
         updateWindowTitle();
 
         m_d->m_editor->document()->clearUndoRedoStacks();
+        m_d->m_editor->document()->setModified(autosavedLoaded);
         m_d->m_editor->setFocus();
+        setWindowModified(autosavedLoaded);
 
         if (modifyStack) {
             if (m_d->m_navigationStackIdx >= 0) {
