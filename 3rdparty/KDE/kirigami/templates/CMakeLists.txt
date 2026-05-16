@@ -1,1 +1,0 @@
-kde_package_app_templates(TEMPLATES kirigami6 INSTALL_DIR ${KDE_INSTALL_KAPPTEMPLATESDIR})

@@ -1,6 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>notificationtester.qml</file>
-    </qresource>
-</RCC>
-

@@ -1,9 +1,0 @@
-/*!
-    \module KWidgetsAddons
-    \title KWidgetsAddons C++ Classes
-    \ingroup modules
-    \cmakepackage KF6
-    \cmakecomponent WidgetsAddons
-
-    \brief Large set of desktop widgets.
-*/

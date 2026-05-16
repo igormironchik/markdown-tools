@@ -1,3 +1,0 @@
-[D-BUS Service]
-Name=org.kde.kded5
-Exec=/usr/bin/kded5

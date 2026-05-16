@@ -1,4 +1,3 @@
-rmdir /S /Q Qt
 del /Q Markdown_Windows_x64.Installer.exe
 del /Q aqtinstall.log
 rmdir /S /Q installer\packages\mironchik.igor.markdown\data\bin
