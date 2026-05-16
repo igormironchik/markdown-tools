@@ -1,0 +1,27 @@
+name: Trigger OBS Build on Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  trigger-obs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Trigger to OBS 1
+        run: |
+          curl -X POST \
+            -H "Authorization: Token ${{ secrets.OBS_TOKEN_SECRET_1 }}" \
+            "https://build.opensuse.org/trigger/runservice?id=${{ secrets.OBS_TOKEN_ID_1 }}"
+
+      - name: Send Trigger to OBS 2
+        run: |
+          curl -X POST \
+            -H "Authorization: Token ${{ secrets.OBS_TOKEN_SECRET_2 }}" \
+            "https://build.opensuse.org/trigger/runservice?id=${{ secrets.OBS_TOKEN_ID_2 }}"
+            
+      - name: Send Trigger to OBS 3
+        run: |
+          curl -X POST \
+            -H "Authorization: Token ${{ secrets.OBS_TOKEN_SECRET_3 }}" \
+            "https://build.opensuse.org/trigger/runservice?id=${{ secrets.OBS_TOKEN_ID_3 }}"

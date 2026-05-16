@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>test.pio</title>
+<meta name="generator" content="KF5::SyntaxHighlighting - Definition (PIO Assembler) - Theme (Breeze Dark)"/>
+</head><body style="background-color:#232629;color:#cfcfc2"><pre>
+
+<span style="color:#27ae60">.program</span> <span style="color:#27aeae">my_program</span>
+
+<span style="color:#7a7c7d">; optional side-set</span>
+<span style="color:#27ae60">.side_set</span> <span style="color:#f67400">1</span> <span style="font-weight:bold">opt</span>
+
+<span style="color:#7a7c7d">// definitions</span>
+<span style="color:#27ae60">.define</span> <span style="color:#27aeae">dec</span> <span style="color:#f67400">1</span>
+<span style="color:#27ae60">.define</span> <span style="color:#27aeae">hex</span> <span style="color:#f67400">0xFF</span>
+<span style="color:#27ae60">.define</span> <span style="color:#27aeae">bin</span> <span style="color:#f67400">0b01010101</span>
+<span style="color:#27ae60">.define</span> <span style="color:#27aeae">exp</span> <span style="color:#3f8058">(</span> <span style="color:#f67400">1</span> <span style="color:#3f8058">+</span> <span style="color:#f67400">2</span> <span style="color:#3f8058">-</span> <span style="color:#f67400">3</span> <span style="color:#3f8058">*</span> <span style="color:#f67400">4</span> <span style="color:#3f8058">/</span> <span style="color:#f67400">5</span> <span style="color:#3f8058">)</span>
+
+<span style="color:#7a7c7d">/*</span>
+<span style="color:#7a7c7d">pio test program</span>
+<span style="color:#81ca2d;background-color:#4d1f24;font-weight:bold">NOTE</span><span style="color:#7a7c7d">: this program don't do anything useful</span>
+<span style="color:#7a7c7d">*/</span>
+<span style="color:#27ae60">.wrap_target</span> <span style="color:#7a7c7d">; resume here at the end of the program</span>
+<span style="font-weight:bold">public</span> <span style="color:#8e44ad">start</span><span style="color:#3f8058">:</span> <span style="color:#7a7c7d">; start of the program</span>
+    <span style="font-weight:bold">set</span> <span style="font-weight:bold">x</span><span style="color:#3f8058">,</span> <span style="color:#f67400">7</span>
+
+<span style="color:#8e44ad">loop</span><span style="color:#3f8058">:</span> <span style="color:#7a7c7d">// iterate x times</span>
+    <span style="font-weight:bold">set</span> <span style="font-weight:bold">y</span><span style="color:#3f8058">,</span> <span style="color:#f67400">1</span> <span style="color:#7a7c7d">; set y to 1</span>
+    <span style="font-weight:bold">set</span> <span style="font-weight:bold">y</span><span style="color:#3f8058">,</span> <span style="color:#27aeae">dec</span>
+    <span style="font-weight:bold">set</span> <span style="font-weight:bold">y</span><span style="color:#3f8058">,</span> <span style="color:#3f8058">(</span><span style="color:#f67400">1</span> <span style="color:#3f8058">&lt;&lt;</span> <span style="color:#f67400">0</span><span style="color:#3f8058">)</span>
+    <span style="font-weight:bold">set</span> <span style="font-weight:bold">y</span><span style="color:#3f8058">,</span> <span style="color:#3f8058">(</span><span style="color:#27aeae">dec</span> <span style="color:#3f8058">&lt;&lt;</span> <span style="color:#f67400">0</span><span style="color:#3f8058">)</span>
+    <span style="font-weight:bold">set</span> <span style="font-weight:bold">y</span><span style="color:#3f8058">,</span> <span style="color:#f67400">1</span> <span style="font-weight:bold">side</span> <span style="color:#f67400">1</span> <span style="color:#7a7c7d">; keep setting y to 1</span>
+    <span style="font-weight:bold">set</span> <span style="font-weight:bold">y</span><span style="color:#3f8058">,</span> <span style="color:#f67400">1</span> <span style="font-weight:bold">side</span> <span style="color:#27aeae">dec</span>
+    <span style="font-weight:bold">set</span> <span style="font-weight:bold">y</span><span style="color:#3f8058">,</span> <span style="color:#f67400">1</span> <span style="font-weight:bold">side</span> <span style="color:#3f8058">(</span><span style="color:#f67400">1</span> <span style="color:#3f8058">&lt;&lt;</span> <span style="color:#f67400">0</span><span style="color:#3f8058">)</span>
+    <span style="font-weight:bold">set</span> <span style="font-weight:bold">y</span><span style="color:#3f8058">,</span> <span style="color:#f67400">1</span> <span style="font-weight:bold">side</span> <span style="color:#3f8058">(</span><span style="color:#27aeae">dec</span> <span style="color:#3f8058">&lt;&lt;</span> <span style="color:#f67400">0</span><span style="color:#3f8058">)</span>
+    <span style="font-weight:bold">set</span> <span style="font-weight:bold">y</span><span style="color:#3f8058">,</span> <span style="color:#f67400">1</span> <span style="font-weight:bold">side</span> <span style="color:#f67400">1</span> <span style="color:#3f8058">[</span><span style="color:#f67400">1</span><span style="color:#3f8058">]</span> <span style="color:#7a7c7d">; still setting y to 1</span>
+    <span style="font-weight:bold">set</span> <span style="font-weight:bold">y</span><span style="color:#3f8058">,</span> <span style="color:#f67400">1</span> <span style="font-weight:bold">side</span> <span style="color:#f67400">1</span> <span style="color:#3f8058">[</span><span style="color:#27aeae">dec</span><span style="color:#3f8058">]</span>
+    <span style="font-weight:bold">set</span> <span style="font-weight:bold">y</span><span style="color:#3f8058">,</span> <span style="color:#f67400">1</span> <span style="font-weight:bold">side</span> <span style="color:#f67400">1</span> <span style="color:#3f8058">[</span><span style="color:#f67400">1</span> <span style="color:#3f8058">&lt;&lt;</span> <span style="color:#f67400">0</span><span style="color:#3f8058">]</span>
+    <span style="font-weight:bold">set</span> <span style="font-weight:bold">y</span><span style="color:#3f8058">,</span> <span style="color:#f67400">1</span> <span style="font-weight:bold">side</span> <span style="color:#f67400">1</span> <span style="color:#3f8058">[</span><span style="color:#27aeae">dec</span> <span style="color:#3f8058">&lt;&lt;</span> <span style="color:#f67400">0</span><span style="color:#3f8058">]</span>
+    <span style="font-weight:bold">set</span> <span style="font-weight:bold">y</span><span style="color:#3f8058">,</span> <span style="color:#f67400">1</span> <span style="font-weight:bold">side</span> <span style="color:#f67400">1</span> <span style="color:#3f8058">[(</span><span style="color:#f67400">1</span> <span style="color:#3f8058">*</span> <span style="color:#f67400">1</span><span style="color:#3f8058">)</span> <span style="color:#3f8058">&lt;&lt;</span> <span style="color:#f67400">0</span><span style="color:#3f8058">]</span>
+    <span style="font-weight:bold">set</span> <span style="font-weight:bold">y</span><span style="color:#3f8058">,</span> <span style="color:#f67400">1</span> <span style="font-weight:bold">side</span> <span style="color:#f67400">1</span> <span style="color:#3f8058">[(</span><span style="color:#27aeae">dec</span> <span style="color:#3f8058">*</span> <span style="color:#f67400">1</span><span style="color:#3f8058">)</span> <span style="color:#3f8058">&lt;&lt;</span> <span style="color:#f67400">0</span><span style="color:#3f8058">]</span>
+    <span style="color:#7a7c7d">/**/</span> <span style="font-weight:bold">set</span> <span style="color:#7a7c7d">/**/</span> <span style="font-weight:bold">y</span> <span style="color:#7a7c7d">/**/</span> <span style="color:#3f8058">,</span> <span style="color:#7a7c7d">/**/</span> <span style="color:#f67400">1</span> <span style="color:#7a7c7d">/**/</span> <span style="font-weight:bold">side</span> <span style="color:#7a7c7d">/**/</span> <span style="color:#3f8058">(</span> <span style="color:#7a7c7d">/**/</span> <span style="color:#f67400">1</span> <span style="color:#7a7c7d">/**/</span> <span style="color:#3f8058">&lt;&lt;</span> <span style="color:#7a7c7d">/**/</span> <span style="color:#f67400">0</span> <span style="color:#7a7c7d">/**/</span> <span style="color:#3f8058">)</span> <span style="color:#7a7c7d">/**/</span> <span style="color:#3f8058">[</span> <span style="color:#7a7c7d">/**/</span> <span style="color:#f67400">1</span> <span style="color:#7a7c7d">/**/</span> <span style="color:#3f8058">]</span>
+    <span style="font-weight:bold">jmp</span> <span style="font-weight:bold">x</span><span style="color:#3f8058">--</span> <span style="color:#27aeae">loop</span>
+
+<span style="color:#8e44ad">busywait</span><span style="color:#3f8058">:</span> <span style="font-weight:bold">jmp</span> <span style="font-weight:bold">pin</span> <span style="color:#27aeae">busywait</span> <span style="color:#7a7c7d">// wait for input pin to go low</span>
+<span style="color:#27ae60">.wrap</span>
+
+<span style="color:#3f8058">%</span> <span style="font-weight:bold">c-sdk</span> <span style="color:#3f8058">{</span>
+<span style="color:#7a7c7d">/*</span>
+<span style="color:#7a7c7d">this function does nothing useful</span>
+<span style="color:#7a7c7d">*/</span>
+<span style="color:#2980b9">uint8_t</span> do_nothing<span style="color:#3f8058">(</span><span style="color:#2980b9">uint8_t</span> num<span style="color:#3f8058">)</span> <span style="color:#3f8058">{</span>
+    <span style="color:#fdbc4b;font-weight:bold">return</span> num<span style="color:#3f8058">;</span>
+<span style="color:#3f8058">}</span>
+<span style="color:#3f8058">%}</span>
+
+<span style="color:#3f8058">%</span> <span style="font-weight:bold">python</span> <span style="color:#3f8058">{</span>
+<span style="color:#7a7c7d"># this function also does nothing useful</span>
+<span style="font-weight:bold">def</span> do_nothing(num):
+    <span style="color:#fdbc4b;font-weight:bold">return</span> num
+<span style="color:#3f8058">%}</span>
+
+<span style="color:#3f8058">%</span> <span style="color:#27aeae">unknown</span> <span style="color:#3f8058">{</span>
+    unknown language pass through
+<span style="color:#3f8058">%}</span>
+</pre></body></html>

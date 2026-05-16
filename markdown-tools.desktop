@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Markdown Tools
+GenericName=Markdown Editor, Viewer and Converter to PDF
+Type=Application
+Exec=md-editor
+Icon=markdown-tools
+Categories=Utility;TextEditor;
+MimeType=text/markdown;

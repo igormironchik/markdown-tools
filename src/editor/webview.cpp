@@ -1,0 +1,123 @@
+/*
+    SPDX-FileCopyrightText: 2026 Igor Mironchik <igor.mironchik@gmail.com>
+    SPDX-License-Identifier: GPL-3.0-or-later
+*/
+
+// md-editor include.
+#include "webview.h"
+
+// Qt include.
+#include <QApplication>
+#include <QClipboard>
+#include <QContextMenuEvent>
+#include <QWebEngineContextMenuRequest>
+
+namespace MdEditor
+{
+
+//
+// WebViewPrivate
+//
+
+struct WebViewPrivate {
+    WebViewPrivate(WebView *parent)
+        : m_q(parent)
+    {
+    }
+
+    void initUi()
+    {
+        m_scrollAction = new QAction(WebView::tr("Scroll Editor To"), m_q);
+        m_q->addAction(m_scrollAction);
+        m_copyAction = new QAction(WebView::tr("Copy"), m_q);
+        m_q->addAction(m_copyAction);
+        m_copyAction->setEnabled(false);
+        m_q->setContextMenuPolicy(Qt::ActionsContextMenu);
+        m_q->setFocusPolicy(Qt::ClickFocus);
+
+        QObject::connect(m_copyAction, &QAction::triggered, m_q, &WebView::onCopy);
+        QObject::connect(m_scrollAction, &QAction::triggered, m_q, &WebView::onScroll);
+        QObject::connect(m_q, &QWebEngineView::selectionChanged, m_q, &WebView::onSelectionChanged);
+    }
+
+    WebView *m_q;
+    QAction *m_copyAction = nullptr;
+    QAction *m_scrollAction = nullptr;
+}; // struct WebViewPrivate
+
+//
+// DNDBlocker
+//
+
+class DNDBlocker : public QObject
+{
+public:
+    explicit DNDBlocker(QObject *parent = nullptr)
+        : QObject(parent)
+    {
+    }
+
+protected:
+    bool eventFilter(QObject *obj,
+                     QEvent *event) override
+    {
+        if (event->type() == QEvent::DragEnter || event->type() == QEvent::DragMove || event->type() == QEvent::Drop) {
+            event->ignore();
+            return true;
+        }
+
+        return QObject::eventFilter(obj, event);
+    }
+}; // class DNDBlocker
+
+//
+// WebView
+//
+
+WebView::WebView(QWidget *parent)
+    : QWebEngineView(parent)
+    , m_d(new WebViewPrivate(this))
+{
+    m_d->initUi();
+
+    installEventFilter(new DNDBlocker(this));
+}
+
+WebView::~WebView()
+{
+}
+
+void WebView::enableScrollEditor(bool on)
+{
+    if (on) {
+        if (!actions().contains(m_d->m_scrollAction)) {
+            insertAction(m_d->m_copyAction, m_d->m_scrollAction);
+        }
+    } else {
+        if (actions().contains(m_d->m_scrollAction)) {
+            removeAction(m_d->m_scrollAction);
+        }
+    }
+}
+
+void WebView::onSelectionChanged()
+{
+    m_d->m_copyAction->setEnabled(hasSelection());
+}
+
+void WebView::onCopy()
+{
+    QApplication::clipboard()->setText(selectedText());
+}
+
+void WebView::onScroll()
+{
+    page()->runJavaScript(QStringLiteral("getId(%1, %2)")
+                              .arg(lastContextMenuRequest()->position().x())
+                              .arg(lastContextMenuRequest()->position().y()),
+                          [this](const QVariant &v) {
+                              emit this->scrollRequested(v.toString());
+                          });
+}
+
+} /* namespace MdEditor */

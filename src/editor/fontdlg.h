@@ -1,0 +1,43 @@
+/*
+    SPDX-FileCopyrightText: 2026 Igor Mironchik <igor.mironchik@gmail.com>
+    SPDX-License-Identifier: GPL-3.0-or-later
+*/
+
+#pragma once
+
+// Qt include.
+#include <QFont>
+#include <QScopedPointer>
+
+// shared include.
+#include "dlg_filter_wheel.h"
+
+namespace MdEditor
+{
+
+class FontPage;
+
+//
+// FontDlg
+//
+
+//! Font dialog.
+class FontDlg : public MdShared::DlgWheelFilter
+{
+    Q_OBJECT
+
+public:
+    FontDlg(const QFont &f,
+            QWidget *parent);
+    ~FontDlg() override = default;
+
+    //! \return Current font.
+    QFont currentFont() const;
+
+private:
+    Q_DISABLE_COPY(FontDlg)
+
+    FontPage *m_page;
+}; // class FontDlg
+
+} /* namespace MdEditor */

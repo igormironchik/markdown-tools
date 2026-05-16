@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE language SYSTEM "language.dtd"
+[
+    <!-- comment line 1
+         comment line 2 -->
+    <!ENTITY name    "(?![0-9])[\w_:][\w.:_-]*">
+    <!ENTITY entref  "&amp;(#[0-9]+|#[xX][0-9A-Fa-f]+|&name;);">
+    <!ENTITY % parameterEntity "blabla%parament;blabla" >
+]>
+
+<!-- we need this tags or this is no valid file -->
+
+<element attr1="a1" attr2="2.03" attr3="&entity;">
+    <sub-element/>
+</element>
+
+This is a pseudo XML file to test Kate's XML syntax highlighting.
+
+Doctype:
+	<!DOCTYPE HTML PUBLIC "-//SOME_DOCTYPE 0.01//EN" SYSTEM "foobar.dtd">
+	<!DOCTYPE
+        HTML PUBLIC "-//SOME_DOCTYPE 0.01//EN" SYSTEM "foobar.dtd">
+
+Processing instruction:
+	<?php processing instruction ?>
+
+Comments:
+	<!-- a comment -->
+	<!-- another comment,
+	using more than one line -->
+
+Comment inside element:
+	<element attr="foobar">content<!-- comment --></element>
+
+Markup inside comment:
+	<!--
+	This is a comment!
+	<element inside_comment />
+	-->
+
+Double hyphen within comment:
+<!--
+    -
+    error: --
+    error: ---
+-->
+<!-- 1 '-' as error --->
+<!-- 2 '-' as error ---->
+<!-- 3 '-' as error ----->
+<!-- 4 '-' as error ------>
+
+CDATA:
+  <![CDATA[ <![CDATA[ ]]&lt; >
+    bla bla <element/>
+  ]]>
+  ]]> <!-- error -->
+
+Empty element:
+	<empty/>
+	<empty  />
+
+Simple element plus content:
+	<element>some content</element>
+	<element attr="foobar">some
+		content</element>
+	<element>some content</element oups="value">
+
+Namespace for elements and attributes:
+	<ns:element>content</ns:element>
+	<element ns:attr="content content">content</element>
+
+Elements containing allowed characters:
+	<element-dash foo="test"/>
+	<element.dot foo="test"/>
+
+Elements containing allowed start characters:
+	<:element foo="test"/>
+	<_element foo="test"/>
+
+Single quotes (the same as double quotes):
+	<element attr='content &nbsp; content'>content</element>
+
+Allowed Whitespace:
+	<element     attr   =   "test"  >
+		content</element>
+
+Entities:
+	&nbsp;
+	&#229;
+	&#xE5;
+	&#Xe5;
+	&#1048;
+	&#x6C34;
+	<element attr="foo &nbsp; &#229; &amp; bar"/>
+
+Illegal XML, should not be highlighted:
+	<0foobar> -- no digit as first character
+	<-foo> -- no dash as first character
+
+<wrong<very wrong>>
+<tag attr="abc"/>
+
+<wrong<!--very wrong-->>
+<tag attr="abc"/>
+
+<wrong<![CDATA[very wrong]]>
+<tag attr="abc"/>
+
+<!-- missing > -->
+
+<wrong<tag attr="abc"/>
+<wrong<!--bla bla--><tag attr="abc"/>
+<wrong<![CDATA[bla bla]]><tag attr="abc"/>
+
+<!-- / without > -->
+
+<wrong/<tag attr="abc"/>
+<wrong/<!--bla bla--><tag attr="abc"/>
+<wrong/<![CDATA[bla bla]]><tag attr="abc"/>
+
+<!-- mising attribute name -->
+
+<wrong ="abc"/><tag attr="abc"/>
+<wrong ="abc"/><!--bla bla-->
+<wrong ="abc"/><![CDATA[bla bla]]>
+
+<!-- invalid attribute name (missing space) -->
+
+<wrong attr="abc"attr="abc"/><tag attr="abc"/>
+<wrong attr="abc"attr="abc"/><!--bla bla-->
+<wrong attr="abc"attr="abc"/><![CDATA[bla bla]]>
+
+<!-- mising value attribute -->
+
+<wrong attr/><tag attr="abc"/>
+<wrong attr/><!--bla bla--><tag attr="abc"/>
+<wrong attr/><![CDATA[bla bla]]><tag attr="abc"/>
+
+<wrong attr=/><tag attr="abc"/>
+<wrong attr=/><!--bla bla--><tag attr="abc"/>
+<wrong attr=/><![CDATA[bla bla]]><tag attr="abc"/>
+
+<!-- error followed by text -->
+
+<wrong at
+  bla bla bla
+  bla bla bla
+
+<wrong at
+    attr="abc"
+  bla bla bla
+  bla bla bla

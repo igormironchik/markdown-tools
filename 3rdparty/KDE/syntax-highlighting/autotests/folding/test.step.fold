@@ -1,0 +1,96 @@
+<beginfold id='1'>ISO-10303-21;</beginfold id='1'>
+/* sample taken from https://en.wikipedia.org/wiki/ISO_10303-21 */
+<beginfold id='2'>HEADER;</beginfold id='2'>
+FILE_DESCRIPTION(
+/* description */ ('A minimal AP214 example with a single part'),
+/* implementation_level */ '2;1');
+FILE_NAME(
+/* name */ 'demo',
+/* time_stamp */ '2003-12-27T11:57:53',
+/* author */ ('Lothar Klein'),
+/* organization */ ('LKSoft'),
+/* preprocessor_version */ ' ',
+/* originating_system */ 'IDA-STEP',
+/* authorization */ ' ');
+FILE_SCHEMA (('AUTOMOTIVE_DESIGN { 1 0 10303 214 2 1 1}'));
+<endfold id='2'>ENDSEC;</endfold id='2'>
+<beginfold id='3'>DATA;</beginfold id='3'>
+#10=ORGANIZATION('O0001','LKSoft','company');
+#11=PRODUCT_DEFINITION_CONTEXT('part definition',#12,'manufacturing');
+#12=APPLICATION_CONTEXT('mechanical design');
+#13=APPLICATION_PROTOCOL_DEFINITION('','automotive_design',2003,#12);
+#14=PRODUCT_DEFINITION('0',$,#15,#11);
+#15=PRODUCT_DEFINITION_FORMATION('1',$,#16);
+#16=PRODUCT('A0001','Test Part 1','',(#18));
+#17=PRODUCT_RELATED_PRODUCT_CATEGORY('part',$,(#16));
+#18=PRODUCT_CONTEXT('',#12,'');
+#19=APPLIED_ORGANIZATION_ASSIGNMENT(#10,#20,(#16));
+#20=ORGANIZATION_ROLE('id owner');
+
+/** String encoding sample from https://github.com/mozman/steputils/ .*/
+#200= IFCPRESENTATIONLAYERWITHSTYLE('STB-W\X2\00E4\X0\nde Neu 3D',$,(
+#180,#319,#396,#486,#576,#1449,#1551,#1647,#1747,#1847,#1947,#2047,#2147
+,#2243,#2343,#2443,#4002,#7817,#8027,#8204,#8380,#8556,#8732,#8908,#9084
+,#9141,#9353,#9530,#9706,#9882,#10058,#10111,#10321,#10498,#10674,#10731
+),'BT_N_STB_W\X2\00C4\X0\NDE',.T.,.U.,.F.,(#201));
+
+/** Binary literals */
+#42=FOO("0FF", "1AB42")
+
+<endfold id='3'>ENDSEC;</endfold id='3'>
+<endfold id='1'>END-ISO-10303-21;</endfold id='1'>
+
+
+<beginfold id='1'>ISO-10303-21;</beginfold id='1'>
+/**
+  Example taken from the IFC documentation.
+  https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/annex-e.html
+*/
+<beginfold id='2'>HEADER;</beginfold id='2'>
+FILE_DESCRIPTION(('ViewDefinition [NotAssigned]'),'2;1');
+FILE_NAME(
+/* name */ 'beam-extruded-solid.ifc',
+/* time_stamp */ '2016-02-04T08:11:04',
+/* author */ ('redacted'),
+/* organization */ ('redacted'),
+/* preprocessor_version */ 'redacted',
+/* originating_system */ 'redacted - redacted - 3.14159',
+/* authorization */ 'None');
+
+FILE_SCHEMA (('IFC4X3_DEV_2e79a7d'));
+<endfold id='2'>ENDSEC;</endfold id='2'>
+
+<beginfold id='3'>DATA;</beginfold id='3'>
+/* general entities required for all IFC data sets, defining the context for the exchange */
+#1= IFCGEOMETRICREPRESENTATIONCONTEXT($,'Model',3,0.0001,#3,$);
+#2= IFCCARTESIANPOINT((0.0,0.0,0.0));
+#3= IFCAXIS2PLACEMENT3D(#2,$,$);
+#4= IFCGEOMETRICREPRESENTATIONSUBCONTEXT('Axis','Model',*,*,*,*,#1,$,.MODEL_VIEW.,$);
+#5= IFCGEOMETRICREPRESENTATIONSUBCONTEXT('Body','Model',*,*,*,*,#1,$,.MODEL_VIEW.,$);
+/* defines the default building (as required as the minimum spatial element)  */
+#50= IFCBUILDING('39t4Pu3nTC4ekXYRIHJB9W',$,'IfcBuilding',$,$,$,$,$,$,$,$,$);
+#51= IFCRELCONTAINEDINSPATIALSTRUCTURE('3Sa3dTJGn0H8TQIGiuGQd5',$,'Building','Building Container for Elements',(#211),#50);
+#52= IFCAXIS2PLACEMENT3D(#2,$,$);
+#100= IFCPROJECT('0$WU4A9R19$vKWO$AdOnKA',$,'IfcProject',$,$,$,$,(#1),#101);
+#101= IFCUNITASSIGNMENT((#102,#103,#104));
+#102= IFCSIUNIT(*,.LENGTHUNIT.,.MILLI.,.METRE.);
+#103= IFCSIUNIT(*,.PLANEANGLEUNIT.,$,.RADIAN.);
+#104= IFCSIUNIT(*,.TIMEUNIT.,$,.SECOND.);
+#105= IFCRELAGGREGATES('091a6ewbvCMQ2Vyiqspa7a',$,'Project Container','Project Container for Buildings',#100,(#50));
+#200= IFCCARTESIANPOINTLIST2D(((2.8,-79.5),(2.8,79.5),(6.31471899999999,87.985281),(14.8,91.5),(50.0,91.5),(50.0,100.0),(-50.0,100.0),(-50.0,91.5),(-14.8,91.5),(-6.31471899999997,87.985281),(-2.79999999999999,79.5),(-2.8,-79.5),(-6.31471899999999,-87.985281),(-14.8,-91.5),(-50.0,-91.5),(-50.0,-100.0),(50.0,-100.0),(50.0,-91.5),(14.8,-91.5),(6.31471899999997,-87.985281)),$);
+#201= IFCINDEXEDPOLYCURVE(#200,(IFCLINEINDEX((1,2)),IFCARCINDEX((2,3,4)),IFCLINEINDEX((4,5,6,7,8,9)),IFCARCINDEX((9,10,11)),IFCLINEINDEX((11,12)),IFCARCINDEX((12,13,14)),IFCLINEINDEX((14,15,16,17,18,19)),IFCARCINDEX((19,20,1))),.F.);
+#202= IFCARBITRARYCLOSEDPROFILEDEF(.AREA.,'IPE200',#201);
+#203= IFCCARTESIANPOINT((0.0,0.0,0.0));
+#204= IFCDIRECTION((0.0,1.0,0.0));
+#205= IFCDIRECTION((1.0,0.0,0.0));
+#206= IFCAXIS2PLACEMENT3D(#203,#204,#205);
+#207= IFCDIRECTION((0.0,0.0,1.0));
+#208= IFCEXTRUDEDAREASOLID(#202,#206,#207,1000.0);
+#209= IFCSHAPEREPRESENTATION(#5,'Body','SweptSolid',(#208));
+#210= IFCPRODUCTDEFINITIONSHAPE($,$,(#209));
+#211= IFCBEAM('0EF5_zZRv0pQPddeofU3KT',$,'ExampleBeamName','ExampleBeamDescription',$,#213,#210,'Tag',$);
+#212= IFCAXIS2PLACEMENT3D(#2,$,$);
+#213= IFCLOCALPLACEMENT($,#212);
+<endfold id='3'>ENDSEC;</endfold id='3'>
+
+<endfold id='1'>END-ISO-10303-21;</endfold id='1'>

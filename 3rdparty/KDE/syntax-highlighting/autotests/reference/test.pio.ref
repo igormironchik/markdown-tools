@@ -1,0 +1,59 @@
+<Normal Text></Normal Text><br/>
+<Directive>.program</Directive><Normal Text> </Normal Text><Identifier>my_program</Identifier><br/>
+<Normal Text></Normal Text><br/>
+<Comment>; optional side-set</Comment><br/>
+<Directive>.side_set</Directive><Normal Text> </Normal Text><Decimal>1</Decimal><Normal Text> </Normal Text><Keyword>opt</Keyword><br/>
+<Normal Text></Normal Text><br/>
+<Comment>// definitions</Comment><br/>
+<Directive>.define</Directive><Normal Text> </Normal Text><Identifier>dec</Identifier><Normal Text> </Normal Text><Decimal>1</Decimal><br/>
+<Directive>.define</Directive><Normal Text> </Normal Text><Identifier>hex</Identifier><Normal Text> </Normal Text><Hex>0xFF</Hex><br/>
+<Directive>.define</Directive><Normal Text> </Normal Text><Identifier>bin</Identifier><Normal Text> </Normal Text><Binary>0b01010101</Binary><br/>
+<Directive>.define</Directive><Normal Text> </Normal Text><Identifier>exp</Identifier><Normal Text> </Normal Text><Symbol>(</Symbol><Normal Text> </Normal Text><Decimal>1</Decimal><Normal Text> </Normal Text><Symbol>+</Symbol><Normal Text> </Normal Text><Decimal>2</Decimal><Normal Text> </Normal Text><Symbol>-</Symbol><Normal Text> </Normal Text><Decimal>3</Decimal><Normal Text> </Normal Text><Symbol>*</Symbol><Normal Text> </Normal Text><Decimal>4</Decimal><Normal Text> </Normal Text><Symbol>/</Symbol><Normal Text> </Normal Text><Decimal>5</Decimal><Normal Text> </Normal Text><Symbol>)</Symbol><br/>
+<Normal Text></Normal Text><br/>
+<Comment>/*</Comment><br/>
+<Comment>pio test program</Comment><br/>
+<Alert Level 3>NOTE</Alert Level 3><Comment>: this program don't do anything useful</Comment><br/>
+<Comment>*/</Comment><br/>
+<Directive>.wrap_target</Directive><Normal Text> </Normal Text><Comment>; resume here at the end of the program</Comment><br/>
+<Keyword>public</Keyword><Normal Text> </Normal Text><Label>start</Label><Symbol>:</Symbol><Normal Text> </Normal Text><Comment>; start of the program</Comment><br/>
+<Normal Text>    </Normal Text><Instruction>set</Instruction><Normal Text> </Normal Text><Register>x</Register><Symbol>,</Symbol><Normal Text> </Normal Text><Decimal>7</Decimal><br/>
+<Normal Text></Normal Text><br/>
+<Label>loop</Label><Symbol>:</Symbol><Normal Text> </Normal Text><Comment>// iterate x times</Comment><br/>
+<Normal Text>    </Normal Text><Instruction>set</Instruction><Normal Text> </Normal Text><Register>y</Register><Symbol>,</Symbol><Normal Text> </Normal Text><Decimal>1</Decimal><Normal Text> </Normal Text><Comment>; set y to 1</Comment><br/>
+<Normal Text>    </Normal Text><Instruction>set</Instruction><Normal Text> </Normal Text><Register>y</Register><Symbol>,</Symbol><Normal Text> </Normal Text><Identifier>dec</Identifier><br/>
+<Normal Text>    </Normal Text><Instruction>set</Instruction><Normal Text> </Normal Text><Register>y</Register><Symbol>,</Symbol><Normal Text> </Normal Text><Symbol>(</Symbol><Decimal>1</Decimal><Normal Text> </Normal Text><Symbol><<</Symbol><Normal Text> </Normal Text><Decimal>0</Decimal><Symbol>)</Symbol><br/>
+<Normal Text>    </Normal Text><Instruction>set</Instruction><Normal Text> </Normal Text><Register>y</Register><Symbol>,</Symbol><Normal Text> </Normal Text><Symbol>(</Symbol><Identifier>dec</Identifier><Normal Text> </Normal Text><Symbol><<</Symbol><Normal Text> </Normal Text><Decimal>0</Decimal><Symbol>)</Symbol><br/>
+<Normal Text>    </Normal Text><Instruction>set</Instruction><Normal Text> </Normal Text><Register>y</Register><Symbol>,</Symbol><Normal Text> </Normal Text><Decimal>1</Decimal><Normal Text> </Normal Text><Keyword>side</Keyword><Normal Text> </Normal Text><Decimal>1</Decimal><Normal Text> </Normal Text><Comment>; keep setting y to 1</Comment><br/>
+<Normal Text>    </Normal Text><Instruction>set</Instruction><Normal Text> </Normal Text><Register>y</Register><Symbol>,</Symbol><Normal Text> </Normal Text><Decimal>1</Decimal><Normal Text> </Normal Text><Keyword>side</Keyword><Normal Text> </Normal Text><Identifier>dec</Identifier><br/>
+<Normal Text>    </Normal Text><Instruction>set</Instruction><Normal Text> </Normal Text><Register>y</Register><Symbol>,</Symbol><Normal Text> </Normal Text><Decimal>1</Decimal><Normal Text> </Normal Text><Keyword>side</Keyword><Normal Text> </Normal Text><Symbol>(</Symbol><Decimal>1</Decimal><Normal Text> </Normal Text><Symbol><<</Symbol><Normal Text> </Normal Text><Decimal>0</Decimal><Symbol>)</Symbol><br/>
+<Normal Text>    </Normal Text><Instruction>set</Instruction><Normal Text> </Normal Text><Register>y</Register><Symbol>,</Symbol><Normal Text> </Normal Text><Decimal>1</Decimal><Normal Text> </Normal Text><Keyword>side</Keyword><Normal Text> </Normal Text><Symbol>(</Symbol><Identifier>dec</Identifier><Normal Text> </Normal Text><Symbol><<</Symbol><Normal Text> </Normal Text><Decimal>0</Decimal><Symbol>)</Symbol><br/>
+<Normal Text>    </Normal Text><Instruction>set</Instruction><Normal Text> </Normal Text><Register>y</Register><Symbol>,</Symbol><Normal Text> </Normal Text><Decimal>1</Decimal><Normal Text> </Normal Text><Keyword>side</Keyword><Normal Text> </Normal Text><Decimal>1</Decimal><Normal Text> </Normal Text><Symbol>[</Symbol><Decimal>1</Decimal><Symbol>]</Symbol><Normal Text> </Normal Text><Comment>; still setting y to 1</Comment><br/>
+<Normal Text>    </Normal Text><Instruction>set</Instruction><Normal Text> </Normal Text><Register>y</Register><Symbol>,</Symbol><Normal Text> </Normal Text><Decimal>1</Decimal><Normal Text> </Normal Text><Keyword>side</Keyword><Normal Text> </Normal Text><Decimal>1</Decimal><Normal Text> </Normal Text><Symbol>[</Symbol><Identifier>dec</Identifier><Symbol>]</Symbol><br/>
+<Normal Text>    </Normal Text><Instruction>set</Instruction><Normal Text> </Normal Text><Register>y</Register><Symbol>,</Symbol><Normal Text> </Normal Text><Decimal>1</Decimal><Normal Text> </Normal Text><Keyword>side</Keyword><Normal Text> </Normal Text><Decimal>1</Decimal><Normal Text> </Normal Text><Symbol>[</Symbol><Decimal>1</Decimal><Normal Text> </Normal Text><Symbol><<</Symbol><Normal Text> </Normal Text><Decimal>0</Decimal><Symbol>]</Symbol><br/>
+<Normal Text>    </Normal Text><Instruction>set</Instruction><Normal Text> </Normal Text><Register>y</Register><Symbol>,</Symbol><Normal Text> </Normal Text><Decimal>1</Decimal><Normal Text> </Normal Text><Keyword>side</Keyword><Normal Text> </Normal Text><Decimal>1</Decimal><Normal Text> </Normal Text><Symbol>[</Symbol><Identifier>dec</Identifier><Normal Text> </Normal Text><Symbol><<</Symbol><Normal Text> </Normal Text><Decimal>0</Decimal><Symbol>]</Symbol><br/>
+<Normal Text>    </Normal Text><Instruction>set</Instruction><Normal Text> </Normal Text><Register>y</Register><Symbol>,</Symbol><Normal Text> </Normal Text><Decimal>1</Decimal><Normal Text> </Normal Text><Keyword>side</Keyword><Normal Text> </Normal Text><Decimal>1</Decimal><Normal Text> </Normal Text><Symbol>[(</Symbol><Decimal>1</Decimal><Normal Text> </Normal Text><Symbol>*</Symbol><Normal Text> </Normal Text><Decimal>1</Decimal><Symbol>)</Symbol><Normal Text> </Normal Text><Symbol><<</Symbol><Normal Text> </Normal Text><Decimal>0</Decimal><Symbol>]</Symbol><br/>
+<Normal Text>    </Normal Text><Instruction>set</Instruction><Normal Text> </Normal Text><Register>y</Register><Symbol>,</Symbol><Normal Text> </Normal Text><Decimal>1</Decimal><Normal Text> </Normal Text><Keyword>side</Keyword><Normal Text> </Normal Text><Decimal>1</Decimal><Normal Text> </Normal Text><Symbol>[(</Symbol><Identifier>dec</Identifier><Normal Text> </Normal Text><Symbol>*</Symbol><Normal Text> </Normal Text><Decimal>1</Decimal><Symbol>)</Symbol><Normal Text> </Normal Text><Symbol><<</Symbol><Normal Text> </Normal Text><Decimal>0</Decimal><Symbol>]</Symbol><br/>
+<Normal Text>    </Normal Text><Comment>/**/</Comment><Normal Text> </Normal Text><Instruction>set</Instruction><Normal Text> </Normal Text><Comment>/**/</Comment><Normal Text> </Normal Text><Register>y</Register><Normal Text> </Normal Text><Comment>/**/</Comment><Normal Text> </Normal Text><Symbol>,</Symbol><Normal Text> </Normal Text><Comment>/**/</Comment><Normal Text> </Normal Text><Decimal>1</Decimal><Normal Text> </Normal Text><Comment>/**/</Comment><Normal Text> </Normal Text><Keyword>side</Keyword><Normal Text> </Normal Text><Comment>/**/</Comment><Normal Text> </Normal Text><Symbol>(</Symbol><Normal Text> </Normal Text><Comment>/**/</Comment><Normal Text> </Normal Text><Decimal>1</Decimal><Normal Text> </Normal Text><Comment>/**/</Comment><Normal Text> </Normal Text><Symbol><<</Symbol><Normal Text> </Normal Text><Comment>/**/</Comment><Normal Text> </Normal Text><Decimal>0</Decimal><Normal Text> </Normal Text><Comment>/**/</Comment><Normal Text> </Normal Text><Symbol>)</Symbol><Normal Text> </Normal Text><Comment>/**/</Comment><Normal Text> </Normal Text><Symbol>[</Symbol><Normal Text> </Normal Text><Comment>/**/</Comment><Normal Text> </Normal Text><Decimal>1</Decimal><Normal Text> </Normal Text><Comment>/**/</Comment><Normal Text> </Normal Text><Symbol>]</Symbol><br/>
+<Normal Text>    </Normal Text><Instruction>jmp</Instruction><Normal Text> </Normal Text><Register>x</Register><Symbol>--</Symbol><Normal Text> </Normal Text><Identifier>loop</Identifier><br/>
+<Normal Text></Normal Text><br/>
+<Label>busywait</Label><Symbol>:</Symbol><Normal Text> </Normal Text><Instruction>jmp</Instruction><Normal Text> </Normal Text><Keyword>pin</Keyword><Normal Text> </Normal Text><Identifier>busywait</Identifier><Normal Text> </Normal Text><Comment>// wait for input pin to go low</Comment><br/>
+<Directive>.wrap</Directive><br/>
+<Normal Text></Normal Text><br/>
+<Symbol>%</Symbol><Normal Text> </Normal Text><Keyword>c-sdk</Keyword><Normal Text> </Normal Text><Symbol>{</Symbol><br/>
+<Comment>/*</Comment><br/>
+<Comment>this function does nothing useful</Comment><br/>
+<Comment>*/</Comment><br/>
+<Data Type>uint8_t</Data Type><Normal Text> do_nothing</Normal Text><Symbol>(</Symbol><Data Type>uint8_t</Data Type><Normal Text> num</Normal Text><Symbol>)</Symbol><Normal Text> </Normal Text><Symbol>{</Symbol><br/>
+<Normal Text>    </Normal Text><Control Flow>return</Control Flow><Normal Text> num</Normal Text><Symbol>;</Symbol><br/>
+<Symbol>}</Symbol><br/>
+<Symbol>%}</Symbol><br/>
+<Normal Text></Normal Text><br/>
+<Symbol>%</Symbol><Normal Text> </Normal Text><Keyword>python</Keyword><Normal Text> </Normal Text><Symbol>{</Symbol><br/>
+<Comment># this function also does nothing useful</Comment><br/>
+<Definition Keyword>def</Definition Keyword><Normal Text> do_nothing(num)</Normal Text><Normal Text>:</Normal Text><br/>
+<Normal Text>    </Normal Text><Flow Control Keyword>return</Flow Control Keyword><Normal Text> num</Normal Text><br/>
+<Symbol>%}</Symbol><br/>
+<Normal Text></Normal Text><br/>
+<Symbol>%</Symbol><Normal Text> </Normal Text><Identifier>unknown</Identifier><Normal Text> </Normal Text><Symbol>{</Symbol><br/>
+<Normal Text>    unknown language pass through</Normal Text><br/>
+<Symbol>%}</Symbol><br/>

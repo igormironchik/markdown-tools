@@ -1,0 +1,66 @@
+<!doctype html>
+<meta charset="utf-8">
+<head>
+  <script src="qrc:/qtwebchannel/qwebchannel.js"></script>
+  <link rel="stylesheet" href="qrc:/res/css/github.css">
+  <link rel="stylesheet" href="qrc:/res/css/github-markdown.css">
+  <script src="qrc:/res/highlight.js"></script>
+  <script>hljs.configure({languages:[]});</script>
+  <link rel="stylesheet" href="qrc:/res/katex/katex.min.css">
+  <script src="qrc:/res/katex/katex.min.js"></script>
+  <script src="qrc:/res/katex/contrib/auto-render.min.js"></script>
+  <script>
+    function scrollToId(itemId) {
+      const element = document.getElementById(itemId);
+
+      if (element) {
+        element.scrollIntoView();
+      }
+    }
+
+    function getId(x, y) {
+        var elem = document.elementFromPoint(x, y);
+        var topParent = elem;
+
+        while (topParent && topParent.parentElement && topParent.parentElement.tagName !== 'ARTICLE') {
+            topParent = topParent.parentElement;
+        }
+
+        return topParent ? topParent.id : null;
+    }
+  </script>
+</head>
+<body>
+  <div id="placeholder"></div>
+  <script type="module">
+  import { replaceBadges } from "qrc:/res/hightlight-blockquote.js";
+  (() => {
+  'use strict';
+
+  let placeholder = document.getElementById('placeholder');
+
+  let updateText = function(text) {
+     placeholder.innerHTML = text;
+     hljs.highlightAll();
+     renderMathInElement(document.body, {
+         delimiters: [
+             {left: '$$', right: '$$', display: true},
+             {left: '$', right: '$', display: false},
+         ],
+         throwOnError : false,
+         strict : false,
+         trust : true
+     });
+     replaceBadges(placeholder);
+  }
+
+  new QWebChannel(qt.webChannelTransport,
+	function(channel) {
+	  let content = channel.objects.content;
+	  updateText(content.text);
+	  content.textChanged.connect(updateText);
+	}
+  );
+  })();</script>
+</body>
+</html>

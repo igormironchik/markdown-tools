@@ -1,0 +1,49 @@
+/*
+    SPDX-FileCopyrightText: 2026 Igor Mironchik <igor.mironchik@gmail.com>
+    SPDX-License-Identifier: GPL-3.0-or-later
+*/
+
+#pragma once
+
+// Qt include.
+#include <QScopedPointer>
+#include <QWebEngineView>
+
+namespace MdEditor
+{
+
+//
+// WebView
+//
+
+struct WebViewPrivate;
+
+//! HTML preview.
+class WebView : public QWebEngineView
+{
+    Q_OBJECT
+
+signals:
+    void scrollRequested(const QString &id);
+
+public:
+    explicit WebView(QWidget *parent);
+    ~WebView() override;
+
+public slots:
+    void enableScrollEditor(bool on = true);
+
+private slots:
+    void onSelectionChanged();
+    void onCopy();
+    void onScroll();
+
+private:
+    friend class WebViewPrivate;
+
+    Q_DISABLE_COPY(WebView)
+
+    QScopedPointer<WebViewPrivate> m_d;
+}; // class WebView
+
+} /* namespace MdEditor */

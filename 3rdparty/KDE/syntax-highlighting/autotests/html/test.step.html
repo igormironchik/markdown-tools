@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>test.step</title>
+<meta name="generator" content="KF5::SyntaxHighlighting - Definition (STEP) - Theme (Breeze Light)"/>
+</head><body style="background-color:#ffffff;color:#1f1c1b"><pre>
+<span style="color:#006e28">ISO-10303-21;</span>
+<span style="color:#898887">/* sample taken from https://en.wikipedia.org/wiki/ISO_10303-21 */</span>
+<span style="font-weight:bold">HEADER;</span>
+<span style="color:#644a9b;font-weight:bold">FILE_DESCRIPTION</span>(
+<span style="color:#898887">/* description */</span> (<span style="color:#bf0303">'A minimal AP214 example with a single part'</span>),
+<span style="color:#898887">/* implementation_level */</span> <span style="color:#bf0303">'2;1'</span>);
+<span style="color:#644a9b;font-weight:bold">FILE_NAME</span>(
+<span style="color:#898887">/* name */</span> <span style="color:#bf0303">'demo'</span>,
+<span style="color:#898887">/* time_stamp */</span> <span style="color:#bf0303">'2003-12-27T11:57:53'</span>,
+<span style="color:#898887">/* author */</span> (<span style="color:#bf0303">'Lothar Klein'</span>),
+<span style="color:#898887">/* organization */</span> (<span style="color:#bf0303">'LKSoft'</span>),
+<span style="color:#898887">/* preprocessor_version */</span> <span style="color:#bf0303">' '</span>,
+<span style="color:#898887">/* originating_system */</span> <span style="color:#bf0303">'IDA-STEP'</span>,
+<span style="color:#898887">/* authorization */</span> <span style="color:#bf0303">' '</span>);
+<span style="color:#644a9b;font-weight:bold">FILE_SCHEMA</span> ((<span style="color:#bf0303">'AUTOMOTIVE_DESIGN { 1 0 10303 214 2 1 1}'</span>));
+<span style="font-weight:bold">ENDSEC;</span>
+<span style="font-weight:bold">DATA;</span>
+<span style="color:#0057ae">#10</span>=ORGANIZATION(<span style="color:#bf0303">'O0001'</span>,<span style="color:#bf0303">'LKSoft'</span>,<span style="color:#bf0303">'company'</span>);
+<span style="color:#0057ae">#11</span>=PRODUCT_DEFINITION_CONTEXT(<span style="color:#bf0303">'part definition'</span>,<span style="color:#0057ae">#12</span>,<span style="color:#bf0303">'manufacturing'</span>);
+<span style="color:#0057ae">#12</span>=APPLICATION_CONTEXT(<span style="color:#bf0303">'mechanical design'</span>);
+<span style="color:#0057ae">#13</span>=APPLICATION_PROTOCOL_DEFINITION(<span style="color:#bf0303">''</span>,<span style="color:#bf0303">'automotive_design'</span>,<span style="color:#b08000">2003</span>,<span style="color:#0057ae">#12</span>);
+<span style="color:#0057ae">#14</span>=PRODUCT_DEFINITION(<span style="color:#bf0303">'0'</span>,<span style="color:#ca60ca">$</span>,<span style="color:#0057ae">#15</span>,<span style="color:#0057ae">#11</span>);
+<span style="color:#0057ae">#15</span>=PRODUCT_DEFINITION_FORMATION(<span style="color:#bf0303">'1'</span>,<span style="color:#ca60ca">$</span>,<span style="color:#0057ae">#16</span>);
+<span style="color:#0057ae">#16</span>=PRODUCT(<span style="color:#bf0303">'A0001'</span>,<span style="color:#bf0303">'Test Part 1'</span>,<span style="color:#bf0303">''</span>,(<span style="color:#0057ae">#18</span>));
+<span style="color:#0057ae">#17</span>=PRODUCT_RELATED_PRODUCT_CATEGORY(<span style="color:#bf0303">'part'</span>,<span style="color:#ca60ca">$</span>,(<span style="color:#0057ae">#16</span>));
+<span style="color:#0057ae">#18</span>=PRODUCT_CONTEXT(<span style="color:#bf0303">''</span>,<span style="color:#0057ae">#12</span>,<span style="color:#bf0303">''</span>);
+<span style="color:#0057ae">#19</span>=APPLIED_ORGANIZATION_ASSIGNMENT(<span style="color:#0057ae">#10</span>,<span style="color:#0057ae">#20</span>,(<span style="color:#0057ae">#16</span>));
+<span style="color:#0057ae">#20</span>=ORGANIZATION_ROLE(<span style="color:#bf0303">'id owner'</span>);
+
+<span style="color:#898887">/** String encoding sample from https://github.com/mozman/steputils/ .*/</span>
+<span style="color:#0057ae">#200</span>= IFCPRESENTATIONLAYERWITHSTYLE(<span style="color:#bf0303">'STB-W</span><span style="color:#3daee9">\X2\00E4\X0\</span><span style="color:#bf0303">nde Neu 3D'</span>,<span style="color:#ca60ca">$</span>,(
+<span style="color:#0057ae">#180</span>,<span style="color:#0057ae">#319</span>,<span style="color:#0057ae">#396</span>,<span style="color:#0057ae">#486</span>,<span style="color:#0057ae">#576</span>,<span style="color:#0057ae">#1449</span>,<span style="color:#0057ae">#1551</span>,<span style="color:#0057ae">#1647</span>,<span style="color:#0057ae">#1747</span>,<span style="color:#0057ae">#1847</span>,<span style="color:#0057ae">#1947</span>,<span style="color:#0057ae">#2047</span>,<span style="color:#0057ae">#2147</span>
+,<span style="color:#0057ae">#2243</span>,<span style="color:#0057ae">#2343</span>,<span style="color:#0057ae">#2443</span>,<span style="color:#0057ae">#4002</span>,<span style="color:#0057ae">#7817</span>,<span style="color:#0057ae">#8027</span>,<span style="color:#0057ae">#8204</span>,<span style="color:#0057ae">#8380</span>,<span style="color:#0057ae">#8556</span>,<span style="color:#0057ae">#8732</span>,<span style="color:#0057ae">#8908</span>,<span style="color:#0057ae">#9084</span>
+,<span style="color:#0057ae">#9141</span>,<span style="color:#0057ae">#9353</span>,<span style="color:#0057ae">#9530</span>,<span style="color:#0057ae">#9706</span>,<span style="color:#0057ae">#9882</span>,<span style="color:#0057ae">#10058</span>,<span style="color:#0057ae">#10111</span>,<span style="color:#0057ae">#10321</span>,<span style="color:#0057ae">#10498</span>,<span style="color:#0057ae">#10674</span>,<span style="color:#0057ae">#10731</span>
+),<span style="color:#bf0303">'BT_N_STB_W</span><span style="color:#3daee9">\X2\00C4\X0\</span><span style="color:#bf0303">NDE'</span>,<span style="color:#aa5500">.T.</span>,<span style="color:#aa5500">.U.</span>,<span style="color:#aa5500">.F.</span>,(<span style="color:#0057ae">#201</span>));
+
+<span style="color:#898887">/** Binary literals */</span>
+<span style="color:#0057ae">#42</span>=FOO(<span style="color:#b08000">"0FF"</span>, <span style="color:#b08000">"1AB42"</span>)
+
+<span style="font-weight:bold">ENDSEC;</span>
+<span style="color:#006e28">END-ISO-10303-21;</span>
+
+
+<span style="color:#006e28">ISO-10303-21;</span>
+<span style="color:#898887">/**</span>
+<span style="color:#898887">  Example taken from the IFC documentation.</span>
+<span style="color:#898887">  https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/annex-e.html</span>
+<span style="color:#898887">*/</span>
+<span style="font-weight:bold">HEADER;</span>
+<span style="color:#644a9b;font-weight:bold">FILE_DESCRIPTION</span>((<span style="color:#bf0303">'ViewDefinition [NotAssigned]'</span>),<span style="color:#bf0303">'2;1'</span>);
+<span style="color:#644a9b;font-weight:bold">FILE_NAME</span>(
+<span style="color:#898887">/* name */</span> <span style="color:#bf0303">'beam-extruded-solid.ifc'</span>,
+<span style="color:#898887">/* time_stamp */</span> <span style="color:#bf0303">'2016-02-04T08:11:04'</span>,
+<span style="color:#898887">/* author */</span> (<span style="color:#bf0303">'redacted'</span>),
+<span style="color:#898887">/* organization */</span> (<span style="color:#bf0303">'redacted'</span>),
+<span style="color:#898887">/* preprocessor_version */</span> <span style="color:#bf0303">'redacted'</span>,
+<span style="color:#898887">/* originating_system */</span> <span style="color:#bf0303">'redacted - redacted - 3.14159'</span>,
+<span style="color:#898887">/* authorization */</span> <span style="color:#bf0303">'None'</span>);
+
+<span style="color:#644a9b;font-weight:bold">FILE_SCHEMA</span> ((<span style="color:#bf0303">'IFC4X3_DEV_2e79a7d'</span>));
+<span style="font-weight:bold">ENDSEC;</span>
+
+<span style="font-weight:bold">DATA;</span>
+<span style="color:#898887">/* general entities required for all IFC data sets, defining the context for the exchange */</span>
+<span style="color:#0057ae">#1</span>= IFCGEOMETRICREPRESENTATIONCONTEXT(<span style="color:#ca60ca">$</span>,<span style="color:#bf0303">'Model'</span>,<span style="color:#b08000">3</span>,<span style="color:#b08000">0.0001</span>,<span style="color:#0057ae">#3</span>,<span style="color:#ca60ca">$</span>);
+<span style="color:#0057ae">#2</span>= IFCCARTESIANPOINT((<span style="color:#b08000">0.0</span>,<span style="color:#b08000">0.0</span>,<span style="color:#b08000">0.0</span>));
+<span style="color:#0057ae">#3</span>= IFCAXIS2PLACEMENT3D(<span style="color:#0057ae">#2</span>,<span style="color:#ca60ca">$</span>,<span style="color:#ca60ca">$</span>);
+<span style="color:#0057ae">#4</span>= IFCGEOMETRICREPRESENTATIONSUBCONTEXT(<span style="color:#bf0303">'Axis'</span>,<span style="color:#bf0303">'Model'</span>,<span style="color:#ca60ca">*</span>,<span style="color:#ca60ca">*</span>,<span style="color:#ca60ca">*</span>,<span style="color:#ca60ca">*</span>,<span style="color:#0057ae">#1</span>,<span style="color:#ca60ca">$</span>,.MODEL_VIEW.,<span style="color:#ca60ca">$</span>);
+<span style="color:#0057ae">#5</span>= IFCGEOMETRICREPRESENTATIONSUBCONTEXT(<span style="color:#bf0303">'Body'</span>,<span style="color:#bf0303">'Model'</span>,<span style="color:#ca60ca">*</span>,<span style="color:#ca60ca">*</span>,<span style="color:#ca60ca">*</span>,<span style="color:#ca60ca">*</span>,<span style="color:#0057ae">#1</span>,<span style="color:#ca60ca">$</span>,.MODEL_VIEW.,<span style="color:#ca60ca">$</span>);
+<span style="color:#898887">/* defines the default building (as required as the minimum spatial element)  */</span>
+<span style="color:#0057ae">#50</span>= IFCBUILDING(<span style="color:#bf0303">'39t4Pu3nTC4ekXYRIHJB9W'</span>,<span style="color:#ca60ca">$</span>,<span style="color:#bf0303">'IfcBuilding'</span>,<span style="color:#ca60ca">$</span>,<span style="color:#ca60ca">$</span>,<span style="color:#ca60ca">$</span>,<span style="color:#ca60ca">$</span>,<span style="color:#ca60ca">$</span>,<span style="color:#ca60ca">$</span>,<span style="color:#ca60ca">$</span>,<span style="color:#ca60ca">$</span>,<span style="color:#ca60ca">$</span>);
+<span style="color:#0057ae">#51</span>= IFCRELCONTAINEDINSPATIALSTRUCTURE(<span style="color:#bf0303">'3Sa3dTJGn0H8TQIGiuGQd5'</span>,<span style="color:#ca60ca">$</span>,<span style="color:#bf0303">'Building'</span>,<span style="color:#bf0303">'Building Container for Elements'</span>,(<span style="color:#0057ae">#211</span>),<span style="color:#0057ae">#50</span>);
+<span style="color:#0057ae">#52</span>= IFCAXIS2PLACEMENT3D(<span style="color:#0057ae">#2</span>,<span style="color:#ca60ca">$</span>,<span style="color:#ca60ca">$</span>);
+<span style="color:#0057ae">#100</span>= IFCPROJECT(<span style="color:#bf0303">'0$WU4A9R19$vKWO$AdOnKA'</span>,<span style="color:#ca60ca">$</span>,<span style="color:#bf0303">'IfcProject'</span>,<span style="color:#ca60ca">$</span>,<span style="color:#ca60ca">$</span>,<span style="color:#ca60ca">$</span>,<span style="color:#ca60ca">$</span>,(<span style="color:#0057ae">#1</span>),<span style="color:#0057ae">#101</span>);
+<span style="color:#0057ae">#101</span>= IFCUNITASSIGNMENT((<span style="color:#0057ae">#102</span>,<span style="color:#0057ae">#103</span>,<span style="color:#0057ae">#104</span>));
+<span style="color:#0057ae">#102</span>= IFCSIUNIT(<span style="color:#ca60ca">*</span>,<span style="color:#aa5500">.LENGTHUNIT.</span>,<span style="color:#aa5500">.MILLI.</span>,<span style="color:#aa5500">.METRE.</span>);
+<span style="color:#0057ae">#103</span>= IFCSIUNIT(<span style="color:#ca60ca">*</span>,<span style="color:#aa5500">.PLANEANGLEUNIT.</span>,<span style="color:#ca60ca">$</span>,<span style="color:#aa5500">.RADIAN.</span>);
+<span style="color:#0057ae">#104</span>= IFCSIUNIT(<span style="color:#ca60ca">*</span>,<span style="color:#aa5500">.TIMEUNIT.</span>,<span style="color:#ca60ca">$</span>,<span style="color:#aa5500">.SECOND.</span>);
+<span style="color:#0057ae">#105</span>= IFCRELAGGREGATES(<span style="color:#bf0303">'091a6ewbvCMQ2Vyiqspa7a'</span>,<span style="color:#ca60ca">$</span>,<span style="color:#bf0303">'Project Container'</span>,<span style="color:#bf0303">'Project Container for Buildings'</span>,<span style="color:#0057ae">#100</span>,(<span style="color:#0057ae">#50</span>));
+<span style="color:#0057ae">#200</span>= IFCCARTESIANPOINTLIST2D(((<span style="color:#b08000">2.8</span>,-<span style="color:#b08000">79.5</span>),(<span style="color:#b08000">2.8</span>,<span style="color:#b08000">79.5</span>),(<span style="color:#b08000">6.31471899999999</span>,<span style="color:#b08000">87.985281</span>),(<span style="color:#b08000">14.8</span>,<span style="color:#b08000">91.5</span>),(<span style="color:#b08000">50.0</span>,<span style="color:#b08000">91.5</span>),(<span style="color:#b08000">50.0</span>,<span style="color:#b08000">100.0</span>),(-<span style="color:#b08000">50.0</span>,<span style="color:#b08000">100.0</span>),(-<span style="color:#b08000">50.0</span>,<span style="color:#b08000">91.5</span>),(-<span style="color:#b08000">14.8</span>,<span style="color:#b08000">91.5</span>),(-<span style="color:#b08000">6.31471899999997</span>,<span style="color:#b08000">87.985281</span>),(-<span style="color:#b08000">2.79999999999999</span>,<span style="color:#b08000">79.5</span>),(-<span style="color:#b08000">2.8</span>,-<span style="color:#b08000">79.5</span>),(-<span style="color:#b08000">6.31471899999999</span>,-<span style="color:#b08000">87.985281</span>),(-<span style="color:#b08000">14.8</span>,-<span style="color:#b08000">91.5</span>),(-<span style="color:#b08000">50.0</span>,-<span style="color:#b08000">91.5</span>),(-<span style="color:#b08000">50.0</span>,-<span style="color:#b08000">100.0</span>),(<span style="color:#b08000">50.0</span>,-<span style="color:#b08000">100.0</span>),(<span style="color:#b08000">50.0</span>,-<span style="color:#b08000">91.5</span>),(<span style="color:#b08000">14.8</span>,-<span style="color:#b08000">91.5</span>),(<span style="color:#b08000">6.31471899999997</span>,-<span style="color:#b08000">87.985281</span>)),<span style="color:#ca60ca">$</span>);
+<span style="color:#0057ae">#201</span>= IFCINDEXEDPOLYCURVE(<span style="color:#0057ae">#200</span>,(IFCLINEINDEX((<span style="color:#b08000">1</span>,<span style="color:#b08000">2</span>)),IFCARCINDEX((<span style="color:#b08000">2</span>,<span style="color:#b08000">3</span>,<span style="color:#b08000">4</span>)),IFCLINEINDEX((<span style="color:#b08000">4</span>,<span style="color:#b08000">5</span>,<span style="color:#b08000">6</span>,<span style="color:#b08000">7</span>,<span style="color:#b08000">8</span>,<span style="color:#b08000">9</span>)),IFCARCINDEX((<span style="color:#b08000">9</span>,<span style="color:#b08000">10</span>,<span style="color:#b08000">11</span>)),IFCLINEINDEX((<span style="color:#b08000">11</span>,<span style="color:#b08000">12</span>)),IFCARCINDEX((<span style="color:#b08000">12</span>,<span style="color:#b08000">13</span>,<span style="color:#b08000">14</span>)),IFCLINEINDEX((<span style="color:#b08000">14</span>,<span style="color:#b08000">15</span>,<span style="color:#b08000">16</span>,<span style="color:#b08000">17</span>,<span style="color:#b08000">18</span>,<span style="color:#b08000">19</span>)),IFCARCINDEX((<span style="color:#b08000">19</span>,<span style="color:#b08000">20</span>,<span style="color:#b08000">1</span>))),<span style="color:#aa5500">.F.</span>);
+<span style="color:#0057ae">#202</span>= IFCARBITRARYCLOSEDPROFILEDEF(<span style="color:#aa5500">.AREA.</span>,<span style="color:#bf0303">'IPE200'</span>,<span style="color:#0057ae">#201</span>);
+<span style="color:#0057ae">#203</span>= IFCCARTESIANPOINT((<span style="color:#b08000">0.0</span>,<span style="color:#b08000">0.0</span>,<span style="color:#b08000">0.0</span>));
+<span style="color:#0057ae">#204</span>= IFCDIRECTION((<span style="color:#b08000">0.0</span>,<span style="color:#b08000">1.0</span>,<span style="color:#b08000">0.0</span>));
+<span style="color:#0057ae">#205</span>= IFCDIRECTION((<span style="color:#b08000">1.0</span>,<span style="color:#b08000">0.0</span>,<span style="color:#b08000">0.0</span>));
+<span style="color:#0057ae">#206</span>= IFCAXIS2PLACEMENT3D(<span style="color:#0057ae">#203</span>,<span style="color:#0057ae">#204</span>,<span style="color:#0057ae">#205</span>);
+<span style="color:#0057ae">#207</span>= IFCDIRECTION((<span style="color:#b08000">0.0</span>,<span style="color:#b08000">0.0</span>,<span style="color:#b08000">1.0</span>));
+<span style="color:#0057ae">#208</span>= IFCEXTRUDEDAREASOLID(<span style="color:#0057ae">#202</span>,<span style="color:#0057ae">#206</span>,<span style="color:#0057ae">#207</span>,<span style="color:#b08000">1000.0</span>);
+<span style="color:#0057ae">#209</span>= IFCSHAPEREPRESENTATION(<span style="color:#0057ae">#5</span>,<span style="color:#bf0303">'Body'</span>,<span style="color:#bf0303">'SweptSolid'</span>,(<span style="color:#0057ae">#208</span>));
+<span style="color:#0057ae">#210</span>= IFCPRODUCTDEFINITIONSHAPE(<span style="color:#ca60ca">$</span>,<span style="color:#ca60ca">$</span>,(<span style="color:#0057ae">#209</span>));
+<span style="color:#0057ae">#211</span>= IFCBEAM(<span style="color:#bf0303">'0EF5_zZRv0pQPddeofU3KT'</span>,<span style="color:#ca60ca">$</span>,<span style="color:#bf0303">'ExampleBeamName'</span>,<span style="color:#bf0303">'ExampleBeamDescription'</span>,<span style="color:#ca60ca">$</span>,<span style="color:#0057ae">#213</span>,<span style="color:#0057ae">#210</span>,<span style="color:#bf0303">'Tag'</span>,<span style="color:#ca60ca">$</span>);
+<span style="color:#0057ae">#212</span>= IFCAXIS2PLACEMENT3D(<span style="color:#0057ae">#2</span>,<span style="color:#ca60ca">$</span>,<span style="color:#ca60ca">$</span>);
+<span style="color:#0057ae">#213</span>= IFCLOCALPLACEMENT(<span style="color:#ca60ca">$</span>,<span style="color:#0057ae">#212</span>);
+<span style="font-weight:bold">ENDSEC;</span>
+
+<span style="color:#006e28">END-ISO-10303-21;</span>
+</pre></body></html>

@@ -1,0 +1,377 @@
+<beginfold id='1'>/*</beginfold id='1'> =====================================================================
+   test_sas_syntax.sas  —  minimal highlighting coverage + edge cases
+   ===================================================================== <endfold id='1'>*/</endfold id='1'>
+
+<beginfold id='1'>/*</beginfold id='1'> ---- 1. COMMENTS --------------------------------------------------- <endfold id='1'>*/</endfold id='1'>
+
+<beginfold id='1'>/*</beginfold id='1'> block comment <endfold id='1'>*/</endfold id='1'>
+
+<beginfold id='1'>*</beginfold id='1'> statement comment at start of line<endfold id='1'>;</endfold id='1'>
+
+<beginfold id='1'>*</beginfold id='1'> multi-line
+  statement comment<endfold id='1'>;</endfold id='1'>
+
+<beginfold id='1'>%*</beginfold id='1'> macro comment<endfold id='1'>;</endfold id='1'>
+
+<beginfold id='2'>data</beginfold id='2'> _null_;
+  x = 1; <beginfold id='1'>*</beginfold id='1'> inline comment after semicolon<endfold id='1'>;</endfold id='1'>
+  y = 2; <beginfold id='1'>*</beginfold id='1'> chained<endfold id='1'>;</endfold id='1'> <beginfold id='1'>*</beginfold id='1'> second<endfold id='1'>;</endfold id='1'>
+  a = 4; <beginfold id='1'>*</beginfold id='1'> comment<endfold id='1'>;</endfold id='1'> b = 5;   <beginfold id='1'>/*</beginfold id='1'> b=5 resumes normal highlighting <endfold id='1'>*/</endfold id='1'>
+  z = 4
+  * 2;   <beginfold id='1'>*</beginfold id='1'> arithmetic * then comment on next statement<endfold id='1'>;</endfold id='1'>
+  x2 = <beginfold id='1'>%*</beginfold id='1'> macro comment mid-expression<endfold id='1'>;</endfold id='1'> 4;
+  y2 = <beginfold id='1'>/*</beginfold id='1'> block comment mid-expression <endfold id='1'>*/</endfold id='1'> 5;
+<endfold id='2'>run;</endfold id='2'>
+
+
+<beginfold id='1'>/*</beginfold id='1'> ---- 2. STRING LITERALS — all suffix types ------------------------- <endfold id='1'>*/</endfold id='1'>
+
+options validvarname=any;
+
+<beginfold id='2'>data</beginfold id='2'> _null_;
+  <beginfold id='1'>/*</beginfold id='1'> double-quoted <endfold id='1'>*/</endfold id='1'>
+  plain   = "hello world";
+  escaped = "it's ""quoted""";
+  date    = "01jan2024"d;
+  dtime   = "01jan2024:12:00:00"dt;
+  time    = "12:00:00"t;
+  bits    = "1010"b;
+  naml    = "my variable"n;
+  hex     = "FFAB3C"x;
+
+  <beginfold id='1'>/*</beginfold id='1'> single-quoted <endfold id='1'>*/</endfold id='1'>
+  sq_plain  = 'hello world';
+  sq_escape = 'it''s quoted';
+  sq_date   = '01jan2024'd;
+  sq_dtime  = '01jan2024:12:00:00'dt;
+  sq_time   = '12:00:00't;
+  sq_bits   = '1010'b;
+  sq_naml   = 'my variable'n;
+  sq_hex    = 'FFAB3C'x;
+
+  <beginfold id='1'>/*</beginfold id='1'> uppercase suffixes <endfold id='1'>*/</endfold id='1'>
+  uc_date  = "01jan2024"D;
+  uc_dtime = "01jan2024:00:00:00"DT;
+  uc_time  = "06:00:00"T;
+  uc_hex   = "FF"X;
+<endfold id='2'>run;</endfold id='2'>
+
+
+<beginfold id='1'>/*</beginfold id='1'> ---- 3. NUMERIC LITERALS ------------------------------------------- <endfold id='1'>*/</endfold id='1'>
+
+<beginfold id='2'>data</beginfold id='2'> _null_;
+  int_val  = 42;
+  neg_int  = -7;
+  float    = 3.14159;
+  sci_pos  = 1.5e10;
+  sci_neg  = 2.0E-3;
+  leading  = .9;
+  sas_hex  = 0c1x;
+<endfold id='2'>run;</endfold id='2'>
+
+
+<beginfold id='1'>/*</beginfold id='1'> ---- 4. FORMATS AND INFORMATS -------------------------------------- <endfold id='1'>*/</endfold id='1'>
+
+<beginfold id='2'>data</beginfold id='2'> _null_;
+  format date_var  date9.;
+  format num_var   comma12.2;
+  format chr_var   $char20.;
+  format best_var  best.;
+  informat raw_in  $50.;
+  informat dt_in   anydtdtm20.;
+<endfold id='2'>run;</endfold id='2'>
+
+
+<beginfold id='1'>/*</beginfold id='1'> ---- 5. OPERATORS -------------------------------------------------- <endfold id='1'>*/</endfold id='1'>
+
+<beginfold id='2'>data</beginfold id='2'> _null_;
+  <beginfold id='1'>/*</beginfold id='1'> arithmetic — * and / dont trigger comment context <endfold id='1'>*/</endfold id='1'>
+  a = 2 ** 3;
+  b = 15 * 3;
+  c = 10 / 4;
+  d = a + b - c;
+  z = 15 * 3 / 4 + 100;
+
+  <beginfold id='1'>/*</beginfold id='1'> comparison — symbolic <endfold id='1'>*/</endfold id='1'>
+  eq_  = (z =  45);
+  ne_  = (z ^= 45);
+  ne2  = (z ~= 45);
+  gt_  = (z >  10);
+  lt_  = (z <  200);
+  ge_  = (z >= 10);
+  le_  = (z <= 200);
+  mn_  = z <> 100;   <beginfold id='1'>/*</beginfold id='1'> min operator <endfold id='1'>*/</endfold id='1'>
+  mx_  = z >< 100;   <beginfold id='1'>/*</beginfold id='1'> max operator <endfold id='1'>*/</endfold id='1'>
+  cat_ = "a" || "b"; <beginfold id='1'>/*</beginfold id='1'> concatenation <endfold id='1'>*/</endfold id='1'>
+
+  <beginfold id='1'>/*</beginfold id='1'> trailing-modifier operators <endfold id='1'>*/</endfold id='1'>
+  name = "Jones";
+  eq_t = (name =:  "Jo");
+  gt_t = (name >:  "Jo");
+  ne_t = (name ^=: "Jo");
+
+  <beginfold id='1'>/*</beginfold id='1'> mnemonic operators <endfold id='1'>*/</endfold id='1'>
+  x = 5; y = 10;
+  if x gt 0 and y lt 20  then put "gt lt";
+  if x ge 5 and y le 10  then put "ge le";
+  if x eq 5 or  y ne 0   then put "eq ne";
+  if not (x = 0)         then put "not";
+  if x in (1 2 3 4 5)    then put "in";
+  if name like "Jo%"     then put "like";
+  if name contains "ohn" then put "contains";
+  if x between 1 and 10  then put "between";
+  if x is missing        then put "missing";
+<endfold id='2'>run;</endfold id='2'>
+
+
+<beginfold id='1'>/*</beginfold id='1'> ---- 6. SPECIAL / AUTOMATIC VARIABLES ------------------------------ <endfold id='1'>*/</endfold id='1'>
+
+<beginfold id='2'>data</beginfold id='2'> _null_;
+  put _n_;
+  put _error_;
+  if _n_ = 1 then put "first";
+  keep _all_;
+  drop _character_;
+  retain _numeric_;
+<endfold id='2'>run;</endfold id='2'>
+
+
+<beginfold id='1'>/*</beginfold id='1'> ---- 7. CONTROL FLOW ----------------------------------------------- <endfold id='1'>*/</endfold id='1'>
+
+<beginfold id='2'>data</beginfold id='2'> _null_;
+  do i = 1 to 10 by 2;
+    if i = 5 then continue;
+    if i = 9 then leave;
+    put i;
+  end;
+
+  i = 0;
+  do while (i < 10);
+    i + 1;
+  end;
+
+  i = 0;
+  do until (i >= 10);
+    i + 1;
+  end;
+
+  select (i);
+    when (1)  put "one";
+    when (2)  put "two";
+    otherwise put "other";
+  end;
+
+  if i > 5 then put "big";
+  else put "small";
+
+  goto done;
+  link sub;
+  return;
+  done:
+  sub:
+  return;
+<endfold id='2'>run;</endfold id='2'>
+
+
+<beginfold id='1'>/*</beginfold id='1'> ---- 8. DATA STEP STATEMENTS + DATASET OPTIONS --------------------- <endfold id='1'>*/</endfold id='1'>
+
+<beginfold id='2'>data</beginfold id='2'> work.out (keep=name age compress=yes);
+  <beginfold id='1'>/*</beginfold id='1'> dataset options on SET — (opt=val) must NOT colour ds name as function <endfold id='1'>*/</endfold id='1'>
+  set sashelp.class (obs=50 where=(age > 12) keep=name age sex);
+  merge work.a (in=ina) work.b (in=inb);
+  by id;
+
+  array nums{3} a b c;
+  attrib name length=$20 label="Full name";
+  length score 8;
+  retain cumcount 0;
+
+  <beginfold id='1'>/*</beginfold id='1'> known functions highlighted; non-function before ( is Normal Text <endfold id='1'>*/</endfold id='1'>
+  z = max(a, b);
+  w = substr(name, 1, 3);
+  if notafunction(z) = 1 then output;   <beginfold id='1'>/*</beginfold id='1'> notafunction -> Normal Text <endfold id='1'>*/</endfold id='1'>
+
+  stop;
+<endfold id='2'>run;</endfold id='2'>
+
+
+<beginfold id='1'>/*</beginfold id='1'> ---- 9. CARDS / DATALINES ------------------------------------------ <endfold id='1'>*/</endfold id='1'>
+
+<beginfold id='2'>data</beginfold id='2'> work.inline;
+  input name $ age;
+  <beginfold id='3'>cards;</beginfold id='3'>
+Alice 30
+Bob   25
+   <endfold id='3'>;</endfold id='3'>
+<endfold id='2'>run;</endfold id='2'>
+
+<beginfold id='2'>data</beginfold id='2'> work.cards4test;
+  input line $ 1-20;
+  <beginfold id='3'>cards4;</beginfold id='3'>
+line with ; inside
+another ; line here
+<endfold id='3'>;;;;</endfold id='3'>
+<endfold id='2'>run;</endfold id='2'>
+
+
+<beginfold id='1'>/*</beginfold id='1'> ---- 10. PROC (GENERIC) + CONTEXT SWITCHING ------------------------ <endfold id='1'>*/</endfold id='1'>
+
+<beginfold id='2'>proc means</beginfold id='2'> data=sashelp.class n mean std min max;
+  var age height weight;
+  class sex;
+  output out=work.stats mean= std= / autoname;
+<endfold id='2'>run;</endfold id='2'>
+
+<beginfold id='2'>proc sort</beginfold id='2'> data=sashelp.class out=work.sorted (keep=name age) nodupkey;
+  by sex descending age;
+<endfold id='2'>run;</endfold id='2'>
+
+<beginfold id='1'>/*</beginfold id='1'> No RUN — next proc/data boundary switches context <endfold id='1'>*/</endfold id='1'>
+<beginfold id='2'>proc datasets</beginfold id='2'> library=work nolist;
+  delete sorted;
+
+<beginfold id='2'>data</beginfold id='2'> work.after_no_run;
+  x = 1;
+<endfold id='2'>run;</endfold id='2'>
+
+<beginfold id='1'>/*</beginfold id='1'> ---- 11. PROC SQL -------------------------------------------------- <endfold id='1'>*/</endfold id='1'>
+
+<beginfold id='2'>proc sql</beginfold id='2'>;
+  create table work.sql_out as
+    select name, age, height / weight as ratio
+    from   sashelp.class
+    where  age > 12 and sex = 'M'
+    order  by age desc;
+
+  select count(*) as n_obs,
+         sum(age * 1.0) / count(*) as mean_age
+  from   sashelp.class;
+
+  drop table work.sql_out;
+<endfold id='2'>quit;</endfold id='2'>
+
+<beginfold id='1'>/*</beginfold id='1'> SQL with no QUIT — next step boundary exits <endfold id='1'>*/</endfold id='1'>
+<beginfold id='2'>proc sql</beginfold id='2'>;
+  select name from sashelp.class;
+
+<beginfold id='2'>data</beginfold id='2'> work.after_sql;
+  set sashelp.class;
+<endfold id='2'>run;</endfold id='2'>
+
+
+<beginfold id='1'>/*</beginfold id='1'> ---- 12. PROC PYTHON (embedded block) ------------------------------ <endfold id='1'>*/</endfold id='1'>
+
+<beginfold id='2'>proc python</beginfold id='2'>;
+submit;
+import sys, math
+x = 2 ** 10 # Python comment
+s = "hello"
+s2 = 'world'
+multi = <beginfold id='4'>"""</beginfold id='4'>
+triple-quoted string
+<endfold id='4'>"""</endfold id='4'>
+print<beginfold id='5'>(</beginfold id='5'>sys.version, math.pi, x<endfold id='5'>)</endfold id='5'>
+endsubmit;
+<endfold id='2'>quit;</endfold id='2'>
+
+
+<beginfold id='1'>/*</beginfold id='1'> ---- 13. PROC LUA (embedded block) --------------------------------- <endfold id='1'>*/</endfold id='1'>
+
+<beginfold id='2'>proc lua</beginfold id='2'>;
+submit;
+-- Lua single-line comment
+local x = 10 * 3     -- * is arithmetic
+local s  = "hello"
+local s2 = 'world'
+local ml = [[multi-line string]]
+<beginfold id='6'>--[[</beginfold id='6'> multi-line Lua comment <endfold id='6'>]]</endfold id='6'>
+print(x, s, s2)
+endsubmit;
+<endfold id='2'>quit;</endfold id='2'>
+
+
+<beginfold id='1'>/*</beginfold id='1'> ---- 14. MACRO LANGUAGE -------------------------------------------- <endfold id='1'>*/</endfold id='1'>
+
+<beginfold id='7'>%macro</beginfold id='7'> greet(name=World, n=1);
+  %local i;
+  <beginfold id='8'>%do</beginfold id='8'> i = 1 %to &n;
+    %put Hello, &name! (iteration &i of &n);
+  <endfold id='8'>%end</endfold id='8'>;
+<endfold id='7'>%mend</endfold id='7'> greet;
+
+%greet(name=SAS, n=3);
+
+%let myvar = 42;
+%let mystr = Hello World;
+
+%if &myvar > 10 %then <beginfold id='8'>%do</beginfold id='8'>;
+  %put myvar (&myvar) is large;
+<endfold id='8'>%end</endfold id='8'>;
+%else <beginfold id='8'>%do</beginfold id='8'>;
+  %put myvar (&myvar) is small;
+<endfold id='8'>%end</endfold id='8'>;
+
+<beginfold id='1'>/*</beginfold id='1'> indirect macro reference <endfold id='1'>*/</endfold id='1'>
+%let prefix = abc;
+%let abcval = found;
+%put &prefix - simple;
+%put &&prefix.val - indirect = &abcval;
+
+<beginfold id='1'>/*</beginfold id='1'> macro quoting / utility functions <endfold id='1'>*/</endfold id='1'>
+%let q1 = %str(a semicolon: ;);
+%let q2 = %nrstr(&notresolved);
+%let len = %length(&mystr);
+%let up  = %upcase(&mystr);
+%let ev  = %eval(2 + 3);
+%let sev = %sysevalf(1.5 * 2.0);
+
+%global gvar1 gvar2;
+%local  lvar1;
+
+<beginfold id='1'>%*</beginfold id='1'> macro comment<endfold id='1'>;</endfold id='1'>
+
+
+<beginfold id='1'>/*</beginfold id='1'> ---- 15. LIBNAME / FILENAME / OPTIONS ------------------------------ <endfold id='1'>*/</endfold id='1'>
+
+libname mylib "/path/to/data" access=readonly;
+libname mylib clear;
+
+filename myfile "/path/to/file.txt" lrecl=256;
+filename myfile clear;
+
+<beginfold id='1'>/*</beginfold id='1'> option=value pattern: option name -> SecKeyword, value -> Normal Text <endfold id='1'>*/</endfold id='1'>
+options obs=max nodate nonumber mprint mlogic symbolgen;
+options validvarname=any compress=yes bufno=20;
+
+
+<beginfold id='1'>/*</beginfold id='1'> ---- 16. MISC PROCS ------------------------------------------------ <endfold id='1'>*/</endfold id='1'>
+
+<beginfold id='2'>proc mixed</beginfold id='2'> data=sashelp.class;
+  class sex;
+  model height = age sex / solution ddfm=kr;
+  random intercept / subject=name type=un;
+  lsmeans sex / pdiff adjust=tukey;
+<endfold id='2'>run;</endfold id='2'>
+
+<beginfold id='2'>proc report</beginfold id='2'> data=sashelp.class nowd;
+  column name sex age height;
+  define name   / display "Student";
+  define height / analysis mean format=6.2 "Avg Height";
+  break after sex / summarize;
+  compute after sex;
+    line "--- end of group ---";
+  endcomp;
+<endfold id='2'>run;</endfold id='2'>
+
+<beginfold id='2'>proc fcmp</beginfold id='2'> outlib=work.funcs.mathlib;
+  function cube(x);
+    return (x ** 3);
+  endfunc;
+  subroutine swap(a, b);
+    outargs a, b;
+    temp = a; a = b; b = temp;
+  endsub;
+<endfold id='2'>run;</endfold id='2'>
+
+endsas;
+%abort abend;

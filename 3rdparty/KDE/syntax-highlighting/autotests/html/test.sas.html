@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>test.sas</title>
+<meta name="generator" content="KF5::SyntaxHighlighting - Definition (SAS) - Theme (Breeze Light)"/>
+</head><body style="background-color:#ffffff;color:#1f1c1b"><pre>
+<span style="color:#898887">/* =====================================================================</span>
+<span style="color:#898887">   test_sas_syntax.sas  —  minimal highlighting coverage + edge cases</span>
+<span style="color:#898887">   ===================================================================== */</span>
+
+<span style="color:#898887">/* ---- 1. COMMENTS --------------------------------------------------- */</span>
+
+<span style="color:#898887">/* block comment */</span>
+
+<span style="color:#898887">* statement comment at start of line;</span>
+
+<span style="color:#898887">* multi-line</span>
+<span style="color:#898887">  statement comment;</span>
+
+<span style="color:#898887">%* macro comment;</span>
+
+<span style="font-weight:bold">data</span> <span style="color:#aa5500">_null_</span>;
+  x <span style="color:#ca60ca">=</span> <span style="color:#b08000">1</span>; <span style="color:#898887">* inline comment after semicolon;</span>
+  y <span style="color:#ca60ca">=</span> <span style="color:#b08000">2</span>; <span style="color:#898887">* chained;</span> <span style="color:#898887">* second;</span>
+  a <span style="color:#ca60ca">=</span> <span style="color:#b08000">4</span>; <span style="color:#898887">* comment;</span> b <span style="color:#ca60ca">=</span> <span style="color:#b08000">5</span>;   <span style="color:#898887">/* b=5 resumes normal highlighting */</span>
+  z <span style="color:#ca60ca">=</span> <span style="color:#b08000">4</span>
+  <span style="color:#ca60ca">*</span> <span style="color:#b08000">2</span>;   <span style="color:#898887">* arithmetic * then comment on next statement;</span>
+  x<span style="color:#b08000">2</span> <span style="color:#ca60ca">=</span> <span style="color:#898887">%* macro comment mid-expression;</span> <span style="color:#b08000">4</span>;
+  y<span style="color:#b08000">2</span> <span style="color:#ca60ca">=</span> <span style="color:#898887">/* block comment mid-expression */</span> <span style="color:#b08000">5</span>;
+<span style="font-weight:bold">run;</span>
+
+
+<span style="color:#898887">/* ---- 2. STRING LITERALS — all suffix types ------------------------- */</span>
+
+<span style="font-weight:bold">options</span> <span style="color:#644a9b;font-weight:bold">validvarname</span><span style="color:#ca60ca">=</span>any;
+
+<span style="font-weight:bold">data</span> <span style="color:#aa5500">_null_</span>;
+  <span style="color:#898887">/* double-quoted */</span>
+  plain   <span style="color:#ca60ca">=</span> <span style="color:#bf0303">"hello world"</span>;
+  escaped <span style="color:#ca60ca">=</span> <span style="color:#bf0303">"it's ""quoted"""</span>;
+  date    <span style="color:#ca60ca">=</span> <span style="color:#b08000">"01jan2024"d</span>;
+  dtime   <span style="color:#ca60ca">=</span> <span style="color:#b08000">"01jan2024:12:00:00"dt</span>;
+  time    <span style="color:#ca60ca">=</span> <span style="color:#b08000">"12:00:00"t</span>;
+  bits    <span style="color:#ca60ca">=</span> <span style="color:#bf0303">"1010"b</span>;
+  naml    <span style="color:#ca60ca">=</span> <span style="color:#bf0303">"my variable"n</span>;
+  hex     <span style="color:#ca60ca">=</span> <span style="color:#bf0303">"FFAB3C"x</span>;
+
+  <span style="color:#898887">/* single-quoted */</span>
+  sq_plain  <span style="color:#ca60ca">=</span> <span style="color:#bf0303">'hello world'</span>;
+  sq_escape <span style="color:#ca60ca">=</span> <span style="color:#bf0303">'it''s quoted'</span>;
+  sq_date   <span style="color:#ca60ca">=</span> <span style="color:#b08000">'01jan2024'd</span>;
+  sq_dtime  <span style="color:#ca60ca">=</span> <span style="color:#b08000">'01jan2024:12:00:00'dt</span>;
+  sq_time   <span style="color:#ca60ca">=</span> <span style="color:#b08000">'12:00:00't</span>;
+  sq_bits   <span style="color:#ca60ca">=</span> <span style="color:#bf0303">'1010'b</span>;
+  sq_naml   <span style="color:#ca60ca">=</span> <span style="color:#bf0303">'my variable'n</span>;
+  sq_hex    <span style="color:#ca60ca">=</span> <span style="color:#bf0303">'FFAB3C'x</span>;
+
+  <span style="color:#898887">/* uppercase suffixes */</span>
+  uc_date  <span style="color:#ca60ca">=</span> <span style="color:#b08000">"01jan2024"D</span>;
+  uc_dtime <span style="color:#ca60ca">=</span> <span style="color:#b08000">"01jan2024:00:00:00"DT</span>;
+  uc_time  <span style="color:#ca60ca">=</span> <span style="color:#b08000">"06:00:00"T</span>;
+  uc_hex   <span style="color:#ca60ca">=</span> <span style="color:#bf0303">"FF"X</span>;
+<span style="font-weight:bold">run;</span>
+
+
+<span style="color:#898887">/* ---- 3. NUMERIC LITERALS ------------------------------------------- */</span>
+
+<span style="font-weight:bold">data</span> <span style="color:#aa5500">_null_</span>;
+  int_val  <span style="color:#ca60ca">=</span> <span style="color:#b08000">42</span>;
+  neg_int  <span style="color:#ca60ca">=</span> <span style="color:#ca60ca">-</span><span style="color:#b08000">7</span>;
+  float    <span style="color:#ca60ca">=</span> <span style="color:#b08000">3.14159</span>;
+  sci_pos  <span style="color:#ca60ca">=</span> <span style="color:#b08000">1.5e10</span>;
+  sci_neg  <span style="color:#ca60ca">=</span> <span style="color:#b08000">2.0E-3</span>;
+  leading  <span style="color:#ca60ca">=</span> <span style="color:#b08000">.9</span>;
+  sas_hex  <span style="color:#ca60ca">=</span> <span style="color:#b08000">0c1x</span>;
+<span style="font-weight:bold">run;</span>
+
+
+<span style="color:#898887">/* ---- 4. FORMATS AND INFORMATS -------------------------------------- */</span>
+
+<span style="font-weight:bold">data</span> <span style="color:#aa5500">_null_</span>;
+  <span style="font-weight:bold">format</span> date_var  <span style="color:#0057ae">date9.</span>;
+  <span style="font-weight:bold">format</span> num_var   <span style="color:#0057ae">comma12.2</span>;
+  <span style="font-weight:bold">format</span> chr_var   <span style="color:#0057ae">$char20.</span>;
+  <span style="font-weight:bold">format</span> best_var  <span style="color:#0057ae">best.</span>;
+  <span style="font-weight:bold">informat</span> raw_in  <span style="color:#0057ae">$50.</span>;
+  <span style="font-weight:bold">informat</span> dt_in   <span style="color:#0057ae">anydtdtm20.</span>;
+<span style="font-weight:bold">run;</span>
+
+
+<span style="color:#898887">/* ---- 5. OPERATORS -------------------------------------------------- */</span>
+
+<span style="font-weight:bold">data</span> <span style="color:#aa5500">_null_</span>;
+  <span style="color:#898887">/* arithmetic — * and / dont trigger comment context */</span>
+  a <span style="color:#ca60ca">=</span> <span style="color:#b08000">2</span> <span style="color:#ca60ca">**</span> <span style="color:#b08000">3</span>;
+  b <span style="color:#ca60ca">=</span> <span style="color:#b08000">15</span> <span style="color:#ca60ca">*</span> <span style="color:#b08000">3</span>;
+  c <span style="color:#ca60ca">=</span> <span style="color:#b08000">10</span> <span style="color:#ca60ca">/</span> <span style="color:#b08000">4</span>;
+  d <span style="color:#ca60ca">=</span> a <span style="color:#ca60ca">+</span> b <span style="color:#ca60ca">-</span> c;
+  z <span style="color:#ca60ca">=</span> <span style="color:#b08000">15</span> <span style="color:#ca60ca">*</span> <span style="color:#b08000">3</span> <span style="color:#ca60ca">/</span> <span style="color:#b08000">4</span> <span style="color:#ca60ca">+</span> <span style="color:#b08000">100</span>;
+
+  <span style="color:#898887">/* comparison — symbolic */</span>
+  eq_  <span style="color:#ca60ca">=</span> (z <span style="color:#ca60ca">=</span>  <span style="color:#b08000">45</span>);
+  ne_  <span style="color:#ca60ca">=</span> (z <span style="color:#ca60ca">^=</span> <span style="color:#b08000">45</span>);
+  ne<span style="color:#b08000">2</span>  <span style="color:#ca60ca">=</span> (z <span style="color:#ca60ca">~=</span> <span style="color:#b08000">45</span>);
+  gt_  <span style="color:#ca60ca">=</span> (z <span style="color:#ca60ca">></span>  <span style="color:#b08000">10</span>);
+  lt_  <span style="color:#ca60ca">=</span> (z <span style="color:#ca60ca">&lt;</span>  <span style="color:#b08000">200</span>);
+  ge_  <span style="color:#ca60ca">=</span> (z <span style="color:#ca60ca">>=</span> <span style="color:#b08000">10</span>);
+  le_  <span style="color:#ca60ca">=</span> (z <span style="color:#ca60ca">&lt;=</span> <span style="color:#b08000">200</span>);
+  mn_  <span style="color:#ca60ca">=</span> z <span style="color:#ca60ca">&lt;></span> <span style="color:#b08000">100</span>;   <span style="color:#898887">/* min operator */</span>
+  mx_  <span style="color:#ca60ca">=</span> z <span style="color:#ca60ca">>&lt;</span> <span style="color:#b08000">100</span>;   <span style="color:#898887">/* max operator */</span>
+  cat_ <span style="color:#ca60ca">=</span> <span style="color:#bf0303">"a"</span> <span style="color:#ca60ca">||</span> <span style="color:#bf0303">"b"</span>; <span style="color:#898887">/* concatenation */</span>
+
+  <span style="color:#898887">/* trailing-modifier operators */</span>
+  name <span style="color:#ca60ca">=</span> <span style="color:#bf0303">"Jones"</span>;
+  eq_t <span style="color:#ca60ca">=</span> (name <span style="color:#ca60ca">=:</span>  <span style="color:#bf0303">"Jo"</span>);
+  gt_t <span style="color:#ca60ca">=</span> (name <span style="color:#ca60ca">>:</span>  <span style="color:#bf0303">"Jo"</span>);
+  ne_t <span style="color:#ca60ca">=</span> (name <span style="color:#ca60ca">^=:</span> <span style="color:#bf0303">"Jo"</span>);
+
+  <span style="color:#898887">/* mnemonic operators */</span>
+  x <span style="color:#ca60ca">=</span> <span style="color:#b08000">5</span>; y <span style="color:#ca60ca">=</span> <span style="color:#b08000">10</span>;
+  <span style="font-weight:bold">if</span> x <span style="color:#ca60ca">gt</span> <span style="color:#b08000">0</span> <span style="color:#ca60ca">and</span> y <span style="color:#ca60ca">lt</span> <span style="color:#b08000">20</span>  <span style="font-weight:bold">then</span> <span style="font-weight:bold">put</span> <span style="color:#bf0303">"gt lt"</span>;
+  <span style="font-weight:bold">if</span> x <span style="color:#ca60ca">ge</span> <span style="color:#b08000">5</span> <span style="color:#ca60ca">and</span> y <span style="color:#ca60ca">le</span> <span style="color:#b08000">10</span>  <span style="font-weight:bold">then</span> <span style="font-weight:bold">put</span> <span style="color:#bf0303">"ge le"</span>;
+  <span style="font-weight:bold">if</span> x <span style="color:#ca60ca">eq</span> <span style="color:#b08000">5</span> <span style="color:#ca60ca">or</span>  y <span style="color:#ca60ca">ne</span> <span style="color:#b08000">0</span>   <span style="font-weight:bold">then</span> <span style="font-weight:bold">put</span> <span style="color:#bf0303">"eq ne"</span>;
+  <span style="font-weight:bold">if</span> not (x <span style="color:#ca60ca">=</span> <span style="color:#b08000">0</span>)         <span style="font-weight:bold">then</span> <span style="font-weight:bold">put</span> <span style="color:#bf0303">"not"</span>;
+  <span style="font-weight:bold">if</span> x in (<span style="color:#b08000">1</span> <span style="color:#b08000">2</span> <span style="color:#b08000">3</span> <span style="color:#b08000">4</span> <span style="color:#b08000">5</span>)    <span style="font-weight:bold">then</span> <span style="font-weight:bold">put</span> <span style="color:#bf0303">"in"</span>;
+  <span style="font-weight:bold">if</span> name <span style="color:#ca60ca">like</span> <span style="color:#bf0303">"Jo%"</span>     <span style="font-weight:bold">then</span> <span style="font-weight:bold">put</span> <span style="color:#bf0303">"like"</span>;
+  <span style="font-weight:bold">if</span> name <span style="color:#ca60ca">contains</span> <span style="color:#bf0303">"ohn"</span> <span style="font-weight:bold">then</span> <span style="font-weight:bold">put</span> <span style="color:#bf0303">"contains"</span>;
+  <span style="font-weight:bold">if</span> x <span style="color:#ca60ca">between</span> <span style="color:#b08000">1</span> <span style="color:#ca60ca">and</span> <span style="color:#b08000">10</span>  <span style="font-weight:bold">then</span> <span style="font-weight:bold">put</span> <span style="color:#bf0303">"between"</span>;
+  <span style="font-weight:bold">if</span> x <span style="color:#ca60ca">is</span> missing        <span style="font-weight:bold">then</span> <span style="font-weight:bold">put</span> <span style="color:#bf0303">"missing"</span>;
+<span style="font-weight:bold">run;</span>
+
+
+<span style="color:#898887">/* ---- 6. SPECIAL / AUTOMATIC VARIABLES ------------------------------ */</span>
+
+<span style="font-weight:bold">data</span> <span style="color:#aa5500">_null_</span>;
+  <span style="font-weight:bold">put</span> <span style="color:#aa5500">_n_</span>;
+  <span style="font-weight:bold">put</span> <span style="color:#aa5500">_error_</span>;
+  <span style="font-weight:bold">if</span> <span style="color:#aa5500">_n_</span> <span style="color:#ca60ca">=</span> <span style="color:#b08000">1</span> <span style="font-weight:bold">then</span> <span style="font-weight:bold">put</span> <span style="color:#bf0303">"first"</span>;
+  <span style="font-weight:bold">keep</span> <span style="color:#aa5500">_all_</span>;
+  <span style="font-weight:bold">drop</span> <span style="color:#aa5500">_character_</span>;
+  <span style="font-weight:bold">retain</span> <span style="color:#aa5500">_numeric_</span>;
+<span style="font-weight:bold">run;</span>
+
+
+<span style="color:#898887">/* ---- 7. CONTROL FLOW ----------------------------------------------- */</span>
+
+<span style="font-weight:bold">data</span> <span style="color:#aa5500">_null_</span>;
+  <span style="font-weight:bold">do</span> i <span style="color:#ca60ca">=</span> <span style="color:#b08000">1</span> <span style="font-weight:bold">to</span> <span style="color:#b08000">10</span> <span style="font-weight:bold">by</span> <span style="color:#b08000">2</span>;
+    <span style="font-weight:bold">if</span> i <span style="color:#ca60ca">=</span> <span style="color:#b08000">5</span> <span style="font-weight:bold">then</span> <span style="font-weight:bold">continue</span>;
+    <span style="font-weight:bold">if</span> i <span style="color:#ca60ca">=</span> <span style="color:#b08000">9</span> <span style="font-weight:bold">then</span> <span style="font-weight:bold">leave</span>;
+    <span style="font-weight:bold">put</span> i;
+  <span style="font-weight:bold">end</span>;
+
+  i <span style="color:#ca60ca">=</span> <span style="color:#b08000">0</span>;
+  <span style="font-weight:bold">do</span> <span style="font-weight:bold">while</span> (i <span style="color:#ca60ca">&lt;</span> <span style="color:#b08000">10</span>);
+    i <span style="color:#ca60ca">+</span> <span style="color:#b08000">1</span>;
+  <span style="font-weight:bold">end</span>;
+
+  i <span style="color:#ca60ca">=</span> <span style="color:#b08000">0</span>;
+  <span style="font-weight:bold">do</span> <span style="font-weight:bold">until</span> (i <span style="color:#ca60ca">>=</span> <span style="color:#b08000">10</span>);
+    i <span style="color:#ca60ca">+</span> <span style="color:#b08000">1</span>;
+  <span style="font-weight:bold">end</span>;
+
+  <span style="font-weight:bold">select</span> (i);
+    <span style="font-weight:bold">when</span> (<span style="color:#b08000">1</span>)  <span style="font-weight:bold">put</span> <span style="color:#bf0303">"one"</span>;
+    <span style="font-weight:bold">when</span> (<span style="color:#b08000">2</span>)  <span style="font-weight:bold">put</span> <span style="color:#bf0303">"two"</span>;
+    <span style="font-weight:bold">otherwise</span> <span style="font-weight:bold">put</span> <span style="color:#bf0303">"other"</span>;
+  <span style="font-weight:bold">end</span>;
+
+  <span style="font-weight:bold">if</span> i <span style="color:#ca60ca">></span> <span style="color:#b08000">5</span> <span style="font-weight:bold">then</span> <span style="font-weight:bold">put</span> <span style="color:#bf0303">"big"</span>;
+  <span style="font-weight:bold">else</span> <span style="font-weight:bold">put</span> <span style="color:#bf0303">"small"</span>;
+
+  <span style="font-weight:bold">goto</span> done;
+  <span style="font-weight:bold">link</span> sub;
+  <span style="font-weight:bold">return</span>;
+  done:
+  sub:
+  <span style="font-weight:bold">return</span>;
+<span style="font-weight:bold">run;</span>
+
+
+<span style="color:#898887">/* ---- 8. DATA STEP STATEMENTS + DATASET OPTIONS --------------------- */</span>
+
+<span style="font-weight:bold">data</span> work.out (<span style="color:#644a9b;font-weight:bold">keep</span><span style="color:#ca60ca">=</span>name age <span style="color:#644a9b;font-weight:bold">compress</span><span style="color:#ca60ca">=</span>yes);
+  <span style="color:#898887">/* dataset options on SET — (opt=val) must NOT colour ds name as function */</span>
+  <span style="font-weight:bold">set</span> sashelp.class (<span style="color:#644a9b;font-weight:bold">obs</span><span style="color:#ca60ca">=</span><span style="color:#b08000">50</span> <span style="color:#644a9b;font-weight:bold">where</span><span style="color:#ca60ca">=</span>(age <span style="color:#ca60ca">></span> <span style="color:#b08000">12</span>) <span style="color:#644a9b;font-weight:bold">keep</span><span style="color:#ca60ca">=</span>name age sex);
+  <span style="font-weight:bold">merge</span> work.a (<span style="color:#644a9b;font-weight:bold">in</span><span style="color:#ca60ca">=</span>ina) work.b (<span style="color:#644a9b;font-weight:bold">in</span><span style="color:#ca60ca">=</span>inb);
+  <span style="font-weight:bold">by</span> id;
+
+  <span style="font-weight:bold">array</span> nums{<span style="color:#b08000">3</span>} a b c;
+  <span style="font-weight:bold">attrib</span> name <span style="font-weight:bold">length</span><span style="color:#ca60ca">=</span>$<span style="color:#b08000">20</span> <span style="font-weight:bold">label</span><span style="color:#ca60ca">=</span><span style="color:#bf0303">"Full name"</span>;
+  <span style="font-weight:bold">length</span> score <span style="color:#b08000">8</span>;
+  <span style="font-weight:bold">retain</span> cumcount <span style="color:#b08000">0</span>;
+
+  <span style="color:#898887">/* known functions highlighted; non-function before ( is Normal Text */</span>
+  z <span style="color:#ca60ca">=</span> <span style="color:#644a9b">max</span>(a, b);
+  w <span style="color:#ca60ca">=</span> <span style="color:#644a9b">substr</span>(name, <span style="color:#b08000">1</span>, <span style="color:#b08000">3</span>);
+  <span style="font-weight:bold">if</span> notafunction(z) <span style="color:#ca60ca">=</span> <span style="color:#b08000">1</span> <span style="font-weight:bold">then</span> <span style="font-weight:bold">output</span>;   <span style="color:#898887">/* notafunction -> Normal Text */</span>
+
+  <span style="font-weight:bold">stop</span>;
+<span style="font-weight:bold">run;</span>
+
+
+<span style="color:#898887">/* ---- 9. CARDS / DATALINES ------------------------------------------ */</span>
+
+<span style="font-weight:bold">data</span> work.inline;
+  <span style="font-weight:bold">input</span> name $ age;
+  <span style="font-weight:bold">cards;</span>
+<span style="color:#006e28">Alice 30</span>
+<span style="color:#006e28">Bob   25</span>
+<span style="color:#006e28">   </span>;
+<span style="font-weight:bold">run;</span>
+
+<span style="font-weight:bold">data</span> work.cards<span style="color:#b08000">4</span>test;
+  <span style="font-weight:bold">input</span> line $ <span style="color:#b08000">1</span><span style="color:#ca60ca">-</span><span style="color:#b08000">20</span>;
+  <span style="font-weight:bold">cards4;</span>
+<span style="color:#006e28">line with ; inside</span>
+<span style="color:#006e28">another ; line here</span>
+;;;;
+<span style="font-weight:bold">run;</span>
+
+
+<span style="color:#898887">/* ---- 10. PROC (GENERIC) + CONTEXT SWITCHING ------------------------ */</span>
+
+<span style="font-weight:bold">proc means</span> <span style="color:#644a9b;font-weight:bold">data</span><span style="color:#ca60ca">=</span>sashelp.class <span style="color:#644a9b;font-weight:bold">n</span> <span style="color:#644a9b;font-weight:bold">mean</span> <span style="color:#644a9b;font-weight:bold">std</span> <span style="color:#644a9b;font-weight:bold">min</span> <span style="color:#644a9b;font-weight:bold">max</span>;
+  <span style="color:#644a9b;font-weight:bold">var</span> age height weight;
+  <span style="color:#644a9b;font-weight:bold">class</span> sex;
+  <span style="color:#644a9b;font-weight:bold">output</span> out<span style="color:#ca60ca">=</span>work.stats mean<span style="color:#ca60ca">=</span> std<span style="color:#ca60ca">=</span> <span style="color:#ca60ca">/</span> autoname;
+<span style="font-weight:bold">run;</span>
+
+<span style="font-weight:bold">proc sort</span> <span style="color:#644a9b;font-weight:bold">data</span><span style="color:#ca60ca">=</span>sashelp.class <span style="color:#644a9b;font-weight:bold">out</span><span style="color:#ca60ca">=</span>work.sorted (<span style="color:#644a9b;font-weight:bold">keep</span><span style="color:#ca60ca">=</span>name age) <span style="color:#644a9b;font-weight:bold">nodupkey</span>;
+  <span style="color:#644a9b;font-weight:bold">by</span> sex descending age;
+<span style="font-weight:bold">run;</span>
+
+<span style="color:#898887">/* No RUN — next proc/data boundary switches context */</span>
+<span style="font-weight:bold">proc datasets</span> <span style="color:#644a9b;font-weight:bold">library</span><span style="color:#ca60ca">=</span>work <span style="color:#644a9b;font-weight:bold">nolist</span>;
+  <span style="color:#644a9b;font-weight:bold">delete</span> sorted;
+
+<span style="font-weight:bold">data</span> work.after_no_run;
+  x <span style="color:#ca60ca">=</span> <span style="color:#b08000">1</span>;
+<span style="font-weight:bold">run;</span>
+
+<span style="color:#898887">/* ---- 11. PROC SQL -------------------------------------------------- */</span>
+
+<span style="font-weight:bold">proc sql</span>;
+  <span style="font-weight:bold">create</span> <span style="font-weight:bold">table</span> <span style="font-weight:bold">work</span>.sql_out <span style="font-weight:bold">as</span>
+    <span style="font-weight:bold">select</span> name, age, height <span style="color:#ca60ca">/</span> weight <span style="font-weight:bold">as</span> ratio
+    <span style="font-weight:bold">from</span>   sashelp.<span style="font-weight:bold">class</span>
+    <span style="font-weight:bold">where</span>  age <span style="color:#ca60ca">></span> <span style="color:#b08000">12</span> <span style="font-weight:bold">and</span> sex <span style="color:#ca60ca">=</span> <span style="color:#bf0303">'M'</span>
+    <span style="font-weight:bold">order</span>  <span style="font-weight:bold">by</span> age <span style="font-weight:bold">desc</span>;
+
+  <span style="font-weight:bold">select</span> <span style="color:#644a9b">count</span>(<span style="color:#ca60ca">*</span>) <span style="font-weight:bold">as</span> n_obs,
+         <span style="color:#644a9b">sum</span>(age <span style="color:#ca60ca">*</span> <span style="color:#b08000">1.0</span>) <span style="color:#ca60ca">/</span> <span style="color:#644a9b">count</span>(<span style="color:#ca60ca">*</span>) <span style="font-weight:bold">as</span> mean_age
+  <span style="font-weight:bold">from</span>   sashelp.<span style="font-weight:bold">class</span>;
+
+  <span style="font-weight:bold">drop</span> <span style="font-weight:bold">table</span> <span style="font-weight:bold">work</span>.sql_out;
+<span style="font-weight:bold">quit;</span>
+
+<span style="color:#898887">/* SQL with no QUIT — next step boundary exits */</span>
+<span style="font-weight:bold">proc sql</span>;
+  <span style="font-weight:bold">select</span> name <span style="font-weight:bold">from</span> sashelp.<span style="font-weight:bold">class</span>;
+
+<span style="font-weight:bold">data</span> work.after_sql;
+  <span style="font-weight:bold">set</span> sashelp.class;
+<span style="font-weight:bold">run;</span>
+
+
+<span style="color:#898887">/* ---- 12. PROC PYTHON (embedded block) ------------------------------ */</span>
+
+<span style="font-weight:bold">proc python</span>;
+<span style="font-weight:bold">submit;</span>
+<span style="color:#ff5500">import</span> sys, math
+x <span style="color:#ca60ca">=</span> <span style="color:#b08000">2</span> <span style="color:#ca60ca">**</span> <span style="color:#b08000">10</span> <span style="color:#898887"># Python comment</span>
+s <span style="color:#ca60ca">=</span> <span style="color:#bf0303">"</span><span style="color:#bf0303">hello</span><span style="color:#bf0303">"</span>
+s2 <span style="color:#ca60ca">=</span> <span style="color:#bf0303">'</span><span style="color:#bf0303">world</span><span style="color:#bf0303">'</span>
+multi <span style="color:#ca60ca">=</span> <span style="color:#bf0303">"""</span>
+<span style="color:#bf0303">triple-quoted string</span>
+<span style="color:#bf0303">"""</span>
+<span style="color:#644a9b;font-weight:bold">print</span>(sys.version, math.pi, x)
+<span style="font-weight:bold">endsubmit;</span>
+<span style="font-weight:bold">quit;</span>
+
+
+<span style="color:#898887">/* ---- 13. PROC LUA (embedded block) --------------------------------- */</span>
+
+<span style="font-weight:bold">proc lua</span>;
+<span style="font-weight:bold">submit;</span>
+<span style="color:#898887">-- Lua single-line comment</span>
+<span style="font-weight:bold">local</span> <span style="color:#0057ae">x</span> <span style="color:#ca60ca">=</span> <span style="color:#b08000">10</span> <span style="color:#ca60ca">*</span> <span style="color:#b08000">3</span>     <span style="color:#898887">-- * is arithmetic</span>
+<span style="font-weight:bold">local</span> <span style="color:#0057ae">s</span>  <span style="color:#ca60ca">=</span> <span style="color:#bf0303">"hello"</span>
+<span style="font-weight:bold">local</span> <span style="color:#0057ae">s2</span> <span style="color:#ca60ca">=</span> <span style="color:#bf0303">'world'</span>
+<span style="font-weight:bold">local</span> <span style="color:#0057ae">ml</span> <span style="color:#ca60ca">=</span> <span style="color:#e31616">[[multi-line string]]</span>
+<span style="color:#898887">--[[ multi-line Lua comment ]]</span>
+<span style="color:#644a9b">print</span><span style="color:#ca60ca">(</span><span style="color:#0057ae">x</span><span style="color:#ca60ca">,</span> <span style="color:#0057ae">s</span><span style="color:#ca60ca">,</span> <span style="color:#0057ae">s2</span><span style="color:#ca60ca">)</span>
+<span style="font-weight:bold">endsubmit;</span>
+<span style="font-weight:bold">quit;</span>
+
+
+<span style="color:#898887">/* ---- 14. MACRO LANGUAGE -------------------------------------------- */</span>
+
+<span style="color:#006e28">%macro</span> <span style="color:#0095ff;font-weight:bold;font-style:italic">greet</span>(name<span style="color:#ca60ca">=</span>World, n<span style="color:#ca60ca">=</span><span style="color:#b08000">1</span>);
+  <span style="color:#006e28">%local</span> i;
+  <span style="color:#006e28">%do</span> i <span style="color:#ca60ca">=</span> <span style="color:#b08000">1</span> <span style="color:#006e28">%to</span> <span style="color:#0057ae">&amp;n</span>;
+    <span style="color:#006e28">%put</span> Hello, <span style="color:#0057ae">&amp;name</span><span style="color:#ca60ca">!</span> (iteration <span style="color:#0057ae">&amp;i</span> of <span style="color:#0057ae">&amp;n</span>);
+  <span style="color:#006e28">%end</span>;
+<span style="color:#006e28">%mend</span> greet;
+
+<span style="color:#0095ff;font-weight:bold;font-style:italic">%greet</span>(name<span style="color:#ca60ca">=</span>SAS, n<span style="color:#ca60ca">=</span><span style="color:#b08000">3</span>);
+
+<span style="color:#006e28">%let</span> myvar <span style="color:#ca60ca">=</span> <span style="color:#b08000">42</span>;
+<span style="color:#006e28">%let</span> mystr <span style="color:#ca60ca">=</span> Hello World;
+
+<span style="color:#006e28">%if</span> <span style="color:#0057ae">&amp;myvar</span> <span style="color:#ca60ca">></span> <span style="color:#b08000">10</span> <span style="color:#006e28">%then</span> <span style="color:#006e28">%do</span>;
+  <span style="color:#006e28">%put</span> myvar (<span style="color:#0057ae">&amp;myvar</span>) <span style="color:#ca60ca">is</span> large;
+<span style="color:#006e28">%end</span>;
+<span style="color:#006e28">%else</span> <span style="color:#006e28">%do</span>;
+  <span style="color:#006e28">%put</span> myvar (<span style="color:#0057ae">&amp;myvar</span>) <span style="color:#ca60ca">is</span> small;
+<span style="color:#006e28">%end</span>;
+
+<span style="color:#898887">/* indirect macro reference */</span>
+<span style="color:#006e28">%let</span> prefix <span style="color:#ca60ca">=</span> abc;
+<span style="color:#006e28">%let</span> abcval <span style="color:#ca60ca">=</span> found;
+<span style="color:#006e28">%put</span> <span style="color:#0057ae">&amp;prefix</span> <span style="color:#ca60ca">-</span> simple;
+<span style="color:#006e28">%put</span> <span style="color:#0057ae">&amp;&amp;prefix.</span>val <span style="color:#ca60ca">-</span> indirect <span style="color:#ca60ca">=</span> <span style="color:#0057ae">&amp;abcval</span>;
+
+<span style="color:#898887">/* macro quoting / utility functions */</span>
+<span style="color:#006e28">%let</span> q<span style="color:#b08000">1</span> <span style="color:#ca60ca">=</span> <span style="color:#0095ff;font-weight:bold;font-style:italic">%str</span>(a semicolon: ;);
+<span style="color:#006e28">%let</span> q<span style="color:#b08000">2</span> <span style="color:#ca60ca">=</span> <span style="color:#0095ff;font-weight:bold;font-style:italic">%nrstr</span>(<span style="color:#0057ae">&amp;notresolved</span>);
+<span style="color:#006e28">%let</span> len <span style="color:#ca60ca">=</span> <span style="color:#0095ff;font-weight:bold;font-style:italic">%length</span>(<span style="color:#0057ae">&amp;mystr</span>);
+<span style="color:#006e28">%let</span> up  <span style="color:#ca60ca">=</span> <span style="color:#0095ff;font-weight:bold;font-style:italic">%upcase</span>(<span style="color:#0057ae">&amp;mystr</span>);
+<span style="color:#006e28">%let</span> ev  <span style="color:#ca60ca">=</span> <span style="color:#0095ff;font-weight:bold;font-style:italic">%eval</span>(<span style="color:#b08000">2</span> <span style="color:#ca60ca">+</span> <span style="color:#b08000">3</span>);
+<span style="color:#006e28">%let</span> sev <span style="color:#ca60ca">=</span> <span style="color:#0095ff;font-weight:bold;font-style:italic">%sysevalf</span>(<span style="color:#b08000">1.5</span> <span style="color:#ca60ca">*</span> <span style="color:#b08000">2.0</span>);
+
+<span style="color:#006e28">%global</span> gvar<span style="color:#b08000">1</span> gvar<span style="color:#b08000">2</span>;
+<span style="color:#006e28">%local</span>  lvar<span style="color:#b08000">1</span>;
+
+<span style="color:#898887">%* macro comment;</span>
+
+
+<span style="color:#898887">/* ---- 15. LIBNAME / FILENAME / OPTIONS ------------------------------ */</span>
+
+<span style="font-weight:bold">libname</span> mylib <span style="color:#bf0303">"/path/to/data"</span> access<span style="color:#ca60ca">=</span>readonly;
+<span style="font-weight:bold">libname</span> mylib clear;
+
+<span style="font-weight:bold">filename</span> myfile <span style="color:#bf0303">"/path/to/file.txt"</span> lrecl<span style="color:#ca60ca">=</span><span style="color:#b08000">256</span>;
+<span style="font-weight:bold">filename</span> myfile clear;
+
+<span style="color:#898887">/* option=value pattern: option name -> SecKeyword, value -> Normal Text */</span>
+<span style="font-weight:bold">options</span> <span style="color:#644a9b;font-weight:bold">obs</span><span style="color:#ca60ca">=</span>max <span style="color:#644a9b;font-weight:bold">nodate</span> <span style="color:#644a9b;font-weight:bold">nonumber</span> <span style="color:#644a9b;font-weight:bold">mprint</span> <span style="color:#644a9b;font-weight:bold">mlogic</span> <span style="color:#644a9b;font-weight:bold">symbolgen</span>;
+<span style="font-weight:bold">options</span> <span style="color:#644a9b;font-weight:bold">validvarname</span><span style="color:#ca60ca">=</span>any <span style="color:#644a9b;font-weight:bold">compress</span><span style="color:#ca60ca">=</span>yes <span style="color:#644a9b;font-weight:bold">bufno</span><span style="color:#ca60ca">=</span><span style="color:#b08000">20</span>;
+
+
+<span style="color:#898887">/* ---- 16. MISC PROCS ------------------------------------------------ */</span>
+
+<span style="font-weight:bold">proc mixed</span> <span style="color:#644a9b;font-weight:bold">data</span><span style="color:#ca60ca">=</span>sashelp.class;
+  <span style="color:#644a9b;font-weight:bold">class</span> sex;
+  <span style="color:#644a9b;font-weight:bold">model</span> height <span style="color:#ca60ca">=</span> age sex <span style="color:#ca60ca">/</span> solution ddfm<span style="color:#ca60ca">=</span>kr;
+  <span style="color:#644a9b;font-weight:bold">random</span> intercept <span style="color:#ca60ca">/</span> subject<span style="color:#ca60ca">=</span>name type<span style="color:#ca60ca">=</span>un;
+  <span style="color:#644a9b;font-weight:bold">lsmeans</span> sex <span style="color:#ca60ca">/</span> pdiff adjust<span style="color:#ca60ca">=</span>tukey;
+<span style="font-weight:bold">run;</span>
+
+<span style="font-weight:bold">proc report</span> <span style="color:#644a9b;font-weight:bold">data</span><span style="color:#ca60ca">=</span>sashelp.class <span style="color:#644a9b;font-weight:bold">nowd</span>;
+  <span style="color:#644a9b;font-weight:bold">column</span> name sex age height;
+  <span style="color:#644a9b;font-weight:bold">define</span> name   <span style="color:#ca60ca">/</span> display <span style="color:#bf0303">"Student"</span>;
+  <span style="color:#644a9b;font-weight:bold">define</span> height <span style="color:#ca60ca">/</span> analysis mean format<span style="color:#ca60ca">=</span><span style="color:#b08000">6.2</span> <span style="color:#bf0303">"Avg Height"</span>;
+  <span style="color:#644a9b;font-weight:bold">break</span> after sex <span style="color:#ca60ca">/</span> summarize;
+  <span style="color:#644a9b;font-weight:bold">compute</span> after sex;
+    <span style="color:#644a9b;font-weight:bold">line</span> <span style="color:#bf0303">"--- end of group ---"</span>;
+  <span style="color:#644a9b;font-weight:bold">endcomp</span>;
+<span style="font-weight:bold">run;</span>
+
+<span style="font-weight:bold">proc fcmp</span> <span style="color:#644a9b;font-weight:bold">outlib</span><span style="color:#ca60ca">=</span>work.funcs.mathlib;
+  <span style="color:#644a9b;font-weight:bold">function</span> cube(x);
+    <span style="color:#644a9b;font-weight:bold">return</span> (x <span style="color:#ca60ca">**</span> <span style="color:#b08000">3</span>);
+  <span style="color:#644a9b;font-weight:bold">endfunc</span>;
+  <span style="color:#644a9b;font-weight:bold">subroutine</span> swap(a, b);
+    <span style="color:#644a9b;font-weight:bold">outargs</span> a, b;
+    <span style="color:#644a9b;font-weight:bold">temp</span> <span style="color:#ca60ca">=</span> a; <span style="color:#644a9b;font-weight:bold">a</span> <span style="color:#ca60ca">=</span> b; <span style="color:#644a9b;font-weight:bold">b</span> <span style="color:#ca60ca">=</span> temp;
+  <span style="color:#644a9b;font-weight:bold">endsub</span>;
+<span style="font-weight:bold">run;</span>
+
+<span style="font-weight:bold">endsas</span>;
+<span style="color:#006e28">%abort</span> abend;
+</pre></body></html>
