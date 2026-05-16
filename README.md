@@ -86,6 +86,31 @@ On Windows `Conan` is a fresh wind to build this project.
 
 On Linux you can use what you want, that is why this is my favourite OS.
 
+## Building for Windows.
+
+To start a development process on Windows you can use `QtCreator` with
+`CMakeLists.txt` from the root folder. But before you need to build and install
+`Sonnet`, `SyntaxHighlighting`, `KWidgetsAddons`, and make them available
+through the `PATH`, `INCLUDE`, `LIB` environment variables.
+
+### To build full installer for Windows you need:
+
+1. Make a folder where you will work.
+2. Clone this repository and https://github.com/igormironchik/kde_breeze_win
+   in the folder from the point `1`.
+3. From this repository in root of `markdown-tools` launch
+   `script\windows\install-qt.bat`, `script\windows-install-openssl.bat`.
+4. From `kde_breeze_win` repository launch `install-kde.bat`.
+5. From `markdown-tools` repository launch:
+   * `script\windows\install-kde.bat`
+   * `script\windows\build.bat`
+   * `script\windows\copy-binaries.bat`
+   * `script\windows\copy-openssl.bat`
+   * `script\windows\deploy.bat`
+
+After these steps in the root of `markdown-tools` repository you will get
+`Markdown_Windows_x64.Installer.exe`.
+
 # Known issues
 
 * Don't use `HTML` attribute `class` in `HTML` tags, it can lead to wrongly rendered content.
