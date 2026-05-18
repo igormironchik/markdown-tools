@@ -1276,7 +1276,7 @@ void MainWindow::resizeEvent(QResizeEvent *e)
             m_d->m_editorPreviewSplitter->setSizes({w / 2, w / 2});
         } else {
             m_d->m_tabEditorSplitter->setSizes({0, centralWidget()->width()});
-            m_d->m_editorPreviewSplitter->setSizes({0, w});
+            m_d->m_editorPreviewSplitter->setSizes({0, centralWidget()->width()});
             m_d->m_tabEditorSplitter->handle(1)->setCursor(Qt::ArrowCursor);
             m_d->m_editorPreviewSplitter->handle(1)->setCursor(Qt::ArrowCursor);
         }
@@ -2701,7 +2701,7 @@ void MainWindow::onTogglePreviewAction(bool checked)
         }
 
         m_d->m_tabEditorSplitter->setSizes({0, centralWidget()->width()});
-        m_d->m_editorPreviewSplitter->setSizes({0, centralWidget()->height()});
+        m_d->m_editorPreviewSplitter->setSizes({0, centralWidget()->width()});
 
         m_d->m_actionMenu->menuAction()->setVisible(false);
     } else {
