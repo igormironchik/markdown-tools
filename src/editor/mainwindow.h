@@ -31,6 +31,8 @@ struct StartupState {
     QString m_workingDir;
     //! Should all linked files be loaded on startup?
     bool m_loadAllLinked;
+    //! Should editor be opened in preview mode?
+    bool m_previewMode;
 }; // strucy StartupState
 
 //

@@ -630,7 +630,6 @@ struct MainWindowPrivate {
         m_tabEditorSplitter->addWidget(m_sidebarPanel);
         m_tabEditorSplitter->addWidget(m_editorPreviewWidget);
 
-        m_splitterCursor = m_tabEditorSplitter->handle(1)->cursor();
         this->m_tabEditorSplitter->handle(1)->setCursor(Qt::ArrowCursor);
 
         l->addWidget(m_tabEditorSplitter);
@@ -1151,7 +1150,6 @@ struct MainWindowPrivate {
     bool m_previewMode = false;
     bool m_tabsVisible = false;
     bool m_livePreviewVisible = true;
-    QCursor m_splitterCursor;
     QSharedPointer<MD::Document> m_mdDoc;
     QSharedPointer<MD::Document> m_tocDoc;
     QString m_baseUrl;
@@ -2456,6 +2454,10 @@ void MainWindow::onFirstTimeShown()
         m_d->m_horizontalOrient = true;
         onChangeOrient();
     }
+
+    if (m_d->m_startupState.m_previewMode) {
+        openInPreviewMode();
+    }
 }
 
 void MainWindow::onGoBack()
@@ -2725,8 +2727,8 @@ void MainWindow::onTogglePreviewAction(bool checked)
         }
 
         m_d->m_tabEditorSplitter->setSizes({0, centralWidget()->width()});
-        m_d->m_editorPreviewSplitter->setSizes(
-            {0, m_d->m_horizontalOrient ? centralWidget()->width() : centralWidget()->height()});
+        m_d->m_editorPreviewSplitter->setSizes(m_d->m_horizontalOrient ? QList<int>{0, centralWidget()->width()}
+                                                                       : QList<int>{centralWidget()->height(), 0});
 
         m_d->m_actionMenu->menuAction()->setVisible(false);
     } else {
@@ -2748,7 +2750,8 @@ void MainWindow::onTogglePreviewAction(bool checked)
         m_d->m_livePreviewAction->setEnabled(true);
 
         if (m_d->m_livePreviewVisible) {
-            m_d->m_editorPreviewSplitter->handle(1)->setCursor(m_d->m_splitterCursor);
+            m_d->m_editorPreviewSplitter->handle(1)->setCursor(m_d->m_horizontalOrient ? Qt::SplitHCursor
+                                                                                       : Qt::SplitVCursor);
         }
 
         m_d->m_cursorPosLabel->show();
@@ -2760,7 +2763,9 @@ void MainWindow::onTogglePreviewAction(bool checked)
         m_d->m_tabEditorSplitter->setSizes({m_d->m_minTabWidth, centralWidget()->width() - m_d->m_minTabWidth});
         const auto s =
             m_d->m_horizontalOrient ? m_d->m_editorPreviewWidget->width() : m_d->m_editorPreviewWidget->height();
-        m_d->m_editorPreviewSplitter->setSizes(m_d->m_livePreviewVisible ? QList<int>{s / 2, s / 2} : QList<int>{0, s});
+        m_d->m_editorPreviewSplitter->setSizes(m_d->m_livePreviewVisible
+                                                   ? QList<int>{s / 2, s / 2}
+                                                   : (m_d->m_horizontalOrient ? QList<int>{s, 0} : QList<int>{0, s}));
 
         m_d->m_editor->setFocus();
     }
@@ -2782,7 +2787,7 @@ void MainWindow::onToggleLivePreviewAction(bool checked)
         const auto s =
             m_d->m_horizontalOrient ? m_d->m_editorPreviewWidget->width() : m_d->m_editorPreviewWidget->height();
         m_d->m_editorPreviewSplitter->setSizes({s / 2, s / 2});
-        m_d->m_tabEditorSplitter->handle(1)->setCursor(m_d->m_splitterCursor);
+        m_d->m_tabEditorSplitter->handle(1)->setCursor(m_d->m_horizontalOrient ? Qt::SplitHCursor : Qt::SplitVCursor);
 
         if (m_d->m_mdDoc) {
             m_d->m_html->setText(MD::toHtml<HtmlVisitor>(m_d->m_mdDoc,
@@ -2967,7 +2972,7 @@ void MainWindow::showOrHideTabs()
         s[0] = m_d->m_tabWidth;
         s[1] = s[1] - m_d->m_tabWidth + m_d->m_minTabWidth;
         m_d->m_sidebarPanel->setMaximumWidth(QWIDGETSIZE_MAX);
-        m_d->m_tabEditorSplitter->handle(1)->setCursor(m_d->m_splitterCursor);
+        m_d->m_tabEditorSplitter->handle(1)->setCursor(Qt::SplitHCursor);
     } else {
         m_d->m_tabWidth = s[0];
         const auto w = s[0] - m_d->m_minTabWidth;

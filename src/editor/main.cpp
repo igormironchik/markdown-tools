@@ -102,14 +102,11 @@ int main(int argc,
         return 0;
     }
 
-    if (parser.isSet(view)) {
-        w.openInPreviewMode();
-    }
-
     MdEditor::StartupState state;
     state.m_fileName = fileName;
     state.m_workingDir = parser.value(workingDir);
     state.m_loadAllLinked = parser.isSet(all);
+    state.m_previewMode = parser.isSet(view);
 
     w.setStartupState(state);
 
