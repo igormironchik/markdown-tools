@@ -95,6 +95,7 @@ private slots:
     void onNavigationDoubleClicked(QTreeWidgetItem *item,
                                    int column);
     void onTogglePreviewAction(bool checked);
+    void onChangeOrient();
     void onToggleLivePreviewAction(bool checked);
     void onShowLicenses();
     void onConvertToPdf();

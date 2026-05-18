@@ -794,6 +794,15 @@ struct MainWindowPrivate {
         m_livePreviewAction->setChecked(true);
         viewMenu->addAction(m_livePreviewAction);
 
+        m_orientAction = new QAction(QIcon::fromTheme(QStringLiteral("view-split-top-bottom"),
+                                                      QIcon(QStringLiteral(":/res/img/view-split-top-bottom.png"))),
+                                     MainWindow::tr("Split Vertically"),
+                                     m_q);
+        m_orientAction->setShortcut(MainWindow::tr("Ctrl+Alt+S"));
+        viewMenu->addAction(m_orientAction);
+
+        QObject::connect(m_orientAction, &QAction::triggered, m_q, &MainWindow::onChangeOrient);
+
         m_settingsMenu = m_q->menuBar()->addMenu(MainWindow::tr("&Settings"));
         auto toggleLineNumbersAction =
             new QAction(QIcon::fromTheme(QStringLiteral("view-table-of-contents-ltr"),
@@ -1117,6 +1126,7 @@ struct MainWindowPrivate {
     QAction *m_backtabAction = nullptr;
     QAction *m_goBackAction = nullptr;
     QAction *m_goFwdAction = nullptr;
+    QAction *m_orientAction = nullptr;
     QMenu *m_actionMenu = nullptr;
     QMenu *m_standardEditMenu = nullptr;
     QMenu *m_settingsMenu = nullptr;
@@ -1156,6 +1166,7 @@ struct MainWindowPrivate {
     int m_settingsWindowHeight = -1;
     bool m_settingsWindowMaximized = false;
     bool m_isDefaultFile = true;
+    bool m_horizontalOrient = true;
     QVector<std::function<void()>> m_funcsQueue;
     QStringList m_navigationStack;
     int m_navigationStackIdx = -1;
@@ -2691,6 +2702,8 @@ void MainWindow::onTogglePreviewAction(bool checked)
         m_d->m_editor->setVisible(false);
         m_d->m_livePreviewAction->setVisible(false);
         m_d->m_livePreviewAction->setEnabled(false);
+        m_d->m_orientAction->setVisible(false);
+        m_d->m_orientAction->setEnabled(false);
         m_d->m_sidebarPanel->hide();
         m_d->m_tabEditorSplitter->handle(1)->setCursor(Qt::ArrowCursor);
         m_d->m_editorPreviewSplitter->handle(1)->setCursor(Qt::ArrowCursor);
@@ -2715,6 +2728,8 @@ void MainWindow::onTogglePreviewAction(bool checked)
         m_d->m_toggleGoToLineAction->setEnabled(true);
         m_d->m_newAction->setVisible(true);
         m_d->m_newAction->setEnabled(true);
+        m_d->m_orientAction->setVisible(true);
+        m_d->m_orientAction->setEnabled(true);
         m_d->m_editor->setVisible(true);
         m_d->m_sidebarPanel->show();
         m_d->m_livePreviewAction->setVisible(true);
@@ -2731,7 +2746,10 @@ void MainWindow::onTogglePreviewAction(bool checked)
         }
 
         m_d->m_tabEditorSplitter->setSizes({m_d->m_minTabWidth, centralWidget()->width() - m_d->m_minTabWidth});
-        m_d->m_editorPreviewSplitter->setSizes(m_d->m_livePreviewVisible ? QList<int>{m_d->m_editorPreviewWidget->width() / 2, m_d->m_editorPreviewWidget->width() / 2} : QList<int>{0, m_d->m_editorPreviewWidget->width()});
+        m_d->m_editorPreviewSplitter->setSizes(
+            m_d->m_livePreviewVisible
+                ? QList<int>{m_d->m_editorPreviewWidget->width() / 2, m_d->m_editorPreviewWidget->width() / 2}
+                : QList<int>{0, m_d->m_editorPreviewWidget->width()});
 
         m_d->m_editor->setFocus();
     }
@@ -2749,7 +2767,8 @@ void MainWindow::onToggleLivePreviewAction(bool checked)
         m_d->m_editorPreviewSplitter->setSizes({m_d->m_editorPreviewWidget->width(), 0});
         m_d->m_editorPreviewSplitter->handle(1)->setCursor(Qt::ArrowCursor);
     } else {
-        m_d->m_editorPreviewSplitter->setSizes({m_d->m_editorPreviewWidget->width() / 2, m_d->m_editorPreviewWidget->width() / 2});
+        m_d->m_editorPreviewSplitter->setSizes(
+            {m_d->m_editorPreviewWidget->width() / 2, m_d->m_editorPreviewWidget->width() / 2});
         m_d->m_tabEditorSplitter->handle(1)->setCursor(m_d->m_splitterCursor);
 
         if (m_d->m_mdDoc) {
@@ -2761,6 +2780,23 @@ void MainWindow::onToggleLivePreviewAction(bool checked)
         } else {
             m_d->m_html->setText({});
         }
+    }
+}
+
+void MainWindow::onChangeOrient()
+{
+    m_d->m_horizontalOrient = !m_d->m_horizontalOrient;
+
+    if (m_d->m_horizontalOrient) {
+        m_d->m_orientAction->setIcon(QIcon::fromTheme(QStringLiteral("view-split-top-bottom"),
+                                                      QIcon(QStringLiteral(":/res/img/view-split-top-bottom.png"))));
+        m_d->m_orientAction->setText(tr("Split Vertically"));
+        m_d->m_editorPreviewSplitter->setOrientation(Qt::Orientation::Horizontal);
+    } else {
+        m_d->m_orientAction->setIcon(QIcon::fromTheme(QStringLiteral("view-split-left-right"),
+                                                      QIcon(QStringLiteral(":/res/img/view-split-left-right.png"))));
+        m_d->m_orientAction->setText(tr("Split Horizontally"));
+        m_d->m_editorPreviewSplitter->setOrientation(Qt::Orientation::Vertical);
     }
 }
 
