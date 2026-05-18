@@ -1383,6 +1383,8 @@ void MainWindow::onFileNew()
 
         if (button != QMessageBox::Yes) {
             return;
+        } else {
+            m_d->m_editor->fileWasSaved();
         }
     }
 
@@ -1424,6 +1426,8 @@ bool MainWindow::askAboutUnsavedFile()
 
         if (button != QMessageBox::Yes) {
             return false;
+        } else {
+            m_d->m_editor->fileWasSaved();
         }
     }
 
