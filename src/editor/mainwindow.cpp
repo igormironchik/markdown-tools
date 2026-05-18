@@ -1866,6 +1866,7 @@ const QString s_drawCodeBackground = QStringLiteral("drawCodeBackground");
 const QString s_githubBehaviour = QStringLiteral("githubBehaviour");
 const QString s_dontUseAutoListInCodeBlock = QStringLiteral("dontUseAutoListInCodeBlock");
 const QString s_autoCodeBlocks = QStringLiteral("autoCodeBlocks");
+const QString s_horizontalOrient = QStringLiteral("horizontalUi");
 
 void MainWindow::saveCfg() const
 {
@@ -1880,6 +1881,7 @@ void MainWindow::saveCfg() const
     s.setValue(s_size, f.pointSize());
     s.endGroup();
 
+    s.setValue(s_horizontalOrient, m_d->m_horizontalOrient);
     s.setValue(s_linkColor, m_d->m_editor->settings().m_colors.m_linkColor);
     s.setValue(s_textColor, m_d->m_editor->settings().m_colors.m_textColor);
     s.setValue(s_inlineColor, m_d->m_editor->settings().m_colors.m_inlineColor);
@@ -1981,6 +1983,8 @@ void MainWindow::readCfg()
     }
 
     s.endGroup();
+
+    m_d->m_horizontalOrient = s.value(s_horizontalOrient, m_d->m_horizontalOrient).toBool();
 
     const auto isFindCaseSensitive = s.value(s_findCaseSensitive, true).toBool();
     m_d->m_find->setCaseSensitive(isFindCaseSensitive);
@@ -2446,6 +2450,11 @@ void MainWindow::onFirstTimeShown()
 
     if (m_d->m_startupState.m_loadAllLinked) {
         loadAllLinkedFiles();
+    }
+
+    if (!m_d->m_horizontalOrient) {
+        m_d->m_horizontalOrient = true;
+        onChangeOrient();
     }
 }
 
