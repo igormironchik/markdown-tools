@@ -58,7 +58,8 @@ set(LIB_SRC
     speller.cpp
     editor_settings.h
     editor_settings.cpp
-    editor_settings.ui)
+    editor_settings.ui
+    const.h)
 
 set(SRC main.cpp)
 

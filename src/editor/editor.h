@@ -190,6 +190,10 @@ public slots:
     void clearUserStateOnAllBlocks();
     //! Try to navigate to reference.
     void tryToNavigate(const QString &ref);
+    //! Notify that file was saved.
+    void fileWasSaved();
+    //! Enable/disable auto saving of content.
+    void enableAutoSave(bool on = true);
 
 private slots:
     //! Calculate and change line number area width.
