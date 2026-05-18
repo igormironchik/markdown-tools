@@ -598,30 +598,30 @@ struct MainWindowPrivate {
         m_editorPreviewSplitter->setOrientation(Qt::Orientation::Horizontal);
         editorPreviewLayout->addWidget(m_editorPreviewSplitter);
 
-        auto editorPanel = new QWidget(m_editorPreviewSplitter);
-        auto v = new QVBoxLayout(editorPanel);
+        m_editorPanel = new QWidget(m_editorPreviewSplitter);
+        auto v = new QVBoxLayout(m_editorPanel);
         v->setContentsMargins(0, 0, 0, 0);
         v->setSpacing(0);
-        m_editor = new Editor(editorPanel, m_q, m_urlAutoCompleteModel);
-        m_find = new Find(m_q, m_editor, editorPanel);
+        m_editor = new Editor(m_editorPanel, m_q, m_urlAutoCompleteModel);
+        m_find = new Find(m_q, m_editor, m_editorPanel);
         m_editor->setFindWidget(m_find);
-        m_gotoline = new GoToLine(m_q, m_editor, editorPanel);
+        m_gotoline = new GoToLine(m_q, m_editor, m_editorPanel);
         v->addWidget(m_editor);
         v->addWidget(m_gotoline);
         v->addWidget(m_find);
 
         // Preview.
-        auto previewPanel = new QWidget(m_editorPreviewSplitter);
-        auto v1 = new QVBoxLayout(previewPanel);
+        m_previewPanel = new QWidget(m_editorPreviewSplitter);
+        auto v1 = new QVBoxLayout(m_previewPanel);
         v1->setContentsMargins(0, 0, 0, 0);
         v1->setSpacing(0);
-        m_preview = new WebView(previewPanel);
-        m_findWeb = new FindWeb(m_q, m_preview, previewPanel);
+        m_preview = new WebView(m_previewPanel);
+        m_findWeb = new FindWeb(m_q, m_preview, m_previewPanel);
         v1->addWidget(m_preview);
         v1->addWidget(m_findWeb);
 
-        m_editorPreviewSplitter->addWidget(editorPanel);
-        m_editorPreviewSplitter->addWidget(previewPanel);
+        m_editorPreviewSplitter->addWidget(m_editorPanel);
+        m_editorPreviewSplitter->addWidget(m_previewPanel);
 
         m_find->hide();
         m_gotoline->hide();
@@ -1136,6 +1136,8 @@ struct MainWindowPrivate {
     QTreeWidget *m_fileTree = nullptr;
     QWidget *m_tocPanel = nullptr;
     QWidget *m_editorPreviewWidget = nullptr;
+    QWidget *m_editorPanel = nullptr;
+    QWidget *m_previewPanel = nullptr;
     WorkingDirectoryWidget *m_workingDirectoryWidget = nullptr;
     TocTreeView *m_tocTree = nullptr;
     TocModel *m_tocModel = nullptr;
@@ -2714,7 +2716,8 @@ void MainWindow::onTogglePreviewAction(bool checked)
         }
 
         m_d->m_tabEditorSplitter->setSizes({0, centralWidget()->width()});
-        m_d->m_editorPreviewSplitter->setSizes({0, centralWidget()->width()});
+        m_d->m_editorPreviewSplitter->setSizes(
+            {0, m_d->m_horizontalOrient ? centralWidget()->width() : centralWidget()->height()});
 
         m_d->m_actionMenu->menuAction()->setVisible(false);
     } else {
@@ -2746,10 +2749,9 @@ void MainWindow::onTogglePreviewAction(bool checked)
         }
 
         m_d->m_tabEditorSplitter->setSizes({m_d->m_minTabWidth, centralWidget()->width() - m_d->m_minTabWidth});
-        m_d->m_editorPreviewSplitter->setSizes(
-            m_d->m_livePreviewVisible
-                ? QList<int>{m_d->m_editorPreviewWidget->width() / 2, m_d->m_editorPreviewWidget->width() / 2}
-                : QList<int>{0, m_d->m_editorPreviewWidget->width()});
+        const auto s =
+            m_d->m_horizontalOrient ? m_d->m_editorPreviewWidget->width() : m_d->m_editorPreviewWidget->height();
+        m_d->m_editorPreviewSplitter->setSizes(m_d->m_livePreviewVisible ? QList<int>{s / 2, s / 2} : QList<int>{0, s});
 
         m_d->m_editor->setFocus();
     }
@@ -2764,11 +2766,13 @@ void MainWindow::onToggleLivePreviewAction(bool checked)
     m_d->m_livePreviewVisible = checked;
 
     if (!m_d->m_livePreviewVisible) {
-        m_d->m_editorPreviewSplitter->setSizes({m_d->m_editorPreviewWidget->width(), 0});
+        m_d->m_editorPreviewSplitter->setSizes(
+            {m_d->m_horizontalOrient ? m_d->m_editorPreviewWidget->width() : m_d->m_editorPreviewWidget->height(), 0});
         m_d->m_editorPreviewSplitter->handle(1)->setCursor(Qt::ArrowCursor);
     } else {
-        m_d->m_editorPreviewSplitter->setSizes(
-            {m_d->m_editorPreviewWidget->width() / 2, m_d->m_editorPreviewWidget->width() / 2});
+        const auto s =
+            m_d->m_horizontalOrient ? m_d->m_editorPreviewWidget->width() : m_d->m_editorPreviewWidget->height();
+        m_d->m_editorPreviewSplitter->setSizes({s / 2, s / 2});
         m_d->m_tabEditorSplitter->handle(1)->setCursor(m_d->m_splitterCursor);
 
         if (m_d->m_mdDoc) {
@@ -2792,11 +2796,13 @@ void MainWindow::onChangeOrient()
                                                       QIcon(QStringLiteral(":/res/img/view-split-top-bottom.png"))));
         m_d->m_orientAction->setText(tr("Split Vertically"));
         m_d->m_editorPreviewSplitter->setOrientation(Qt::Orientation::Horizontal);
+        m_d->m_editorPreviewSplitter->addWidget(m_d->m_previewPanel);
     } else {
         m_d->m_orientAction->setIcon(QIcon::fromTheme(QStringLiteral("view-split-left-right"),
                                                       QIcon(QStringLiteral(":/res/img/view-split-left-right.png"))));
         m_d->m_orientAction->setText(tr("Split Horizontally"));
         m_d->m_editorPreviewSplitter->setOrientation(Qt::Orientation::Vertical);
+        m_d->m_editorPreviewSplitter->addWidget(m_d->m_editorPanel);
     }
 }
 
