@@ -1604,11 +1604,15 @@ void Editor::onContentChanged()
     QFileInfo info(m_d->m_docName);
 
     if (m_d->m_autosavingEnabled && !m_d->m_docName.isEmpty() && m_d->m_docName != s_defaultFileName) {
-        QFile f(m_d->m_docName + s_autosaveExtension);
-        if (f.open(QIODevice::WriteOnly | QIODevice::Text)) {
-            QTextStream str(&f);
-            str << md;
-            f.close();
+        if (document()->isUndoAvailable()) {
+            QFile f(m_d->m_docName + s_autosaveExtension);
+            if (f.open(QIODevice::WriteOnly | QIODevice::Text)) {
+                QTextStream str(&f);
+                str << md;
+                f.close();
+            }
+        } else {
+            fileWasSaved();
         }
     }
 
