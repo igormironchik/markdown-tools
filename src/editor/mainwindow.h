@@ -148,6 +148,8 @@ private:
     QPair<QSharedPointer<QFile>,
           bool>
     getFile(const QString &path);
+    //! Set state of the editor/preview splitter.
+    void setStateOfEditorPreviewSplitter(bool updateHtml);
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event) override;

@@ -2740,6 +2740,10 @@ void MainWindow::onTogglePreviewAction(bool checked)
         m_d->m_tabEditorSplitter->setSizes({0, centralWidget()->width()});
         m_d->m_editorPreviewSplitter->setSizes(m_d->m_horizontalOrient ? QList<int>{0, centralWidget()->width()}
                                                                        : QList<int>{centralWidget()->height(), 0});
+        m_d->m_editorPreviewSplitter->handle(1)->setEnabled(false);
+        m_d->m_editorPreviewSplitter->handle(1)->setVisible(false);
+        m_d->m_tabEditorSplitter->handle(1)->setEnabled(false);
+        m_d->m_tabEditorSplitter->handle(1)->setVisible(false);
 
         m_d->m_actionMenu->menuAction()->setVisible(false);
     } else {
@@ -2777,6 +2781,10 @@ void MainWindow::onTogglePreviewAction(bool checked)
         m_d->m_editorPreviewSplitter->setSizes(m_d->m_livePreviewVisible
                                                    ? QList<int>{s / 2, s / 2}
                                                    : (m_d->m_horizontalOrient ? QList<int>{s, 0} : QList<int>{0, s}));
+        m_d->m_editorPreviewSplitter->handle(1)->setEnabled(true);
+        m_d->m_editorPreviewSplitter->handle(1)->setVisible(true);
+        m_d->m_tabEditorSplitter->handle(1)->setEnabled(true);
+        m_d->m_tabEditorSplitter->handle(1)->setVisible(true);
 
         m_d->m_editor->setFocus();
     }
@@ -2786,32 +2794,43 @@ void MainWindow::onTogglePreviewAction(bool checked)
     updateWindowTitle();
 }
 
-void MainWindow::onToggleLivePreviewAction(bool checked)
+void MainWindow::setStateOfEditorPreviewSplitter(bool updateHtml)
 {
-    m_d->m_livePreviewVisible = checked;
-
     if (!m_d->m_livePreviewVisible) {
         m_d->m_editorPreviewSplitter->setSizes(m_d->m_horizontalOrient
                                                    ? QList<int>{m_d->m_editorPreviewWidget->width(), 0}
                                                    : QList<int>{0, m_d->m_editorPreviewWidget->height()});
         m_d->m_editorPreviewSplitter->handle(1)->setCursor(Qt::ArrowCursor);
+        m_d->m_editorPreviewSplitter->handle(1)->setEnabled(false);
+        m_d->m_editorPreviewSplitter->handle(1)->setVisible(false);
     } else {
         const auto s =
             m_d->m_horizontalOrient ? m_d->m_editorPreviewWidget->width() : m_d->m_editorPreviewWidget->height();
         m_d->m_editorPreviewSplitter->setSizes({s / 2, s / 2});
         m_d->m_editorPreviewSplitter->handle(1)->setCursor(m_d->m_horizontalOrient ? Qt::SplitHCursor
                                                                                    : Qt::SplitVCursor);
+        m_d->m_editorPreviewSplitter->handle(1)->setEnabled(true);
+        m_d->m_editorPreviewSplitter->handle(1)->setVisible(true);
 
-        if (m_d->m_mdDoc) {
-            m_d->m_html->setText(MD::toHtml<HtmlVisitor>(m_d->m_mdDoc,
-                                                         false,
-                                                         QStringLiteral("<img src=\"qrc:/res/img/go-jump.png\" />"),
-                                                         true,
-                                                         &m_d->m_editor->idsMap()));
-        } else {
-            m_d->m_html->setText({});
+        if (updateHtml){
+            if (m_d->m_mdDoc) {
+                m_d->m_html->setText(MD::toHtml<HtmlVisitor>(m_d->m_mdDoc,
+                                                             false,
+                                                             QStringLiteral("<img src=\"qrc:/res/img/go-jump.png\" />"),
+                                                             true,
+                                                             &m_d->m_editor->idsMap()));
+            } else {
+                m_d->m_html->setText({});
+            }
         }
     }
+}
+
+void MainWindow::onToggleLivePreviewAction(bool checked)
+{
+    m_d->m_livePreviewVisible = checked;
+
+    setStateOfEditorPreviewSplitter(true);
 }
 
 void MainWindow::onChangeOrient()
@@ -2831,6 +2850,8 @@ void MainWindow::onChangeOrient()
         m_d->m_editorPreviewSplitter->setOrientation(Qt::Orientation::Vertical);
         m_d->m_editorPreviewSplitter->addWidget(m_d->m_editorPanel);
     }
+
+    setStateOfEditorPreviewSplitter(false);
 }
 
 namespace /* anonymous */
