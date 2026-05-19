@@ -1536,6 +1536,8 @@ void MainWindow::onFileSaveAs()
     closeAllLinkedFiles();
 
     updateLoadAllLinkedFilesMenuText();
+
+    m_d->m_editor->fileWasSaved();
 }
 
 void MainWindow::closeEvent(QCloseEvent *e)
