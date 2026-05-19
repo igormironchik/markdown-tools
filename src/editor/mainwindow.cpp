@@ -1671,7 +1671,9 @@ inline QString itemType(MD::Item *item,
     case MD::ItemType::Paragraph: {
         auto p = static_cast<MD::Paragraph *>(item);
 
-        if (p->items().size() == 1 && p->items().at(0)->type() == MD::ItemType::Math) {
+        if (p->items().size() == 1
+            && p->items().at(0)->type() == MD::ItemType::Math
+            && !static_cast<MD::Math *>(p->items().at(0).get())->isInline()) {
             return MainWindow::tr("LaTeX Math Expression");
         } else {
             return MainWindow::tr("Paragraph");
@@ -1740,10 +1742,10 @@ void MainWindow::onLineHovered(int lineNumber,
             || items.size() == 1) {
             QToolTip::showText(pos, itemType(items.front(), items.size() == 1));
         } else {
-            QToolTip::showText(pos,
-                               tr("%1 in %2")
-                                   .arg(itemType(items.at(1), items.size() == 1),
-                                        itemType(items.front(), items.size() == 1)));
+            QToolTip::showText(
+                pos,
+                tr("%1 in %2")
+                    .arg(itemType(items.at(1), items.size() == 1), itemType(items.front(), items.size() == 1)));
         }
     }
 }
