@@ -1660,16 +1660,23 @@ void MainWindow::onAboutQt()
 namespace /* anonymous */
 {
 
-inline QString itemType(MD::ItemType t,
+inline QString itemType(MD::Item *item,
                         bool alone)
 {
-    switch (t) {
+    switch (item->type()) {
     case MD::ItemType::Heading:
         return MainWindow::tr("Heading");
     case MD::ItemType::Text:
         return MainWindow::tr("Text");
-    case MD::ItemType::Paragraph:
-        return MainWindow::tr("Paragraph");
+    case MD::ItemType::Paragraph: {
+        auto p = static_cast<MD::Paragraph *>(item);
+
+        if (p->items().size() == 1 && p->items().at(0)->type() == MD::ItemType::Math) {
+            return MainWindow::tr("LaTeX Math Expression");
+        } else {
+            return MainWindow::tr("Paragraph");
+        }
+    }
     case MD::ItemType::LineBreak:
         return MainWindow::tr("Line Break");
     case MD::ItemType::Blockquote:
@@ -1731,12 +1738,12 @@ void MainWindow::onLineHovered(int lineNumber,
     if (!items.empty()) {
         if ((items.front()->type() != MD::ItemType::List && items.front()->type() != MD::ItemType::Footnote)
             || items.size() == 1) {
-            QToolTip::showText(pos, itemType(items.front()->type(), items.size() == 1));
+            QToolTip::showText(pos, itemType(items.front(), items.size() == 1));
         } else {
             QToolTip::showText(pos,
                                tr("%1 in %2")
-                                   .arg(itemType(items.at(1)->type(), items.size() == 1),
-                                        itemType(items.front()->type(), items.size() == 1)));
+                                   .arg(itemType(items.at(1), items.size() == 1),
+                                        itemType(items.front(), items.size() == 1)));
         }
     }
 }
