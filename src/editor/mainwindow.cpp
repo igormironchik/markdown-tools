@@ -2791,14 +2791,16 @@ void MainWindow::onToggleLivePreviewAction(bool checked)
     m_d->m_livePreviewVisible = checked;
 
     if (!m_d->m_livePreviewVisible) {
-        m_d->m_editorPreviewSplitter->setSizes(
-            {m_d->m_horizontalOrient ? m_d->m_editorPreviewWidget->width() : m_d->m_editorPreviewWidget->height(), 0});
+        m_d->m_editorPreviewSplitter->setSizes(m_d->m_horizontalOrient
+                                                   ? QList<int>{m_d->m_editorPreviewWidget->width(), 0}
+                                                   : QList<int>{0, m_d->m_editorPreviewWidget->height()});
         m_d->m_editorPreviewSplitter->handle(1)->setCursor(Qt::ArrowCursor);
     } else {
         const auto s =
             m_d->m_horizontalOrient ? m_d->m_editorPreviewWidget->width() : m_d->m_editorPreviewWidget->height();
         m_d->m_editorPreviewSplitter->setSizes({s / 2, s / 2});
-        m_d->m_tabEditorSplitter->handle(1)->setCursor(m_d->m_horizontalOrient ? Qt::SplitHCursor : Qt::SplitVCursor);
+        m_d->m_editorPreviewSplitter->handle(1)->setCursor(m_d->m_horizontalOrient ? Qt::SplitHCursor
+                                                                                   : Qt::SplitVCursor);
 
         if (m_d->m_mdDoc) {
             m_d->m_html->setText(MD::toHtml<HtmlVisitor>(m_d->m_mdDoc,
