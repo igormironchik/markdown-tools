@@ -2764,11 +2764,6 @@ void MainWindow::onTogglePreviewAction(bool checked)
         m_d->m_livePreviewAction->setVisible(true);
         m_d->m_livePreviewAction->setEnabled(true);
 
-        if (m_d->m_livePreviewVisible) {
-            m_d->m_editorPreviewSplitter->handle(1)->setCursor(m_d->m_horizontalOrient ? Qt::SplitHCursor
-                                                                                       : Qt::SplitVCursor);
-        }
-
         m_d->m_cursorPosLabel->show();
 
         if (m_d->m_loadAllFlag) {
@@ -2776,15 +2771,10 @@ void MainWindow::onTogglePreviewAction(bool checked)
         }
 
         m_d->m_tabEditorSplitter->setSizes({m_d->m_minTabWidth, centralWidget()->width() - m_d->m_minTabWidth});
-        const auto s =
-            m_d->m_horizontalOrient ? m_d->m_editorPreviewWidget->width() : m_d->m_editorPreviewWidget->height();
-        m_d->m_editorPreviewSplitter->setSizes(m_d->m_livePreviewVisible
-                                                   ? QList<int>{s / 2, s / 2}
-                                                   : (m_d->m_horizontalOrient ? QList<int>{s, 0} : QList<int>{0, s}));
-        m_d->m_editorPreviewSplitter->handle(1)->setEnabled(true);
-        m_d->m_editorPreviewSplitter->handle(1)->setVisible(true);
         m_d->m_tabEditorSplitter->handle(1)->setEnabled(true);
         m_d->m_tabEditorSplitter->handle(1)->setVisible(true);
+
+        setStateOfEditorPreviewSplitter(false);
 
         m_d->m_editor->setFocus();
     }
