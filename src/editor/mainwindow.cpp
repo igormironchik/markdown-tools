@@ -2746,6 +2746,7 @@ void MainWindow::onTogglePreviewAction(bool checked)
         m_d->m_tabEditorSplitter->handle(1)->setVisible(false);
 
         m_d->m_actionMenu->menuAction()->setVisible(false);
+        m_d->m_editor->setEnabled(false);
     } else {
         m_d->m_settingsMenu->menuAction()->setVisible(true);
         m_d->m_editMenuAction->setVisible(true);
@@ -2776,6 +2777,7 @@ void MainWindow::onTogglePreviewAction(bool checked)
 
         setStateOfEditorPreviewSplitter(false);
 
+        m_d->m_editor->setEnabled(true);
         m_d->m_editor->setFocus();
     }
 
