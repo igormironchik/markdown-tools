@@ -321,7 +321,7 @@
         <translation>Лицензии</translation>
     </message>
     <message>
-        <location filename="../src/shared/license_dialog.ui" line="95"/>
+        <location filename="../src/shared/license_dialog.ui" line="85"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
@@ -450,12 +450,12 @@
 <context>
     <name>MdEditor::Editor</name>
     <message>
-        <location filename="../src/editor/editor.cpp" line="996"/>
+        <location filename="../src/editor/editor.cpp" line="999"/>
         <source>Spelling</source>
         <translation>Орфография</translation>
     </message>
     <message>
-        <location filename="../src/editor/editor.cpp" line="1008"/>
+        <location filename="../src/editor/editor.cpp" line="1011"/>
         <source>Skip Word</source>
         <translation>Пропустить слово</translation>
     </message>
@@ -553,340 +553,355 @@
 <context>
     <name>MdEditor::MainWindow</name>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="489"/>
+        <location filename="../src/editor/mainwindow.cpp" line="490"/>
         <source>Error loading res/index.html</source>
         <translation>Не удалось загрузить res/index.html</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="524"/>
+        <location filename="../src/editor/mainwindow.cpp" line="525"/>
         <source>Filter ToC (Ctrl+Alt+F)</source>
         <translation>Фильтровать содержание</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="527"/>
+        <location filename="../src/editor/mainwindow.cpp" line="528"/>
         <source>Ctrl+Alt+F</source>
         <translation>Ctrl+Alt+F</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="549"/>
+        <location filename="../src/editor/mainwindow.cpp" line="550"/>
         <source>To&amp;C</source>
         <translation>&amp;Содержание</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="560"/>
-        <location filename="../src/editor/mainwindow.cpp" line="753"/>
+        <location filename="../src/editor/mainwindow.cpp" line="561"/>
+        <location filename="../src/editor/mainwindow.cpp" line="761"/>
         <source>Go Back</source>
         <translation>Назад</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="564"/>
-        <location filename="../src/editor/mainwindow.cpp" line="761"/>
+        <location filename="../src/editor/mainwindow.cpp" line="565"/>
+        <location filename="../src/editor/mainwindow.cpp" line="769"/>
         <source>Go Forward</source>
         <translation>Вперед</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="654"/>
+        <location filename="../src/editor/mainwindow.cpp" line="662"/>
         <source>&amp;File</source>
         <translation>&amp;Файл</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="657"/>
+        <location filename="../src/editor/mainwindow.cpp" line="665"/>
         <source>New</source>
         <translation>Новый</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="658"/>
+        <location filename="../src/editor/mainwindow.cpp" line="666"/>
         <source>Ctrl+N</source>
         <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="663"/>
+        <location filename="../src/editor/mainwindow.cpp" line="671"/>
         <source>Open</source>
         <translation>Открыть</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="664"/>
+        <location filename="../src/editor/mainwindow.cpp" line="672"/>
         <source>Ctrl+O</source>
         <translation>Ctrl+O</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="670"/>
+        <location filename="../src/editor/mainwindow.cpp" line="678"/>
         <source>Save</source>
         <translation>Сохранить</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="671"/>
+        <location filename="../src/editor/mainwindow.cpp" line="679"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="676"/>
+        <location filename="../src/editor/mainwindow.cpp" line="684"/>
         <source>Save As</source>
         <translation>Сохранить как</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="680"/>
-        <location filename="../src/editor/mainwindow.cpp" line="2608"/>
+        <location filename="../src/editor/mainwindow.cpp" line="688"/>
+        <location filename="../src/editor/mainwindow.cpp" line="2705"/>
         <source>Load All Linked Files...</source>
         <translation>Загрузить все присоединенные файлы...</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="681"/>
+        <location filename="../src/editor/mainwindow.cpp" line="689"/>
         <source>Ctrl+R</source>
         <translation>Ctrl+R</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="690"/>
+        <location filename="../src/editor/mainwindow.cpp" line="698"/>
         <source>Convert To PDF...</source>
         <translation>Преобразовать в PDF...</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="698"/>
+        <location filename="../src/editor/mainwindow.cpp" line="706"/>
         <source>Quit</source>
         <translation>Выход</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="699"/>
+        <location filename="../src/editor/mainwindow.cpp" line="707"/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="703"/>
+        <location filename="../src/editor/mainwindow.cpp" line="711"/>
         <source>&amp;Edit</source>
         <translation>&amp;Редактирование</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="706"/>
+        <location filename="../src/editor/mainwindow.cpp" line="714"/>
         <source>Find/Replace</source>
         <translation>Найти/заменить</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="708"/>
+        <location filename="../src/editor/mainwindow.cpp" line="716"/>
         <source>Ctrl+F</source>
         <translation>Ctrl+F</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="713"/>
+        <location filename="../src/editor/mainwindow.cpp" line="721"/>
         <source>Find In Preview</source>
         <translation>Найти в предпросмотре</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="715"/>
+        <location filename="../src/editor/mainwindow.cpp" line="723"/>
         <source>Ctrl+W</source>
         <translation>Ctrl+W</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="720"/>
+        <location filename="../src/editor/mainwindow.cpp" line="728"/>
         <source>Go to Line</source>
         <translation>Перейти на линию</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="722"/>
+        <location filename="../src/editor/mainwindow.cpp" line="730"/>
         <source>Ctrl+L</source>
         <translation>Ctrl+L</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="725"/>
+        <location filename="../src/editor/mainwindow.cpp" line="733"/>
         <source>Add ToC</source>
         <translation>Добавить содержание</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="727"/>
+        <location filename="../src/editor/mainwindow.cpp" line="735"/>
         <source>Next Misspelled</source>
         <translation>Следющее неправильно написанное</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="728"/>
+        <location filename="../src/editor/mainwindow.cpp" line="736"/>
         <source>F6</source>
         <translation>F6</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="732"/>
+        <location filename="../src/editor/mainwindow.cpp" line="740"/>
         <source>F&amp;ormat</source>
         <translation>Ф&amp;орматировние</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="734"/>
+        <location filename="../src/editor/mainwindow.cpp" line="742"/>
         <source>Indent</source>
         <translation>Сделать отступ</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="735"/>
+        <location filename="../src/editor/mainwindow.cpp" line="743"/>
         <source>Tab</source>
         <translation>Tab</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="742"/>
+        <location filename="../src/editor/mainwindow.cpp" line="750"/>
         <source>Unindent</source>
         <translation>Убрать отступ</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="743"/>
+        <location filename="../src/editor/mainwindow.cpp" line="751"/>
         <source>Shift+Tab</source>
         <translation>Shift+Tab</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="750"/>
+        <location filename="../src/editor/mainwindow.cpp" line="758"/>
         <source>&amp;Action</source>
         <translation>&amp;Действия</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="772"/>
+        <location filename="../src/editor/mainwindow.cpp" line="780"/>
         <source>&amp;View</source>
         <translation>&amp;Вид</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="775"/>
+        <location filename="../src/editor/mainwindow.cpp" line="783"/>
         <source>Toggle Preview Mode</source>
         <translation>Переключить режим предпросмотра</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="776"/>
+        <location filename="../src/editor/mainwindow.cpp" line="784"/>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="782"/>
+        <location filename="../src/editor/mainwindow.cpp" line="790"/>
         <source>Live Preview</source>
         <translation>Предпросмотр в реальном времени</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="783"/>
+        <location filename="../src/editor/mainwindow.cpp" line="791"/>
         <source>Ctrl+Alt+P</source>
         <translation>Ctrl+Alt+P</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="788"/>
+        <location filename="../src/editor/mainwindow.cpp" line="798"/>
+        <location filename="../src/editor/mainwindow.cpp" line="2835"/>
+        <source>Split Vertically</source>
+        <translation>Расположить вертикально</translation>
+    </message>
+    <message>
+        <location filename="../src/editor/mainwindow.cpp" line="800"/>
+        <source>Ctrl+Alt+S</source>
+        <translation>Ctrl+Alt+S</translation>
+    </message>
+    <message>
+        <location filename="../src/editor/mainwindow.cpp" line="805"/>
         <source>&amp;Settings</source>
         <translation>&amp;Настройки</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="792"/>
+        <location filename="../src/editor/mainwindow.cpp" line="809"/>
         <source>Show Line Numbers</source>
         <translation>Показывать номера строк</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="795"/>
+        <location filename="../src/editor/mainwindow.cpp" line="812"/>
         <source>Alt+L</source>
         <translation>Alt+L</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="801"/>
+        <location filename="../src/editor/mainwindow.cpp" line="818"/>
         <source>Show Tabs/Spaces</source>
         <translation>Показывать табуляторы/пробелы</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="804"/>
+        <location filename="../src/editor/mainwindow.cpp" line="821"/>
         <source>Alt+T</source>
         <translation>Alt+T</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="812"/>
+        <location filename="../src/editor/mainwindow.cpp" line="829"/>
         <source>Decrease Font Size</source>
         <translation>Уменьшить размер шрифта</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="813"/>
+        <location filename="../src/editor/mainwindow.cpp" line="830"/>
         <source>Ctrl+-</source>
         <translation>Ctrl+-</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="818"/>
+        <location filename="../src/editor/mainwindow.cpp" line="835"/>
         <source>Increase Font Size</source>
         <translation>Увеличить размер шрифта</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="819"/>
+        <location filename="../src/editor/mainwindow.cpp" line="836"/>
         <source>Ctrl+=</source>
         <translation>Ctrl+=</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="827"/>
+        <location filename="../src/editor/mainwindow.cpp" line="844"/>
         <source>Font...</source>
         <translation>Шрифт...</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="833"/>
+        <location filename="../src/editor/mainwindow.cpp" line="850"/>
         <source>Colors...</source>
         <translation>Цвета...</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="841"/>
+        <location filename="../src/editor/mainwindow.cpp" line="858"/>
         <source>Settings</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="845"/>
+        <location filename="../src/editor/mainwindow.cpp" line="862"/>
         <source>&amp;Help</source>
         <translation>С&amp;правка</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="847"/>
+        <location filename="../src/editor/mainwindow.cpp" line="864"/>
         <source>About</source>
         <translation>О приложении</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="851"/>
+        <location filename="../src/editor/mainwindow.cpp" line="868"/>
         <source>About Qt</source>
         <translation>О Qt</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="856"/>
+        <location filename="../src/editor/mainwindow.cpp" line="873"/>
         <source>Licenses</source>
         <translation>Лицензии</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="861"/>
+        <location filename="../src/editor/mainwindow.cpp" line="878"/>
         <source>Tips &amp;&amp; Tricks</source>
         <translation>Советы и рекомендации</translation>
+    </message>
+    <message>
+        <location filename="../src/editor/mainwindow.cpp" line="2841"/>
+        <source>Split Horizontally</source>
+        <translation>Расположить горизонтально</translation>
     </message>
     <message>
         <source>Tips &amp; Tricks</source>
         <translation type="vanished">Советы и рекомендации</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="1296"/>
-        <location filename="../src/editor/mainwindow.cpp" line="2486"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1335"/>
         <source>Could not open file %1: %2</source>
         <translation>Не удалось открыть файл %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="1343"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1403"/>
         <source>You have unsaved changes. Do you want to create a new document anyway?</source>
         <translation>У вас есть несохраненные изменения. Вы действительно хотите создать новый документ?</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="1384"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1446"/>
         <source>You have unsaved changes. Do you want to open a new document anyway?</source>
         <translation>У вас есть несохраненные изменения. Вы действительно хотите открыть новый документ?</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="1405"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1469"/>
         <source>Open Markdown File</source>
         <translation>Открыть Markdown файл</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="1425"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1489"/>
         <source>Could not write to file %1: %2</source>
         <translation>Не удалось сохранить файл %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="1446"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1511"/>
         <source>Save Markdown File</source>
         <translation>Сохранить Markdown файл</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="1483"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1551"/>
         <source>You have unsaved changes. Do you want to exit anyway?</source>
         <translation>У вас есть несохраненные изменения. Вы действительно хотите выйти?</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="1567"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1637"/>
         <source>About Markdown Editor</source>
         <translation>О редакторе Markdown</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="1568"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1638"/>
         <source>Markdown Editor.&lt;br /&gt;&lt;br /&gt;Version &lt;a href=&quot;https://github.com/igormironchik/markdown-tools/commit/%3&quot;&gt;%1&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;md4qt version %2&lt;br /&gt;&lt;br /&gt;Author - Igor Mironchik (&lt;a href=&quot;mailto:igor.mironchik@gmail.com&quot;&gt;igor.mironchik at gmail dot com&lt;/a&gt;).&lt;br /&gt;&lt;br /&gt;Copyright (c) 2026 Igor Mironchik.&lt;br /&gt;&lt;br /&gt;Licensed under GNU GPL 3.0.</source>
         <translation>Редактор Markdown.&lt;br /&gt;&lt;br /&gt;Версия &lt;a href=&quot;https://github.com/igormironchik/markdown-tools/commit/%3&quot;&gt;%1&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;md4qt версия %2&lt;br /&gt;&lt;br /&gt;Автор - Игорь Мирончик (&lt;a href=&quot;mailto:igor.mironchik@gmail.com&quot;&gt;igor.mironchik at gmail dot com&lt;/a&gt;).&lt;br /&gt;&lt;br /&gt;Copyright (c) 2026 Igor Mironchik.&lt;br /&gt;&lt;br /&gt;Лицензировано под GNU GPL 3.0.</translation>
     </message>
@@ -895,168 +910,178 @@
         <translation type="vanished">Markdown редактор.&lt;br /&gt;&lt;br /&gt;Версия &lt;a href=&quot;https://github.com/igormironchik/markdown-tools/commit/%3&quot;&gt;%1&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;md4qt версия %2&lt;br /&gt;&lt;br /&gt;Автор - Игорь Мирончик (&lt;a href=&quot;mailto:igor.mironchik@gmail.com&quot;&gt;igor.mironchik at gmail dot com&lt;/a&gt;).&lt;br /&gt;&lt;br /&gt;Copyright (c) 2025 Игорь Мирончик.&lt;br /&gt;&lt;br /&gt;Лицензировано под GNU GPL 3.0.</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="1598"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1668"/>
         <source>Heading</source>
         <translation>Заголовок</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="1600"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1670"/>
         <source>Text</source>
         <translation>Текст</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="1602"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1679"/>
         <source>Paragraph</source>
         <translation>Параграф</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="1604"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1683"/>
         <source>Line Break</source>
         <translation>Перенос строки</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="1606"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1685"/>
         <source>Blockquote</source>
         <translation>Цитата</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="1608"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1687"/>
         <source>List Item</source>
         <translation>Элемент списка</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="1610"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1689"/>
         <source>List</source>
         <translation>Список</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="1613"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1692"/>
         <source>Reference Link</source>
         <translation>Ссылка</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="1615"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1694"/>
         <source>Link</source>
         <translation>Ссылка</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="1619"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1698"/>
         <source>Image</source>
         <translation>Картинка</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="1621"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1700"/>
         <source>Code</source>
         <translation>Код</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="1623"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1702"/>
         <source>Table Cell</source>
         <translation>Ячейка таблицы</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="1625"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1704"/>
         <source>Table Row</source>
         <translation>Строка таблицы</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="1627"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1706"/>
         <source>Table</source>
         <translation>Таблица</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="1629"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1708"/>
         <source>Footnote Reference</source>
         <translation>Сноска</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="1631"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1710"/>
         <source>Footnote</source>
         <translation>Сноска</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="1633"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1712"/>
         <source>Document</source>
         <translation>Документ</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="1635"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1714"/>
         <source>Page Break</source>
         <translation>Перенос страницы</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="1637"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1716"/>
         <source>Anchor</source>
         <translation>Якорь</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="1639"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1718"/>
         <source>Horizontal Line</source>
         <translation>Горизонтальная линия</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="1641"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1720"/>
         <source>Raw HTML</source>
         <translation>Вставка HTML</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="1643"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1677"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1722"/>
         <source>LaTeX Math Expression</source>
         <translation>LaTeX математическое выражение</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="1646"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1321"/>
+        <source>Would you like to open auto saved content of this file?
+
+File: &quot;%1&quot;</source>
+        <translation>Вы хотите загрузить автоматически сохраненное содержимое этого файла?
+
+Файл: &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <location filename="../src/editor/mainwindow.cpp" line="1725"/>
         <source>YAML Header</source>
         <translation>YAML заголовок</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="1667"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1747"/>
         <source>%1 in %2</source>
         <translation>%1 в %2</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="1688"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1767"/>
         <source>Scroll Web Preview To</source>
         <translation>Прокрутить предпросмотр к</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="2146"/>
+        <location filename="../src/editor/mainwindow.cpp" line="2229"/>
         <source>&lt;b&gt;Line:&lt;/b&gt; %1, &lt;b&gt;Col:&lt;/b&gt; %2</source>
         <translation>&lt;b&gt;Строка:&lt;/b&gt; %1, &lt;b&gt;Колонка:&lt;/b&gt; %2</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="2203"/>
-        <location filename="../src/editor/mainwindow.cpp" line="2475"/>
+        <location filename="../src/editor/mainwindow.cpp" line="2286"/>
+        <location filename="../src/editor/mainwindow.cpp" line="2567"/>
         <source>You have unsaved changes. Please save document first.</source>
         <translation>У вас есть несохраненные изменения. Пожалуйста, сохраните документ.</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="2219"/>
+        <location filename="../src/editor/mainwindow.cpp" line="2302"/>
         <source>&amp;Navigation</source>
         <translation>Файл&amp;ы</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="2292"/>
+        <location filename="../src/editor/mainwindow.cpp" line="2375"/>
         <source>HTML preview is ready. Modifications in files will not update HTML preview till you save changes.</source>
         <translation>Предпросмотр HTML готов. Изменения в файлах не будут обновлять предпросмотр HTML, пока вы не сохраните изменения.</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="2304"/>
+        <location filename="../src/editor/mainwindow.cpp" line="2387"/>
         <source>This document doesn&apos;t have linked documents.</source>
         <translation>В этом документе нет других подключенных Markdown документов.</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="2596"/>
+        <location filename="../src/editor/mainwindow.cpp" line="2693"/>
         <source>%1[*] - Markdown Editor%2</source>
         <translation>%1[*] - Markdown редактор%2</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="2598"/>
+        <location filename="../src/editor/mainwindow.cpp" line="2695"/>
         <source> [Preview Mode]</source>
         <translation> [Режим просмотра]</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="2604"/>
+        <location filename="../src/editor/mainwindow.cpp" line="2701"/>
         <source>Show Only Current File...</source>
         <translation>Показать только текущий файл...</translation>
     </message>
@@ -1087,7 +1112,7 @@
 <context>
     <name>MdEditor::TocTreeView</name>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="308"/>
+        <location filename="../src/editor/mainwindow.cpp" line="309"/>
         <source>Scroll Web Preview To</source>
         <translation>Прокрутить предпросмотр к</translation>
     </message>
@@ -1108,22 +1133,22 @@
 <context>
     <name>MdEditor::WorkingDirectoryWidget</name>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="347"/>
+        <location filename="../src/editor/mainwindow.cpp" line="348"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="348"/>
+        <location filename="../src/editor/mainwindow.cpp" line="349"/>
         <source>Change Working Directory.</source>
         <translation>Изменить рабочую директорию.</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="352"/>
+        <location filename="../src/editor/mainwindow.cpp" line="353"/>
         <source>Use Working Directory.</source>
         <translation>Использовать рабочую директорию.</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="395"/>
+        <location filename="../src/editor/mainwindow.cpp" line="396"/>
         <source>&lt;b&gt;Working Directory:&lt;/b&gt; </source>
         <translation>&lt;b&gt;Рабочая директория:&lt;/b&gt; </translation>
     </message>
