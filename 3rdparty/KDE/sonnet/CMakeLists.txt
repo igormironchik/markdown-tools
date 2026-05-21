@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.29)
 set(KF_VERSION "6.25.0") # handled by release scripts
 project(Sonnet VERSION ${KF_VERSION})
 
+set(CMAKE_FIND_PACKAGE_PREFER_CONFIG TRUE)
+
 include(FeatureSummary)
 include(CMakeDependentOption)
 find_package(ECM 6.25.0  NO_MODULE)
