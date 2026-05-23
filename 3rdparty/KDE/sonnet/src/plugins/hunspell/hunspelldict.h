@@ -8,7 +8,7 @@
 #ifndef KSPELL_HUNSPELLDICT_H
 #define KSPELL_HUNSPELLDICT_H
 
-#include "hunspell/hunspell.hxx"
+#include "hunspell.hxx"
 #include "spellerplugin_p.h"
 
 #include <QStringDecoder>

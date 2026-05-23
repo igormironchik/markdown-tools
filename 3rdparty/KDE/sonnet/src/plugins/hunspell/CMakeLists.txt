@@ -23,7 +23,8 @@ message(STATUS "Using old hunspell API: ${USE_OLD_HUNSPELL_API}")
 
 configure_file(config-hunspell.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-hunspell.h)
 
-target_link_libraries(sonnet_hunspell PRIVATE KF6::SonnetCore hunspell::hunspell)
+target_include_directories(sonnet_hunspell SYSTEM PUBLIC ${HUNSPELL_INCLUDE_DIRS})
+target_link_libraries(sonnet_hunspell PRIVATE KF6::SonnetCore ${HUNSPELL_LIBRARIES})
 
 target_compile_definitions(sonnet_hunspell PRIVATE DEFINITIONS SONNET_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}")
 

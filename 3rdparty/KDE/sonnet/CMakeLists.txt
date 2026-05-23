@@ -3,15 +3,14 @@ cmake_minimum_required(VERSION 3.29)
 set(KF_VERSION "6.25.0") # handled by release scripts
 project(Sonnet VERSION ${KF_VERSION})
 
-set(CMAKE_FIND_PACKAGE_PREFER_CONFIG TRUE)
-
 include(FeatureSummary)
 include(CMakeDependentOption)
 find_package(ECM 6.25.0  NO_MODULE)
 set_package_properties(ECM PROPERTIES TYPE REQUIRED DESCRIPTION "Extra CMake Modules." URL "https://commits.kde.org/extra-cmake-modules")
 feature_summary(WHAT REQUIRED_PACKAGES_NOT_FOUND FATAL_ON_MISSING_REQUIRED_PACKAGES)
 
-list(APPEND CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake )
+
+set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake )
 
 include(KDEInstallDirs)
 include(KDEFrameworkCompilerSettings NO_POLICY_SCOPE)
