@@ -1,0 +1,144 @@
+# GN (Generate Ninja) syntax highlighting test file
+# SPDX-License-Identifier: MIT
+
+# Import a file
+import("//build/config/features.gni")
+
+# Declare build arguments
+declare_args() {
+  my_flag = true
+  my_count = 42
+  my_name = "default"
+}
+
+# Control flow
+if (my_flag) {
+  print("flag is set")
+} else {
+  assert(defined(my_name), "my_name must be set")
+}
+
+# Target functions
+executable("my_app") {
+  sources = [
+    "main.cc",
+    "app.cc",
+  ]
+  deps = [ ":my_lib" ]
+  if (current_os == "linux") {
+    libs = [ "pthread" ]
+  }
+}
+
+static_library("my_lib") {
+  sources = [ "lib.cc" ]
+  public_deps = [ "//base" ]
+}
+
+shared_library("my_shared") {
+  output_name = "shared"
+}
+
+source_set("my_sources") {
+  sources = [ "util.cc" ]
+}
+
+group("all") {
+  deps = [
+    ":my_app",
+    ":my_lib",
+  ]
+}
+
+action("generate_header") {
+  script = "//tools/gen.py"
+  outputs = [ "$target_gen_dir/generated.h" ]
+  args = [
+    rebase_path(target_gen_dir, root_build_dir),
+    "--output",
+    rebase_path("$target_out_dir/out.txt"),
+  ]
+}
+
+config("my_config") {
+  cflags = [ "-Wall" ]
+  defines = [ "USE_FEATURE=1" ]
+}
+
+# Builtin variables
+print(host_os)
+print(host_cpu)
+print(target_cpu)
+print(current_toolchain)
+print(default_toolchain)
+print(root_out_dir)
+print(root_gen_dir)
+print(root_build_dir)
+print(python_path)
+print(invoker)
+
+# String interpolation
+my_var = "world"
+greeting = "hello $my_var!"
+path = "prefix/${my_var}/suffix"
+
+# Escape sequences
+escaped = "tab\there\nnewline"
+dollar = "costs \$100"
+
+# Operators
+x = 1
+y = 2
+result = x + y
+x += 1
+x -= 1
+flag = true && false || !true
+cmp = x == y
+cmp2 = x != y
+lt = x < y
+gt = x > y
+le = x <= y
+ge = x >= y
+
+# Foreach loop
+items = [ "a", "b", "c" ]
+foreach(item, items) {
+  print(item)
+}
+
+# More builtin functions
+set_defaults("executable") {
+  configs = []
+}
+
+template("my_template") {
+  executable(target_name) {
+    forward_variables_from(invoker, "*")
+  }
+}
+
+toolchain("my_toolchain") {
+  tool("cc") {
+    command = "gcc {{source}} -o {{output}}"
+  }
+}
+
+# Various builtin functions
+files = read_file("//list.txt", "list lines")
+write_file("$root_build_dir/out.txt", files)
+info = get_label_info(":my_app", "dir")
+tgt_out = get_target_outputs(":generate_header")
+env_val = getenv("HOME")
+rebased = rebase_path("src/file.cc", root_build_dir)
+parts = string_split("a,b,c", ",")
+joined = string_join(",", parts)
+replaced = string_replace("hello", "l", "r")
+filtered = filter_include(sources, [ "*.cc" ])
+excluded = filter_exclude(sources, [ "*_test.cc" ])
+processed = process_file_template(sources, "{{source_dir}}/{{source_name_part}}.o")
+split = split_list(sources, 2)
+exec_result = exec_script("//script.py", [ "arg1" ])
+
+pool("link_pool") {
+  depth = 4
+}

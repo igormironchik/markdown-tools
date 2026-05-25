@@ -8,6 +8,12 @@
 // alert check, no word delimiter check at start of word, bug 397719
 #TODO
 
+import itertools
+from itertools import accumulate as A
+lazy import itertools
+lazy from itertools import accumulate as A
+lazy = 42
+
 a = 100_000
 b = 856_264.65
 c = 0x420_F52

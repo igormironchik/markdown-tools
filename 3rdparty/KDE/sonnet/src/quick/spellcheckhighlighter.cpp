@@ -104,14 +104,24 @@ public:
         // Danger red from our color scheme
         errorFormat.setForeground(spellColor);
         errorFormat.setUnderlineColor(spellColor);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 12, 0)
+        // Qt 6.12 has support for this underline style finally!
+        errorFormat.setUnderlineStyle(QTextCharFormat::SpellCheckUnderline);
+#else
         errorFormat.setUnderlineStyle(QTextCharFormat::SingleUnderline);
+#endif
 
         selectedErrorFormat.setForeground(spellColor);
         auto bg = spellColor;
         bg.setAlphaF(0.1);
         selectedErrorFormat.setBackground(bg);
         selectedErrorFormat.setUnderlineColor(spellColor);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 12, 0)
+        // Qt 6.12 has support for this underline style finally!
+        selectedErrorFormat.setUnderlineStyle(QTextCharFormat::SpellCheckUnderline);
+#else
         selectedErrorFormat.setUnderlineStyle(QTextCharFormat::SingleUnderline);
+#endif
 
         quoteFormat.setForeground(QColor{"#7f8c8d"});
     }

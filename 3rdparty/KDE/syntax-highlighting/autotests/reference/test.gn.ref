@@ -1,0 +1,144 @@
+<Comment># GN (Generate Ninja) syntax highlighting test file</Comment><br/>
+<Comment># SPDX-License-Identifier: MIT</Comment><br/>
+<Normal Text></Normal Text><br/>
+<Comment># Import a file</Comment><br/>
+<Builtin Function>import</Builtin Function><Normal Text>(</Normal Text><String>"//build/config/features.gni"</String><Normal Text>)</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Comment># Declare build arguments</Comment><br/>
+<Builtin Function>declare_args</Builtin Function><Normal Text>() {</Normal Text><br/>
+<Normal Text>  </Normal Text><Property>my_flag</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Boolean>true</Boolean><br/>
+<Normal Text>  </Normal Text><Property>my_count</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Integer>42</Integer><br/>
+<Normal Text>  </Normal Text><Property>my_name</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><String>"default"</String><br/>
+<Normal Text>}</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Comment># Control flow</Comment><br/>
+<Control Flow>if</Control Flow><Normal Text> (my_flag) {</Normal Text><br/>
+<Normal Text>  </Normal Text><Builtin Function>print</Builtin Function><Normal Text>(</Normal Text><String>"flag is set"</String><Normal Text>)</Normal Text><br/>
+<Normal Text>} </Normal Text><Control Flow>else</Control Flow><Normal Text> {</Normal Text><br/>
+<Normal Text>  </Normal Text><Builtin Function>assert</Builtin Function><Normal Text>(</Normal Text><Builtin Function>defined</Builtin Function><Normal Text>(my_name), </Normal Text><String>"my_name must be set"</String><Normal Text>)</Normal Text><br/>
+<Normal Text>}</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Comment># Target functions</Comment><br/>
+<Target Function>executable</Target Function><Normal Text>(</Normal Text><String>"my_app"</String><Normal Text>) {</Normal Text><br/>
+<Normal Text>  </Normal Text><Property>sources</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> [</Normal Text><br/>
+<Normal Text>    </Normal Text><String>"main.cc"</String><Normal Text>,</Normal Text><br/>
+<Normal Text>    </Normal Text><String>"app.cc"</String><Normal Text>,</Normal Text><br/>
+<Normal Text>  ]</Normal Text><br/>
+<Normal Text>  </Normal Text><Property>deps</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> [ </Normal Text><String>":my_lib"</String><Normal Text> ]</Normal Text><br/>
+<Normal Text>  </Normal Text><Control Flow>if</Control Flow><Normal Text> (</Normal Text><Builtin Variable>current_os</Builtin Variable><Normal Text> </Normal Text><Operator>==</Operator><Normal Text> </Normal Text><String>"linux"</String><Normal Text>) {</Normal Text><br/>
+<Normal Text>    </Normal Text><Property>libs</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> [ </Normal Text><String>"pthread"</String><Normal Text> ]</Normal Text><br/>
+<Normal Text>  }</Normal Text><br/>
+<Normal Text>}</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Target Function>static_library</Target Function><Normal Text>(</Normal Text><String>"my_lib"</String><Normal Text>) {</Normal Text><br/>
+<Normal Text>  </Normal Text><Property>sources</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> [ </Normal Text><String>"lib.cc"</String><Normal Text> ]</Normal Text><br/>
+<Normal Text>  </Normal Text><Property>public_deps</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> [ </Normal Text><String>"//base"</String><Normal Text> ]</Normal Text><br/>
+<Normal Text>}</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Target Function>shared_library</Target Function><Normal Text>(</Normal Text><String>"my_shared"</String><Normal Text>) {</Normal Text><br/>
+<Normal Text>  </Normal Text><Property>output_name</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><String>"shared"</String><br/>
+<Normal Text>}</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Target Function>source_set</Target Function><Normal Text>(</Normal Text><String>"my_sources"</String><Normal Text>) {</Normal Text><br/>
+<Normal Text>  </Normal Text><Property>sources</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> [ </Normal Text><String>"util.cc"</String><Normal Text> ]</Normal Text><br/>
+<Normal Text>}</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Target Function>group</Target Function><Normal Text>(</Normal Text><String>"all"</String><Normal Text>) {</Normal Text><br/>
+<Normal Text>  </Normal Text><Property>deps</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> [</Normal Text><br/>
+<Normal Text>    </Normal Text><String>":my_app"</String><Normal Text>,</Normal Text><br/>
+<Normal Text>    </Normal Text><String>":my_lib"</String><Normal Text>,</Normal Text><br/>
+<Normal Text>  ]</Normal Text><br/>
+<Normal Text>}</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Target Function>action</Target Function><Normal Text>(</Normal Text><String>"generate_header"</String><Normal Text>) {</Normal Text><br/>
+<Normal Text>  </Normal Text><Property>script</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><String>"//tools/gen.py"</String><br/>
+<Normal Text>  </Normal Text><Property>outputs</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> [ </Normal Text><String>"</String><Interpolation>$target_gen_dir</Interpolation><String>/generated.h"</String><Normal Text> ]</Normal Text><br/>
+<Normal Text>  </Normal Text><Property>args</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> [</Normal Text><br/>
+<Normal Text>    </Normal Text><Builtin Function>rebase_path</Builtin Function><Normal Text>(</Normal Text><Builtin Variable>target_gen_dir</Builtin Variable><Normal Text>, </Normal Text><Builtin Variable>root_build_dir</Builtin Variable><Normal Text>),</Normal Text><br/>
+<Normal Text>    </Normal Text><String>"--output"</String><Normal Text>,</Normal Text><br/>
+<Normal Text>    </Normal Text><Builtin Function>rebase_path</Builtin Function><Normal Text>(</Normal Text><String>"</String><Interpolation>$target_out_dir</Interpolation><String>/out.txt"</String><Normal Text>),</Normal Text><br/>
+<Normal Text>  ]</Normal Text><br/>
+<Normal Text>}</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Target Function>config</Target Function><Normal Text>(</Normal Text><String>"my_config"</String><Normal Text>) {</Normal Text><br/>
+<Normal Text>  </Normal Text><Property>cflags</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> [ </Normal Text><String>"-Wall"</String><Normal Text> ]</Normal Text><br/>
+<Normal Text>  </Normal Text><Property>defines</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> [ </Normal Text><String>"USE_FEATURE=1"</String><Normal Text> ]</Normal Text><br/>
+<Normal Text>}</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Comment># Builtin variables</Comment><br/>
+<Builtin Function>print</Builtin Function><Normal Text>(</Normal Text><Builtin Variable>host_os</Builtin Variable><Normal Text>)</Normal Text><br/>
+<Builtin Function>print</Builtin Function><Normal Text>(</Normal Text><Builtin Variable>host_cpu</Builtin Variable><Normal Text>)</Normal Text><br/>
+<Builtin Function>print</Builtin Function><Normal Text>(</Normal Text><Builtin Variable>target_cpu</Builtin Variable><Normal Text>)</Normal Text><br/>
+<Builtin Function>print</Builtin Function><Normal Text>(</Normal Text><Builtin Variable>current_toolchain</Builtin Variable><Normal Text>)</Normal Text><br/>
+<Builtin Function>print</Builtin Function><Normal Text>(</Normal Text><Builtin Variable>default_toolchain</Builtin Variable><Normal Text>)</Normal Text><br/>
+<Builtin Function>print</Builtin Function><Normal Text>(</Normal Text><Builtin Variable>root_out_dir</Builtin Variable><Normal Text>)</Normal Text><br/>
+<Builtin Function>print</Builtin Function><Normal Text>(</Normal Text><Builtin Variable>root_gen_dir</Builtin Variable><Normal Text>)</Normal Text><br/>
+<Builtin Function>print</Builtin Function><Normal Text>(</Normal Text><Builtin Variable>root_build_dir</Builtin Variable><Normal Text>)</Normal Text><br/>
+<Builtin Function>print</Builtin Function><Normal Text>(</Normal Text><Builtin Variable>python_path</Builtin Variable><Normal Text>)</Normal Text><br/>
+<Builtin Function>print</Builtin Function><Normal Text>(</Normal Text><Builtin Variable>invoker</Builtin Variable><Normal Text>)</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Comment># String interpolation</Comment><br/>
+<Property>my_var</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><String>"world"</String><br/>
+<Property>greeting</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><String>"hello </String><Interpolation>$my_var</Interpolation><String>!"</String><br/>
+<Property>path</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><String>"prefix/</String><Interpolation>${</Interpolation><Normal Text>my_var</Normal Text><Interpolation>}</Interpolation><String>/suffix"</String><br/>
+<Normal Text></Normal Text><br/>
+<Comment># Escape sequences</Comment><br/>
+<Property>escaped</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><String>"tab</String><Escape>\t</Escape><String>here</String><Escape>\n</Escape><String>newline"</String><br/>
+<Property>dollar</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><String>"costs </String><Escape>\$</Escape><String>100"</String><br/>
+<Normal Text></Normal Text><br/>
+<Comment># Operators</Comment><br/>
+<Property>x</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Integer>1</Integer><br/>
+<Property>y</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Integer>2</Integer><br/>
+<Property>result</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> x </Normal Text><Operator>+</Operator><Normal Text> y</Normal Text><br/>
+<Property>x</Property><Normal Text> </Normal Text><Operator>+=</Operator><Normal Text> </Normal Text><Integer>1</Integer><br/>
+<Property>x</Property><Normal Text> </Normal Text><Operator>-=</Operator><Normal Text> </Normal Text><Integer>1</Integer><br/>
+<Property>flag</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Boolean>true</Boolean><Normal Text> </Normal Text><Operator>&&</Operator><Normal Text> </Normal Text><Boolean>false</Boolean><Normal Text> </Normal Text><Operator>||</Operator><Normal Text> </Normal Text><Operator>!</Operator><Boolean>true</Boolean><br/>
+<Property>cmp</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> x </Normal Text><Operator>==</Operator><Normal Text> y</Normal Text><br/>
+<Property>cmp2</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> x </Normal Text><Operator>!=</Operator><Normal Text> y</Normal Text><br/>
+<Property>lt</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> x </Normal Text><Operator><</Operator><Normal Text> y</Normal Text><br/>
+<Property>gt</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> x </Normal Text><Operator>></Operator><Normal Text> y</Normal Text><br/>
+<Property>le</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> x </Normal Text><Operator><=</Operator><Normal Text> y</Normal Text><br/>
+<Property>ge</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> x </Normal Text><Operator>>=</Operator><Normal Text> y</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Comment># Foreach loop</Comment><br/>
+<Property>items</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> [ </Normal Text><String>"a"</String><Normal Text>, </Normal Text><String>"b"</String><Normal Text>, </Normal Text><String>"c"</String><Normal Text> ]</Normal Text><br/>
+<Control Flow>foreach</Control Flow><Normal Text>(item, items) {</Normal Text><br/>
+<Normal Text>  </Normal Text><Builtin Function>print</Builtin Function><Normal Text>(item)</Normal Text><br/>
+<Normal Text>}</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Comment># More builtin functions</Comment><br/>
+<Builtin Function>set_defaults</Builtin Function><Normal Text>(</Normal Text><String>"executable"</String><Normal Text>) {</Normal Text><br/>
+<Normal Text>  </Normal Text><Property>configs</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> []</Normal Text><br/>
+<Normal Text>}</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Builtin Function>template</Builtin Function><Normal Text>(</Normal Text><String>"my_template"</String><Normal Text>) {</Normal Text><br/>
+<Normal Text>  </Normal Text><Target Function>executable</Target Function><Normal Text>(</Normal Text><Builtin Variable>target_name</Builtin Variable><Normal Text>) {</Normal Text><br/>
+<Normal Text>    </Normal Text><Builtin Function>forward_variables_from</Builtin Function><Normal Text>(</Normal Text><Builtin Variable>invoker</Builtin Variable><Normal Text>, </Normal Text><String>"*"</String><Normal Text>)</Normal Text><br/>
+<Normal Text>  }</Normal Text><br/>
+<Normal Text>}</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Target Function>toolchain</Target Function><Normal Text>(</Normal Text><String>"my_toolchain"</String><Normal Text>) {</Normal Text><br/>
+<Normal Text>  </Normal Text><Builtin Function>tool</Builtin Function><Normal Text>(</Normal Text><String>"cc"</String><Normal Text>) {</Normal Text><br/>
+<Normal Text>    </Normal Text><Property>command</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><String>"gcc {{source}} -o {{output}}"</String><br/>
+<Normal Text>  }</Normal Text><br/>
+<Normal Text>}</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Comment># Various builtin functions</Comment><br/>
+<Property>files</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Builtin Function>read_file</Builtin Function><Normal Text>(</Normal Text><String>"//list.txt"</String><Normal Text>, </Normal Text><String>"list lines"</String><Normal Text>)</Normal Text><br/>
+<Builtin Function>write_file</Builtin Function><Normal Text>(</Normal Text><String>"</String><Interpolation>$root_build_dir</Interpolation><String>/out.txt"</String><Normal Text>, files)</Normal Text><br/>
+<Property>info</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Builtin Function>get_label_info</Builtin Function><Normal Text>(</Normal Text><String>":my_app"</String><Normal Text>, </Normal Text><String>"dir"</String><Normal Text>)</Normal Text><br/>
+<Property>tgt_out</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Builtin Function>get_target_outputs</Builtin Function><Normal Text>(</Normal Text><String>":generate_header"</String><Normal Text>)</Normal Text><br/>
+<Property>env_val</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Builtin Function>getenv</Builtin Function><Normal Text>(</Normal Text><String>"HOME"</String><Normal Text>)</Normal Text><br/>
+<Property>rebased</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Builtin Function>rebase_path</Builtin Function><Normal Text>(</Normal Text><String>"src/file.cc"</String><Normal Text>, </Normal Text><Builtin Variable>root_build_dir</Builtin Variable><Normal Text>)</Normal Text><br/>
+<Property>parts</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Builtin Function>string_split</Builtin Function><Normal Text>(</Normal Text><String>"a,b,c"</String><Normal Text>, </Normal Text><String>","</String><Normal Text>)</Normal Text><br/>
+<Property>joined</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Builtin Function>string_join</Builtin Function><Normal Text>(</Normal Text><String>","</String><Normal Text>, parts)</Normal Text><br/>
+<Property>replaced</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Builtin Function>string_replace</Builtin Function><Normal Text>(</Normal Text><String>"hello"</String><Normal Text>, </Normal Text><String>"l"</String><Normal Text>, </Normal Text><String>"r"</String><Normal Text>)</Normal Text><br/>
+<Property>filtered</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Builtin Function>filter_include</Builtin Function><Normal Text>(sources, [ </Normal Text><String>"*.cc"</String><Normal Text> ])</Normal Text><br/>
+<Property>excluded</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Builtin Function>filter_exclude</Builtin Function><Normal Text>(sources, [ </Normal Text><String>"*_test.cc"</String><Normal Text> ])</Normal Text><br/>
+<Property>processed</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Builtin Function>process_file_template</Builtin Function><Normal Text>(sources, </Normal Text><String>"{{source_dir}}/{{source_name_part}}.o"</String><Normal Text>)</Normal Text><br/>
+<Property>split</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Builtin Function>split_list</Builtin Function><Normal Text>(sources, </Normal Text><Integer>2</Integer><Normal Text>)</Normal Text><br/>
+<Property>exec_result</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Builtin Function>exec_script</Builtin Function><Normal Text>(</Normal Text><String>"//script.py"</String><Normal Text>, [ </Normal Text><String>"arg1"</String><Normal Text> ])</Normal Text><br/>
+<Normal Text></Normal Text><br/>
+<Target Function>pool</Target Function><Normal Text>(</Normal Text><String>"link_pool"</String><Normal Text>) {</Normal Text><br/>
+<Normal Text>  </Normal Text><Property>depth</Property><Normal Text> </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Integer>4</Integer><br/>
+<Normal Text>}</Normal Text><br/>

@@ -7,12 +7,13 @@
 # Thiago Masato Costa Sueto <herzenschein@gmail.com>, 2021.
 # SPDX-FileCopyrightText: 2023, 2025 Geraldo Simiao <geraldosimiao@fedoraproject.org>
 # SPDX-FileCopyrightText: 2025, 2026 Marcus Gama <marcus.gama@gmail.com>
+# SPDX-FileCopyrightText: 2026 Guilherme Marçal Silva <guimarcalsilva@gmail.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: syntaxhighlighting5_qt\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"PO-Revision-Date: 2026-03-22 06:57-0300\n"
-"Last-Translator: Marcus Gama <marcus.gama@gmail.com>\n"
+"PO-Revision-Date: 2026-04-17 02:56-0300\n"
+"Last-Translator: Guilherme Marçal Silva <guimarcalsilva@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <kde-i18n-pt_BR@kde.org>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
@@ -485,6 +486,10 @@ msgstr "GNU Assembler"
 msgctxt "Language|"
 msgid "Gnuplot"
 msgstr "Gnuplot"
+
+msgctxt "Language|"
+msgid "GN"
+msgstr "GN"
 
 msgctxt "Language|"
 msgid "Go"
@@ -1235,6 +1240,10 @@ msgid "SQL"
 msgstr "SQL"
 
 msgctxt "Language|"
+msgid "IATA SSIM"
+msgstr "IATA SSIM"
+
+msgctxt "Language|"
 msgid "Stan"
 msgstr "Stan"
 
@@ -1245,6 +1254,10 @@ msgstr "Starlark"
 msgctxt "Language|"
 msgid "Stata"
 msgstr "Stata"
+
+msgctxt "Language|"
+msgid "STEP"
+msgstr "STEP"
 
 msgctxt "Language|"
 msgid "STL"

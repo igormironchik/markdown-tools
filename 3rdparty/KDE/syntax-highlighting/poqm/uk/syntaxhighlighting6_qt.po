@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: syntaxhighlighting5_qt\n"
-"PO-Revision-Date: 2026-03-22 23:03+0200\n"
+"PO-Revision-Date: 2026-04-17 08:09+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -483,6 +483,10 @@ msgstr "Асемблер GNU"
 msgctxt "Language|"
 msgid "Gnuplot"
 msgstr "Gnuplot"
+
+msgctxt "Language|"
+msgid "GN"
+msgstr "GN"
 
 msgctxt "Language|"
 msgid "Go"
@@ -1233,6 +1237,10 @@ msgid "SQL"
 msgstr "SQL"
 
 msgctxt "Language|"
+msgid "IATA SSIM"
+msgstr "IATA SSIM"
+
+msgctxt "Language|"
 msgid "Stan"
 msgstr "Stan"
 
@@ -1243,6 +1251,10 @@ msgstr "Starlark"
 msgctxt "Language|"
 msgid "Stata"
 msgstr "Stata"
+
+msgctxt "Language|"
+msgid "STEP"
+msgstr "STEP"
 
 msgctxt "Language|"
 msgid "STL"

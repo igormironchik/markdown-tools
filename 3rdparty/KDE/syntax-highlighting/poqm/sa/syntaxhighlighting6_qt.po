@@ -490,6 +490,10 @@ msgid "Gnuplot"
 msgstr "ग्नुप्लॉट्"
 
 msgctxt "Language|"
+msgid "GN"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Go"
 msgstr "गच्छ"
 
@@ -1250,6 +1254,10 @@ msgid "SQL"
 msgstr "SQL"
 
 msgctxt "Language|"
+msgid "IATA SSIM"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Stan"
 msgstr "स्तन्"
 
@@ -1260,6 +1268,10 @@ msgstr ""
 msgctxt "Language|"
 msgid "Stata"
 msgstr "आसीत्‌"
+
+msgctxt "Language|"
+msgid "STEP"
+msgstr ""
 
 msgctxt "Language|"
 msgid "STL"

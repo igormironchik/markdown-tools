@@ -21,8 +21,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 23.08.3\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Generator: Lokalize 23.08.3\n"
 "X-Qt-Contexts: true\n"
 
 #: core/loader.cpp:177
@@ -144,17 +144,17 @@ msgctxt "Sonnet::Loader|dictionary name; %1 = language name, %2 = country name"
 msgid "%1 (%2)"
 msgstr "%1 (%2)"
 
-#: quick/spellcheckhighlighter.cpp:253 quick/spellcheckhighlighter.cpp:277
+#: quick/spellcheckhighlighter.cpp:263 quick/spellcheckhighlighter.cpp:287
 msgctxt "SpellcheckHighlighter|"
 msgid "As-you-type spell checking enabled."
 msgstr "Kontrola pravopisu počas písania zapnutá."
 
-#: quick/spellcheckhighlighter.cpp:257
+#: quick/spellcheckhighlighter.cpp:267
 msgctxt "SpellcheckHighlighter|"
 msgid "Too many misspelled words. As-you-type spell checking disabled."
 msgstr "Príliš veľa chybných slov. Kontrola pravopisu počas písania vypnutá."
 
-#: quick/spellcheckhighlighter.cpp:279
+#: quick/spellcheckhighlighter.cpp:289
 msgctxt "SpellcheckHighlighter|"
 msgid "As-you-type spell checking disabled."
 msgstr "Kontrola pravopisu počas písania vypnutá."
@@ -175,9 +175,6 @@ msgid "Default language:"
 msgstr "Štandardný jazyk:"
 
 #: ui/configui.ui:55
-#, fuzzy
-#| msgctxt "SonnetConfigUI|"
-#| msgid "Choose your preferred languages"
 msgctxt "SonnetConfigUI|"
 msgid "Preferred Languages"
 msgstr "Vyberte si preferované jazyky"
@@ -218,9 +215,6 @@ msgid "S&kip run-together words"
 msgstr "Pres&kočiť spojené slová"
 
 #: ui/configui.ui:151
-#, fuzzy
-#| msgctxt "SonnetConfigUI|"
-#| msgid "Ignored Words:"
 msgctxt "SonnetConfigUI|"
 msgid "Ignored Words"
 msgstr "Ignorované slová:"
@@ -241,9 +235,6 @@ msgid "Check Spelling"
 msgstr "Kontrola pravopisu"
 
 #: ui/dialog.cpp:193
-#, fuzzy
-#| msgctxt "Sonnet::Dialog|progress label"
-#| msgid "Spell checking in progress..."
 msgctxt "Sonnet::Dialog|@info:progress"
 msgid "Spell checking in progress…"
 msgstr "Prebieha kontrola pravopisu..."

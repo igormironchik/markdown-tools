@@ -1,0 +1,144 @@
+# GN (Generate Ninja) syntax highlighting test file
+# SPDX-License-Identifier: MIT
+
+# Import a file
+import("//build/config/features.gni")
+
+# Declare build arguments
+declare_args() <beginfold id='1'>{</beginfold id='1'>
+  my_flag = true
+  my_count = 42
+  my_name = "default"
+<endfold id='1'>}</endfold id='1'>
+
+# Control flow
+if (my_flag) <beginfold id='1'>{</beginfold id='1'>
+  print("flag is set")
+<endfold id='1'>}</endfold id='1'> else <beginfold id='1'>{</beginfold id='1'>
+  assert(defined(my_name), "my_name must be set")
+<endfold id='1'>}</endfold id='1'>
+
+# Target functions
+executable("my_app") <beginfold id='1'>{</beginfold id='1'>
+  sources = <beginfold id='2'>[</beginfold id='2'>
+    "main.cc",
+    "app.cc",
+  <endfold id='2'>]</endfold id='2'>
+  deps = <beginfold id='2'>[</beginfold id='2'> ":my_lib" <endfold id='2'>]</endfold id='2'>
+  if (current_os == "linux") <beginfold id='1'>{</beginfold id='1'>
+    libs = <beginfold id='2'>[</beginfold id='2'> "pthread" <endfold id='2'>]</endfold id='2'>
+  <endfold id='1'>}</endfold id='1'>
+<endfold id='1'>}</endfold id='1'>
+
+static_library("my_lib") <beginfold id='1'>{</beginfold id='1'>
+  sources = <beginfold id='2'>[</beginfold id='2'> "lib.cc" <endfold id='2'>]</endfold id='2'>
+  public_deps = <beginfold id='2'>[</beginfold id='2'> "//base" <endfold id='2'>]</endfold id='2'>
+<endfold id='1'>}</endfold id='1'>
+
+shared_library("my_shared") <beginfold id='1'>{</beginfold id='1'>
+  output_name = "shared"
+<endfold id='1'>}</endfold id='1'>
+
+source_set("my_sources") <beginfold id='1'>{</beginfold id='1'>
+  sources = <beginfold id='2'>[</beginfold id='2'> "util.cc" <endfold id='2'>]</endfold id='2'>
+<endfold id='1'>}</endfold id='1'>
+
+group("all") <beginfold id='1'>{</beginfold id='1'>
+  deps = <beginfold id='2'>[</beginfold id='2'>
+    ":my_app",
+    ":my_lib",
+  <endfold id='2'>]</endfold id='2'>
+<endfold id='1'>}</endfold id='1'>
+
+action("generate_header") <beginfold id='1'>{</beginfold id='1'>
+  script = "//tools/gen.py"
+  outputs = <beginfold id='2'>[</beginfold id='2'> "$target_gen_dir/generated.h" <endfold id='2'>]</endfold id='2'>
+  args = <beginfold id='2'>[</beginfold id='2'>
+    rebase_path(target_gen_dir, root_build_dir),
+    "--output",
+    rebase_path("$target_out_dir/out.txt"),
+  <endfold id='2'>]</endfold id='2'>
+<endfold id='1'>}</endfold id='1'>
+
+config("my_config") <beginfold id='1'>{</beginfold id='1'>
+  cflags = <beginfold id='2'>[</beginfold id='2'> "-Wall" <endfold id='2'>]</endfold id='2'>
+  defines = <beginfold id='2'>[</beginfold id='2'> "USE_FEATURE=1" <endfold id='2'>]</endfold id='2'>
+<endfold id='1'>}</endfold id='1'>
+
+# Builtin variables
+print(host_os)
+print(host_cpu)
+print(target_cpu)
+print(current_toolchain)
+print(default_toolchain)
+print(root_out_dir)
+print(root_gen_dir)
+print(root_build_dir)
+print(python_path)
+print(invoker)
+
+# String interpolation
+my_var = "world"
+greeting = "hello $my_var!"
+path = "prefix/${my_var}/suffix"
+
+# Escape sequences
+escaped = "tab\there\nnewline"
+dollar = "costs \$100"
+
+# Operators
+x = 1
+y = 2
+result = x + y
+x += 1
+x -= 1
+flag = true && false || !true
+cmp = x == y
+cmp2 = x != y
+lt = x < y
+gt = x > y
+le = x <= y
+ge = x >= y
+
+# Foreach loop
+items = <beginfold id='2'>[</beginfold id='2'> "a", "b", "c" <endfold id='2'>]</endfold id='2'>
+foreach(item, items) <beginfold id='1'>{</beginfold id='1'>
+  print(item)
+<endfold id='1'>}</endfold id='1'>
+
+# More builtin functions
+set_defaults("executable") <beginfold id='1'>{</beginfold id='1'>
+  configs = <beginfold id='2'>[</beginfold id='2'><endfold id='2'>]</endfold id='2'>
+<endfold id='1'>}</endfold id='1'>
+
+template("my_template") <beginfold id='1'>{</beginfold id='1'>
+  executable(target_name) <beginfold id='1'>{</beginfold id='1'>
+    forward_variables_from(invoker, "*")
+  <endfold id='1'>}</endfold id='1'>
+<endfold id='1'>}</endfold id='1'>
+
+toolchain("my_toolchain") <beginfold id='1'>{</beginfold id='1'>
+  tool("cc") <beginfold id='1'>{</beginfold id='1'>
+    command = "gcc {{source}} -o {{output}}"
+  <endfold id='1'>}</endfold id='1'>
+<endfold id='1'>}</endfold id='1'>
+
+# Various builtin functions
+files = read_file("//list.txt", "list lines")
+write_file("$root_build_dir/out.txt", files)
+info = get_label_info(":my_app", "dir")
+tgt_out = get_target_outputs(":generate_header")
+env_val = getenv("HOME")
+rebased = rebase_path("src/file.cc", root_build_dir)
+parts = string_split("a,b,c", ",")
+joined = string_join(",", parts)
+replaced = string_replace("hello", "l", "r")
+filtered = filter_include(sources, <beginfold id='2'>[</beginfold id='2'> "*.cc" <endfold id='2'>]</endfold id='2'>)
+excluded = filter_exclude(sources, <beginfold id='2'>[</beginfold id='2'> "*_test.cc" <endfold id='2'>]</endfold id='2'>)
+processed = process_file_template(sources, "{{source_dir}}/{{source_name_part}}.o")
+split = split_list(sources, 2)
+exec_result = exec_script("//script.py", <beginfold id='2'>[</beginfold id='2'> "arg1" <endfold id='2'>]</endfold id='2'>)
+
+pool("link_pool") <beginfold id='1'>{</beginfold id='1'>
+  depth = 4
+<endfold id='1'>}</endfold id='1'>

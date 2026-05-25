@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2026-03-22 15:55+0100\n"
+"PO-Revision-Date: 2026-04-17 14:23+0200\n"
 "Last-Translator: Freek de Kruijf <freekdekruijf@kde.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -477,6 +477,10 @@ msgstr "GNU Assembler"
 msgctxt "Language|"
 msgid "Gnuplot"
 msgstr "Gnuplot"
+
+msgctxt "Language|"
+msgid "GN"
+msgstr "GN"
 
 msgctxt "Language|"
 msgid "Go"
@@ -1227,6 +1231,10 @@ msgid "SQL"
 msgstr "SQL"
 
 msgctxt "Language|"
+msgid "IATA SSIM"
+msgstr "IATA SSIM"
+
+msgctxt "Language|"
 msgid "Stan"
 msgstr "Stan"
 
@@ -1237,6 +1245,10 @@ msgstr "Starlark"
 msgctxt "Language|"
 msgid "Stata"
 msgstr "Stata"
+
+msgctxt "Language|"
+msgid "STEP"
+msgstr "STAP"
 
 msgctxt "Language|"
 msgid "STL"

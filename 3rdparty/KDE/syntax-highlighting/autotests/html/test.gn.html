@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>test.gn</title>
+<meta name="generator" content="KF5::SyntaxHighlighting - Definition (GN) - Theme (Breeze Light)"/>
+</head><body style="background-color:#ffffff;color:#1f1c1b"><pre>
+<span style="color:#898887"># GN (Generate Ninja) syntax highlighting test file</span>
+<span style="color:#898887"># SPDX-License-Identifier: MIT</span>
+
+<span style="color:#898887"># Import a file</span>
+<span style="color:#644a9b;font-weight:bold">import</span>(<span style="color:#bf0303">"//build/config/features.gni"</span>)
+
+<span style="color:#898887"># Declare build arguments</span>
+<span style="color:#644a9b;font-weight:bold">declare_args</span>() {
+  <span style="color:#0057ae">my_flag</span> <span style="color:#ca60ca">=</span> <span style="color:#aa5500">true</span>
+  <span style="color:#0057ae">my_count</span> <span style="color:#ca60ca">=</span> <span style="color:#b08000">42</span>
+  <span style="color:#0057ae">my_name</span> <span style="color:#ca60ca">=</span> <span style="color:#bf0303">"default"</span>
+}
+
+<span style="color:#898887"># Control flow</span>
+<span style="font-weight:bold">if</span> (my_flag) {
+  <span style="color:#644a9b;font-weight:bold">print</span>(<span style="color:#bf0303">"flag is set"</span>)
+} <span style="font-weight:bold">else</span> {
+  <span style="color:#644a9b;font-weight:bold">assert</span>(<span style="color:#644a9b;font-weight:bold">defined</span>(my_name), <span style="color:#bf0303">"my_name must be set"</span>)
+}
+
+<span style="color:#898887"># Target functions</span>
+<span style="color:#644a9b">executable</span>(<span style="color:#bf0303">"my_app"</span>) {
+  <span style="color:#0057ae">sources</span> <span style="color:#ca60ca">=</span> [
+    <span style="color:#bf0303">"main.cc"</span>,
+    <span style="color:#bf0303">"app.cc"</span>,
+  ]
+  <span style="color:#0057ae">deps</span> <span style="color:#ca60ca">=</span> [ <span style="color:#bf0303">":my_lib"</span> ]
+  <span style="font-weight:bold">if</span> (<span style="color:#0057ae">current_os</span> <span style="color:#ca60ca">==</span> <span style="color:#bf0303">"linux"</span>) {
+    <span style="color:#0057ae">libs</span> <span style="color:#ca60ca">=</span> [ <span style="color:#bf0303">"pthread"</span> ]
+  }
+}
+
+<span style="color:#644a9b">static_library</span>(<span style="color:#bf0303">"my_lib"</span>) {
+  <span style="color:#0057ae">sources</span> <span style="color:#ca60ca">=</span> [ <span style="color:#bf0303">"lib.cc"</span> ]
+  <span style="color:#0057ae">public_deps</span> <span style="color:#ca60ca">=</span> [ <span style="color:#bf0303">"//base"</span> ]
+}
+
+<span style="color:#644a9b">shared_library</span>(<span style="color:#bf0303">"my_shared"</span>) {
+  <span style="color:#0057ae">output_name</span> <span style="color:#ca60ca">=</span> <span style="color:#bf0303">"shared"</span>
+}
+
+<span style="color:#644a9b">source_set</span>(<span style="color:#bf0303">"my_sources"</span>) {
+  <span style="color:#0057ae">sources</span> <span style="color:#ca60ca">=</span> [ <span style="color:#bf0303">"util.cc"</span> ]
+}
+
+<span style="color:#644a9b">group</span>(<span style="color:#bf0303">"all"</span>) {
+  <span style="color:#0057ae">deps</span> <span style="color:#ca60ca">=</span> [
+    <span style="color:#bf0303">":my_app"</span>,
+    <span style="color:#bf0303">":my_lib"</span>,
+  ]
+}
+
+<span style="color:#644a9b">action</span>(<span style="color:#bf0303">"generate_header"</span>) {
+  <span style="color:#0057ae">script</span> <span style="color:#ca60ca">=</span> <span style="color:#bf0303">"//tools/gen.py"</span>
+  <span style="color:#0057ae">outputs</span> <span style="color:#ca60ca">=</span> [ <span style="color:#bf0303">"</span><span style="color:#ff5500">$target_gen_dir</span><span style="color:#bf0303">/generated.h"</span> ]
+  <span style="color:#0057ae">args</span> <span style="color:#ca60ca">=</span> [
+    <span style="color:#644a9b;font-weight:bold">rebase_path</span>(<span style="color:#0057ae">target_gen_dir</span>, <span style="color:#0057ae">root_build_dir</span>),
+    <span style="color:#bf0303">"--output"</span>,
+    <span style="color:#644a9b;font-weight:bold">rebase_path</span>(<span style="color:#bf0303">"</span><span style="color:#ff5500">$target_out_dir</span><span style="color:#bf0303">/out.txt"</span>),
+  ]
+}
+
+<span style="color:#644a9b">config</span>(<span style="color:#bf0303">"my_config"</span>) {
+  <span style="color:#0057ae">cflags</span> <span style="color:#ca60ca">=</span> [ <span style="color:#bf0303">"-Wall"</span> ]
+  <span style="color:#0057ae">defines</span> <span style="color:#ca60ca">=</span> [ <span style="color:#bf0303">"USE_FEATURE=1"</span> ]
+}
+
+<span style="color:#898887"># Builtin variables</span>
+<span style="color:#644a9b;font-weight:bold">print</span>(<span style="color:#0057ae">host_os</span>)
+<span style="color:#644a9b;font-weight:bold">print</span>(<span style="color:#0057ae">host_cpu</span>)
+<span style="color:#644a9b;font-weight:bold">print</span>(<span style="color:#0057ae">target_cpu</span>)
+<span style="color:#644a9b;font-weight:bold">print</span>(<span style="color:#0057ae">current_toolchain</span>)
+<span style="color:#644a9b;font-weight:bold">print</span>(<span style="color:#0057ae">default_toolchain</span>)
+<span style="color:#644a9b;font-weight:bold">print</span>(<span style="color:#0057ae">root_out_dir</span>)
+<span style="color:#644a9b;font-weight:bold">print</span>(<span style="color:#0057ae">root_gen_dir</span>)
+<span style="color:#644a9b;font-weight:bold">print</span>(<span style="color:#0057ae">root_build_dir</span>)
+<span style="color:#644a9b;font-weight:bold">print</span>(<span style="color:#0057ae">python_path</span>)
+<span style="color:#644a9b;font-weight:bold">print</span>(<span style="color:#0057ae">invoker</span>)
+
+<span style="color:#898887"># String interpolation</span>
+<span style="color:#0057ae">my_var</span> <span style="color:#ca60ca">=</span> <span style="color:#bf0303">"world"</span>
+<span style="color:#0057ae">greeting</span> <span style="color:#ca60ca">=</span> <span style="color:#bf0303">"hello </span><span style="color:#ff5500">$my_var</span><span style="color:#bf0303">!"</span>
+<span style="color:#0057ae">path</span> <span style="color:#ca60ca">=</span> <span style="color:#bf0303">"prefix/</span><span style="color:#ff5500">${</span>my_var<span style="color:#ff5500">}</span><span style="color:#bf0303">/suffix"</span>
+
+<span style="color:#898887"># Escape sequences</span>
+<span style="color:#0057ae">escaped</span> <span style="color:#ca60ca">=</span> <span style="color:#bf0303">"tab</span><span style="color:#3daee9">\t</span><span style="color:#bf0303">here</span><span style="color:#3daee9">\n</span><span style="color:#bf0303">newline"</span>
+<span style="color:#0057ae">dollar</span> <span style="color:#ca60ca">=</span> <span style="color:#bf0303">"costs </span><span style="color:#3daee9">\$</span><span style="color:#bf0303">100"</span>
+
+<span style="color:#898887"># Operators</span>
+<span style="color:#0057ae">x</span> <span style="color:#ca60ca">=</span> <span style="color:#b08000">1</span>
+<span style="color:#0057ae">y</span> <span style="color:#ca60ca">=</span> <span style="color:#b08000">2</span>
+<span style="color:#0057ae">result</span> <span style="color:#ca60ca">=</span> x <span style="color:#ca60ca">+</span> y
+<span style="color:#0057ae">x</span> <span style="color:#ca60ca">+=</span> <span style="color:#b08000">1</span>
+<span style="color:#0057ae">x</span> <span style="color:#ca60ca">-=</span> <span style="color:#b08000">1</span>
+<span style="color:#0057ae">flag</span> <span style="color:#ca60ca">=</span> <span style="color:#aa5500">true</span> <span style="color:#ca60ca">&amp;&amp;</span> <span style="color:#aa5500">false</span> <span style="color:#ca60ca">||</span> <span style="color:#ca60ca">!</span><span style="color:#aa5500">true</span>
+<span style="color:#0057ae">cmp</span> <span style="color:#ca60ca">=</span> x <span style="color:#ca60ca">==</span> y
+<span style="color:#0057ae">cmp2</span> <span style="color:#ca60ca">=</span> x <span style="color:#ca60ca">!=</span> y
+<span style="color:#0057ae">lt</span> <span style="color:#ca60ca">=</span> x <span style="color:#ca60ca">&lt;</span> y
+<span style="color:#0057ae">gt</span> <span style="color:#ca60ca">=</span> x <span style="color:#ca60ca">></span> y
+<span style="color:#0057ae">le</span> <span style="color:#ca60ca">=</span> x <span style="color:#ca60ca">&lt;=</span> y
+<span style="color:#0057ae">ge</span> <span style="color:#ca60ca">=</span> x <span style="color:#ca60ca">>=</span> y
+
+<span style="color:#898887"># Foreach loop</span>
+<span style="color:#0057ae">items</span> <span style="color:#ca60ca">=</span> [ <span style="color:#bf0303">"a"</span>, <span style="color:#bf0303">"b"</span>, <span style="color:#bf0303">"c"</span> ]
+<span style="font-weight:bold">foreach</span>(item, items) {
+  <span style="color:#644a9b;font-weight:bold">print</span>(item)
+}
+
+<span style="color:#898887"># More builtin functions</span>
+<span style="color:#644a9b;font-weight:bold">set_defaults</span>(<span style="color:#bf0303">"executable"</span>) {
+  <span style="color:#0057ae">configs</span> <span style="color:#ca60ca">=</span> []
+}
+
+<span style="color:#644a9b;font-weight:bold">template</span>(<span style="color:#bf0303">"my_template"</span>) {
+  <span style="color:#644a9b">executable</span>(<span style="color:#0057ae">target_name</span>) {
+    <span style="color:#644a9b;font-weight:bold">forward_variables_from</span>(<span style="color:#0057ae">invoker</span>, <span style="color:#bf0303">"*"</span>)
+  }
+}
+
+<span style="color:#644a9b">toolchain</span>(<span style="color:#bf0303">"my_toolchain"</span>) {
+  <span style="color:#644a9b;font-weight:bold">tool</span>(<span style="color:#bf0303">"cc"</span>) {
+    <span style="color:#0057ae">command</span> <span style="color:#ca60ca">=</span> <span style="color:#bf0303">"gcc {{source}} -o {{output}}"</span>
+  }
+}
+
+<span style="color:#898887"># Various builtin functions</span>
+<span style="color:#0057ae">files</span> <span style="color:#ca60ca">=</span> <span style="color:#644a9b;font-weight:bold">read_file</span>(<span style="color:#bf0303">"//list.txt"</span>, <span style="color:#bf0303">"list lines"</span>)
+<span style="color:#644a9b;font-weight:bold">write_file</span>(<span style="color:#bf0303">"</span><span style="color:#ff5500">$root_build_dir</span><span style="color:#bf0303">/out.txt"</span>, files)
+<span style="color:#0057ae">info</span> <span style="color:#ca60ca">=</span> <span style="color:#644a9b;font-weight:bold">get_label_info</span>(<span style="color:#bf0303">":my_app"</span>, <span style="color:#bf0303">"dir"</span>)
+<span style="color:#0057ae">tgt_out</span> <span style="color:#ca60ca">=</span> <span style="color:#644a9b;font-weight:bold">get_target_outputs</span>(<span style="color:#bf0303">":generate_header"</span>)
+<span style="color:#0057ae">env_val</span> <span style="color:#ca60ca">=</span> <span style="color:#644a9b;font-weight:bold">getenv</span>(<span style="color:#bf0303">"HOME"</span>)
+<span style="color:#0057ae">rebased</span> <span style="color:#ca60ca">=</span> <span style="color:#644a9b;font-weight:bold">rebase_path</span>(<span style="color:#bf0303">"src/file.cc"</span>, <span style="color:#0057ae">root_build_dir</span>)
+<span style="color:#0057ae">parts</span> <span style="color:#ca60ca">=</span> <span style="color:#644a9b;font-weight:bold">string_split</span>(<span style="color:#bf0303">"a,b,c"</span>, <span style="color:#bf0303">","</span>)
+<span style="color:#0057ae">joined</span> <span style="color:#ca60ca">=</span> <span style="color:#644a9b;font-weight:bold">string_join</span>(<span style="color:#bf0303">","</span>, parts)
+<span style="color:#0057ae">replaced</span> <span style="color:#ca60ca">=</span> <span style="color:#644a9b;font-weight:bold">string_replace</span>(<span style="color:#bf0303">"hello"</span>, <span style="color:#bf0303">"l"</span>, <span style="color:#bf0303">"r"</span>)
+<span style="color:#0057ae">filtered</span> <span style="color:#ca60ca">=</span> <span style="color:#644a9b;font-weight:bold">filter_include</span>(sources, [ <span style="color:#bf0303">"*.cc"</span> ])
+<span style="color:#0057ae">excluded</span> <span style="color:#ca60ca">=</span> <span style="color:#644a9b;font-weight:bold">filter_exclude</span>(sources, [ <span style="color:#bf0303">"*_test.cc"</span> ])
+<span style="color:#0057ae">processed</span> <span style="color:#ca60ca">=</span> <span style="color:#644a9b;font-weight:bold">process_file_template</span>(sources, <span style="color:#bf0303">"{{source_dir}}/{{source_name_part}}.o"</span>)
+<span style="color:#0057ae">split</span> <span style="color:#ca60ca">=</span> <span style="color:#644a9b;font-weight:bold">split_list</span>(sources, <span style="color:#b08000">2</span>)
+<span style="color:#0057ae">exec_result</span> <span style="color:#ca60ca">=</span> <span style="color:#644a9b;font-weight:bold">exec_script</span>(<span style="color:#bf0303">"//script.py"</span>, [ <span style="color:#bf0303">"arg1"</span> ])
+
+<span style="color:#644a9b">pool</span>(<span style="color:#bf0303">"link_pool"</span>) {
+  <span style="color:#0057ae">depth</span> <span style="color:#ca60ca">=</span> <span style="color:#b08000">4</span>
+}
+</pre></body></html>

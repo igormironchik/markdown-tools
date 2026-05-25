@@ -8,6 +8,12 @@
 <Operator>//</Operator><Normal Text> alert check, no word delimiter check at start of word, bug </Normal Text><Int>397719</Int><br/>
 <Comment>#</Comment><Alert Level 2>TODO</Alert Level 2><br/>
 <Normal Text></Normal Text><br/>
+<Import>import</Import><Normal Text> itertools</Normal Text><br/>
+<Import>from</Import><Normal Text> itertools </Normal Text><Import>import</Import><Normal Text> accumulate </Normal Text><Import>as</Import><Normal Text> A</Normal Text><br/>
+<Import>lazy import</Import><Normal Text> itertools</Normal Text><br/>
+<Import>lazy from</Import><Normal Text> itertools </Normal Text><Import>import</Import><Normal Text> accumulate </Normal Text><Import>as</Import><Normal Text> A</Normal Text><br/>
+<Normal Text>lazy </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Int>42</Int><br/>
+<Normal Text></Normal Text><br/>
 <Normal Text>a </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Int>100_000</Int><br/>
 <Normal Text>b </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Float>856_264.65</Float><br/>
 <Normal Text>c </Normal Text><Operator>=</Operator><Normal Text> </Normal Text><Hex>0x420_F52</Hex><br/>

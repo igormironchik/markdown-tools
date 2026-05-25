@@ -159,13 +159,13 @@ msgctxt "Sonnet::Loader|dictionary name; %1 = language name, %2 = country name"
 msgid "%1 (%2)"
 msgstr "%1 (%2)"
 
-#: quick/spellcheckhighlighter.cpp:253 quick/spellcheckhighlighter.cpp:277
+#: quick/spellcheckhighlighter.cpp:263 quick/spellcheckhighlighter.cpp:287
 #, fuzzy
 msgctxt "SpellcheckHighlighter|"
 msgid "As-you-type spell checking enabled."
 msgstr "ടൈപ്പ് ചെയ്യുന്നതനുസരിച്ചു് അക്ഷരത്തെറ്റു് പരിശോധന സജ്ജമാക്കിയിരിക്കുന്നു."
 
-#: quick/spellcheckhighlighter.cpp:257
+#: quick/spellcheckhighlighter.cpp:267
 #, fuzzy
 msgctxt "SpellcheckHighlighter|"
 msgid "Too many misspelled words. As-you-type spell checking disabled."
@@ -173,7 +173,7 @@ msgstr ""
 "ഒരുപാടു് തെറ്റുള്ള വാക്കുകളുണ്ടു്. ടൈപ്പ് ചെയ്യുന്നതനുസരിച്ചുള്ള അക്ഷരത്തെറ്റു് പരിശോധന നിര്‍"
 "ജ്ജീമാക്കിയിരിക്കുന്നു."
 
-#: quick/spellcheckhighlighter.cpp:279
+#: quick/spellcheckhighlighter.cpp:289
 #, fuzzy
 msgctxt "SpellcheckHighlighter|"
 msgid "As-you-type spell checking disabled."

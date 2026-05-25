@@ -41,7 +41,7 @@ public:
 
     /**
      * Push contexts to top of the current stack.
-     * Captures is inserted with the latest context.
+     * Captures is inserted in all contexts.
      */
     void push(const Context *const *firstContext, const Context *const *lastContext, QStringList &&captures);
 

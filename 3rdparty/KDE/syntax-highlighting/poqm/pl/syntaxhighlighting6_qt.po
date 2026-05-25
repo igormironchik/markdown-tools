@@ -1,18 +1,19 @@
-# SPDX-FileCopyrightText: 2016, 2017, 2018, 2019, 2021, 2022, 2023, 2024, 2025 Łukasz Wojniłowicz <lukasz.wojnilowicz@gmail.com>
+# SPDX-FileCopyrightText: 2016, 2017, 2018, 2019, 2021, 2022, 2023, 2024, 2025, 2026 Łukasz Wojniłowicz <lukasz.wojnilowicz@gmail.com>
 # Piotr Wójcik <chocimier@tlen.pl>, 2017.
 # Ignacy Kajdan <ignacy.kajdan@gmail.com>, 2021.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2025-02-23 12:33+0100\n"
+"PO-Revision-Date: 2026-04-18 13:26+0200\n"
 "Last-Translator: Łukasz Wojniłowicz <lukasz.wojnilowicz@gmail.com>\n"
-"Language-Team: Polish <kde-i18n-doc@kde.org>\n"
+"Language-Team: pl\n"
 "Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 25.08.2\n"
 "X-Qt-Contexts: true\n"
 
 msgctxt "Language|"
@@ -27,16 +28,13 @@ msgctxt "Language|"
 msgid "ABC"
 msgstr "ABC"
 
-#, fuzzy
-#| msgctxt "Language|"
-#| msgid "E Language"
 msgctxt "Language|"
 msgid "ACPI Source Language"
-msgstr "Język E"
+msgstr "Język źródłowy ACPI"
 
 msgctxt "Language|"
 msgid "ACPI DSL"
-msgstr ""
+msgstr "ACPI DSL"
 
 msgctxt "Language|"
 msgid "ActionScript 2.0"
@@ -152,7 +150,7 @@ msgstr "Cabal"
 
 msgctxt "Language|"
 msgid "Cap'n Proto"
-msgstr ""
+msgstr "Cap'n Proto"
 
 msgctxt "Language|"
 msgid "CartoCSS MML"
@@ -270,12 +268,9 @@ msgctxt "Language|"
 msgid "C"
 msgstr "C"
 
-#, fuzzy
-#| msgctxt "Language|"
-#| msgid "D"
 msgctxt "Language|"
 msgid "D2"
-msgstr "D"
+msgstr "D2"
 
 msgctxt "Language|"
 msgid "Dart"
@@ -323,7 +318,7 @@ msgstr "DTD"
 
 msgctxt "Language|"
 msgid "Devicetree Source (DTS)"
-msgstr ""
+msgstr "Źródło drzewa urządzeń (DTS)"
 
 msgctxt "Language|"
 msgid "D"
@@ -331,7 +326,7 @@ msgstr "D"
 
 msgctxt "Language|"
 msgid "FreeFEM"
-msgstr ""
+msgstr "FreeFEM"
 
 msgctxt "Language|"
 msgid "Eiffel"
@@ -441,12 +436,9 @@ msgctxt "Language|"
 msgid "GDL"
 msgstr "GDL"
 
-#, fuzzy
-#| msgctxt "Language|"
-#| msgid "GNU Gettext"
 msgctxt "Language|"
 msgid "Gemtext"
-msgstr "GNU Gettext"
+msgstr "Gemtext"
 
 msgctxt "Language|"
 msgid "GNU Gettext"
@@ -489,6 +481,10 @@ msgid "Gnuplot"
 msgstr "Gnuplot"
 
 msgctxt "Language|"
+msgid "GN"
+msgstr "GN"
+
+msgctxt "Language|"
 msgid "Go"
 msgstr "Go"
 
@@ -510,7 +506,7 @@ msgstr "Groovy"
 
 msgctxt "Language|"
 msgid "GTK Blueprint"
-msgstr ""
+msgstr "GTK Blueprint"
 
 msgctxt "Language|"
 msgid "Hamlet"
@@ -610,18 +606,15 @@ msgstr "JCL"
 
 msgctxt "Language|"
 msgid "Jinja"
-msgstr ""
+msgstr "Jinja"
 
 msgctxt "Language|"
 msgid "Jira"
 msgstr "Jira"
 
-#, fuzzy
-#| msgctxt "Language|"
-#| msgid "JSON"
 msgctxt "Language|"
 msgid "JSON5"
-msgstr "JSON"
+msgstr "JSON5"
 
 msgctxt "Language|"
 msgid "Jsonnet"
@@ -673,7 +666,7 @@ msgstr "k"
 
 msgctxt "Language|"
 msgid "LaTeX Log File"
-msgstr ""
+msgstr "Plik dziennika LaTeX"
 
 msgctxt "Language|"
 msgid "LaTeX"
@@ -715,23 +708,17 @@ msgctxt "Language|"
 msgid "Logcat"
 msgstr "Logcat"
 
-#, fuzzy
-#| msgctxt "Language|"
-#| msgid "Log File (advanced)"
 msgctxt "Language|"
 msgid "Log File (advanced) Selector"
-msgstr "Plik dziennika (rozbudowany)"
+msgstr "Wybierak pliku dziennika (rozbudowany)"
 
 msgctxt "Language|"
 msgid "Log File (advanced)"
 msgstr "Plik dziennika (rozbudowany)"
 
-#, fuzzy
-#| msgctxt "Language|"
-#| msgid "Log File (simplified)"
 msgctxt "Language|"
 msgid "Log File (simplified) Selector"
-msgstr "Plik dziennika (uproszczony)"
+msgstr "Wybierak pliku dziennika (uproszczony)"
 
 msgctxt "Language|"
 msgid "Log File (simplified)"
@@ -895,7 +882,7 @@ msgstr "nesC"
 
 msgctxt "Language|"
 msgid "NFTables"
-msgstr ""
+msgstr "NFTables"
 
 msgctxt "Language|"
 msgid "nginx Configuration"
@@ -989,12 +976,9 @@ msgctxt "Language|"
 msgid "Pike"
 msgstr "Pike"
 
-#, fuzzy
-#| msgctxt "Language Section|"
-#| msgid "Assembler"
 msgctxt "Language|"
 msgid "PIO Assembler"
-msgstr "Assembler"
+msgstr "Assembler PIO"
 
 msgctxt "Language|"
 msgid "PL/I"
@@ -1066,7 +1050,7 @@ msgstr "QML"
 
 msgctxt "Language|"
 msgid "Quarto"
-msgstr ""
+msgstr "Quarto"
 
 msgctxt "Language|"
 msgid "q"
@@ -1214,7 +1198,7 @@ msgstr "SML"
 
 msgctxt "Language|"
 msgid "Snakemake"
-msgstr ""
+msgstr "Snakemake"
 
 msgctxt "Language|"
 msgid "Snort/Suricata"
@@ -1226,7 +1210,7 @@ msgstr "Solidity"
 
 msgctxt "Language|"
 msgid "SPARQL"
-msgstr ""
+msgstr "SPARQL"
 
 msgctxt "Language|"
 msgid "Spice"
@@ -1249,16 +1233,24 @@ msgid "SQL"
 msgstr "SQL"
 
 msgctxt "Language|"
+msgid "IATA SSIM"
+msgstr "IATA SSIM"
+
+msgctxt "Language|"
 msgid "Stan"
 msgstr "Stan"
 
 msgctxt "Language|"
 msgid "Starlark"
-msgstr ""
+msgstr "Starlark"
 
 msgctxt "Language|"
 msgid "Stata"
 msgstr "Stata"
+
+msgctxt "Language|"
+msgid "STEP"
+msgstr "STEP"
 
 msgctxt "Language|"
 msgid "STL"
@@ -1410,7 +1402,7 @@ msgstr "Ślad Wayland"
 
 msgctxt "Language|"
 msgid "Web Video Text Tracks"
-msgstr ""
+msgstr "Ścieżki tekstowe filmu z sieci"
 
 msgctxt "Language|"
 msgid "WINE Config"
@@ -1424,12 +1416,9 @@ msgctxt "Language|"
 msgid "xHarbour"
 msgstr "xHarbour"
 
-#, fuzzy
-#| msgctxt "Language|"
-#| msgid "HTML"
 msgctxt "Language|"
 msgid "XHTML"
-msgstr "HTML"
+msgstr "XHTML"
 
 msgctxt "Language|"
 msgid "XML (Debug)"

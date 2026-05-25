@@ -478,6 +478,10 @@ msgid "Gnuplot"
 msgstr ""
 
 msgctxt "Language|"
+msgid "GN"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Go"
 msgstr ""
 
@@ -1226,6 +1230,10 @@ msgid "SQL"
 msgstr ""
 
 msgctxt "Language|"
+msgid "IATA SSIM"
+msgstr ""
+
+msgctxt "Language|"
 msgid "Stan"
 msgstr ""
 
@@ -1235,6 +1243,10 @@ msgstr ""
 
 msgctxt "Language|"
 msgid "Stata"
+msgstr ""
+
+msgctxt "Language|"
+msgid "STEP"
 msgstr ""
 
 msgctxt "Language|"

@@ -142,7 +142,7 @@ msgctxt "Sonnet::Loader|dictionary name; %1 = language name, %2 = country name"
 msgid "%1 (%2)"
 msgstr "%1 (%2)"
 
-#: quick/spellcheckhighlighter.cpp:253 quick/spellcheckhighlighter.cpp:277
+#: quick/spellcheckhighlighter.cpp:263 quick/spellcheckhighlighter.cpp:287
 #, fuzzy
 #| msgctxt "Sonnet::Highlighter|"
 #| msgid "As-you-type spell checking enabled."
@@ -150,7 +150,7 @@ msgctxt "SpellcheckHighlighter|"
 msgid "As-you-type spell checking enabled."
 msgstr "टाइप करते समय वर्तनी जांच सक्षम है।"
 
-#: quick/spellcheckhighlighter.cpp:257
+#: quick/spellcheckhighlighter.cpp:267
 #, fuzzy
 #| msgctxt "Sonnet::Highlighter|"
 #| msgid "Too many misspelled words. As-you-type spell checking disabled."
@@ -158,7 +158,7 @@ msgctxt "SpellcheckHighlighter|"
 msgid "Too many misspelled words. As-you-type spell checking disabled."
 msgstr "बहुत सारे गलत वर्तनी वाले शब्द हैं। टाइप करने के दौरान वर्तनी जांच बंद रखा गया है।"
 
-#: quick/spellcheckhighlighter.cpp:279
+#: quick/spellcheckhighlighter.cpp:289
 #, fuzzy
 #| msgctxt "Sonnet::Highlighter|"
 #| msgid "As-you-type spell checking disabled."
