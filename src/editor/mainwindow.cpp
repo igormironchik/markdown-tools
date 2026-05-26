@@ -12,6 +12,7 @@
 #include "findweb.h"
 #include "fontdlg.h"
 #include "gotoline.h"
+#include "html.h"
 #include "htmldocument.h"
 #include "previewpage.h"
 #include "settings.h"
@@ -70,12 +71,9 @@
 
 // md4qt include.
 #include <md4qt/src/algo.h>
-#include <md4qt/src/html.h>
 #include <md4qt/src/parser.h>
 
 // shared include.
-#include "emoji.h"
-#include "emoji_parser.h"
 #include "folder_chooser.h"
 #include "license_dialog.h"
 #include "plugins_page.h"
@@ -83,109 +81,6 @@
 
 namespace MdEditor
 {
-
-static const QChar s_colon = QLatin1Char(':');
-
-//
-// HtmlVisitor
-//
-
-//! Converter into HTML.
-class HtmlVisitor : public MD::details::HtmlVisitor
-{
-protected:
-    void onUserDefined(MD::Item *item) override
-    {
-        if (!m_justCollectFootnoteRefs) {
-            if (item->type() == MdShared::EmojiItem::emojiType()) {
-                auto emoji = static_cast<MdShared::EmojiItem *>(item);
-
-                openStyle(emoji->openStyles());
-
-                m_html.push_back(s_emojiMap[emoji->emojiName()]);
-
-                closeStyle(emoji->closeStyles());
-            }
-        }
-    }
-
-    //! Prepare text to insert into HTML content.
-    QString prepareTextForHtml(const QString &t) override
-    {
-        auto tmp = MD::details::HtmlVisitor::prepareTextForHtml(t);
-        tmp.replace(QLatin1Char('$'), QStringLiteral("<span>$</span>"));
-
-        return tmp;
-    }
-
-    void openStyle(const typename MD::ItemWithOpts::Styles &styles) override
-    {
-        for (const auto &s : styles) {
-            switch (s.style()) {
-            case MD::TextOption::BoldText:
-                m_html.push_back(QStringLiteral("<strong>"));
-                break;
-
-            case MD::TextOption::ItalicText:
-                m_html.push_back(QStringLiteral("<em>"));
-                break;
-
-            case MD::TextOption::StrikethroughText:
-                m_html.push_back(QStringLiteral("<del>"));
-                break;
-
-            case 8:
-                m_html.push_back(QStringLiteral("<sup>"));
-                break;
-
-            case 16:
-                m_html.push_back(QStringLiteral("<sub>"));
-                break;
-
-            case 32:
-                m_html.push_back(QStringLiteral("<mark>"));
-                break;
-
-            default:
-                break;
-            }
-        }
-    }
-
-    void closeStyle(const typename MD::ItemWithOpts::Styles &styles) override
-    {
-        for (const auto &s : styles) {
-            switch (s.style()) {
-            case MD::TextOption::BoldText:
-                m_html.push_back(QStringLiteral("</strong>"));
-                break;
-
-            case MD::TextOption::ItalicText:
-                m_html.push_back(QStringLiteral("</em>"));
-                break;
-
-            case MD::TextOption::StrikethroughText:
-                m_html.push_back(QStringLiteral("</del>"));
-                break;
-
-            case 8:
-                m_html.push_back(QStringLiteral("</sup>"));
-                break;
-
-            case 16:
-                m_html.push_back(QStringLiteral("</sub>"));
-                break;
-
-            case 32:
-                m_html.push_back(QStringLiteral("</mark>"));
-                break;
-
-            default:
-                break;
-            }
-        }
-    }
-};
 
 //
 // TabBar
@@ -1631,11 +1526,11 @@ void MainWindow::onTextChanged()
         m_d->m_mdDoc = m_d->m_editor->currentDoc();
 
         if (m_d->m_livePreviewVisible && m_d->m_mdDoc) {
-            m_d->m_html->setText(MD::toHtml<HtmlVisitor>(m_d->m_mdDoc,
-                                                         false,
-                                                         QStringLiteral("<img src=\"qrc:/res/img/go-jump.png\" />"),
-                                                         true,
-                                                         &m_d->m_editor->idsMap()));
+            m_d->m_html->setText(MD::toHtml<HtmlConv>(m_d->m_mdDoc,
+                                                      false,
+                                                      QStringLiteral("<img src=\"qrc:/res/img/go-jump.png\" />"),
+                                                      true,
+                                                      &m_d->m_editor->idsMap()));
         }
     }
 
@@ -1772,12 +1667,31 @@ void MainWindow::onLineNumberContextMenuRequested(int lineNumber,
         const auto it = m_d->m_editor->idsMap().find(items.front());
 
         if (it != m_d->m_editor->idsMap().cend()) {
+            qsizetype count = 0;
+            bool code = false;
+
+            if (items.back()->type() == MD::ItemType::Code) {
+                count = lineNumber - items.back()->startLine();
+                code = true;
+            } else {
+                count = lineNumber - items.front()->startLine();
+            }
+
             QMenu menu;
 
             const auto id = it.value();
 
-            menu.addAction(tr("Scroll Web Preview To"), [id, this]() {
-                this->onScrollWebViewTo(id);
+            menu.addAction(tr("Scroll Web Preview To"), [id, this, count, code]() {
+                if (code) {
+                    this->m_d->m_page->runJavaScript(
+                        QStringLiteral("scrollToLineInCode('%1', '%2')").arg(id, QString::number(count)));
+                } else {
+                    if (count > 0) {
+                        this->onScrollWebViewTo(QStringLiteral("%1-%2").arg(id, QString::number(count)));
+                    } else {
+                        this->onScrollWebViewTo(id);
+                    }
+                }
             });
 
             menu.exec(pos);
@@ -2556,11 +2470,11 @@ void MainWindow::readAllLinked(bool updateRootFileName)
         }
 
         if (m_d->m_livePreviewVisible) {
-            m_d->m_html->setText(MD::toHtml<HtmlVisitor>(m_d->m_mdDoc,
-                                                         false,
-                                                         QStringLiteral("<img src=\"qrc:/res/img/go-jump.png\" />"),
-                                                         true,
-                                                         &idsMap));
+            m_d->m_html->setText(MD::toHtml<HtmlConv>(m_d->m_mdDoc,
+                                                      false,
+                                                      QStringLiteral("<img src=\"qrc:/res/img/go-jump.png\" />"),
+                                                      true,
+                                                      &idsMap));
         }
     }
 }
@@ -2818,11 +2732,11 @@ void MainWindow::setStateOfEditorPreviewSplitter(bool updateHtml)
 
         if (updateHtml) {
             if (m_d->m_mdDoc) {
-                m_d->m_html->setText(MD::toHtml<HtmlVisitor>(m_d->m_mdDoc,
-                                                             false,
-                                                             QStringLiteral("<img src=\"qrc:/res/img/go-jump.png\" />"),
-                                                             true,
-                                                             &m_d->m_editor->idsMap()));
+                m_d->m_html->setText(MD::toHtml<HtmlConv>(m_d->m_mdDoc,
+                                                          false,
+                                                          QStringLiteral("<img src=\"qrc:/res/img/go-jump.png\" />"),
+                                                          true,
+                                                          &m_d->m_editor->idsMap()));
             } else {
                 m_d->m_html->setText({});
             }
