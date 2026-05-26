@@ -5,11 +5,15 @@
 
 #pragma once
 
+// md-editor include.
+#include "mainwindow_p.h"
+
 // Qt include.
 #include <QFile>
 #include <QMainWindow>
 #include <QScopedPointer>
 #include <QSharedPointer>
+#include <QTextBlock>
 
 QT_BEGIN_NAMESPACE
 class QTreeWidgetItem;
@@ -20,26 +24,8 @@ namespace MdEditor
 {
 
 //
-// StartupState
-//
-
-//! Startup state of the application.
-struct StartupState {
-    //! File name to open on startup.
-    QString m_fileName;
-    //! Working directory to set on startup.
-    QString m_workingDir;
-    //! Should all linked files be loaded on startup?
-    bool m_loadAllLinked;
-    //! Should editor be opened in preview mode?
-    bool m_previewMode;
-}; // strucy StartupState
-
-//
 // MainWindow
 //
-
-struct MainWindowPrivate;
 
 //! Main window.
 class MainWindow : public QMainWindow
@@ -117,6 +103,37 @@ private slots:
     void onGoForward();
     void onOpenRequestedRef();
     void onScrollEditor(const QString &id);
+    void scrollPreview(const QString &id,
+                       qsizetype count,
+                       bool code);
+
+private:
+    template<class Func>
+    void scrollPreview(int lineNumber,
+                       Func func,
+                       const QPoint &pos)
+    {
+        const auto items = m_d->m_editor->syntaxHighlighter().findFirstInCache(
+            {0, lineNumber, m_d->m_editor->document()->findBlockByLineNumber(lineNumber).length(), lineNumber});
+
+        if (!items.isEmpty()) {
+            const auto it = m_d->m_editor->idsMap().find(items.front());
+
+            if (it != m_d->m_editor->idsMap().cend()) {
+                qsizetype count = 0;
+                bool code = false;
+
+                if (items.back()->type() == MD::ItemType::Code) {
+                    count = lineNumber - items.back()->startLine();
+                    code = true;
+                } else {
+                    count = lineNumber - items.front()->startLine();
+                }
+
+                func(it.value(), count, code, pos);
+            }
+        }
+    }
 
 private:
     //! \return Is document was changed?
