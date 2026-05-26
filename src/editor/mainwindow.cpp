@@ -868,23 +868,29 @@ struct MainWindowPrivate {
                             MainWindow::tr("About Qt"),
                             m_q,
                             &MainWindow::onAboutQt);
+        helpMenu->addAction(QIcon(QStringLiteral(":/icon/icon_24x24.png")), MainWindow::tr("About Markdown"), []() {
+            QDesktopServices::openUrl(QUrl(QStringLiteral("https://spec.commonmark.org/0.31.2/")));
+        });
         helpMenu->addAction(QIcon::fromTheme(QStringLiteral("bookmarks-organize"),
                                              QIcon(QStringLiteral(":/res/img/bookmarks-organize.png"))),
                             MainWindow::tr("Licenses"),
                             m_q,
                             &MainWindow::onShowLicenses);
+        helpMenu->addSeparator();
         helpMenu->addAction(
             QIcon::fromTheme(QStringLiteral("help-hint"), QIcon(QStringLiteral(":/res/img/help-hint.png"))),
             MainWindow::tr("Tips && Tricks"),
             []() {
                 QDesktopServices::openUrl(QUrl(QStringLiteral("https://igormironchik.github.io/markdown-tools/")));
             });
-        helpMenu->addAction(
-            QIcon(QStringLiteral(":/icon/icon_24x24.png")),
-            MainWindow::tr("About Markdown"),
-            []() {
-                QDesktopServices::openUrl(QUrl(QStringLiteral("https://spec.commonmark.org/0.31.2/")));
-            });
+        helpMenu->addSeparator();
+        helpMenu->addAction(QIcon::fromTheme(QStringLiteral("tools-report-bug"),
+                                             QIcon(QStringLiteral(":/res/img/tools-report-bug.png"))),
+                            MainWindow::tr("Report Bug"),
+                            []() {
+                                QDesktopServices::openUrl(
+                                    QUrl(QStringLiteral("https://github.com/igormironchik/markdown-tools/issues")));
+                            });
 
         m_cursorPosLabel = new QLabel(m_q);
         m_workingDirectoryWidget = new WorkingDirectoryWidget(m_q);
@@ -2810,7 +2816,7 @@ void MainWindow::setStateOfEditorPreviewSplitter(bool updateHtml)
         m_d->m_editorPreviewSplitter->handle(1)->setEnabled(true);
         m_d->m_editorPreviewSplitter->handle(1)->setVisible(true);
 
-        if (updateHtml){
+        if (updateHtml) {
             if (m_d->m_mdDoc) {
                 m_d->m_html->setText(MD::toHtml<HtmlVisitor>(m_d->m_mdDoc,
                                                              false,

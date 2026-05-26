@@ -19,6 +19,7 @@
 #include <QCloseEvent>
 #include <QColorDialog>
 #include <QComboBox>
+#include <QDesktopServices>
 #include <QFileDialog>
 #include <QMenu>
 #include <QMenuBar>
@@ -643,6 +644,13 @@ MainWindow::MainWindow()
         tr("Licenses"),
         this,
         &MainWindow::licenses);
+    help->addSeparator();
+    help->addAction(
+        QIcon::fromTheme(QStringLiteral("tools-report-bug"), QIcon(QStringLiteral(":/img/tools-report-bug.png"))),
+        MainWindow::tr("Report Bug"),
+        []() {
+            QDesktopServices::openUrl(QUrl(QStringLiteral("https://github.com/igormironchik/markdown-tools/issues")));
+        });
 
     ui = new MainWidget(this);
 
