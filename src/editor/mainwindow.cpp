@@ -766,6 +766,7 @@ const QString s_githubBehaviour = QStringLiteral("githubBehaviour");
 const QString s_dontUseAutoListInCodeBlock = QStringLiteral("dontUseAutoListInCodeBlock");
 const QString s_autoCodeBlocks = QStringLiteral("autoCodeBlocks");
 const QString s_horizontalOrient = QStringLiteral("horizontalUi");
+const QString s_previewFollowEditor = QStringLiteral("previewFollowEditor");
 
 void MainWindow::saveCfg() const
 {
@@ -797,6 +798,7 @@ void MainWindow::saveCfg() const
     s.setValue(s_codeBlockTheme, m_d->m_editor->settings().m_colors.m_codeTheme);
     s.setValue(s_drawCodeBackground, m_d->m_editor->settings().m_colors.m_drawCodeBackground);
     s.setValue(s_sidebarWidth, m_d->m_tabWidth);
+    s.setValue(s_previewFollowEditor, m_d->m_editor->settings().m_previewFollowEditor);
 
     s.beginGroup(s_indent);
     s.setValue(s_mode, m_d->m_editor->settings().m_indentMode == Editor::IndentMode::Tabs ? s_tabs : s_spaces);
@@ -957,6 +959,8 @@ void MainWindow::readCfg()
         s.value(s_autoLinks, m_d->m_editor->settings().m_isLinksAutoCompletionEnabled).toBool());
     m_d->m_editor->enableAutoCompletionOfEmojies(
         s.value(s_autoEmojies, m_d->m_editor->settings().m_isEmojiAutoCompletionEnabled).toBool());
+    m_d->m_editor->setPreviewFollowEditor(
+        s.value(s_previewFollowEditor, m_d->m_editor->settings().m_previewFollowEditor).toBool());
 
     Margins margins = m_d->m_editor->settings().m_margins;
 
@@ -1953,6 +1957,7 @@ void MainWindow::onSettings()
             m_d->m_editor->enableAutoCodeBlocks(settings.m_isAutoCodeBlocksEnabled);
             m_d->m_editor->enableAutoCompletionOfLinks(settings.m_isLinksAutoCompletionEnabled);
             m_d->m_editor->enableAutoCompletionOfEmojies(settings.m_isEmojiAutoCompletionEnabled);
+            m_d->m_editor->setPreviewFollowEditor(settings.m_previewFollowEditor);
 
             m_d->m_editor->doUpdate();
 

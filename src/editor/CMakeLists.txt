@@ -65,7 +65,10 @@ set(LIB_SRC
     mainwindow_p.h
     mainwindow_p.cpp
     widgets.h
-    widgets.cpp)
+    widgets.cpp
+    preview_settings.h
+    preview_settings.cpp
+    preview_settings.ui)
 
 set(SRC main.cpp)
 

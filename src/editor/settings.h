@@ -33,6 +33,7 @@ namespace MdEditor
 
 class EditorSettingsPage;
 class FontPage;
+class PreviewSettingsPage;
 
 //
 // Settings
@@ -66,6 +67,8 @@ struct Settings {
     bool m_isLinksAutoCompletionEnabled = true;
     //! Is auto-completion of Emojies enabled?
     bool m_isEmojiAutoCompletionEnabled = true;
+    //! Should preview follow editor?
+    bool m_previewFollowEditor = false;
 }; // struct Settings
 
 bool operator!=(const Settings &s1,
@@ -106,6 +109,7 @@ private:
     MdShared::PluginsPage *m_pluginsPage = nullptr;
     KPageWidgetItem *m_colorsPageItem = nullptr;
     KPageWidgetItem *m_editorPageItem = nullptr;
+    PreviewSettingsPage *m_previewPage = nullptr;
 }; // class SettingsDlg
 
 } /* namespace MdEditor */

@@ -678,6 +678,11 @@ void Editor::setIndentSpacesCount(int s)
     m_d->m_settings.m_indentSpacesCount = s;
 }
 
+void Editor::setPreviewFollowEditor(bool on)
+{
+    m_d->m_settings.m_previewFollowEditor = on;
+}
+
 const Settings &Editor::settings() const
 {
     return m_d->m_settings;
