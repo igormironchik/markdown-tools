@@ -879,6 +879,12 @@ struct MainWindowPrivate {
             []() {
                 QDesktopServices::openUrl(QUrl(QStringLiteral("https://igormironchik.github.io/markdown-tools/")));
             });
+        helpMenu->addAction(
+            QIcon(QStringLiteral(":/icon/icon_24x24.png")),
+            MainWindow::tr("About Markdown"),
+            []() {
+                QDesktopServices::openUrl(QUrl(QStringLiteral("https://spec.commonmark.org/0.31.2/")));
+            });
 
         m_cursorPosLabel = new QLabel(m_q);
         m_workingDirectoryWidget = new WorkingDirectoryWidget(m_q);
