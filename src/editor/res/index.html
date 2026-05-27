@@ -84,7 +84,7 @@
     const allCodeElements = document.querySelectorAll('pre code');
 
     allCodeElements.forEach((codeElement) => {
-      const htmlLines = codeElement.innerHTML.split('\n');
+      const htmlLines = codeElement.innerHTML.replace(/\n$/, '').split('\n');
 
       codeElement.innerHTML = htmlLines
         .map(lineHtml => `<div class="code-line">${lineHtml || '&nbsp;'}</div>`)
