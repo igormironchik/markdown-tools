@@ -26,6 +26,7 @@
 #include <QMimeData>
 #include <QMimeDatabase>
 #include <QProcess>
+#include <QScrollBar>
 #include <QSettings>
 #include <QSortFilterProxyModel>
 #include <QSplitter>
@@ -646,6 +647,30 @@ void MainWindow::scrollPreview(const QString &id,
     }
 }
 
+void MainWindow::enablePreviewFollowEditor(bool on)
+{
+    if (on) {
+        connect(m_d->m_editor->verticalScrollBar(), &QScrollBar::valueChanged, this, &MainWindow::onEditorScrolled);
+    } else {
+        disconnect(m_d->m_editor->verticalScrollBar(), &QScrollBar::valueChanged, this, &MainWindow::onEditorScrolled);
+    }
+}
+
+void MainWindow::onEditorScrolled(int)
+{
+    const auto centerY = m_d->m_editor->viewport()->height() / 2;
+    const QPoint centerPoint(m_d->m_editor->viewport()->width() / 2, centerY);
+
+    const auto c = m_d->m_editor->cursorForPosition(centerPoint);
+
+    scrollPreview(
+        c.blockNumber(),
+        [this](const QString &id, qsizetype count, bool code, const QPoint &pos) {
+            this->scrollPreview(id, count, code);
+        },
+        QPoint());
+}
+
 void MainWindow::onLineNumberContextMenuRequested(int lineNumber,
                                                   const QPoint &pos)
 {
@@ -1058,6 +1083,8 @@ void MainWindow::readCfg()
 
     m_d->m_editor->setPluginsCfg(pluginsCfg);
     m_d->m_editor->doUpdate();
+
+    enablePreviewFollowEditor(m_d->m_editor->settings().m_previewFollowEditor);
 }
 
 void MainWindow::onLessFontSize()
@@ -1120,7 +1147,16 @@ void MainWindow::onCursorPositionChanged()
     m_d->m_backtabAction->setEnabled(c.hasSelection());
 
     m_d->m_cursorPosLabel->setText(
-        tr("<b>Line:</b> %1, <b>Col:</b> %2").arg(c.block().blockNumber() + 1).arg(c.positionInBlock() + 1));
+        tr("<b>Line:</b> %1, <b>Col:</b> %2").arg(c.blockNumber() + 1).arg(c.positionInBlock() + 1));
+
+    if (m_d->m_editor->settings().m_previewFollowEditor) {
+        scrollPreview(
+            c.blockNumber(),
+            [this](const QString &id, qsizetype count, bool code, const QPoint &pos) {
+                this->scrollPreview(id, count, code);
+            },
+            QPoint());
+    }
 }
 
 void MainWindow::onEditMenuActionTriggered(QAction *action)
@@ -1958,6 +1994,8 @@ void MainWindow::onSettings()
             m_d->m_editor->enableAutoCompletionOfLinks(settings.m_isLinksAutoCompletionEnabled);
             m_d->m_editor->enableAutoCompletionOfEmojies(settings.m_isEmojiAutoCompletionEnabled);
             m_d->m_editor->setPreviewFollowEditor(settings.m_previewFollowEditor);
+
+            enablePreviewFollowEditor(settings.m_previewFollowEditor);
 
             m_d->m_editor->doUpdate();
 

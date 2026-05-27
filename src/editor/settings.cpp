@@ -99,8 +99,8 @@ SettingsDlg::SettingsDlg(const Settings &s,
                                                QIcon(QStringLiteral(":/res/img/document-properties.png"))));
     pluginsPageItem->setIcon(QIcon::fromTheme(QStringLiteral("preferences-plugin"),
                                               QIcon(QStringLiteral(":/res/img/preferences-plugin.png"))));
-    previewPageItem->setIcon(QIcon::fromTheme(QStringLiteral("view-preview"),
-                                              QIcon(QStringLiteral(":/res/img/view-preview.png"))));
+    previewPageItem->setIcon(
+        QIcon::fromTheme(QStringLiteral("view-preview"), QIcon(QStringLiteral(":/res/img/view-preview.png"))));
 
     setFaceType(KPageDialog::List);
 }
