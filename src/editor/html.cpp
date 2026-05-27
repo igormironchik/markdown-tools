@@ -254,10 +254,10 @@ void HtmlConv::onTable(MD::Table *t)
         }
 
         if (!m_justCollectFootnoteRefs) {
-            m_html.push_back(QStringLiteral("</tr></thead><tbody>"));
+            m_html.push_back(QStringLiteral("</tr></thead><tbody>\n"));
         }
 
-        onAddLineEnding();
+        ++m_count;
 
         for (auto r = std::next(t->rows().cbegin()), rlast = t->rows().cend(); r != rlast; ++r) {
             if (!m_justCollectFootnoteRefs) {
@@ -266,12 +266,21 @@ void HtmlConv::onTable(MD::Table *t)
 
             int i = 0;
 
+            bool first = true;
+
             for (auto c = (*r)->cells().cbegin(), clast = (*r)->cells().cend(); c != clast; ++c) {
                 if (!m_justCollectFootnoteRefs) {
                     m_html.push_back(QStringLiteral("\n<td"));
                     m_html.push_back(tableAlignmentToHtml(t->columnAlignment(i)));
                     m_html.push_back(QStringLiteral(" dir=\"auto\">\n"));
+
+                    if (first) {
+                        printLineId(nullptr);
+                        first = false;
+                    }
                 }
+
+                QScopedValueRollback rollback(m_skipSpan, true);
 
                 this->onTableCell(c->get());
 
@@ -291,10 +300,8 @@ void HtmlConv::onTable(MD::Table *t)
                     m_html.push_back(QStringLiteral("<td dir=\"auto\"></td>"));
                 }
 
-                m_html.push_back(QStringLiteral("\n</tr>"));
+                m_html.push_back(QStringLiteral("\n</tr>\n"));
             }
-
-            onAddLineEnding();
         }
 
         if (!m_justCollectFootnoteRefs) {

@@ -46,18 +46,26 @@
       }
     }
 
-    function getId(x, y) {
-        var elem = document.elementFromPoint(x, y);
-        var topParent = elem;
+    function findParent(elem) {
+      let topParent = elem;
 
-        while (topParent && topParent.parentElement && topParent.parentElement.tagName !== 'ARTICLE') {
-          topParent = topParent.parentElement;
-        }
+      while (topParent && topParent.parentElement && topParent.parentElement.tagName !== 'ARTICLE') {
+        topParent = topParent.parentElement;
+      }
+
+      return topParent;
+    }
+
+    function getId(x, y) {
+        let elem = document.elementFromPoint(x, y);
+        let topParent = elem;
 
         let code = elem.closest('pre code');
         let divCount = 0;
 
         if (code) {
+          topParent = findParent(elem);
+
           const currentLineDiv = elem.closest('div.code-line');
 
           if (currentLineDiv) {
@@ -74,6 +82,18 @@
             const lastNumber = span.id.slice(lastHyphenIndex + 1);
 
             divCount = parseInt(lastNumber, 10) + divCount;
+          }
+        } else {
+          topParent = findParent(topParent);
+          const spans = Array.from(topParent.querySelectorAll('span'));
+          const nextSpanIndex = spans.findIndex(span =>
+              elem.compareDocumentPosition(span) & Node.DOCUMENT_POSITION_FOLLOWING
+          );
+
+          if (nextSpanIndex === -1) {
+            topParent = spans[spans.length - 1] || null;
+          } else if (nextSpanIndex > 0) {
+            topParent = spans[nextSpanIndex - 1];
           }
         }
 

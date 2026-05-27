@@ -1621,6 +1621,10 @@ void MainWindow::onOpenRequestedRef()
 
 void MainWindow::onScrollEditor(const QString &id)
 {
+    if (id.isEmpty()) {
+        return;
+    }
+
     qsizetype i = id.length() - 1;
 
     for (; i >= 0; --i) {
