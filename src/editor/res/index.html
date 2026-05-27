@@ -39,15 +39,11 @@
         return;
       }
 
-      const subSpans = codeElement.querySelectorAll('span');
-      for (const span of subSpans) {
-        if (span.textContent.includes(lineText)) {
-          span.scrollIntoView({ block: "center" });
-          return;
-        }
+      const lineIndex = parseInt(lineText, 10);
+      const targetLine = codeElement.querySelectorAll('.code-line')[lineIndex];
+      if (targetLine) {
+        targetLine.scrollIntoView({ block: "center" });
       }
-
-      preElement.scrollIntoView({ block: "center" });
     }
 
     function getId(x, y) {
@@ -84,6 +80,18 @@
     }
   }
 
+  let prepareCode = function() {
+    const allCodeElements = document.querySelectorAll('pre code');
+
+    allCodeElements.forEach((codeElement) => {
+      const htmlLines = codeElement.innerHTML.split('\n');
+
+      codeElement.innerHTML = htmlLines
+        .map(lineHtml => `<div class="code-line">${lineHtml || '&nbsp;'}</div>`)
+        .join('');
+    });
+  }
+
   let updateText = function(text) {
      placeholder.innerHTML = text;
      hljs.highlightAll();
@@ -97,6 +105,7 @@
          trust : true
      });
      replaceBadges(placeholder);
+     prepareCode();
      scroll();
   }
 
