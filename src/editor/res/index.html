@@ -93,17 +93,35 @@
 
                         divCount = parseInt(lastNumber, 10) + divCount;
                     }
-                } else if (!elem.id) {
+                } else {
                     topParent = findParent(topParent);
                     const spans = Array.from(topParent.querySelectorAll('span'));
-                    const nextSpanIndex = spans.findIndex(span =>
-                        elem.compareDocumentPosition(span) & Node.DOCUMENT_POSITION_FOLLOWING
-                    );
 
-                    if (nextSpanIndex === -1) {
-                        topParent = spans[spans.length - 1] || null;
-                    } else if (nextSpanIndex > 0) {
-                        topParent = spans[nextSpanIndex - 1];
+                    let closestSpan = null;
+                    let minDistance = Infinity;
+
+                    for (const span of spans) {
+                        const range = document.createRange();
+                        range.selectNode(span);
+                        const rect = range.getBoundingClientRect();
+
+                        if (y >= rect.top && y <= rect.bottom) {
+                            closestSpan = span;
+                            break;
+                        }
+
+                        const distanceToTop = Math.abs(y - rect.top);
+                        const distanceToBottom = Math.abs(y - rect.bottom);
+                        const currentDistance = Math.min(distanceToTop, distanceToBottom);
+
+                        if (currentDistance < minDistance) {
+                            minDistance = currentDistance;
+                            closestSpan = span;
+                        }
+                    }
+
+                    if (closestSpan) {
+                        topParent = closestSpan;
                     }
                 }
 
