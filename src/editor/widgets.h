@@ -117,6 +117,8 @@ public:
     //! \return Folder chooser widget.
     MdShared::FolderChooser *folderChooser();
 
+    int labelHeight() const;
+
 public slots:
     //! Set working directory.
     void setWorkingDirectory(const QString &wd,

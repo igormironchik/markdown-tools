@@ -470,7 +470,29 @@ void MainWindowPrivate::initUi()
 
     m_cursorPosLabel = new QLabel(m_q);
     m_workingDirectoryWidget = new WorkingDirectoryWidget(m_q);
+
+    m_pinPreviewEditor = new QToolButton(m_q->statusBar());
+    m_pinPreviewEditor->setCheckable(true);
+    m_pinPreviewEditor->setIconSize(QSize(16, 16));
+    m_pinPreviewEditor->setMinimumHeight(m_workingDirectoryWidget->labelHeight());
+    m_pinPreviewEditor->setMaximumHeight(m_workingDirectoryWidget->labelHeight());
+    m_pinPreviewEditor->setMinimumWidth(m_workingDirectoryWidget->labelHeight());
+    m_pinPreviewEditor->setMaximumWidth(m_workingDirectoryWidget->labelHeight());
+
+    QObject::connect(m_pinPreviewEditor, &QToolButton::toggled, m_q, &MainWindow::onPinPreviewEditor);
+
+    auto makeSeparator = [this]() -> QFrame * {
+        auto separator = new QFrame(this->m_q->statusBar());
+        separator->setFrameShape(QFrame::VLine);
+        separator->setFrameShadow(QFrame::Sunken);
+
+        return separator;
+    };
+
+    m_q->statusBar()->addPermanentWidget(m_pinPreviewEditor);
+    m_q->statusBar()->addPermanentWidget(makeSeparator());
     m_q->statusBar()->addPermanentWidget(m_workingDirectoryWidget);
+    m_q->statusBar()->addPermanentWidget(makeSeparator());
     m_q->statusBar()->addPermanentWidget(m_cursorPosLabel);
     m_workingDirectoryWidget->hide();
 

@@ -50,11 +50,11 @@ bool TabBar::event(QEvent *e)
 TabWidget::TabWidget(QWidget *parent)
     : QTabWidget(parent)
 {
-    auto bar = new TabBar(this);
+    auto tabs = new TabBar(this);
 
-    setTabBar(bar);
+    setTabBar(tabs);
 
-    connect(bar, &TabBar::activated, this, &TabWidget::activated);
+    connect(tabs, &TabBar::activated, this, &TabWidget::activated);
 }
 
 void TabWidget::keyPressEvent(QKeyEvent *e)
@@ -125,7 +125,7 @@ WorkingDirectoryWidget::WorkingDirectoryWidget(QWidget *parent)
     layout->addWidget(m_useWorkingDir);
 
     m_label->setText(QStringLiteral("T"));
-    const auto h = m_label->sizeHint().height();
+    const auto h = labelHeight();
     m_label->setText({});
 
     m_btn->setText(tr("..."));
@@ -143,6 +143,11 @@ WorkingDirectoryWidget::WorkingDirectoryWidget(QWidget *parent)
     connect(m_btn, &QToolButton::clicked, this, &WorkingDirectoryWidget::onChangeButtonClicked);
     connect(m_folderChooser, &MdShared::FolderChooser::pathSelected, this, &WorkingDirectoryWidget::onPathChanged);
     connect(m_useWorkingDir, &QCheckBox::checkStateChanged, this, &WorkingDirectoryWidget::onUseWorkingDirChanged);
+}
+
+int WorkingDirectoryWidget::labelHeight() const
+{
+    return m_label->sizeHint().height();
 }
 
 const QString &WorkingDirectoryWidget::workingDirectory() const

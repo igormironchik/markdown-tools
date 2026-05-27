@@ -106,9 +106,9 @@ private slots:
     void scrollPreview(const QString &id,
                        qsizetype count,
                        bool code);
-    void enablePreviewFollowEditor(bool on = true);
     void onEditorScrolled(int);
     void scrollToCursor();
+    void onPinPreviewEditor(bool checked);
 
 private:
     template<class Func>

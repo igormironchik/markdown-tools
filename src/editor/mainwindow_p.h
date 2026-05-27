@@ -129,6 +129,7 @@ struct MainWindowPrivate {
     QSortFilterProxyModel *m_filterTocModel = nullptr;
     QLabel *m_cursorPosLabel = nullptr;
     QLineEdit *m_tocFilterLine = nullptr;
+    QToolButton *m_pinPreviewEditor = nullptr;
     bool m_sizesInitialized = false;
     bool m_shownAlready = false;
     bool m_loadAllFlag = false;

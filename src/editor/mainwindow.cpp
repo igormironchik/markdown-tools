@@ -651,15 +651,6 @@ void MainWindow::scrollPreview(const QString &id,
     }
 }
 
-void MainWindow::enablePreviewFollowEditor(bool on)
-{
-    if (on) {
-        connect(m_d->m_editor->verticalScrollBar(), &QScrollBar::valueChanged, this, &MainWindow::onEditorScrolled);
-    } else {
-        disconnect(m_d->m_editor->verticalScrollBar(), &QScrollBar::valueChanged, this, &MainWindow::onEditorScrolled);
-    }
-}
-
 void MainWindow::onEditorScrolled(int)
 {
     const auto centerY = m_d->m_editor->viewport()->height() / 2;
@@ -683,6 +674,23 @@ void MainWindow::scrollToCursor()
             this->scrollPreview(id, count, code);
         },
         QPoint());
+}
+
+void MainWindow::onPinPreviewEditor(bool checked)
+{
+    if (checked) {
+        m_d->m_pinPreviewEditor->setIcon(
+            QIcon::fromTheme(QStringLiteral("window-unpin"), QIcon(QStringLiteral(":/res/img/window-unpin.png"))));
+        m_d->m_pinPreviewEditor->setToolTip(MainWindow::tr("Unpin Web preview scrolling to editor"));
+        connect(m_d->m_editor->verticalScrollBar(), &QScrollBar::valueChanged, this, &MainWindow::onEditorScrolled);
+    } else {
+        m_d->m_pinPreviewEditor->setIcon(
+            QIcon::fromTheme(QStringLiteral("window-pin"), QIcon(QStringLiteral(":/res/img/window-pin.png"))));
+        m_d->m_pinPreviewEditor->setToolTip(MainWindow::tr("Pin Web preview scrolling to editor"));
+        disconnect(m_d->m_editor->verticalScrollBar(), &QScrollBar::valueChanged, this, &MainWindow::onEditorScrolled);
+    }
+
+    m_d->m_editor->setPreviewFollowEditor(checked);
 }
 
 void MainWindow::onLineNumberContextMenuRequested(int lineNumber,
@@ -998,8 +1006,9 @@ void MainWindow::readCfg()
         s.value(s_autoLinks, m_d->m_editor->settings().m_isLinksAutoCompletionEnabled).toBool());
     m_d->m_editor->enableAutoCompletionOfEmojies(
         s.value(s_autoEmojies, m_d->m_editor->settings().m_isEmojiAutoCompletionEnabled).toBool());
-    m_d->m_editor->setPreviewFollowEditor(
+    m_d->m_pinPreviewEditor->setChecked(
         s.value(s_previewFollowEditor, m_d->m_editor->settings().m_previewFollowEditor).toBool());
+    onPinPreviewEditor(m_d->m_pinPreviewEditor->isChecked());
 
     Margins margins = m_d->m_editor->settings().m_margins;
 
@@ -1097,8 +1106,6 @@ void MainWindow::readCfg()
 
     m_d->m_editor->setPluginsCfg(pluginsCfg);
     m_d->m_editor->doUpdate();
-
-    enablePreviewFollowEditor(m_d->m_editor->settings().m_previewFollowEditor);
 }
 
 void MainWindow::onLessFontSize()
@@ -1998,9 +2005,8 @@ void MainWindow::onSettings()
             m_d->m_editor->enableAutoCodeBlocks(settings.m_isAutoCodeBlocksEnabled);
             m_d->m_editor->enableAutoCompletionOfLinks(settings.m_isLinksAutoCompletionEnabled);
             m_d->m_editor->enableAutoCompletionOfEmojies(settings.m_isEmojiAutoCompletionEnabled);
-            m_d->m_editor->setPreviewFollowEditor(settings.m_previewFollowEditor);
-
-            enablePreviewFollowEditor(settings.m_previewFollowEditor);
+            m_d->m_pinPreviewEditor->setChecked(settings.m_previewFollowEditor);
+            onPinPreviewEditor(m_d->m_pinPreviewEditor->isChecked());
 
             m_d->m_editor->doUpdate();
 
