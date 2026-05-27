@@ -507,7 +507,7 @@ void MainWindow::onTextChanged()
                                                       true,
                                                       &m_d->m_editor->idsMap()));
 
-            if (m_d->m_editor->settings().m_previewFollowEditor) {
+            if (m_d->m_editor->settings().m_previewFollowEditor) {    
                 scrollToCursor();
             }
         }
@@ -642,9 +642,10 @@ void MainWindow::scrollPreview(const QString &id,
 {
     if (code) {
         if (count > 0) {
-            m_d->m_page->runJavaScript(QStringLiteral("scrollToLineInCode('%1', '%2')").arg(id, QString::number(count)));
+            m_d->m_page->runJavaScript(
+                QStringLiteral("scrollToLineInCode('%1', '%2')").arg(id, QString::number(count)));
         } else {
-            onScrollWebViewTo(id);
+            m_d->m_page->runJavaScript(QStringLiteral("scrollToLineInCode('%1', '0')").arg(id));
         }
     } else {
         if (count > 0) {
@@ -657,19 +658,17 @@ void MainWindow::scrollPreview(const QString &id,
 
 void MainWindow::onEditorScrolled(int)
 {
-    if (!m_d->m_editorScrolledFromPreview) {
-        const auto centerY = m_d->m_editor->viewport()->height() / 2;
-        const QPoint centerPoint(m_d->m_editor->viewport()->width() / 2, centerY);
+    const auto centerY = m_d->m_editor->viewport()->height() / 2;
+    const QPoint centerPoint(m_d->m_editor->viewport()->width() / 2, centerY);
 
-        const auto c = m_d->m_editor->cursorForPosition(centerPoint);
+    const auto c = m_d->m_editor->cursorForPosition(centerPoint);
 
-        scrollPreview(
-            c.blockNumber(),
-            [this](const QString &id, qsizetype count, bool code, const QPoint &pos) {
-                this->scrollPreview(id, count, code);
-            },
-            QPoint());
-    }
+    scrollPreview(
+        c.blockNumber(),
+        [this](const QString &id, qsizetype count, bool code, const QPoint &pos) {
+            this->scrollPreview(id, count, code);
+        },
+        QPoint());
 }
 
 void MainWindow::scrollToCursor()
@@ -1657,9 +1656,7 @@ void MainWindow::onScrollEditor(const QString &id)
 
         m_d->m_editor->setTextCursor(c);
 
-        m_d->m_editorScrolledFromPreview = true;
         m_d->m_editor->ensureCursorVisible();
-        m_d->m_editorScrolledFromPreview = false;
 
         m_d->m_editor->setFocus();
     }

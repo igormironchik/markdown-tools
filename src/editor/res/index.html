@@ -1,170 +1,167 @@
 <!doctype html>
 <meta charset="utf-8">
 <head>
-  <script src="qrc:/qtwebchannel/qwebchannel.js"></script>
-  <link rel="stylesheet" href="qrc:/res/css/github.css">
-  <link rel="stylesheet" href="qrc:/res/css/github-markdown.css">
-  <script src="qrc:/res/highlight.js"></script>
-  <script>hljs.configure({languages:[]});</script>
-  <link rel="stylesheet" href="qrc:/res/katex/katex.min.css">
-  <script src="qrc:/res/katex/katex.min.js"></script>
-  <script src="qrc:/res/katex/contrib/auto-render.min.js"></script>
+    <script src="qrc:/qtwebchannel/qwebchannel.js"></script>
+    <link rel="stylesheet" href="qrc:/res/css/github.css">
+    <link rel="stylesheet" href="qrc:/res/css/github-markdown.css">
+    <script src="qrc:/res/highlight.js"></script>
+    <script>hljs.configure({languages:[]});</script>
+    <link rel="stylesheet" href="qrc:/res/katex/katex.min.css">
+    <script src="qrc:/res/katex/katex.min.js"></script>
+    <script src="qrc:/res/katex/contrib/auto-render.min.js"></script>
 </head>
 <body>
-  <div id="placeholder"></div>
-  <script type="module">
-    import { replaceBadges } from "qrc:/res/hightlight-blockquote.js";
-    (() => {
-        'use strict';
+    <div id="placeholder"></div>
+    <script type="module">
+        import { replaceBadges } from "qrc:/res/hightlight-blockquote.js";
+        (() => {
+            'use strict';
 
-        let s_id = '';
-        let s_ln = -1;
+            let s_id = '';
+            let s_ln = -1;
 
-        function scrollToId(itemId) {
-            const element = document.getElementById(itemId);
+            window.scrollToId = function(itemId) {
+                const element = document.getElementById(itemId);
 
-            if (element) {
-                element.scrollIntoView({ block: "center" });
-            } else {
-                s_id = itemId;
-                s_ln = -1;
-            }
-        }
-
-        function scrollToLineInCode(preId, lineText) {
-            const preElement = document.getElementById(preId);
-            if (!preElement) {
-                s_id = preId;
-                s_ln = lineText;
-                return;
-            }
-
-            const codeElement = preElement.querySelector('code');
-            if (!codeElement) {
-                s_id = preId;
-                s_ln = lineText;
-                return;
-            }
-
-            const lineIndex = parseInt(lineText, 10);
-            const lines = codeElement.querySelectorAll('.code-line');
-            const targetLine = lines[lineIndex];
-            if (targetLine) {
-                targetLine.scrollIntoView({ block: "center" });
-            } else {
-                lines[lines.length - 1].scrollIntoView({ block: "center" });
-            }
-        }
-
-        function findParent(elem) {
-            let topParent = elem;
-
-            while (topParent && topParent.parentElement && topParent.parentElement.tagName !== 'ARTICLE') {
-                topParent = topParent.parentElement;
-            }
-
-            return topParent;
-        }
-
-        function getId(x, y) {
-            let elem = document.elementFromPoint(x, y);
-            let topParent = elem;
-
-            let code = elem.closest('pre code');
-            let divCount = 0;
-
-            if (code) {
-                topParent = findParent(elem);
-
-                const currentLineDiv = elem.closest('div.code-line');
-
-                if (currentLineDiv) {
-                    const allLines = Array.from(code.querySelectorAll('div.code-line'));
-
-                    divCount = allLines.indexOf(currentLineDiv);
-                }
-
-                const preTag = code.parentElement;
-
-                if (!preTag.id) {
-                    const span = preTag.previousElementSibling;
-                    const lastHyphenIndex = span.id.lastIndexOf('-');
-                    const lastNumber = span.id.slice(lastHyphenIndex + 1);
-
-                    divCount = parseInt(lastNumber, 10) + divCount;
-                }
-            } else {
-                topParent = findParent(topParent);
-                const spans = Array.from(topParent.querySelectorAll('span'));
-                const nextSpanIndex = spans.findIndex(span =>
-                    elem.compareDocumentPosition(span) & Node.DOCUMENT_POSITION_FOLLOWING
-                );
-
-                if (nextSpanIndex === -1) {
-                    topParent = spans[spans.length - 1] || null;
-                } else if (nextSpanIndex > 0) {
-                    topParent = spans[nextSpanIndex - 1];
-                }
-            }
-
-            return topParent ? (divCount > 0 ? `${topParent.id}-${divCount}` : topParent.id) : null;
-        }
-
-        let placeholder = document.getElementById('placeholder');
-
-        function scroll() {
-            if (s_id) {
-                if (s_ln != -1) {
-                    scrollToLineInCode(s_id, s_ln);
-                    s_id = '';
-                    s_ln = -1;
+                if (element) {
+                    element.scrollIntoView({ block: "center" });
                 } else {
-                    scrollToId(s_id);
-                    s_id = '';
+                    s_id = itemId;
+                    s_ln = -1;
                 }
             }
-        }
 
-        let prepareCode = function() {
-            const allCodeElements = document.querySelectorAll('pre code');
+            window.scrollToLineInCode = function(preId, lineText) {
+                const preElement = document.getElementById(preId);
+                if (!preElement) {
+                    s_id = preId;
+                    s_ln = lineText;
+                    return;
+                }
 
-            allCodeElements.forEach((codeElement) => {
+                const codeElement = preElement.querySelector('code');
+                if (!codeElement) {
+                    s_id = preId;
+                    s_ln = lineText;
+                    return;
+                }
+
+                const lineIndex = parseInt(lineText, 10);
+                const lines = codeElement.querySelectorAll('.code-line');
+                const targetLine = lines[lineIndex];
+                if (targetLine) {
+                    targetLine.scrollIntoView({ block: "center" });
+                } else if (lines[lines.length - 1]) {
+                    lines[lines.length - 1].scrollIntoView({ block: "center" });
+                }
+            }
+
+            function findParent(elem) {
+                let topParent = elem;
+
+                while (topParent && topParent.parentElement && topParent.parentElement.tagName !== 'ARTICLE') {
+                    topParent = topParent.parentElement;
+                }
+
+                return topParent;
+            }
+
+            window.getId = function(x, y) {
+                let elem = document.elementFromPoint(x, y);
+                let topParent = elem;
+
+                let code = elem.closest('pre code');
+                let divCount = 0;
+
+                if (code) {
+                    topParent = findParent(elem);
+
+                    const currentLineDiv = elem.closest('div.code-line');
+
+                    if (currentLineDiv) {
+                        const allLines = Array.from(code.querySelectorAll('div.code-line'));
+
+                        divCount = allLines.indexOf(currentLineDiv);
+                    }
+
+                    const preTag = code.parentElement;
+
+                    if (!preTag.id) {
+                        const span = preTag.previousElementSibling;
+                        const lastHyphenIndex = span.id.lastIndexOf('-');
+                        const lastNumber = span.id.slice(lastHyphenIndex + 1);
+
+                        divCount = parseInt(lastNumber, 10) + divCount;
+                    }
+                } else if (!elem.id) {
+                    topParent = findParent(topParent);
+                    const spans = Array.from(topParent.querySelectorAll('span'));
+                    const nextSpanIndex = spans.findIndex(span =>
+                        elem.compareDocumentPosition(span) & Node.DOCUMENT_POSITION_FOLLOWING
+                    );
+
+                    if (nextSpanIndex === -1) {
+                        topParent = spans[spans.length - 1] || null;
+                    } else if (nextSpanIndex > 0) {
+                        topParent = spans[nextSpanIndex - 1];
+                    }
+                }
+
+                return topParent ? (divCount > 0 ? `${topParent.id}-${divCount}` : topParent.id) : null;
+            }
+
+            let placeholder = document.getElementById('placeholder');
+
+            function scroll() {
+                if (s_id) {
+                    if (s_ln != -1) {
+                        scrollToLineInCode(s_id, s_ln);
+                        s_id = '';
+                        s_ln = -1;
+                    } else {
+                        scrollToId(s_id);
+                        s_id = '';
+                    }
+                }
+            }
+
+            let prepareCode = function() {
+                const allCodeElements = document.querySelectorAll('pre code');
+
+                allCodeElements.forEach((codeElement) => {
                 const htmlLines = codeElement.innerHTML.replace(/\n$/, '').split('\n');
 
-            codeElement.innerHTML = htmlLines
-                .map(lineHtml => `<div class="code-line">${lineHtml || '&nbsp;'}</div>`)
-                .join('');
-            });
-        }
-
-        let updateText = function(text) {
-            placeholder.innerHTML = text;
-            hljs.highlightAll();
-            renderMathInElement(document.body, {
-                delimiters: [
-                    {left: '$$', right: '$$', display: true},
-                    {left: '$', right: '$', display: false},
-                ],
-            throwOnError : false,
-            strict : false,
-            trust : true
-            });
-            replaceBadges(placeholder);
-            prepareCode();
-            scroll();
-        }
-
-        new QWebChannel(qt.webChannelTransport,
-            function(channel) {
-                let content = channel.objects.content;
-                updateText(content.text);
-                content.textChanged.connect(updateText);
+                codeElement.innerHTML = htmlLines
+                    .map(lineHtml => `<div class="code-line">${lineHtml || '&nbsp;'}</div>`)
+                    .join('');
+                });
             }
-        );
 
-        window.scrollToId = scrollToId;
-        window.scrollToLineInCode = scrollToLineInCode;
-        window.getId = getId;
-    })();</script>
+            let updateText = function(text) {
+                placeholder.innerHTML = text;
+                hljs.highlightAll();
+                renderMathInElement(document.body, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false},
+                    ],
+                throwOnError : false,
+                strict : false,
+                trust : true
+                });
+                replaceBadges(placeholder);
+                prepareCode();
+                scroll();
+            }
+
+            new QWebChannel(qt.webChannelTransport,
+                function(channel) {
+                    let content = channel.objects.content;
+                    updateText(content.text);
+                    content.textChanged.connect(updateText);
+                }
+            );
+        })();
+    </script>
 </body>
 </html>
