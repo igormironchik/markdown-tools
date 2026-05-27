@@ -653,17 +653,19 @@ void MainWindow::scrollPreview(const QString &id,
 
 void MainWindow::onEditorScrolled(int)
 {
-    const auto centerY = m_d->m_editor->viewport()->height() / 2;
-    const QPoint centerPoint(m_d->m_editor->viewport()->width() / 2, centerY);
+    if (!m_d->m_editorScrolledFromPreview) {
+        const auto centerY = m_d->m_editor->viewport()->height() / 2;
+        const QPoint centerPoint(m_d->m_editor->viewport()->width() / 2, centerY);
 
-    const auto c = m_d->m_editor->cursorForPosition(centerPoint);
+        const auto c = m_d->m_editor->cursorForPosition(centerPoint);
 
-    scrollPreview(
-        c.blockNumber(),
-        [this](const QString &id, qsizetype count, bool code, const QPoint &pos) {
-            this->scrollPreview(id, count, code);
-        },
-        QPoint());
+        scrollPreview(
+            c.blockNumber(),
+            [this](const QString &id, qsizetype count, bool code, const QPoint &pos) {
+                this->scrollPreview(id, count, code);
+            },
+            QPoint());
+    }
 }
 
 void MainWindow::scrollToCursor()
@@ -1169,6 +1171,10 @@ void MainWindow::onCursorPositionChanged()
 
     m_d->m_cursorPosLabel->setText(
         tr("<b>Line:</b> %1, <b>Col:</b> %2").arg(c.blockNumber() + 1).arg(c.positionInBlock() + 1));
+
+    if (m_d->m_editor->settings().m_previewFollowEditor) {
+        scrollToCursor();
+    }
 }
 
 void MainWindow::onEditMenuActionTriggered(QAction *action)
@@ -1643,7 +1649,9 @@ void MainWindow::onScrollEditor(const QString &id)
 
         m_d->m_editor->setTextCursor(c);
 
+        m_d->m_editorScrolledFromPreview = true;
         m_d->m_editor->ensureCursorVisible();
+        m_d->m_editorScrolledFromPreview = false;
 
         m_d->m_editor->setFocus();
     }

@@ -136,6 +136,7 @@ struct MainWindowPrivate {
     bool m_previewMode = false;
     bool m_tabsVisible = false;
     bool m_livePreviewVisible = true;
+    bool m_editorScrolledFromPreview = false;
     QSharedPointer<MD::Document> m_mdDoc;
     QSharedPointer<MD::Document> m_tocDoc;
     QString m_baseUrl;
