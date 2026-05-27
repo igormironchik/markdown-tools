@@ -506,6 +506,10 @@ void MainWindow::onTextChanged()
                                                       QStringLiteral("<img src=\"qrc:/res/img/go-jump.png\" />"),
                                                       true,
                                                       &m_d->m_editor->idsMap()));
+
+            if (m_d->m_editor->settings().m_previewFollowEditor) {
+                scrollToCursor();
+            }
         }
     }
 
@@ -666,6 +670,16 @@ void MainWindow::onEditorScrolled(int)
     scrollPreview(
         c.blockNumber(),
         [this](const QString &id, qsizetype count, bool code, const QPoint &pos) {
+            this->scrollPreview(id, count, code);
+        },
+        QPoint());
+}
+
+void MainWindow::scrollToCursor()
+{
+    scrollPreview(
+        m_d->m_editor->textCursor().blockNumber(),
+        [this](const QString &id, qsizetype count, bool code, const QPoint &) {
             this->scrollPreview(id, count, code);
         },
         QPoint());
@@ -1148,15 +1162,6 @@ void MainWindow::onCursorPositionChanged()
 
     m_d->m_cursorPosLabel->setText(
         tr("<b>Line:</b> %1, <b>Col:</b> %2").arg(c.blockNumber() + 1).arg(c.positionInBlock() + 1));
-
-    if (m_d->m_editor->settings().m_previewFollowEditor) {
-        scrollPreview(
-            c.blockNumber(),
-            [this](const QString &id, qsizetype count, bool code, const QPoint &pos) {
-                this->scrollPreview(id, count, code);
-            },
-            QPoint());
-    }
 }
 
 void MainWindow::onEditMenuActionTriggered(QAction *action)

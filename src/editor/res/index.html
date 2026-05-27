@@ -10,20 +10,34 @@
   <script src="qrc:/res/katex/katex.min.js"></script>
   <script src="qrc:/res/katex/contrib/auto-render.min.js"></script>
   <script>
+    let s_id = '';
+    let s_ln = -1;
+
     function scrollToId(itemId) {
       const element = document.getElementById(itemId);
 
       if (element) {
         element.scrollIntoView({ block: "center" });
+      } else {
+        s_id = itemId;
+        s_ln = -1;
       }
     }
 
     function scrollToLineInCode(preId, lineText) {
       const preElement = document.getElementById(preId);
-      if (!preElement) return;
+      if (!preElement) {
+        s_id = preId;
+        s_ln = lineText;
+        return;
+      }
 
       const codeElement = preElement.querySelector('code');
-      if (!codeElement) return;
+      if (!codeElement) {
+        s_id = preId;
+        s_ln = lineText;
+        return;
+      }
 
       const subSpans = codeElement.querySelectorAll('span');
       for (const span of subSpans) {
@@ -57,6 +71,19 @@
 
   let placeholder = document.getElementById('placeholder');
 
+  let scroll = function() {
+    if (s_id) {
+      if (s_ln != -1) {
+        scrollToLineInCode(s_id, s_ln);
+        s_id = '';
+        s_ln = -1;
+      } else {
+        scrollToId(s_id);
+        s_id = '';
+      }
+    }
+  }
+
   let updateText = function(text) {
      placeholder.innerHTML = text;
      hljs.highlightAll();
@@ -70,6 +97,7 @@
          trust : true
      });
      replaceBadges(placeholder);
+     scroll();
   }
 
   new QWebChannel(qt.webChannelTransport,

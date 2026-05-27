@@ -108,6 +108,7 @@ private slots:
                        bool code);
     void enablePreviewFollowEditor(bool on = true);
     void onEditorScrolled(int);
+    void scrollToCursor();
 
 private:
     template<class Func>
