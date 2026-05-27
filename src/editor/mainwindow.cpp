@@ -1615,12 +1615,31 @@ void MainWindow::onOpenRequestedRef()
 
 void MainWindow::onScrollEditor(const QString &id)
 {
-    if (!id.isEmpty() && m_d->m_editor->itemsMap().contains(id)) {
-        auto item = m_d->m_editor->itemsMap()[id];
+    qsizetype i = id.length() - 1;
+
+    for (; i >= 0; --i) {
+        if (!id[i].isNumber()) {
+            break;
+        }
+    }
+
+    const auto number = (i < id.length() - 1 ? id.sliced(i + 1, id.length() - 1 - i) : QString());
+    const auto withNum = (id[i] == QLatin1Char('-') && !number.isEmpty());
+
+    auto tmp = id;
+
+    if (withNum) {
+        tmp = id.sliced(0, i);
+    }
+
+    if (!tmp.isEmpty() && m_d->m_editor->itemsMap().contains(tmp)) {
+        auto item = m_d->m_editor->itemsMap()[tmp];
 
         auto c = m_d->m_editor->textCursor();
 
-        c.setPosition(m_d->m_editor->document()->findBlockByNumber(item->startLine()).position());
+        c.setPosition(m_d->m_editor->document()
+                          ->findBlockByNumber(item->startLine() + (withNum ? number.toInt() : 0))
+                          .position());
 
         m_d->m_editor->setTextCursor(c);
 

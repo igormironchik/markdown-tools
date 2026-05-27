@@ -51,10 +51,33 @@
         var topParent = elem;
 
         while (topParent && topParent.parentElement && topParent.parentElement.tagName !== 'ARTICLE') {
-            topParent = topParent.parentElement;
+          topParent = topParent.parentElement;
         }
 
-        return topParent ? topParent.id : null;
+        let code = elem.closest('pre code');
+        let divCount = 0;
+
+        if (code) {
+          const currentLineDiv = elem.closest('div.code-line');
+
+          if (currentLineDiv) {
+            const allLines = Array.from(code.querySelectorAll('div.code-line'));
+
+            divCount = allLines.indexOf(currentLineDiv);
+          }
+
+          const preTag = code.parentElement;
+
+          if (!preTag.id) {
+            const span = preTag.previousElementSibling;
+            const lastHyphenIndex = span.id.lastIndexOf('-');
+            const lastNumber = span.id.slice(lastHyphenIndex + 1);
+
+            divCount = parseInt(lastNumber, 10) + divCount;
+          }
+        }
+
+        return topParent ? (divCount > 0 ? `${topParent.id}-${divCount}` : topParent.id) : null;
     }
   </script>
 </head>
