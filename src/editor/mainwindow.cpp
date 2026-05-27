@@ -641,7 +641,11 @@ void MainWindow::scrollPreview(const QString &id,
                                bool code)
 {
     if (code) {
-        m_d->m_page->runJavaScript(QStringLiteral("scrollToLineInCode('%1', '%2')").arg(id, QString::number(count)));
+        if (count > 0) {
+            m_d->m_page->runJavaScript(QStringLiteral("scrollToLineInCode('%1', '%2')").arg(id, QString::number(count)));
+        } else {
+            onScrollWebViewTo(id);
+        }
     } else {
         if (count > 0) {
             onScrollWebViewTo(QStringLiteral("%1-%2").arg(id, QString::number(count)));
