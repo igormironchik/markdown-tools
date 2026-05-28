@@ -96,7 +96,9 @@
 
                 const lastSpan = allNodes
                     .slice(0, targetIndex)
-                    .filter(node => node.tagName === 'SPAN')
+                    .filter(node => node.tagName === 'SPAN' &&
+                            node.id &&
+                            node.id.startsWith('md4qt-line-id-'))
                     .at(-1);
 
                 return lastSpan;
