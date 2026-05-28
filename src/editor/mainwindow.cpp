@@ -7,1185 +7,55 @@
 #include "mainwindow.h"
 #include "colorsdlg.h"
 #include "const.h"
-#include "editor.h"
 #include "find.h"
 #include "findweb.h"
 #include "fontdlg.h"
 #include "gotoline.h"
+#include "html.h"
 #include "htmldocument.h"
 #include "previewpage.h"
 #include "settings.h"
-#include "syntaxvisitor.h"
-#include "toc.h"
-#include "version.h"
 #include "webview.h"
-#include "wordwrapdelegate.h"
+#include "widgets.h"
+
+// Qt include.
+#include <QDir>
+#include <QFileDialog>
+#include <QMenu>
+#include <QMessageBox>
+#include <QMimeData>
+#include <QMimeDatabase>
+#include <QProcess>
+#include <QScrollBar>
+#include <QSettings>
+#include <QSortFilterProxyModel>
+#include <QSplitter>
+#include <QStandardPaths>
+#include <QTextDocument>
+#include <QTextDocumentFragment>
+#include <QTimer>
+#include <QToolButton>
+#include <QToolTip>
+#include <QTreeWidgetItem>
+#include <QWindow>
 
 // Sonnet include.
 #include <Sonnet/ConfigWidget>
 #include <Sonnet/Settings>
 
-// Qt include.
-#include <QAction>
-#include <QApplication>
-#include <QCloseEvent>
-#include <QDesktopServices>
-#include <QDir>
-#include <QFileDialog>
-#include <QFileInfo>
-#include <QHBoxLayout>
-#include <QHeaderView>
-#include <QKeyEvent>
-#include <QLabel>
-#include <QLineEdit>
-#include <QMenu>
-#include <QMenuBar>
-#include <QMessageBox>
-#include <QMimeData>
-#include <QMimeDatabase>
-#include <QProcess>
-#include <QResizeEvent>
-#include <QSet>
-#include <QSettings>
-#include <QSortFilterProxyModel>
-#include <QSplitter>
-#include <QStandardPaths>
-#include <QStatusBar>
-#include <QStringListModel>
-#include <QStyleOptionTab>
-#include <QTabBar>
-#include <QTabWidget>
-#include <QTextBlock>
-#include <QTextDocumentFragment>
-#include <QTimer>
-#include <QToolButton>
-#include <QToolTip>
-#include <QTreeView>
-#include <QTreeWidget>
-#include <QUrl>
-#include <QVBoxLayout>
-#include <QWebChannel>
-#include <QWidget>
-#include <QWindow>
-
 // md4qt include.
 #include <md4qt/src/algo.h>
-#include <md4qt/src/html.h>
 #include <md4qt/src/parser.h>
 
 // shared include.
-#include "emoji.h"
-#include "emoji_parser.h"
 #include "folder_chooser.h"
 #include "license_dialog.h"
 #include "plugins_page.h"
 #include "utils.h"
+#include "version.h"
 
 namespace MdEditor
 {
-
-static const QChar s_colon = QLatin1Char(':');
-
-//
-// HtmlVisitor
-//
-
-//! Converter into HTML.
-class HtmlVisitor : public MD::details::HtmlVisitor
-{
-protected:
-    void onUserDefined(MD::Item *item) override
-    {
-        if (!m_justCollectFootnoteRefs) {
-            if (item->type() == MdShared::EmojiItem::emojiType()) {
-                auto emoji = static_cast<MdShared::EmojiItem *>(item);
-
-                openStyle(emoji->openStyles());
-
-                m_html.push_back(s_emojiMap[emoji->emojiName()]);
-
-                closeStyle(emoji->closeStyles());
-            }
-        }
-    }
-
-    //! Prepare text to insert into HTML content.
-    QString prepareTextForHtml(const QString &t) override
-    {
-        auto tmp = MD::details::HtmlVisitor::prepareTextForHtml(t);
-        tmp.replace(QLatin1Char('$'), QStringLiteral("<span>$</span>"));
-
-        return tmp;
-    }
-
-    void openStyle(const typename MD::ItemWithOpts::Styles &styles) override
-    {
-        for (const auto &s : styles) {
-            switch (s.style()) {
-            case MD::TextOption::BoldText:
-                m_html.push_back(QStringLiteral("<strong>"));
-                break;
-
-            case MD::TextOption::ItalicText:
-                m_html.push_back(QStringLiteral("<em>"));
-                break;
-
-            case MD::TextOption::StrikethroughText:
-                m_html.push_back(QStringLiteral("<del>"));
-                break;
-
-            case 8:
-                m_html.push_back(QStringLiteral("<sup>"));
-                break;
-
-            case 16:
-                m_html.push_back(QStringLiteral("<sub>"));
-                break;
-
-            case 32:
-                m_html.push_back(QStringLiteral("<mark>"));
-                break;
-
-            default:
-                break;
-            }
-        }
-    }
-
-    void closeStyle(const typename MD::ItemWithOpts::Styles &styles) override
-    {
-        for (const auto &s : styles) {
-            switch (s.style()) {
-            case MD::TextOption::BoldText:
-                m_html.push_back(QStringLiteral("</strong>"));
-                break;
-
-            case MD::TextOption::ItalicText:
-                m_html.push_back(QStringLiteral("</em>"));
-                break;
-
-            case MD::TextOption::StrikethroughText:
-                m_html.push_back(QStringLiteral("</del>"));
-                break;
-
-            case 8:
-                m_html.push_back(QStringLiteral("</sup>"));
-                break;
-
-            case 16:
-                m_html.push_back(QStringLiteral("</sub>"));
-                break;
-
-            case 32:
-                m_html.push_back(QStringLiteral("</mark>"));
-                break;
-
-            default:
-                break;
-            }
-        }
-    }
-};
-
-//
-// TabBar
-//
-
-//! Tab bar for tabs in main window.
-class TabBar : public QTabBar
-{
-    Q_OBJECT
-
-signals:
-    void activated();
-
-public:
-    explicit TabBar(QWidget *parent)
-        : QTabBar(parent)
-    {
-    }
-
-    ~TabBar() override = default;
-
-protected:
-    bool event(QEvent *e) override
-    {
-        const auto res = QTabBar::event(e);
-
-        if (e->type() == QEvent::Shortcut && res) {
-            emit activated();
-        }
-
-        return res;
-    }
-}; // class TabBar
-
-//
-// TabWidget
-//
-
-//! Tabs in main window.
-class TabWidget : public QTabWidget
-{
-    Q_OBJECT
-
-signals:
-    //! Return key was pressed on tab or tab was activated by shortcut.
-    void activated();
-    //! Tab removed.
-    void removed();
-
-public:
-    explicit TabWidget(QWidget *parent)
-        : QTabWidget(parent)
-    {
-        auto bar = new TabBar(this);
-
-        setTabBar(bar);
-
-        connect(bar, &TabBar::activated, this, &TabWidget::activated);
-    }
-
-    ~TabWidget() override = default;
-
-protected:
-    void keyPressEvent(QKeyEvent *e) override
-    {
-        if (e->key() == Qt::Key_Return) {
-            emit activated();
-        }
-
-        QTabWidget::keyPressEvent(e);
-    }
-
-    void tabRemoved(int index) override
-    {
-        QTabWidget::tabRemoved(index);
-
-        emit removed();
-    }
-}; // class TabWidget
-
-//
-// TocTreeView
-//
-
-//! Tree view for ToC.
-class TocTreeView : public QTreeView
-{
-    Q_OBJECT
-
-signals:
-    //! Scroll Web preview to a given ID.
-    void scrollWebViewToRequested(const QString &id);
-
-public:
-    explicit TocTreeView(QWidget *parent)
-        : QTreeView(parent)
-    {
-    }
-
-    ~TocTreeView() override = default;
-
-protected:
-    void keyPressEvent(QKeyEvent *e) override
-    {
-        QTreeView::keyPressEvent(e);
-
-        if (e->key() == Qt::Key_Return) {
-            e->accept();
-        }
-    }
-
-    void contextMenuEvent(QContextMenuEvent *e) override
-    {
-        QMenu menu;
-
-        const auto id =
-            static_cast<TocData *>(
-                static_cast<QSortFilterProxyModel *>(model())->mapToSource(indexAt(e->pos())).internalPointer())
-                ->m_id;
-
-        menu.addAction(tr("Scroll Web Preview To"), [id, this]() {
-            emit this->scrollWebViewToRequested(id);
-        });
-
-        menu.exec(e->globalPos());
-
-        e->accept();
-    }
-}; // class TocTreeView
-
-//
-// WorkingDirectoryWidget
-//
-
-//! Widget for working directory in a status bar of main window.
-class WorkingDirectoryWidget : public QWidget
-{
-    Q_OBJECT
-
-signals:
-    void workingDirectoryChanged(const QString &);
-
-public:
-    WorkingDirectoryWidget(QWidget *parent)
-        : QWidget(parent)
-        , m_label(new QLabel(this))
-        , m_btn(new QToolButton(this))
-        , m_useWorkingDir(new QCheckBox(this))
-    {
-        auto layout = new QHBoxLayout(this);
-        layout->setContentsMargins(0, 0, 0, 0);
-        layout->addWidget(m_label);
-        layout->addWidget(m_btn);
-        layout->addWidget(m_useWorkingDir);
-
-        m_label->setText(QStringLiteral("T"));
-        const auto h = m_label->sizeHint().height();
-        m_label->setText({});
-
-        m_btn->setText(tr("..."));
-        m_btn->setToolTip(tr("Change Working Directory."));
-        m_btn->setMinimumHeight(h);
-        m_btn->setMaximumHeight(h);
-
-        m_useWorkingDir->setToolTip(tr("Use Working Directory."));
-        m_useWorkingDir->setChecked(false);
-
-        m_folderChooser = new MdShared::FolderChooser(this);
-        m_folderChooser->setPopup();
-        m_folderChooser->hide();
-
-        connect(m_btn, &QToolButton::clicked, this, &WorkingDirectoryWidget::onChangeButtonClicked);
-        connect(m_folderChooser, &MdShared::FolderChooser::pathSelected, this, &WorkingDirectoryWidget::onPathChanged);
-        connect(m_useWorkingDir, &QCheckBox::checkStateChanged, this, &WorkingDirectoryWidget::onUseWorkingDirChanged);
-    }
-
-    ~WorkingDirectoryWidget() override = default;
-
-    //! \return Current working directory.
-    const QString &workingDirectory() const
-    {
-        return (isRelative() ? m_fullPath : m_currentPath);
-    }
-
-    //! \return Full path available for selection in this widget.
-    const QString &fullPath() const
-    {
-        return m_fullPath;
-    }
-
-    //! Should relative path be used?
-    bool isRelative() const
-    {
-        return !m_useWorkingDir->isChecked();
-    }
-
-    //! \return Folder chooser widget.
-    MdShared::FolderChooser *folderChooser()
-    {
-        return m_folderChooser;
-    }
-
-public slots:
-    //! Set working directory.
-    void setWorkingDirectory(const QString &wd,
-                             bool notify = true)
-    {
-        m_label->setText(tr("<b>Working Directory:</b> ") + wd);
-        m_currentPath = wd;
-
-        if (notify) {
-            m_folderChooser->setPath(wd);
-            m_fullPath = wd;
-        }
-
-        show();
-    }
-
-private slots:
-    void onChangeButtonClicked()
-    {
-        const auto p1 = mapToGlobal(m_btn->pos());
-        auto s = static_cast<QWidget *>(parent());
-        const auto p2 = s->mapToGlobal(QPoint{0, 0});
-
-        m_folderChooser->move(p1.x() - (layoutDirection() == Qt::LeftToRight ? m_folderChooser->sizeHint().width() : 0),
-                              p2.y() - m_folderChooser->sizeHint().height() - 3);
-        m_folderChooser->show();
-    }
-
-    void onPathChanged(const QString &path)
-    {
-        if (!path.isEmpty() && m_currentPath != path) {
-            disconnect(m_useWorkingDir,
-                       &QCheckBox::checkStateChanged,
-                       this,
-                       &WorkingDirectoryWidget::onUseWorkingDirChanged);
-            m_useWorkingDir->setChecked(true);
-            connect(m_useWorkingDir,
-                    &QCheckBox::checkStateChanged,
-                    this,
-                    &WorkingDirectoryWidget::onUseWorkingDirChanged);
-
-            setWorkingDirectory(path, false);
-
-            emit workingDirectoryChanged(path);
-        }
-    }
-
-    void onUseWorkingDirChanged(Qt::CheckState)
-    {
-        emit workingDirectoryChanged(m_currentPath);
-    }
-
-private:
-    //! Text label.
-    QLabel *m_label = nullptr;
-    //! Button to show folder chooser.
-    QToolButton *m_btn = nullptr;
-    //! Checkbox for enabling/disabling working directory usage.
-    QCheckBox *m_useWorkingDir = nullptr;
-    //! Folder chooser widget.
-    MdShared::FolderChooser *m_folderChooser = nullptr;
-    //! Currently selected path.
-    QString m_currentPath;
-    //! Full available path.
-    QString m_fullPath;
-}; // class WorkingDirectoryWidget
-
-//
-// MainWindowPrivate
-//
-
-struct MainWindowPrivate {
-    MainWindowPrivate(MainWindow *parent)
-        : m_q(parent)
-    {
-    }
-
-    //! Notify ToC tree to update their items' sizes.
-    void notifyTocTree(QAbstractItemModel *model,
-                       WordWrapItemDelegate *delegate,
-                       const QModelIndex &parent)
-    {
-        for (int i = 0; i < model->rowCount(parent); ++i) {
-            const auto idx = model->index(i, 0, parent);
-
-            emit delegate->sizeHintChanged(idx);
-
-            if (model->rowCount(idx) > 0) {
-                notifyTocTree(model, delegate, idx);
-            }
-        }
-    }
-
-    void initUi()
-    {
-        {
-            QFile wrapperHtmlFile(":/res/index.html");
-
-            if (!wrapperHtmlFile.open(QFile::ReadOnly | QFile::Text)) {
-                m_htmlContent = MainWindow::tr("Error loading res/index.html");
-            } else {
-                QTextStream stream(&wrapperHtmlFile);
-                m_htmlContent = stream.readAll();
-                wrapperHtmlFile.close();
-            }
-        }
-
-        auto w = new QWidget(m_q);
-        auto l = new QVBoxLayout(w);
-        l->setContentsMargins(0, 0, 0, 0);
-        l->setSpacing(0);
-
-        m_tabEditorSplitter = new QSplitter(w);
-        m_tabEditorSplitter->setOrientation(Qt::Orientation::Horizontal);
-
-        // Sidebar.
-        m_sidebarPanel = new QWidget(m_tabEditorSplitter);
-        QVBoxLayout *sl = new QVBoxLayout(m_sidebarPanel);
-        sl->setContentsMargins(0, 0, 0, 0);
-        sl->setSpacing(0);
-        m_tabs = new TabWidget(m_sidebarPanel);
-        sl->addWidget(m_tabs);
-        m_tabs->setTabPosition(QTabWidget::East);
-
-        QObject::connect(m_tabs, &TabWidget::activated, m_q, &MainWindow::onTabActivated);
-        QObject::connect(m_tabs, &TabWidget::removed, [this]() {
-            this->handleCurrentTab();
-        });
-
-        m_tocPanel = new QWidget(m_tabs);
-        auto tpv = new QVBoxLayout(m_tocPanel);
-        tpv->setContentsMargins(3, 3, 3, 3);
-        tpv->setSpacing(3);
-        m_tocFilterLine = new QLineEdit(m_tocPanel);
-        m_tocFilterLine->setPlaceholderText(MainWindow::tr("Filter ToC (Ctrl+Alt+F)"));
-        tpv->addWidget(m_tocFilterLine);
-        auto tocFilterAction = new QAction(m_q);
-        tocFilterAction->setShortcut(MainWindow::tr("Ctrl+Alt+F"));
-        tocFilterAction->setShortcutContext(Qt::ApplicationShortcut);
-        m_q->addAction(tocFilterAction);
-
-        QObject::connect(tocFilterAction, &QAction::triggered, [this]() {
-            this->m_tocFilterLine->setFocus();
-            this->m_tocFilterLine->selectAll();
-        });
-
-        m_tocTree = new TocTreeView(m_tocPanel);
-        m_tocModel = new TocModel(m_tocTree);
-        m_filterTocModel = new QSortFilterProxyModel(m_tocTree);
-        m_filterTocModel->setSourceModel(m_tocModel);
-        m_filterTocModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
-        m_filterTocModel->setRecursiveFilteringEnabled(true);
-        m_tocTree->setModel(m_filterTocModel);
-        m_tocTree->setHeaderHidden(true);
-        m_delegate = new WordWrapItemDelegate(m_tocTree, m_tocModel, m_filterTocModel);
-        m_tocTree->setItemDelegate(m_delegate);
-        m_tocTree->setAlternatingRowColors(true);
-        m_tocTree->setSortingEnabled(false);
-        tpv->addWidget(m_tocTree);
-        m_tabs->addTab(m_tocPanel, MainWindow::tr("To&C"));
-
-        m_urlAutoCompleteModel = new QStringListModel(m_q);
-
-        m_filePanel = new QWidget(m_tabs);
-        auto fpv = new QVBoxLayout(m_filePanel);
-        fpv->setContentsMargins(3, 3, 3, 3);
-        fpv->setSpacing(3);
-        m_backBtn = new QToolButton(m_filePanel);
-        m_backBtn->setIcon(
-            QIcon::fromTheme(QStringLiteral("go-previous"), QIcon(QStringLiteral(":/res/img/go-previous-16.png"))));
-        m_backBtn->setToolTip(MainWindow::tr("Go Back"));
-        m_fwdBtn = new QToolButton(m_filePanel);
-        m_fwdBtn->setIcon(
-            QIcon::fromTheme(QStringLiteral("go-next"), QIcon(QStringLiteral(":/res/img/go-next-16.png"))));
-        m_fwdBtn->setToolTip(MainWindow::tr("Go Forward"));
-        m_backBtn->setEnabled(false);
-        m_fwdBtn->setEnabled(false);
-        auto fph = new QHBoxLayout;
-        fph->setContentsMargins(0, 0, 0, 0);
-        fph->setSpacing(3);
-        fph->addWidget(m_backBtn);
-        fph->addWidget(m_fwdBtn);
-        fph->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Fixed));
-        fpv->addLayout(fph);
-        m_fileTree = new QTreeWidget(m_filePanel);
-        m_fileTree->setHeaderHidden(true);
-        fpv->addWidget(m_fileTree);
-        m_filePanel->hide();
-
-        QObject::connect(m_fileTree, &QTreeWidget::itemDoubleClicked, m_q, &MainWindow::onNavigationDoubleClicked);
-        QObject::connect(m_tocTree->header(), &QHeaderView::sectionResized, [this](int, int, int) {
-            notifyTocTree(this->m_filterTocModel, this->m_delegate, QModelIndex());
-        });
-        QObject::connect(m_tocTree, &TocTreeView::scrollWebViewToRequested, m_q, &MainWindow::onScrollWebViewTo);
-
-        QObject::connect(m_tocFilterLine, &QLineEdit::textChanged, [this](const QString &text) {
-            this->m_filterTocModel->setFilterFixedString(text);
-        });
-        QObject::connect(m_backBtn, &QToolButton::clicked, m_q, &MainWindow::onGoBack);
-        QObject::connect(m_fwdBtn, &QToolButton::clicked, m_q, &MainWindow::onGoForward);
-
-        m_tocPanel->hide();
-
-        // Editor.
-        m_editorPreviewWidget = new QWidget(m_tabEditorSplitter);
-        auto editorPreviewLayout = new QVBoxLayout(m_editorPreviewWidget);
-        m_editorPreviewSplitter = new QSplitter(m_editorPreviewWidget);
-        m_editorPreviewSplitter->setOrientation(Qt::Orientation::Horizontal);
-        editorPreviewLayout->addWidget(m_editorPreviewSplitter);
-
-        m_editorPanel = new QWidget(m_editorPreviewSplitter);
-        auto v = new QVBoxLayout(m_editorPanel);
-        v->setContentsMargins(0, 0, 0, 0);
-        v->setSpacing(0);
-        m_editor = new Editor(m_editorPanel, m_q, m_urlAutoCompleteModel);
-        m_find = new Find(m_q, m_editor, m_editorPanel);
-        m_editor->setFindWidget(m_find);
-        m_gotoline = new GoToLine(m_q, m_editor, m_editorPanel);
-        v->addWidget(m_editor);
-        v->addWidget(m_gotoline);
-        v->addWidget(m_find);
-
-        // Preview.
-        m_previewPanel = new QWidget(m_editorPreviewSplitter);
-        auto v1 = new QVBoxLayout(m_previewPanel);
-        v1->setContentsMargins(0, 0, 0, 0);
-        v1->setSpacing(0);
-        m_preview = new WebView(m_previewPanel);
-        m_findWeb = new FindWeb(m_q, m_preview, m_previewPanel);
-        v1->addWidget(m_preview);
-        v1->addWidget(m_findWeb);
-
-        m_editorPreviewSplitter->addWidget(m_editorPanel);
-        m_editorPreviewSplitter->addWidget(m_previewPanel);
-
-        m_find->hide();
-        m_gotoline->hide();
-        m_findWeb->hide();
-
-        m_tabEditorSplitter->addWidget(m_sidebarPanel);
-        m_tabEditorSplitter->addWidget(m_editorPreviewWidget);
-
-        this->m_tabEditorSplitter->handle(1)->setCursor(Qt::ArrowCursor);
-
-        l->addWidget(m_tabEditorSplitter);
-
-        m_q->setCentralWidget(w);
-
-        m_page = new PreviewPage(m_preview);
-        m_preview->setPage(m_page);
-
-        m_html = new HtmlDocument(m_q);
-
-        auto channel = new QWebChannel(m_q);
-        channel->registerObject(QStringLiteral("content"), m_html);
-        m_page->setWebChannel(channel);
-
-        QObject::connect(m_preview, &WebView::scrollRequested, m_q, &MainWindow::onScrollEditor, Qt::QueuedConnection);
-
-#ifdef Q_OS_WIN
-        m_mdPdfExe = QStringLiteral("md-pdf-gui.exe");
-        m_launcherExe = QStringLiteral("md-launcher.exe");
-#else
-        m_mdPdfExe = QStringLiteral("md-pdf-gui");
-        m_launcherExe = QStringLiteral("md-launcher");
-#endif
-
-        QDir workingDir(QApplication::applicationDirPath());
-        const auto mdPdfExeFiles = workingDir.entryInfoList({m_mdPdfExe}, QDir::Executable | QDir::Files);
-        const auto starterExeFiles = workingDir.entryInfoList({m_launcherExe}, QDir::Executable | QDir::Files);
-
-        auto fileMenu = m_q->menuBar()->addMenu(MainWindow::tr("&File"));
-        m_newAction = fileMenu->addAction(
-            QIcon::fromTheme(QStringLiteral("document-new"), QIcon(QStringLiteral(":/res/img/document-new.png"))),
-            MainWindow::tr("New"),
-            MainWindow::tr("Ctrl+N"),
-            m_q,
-            &MainWindow::onFileNew);
-        m_openAction = fileMenu->addAction(
-            QIcon::fromTheme(QStringLiteral("document-open"), QIcon(QStringLiteral(":/res/img/document-open.png"))),
-            MainWindow::tr("Open"),
-            MainWindow::tr("Ctrl+O"),
-            m_q,
-            &MainWindow::onFileOpen);
-        fileMenu->addSeparator();
-        m_saveAction = fileMenu->addAction(
-            QIcon::fromTheme(QStringLiteral("document-save"), QIcon(QStringLiteral(":/res/img/document-save.png"))),
-            MainWindow::tr("Save"),
-            MainWindow::tr("Ctrl+S"),
-            m_q,
-            &MainWindow::onFileSave);
-        m_saveAsAction = fileMenu->addAction(QIcon::fromTheme(QStringLiteral("document-save-as"),
-                                                              QIcon(QStringLiteral(":/res/img/document-save-as.png"))),
-                                             MainWindow::tr("Save As"),
-                                             m_q,
-                                             &MainWindow::onFileSaveAs);
-        fileMenu->addSeparator();
-        m_loadAllAction = fileMenu->addAction(MainWindow::tr("Load All Linked Files..."),
-                                              MainWindow::tr("Ctrl+R"),
-                                              m_q,
-                                              &MainWindow::loadAllLinkedFiles);
-        m_loadAllAction->setEnabled(false);
-
-        if (!mdPdfExeFiles.isEmpty() && !starterExeFiles.isEmpty()) {
-            fileMenu->addSeparator();
-
-            m_convertToPdfAction =
-                fileMenu->addAction(MainWindow::tr("Convert To PDF..."), m_q, &MainWindow::onConvertToPdf);
-
-            m_convertToPdfAction->setEnabled(false);
-        }
-
-        fileMenu->addSeparator();
-        fileMenu->addAction(QIcon::fromTheme(QStringLiteral("application-exit"),
-                                             QIcon(QStringLiteral(":/res/img/application-exit.png"))),
-                            MainWindow::tr("Quit"),
-                            MainWindow::tr("Ctrl+Q"),
-                            m_q,
-                            &QWidget::close);
-
-        m_editMenuAction = m_q->menuBar()->addAction(MainWindow::tr("&Edit"));
-        m_toggleFindAction =
-            new QAction(QIcon::fromTheme(QStringLiteral("edit-find"), QIcon(QStringLiteral(":/res/img/edit-find.png"))),
-                        MainWindow::tr("Find/Replace"),
-                        m_q);
-        m_toggleFindAction->setShortcut(MainWindow::tr("Ctrl+F"));
-        m_q->addAction(m_toggleFindAction);
-
-        m_toggleFindWebAction =
-            new QAction(QIcon::fromTheme(QStringLiteral("edit-find"), QIcon(QStringLiteral(":/res/img/edit-find.png"))),
-                        MainWindow::tr("Find In Preview"),
-                        m_q);
-        m_toggleFindWebAction->setShortcut(MainWindow::tr("Ctrl+W"));
-        m_q->addAction(m_toggleFindWebAction);
-
-        m_toggleGoToLineAction = new QAction(
-            QIcon::fromTheme(QStringLiteral("go-next-use"), QIcon(QStringLiteral(":/res/img/go-next-use.png"))),
-            MainWindow::tr("Go to Line"),
-            m_q);
-        m_toggleGoToLineAction->setShortcut(MainWindow::tr("Ctrl+L"));
-        m_q->addAction(m_toggleGoToLineAction);
-
-        m_addTOCAction = new QAction(MainWindow::tr("Add ToC"), m_q);
-
-        m_nextMisspelled = new QAction(MainWindow::tr("Next Misspelled"), m_q);
-        m_nextMisspelled->setShortcut(MainWindow::tr("F6"));
-        m_nextMisspelled->setEnabled(false);
-        m_q->addAction(m_nextMisspelled);
-
-        auto formatMenu = m_q->menuBar()->addMenu(MainWindow::tr("F&ormat"));
-
-        m_tabAction = new QAction(MainWindow::tr("Indent"), formatMenu);
-        m_tabAction->setShortcut(MainWindow::tr("Tab"));
-        m_tabAction->setShortcutContext(Qt::WidgetShortcut);
-        QObject::connect(m_tabAction, &QAction::triggered, [this]() {
-            qApp->postEvent(this->m_editor, new QKeyEvent(QEvent::KeyPress, Qt::Key_Tab, Qt::NoModifier));
-        });
-        formatMenu->addAction(m_tabAction);
-
-        m_backtabAction = new QAction(MainWindow::tr("Unindent"), formatMenu);
-        m_backtabAction->setShortcut(MainWindow::tr("Shift+Tab"));
-        m_backtabAction->setShortcutContext(Qt::WidgetShortcut);
-        QObject::connect(m_backtabAction, &QAction::triggered, [this]() {
-            qApp->postEvent(this->m_editor, new QKeyEvent(QEvent::KeyPress, Qt::Key_Backtab, Qt::NoModifier));
-        });
-        formatMenu->addAction(m_backtabAction);
-
-        m_actionMenu = m_q->menuBar()->addMenu(MainWindow::tr("&Action"));
-        m_goBackAction = new QAction(
-            QIcon::fromTheme(QStringLiteral("go-previous"), QIcon(QStringLiteral(":/res/img/go-previous.png"))),
-            MainWindow::tr("Go Back"),
-            m_q);
-        m_goBackAction->setShortcut(QKeySequence(Qt::ControlModifier | Qt::AltModifier | Qt::Key_Left));
-        m_goBackAction->setShortcutContext(Qt::ApplicationShortcut);
-        m_actionMenu->addAction(m_goBackAction);
-        m_goBackAction->setEnabled(false);
-        m_goFwdAction =
-            new QAction(QIcon::fromTheme(QStringLiteral("go-next"), QIcon(QStringLiteral(":/res/img/go-next.png"))),
-                        MainWindow::tr("Go Forward"),
-                        m_q);
-        m_goFwdAction->setShortcut(QKeySequence(Qt::ControlModifier | Qt::AltModifier | Qt::Key_Right));
-        m_goFwdAction->setShortcutContext(Qt::ApplicationShortcut);
-        m_actionMenu->addAction(m_goFwdAction);
-        m_goFwdAction->setEnabled(false);
-        m_actionMenu->menuAction()->setVisible(false);
-
-        QObject::connect(m_goBackAction, &QAction::triggered, m_q, &MainWindow::onGoBack);
-        QObject::connect(m_goFwdAction, &QAction::triggered, m_q, &MainWindow::onGoForward);
-
-        auto viewMenu = m_q->menuBar()->addMenu(MainWindow::tr("&View"));
-        m_viewAction = new QAction(
-            QIcon::fromTheme(QStringLiteral("view-preview"), QIcon(QStringLiteral(":/res/img/view-preview.png"))),
-            MainWindow::tr("Toggle Preview Mode"));
-        m_viewAction->setShortcut(MainWindow::tr("Ctrl+P"));
-        m_viewAction->setCheckable(true);
-        m_viewAction->setChecked(false);
-        viewMenu->addAction(m_viewAction);
-        m_livePreviewAction = new QAction(QIcon::fromTheme(QStringLiteral("layer-visible-on"),
-                                                           QIcon(QStringLiteral(":/res/img/layer-visible-on.png"))),
-                                          MainWindow::tr("Live Preview"));
-        m_livePreviewAction->setShortcut(MainWindow::tr("Ctrl+Alt+P"));
-        m_livePreviewAction->setCheckable(true);
-        m_livePreviewAction->setChecked(true);
-        viewMenu->addAction(m_livePreviewAction);
-
-        m_orientAction = new QAction(QIcon::fromTheme(QStringLiteral("view-split-top-bottom"),
-                                                      QIcon(QStringLiteral(":/res/img/view-split-top-bottom.png"))),
-                                     MainWindow::tr("Split Vertically"),
-                                     m_q);
-        m_orientAction->setShortcut(MainWindow::tr("Ctrl+Alt+S"));
-        viewMenu->addAction(m_orientAction);
-
-        QObject::connect(m_orientAction, &QAction::triggered, m_q, &MainWindow::onChangeOrient);
-
-        m_settingsMenu = m_q->menuBar()->addMenu(MainWindow::tr("&Settings"));
-        auto toggleLineNumbersAction =
-            new QAction(QIcon::fromTheme(QStringLiteral("view-table-of-contents-ltr"),
-                                         QIcon(QStringLiteral(":/res/img/view-table-of-contents-ltr.png"))),
-                        MainWindow::tr("Show Line Numbers"),
-                        m_q);
-        toggleLineNumbersAction->setCheckable(true);
-        toggleLineNumbersAction->setShortcut(MainWindow::tr("Alt+L"));
-        toggleLineNumbersAction->setChecked(true);
-        m_settingsMenu->addAction(toggleLineNumbersAction);
-
-        auto toggleUnprintableCharacters = new QAction(
-            QIcon::fromTheme(QStringLiteral("character-set"), QIcon(QStringLiteral(":/res/img/character-set.png"))),
-            MainWindow::tr("Show Tabs/Spaces"),
-            m_q);
-        toggleUnprintableCharacters->setCheckable(true);
-        toggleUnprintableCharacters->setShortcut(MainWindow::tr("Alt+T"));
-        toggleUnprintableCharacters->setChecked(true);
-        m_settingsMenu->addAction(toggleUnprintableCharacters);
-
-        m_settingsMenu->addSeparator();
-
-        m_settingsMenu->addAction(QIcon::fromTheme(QStringLiteral("format-font-size-less"),
-                                                   QIcon(QStringLiteral(":/res/img/format-font-size-less.png"))),
-                                  MainWindow::tr("Decrease Font Size"),
-                                  MainWindow::tr("Ctrl+-"),
-                                  m_q,
-                                  &MainWindow::onLessFontSize);
-        m_settingsMenu->addAction(QIcon::fromTheme(QStringLiteral("format-font-size-more"),
-                                                   QIcon(QStringLiteral(":/res/img/format-font-size-more.png"))),
-                                  MainWindow::tr("Increase Font Size"),
-                                  MainWindow::tr("Ctrl+="),
-                                  m_q,
-                                  &MainWindow::onMoreFontSize);
-
-        m_settingsMenu->addSeparator();
-
-        m_settingsMenu->addAction(QIcon::fromTheme(QStringLiteral("preferences-desktop-font"),
-                                                   QIcon(QStringLiteral(":/res/img/preferences-desktop-font.png"))),
-                                  MainWindow::tr("Font..."),
-                                  m_q,
-                                  &MainWindow::onChooseFont);
-
-        m_settingsMenu->addAction(
-            QIcon::fromTheme(QStringLiteral("fill-color"), QIcon(QStringLiteral(":/res/img/fill-color.png"))),
-            MainWindow::tr("Colors..."),
-            m_q,
-            &MainWindow::onChangeColors);
-
-        m_settingsMenu->addSeparator();
-
-        m_settingsMenu->addAction(
-            QIcon::fromTheme(QStringLiteral("configure"), QIcon(QStringLiteral(":/res/img/configure.png"))),
-            MainWindow::tr("Settings"),
-            m_q,
-            &MainWindow::onSettings);
-
-        auto helpMenu = m_q->menuBar()->addMenu(MainWindow::tr("&Help"));
-        helpMenu->addAction(QIcon(QStringLiteral(":/icon/icon_24x24.png")),
-                            MainWindow::tr("About"),
-                            m_q,
-                            &MainWindow::onAbout);
-        helpMenu->addAction(QIcon(QStringLiteral(":/img/Qt-logo-neon-transparent.png")),
-                            MainWindow::tr("About Qt"),
-                            m_q,
-                            &MainWindow::onAboutQt);
-        helpMenu->addAction(QIcon(QStringLiteral(":/icon/icon_24x24.png")), MainWindow::tr("About Markdown"), []() {
-            QDesktopServices::openUrl(QUrl(QStringLiteral("https://spec.commonmark.org/0.31.2/")));
-        });
-        helpMenu->addAction(QIcon::fromTheme(QStringLiteral("bookmarks-organize"),
-                                             QIcon(QStringLiteral(":/res/img/bookmarks-organize.png"))),
-                            MainWindow::tr("Licenses"),
-                            m_q,
-                            &MainWindow::onShowLicenses);
-        helpMenu->addSeparator();
-        helpMenu->addAction(
-            QIcon::fromTheme(QStringLiteral("help-hint"), QIcon(QStringLiteral(":/res/img/help-hint.png"))),
-            MainWindow::tr("Tips && Tricks"),
-            []() {
-                QDesktopServices::openUrl(QUrl(QStringLiteral("https://igormironchik.github.io/markdown-tools/")));
-            });
-        helpMenu->addSeparator();
-        helpMenu->addAction(QIcon::fromTheme(QStringLiteral("tools-report-bug"),
-                                             QIcon(QStringLiteral(":/res/img/tools-report-bug.png"))),
-                            MainWindow::tr("Report Bug"),
-                            []() {
-                                QDesktopServices::openUrl(
-                                    QUrl(QStringLiteral("https://github.com/igormironchik/markdown-tools/issues")));
-                            });
-
-        m_cursorPosLabel = new QLabel(m_q);
-        m_workingDirectoryWidget = new WorkingDirectoryWidget(m_q);
-        m_q->statusBar()->addPermanentWidget(m_workingDirectoryWidget);
-        m_q->statusBar()->addPermanentWidget(m_cursorPosLabel);
-        m_workingDirectoryWidget->hide();
-
-        QObject::connect(m_workingDirectoryWidget,
-                         &WorkingDirectoryWidget::workingDirectoryChanged,
-                         m_q,
-                         &MainWindow::onWorkingDirectoryChange);
-        QObject::connect(m_editor->document(), &QTextDocument::modificationChanged, m_saveAction, &QAction::setEnabled);
-        QObject::connect(m_editor->document(),
-                         &QTextDocument::modificationChanged,
-                         m_q,
-                         &MainWindow::setWindowModified);
-        QObject::connect(m_editor, &Editor::ready, m_q, &MainWindow::onTextChanged);
-        QObject::connect(m_editor, &Editor::misspelled, m_q, &MainWindow::onMisspelledFount);
-        QObject::connect(m_editor, &Editor::lineHovered, m_q, &MainWindow::onLineHovered);
-        QObject::connect(m_editor,
-                         &Editor::lineNumberContextMenuRequested,
-                         m_q,
-                         &MainWindow::onLineNumberContextMenuRequested);
-        QObject::connect(toggleLineNumbersAction, &QAction::toggled, m_editor, &Editor::showLineNumbers);
-        QObject::connect(toggleUnprintableCharacters, &QAction::toggled, m_editor, &Editor::showUnprintableCharacters);
-        QObject::connect(m_toggleFindAction, &QAction::triggered, m_q, &MainWindow::onFind);
-        QObject::connect(m_toggleFindWebAction, &QAction::triggered, m_q, &MainWindow::onFindWeb);
-        QObject::connect(m_toggleGoToLineAction, &QAction::triggered, m_q, &MainWindow::onGoToLine);
-        QObject::connect(m_nextMisspelled, &QAction::triggered, m_q, &MainWindow::onNextMisspelled);
-        QObject::connect(m_page, &QWebEnginePage::linkHovered, [this](const QString &url) {
-            if (!url.isEmpty())
-                this->m_q->statusBar()->showMessage(url);
-            else
-                this->m_q->statusBar()->clearMessage();
-        });
-        QObject::connect(m_editor, &QPlainTextEdit::cursorPositionChanged, m_q, &MainWindow::onCursorPositionChanged);
-        QObject::connect(m_viewAction, &QAction::toggled, m_q, &MainWindow::onTogglePreviewAction);
-        QObject::connect(m_livePreviewAction, &QAction::toggled, m_q, &MainWindow::onToggleLivePreviewAction);
-        QObject::connect(m_addTOCAction, &QAction::triggered, m_q, &MainWindow::onAddTOC);
-        QObject::connect(m_tabs, &QTabWidget::tabBarClicked, m_q, &MainWindow::onTabClicked);
-        QObject::connect(m_tocTree, &QTreeView::activated, m_q, &MainWindow::onTocClicked);
-        QObject::connect(m_tocTree, &QTreeView::clicked, m_q, &MainWindow::onTocClicked);
-        QObject::connect(m_editor, &Editor::ready, m_q, &MainWindow::onProcessQueue);
-
-        m_editor->setFocus();
-        m_preview->setFocusPolicy(Qt::ClickFocus);
-        m_editor->applyColors(m_editor->settings().m_colors);
-
-        m_q->setTabOrder(m_gotoline->line(), m_find->editLine());
-        m_q->setTabOrder(m_find->editLine(), m_find->replaceLine());
-        m_q->setTabOrder(m_find->replaceLine(), m_findWeb->line());
-
-        m_q->onFileNew();
-
-        m_q->setAcceptDrops(true);
-    }
-
-    void handleCurrentTab()
-    {
-        if (m_tabs->currentIndex() == 0) {
-            initMarkdownMenu();
-        }
-
-        m_currentTab = m_tabs->currentIndex();
-    }
-
-    //! \return Data for ToC item.
-    StringDataVec paragraphToMenuText(MD::Paragraph *p,
-                                      bool skipRtl = false)
-    {
-        StringDataVec res;
-        bool rtl = false;
-        bool first = !skipRtl;
-
-        for (auto it = p->items().cbegin(), last = p->items().cend(); it != last; ++it) {
-            switch ((*it)->type()) {
-            case MD::ItemType::Text: {
-                auto t = static_cast<MD::Text *>(it->get());
-
-                if (first) {
-                    first = false;
-                    rtl = t->text().isRightToLeft();
-                }
-
-                res.append({t->text(), false, rtl});
-            } break;
-
-            case MD::ItemType::Code: {
-                auto c = static_cast<MD::Code *>(it->get());
-
-                if (first) {
-                    first = false;
-                    rtl = c->text().isRightToLeft();
-                }
-
-                res.append({c->text(), true, rtl});
-            } break;
-
-            case MD::ItemType::Link: {
-                auto l = static_cast<MD::Link *>(it->get());
-
-                first = false;
-
-                if (!l->p()->isEmpty())
-                    res.append(paragraphToMenuText(l->p().get(), true));
-            } break;
-
-            default:
-                break;
-            }
-        }
-
-        return res;
-    }
-
-    //! Populate ToC tree view.
-    void initMarkdownMenu()
-    {
-        if (m_tocDoc != m_editor->currentDoc()) {
-            m_tocDoc = m_editor->currentDoc();
-
-            TocStringLevelVec newToc;
-
-            MD::forEach(
-                {MD::ItemType::Heading},
-                m_tocDoc,
-                [this, &newToc](MD::Item *item) {
-                    auto h = static_cast<MD::Heading *>(item);
-
-                    newToc.push_back({this->paragraphToMenuText(h->text().get()), h->level(), h->startLine()});
-                },
-                1);
-
-            if (newToc != m_tocModel->tocStrings()) {
-                QStringList urls;
-                m_tocModel->clear();
-
-                std::vector<QModelIndex> current;
-
-                MD::forEach(
-                    {MD::ItemType::Heading},
-                    m_tocDoc,
-                    [this, &current, &urls](MD::Item *item) {
-                        auto h = static_cast<MD::Heading *>(item);
-
-                        if (h->text()) {
-                            if (current.size()) {
-                                if (h->level() < this->m_tocModel->level(current.front())) {
-                                    current.clear();
-                                } else {
-                                    current.erase(std::find_if(current.cbegin(),
-                                                               current.cend(),
-                                                               [h, this](const auto &i) {
-                                                                   return this->m_tocModel->level(i) >= h->level();
-                                                               }),
-                                                  current.cend());
-                                }
-
-                                if (current.empty()) {
-                                    this->m_tocModel->addTopLevelItem(this->paragraphToMenuText(h->text().get()),
-                                                                      h->startLine(),
-                                                                      h->level(),
-                                                                      h->label());
-                                    const auto idx = this->m_tocModel->index(this->m_tocModel->rowCount() - 1, 0);
-
-                                    current.push_back(idx);
-                                    urls.append(QLatin1Char('#') + this->m_tocModel->shortId(idx));
-                                } else {
-                                    this->m_tocModel->addChildItem(current.back(),
-                                                                   this->paragraphToMenuText(h->text().get()),
-                                                                   h->startLine(),
-                                                                   h->level(),
-                                                                   h->label());
-
-                                    const auto idx =
-                                        this->m_tocModel->index(this->m_tocModel->rowCount(current.back()) - 1,
-                                                                0,
-                                                                current.back());
-                                    current.push_back(idx);
-                                    urls.append(QLatin1Char('#') + this->m_tocModel->shortId(idx));
-                                }
-                            } else {
-                                this->m_tocModel->addTopLevelItem(this->paragraphToMenuText(h->text().get()),
-                                                                  h->startLine(),
-                                                                  h->level(),
-                                                                  h->label());
-
-                                const auto idx = this->m_tocModel->index(this->m_tocModel->rowCount() - 1, 0);
-
-                                current.push_back(idx);
-                                urls.append(QLatin1Char('#') + this->m_tocModel->shortId(idx));
-                            }
-                        }
-                    },
-                    1);
-
-                std::sort(urls.begin(), urls.end());
-                m_urlAutoCompleteModel->setStringList(urls);
-            } else {
-                m_tocModel->updateTocLines(newToc);
-            }
-        }
-    }
-
-    //! Run function when editor will be ready.
-    template<class Func>
-    void runWhenEditorReady(Func f)
-    {
-        if (m_editor->isReady()) {
-            f();
-        } else {
-            m_funcsQueue.push_back(std::move(f));
-        }
-    }
-
-    MainWindow *m_q = nullptr;
-    Editor *m_editor = nullptr;
-    WebView *m_preview = nullptr;
-    PreviewPage *m_page = nullptr;
-    QSplitter *m_tabEditorSplitter = nullptr;
-    QSplitter *m_editorPreviewSplitter = nullptr;
-    QWidget *m_sidebarPanel = nullptr;
-    HtmlDocument *m_html = nullptr;
-    WordWrapItemDelegate *m_delegate = nullptr;
-    Find *m_find = nullptr;
-    FindWeb *m_findWeb = nullptr;
-    GoToLine *m_gotoline = nullptr;
-    TabWidget *m_tabs = nullptr;
-    QAction *m_newAction = nullptr;
-    QAction *m_openAction = nullptr;
-    QAction *m_saveAction = nullptr;
-    QAction *m_saveAsAction = nullptr;
-    QAction *m_toggleFindAction = nullptr;
-    QAction *m_toggleFindWebAction = nullptr;
-    QAction *m_toggleGoToLineAction = nullptr;
-    QAction *m_editMenuAction = nullptr;
-    QAction *m_loadAllAction = nullptr;
-    QAction *m_viewAction = nullptr;
-    QAction *m_livePreviewAction = nullptr;
-    QAction *m_convertToPdfAction = nullptr;
-    QAction *m_addTOCAction = nullptr;
-    QAction *m_nextMisspelled = nullptr;
-    QAction *m_tabAction = nullptr;
-    QAction *m_backtabAction = nullptr;
-    QAction *m_goBackAction = nullptr;
-    QAction *m_goFwdAction = nullptr;
-    QAction *m_orientAction = nullptr;
-    QMenu *m_actionMenu = nullptr;
-    QMenu *m_standardEditMenu = nullptr;
-    QMenu *m_settingsMenu = nullptr;
-    QToolButton *m_backBtn = nullptr;
-    QToolButton *m_fwdBtn = nullptr;
-    QWidget *m_filePanel = nullptr;
-    QTreeWidget *m_fileTree = nullptr;
-    QWidget *m_tocPanel = nullptr;
-    QWidget *m_editorPreviewWidget = nullptr;
-    QWidget *m_editorPanel = nullptr;
-    QWidget *m_previewPanel = nullptr;
-    WorkingDirectoryWidget *m_workingDirectoryWidget = nullptr;
-    TocTreeView *m_tocTree = nullptr;
-    TocModel *m_tocModel = nullptr;
-    QStringListModel *m_urlAutoCompleteModel = nullptr;
-    QSortFilterProxyModel *m_filterTocModel = nullptr;
-    QLabel *m_cursorPosLabel = nullptr;
-    QLineEdit *m_tocFilterLine = nullptr;
-    bool m_sizesInitialized = false;
-    bool m_shownAlready = false;
-    bool m_loadAllFlag = false;
-    bool m_previewMode = false;
-    bool m_tabsVisible = false;
-    bool m_livePreviewVisible = true;
-    QSharedPointer<MD::Document> m_mdDoc;
-    QSharedPointer<MD::Document> m_tocDoc;
-    QString m_baseUrl;
-    QString m_rootFilePath;
-    QString m_mdPdfExe;
-    QString m_launcherExe;
-    QString m_htmlContent;
-    QString m_tmpWorkingDir;
-    QString m_requestedRef;
-    int m_tabWidth = -1;
-    int m_minTabWidth = -1;
-    int m_currentTab = 0;
-    int m_settingsWindowWidth = -1;
-    int m_settingsWindowHeight = -1;
-    bool m_settingsWindowMaximized = false;
-    bool m_isDefaultFile = true;
-    bool m_horizontalOrient = true;
-    QVector<std::function<void()>> m_funcsQueue;
-    QStringList m_navigationStack;
-    int m_navigationStackIdx = -1;
-    StartupState m_startupState;
-    //! Names of files available in navigation toolbar.
-    QSet<QString> m_fullFileNames;
-}; // struct MainWindowPrivate
 
 //
 // MainWindow
@@ -1631,11 +501,15 @@ void MainWindow::onTextChanged()
         m_d->m_mdDoc = m_d->m_editor->currentDoc();
 
         if (m_d->m_livePreviewVisible && m_d->m_mdDoc) {
-            m_d->m_html->setText(MD::toHtml<HtmlVisitor>(m_d->m_mdDoc,
-                                                         false,
-                                                         QStringLiteral("<img src=\"qrc:/res/img/go-jump.png\" />"),
-                                                         true,
-                                                         &m_d->m_editor->idsMap()));
+            m_d->m_html->setText(MD::toHtml<HtmlConv>(m_d->m_mdDoc,
+                                                      false,
+                                                      QStringLiteral("<img src=\"qrc:/res/img/go-jump.png\" />"),
+                                                      true,
+                                                      &m_d->m_editor->idsMap()));
+
+            if (m_d->m_editor->settings().m_previewFollowEditor) {    
+                scrollToCursor();
+            }
         }
     }
 
@@ -1762,27 +636,83 @@ void MainWindow::onLineHovered(int lineNumber,
     }
 }
 
+void MainWindow::scrollPreview(const QString &id,
+                               qsizetype count,
+                               bool code)
+{
+    if (code) {
+        if (count > 0) {
+            m_d->m_page->runJavaScript(
+                QStringLiteral("scrollToLineInCode('%1', '%2')").arg(id, QString::number(count)));
+        } else {
+            m_d->m_page->runJavaScript(QStringLiteral("scrollToLineInCode('%1', '0')").arg(id));
+        }
+    } else {
+        if (count > 0) {
+            onScrollWebViewTo(QStringLiteral("%1-%2").arg(id, QString::number(count)));
+        } else {
+            onScrollWebViewTo(id);
+        }
+    }
+}
+
+void MainWindow::onEditorScrolled(int)
+{
+    const auto centerY = m_d->m_editor->viewport()->height() / 2;
+    const QPoint centerPoint(m_d->m_editor->viewport()->width() / 2, centerY);
+
+    const auto c = m_d->m_editor->cursorForPosition(centerPoint);
+
+    scrollPreview(
+        c.blockNumber(),
+        [this](const QString &id, qsizetype count, bool code, const QPoint &pos) {
+            this->scrollPreview(id, count, code);
+        },
+        QPoint());
+}
+
+void MainWindow::scrollToCursor()
+{
+    scrollPreview(
+        m_d->m_editor->textCursor().blockNumber(),
+        [this](const QString &id, qsizetype count, bool code, const QPoint &) {
+            this->scrollPreview(id, count, code);
+        },
+        QPoint());
+}
+
+void MainWindow::onPinPreviewEditor(bool checked)
+{
+    if (checked) {
+        m_d->m_pinPreviewEditor->setIcon(
+            QIcon::fromTheme(QStringLiteral("window-unpin"), QIcon(QStringLiteral(":/res/img/window-unpin.png"))));
+        m_d->m_pinPreviewEditor->setToolTip(MainWindow::tr("Unpin Web preview scrolling to editor"));
+        connect(m_d->m_editor->verticalScrollBar(), &QScrollBar::valueChanged, this, &MainWindow::onEditorScrolled);
+    } else {
+        m_d->m_pinPreviewEditor->setIcon(
+            QIcon::fromTheme(QStringLiteral("window-pin"), QIcon(QStringLiteral(":/res/img/window-pin.png"))));
+        m_d->m_pinPreviewEditor->setToolTip(MainWindow::tr("Pin Web preview scrolling to editor"));
+        disconnect(m_d->m_editor->verticalScrollBar(), &QScrollBar::valueChanged, this, &MainWindow::onEditorScrolled);
+    }
+
+    m_d->m_editor->setPreviewFollowEditor(checked);
+}
+
 void MainWindow::onLineNumberContextMenuRequested(int lineNumber,
                                                   const QPoint &pos)
 {
-    const auto items = m_d->m_editor->syntaxHighlighter().findFirstInCache(
-        {0, lineNumber, m_d->m_editor->document()->findBlockByLineNumber(lineNumber).length(), lineNumber});
-
-    if (!items.isEmpty()) {
-        const auto it = m_d->m_editor->idsMap().find(items.front());
-
-        if (it != m_d->m_editor->idsMap().cend()) {
+    scrollPreview(
+        lineNumber,
+        [this](const QString &id, qsizetype count, bool code, const QPoint &pos) {
             QMenu menu;
 
-            const auto id = it.value();
-
-            menu.addAction(tr("Scroll Web Preview To"), [id, this]() {
-                this->onScrollWebViewTo(id);
+            menu.addAction(tr("Scroll Web Preview To"), [id, this, count, code]() {
+                this->scrollPreview(id, count, code);
             });
 
             menu.exec(pos);
-        }
-    }
+        },
+        pos);
 }
 
 void MainWindow::onFind(bool)
@@ -1888,6 +818,7 @@ const QString s_githubBehaviour = QStringLiteral("githubBehaviour");
 const QString s_dontUseAutoListInCodeBlock = QStringLiteral("dontUseAutoListInCodeBlock");
 const QString s_autoCodeBlocks = QStringLiteral("autoCodeBlocks");
 const QString s_horizontalOrient = QStringLiteral("horizontalUi");
+const QString s_previewFollowEditor = QStringLiteral("previewFollowEditor");
 
 void MainWindow::saveCfg() const
 {
@@ -1919,6 +850,7 @@ void MainWindow::saveCfg() const
     s.setValue(s_codeBlockTheme, m_d->m_editor->settings().m_colors.m_codeTheme);
     s.setValue(s_drawCodeBackground, m_d->m_editor->settings().m_colors.m_drawCodeBackground);
     s.setValue(s_sidebarWidth, m_d->m_tabWidth);
+    s.setValue(s_previewFollowEditor, m_d->m_editor->settings().m_previewFollowEditor);
 
     s.beginGroup(s_indent);
     s.setValue(s_mode, m_d->m_editor->settings().m_indentMode == Editor::IndentMode::Tabs ? s_tabs : s_spaces);
@@ -2079,6 +1011,9 @@ void MainWindow::readCfg()
         s.value(s_autoLinks, m_d->m_editor->settings().m_isLinksAutoCompletionEnabled).toBool());
     m_d->m_editor->enableAutoCompletionOfEmojies(
         s.value(s_autoEmojies, m_d->m_editor->settings().m_isEmojiAutoCompletionEnabled).toBool());
+    m_d->m_pinPreviewEditor->setChecked(
+        s.value(s_previewFollowEditor, m_d->m_editor->settings().m_previewFollowEditor).toBool());
+    onPinPreviewEditor(m_d->m_pinPreviewEditor->isChecked());
 
     Margins margins = m_d->m_editor->settings().m_margins;
 
@@ -2238,7 +1173,11 @@ void MainWindow::onCursorPositionChanged()
     m_d->m_backtabAction->setEnabled(c.hasSelection());
 
     m_d->m_cursorPosLabel->setText(
-        tr("<b>Line:</b> %1, <b>Col:</b> %2").arg(c.block().blockNumber() + 1).arg(c.positionInBlock() + 1));
+        tr("<b>Line:</b> %1, <b>Col:</b> %2").arg(c.blockNumber() + 1).arg(c.positionInBlock() + 1));
+
+    if (m_d->m_editor->settings().m_previewFollowEditor) {
+        scrollToCursor();
+    }
 }
 
 void MainWindow::onEditMenuActionTriggered(QAction *action)
@@ -2556,11 +1495,11 @@ void MainWindow::readAllLinked(bool updateRootFileName)
         }
 
         if (m_d->m_livePreviewVisible) {
-            m_d->m_html->setText(MD::toHtml<HtmlVisitor>(m_d->m_mdDoc,
-                                                         false,
-                                                         QStringLiteral("<img src=\"qrc:/res/img/go-jump.png\" />"),
-                                                         true,
-                                                         &idsMap));
+            m_d->m_html->setText(MD::toHtml<HtmlConv>(m_d->m_mdDoc,
+                                                      false,
+                                                      QStringLiteral("<img src=\"qrc:/res/img/go-jump.png\" />"),
+                                                      true,
+                                                      &idsMap));
         }
     }
 }
@@ -2685,12 +1624,35 @@ void MainWindow::onOpenRequestedRef()
 
 void MainWindow::onScrollEditor(const QString &id)
 {
-    if (!id.isEmpty() && m_d->m_editor->itemsMap().contains(id)) {
-        auto item = m_d->m_editor->itemsMap()[id];
+    if (id.isEmpty()) {
+        return;
+    }
+
+    qsizetype i = id.length() - 1;
+
+    for (; i >= 0; --i) {
+        if (!id[i].isNumber()) {
+            break;
+        }
+    }
+
+    const auto number = (i < id.length() - 1 ? id.sliced(i + 1, id.length() - 1 - i) : QString());
+    const auto withNum = (id[i] == QLatin1Char('-') && !number.isEmpty());
+
+    auto tmp = id;
+
+    if (withNum) {
+        tmp = id.sliced(0, i);
+    }
+
+    if (!tmp.isEmpty() && m_d->m_editor->itemsMap().contains(tmp)) {
+        auto item = m_d->m_editor->itemsMap()[tmp];
 
         auto c = m_d->m_editor->textCursor();
 
-        c.setPosition(m_d->m_editor->document()->findBlockByNumber(item->startLine()).position());
+        c.setPosition(m_d->m_editor->document()
+                          ->findBlockByNumber(item->startLine() + (withNum ? number.toInt() : 0))
+                          .position());
 
         m_d->m_editor->setTextCursor(c);
 
@@ -2818,11 +1780,11 @@ void MainWindow::setStateOfEditorPreviewSplitter(bool updateHtml)
 
         if (updateHtml) {
             if (m_d->m_mdDoc) {
-                m_d->m_html->setText(MD::toHtml<HtmlVisitor>(m_d->m_mdDoc,
-                                                             false,
-                                                             QStringLiteral("<img src=\"qrc:/res/img/go-jump.png\" />"),
-                                                             true,
-                                                             &m_d->m_editor->idsMap()));
+                m_d->m_html->setText(MD::toHtml<HtmlConv>(m_d->m_mdDoc,
+                                                          false,
+                                                          QStringLiteral("<img src=\"qrc:/res/img/go-jump.png\" />"),
+                                                          true,
+                                                          &m_d->m_editor->idsMap()));
             } else {
                 m_d->m_html->setText({});
             }
@@ -3075,6 +2037,8 @@ void MainWindow::onSettings()
             m_d->m_editor->enableAutoCodeBlocks(settings.m_isAutoCodeBlocksEnabled);
             m_d->m_editor->enableAutoCompletionOfLinks(settings.m_isLinksAutoCompletionEnabled);
             m_d->m_editor->enableAutoCompletionOfEmojies(settings.m_isEmojiAutoCompletionEnabled);
+            m_d->m_pinPreviewEditor->setChecked(settings.m_previewFollowEditor);
+            onPinPreviewEditor(m_d->m_pinPreviewEditor->isChecked());
 
             m_d->m_editor->doUpdate();
 
@@ -3097,5 +2061,3 @@ void MainWindow::onSettings()
 }
 
 } /* namespace MdEditor */
-
-#include "mainwindow.moc"

@@ -59,7 +59,16 @@ set(LIB_SRC
     editor_settings.h
     editor_settings.cpp
     editor_settings.ui
-    const.h)
+    const.h
+    html.h
+    html.cpp
+    mainwindow_p.h
+    mainwindow_p.cpp
+    widgets.h
+    widgets.cpp
+    preview_settings.h
+    preview_settings.cpp
+    preview_settings.ui)
 
 set(SRC main.cpp)
 

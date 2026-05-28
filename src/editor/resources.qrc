@@ -25,6 +25,8 @@
         <file>res/img/view-preview.png</file>
 		<file>res/img/layer-visible-on.png</file>
         <file>res/img/preferences-plugin.png</file>
+        <file>res/img/window-pin.png</file>
+        <file>res/img/window-unpin.png</file>
         <file>res/img/view-split-left-right.png</file>
         <file>res/img/view-split-top-bottom.png</file>
         <file>res/css/github-markdown.css</file>

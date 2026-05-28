@@ -8,6 +8,7 @@
 #include "colors.h"
 #include "editor_settings.h"
 #include "font.h"
+#include "preview_settings.h"
 
 // md-shared include.
 #include "plugins_page.h"
@@ -37,7 +38,8 @@ bool operator!=(const Settings &s1,
             || s1.m_dontUseAutoListInCodeBlock != s2.m_dontUseAutoListInCodeBlock
             || s1.m_isAutoCodeBlocksEnabled != s2.m_isAutoCodeBlocksEnabled
             || s1.m_isLinksAutoCompletionEnabled != s2.m_isLinksAutoCompletionEnabled
-            || s1.m_isEmojiAutoCompletionEnabled != s2.m_isEmojiAutoCompletionEnabled);
+            || s1.m_isEmojiAutoCompletionEnabled != s2.m_isEmojiAutoCompletionEnabled
+            || s1.m_previewFollowEditor != s2.m_previewFollowEditor);
 }
 
 //
@@ -52,6 +54,7 @@ SettingsDlg::SettingsDlg(const Settings &s,
     , m_colorsPage(new ColorsPage(this))
     , m_fontPage(new FontPage(this))
     , m_pluginsPage(new MdShared::PluginsPage(this))
+    , m_previewPage(new PreviewSettingsPage(this))
 {
     m_colorsPage->initCodeThemes(syntax);
     m_colorsPage->colors() = s.m_colors;
@@ -78,11 +81,14 @@ SettingsDlg::SettingsDlg(const Settings &s,
 
     m_pluginsPage->setCfg(s.m_pluginsCfg);
 
+    m_previewPage->ui().m_follow->setChecked(s.m_previewFollowEditor);
+
     installFilterForChildren(this);
 
     m_colorsPageItem = addPage(m_colorsPage, tr("Colors"));
     auto fontPageItem = addPage(m_fontPage, tr("Font"));
     m_editorPageItem = addPage(m_editorPage, tr("Editor"));
+    auto previewPageItem = addPage(m_previewPage, tr("Preview"));
     auto pluginsPageItem = addPage(m_pluginsPage, tr("Plugins"));
 
     m_colorsPageItem->setIcon(
@@ -93,6 +99,8 @@ SettingsDlg::SettingsDlg(const Settings &s,
                                                QIcon(QStringLiteral(":/res/img/document-properties.png"))));
     pluginsPageItem->setIcon(QIcon::fromTheme(QStringLiteral("preferences-plugin"),
                                               QIcon(QStringLiteral(":/res/img/preferences-plugin.png"))));
+    previewPageItem->setIcon(
+        QIcon::fromTheme(QStringLiteral("view-preview"), QIcon(QStringLiteral(":/res/img/view-preview.png"))));
 
     setFaceType(KPageDialog::List);
 }
@@ -116,6 +124,7 @@ Settings SettingsDlg::settings() const
     s.m_isAutoCodeBlocksEnabled = m_editorPage->ui().m_autoFormatCodeBlocks->isChecked();
     s.m_isLinksAutoCompletionEnabled = m_editorPage->ui().m_autoLinks->isChecked();
     s.m_isEmojiAutoCompletionEnabled = m_editorPage->ui().m_autoEmoji->isChecked();
+    s.m_previewFollowEditor = m_previewPage->ui().m_follow->isChecked();
 
     return s;
 }

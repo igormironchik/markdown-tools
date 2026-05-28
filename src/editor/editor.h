@@ -10,7 +10,6 @@
 #include <QScopedPointer>
 
 // md-editor include.
-#include "colorsdlg.h"
 #include "syntaxvisitor.h"
 
 // md4qt include.
@@ -149,9 +148,10 @@ public:
 
     //! Set indent mode.
     void setIndentMode(IndentMode mode);
-
     //! Set amount of spaces in indent.
     void setIndentSpacesCount(int s);
+    //! Enable preview to follow editor.
+    void setPreviewFollowEditor(bool on = true);
 
     //! \return Settings.
     const Settings &settings() const;
