@@ -126,7 +126,7 @@ private:
                 qsizetype count = 0;
                 bool code = false;
 
-                if (items.back()->type() == MD::ItemType::Code) {
+                if (items.back()->type() == MD::ItemType::Code && !static_cast<MD::Code *>(items.back())->isInline()) {
                     count = lineNumber - items.back()->startLine();
                     code = true;
                 } else {
