@@ -66,6 +66,42 @@
                 return topParent;
             }
 
+            function findLineByTextClick(clientX, clientY, elem) {
+                let textNode = null;
+
+                if (document.caretPositionFromPoint) {
+                    const position = document.caretPositionFromPoint(clientX, clientY);
+                    if (position) textNode = position.offsetNode;
+                } else if (document.caretRangeFromPoint) {
+                    const range = document.caretRangeFromPoint(clientX, clientY);
+                    if (range) textNode = range.startContainer;
+                }
+
+                if (!textNode) {
+                    textNode = elem;
+                }
+
+                if (!textNode) return null;
+
+                const allNodes = [];
+                const walker = document.createTreeWalker(elem, NodeFilter.SHOW_ALL, null, false);
+                let currentNode = walker.nextNode();
+
+                while (currentNode) {
+                    allNodes.push(currentNode);
+                    currentNode = walker.nextNode();
+                }
+
+                const targetIndex = allNodes.indexOf(textNode);
+
+                const lastSpan = allNodes
+                    .slice(0, targetIndex)
+                    .filter(node => node.tagName === 'SPAN')
+                    .at(-1);
+
+                return lastSpan;
+            }
+
             window.getId = function(x, y) {
                 let elem = document.elementFromPoint(x, y);
                 let topParent = elem;
@@ -95,33 +131,10 @@
                     }
                 } else {
                     topParent = findParent(topParent);
-                    const spans = Array.from(topParent.querySelectorAll('span'));
+                    elem = findLineByTextClick(x, y, topParent);
 
-                    let closestSpan = null;
-                    let minDistance = Infinity;
-
-                    for (const span of spans) {
-                        const range = document.createRange();
-                        range.selectNode(span);
-                        const rect = range.getBoundingClientRect();
-
-                        if (y >= rect.top && y <= rect.bottom) {
-                            closestSpan = span;
-                            break;
-                        }
-
-                        const distanceToTop = Math.abs(y - rect.top);
-                        const distanceToBottom = Math.abs(y - rect.bottom);
-                        const currentDistance = Math.min(distanceToTop, distanceToBottom);
-
-                        if (currentDistance < minDistance) {
-                            minDistance = currentDistance;
-                            closestSpan = span;
-                        }
-                    }
-
-                    if (closestSpan) {
-                        topParent = closestSpan;
+                    if (elem) {
+                        topParent = elem;
                     }
                 }
 
