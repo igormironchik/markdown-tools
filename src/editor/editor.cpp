@@ -60,7 +60,7 @@ BlockLines::BlockLines(qsizetype start,
 {
 }
 
-void BlockLines::find(qsizetype line,
+bool BlockLines::find(qsizetype line,
                       QVector<BlockLines *> *ret) const
 {
     const auto it = std::lower_bound(m_children.cbegin(),
@@ -74,7 +74,11 @@ void BlockLines::find(qsizetype line,
         ret->append(it->get());
 
         (*it)->find(line, ret);
+
+        return true;
     }
+
+    return false;
 }
 
 bool operator!=(const Margins &l,
@@ -284,6 +288,8 @@ private:
 // DocumentLayoutWithRightAlignment
 //
 
+static const int s_foldingState = 1;
+
 //! Layout to support right alignment of text in plain text editor.
 class DocumentLayoutWithRightAlignment : public QPlainTextDocumentLayout
 {
@@ -294,27 +300,40 @@ public:
         , m_viewport(viewport)
     {
     }
+
     ~DocumentLayoutWithRightAlignment() override = default;
+
+    QSizeF foldingSize(const QTextBlock &block) const
+    {
+        const auto fm = QFontMetrics(block.document()->defaultFont());
+        const auto w = fm.horizontalAdvance(QStringLiteral("..."));
+        const auto h = fm.ascent();
+
+        return QSizeF(w, h);
+    }
+
+    bool rtlDirection(const QTextBlock &block) const
+    {
+        switch (block.textDirection()) {
+        case Qt::RightToLeft:
+            return true;
+
+        case Qt::LayoutDirectionAuto:
+            return block.text().isRightToLeft();
+
+        default:
+            return false;
+        }
+    }
 
     QRectF blockBoundingRect(const QTextBlock &block) const override
     {
-        const auto r = QPlainTextDocumentLayout::blockBoundingRect(block);
+        auto r = QPlainTextDocumentLayout::blockBoundingRect(block);
+        const auto folded = block.userState() == s_foldingState;
+        const auto lastLineWidth = block.layout()->lineAt(block.lineCount() - 1).horizontalAdvance();
 
         if (block.isValid()) {
-            bool alignRight = false;
-
-            switch (block.textDirection()) {
-            case Qt::RightToLeft:
-                alignRight = true;
-                break;
-
-            case Qt::LayoutDirectionAuto:
-                alignRight = block.text().isRightToLeft();
-                break;
-
-            default:
-                break;
-            }
+            bool alignRight = rtlDirection(block);
 
             if (alignRight) {
                 auto tl = block.layout();
@@ -338,9 +357,55 @@ public:
                     line.setPosition({margin + availableWidth - line.naturalTextWidth(), line.position().y()});
                 }
             }
+
+            if (folded && lastLineWidth + foldingSize(block).width() > r.width()) {
+                const auto fm = QFontMetrics(block.document()->defaultFont());
+                r.adjust(0., 0., 0., fm.height());
+            }
         }
 
         return r;
+    }
+
+    void draw(QPainter *painter,
+              const QAbstractTextDocumentLayout::PaintContext &context) override
+    {
+        QPlainTextDocumentLayout::draw(painter, context);
+
+        QTextBlock block = document()->begin();
+        while (block.isValid()) {
+            const auto folded = block.userState() == s_foldingState;
+
+            if (folded) {
+                const auto lastLineWidth = block.layout()->lineAt(block.lineCount() - 1).horizontalAdvance();
+
+                QRectF br = blockBoundingRect(block);
+                if (br.intersects(context.clip)) {
+                    painter->save();
+                    painter->translate(br.topLeft());
+
+                    painter->setPen(Qt::black);
+
+                    const auto fs = foldingSize(block);
+                    const auto y = lastLineWidth + fs.width() <= br.width()
+                        ? block.layout()->lineAt(block.lineCount() - 1).y()
+                        : block.layout()->lineAt(block.lineCount() - 1).y()
+                            + block.layout()->lineAt(block.lineCount() - 1).height();
+                    const auto rtl = rtlDirection(block);
+                    const auto x = lastLineWidth + fs.width() <= br.width()
+                            ? (rtl ? br.width() - lastLineWidth - fs.width() : lastLineWidth)
+                            : (rtl ? br.width() - fs.width() : 0);
+
+                    const QRectF r(x, y, fs.width(), fs.height());
+                    painter->drawRoundedRect(r, 4, 4);
+                    painter->drawText(r, Qt::AlignCenter, QStringLiteral("..."));
+
+                    painter->restore();
+                }
+            }
+
+            block = block.next();
+        }
     }
 
 private:
@@ -616,6 +681,8 @@ struct EditorPrivate {
     Editor::ItemsMap m_itemsMap;
     //! Lines of blocks.
     QSharedPointer<BlockLines> m_blockLines;
+    //! Current state of collapse handles (line number/collapsed).
+    QHash<qsizetype, bool> m_blockStates;
     //! Syntax highlighter.
     SyntaxVisitor m_syntax;
     //! Tread for parsing.
@@ -757,6 +824,18 @@ void Editor::enableAutoCompletionOfEmojies(bool on)
     m_d->m_settings.m_isEmojiAutoCompletionEnabled = on;
 }
 
+void Editor::collapse(qsizetype line,
+                      bool on)
+{
+    if (on) {
+        document()->findBlockByNumber(line).setUserState(s_foldingState);
+    } else {
+        document()->findBlockByNumber(line).setUserState(0);
+    }
+
+    viewport()->update();
+}
+
 void Editor::setIndentMode(IndentMode mode)
 {
     m_d->m_settings.m_indentMode = mode;
@@ -780,6 +859,13 @@ const Settings &Editor::settings() const
 const BlockLines &Editor::blockLines() const
 {
     return *m_d->m_blockLines.get();
+}
+
+QHash<qsizetype,
+      bool> &
+Editor::collapsState()
+{
+    return m_d->m_blockStates;
 }
 
 bool Editor::foundHighlighted() const
@@ -1264,7 +1350,6 @@ void Editor::lineNumberAreaPaintEvent(QPaintEvent *event)
 
     while (block.isValid() && top <= event->rect().bottom()) {
         collaps.clear();
-        m_d->m_blockLines->find(blockNumber, &collaps);
 
         if (block.isVisible() && bottom >= event->rect().top()) {
             QString number = QString::number(blockNumber + 1);
@@ -1276,14 +1361,25 @@ void Editor::lineNumberAreaPaintEvent(QPaintEvent *event)
                              Qt::AlignRight,
                              number);
 
-            if (collapsStartHereAndIsNotOnOneLine(collaps, blockNumber)) {
+            if (m_d->m_blockStates.contains(blockNumber)
+                || (m_d->m_blockLines->find(blockNumber, &collaps)
+                    && collapsStartHereAndIsNotOnOneLine(collaps, blockNumber))) {
+                if (!m_d->m_blockStates.contains(blockNumber)) {
+                    m_d->m_blockStates.insert(blockNumber, false);
+                }
+
                 painter.drawPixmap(
                     m_d->m_lineNumberArea->width() - collapsingBlockHandleWidth() + 3,
                     top + (fontMetrics().height() - collapsingBlockHandleWidth() + 3) / 2,
                     collapsingBlockHandleWidth() - 3,
                     fontMetrics().height(),
-                    QIcon::fromTheme(QStringLiteral("arrow-down"), QIcon(QStringLiteral(":/res/img/arrow-down.png")))
-                        .pixmap(std::min(fontMetrics().height(), 16), std::min(fontMetrics().height(), 16)));
+                    m_d->m_blockStates[blockNumber]
+                        ? QIcon::fromTheme(QStringLiteral("arrow-right"),
+                                           QIcon(QStringLiteral(":/res/img/arrow-right.png")))
+                              .pixmap(std::min(fontMetrics().height(), 16), std::min(fontMetrics().height(), 16))
+                        : QIcon::fromTheme(QStringLiteral("arrow-down"),
+                                           QIcon(QStringLiteral(":/res/img/arrow-down.png")))
+                              .pixmap(std::min(fontMetrics().height(), 16), std::min(fontMetrics().height(), 16)));
             }
         }
 
@@ -1320,6 +1416,35 @@ void LineNumberArea::enterEvent(QEnterEvent *event)
     onHover(event->position().toPoint());
 
     event->ignore();
+}
+
+void LineNumberArea::mousePressEvent(QMouseEvent *e)
+{
+    if (e->button() == Qt::LeftButton) {
+        m_leftBtnPressed = true;
+
+        e->accept();
+    }
+
+    QWidget::mousePressEvent(e);
+}
+
+void LineNumberArea::mouseReleaseEvent(QMouseEvent *e)
+{
+    if (m_leftBtnPressed) {
+        const auto x = qRound(e->position().x());
+        if (x >= width() - m_codeEditor->collapsingBlockHandleWidth() + 3 && x <= width()) {
+            if (m_codeEditor->collapsState().contains(m_lineNumber)) {
+                m_codeEditor->collapsState()[m_lineNumber] = !m_codeEditor->collapsState()[m_lineNumber];
+                m_codeEditor->collapse(m_lineNumber, m_codeEditor->collapsState()[m_lineNumber]);
+                update();
+
+                e->accept();
+            }
+        }
+    }
+
+    QWidget::mouseReleaseEvent(e);
 }
 
 void LineNumberArea::mouseMoveEvent(QMouseEvent *event)
@@ -1784,6 +1909,7 @@ void Editor::onParsingDone(QSharedPointer<MD::Document> doc,
         m_d->m_blockLines = blockLines;
         m_d->m_syntax = syntax;
         m_d->m_isReady = true;
+        m_d->m_blockStates.clear();
 
         m_d->m_underlinedLink = {};
         m_d->restoreCursor();
@@ -1896,6 +2022,7 @@ void Editor::setText(const QString &t)
 {
     m_d->m_underlinedLink = {};
     m_d->restoreCursor();
+    m_d->m_blockStates.clear();
 
     setPlainText(t);
 }

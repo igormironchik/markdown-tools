@@ -37,7 +37,7 @@ struct BlockLines {
                BlockLines *parent = nullptr);
 
     //! Set vector of blocks (from top most parent to most nested children) with the given line.
-    void find(qsizetype line,
+    bool find(qsizetype line,
               QVector<BlockLines *> *ret) const;
 
     qsizetype m_start;
@@ -160,6 +160,9 @@ public:
     void enableAutoCompletionOfLinks(bool on = true);
     //! Enable auto-completion of Emojies.
     void enableAutoCompletionOfEmojies(bool on = true);
+    //! Collapse/uncollapse block.
+    void collapse(qsizetype line,
+                  bool on);
 
     //! Indent mode.
     enum class IndentMode {
@@ -179,6 +182,10 @@ public:
     const Settings &settings() const;
     //! \return Lines of blocks.
     const BlockLines &blockLines() const;
+    //! \return Collaps handles states.
+    QHash<qsizetype,
+          bool> &
+    collapsState();
 
 public slots:
     //! Enable/disable showing of unprintable characters.
@@ -329,6 +336,8 @@ protected:
 
     void enterEvent(QEnterEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
+    void mousePressEvent(QMouseEvent *e) override;
+    void mouseReleaseEvent(QMouseEvent *e) override;
     void leaveEvent(QEvent *event) override;
     void contextMenuEvent(QContextMenuEvent *event) override;
 
@@ -339,6 +348,7 @@ private:
 private:
     Editor *m_codeEditor;
     int m_lineNumber = -1;
+    bool m_leftBtnPressed = false;
 }; // class LineNumberArea
 
 } /* namespace MdEditor */
