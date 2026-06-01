@@ -26,6 +26,27 @@ QT_END_NAMESPACE
 namespace MdEditor
 {
 
+//
+// BlockLines
+//
+
+//! Information about lines of the block.
+struct BlockLines {
+    BlockLines(qsizetype start,
+               qsizetype end,
+               BlockLines *parent = nullptr);
+
+    //! Set vector of blocks (from top most parent to most nested children) with the given line.
+    void find(qsizetype line,
+              QVector<BlockLines *> *ret) const;
+
+    qsizetype m_start;
+    qsizetype m_end;
+    BlockLines *m_parent = nullptr;
+    // Should be sorted.
+    QVector<QSharedPointer<BlockLines>> m_children;
+}; // struct BlockLines
+
 struct Settings;
 
 //
@@ -97,8 +118,10 @@ public:
 
     //! Draw line number area.
     void lineNumberAreaPaintEvent(QPaintEvent *event);
+    //! \return Width of collapsing blocks handles.
+    int collapsingBlockHandleWidth() const;
     //! \return Width of line number area.
-    int lineNumberAreaWidth();
+    int lineNumberAreaWidth() const;
     //! \return Is any text in editor highlighted?
     bool foundHighlighted() const;
     //! \return Is any highlighted text in editor selected?
@@ -152,9 +175,10 @@ public:
     void setIndentSpacesCount(int s);
     //! Enable preview to follow editor.
     void setPreviewFollowEditor(bool on = true);
-
     //! \return Settings.
     const Settings &settings() const;
+    //! \return Lines of blocks.
+    const BlockLines &blockLines() const;
 
 public slots:
     //! Enable/disable showing of unprintable characters.
@@ -214,7 +238,8 @@ private slots:
                        unsigned long long int counter,
                        SyntaxVisitor syntax,
                        MD::details::IdsMap idsMap,
-                       Editor::ItemsMap itemsMap);
+                       Editor::ItemsMap itemsMap,
+                       QSharedPointer<BlockLines> blockLines);
     //! Link clicked.
     void onLinkClicked(const QString &url);
     //! Check for URL auto-completion.

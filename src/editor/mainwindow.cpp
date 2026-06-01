@@ -507,7 +507,7 @@ void MainWindow::onTextChanged()
                                                       true,
                                                       &m_d->m_editor->idsMap()));
 
-            if (m_d->m_editor->settings().m_previewFollowEditor) {    
+            if (m_d->m_editor->settings().m_previewFollowEditor) {
                 scrollToCursor();
             }
         }

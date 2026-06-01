@@ -32,6 +32,7 @@
 #include <QThread>
 
 // C++ include.
+#include <algorithm>
 #include <functional>
 #include <limits>
 #include <utility>
@@ -45,6 +46,36 @@
 
 namespace MdEditor
 {
+
+//
+// BlockLines
+//
+
+BlockLines::BlockLines(qsizetype start,
+                       qsizetype end,
+                       BlockLines *parent)
+    : m_start(start)
+    , m_end(end)
+    , m_parent(parent)
+{
+}
+
+void BlockLines::find(qsizetype line,
+                      QVector<BlockLines *> *ret) const
+{
+    const auto it = std::lower_bound(m_children.cbegin(),
+                                     m_children.cend(),
+                                     line,
+                                     [](const QSharedPointer<BlockLines> &block, qsizetype line) {
+                                         return (line > block->m_end);
+                                     });
+
+    if (it != m_children.cend() && line >= (*it)->m_start && line <= (*it)->m_end) {
+        ret->append(it->get());
+
+        (*it)->find(line, ret);
+    }
+}
 
 bool operator!=(const Margins &l,
                 const Margins &r)
@@ -69,7 +100,8 @@ signals:
               unsigned long long int,
               SyntaxVisitor syntax,
               MD::details::IdsMap idsMap,
-              Editor::ItemsMap itemsMap);
+              Editor::ItemsMap itemsMap,
+              QSharedPointer<BlockLines> blockLines);
 
 public:
     DataParser()
@@ -146,11 +178,63 @@ private slots:
                 },
                 1);
 
-            emit done(doc, m_counter, m_syntax, idsMap, itemsMap);
+            auto block = QSharedPointer<BlockLines>::create(-1, -1, nullptr);
+
+            collectBlockLines(*block.get(), *doc.get(), tmp);
+
+            emit done(doc, m_counter, m_syntax, idsMap, itemsMap, block);
         }
     }
 
 private:
+    void setEndLine(BlockLines *block,
+                    qsizetype line,
+                    MD::TextStream &stream)
+    {
+        while (line >= 0) {
+            block->m_end = line;
+            auto tmp = stream.moveTo(line);
+
+            if (MD::isEmptyLine(tmp)) {
+                --line;
+            } else {
+                break;
+            }
+        }
+    }
+    void collectBlockLines(BlockLines &lines,
+                           MD::Block &block,
+                           MD::TextStream &stream)
+    {
+        for (const auto &b : std::as_const(block.items())) {
+            if (b->type() != MD::ItemType::Anchor) {
+                lines.m_children.append(QSharedPointer<BlockLines>::create(-1, -1, &lines));
+
+                if (b->type() != MD::ItemType::Code) {
+                    lines.m_children.back()->m_start = b->startLine();
+                    setEndLine(lines.m_children.back().get(), b->endLine(), stream);
+                } else {
+                    auto c = static_cast<MD::Code *>(b.get());
+
+                    if (c->isFensedCode()) {
+                        lines.m_children.back()->m_start = b->startLine() - 1;
+                        setEndLine(lines.m_children.back().get(), b->endLine() + 1, stream);
+                    } else {
+                        lines.m_children.back()->m_start = b->startLine();
+                        setEndLine(lines.m_children.back().get(), b->endLine(), stream);
+                    }
+                }
+
+                if (b->type() != MD::ItemType::Paragraph) {
+                    auto child = dynamic_cast<MD::Block *>(b.get());
+
+                    if (child) {
+                        collectBlockLines(*lines.m_children.back().get(), *child, stream);
+                    }
+                }
+            }
+        }
+    }
     //! \return Generated ID for a given item.
     QString generateId(MD::Item *item)
     {
@@ -281,6 +365,9 @@ struct EditorPrivate {
                                      m_q))
         , m_emojiCompleter(new QCompleter(m_emojiModel,
                                           m_q))
+        , m_blockLines(QSharedPointer<BlockLines>::create(-1,
+                                                          -1,
+                                                          nullptr))
         , m_parsingThread(new QThread(m_q))
         , m_parser(new DataParser)
     {
@@ -527,6 +614,8 @@ struct EditorPrivate {
     MD::details::IdsMap m_idsMap;
     //! Map of items be theirs IDs.
     Editor::ItemsMap m_itemsMap;
+    //! Lines of blocks.
+    QSharedPointer<BlockLines> m_blockLines;
     //! Syntax highlighter.
     SyntaxVisitor m_syntax;
     //! Tread for parsing.
@@ -688,6 +777,11 @@ const Settings &Editor::settings() const
     return m_d->m_settings;
 }
 
+const BlockLines &Editor::blockLines() const
+{
+    return *m_d->m_blockLines.get();
+}
+
 bool Editor::foundHighlighted() const
 {
     return !m_d->m_extraSelections.isEmpty();
@@ -759,7 +853,12 @@ const QString &Editor::docName() const
     return m_d->m_docName;
 }
 
-int Editor::lineNumberAreaWidth()
+int Editor::collapsingBlockHandleWidth() const
+{
+    return 3 + 16;
+}
+
+int Editor::lineNumberAreaWidth() const
 {
     int digits = 1;
     int max = qMax(1, blockCount());
@@ -773,7 +872,7 @@ int Editor::lineNumberAreaWidth()
         digits = 2;
     }
 
-    int space = 3 + fontMetrics().horizontalAdvance(QLatin1Char('9')) * digits;
+    int space = 3 + fontMetrics().horizontalAdvance(QLatin1Char('9')) * digits + collapsingBlockHandleWidth();
 
     return space;
 }
@@ -1139,6 +1238,18 @@ void Editor::highlightCurrentLine()
     }
 }
 
+inline bool collapsStartHereAndIsNotOnOneLine(const QVector<BlockLines *> &collaps,
+                                              qsizetype line)
+{
+    for (const auto &c : std::as_const(collaps)) {
+        if (c->m_start == line && c->m_end > c->m_start) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void Editor::lineNumberAreaPaintEvent(QPaintEvent *event)
 {
     QPainter painter(m_d->m_lineNumberArea);
@@ -1149,11 +1260,31 @@ void Editor::lineNumberAreaPaintEvent(QPaintEvent *event)
     int top = qRound(blockBoundingGeometry(block).translated(contentOffset()).top());
     int bottom = top + qRound(blockBoundingRect(block).height());
 
+    QVector<BlockLines *> collaps;
+
     while (block.isValid() && top <= event->rect().bottom()) {
+        collaps.clear();
+        m_d->m_blockLines->find(blockNumber, &collaps);
+
         if (block.isVisible() && bottom >= event->rect().top()) {
             QString number = QString::number(blockNumber + 1);
             painter.setPen(Qt::black);
-            painter.drawText(0, top, m_d->m_lineNumberArea->width(), fontMetrics().height(), Qt::AlignRight, number);
+            painter.drawText(0,
+                             top,
+                             m_d->m_lineNumberArea->width() - collapsingBlockHandleWidth(),
+                             fontMetrics().height(),
+                             Qt::AlignRight,
+                             number);
+
+            if (collapsStartHereAndIsNotOnOneLine(collaps, blockNumber)) {
+                painter.drawPixmap(
+                    m_d->m_lineNumberArea->width() - collapsingBlockHandleWidth() + 3,
+                    top + (fontMetrics().height() - collapsingBlockHandleWidth() + 3) / 2,
+                    collapsingBlockHandleWidth() - 3,
+                    fontMetrics().height(),
+                    QIcon::fromTheme(QStringLiteral("arrow-down"), QIcon(QStringLiteral(":/res/img/arrow-down.png")))
+                        .pixmap(std::min(fontMetrics().height(), 16), std::min(fontMetrics().height(), 16)));
+            }
         }
 
         block = block.next();
@@ -1643,12 +1774,14 @@ void Editor::onParsingDone(QSharedPointer<MD::Document> doc,
                            unsigned long long int counter,
                            SyntaxVisitor syntax,
                            MD::details::IdsMap idsMap,
-                           Editor::ItemsMap itemsMap)
+                           Editor::ItemsMap itemsMap,
+                           QSharedPointer<BlockLines> blockLines)
 {
     if (m_d->m_currentParsingCounter == counter) {
         m_d->m_currentDoc = doc;
         m_d->m_idsMap = idsMap;
         m_d->m_itemsMap = itemsMap;
+        m_d->m_blockLines = blockLines;
         m_d->m_syntax = syntax;
         m_d->m_isReady = true;
 
@@ -1669,6 +1802,7 @@ void Editor::onParsingDone(QSharedPointer<MD::Document> doc,
         emit misspelled(syntaxHighlighter().hasMisspelled());
 
         viewport()->repaint();
+        m_d->m_lineNumberArea->update();
     }
 }
 
