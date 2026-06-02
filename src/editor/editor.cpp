@@ -189,16 +189,96 @@ private slots:
 
             collectBlockLines(*block, *doc, tmp);
 
-            const auto diff = compareBlocks(*m_oldBlocks, *block);
+            BlockLinesDiff diff;
+
+            if (!block->m_children.isEmpty()) {
+                diff = compareBlocks(m_oldBlocks->m_children,
+                                     block->m_children,
+                                     block->m_children.front()->m_start,
+                                     block->m_children.back()->m_end);
+            }
 
             emit done(doc, m_counter, m_syntax, idsMap, itemsMap, block, diff);
         }
     }
 
 private:
-    BlockLinesDiff compareBlocks(const BlockLines &oldBlocks, const BlockLines &newBlocks)
+    BlockLinesDiff compareBlocks(const QVector<QSharedPointer<BlockLines>> &oldBlocks,
+                                 const QVector<QSharedPointer<BlockLines>> &newBlocks,
+                                 qsizetype startParent,
+                                 qsizetype endParent)
     {
-        return {};
+        if (oldBlocks.isEmpty() || newBlocks.isEmpty()) {
+            return {};
+        }
+
+        qsizetype oldStart = 0;
+        qsizetype newStart = 0;
+
+        while (oldStart < oldBlocks.size() && newStart < newBlocks.size()) {
+            BlockLinesDiff diff = compareBlocks(*oldBlocks[oldStart], *newBlocks[newStart]);
+            if (diff.m_start != -1) {
+                break;
+            }
+            ++oldStart;
+            ++newStart;
+        }
+
+        if (oldStart == oldBlocks.size() && newStart == newBlocks.size()) {
+            return {};
+        }
+
+        qsizetype oldEnd = oldBlocks.size() - 1;
+        qsizetype newEnd = newBlocks.size() - 1;
+
+        while (oldEnd >= oldStart && newEnd >= newStart) {
+            BlockLinesDiff diff = compareBlocks(*oldBlocks[oldEnd], *newBlocks[newEnd]);
+            if (diff.m_start != -1) {
+                break;
+            }
+            --oldEnd;
+            --newEnd;
+        }
+
+        qsizetype diffStart = startParent;
+        qsizetype diffEnd = endParent;
+
+        if (newStart > 0) {
+            diffStart = newBlocks[newStart]->m_start;
+        } else if (newStart < newBlocks.size()) {
+            diffStart = newBlocks[newStart]->m_start;
+        }
+
+        if (newEnd >= 0 && newEnd < newBlocks.size()) {
+            diffEnd = newBlocks[newEnd]->m_end;
+        }
+
+        if (diffStart > diffEnd) {
+            return {startParent, endParent};
+        }
+
+        return {diffStart, diffEnd};
+    }
+
+    BlockLinesDiff compareBlocks(const BlockLines &oldBlock,
+                                 const BlockLines &newBlock)
+    {
+        const qsizetype oldLength = oldBlock.m_end - oldBlock.m_start;
+        const qsizetype newLength = newBlock.m_end - newBlock.m_start;
+
+        if (oldLength != newLength) {
+            return {newBlock.m_start, newBlock.m_end};
+        }
+
+        if (oldBlock.m_children.size() != newBlock.m_children.size()) {
+            return {newBlock.m_start, newBlock.m_end};
+        }
+
+        if (newBlock.m_children.isEmpty()) {
+            return {};
+        }
+
+        return compareBlocks(oldBlock.m_children, newBlock.m_children, newBlock.m_start, newBlock.m_end);
     }
 
     void setEndLine(BlockLines *block,
@@ -795,7 +875,8 @@ void Editor::enableAutoCompletionOfEmojies(bool on)
     m_d->m_settings.m_isEmojiAutoCompletionEnabled = on;
 }
 
-inline BlockLines *findBlock(const QVector<BlockLines *> &blocks, qsizetype startLine)
+inline BlockLines *findBlock(const QVector<BlockLines *> &blocks,
+                             qsizetype startLine)
 {
     for (const auto &block : std::as_const(blocks)) {
         if (block->m_start == startLine) {
@@ -2002,7 +2083,8 @@ void Editor::onContentChanged()
                    m_d->m_blockLines);
 }
 
-bool operator != (const QVector<BlockLines *> & b1, const QVector<BlockLines *> &b2)
+bool operator!=(const QVector<BlockLines *> &b1,
+                const QVector<BlockLines *> &b2)
 {
     if (b1.size() != b2.size()) {
         return true;
