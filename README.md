@@ -4,8 +4,12 @@
 * [Installers](#installers)
 * [Building](#building)
   * [On what platforms better use `Conan` to build `markdown-tools`?](#on-what-platforms-better-use-conan-to-build-markdown-tools)
+  * [Building for Windows](#building-for-windows)
+    * [To build full installer for Windows you need](#to-build-full-installer-for-windows-you-need)
 * [Known issues](#known-issues)
 * [Translating](#translating)
+
+
 
 # About
 
@@ -35,16 +39,6 @@ For `Linux`, especially for `KDE`, I'd recommend to use your own build with syst
 `Qt`, in this case you won't have issues with platform integration in `KDE`.
 
 Look at the release page for the installer for some Linux and Windows distributions.
-
-# Wish list
-
-Here I will write some interesting things that can be done, but because of my laziness
-or some other reasons I didn't do it yet. I'd like to receive a feedback for the below
-cherries and if I'll get enough requests I will do it. Feel free to open issues here
-or even email me directly.
-
-* [ ] Implement collapsing blocks in editor, like in code editors. This is very easy thing
-for implementation, but I'm not sure it will be very demanded.
 
 # Building
 
@@ -86,14 +80,14 @@ On Windows `Conan` is a fresh wind to build this project.
 
 On Linux you can use what you want, that is why this is my favourite OS.
 
-## Building for Windows.
+## Building for Windows
 
 To start a development process on Windows you can use `QtCreator` with
 `CMakeLists.txt` from the root folder. But before you need to build and install
 `Sonnet`, `SyntaxHighlighting`, `KWidgetsAddons`, `Extra CMake Modules` and make
 them available through the `PATH`, `INCLUDE`, `LIB` environment variables.
 
-### To build full installer for Windows you need:
+### To build full installer for Windows you need
 
 1. Make a folder where you will work.
 2. Clone this repository and https://github.com/igormironchik/kde_breeze_win
