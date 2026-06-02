@@ -50,6 +50,16 @@ struct BlockLines {
     QVector<QSharedPointer<BlockLines>> m_children;
 }; // struct BlockLines
 
+//
+// BlockLinesDiff
+//
+
+//! Difference between two blocks of lines.
+struct BlockLinesDiff {
+    qsizetype m_start = -1;
+    qsizetype m_end = -1;
+}; // struct BlockLinesDiff
+
 struct Settings;
 
 //
@@ -101,7 +111,8 @@ signals:
                    const QString &fileName,
                    unsigned long long int counter,
                    SyntaxVisitor syntax,
-                   const MdShared::PluginsCfg &pluginsCfg);
+                   const MdShared::PluginsCfg &pluginsCfg,
+                   QSharedPointer<BlockLines> blocks);
     //! Link clicked.
     void linkClicked(const QString &url);
 
@@ -245,7 +256,8 @@ private slots:
                        SyntaxVisitor syntax,
                        MD::details::IdsMap idsMap,
                        Editor::ItemsMap itemsMap,
-                       QSharedPointer<BlockLines> blockLines);
+                       QSharedPointer<BlockLines> blockLines,
+                       BlockLinesDiff diff);
     //! Link clicked.
     void onLinkClicked(const QString &url);
     //! Check for URL auto-completion.

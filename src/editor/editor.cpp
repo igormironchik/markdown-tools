@@ -105,7 +105,8 @@ signals:
               SyntaxVisitor syntax,
               MD::details::IdsMap idsMap,
               Editor::ItemsMap itemsMap,
-              QSharedPointer<BlockLines> blockLines);
+              QSharedPointer<BlockLines> blockLines,
+              BlockLinesDiff diff);
 
 public:
     DataParser()
@@ -128,7 +129,8 @@ public slots:
                 const QString &fileName,
                 unsigned long long int counter,
                 SyntaxVisitor syntax,
-                const MdShared::PluginsCfg &pluginsCfg)
+                const MdShared::PluginsCfg &pluginsCfg,
+                QSharedPointer<BlockLines> blocks)
     {
         m_data.clear();
         m_data.push_back(md);
@@ -137,6 +139,7 @@ public slots:
         m_counter = counter;
         m_syntax = syntax;
         m_pluginsCfg = pluginsCfg;
+        m_oldBlocks = blocks;
 
         emit newData();
     }
@@ -184,13 +187,20 @@ private slots:
 
             auto block = QSharedPointer<BlockLines>::create(-1, -1, nullptr);
 
-            collectBlockLines(*block.get(), *doc.get(), tmp);
+            collectBlockLines(*block, *doc, tmp);
 
-            emit done(doc, m_counter, m_syntax, idsMap, itemsMap, block);
+            const auto diff = compareBlocks(*m_oldBlocks, *block);
+
+            emit done(doc, m_counter, m_syntax, idsMap, itemsMap, block, diff);
         }
     }
 
 private:
+    BlockLinesDiff compareBlocks(const BlockLines &oldBlocks, const BlockLines &newBlocks)
+    {
+        return {};
+    }
+
     void setEndLine(BlockLines *block,
                     qsizetype line,
                     MD::TextStream &stream)
@@ -282,6 +292,8 @@ private:
     unsigned long long int m_id = 0;
     //! Plugins configuration.
     MdShared::PluginsCfg m_pluginsCfg;
+    //! Old blocks of lines.
+    QSharedPointer<BlockLines> m_oldBlocks;
 };
 
 //
@@ -666,8 +678,6 @@ struct EditorPrivate {
     bool m_leftMouseBtnPressed = false;
     //! Is auto saving enabled?
     bool m_autosavingEnabled = true;
-    //! Count of blocks changed.
-    bool m_countOfBlocksChanged = false;
     //! Settings.
     Settings m_settings;
     //! Current link.
@@ -1573,6 +1583,15 @@ void Editor::showUnprintableCharacters(bool on)
     setTabStopDistance(fontMetrics().horizontalAdvance(QLatin1Char(' ')) * 4);
 }
 
+inline void unfoldBlock(QTextBlock &block)
+{
+    if (block.userState() > 0) {
+        block.setUserState(block.userState() & ~s_foldingState);
+    }
+
+    block.setVisible(true);
+}
+
 void Editor::showLineNumbers(bool on)
 {
     if (on) {
@@ -1591,9 +1610,19 @@ void Editor::showLineNumbers(bool on)
 
         m_d->m_lineNumberArea->hide();
         m_d->m_showLineNumberArea = false;
+
+        auto block = document()->firstBlock();
+
+        while (block.isValid()) {
+            unfoldBlock(block);
+            block = block.next();
+        }
+
+        static_cast<DocumentLayoutWithRightAlignment *>(document()->documentLayout())->requestUpdate();
     }
 
     updateLineNumberAreaWidth(0);
+    viewport()->update();
 }
 
 namespace /* anonymous */
@@ -1969,7 +1998,8 @@ void Editor::onContentChanged()
                    info.fileName(),
                    m_d->m_currentParsingCounter,
                    m_d->m_syntax,
-                   m_d->m_settings.m_pluginsCfg);
+                   m_d->m_settings.m_pluginsCfg,
+                   m_d->m_blockLines);
 }
 
 bool operator != (const QVector<BlockLines *> & b1, const QVector<BlockLines *> &b2)
@@ -1994,34 +2024,24 @@ void Editor::onParsingDone(QSharedPointer<MD::Document> doc,
                            SyntaxVisitor syntax,
                            MD::details::IdsMap idsMap,
                            Editor::ItemsMap itemsMap,
-                           QSharedPointer<BlockLines> blockLines)
+                           QSharedPointer<BlockLines> blockLines,
+                           BlockLinesDiff diff)
 {
     if (m_d->m_currentParsingCounter == counter) {
         m_d->m_currentDoc = doc;
         m_d->m_idsMap = idsMap;
         m_d->m_itemsMap = itemsMap;
 
-        if (m_d->m_countOfBlocksChanged) {
-            auto block = document()->firstBlock();
+        if (m_d->m_showLineNumberArea) {
+            if (diff.m_start != -1 && diff.m_end >= diff.m_start) {
+                auto block = document()->findBlockByNumber(diff.m_start);
 
-            while (block.isValid()) {
-                QVector<BlockLines *> b1;
-                QVector<BlockLines *> b2;
-                m_d->m_blockLines->find(block.blockNumber(), &b1);
-                blockLines->find(block.blockNumber(), &b2);
-
-                if (b1 != b2) {
-                    if (isFolded(block)) {
-                        collapse(block.blockNumber(), false);
-                    }
-
-                    break;
+                while (block.isValid() && diff.m_start <= diff.m_end) {
+                    unfoldBlock(block);
+                    ++diff.m_start;
+                    block = block.next();
                 }
-
-                block = block.next();
             }
-
-            m_d->m_countOfBlocksChanged = false;
         }
 
         m_d->m_blockLines = blockLines;
@@ -2264,7 +2284,6 @@ void Editor::keyPressEvent(QKeyEvent *event)
     m_d->m_keyPressed = !event->text().isEmpty() && !event->matches(QKeySequence::Undo);
 
     auto c = textCursor();
-    qsizetype blockCount = -1;
 
     if (event == QKeySequence::InsertParagraphSeparator) {
         event->accept();
@@ -2364,11 +2383,6 @@ void Editor::keyPressEvent(QKeyEvent *event)
         if (!tmp.block().isVisible()) {
             collapse(m_d->m_lineNumberArea->foldedLineNumber(tmp.block().blockNumber()), false);
         }
-    } else if (event == QKeySequence::Delete
-               || event == QKeySequence::Paste
-               || event == QKeySequence::Undo
-               || event == QKeySequence::Redo) {
-        blockCount = document()->blockCount();
     }
 
     if (c.hasSelection()) {
@@ -2425,10 +2439,6 @@ void Editor::keyPressEvent(QKeyEvent *event)
         }
     } else {
         QPlainTextEdit::keyPressEvent(event);
-    }
-
-    if (blockCount != -1 && blockCount != document()->blockCount()) {
-        m_d->m_countOfBlocksChanged = true;
     }
 }
 
