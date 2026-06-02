@@ -218,7 +218,7 @@ public slots:
     //! Update editor.
     void doUpdate();
     //! Clear user state on all blocks.
-    void clearUserStateOnAllBlocks();
+    void clearAutoListStateOnAllBlocks();
     //! Try to navigate to reference.
     void tryToNavigate(const QString &ref);
     //! Notify that file was saved.

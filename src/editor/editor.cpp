@@ -289,6 +289,7 @@ private:
 //
 
 static const int s_foldingState = 1;
+static const int s_autoAddedListItem = 2;
 
 //! Layout to support right alignment of text in plain text editor.
 class DocumentLayoutWithRightAlignment : public QPlainTextDocumentLayout
@@ -309,7 +310,7 @@ public:
         const auto w = fm.horizontalAdvance(QStringLiteral("..."));
         const auto h = fm.ascent();
 
-        return QSizeF(w, h);
+        return QSizeF(w + 6, h);
     }
 
     bool rtlDirection(const QTextBlock &block) const
@@ -329,8 +330,9 @@ public:
     QRectF blockBoundingRect(const QTextBlock &block) const override
     {
         auto r = QPlainTextDocumentLayout::blockBoundingRect(block);
-        const auto folded = block.userState() == s_foldingState;
-        const auto lastLineWidth = block.layout()->lineAt(block.lineCount() - 1).horizontalAdvance();
+        const auto folded = block.userState() > 0 ? block.userState() & s_foldingState : false;
+        const auto lastLineWidth =
+            block.layout()->lineAt(block.lineCount() - 1).horizontalAdvance() + document()->documentMargin() * 2;
 
         if (block.isValid()) {
             bool alignRight = rtlDirection(block);
@@ -365,47 +367,6 @@ public:
         }
 
         return r;
-    }
-
-    void draw(QPainter *painter,
-              const QAbstractTextDocumentLayout::PaintContext &context) override
-    {
-        QPlainTextDocumentLayout::draw(painter, context);
-
-        QTextBlock block = document()->begin();
-        while (block.isValid()) {
-            const auto folded = block.userState() == s_foldingState;
-
-            if (folded) {
-                const auto lastLineWidth = block.layout()->lineAt(block.lineCount() - 1).horizontalAdvance();
-
-                QRectF br = blockBoundingRect(block);
-                if (br.intersects(context.clip)) {
-                    painter->save();
-                    painter->translate(br.topLeft());
-
-                    painter->setPen(Qt::black);
-
-                    const auto fs = foldingSize(block);
-                    const auto y = lastLineWidth + fs.width() <= br.width()
-                        ? block.layout()->lineAt(block.lineCount() - 1).y()
-                        : block.layout()->lineAt(block.lineCount() - 1).y()
-                            + block.layout()->lineAt(block.lineCount() - 1).height();
-                    const auto rtl = rtlDirection(block);
-                    const auto x = lastLineWidth + fs.width() <= br.width()
-                            ? (rtl ? br.width() - lastLineWidth - fs.width() : lastLineWidth)
-                            : (rtl ? br.width() - fs.width() : 0);
-
-                    const QRectF r(x, y, fs.width(), fs.height());
-                    painter->drawRoundedRect(r, 4, 4);
-                    painter->drawText(r, Qt::AlignCenter, QStringLiteral("..."));
-
-                    painter->restore();
-                }
-            }
-
-            block = block.next();
-        }
     }
 
 private:
@@ -827,12 +788,15 @@ void Editor::enableAutoCompletionOfEmojies(bool on)
 void Editor::collapse(qsizetype line,
                       bool on)
 {
+    auto block = document()->findBlockByNumber(line);
+
     if (on) {
-        document()->findBlockByNumber(line).setUserState(s_foldingState);
+        block.setUserState(s_foldingState | (block.userState() > 0 ? block.userState() : 0));
     } else {
-        document()->findBlockByNumber(line).setUserState(0);
+        block.setUserState(block.userState() > 0 ? block.userState() & ~s_foldingState : 0);
     }
 
+    static_cast<DocumentLayoutWithRightAlignment *>(document()->documentLayout())->requestUpdate();
     viewport()->update();
 }
 
@@ -1130,40 +1094,90 @@ void Editor::drawCodeBlocksBackground(QPainter &p)
 
 void Editor::paintEvent(QPaintEvent *event)
 {
-    QPainter painter(viewport());
+    {
+        QPainter painter(viewport());
 
-    if (m_d->m_settings.m_colors.m_codeThemeEnabled && m_d->m_settings.m_colors.m_drawCodeBackground) {
-        drawCodeBlocksBackground(painter);
-    }
-
-    if (m_d->m_settings.m_margins.m_enable) {
-        QRect r = viewport()->rect();
-        QFontMetricsF fm(font());
-
-        if (layoutDirection() == Qt::LeftToRight) {
-            r.setX(document()->documentMargin() + qRound(fm.averageCharWidth() * m_d->m_settings.m_margins.m_length));
-        } else {
-            r.setWidth(r.width()
-                       - qRound(fm.averageCharWidth() * m_d->m_settings.m_margins.m_length)
-                       - document()->documentMargin());
+        if (m_d->m_settings.m_colors.m_codeThemeEnabled && m_d->m_settings.m_colors.m_drawCodeBackground) {
+            drawCodeBlocksBackground(painter);
         }
 
-        painter.setBrush(QColor(239, 239, 239, 200));
+        if (m_d->m_settings.m_margins.m_enable) {
+            QRect r = viewport()->rect();
+            QFontMetricsF fm(font());
+
+            if (layoutDirection() == Qt::LeftToRight) {
+                r.setX(document()->documentMargin()
+                       + qRound(fm.averageCharWidth() * m_d->m_settings.m_margins.m_length));
+            } else {
+                r.setWidth(r.width()
+                           - qRound(fm.averageCharWidth() * m_d->m_settings.m_margins.m_length)
+                           - document()->documentMargin());
+            }
+
+            painter.setBrush(QColor(239, 239, 239, 200));
+            painter.setPen(Qt::NoPen);
+            painter.drawRect(r);
+        }
+
+        highlightCurrentLine();
+
+        painter.setBrush(m_d->m_currentLine.m_color);
         painter.setPen(Qt::NoPen);
-        painter.drawRect(r);
+        const auto cr = cursorRect();
+        painter.drawRect(m_d->m_currentLine.m_x,
+                         cr.top(),
+                         viewport()->rect().width() - qRound(document()->documentMargin()) - m_d->m_currentLine.m_x,
+                         cr.height());
     }
 
-    highlightCurrentLine();
-
-    painter.setBrush(m_d->m_currentLine.m_color);
-    painter.setPen(Qt::NoPen);
-    const auto cr = cursorRect();
-    painter.drawRect(m_d->m_currentLine.m_x,
-                     cr.top(),
-                     viewport()->rect().width() - qRound(document()->documentMargin()) - m_d->m_currentLine.m_x,
-                     cr.height());
-
     QPlainTextEdit::paintEvent(event);
+
+    {
+        QPainter painter(viewport());
+        painter.setRenderHint(QPainter::Antialiasing, true);
+
+        QTextBlock block = firstVisibleBlock();
+        int top = qRound(blockBoundingGeometry(block).translated(contentOffset()).top());
+        int bottom = top + qRound(blockBoundingRect(block).height());
+
+        while (block.isValid() && top <= event->rect().bottom()) {
+            if (block.isVisible() && bottom >= event->rect().top()) {
+                const auto folded = block.userState() > 0 ? block.userState() & s_foldingState : false;
+
+                if (folded) {
+                    const auto lastLineWidth = block.layout()->lineAt(block.lineCount() - 1).horizontalAdvance()
+                        + document()->documentMargin() * 2;
+
+                    QRectF br = blockBoundingGeometry(block).translated(contentOffset());
+                    painter.save();
+                    painter.translate(br.topLeft());
+
+                    painter.setPen(Qt::black);
+
+                    auto layout = static_cast<DocumentLayoutWithRightAlignment *>(document()->documentLayout());
+
+                    const auto fs = layout->foldingSize(block);
+                    const auto y = lastLineWidth + fs.width() <= br.width()
+                        ? block.layout()->lineAt(block.lineCount() - 1).rect().top()
+                        : block.layout()->lineAt(block.lineCount() - 1).rect().bottom();
+                    const auto rtl = layout->rtlDirection(block);
+                    const auto x = lastLineWidth + fs.width() <= br.width()
+                        ? (rtl ? br.width() - lastLineWidth - fs.width() : lastLineWidth)
+                        : (rtl ? br.width() - fs.width() : 0);
+
+                    const QRectF r(x, y, fs.width(), fs.height());
+                    painter.drawRoundedRect(r.adjusted(0, 2, 0, 2), 4, 4);
+                    painter.drawText(r, Qt::AlignCenter, QStringLiteral("..."));
+
+                    painter.restore();
+                }
+            }
+
+            block = block.next();
+            top = bottom;
+            bottom = top + qRound(blockBoundingRect(block).height());
+        }
+    }
 }
 
 void Editor::contextMenuEvent(QContextMenuEvent *event)
@@ -2048,14 +2062,12 @@ void Editor::doUpdate()
     viewport()->update();
 }
 
-static const int s_unknownUserState = -1;
-
-void Editor::clearUserStateOnAllBlocks()
+void Editor::clearAutoListStateOnAllBlocks()
 {
     auto block = document()->firstBlock();
 
     while (block.isValid()) {
-        block.setUserState(s_unknownUserState);
+        block.setUserState(block.userState() > 0 ? block.userState() & ~s_autoAddedListItem : 0);
         block = block.next();
     }
 }
@@ -2082,8 +2094,6 @@ void replaceListDelims(QString &text,
         }
     }
 }
-
-static const int s_autoAddedListItem = 1;
 
 bool Editor::handleReturnKeyForCode(QKeyEvent *event,
                                     const MD::PosCache::Items &items,
@@ -2176,11 +2186,12 @@ void Editor::keyPressEvent(QKeyEvent *event)
                             c.setPosition(document()->findBlockByNumber(l->startLine()).position());
 
                             if ((l->items().isEmpty() || isEmptyParagraphOnly(l->items()))
-                                && c.block().userState() == s_autoAddedListItem) {
+                                && (c.block().userState() > 0 ? c.block().userState() & s_autoAddedListItem : false)) {
                                 textCursor().beginEditBlock();
                                 c.setPosition(c.position() + lineLength - 1, QTextCursor::KeepAnchor);
                                 c.deleteChar();
-                                c.block().setUserState(s_unknownUserState);
+                                c.block().setUserState(
+                                    c.block().userState() > 0 ? c.block().userState() & ~s_autoAddedListItem : 0);
                                 textCursor().endEditBlock();
                             } else {
                                 textCursor().beginEditBlock();
@@ -2217,7 +2228,10 @@ void Editor::keyPressEvent(QKeyEvent *event)
                                     textCursor().insertText(QStringLiteral("[ ] "));
                                 }
 
-                                textCursor().block().setUserState(s_autoAddedListItem);
+                                textCursor().block().setUserState(textCursor().block().userState() > 0
+                                                                      ? textCursor().block().userState()
+                                                                          | s_autoAddedListItem
+                                                                      : s_autoAddedListItem);
 
                                 textCursor().endEditBlock();
                             }

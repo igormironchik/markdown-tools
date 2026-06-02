@@ -380,7 +380,7 @@ void MainWindow::onFileSave()
 
     m_d->m_editor->document()->setModified(false);
     m_d->m_editor->fileWasSaved();
-    m_d->m_editor->clearUserStateOnAllBlocks();
+    m_d->m_editor->clearAutoListStateOnAllBlocks();
 
     updateWindowTitle();
 
