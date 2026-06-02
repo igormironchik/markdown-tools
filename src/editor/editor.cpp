@@ -330,10 +330,11 @@ public:
     QRectF blockBoundingRect(const QTextBlock &block) const override
     {
         auto r = QPlainTextDocumentLayout::blockBoundingRect(block);
-        const auto lastLineWidth =
-            block.layout()->lineAt(block.lineCount() - 1).horizontalAdvance() + document()->documentMargin() * 2;
 
         if (block.isValid()) {
+            const auto lastLineWidth =
+                block.layout()->lineAt(block.lineCount() - 1).horizontalAdvance() + document()->documentMargin() * 2;
+
             bool alignRight = rtlDirection(block);
 
             if (alignRight) {
@@ -665,6 +666,8 @@ struct EditorPrivate {
     bool m_leftMouseBtnPressed = false;
     //! Is auto saving enabled?
     bool m_autosavingEnabled = true;
+    //! Count of blocks changed.
+    bool m_countOfBlocksChanged = false;
     //! Settings.
     Settings m_settings;
     //! Current link.
@@ -782,6 +785,17 @@ void Editor::enableAutoCompletionOfEmojies(bool on)
     m_d->m_settings.m_isEmojiAutoCompletionEnabled = on;
 }
 
+inline BlockLines *findBlock(const QVector<BlockLines *> &blocks, qsizetype startLine)
+{
+    for (const auto &block : std::as_const(blocks)) {
+        if (block->m_start == startLine) {
+            return block;
+        }
+    }
+
+    return nullptr;
+}
+
 void Editor::setBlockVisible(qsizetype line,
                              bool on)
 {
@@ -789,8 +803,28 @@ void Editor::setBlockVisible(qsizetype line,
     m_d->m_blockLines->find(line, &blocks);
 
     if (!blocks.isEmpty()) {
-        for (qsizetype i = blocks.front()->m_start + 1; i <= blocks.front()->m_end; ++i) {
-            document()->findBlockByNumber(i).setVisible(on);
+        auto b = findBlock(blocks, line);
+
+        if (b) {
+            for (qsizetype i = b->m_start + 1; i <= b->m_end; ++i) {
+                auto d = document()->findBlockByNumber(i);
+
+                if (on) {
+                    QVector<BlockLines *> tmp;
+                    m_d->m_blockLines->find(i, &tmp);
+                    auto n = findBlock(tmp, i);
+
+                    if (n && isFolded(d)) {
+                        i = n->m_end;
+
+                        d.setVisible(on);
+
+                        continue;
+                    }
+                }
+
+                d.setVisible(on);
+            }
         }
     }
 }
@@ -1938,6 +1972,23 @@ void Editor::onContentChanged()
                    m_d->m_settings.m_pluginsCfg);
 }
 
+bool operator != (const QVector<BlockLines *> & b1, const QVector<BlockLines *> &b2)
+{
+    if (b1.size() != b2.size()) {
+        return true;
+    }
+
+    for (qsizetype i = 0; i < b1.size(); ++i) {
+        if (b1[i]->m_start != b2[i]->m_start) {
+            return true;
+        } else if (b1[i]->m_end != b2[i]->m_end) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void Editor::onParsingDone(QSharedPointer<MD::Document> doc,
                            unsigned long long int counter,
                            SyntaxVisitor syntax,
@@ -1949,6 +2000,30 @@ void Editor::onParsingDone(QSharedPointer<MD::Document> doc,
         m_d->m_currentDoc = doc;
         m_d->m_idsMap = idsMap;
         m_d->m_itemsMap = itemsMap;
+
+        if (m_d->m_countOfBlocksChanged) {
+            auto block = document()->firstBlock();
+
+            while (block.isValid()) {
+                QVector<BlockLines *> b1;
+                QVector<BlockLines *> b2;
+                m_d->m_blockLines->find(block.blockNumber(), &b1);
+                blockLines->find(block.blockNumber(), &b2);
+
+                if (b1 != b2) {
+                    if (isFolded(block)) {
+                        collapse(block.blockNumber(), false);
+                    }
+
+                    break;
+                }
+
+                block = block.next();
+            }
+
+            m_d->m_countOfBlocksChanged = false;
+        }
+
         m_d->m_blockLines = blockLines;
         m_d->m_syntax = syntax;
         m_d->m_isReady = true;
@@ -2189,6 +2264,7 @@ void Editor::keyPressEvent(QKeyEvent *event)
     m_d->m_keyPressed = !event->text().isEmpty() && !event->matches(QKeySequence::Undo);
 
     auto c = textCursor();
+    qsizetype blockCount = -1;
 
     if (event == QKeySequence::InsertParagraphSeparator) {
         event->accept();
@@ -2288,6 +2364,11 @@ void Editor::keyPressEvent(QKeyEvent *event)
         if (!tmp.block().isVisible()) {
             collapse(m_d->m_lineNumberArea->foldedLineNumber(tmp.block().blockNumber()), false);
         }
+    } else if (event == QKeySequence::Delete
+               || event == QKeySequence::Paste
+               || event == QKeySequence::Undo
+               || event == QKeySequence::Redo) {
+        blockCount = document()->blockCount();
     }
 
     if (c.hasSelection()) {
@@ -2344,6 +2425,10 @@ void Editor::keyPressEvent(QKeyEvent *event)
         }
     } else {
         QPlainTextEdit::keyPressEvent(event);
+    }
+
+    if (blockCount != -1 && blockCount != document()->blockCount()) {
+        m_d->m_countOfBlocksChanged = true;
     }
 }
 
