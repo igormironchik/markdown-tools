@@ -332,6 +332,8 @@ public:
 
     //! \return Whether folding handle is on the given line.
     bool isFoldingHandleHere(qsizetype line) const;
+    //! \return Folding line for the given line.
+    qsizetype foldedLineNumber(qsizetype line) const;
 
 protected:
     void paintEvent(QPaintEvent *event) override

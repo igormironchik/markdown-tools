@@ -800,16 +800,19 @@ void Editor::collapse(qsizetype line,
 {
     auto block = document()->findBlockByNumber(line);
 
-    if (on) {
-        block.setUserState(s_foldingState | (block.userState() > 0 ? block.userState() : 0));
-    } else {
-        block.setUserState(block.userState() > 0 ? block.userState() & ~s_foldingState : 0);
+    if (block.isValid()) {
+        if (on) {
+            block.setUserState(s_foldingState | (block.userState() > 0 ? block.userState() : 0));
+        } else {
+            block.setUserState(block.userState() > 0 ? block.userState() & ~s_foldingState : 0);
+        }
+
+        setBlockVisible(line, !on);
+
+        static_cast<DocumentLayoutWithRightAlignment *>(document()->documentLayout())->requestUpdate();
+        viewport()->update();
+        m_d->m_lineNumberArea->update();
     }
-
-    setBlockVisible(line, !on);
-
-    static_cast<DocumentLayoutWithRightAlignment *>(document()->documentLayout())->requestUpdate();
-    viewport()->update();
 }
 
 void Editor::setIndentMode(IndentMode mode)
@@ -1451,6 +1454,22 @@ bool LineNumberArea::isFoldingHandleHere(qsizetype line) const
     QVector<BlockLines *> blocks;
 
     return (m_codeEditor->blockLines().find(line, &blocks) && collapsStartHereAndIsNotOnOneLine(blocks, line));
+}
+
+qsizetype LineNumberArea::foldedLineNumber(qsizetype line) const
+{
+    auto block = m_codeEditor->document()->findBlockByNumber(line);
+    block = block.previous();
+
+    while (block.isValid()) {
+        if (isFolded(block) && block.isVisible()) {
+            return block.blockNumber();
+        }
+
+        block = block.previous();
+    }
+
+    return -1;
 }
 
 void LineNumberArea::mouseReleaseEvent(QMouseEvent *e)
@@ -2260,6 +2279,15 @@ void Editor::keyPressEvent(QKeyEvent *event)
         }
 
         return;
+    }
+
+    if (event->key() == Qt::Key_Backspace || event == QKeySequence::MoveToPreviousChar) {
+        auto tmp = c;
+        tmp.movePosition(QTextCursor::PreviousCharacter);
+
+        if (!tmp.block().isVisible()) {
+            collapse(m_d->m_lineNumberArea->foldedLineNumber(tmp.block().blockNumber()), false);
+        }
     }
 
     if (c.hasSelection()) {
