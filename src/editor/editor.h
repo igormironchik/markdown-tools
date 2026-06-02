@@ -26,6 +26,9 @@ QT_END_NAMESPACE
 namespace MdEditor
 {
 
+//! \return Whether block is folded.
+bool isFolded(const QTextBlock &block);
+
 //
 // BlockLines
 //
@@ -182,10 +185,6 @@ public:
     const Settings &settings() const;
     //! \return Lines of blocks.
     const BlockLines &blockLines() const;
-    //! \return Collaps handles states.
-    QHash<qsizetype,
-          bool> &
-    collapsState();
 
 public slots:
     //! Enable/disable showing of unprintable characters.
@@ -261,6 +260,9 @@ private slots:
 private:
     //! Navigate to reference.
     bool navigate(const QString &place);
+    //! Show/hide lines.
+    void setBlockVisible(qsizetype line,
+                         bool on);
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
@@ -327,6 +329,9 @@ public:
     {
         return QSize(m_codeEditor->lineNumberAreaWidth(), 0);
     }
+
+    //! \return Whether folding handle is on the given line.
+    bool isFoldingHandleHere(qsizetype line) const;
 
 protected:
     void paintEvent(QPaintEvent *event) override

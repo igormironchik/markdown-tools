@@ -330,7 +330,6 @@ public:
     QRectF blockBoundingRect(const QTextBlock &block) const override
     {
         auto r = QPlainTextDocumentLayout::blockBoundingRect(block);
-        const auto folded = block.userState() > 0 ? block.userState() & s_foldingState : false;
         const auto lastLineWidth =
             block.layout()->lineAt(block.lineCount() - 1).horizontalAdvance() + document()->documentMargin() * 2;
 
@@ -360,7 +359,7 @@ public:
                 }
             }
 
-            if (folded && lastLineWidth + foldingSize(block).width() > r.width()) {
+            if (isFolded(block) && lastLineWidth + foldingSize(block).width() > r.width()) {
                 const auto fm = QFontMetrics(block.document()->defaultFont());
                 r.adjust(0., 0., 0., fm.height());
             }
@@ -642,8 +641,6 @@ struct EditorPrivate {
     Editor::ItemsMap m_itemsMap;
     //! Lines of blocks.
     QSharedPointer<BlockLines> m_blockLines;
-    //! Current state of collapse handles (line number/collapsed).
-    QHash<qsizetype, bool> m_blockStates;
     //! Syntax highlighter.
     SyntaxVisitor m_syntax;
     //! Tread for parsing.
@@ -785,6 +782,19 @@ void Editor::enableAutoCompletionOfEmojies(bool on)
     m_d->m_settings.m_isEmojiAutoCompletionEnabled = on;
 }
 
+void Editor::setBlockVisible(qsizetype line,
+                             bool on)
+{
+    QVector<BlockLines *> blocks;
+    m_d->m_blockLines->find(line, &blocks);
+
+    if (!blocks.isEmpty()) {
+        for (qsizetype i = blocks.front()->m_start + 1; i <= blocks.front()->m_end; ++i) {
+            document()->findBlockByNumber(i).setVisible(on);
+        }
+    }
+}
+
 void Editor::collapse(qsizetype line,
                       bool on)
 {
@@ -795,6 +805,8 @@ void Editor::collapse(qsizetype line,
     } else {
         block.setUserState(block.userState() > 0 ? block.userState() & ~s_foldingState : 0);
     }
+
+    setBlockVisible(line, !on);
 
     static_cast<DocumentLayoutWithRightAlignment *>(document()->documentLayout())->requestUpdate();
     viewport()->update();
@@ -825,11 +837,9 @@ const BlockLines &Editor::blockLines() const
     return *m_d->m_blockLines.get();
 }
 
-QHash<qsizetype,
-      bool> &
-Editor::collapsState()
+bool isFolded(const QTextBlock &block)
 {
-    return m_d->m_blockStates;
+    return (block.userState() > 0 ? block.userState() & s_foldingState : false);
 }
 
 bool Editor::foundHighlighted() const
@@ -1142,9 +1152,7 @@ void Editor::paintEvent(QPaintEvent *event)
 
         while (block.isValid() && top <= event->rect().bottom()) {
             if (block.isVisible() && bottom >= event->rect().top()) {
-                const auto folded = block.userState() > 0 ? block.userState() & s_foldingState : false;
-
-                if (folded) {
+                if (isFolded(block)) {
                     const auto lastLineWidth = block.layout()->lineAt(block.lineCount() - 1).horizontalAdvance()
                         + document()->documentMargin() * 2;
 
@@ -1375,25 +1383,20 @@ void Editor::lineNumberAreaPaintEvent(QPaintEvent *event)
                              Qt::AlignRight,
                              number);
 
-            if (m_d->m_blockStates.contains(blockNumber)
-                || (m_d->m_blockLines->find(blockNumber, &collaps)
-                    && collapsStartHereAndIsNotOnOneLine(collaps, blockNumber))) {
-                if (!m_d->m_blockStates.contains(blockNumber)) {
-                    m_d->m_blockStates.insert(blockNumber, false);
-                }
+            const auto folded = isFolded(block);
 
+            if (folded || m_d->m_lineNumberArea->isFoldingHandleHere(blockNumber)) {
                 painter.drawPixmap(
                     m_d->m_lineNumberArea->width() - collapsingBlockHandleWidth() + 3,
                     top + (fontMetrics().height() - collapsingBlockHandleWidth() + 3) / 2,
                     collapsingBlockHandleWidth() - 3,
                     fontMetrics().height(),
-                    m_d->m_blockStates[blockNumber]
-                        ? QIcon::fromTheme(QStringLiteral("arrow-right"),
-                                           QIcon(QStringLiteral(":/res/img/arrow-right.png")))
-                              .pixmap(std::min(fontMetrics().height(), 16), std::min(fontMetrics().height(), 16))
-                        : QIcon::fromTheme(QStringLiteral("arrow-down"),
-                                           QIcon(QStringLiteral(":/res/img/arrow-down.png")))
-                              .pixmap(std::min(fontMetrics().height(), 16), std::min(fontMetrics().height(), 16)));
+                    folded ? QIcon::fromTheme(QStringLiteral("arrow-right"),
+                                              QIcon(QStringLiteral(":/res/img/arrow-right.png")))
+                                 .pixmap(std::min(fontMetrics().height(), 16), std::min(fontMetrics().height(), 16))
+                           : QIcon::fromTheme(QStringLiteral("arrow-down"),
+                                              QIcon(QStringLiteral(":/res/img/arrow-down.png")))
+                                 .pixmap(std::min(fontMetrics().height(), 16), std::min(fontMetrics().height(), 16)));
             }
         }
 
@@ -1443,14 +1446,21 @@ void LineNumberArea::mousePressEvent(QMouseEvent *e)
     QWidget::mousePressEvent(e);
 }
 
+bool LineNumberArea::isFoldingHandleHere(qsizetype line) const
+{
+    QVector<BlockLines *> blocks;
+
+    return (m_codeEditor->blockLines().find(line, &blocks) && collapsStartHereAndIsNotOnOneLine(blocks, line));
+}
+
 void LineNumberArea::mouseReleaseEvent(QMouseEvent *e)
 {
     if (m_leftBtnPressed) {
         const auto x = qRound(e->position().x());
         if (x >= width() - m_codeEditor->collapsingBlockHandleWidth() + 3 && x <= width()) {
-            if (m_codeEditor->collapsState().contains(m_lineNumber)) {
-                m_codeEditor->collapsState()[m_lineNumber] = !m_codeEditor->collapsState()[m_lineNumber];
-                m_codeEditor->collapse(m_lineNumber, m_codeEditor->collapsState()[m_lineNumber]);
+            if (isFoldingHandleHere(m_lineNumber)) {
+                m_codeEditor->collapse(m_lineNumber,
+                                       !isFolded(m_codeEditor->document()->findBlockByNumber(m_lineNumber)));
                 update();
 
                 e->accept();
@@ -1923,7 +1933,6 @@ void Editor::onParsingDone(QSharedPointer<MD::Document> doc,
         m_d->m_blockLines = blockLines;
         m_d->m_syntax = syntax;
         m_d->m_isReady = true;
-        m_d->m_blockStates.clear();
 
         m_d->m_underlinedLink = {};
         m_d->restoreCursor();
@@ -2036,7 +2045,6 @@ void Editor::setText(const QString &t)
 {
     m_d->m_underlinedLink = {};
     m_d->restoreCursor();
-    m_d->m_blockStates.clear();
 
     setPlainText(t);
 }
