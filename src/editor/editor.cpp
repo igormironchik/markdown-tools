@@ -916,6 +916,8 @@ void Editor::setBlockVisible(qsizetype line,
 
                 d.setVisible(on);
             }
+
+            document()->adjustSize();
         }
     }
 }
@@ -934,7 +936,6 @@ void Editor::collapse(qsizetype line,
 
         setBlockVisible(line, !on);
 
-        static_cast<DocumentLayoutWithRightAlignment *>(document()->documentLayout())->requestUpdate();
         viewport()->update();
         m_d->m_lineNumberArea->update();
     }
@@ -1309,9 +1310,15 @@ void Editor::paintEvent(QPaintEvent *event)
                 }
             }
 
+            if (block.isVisible()) {
+                top = bottom;
+            }
+
             block = block.next();
-            top = bottom;
-            bottom = top + qRound(blockBoundingRect(block).height());
+
+            if (block.isVisible()) {
+                bottom = top + qRound(blockBoundingRect(block).height());
+            }
         }
     }
 }
@@ -1528,9 +1535,16 @@ void Editor::lineNumberAreaPaintEvent(QPaintEvent *event)
             }
         }
 
+        if (block.isVisible()) {
+            top = bottom;
+        }
+
         block = block.next();
-        top = bottom;
-        bottom = top + qRound(blockBoundingRect(block).height());
+
+        if (block.isVisible()) {
+            bottom = top + qRound(blockBoundingRect(block).height());
+        }
+
         ++blockNumber;
     }
 }
@@ -1547,9 +1561,16 @@ int Editor::lineNumber(const QPoint &p)
             return blockNumber;
         }
 
+        if (block.isVisible()) {
+            top = bottom;
+        }
+
         block = block.next();
-        top = bottom;
-        bottom = top + qRound(blockBoundingRect(block).height());
+
+        if (block.isVisible()) {
+            bottom = top + qRound(blockBoundingRect(block).height());
+        }
+
         ++blockNumber;
     }
 
