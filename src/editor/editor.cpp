@@ -452,7 +452,7 @@ public:
                 }
             }
 
-            if (isFolded(block) && lastLineWidth + foldingSize(block).width() > r.width()) {
+            if (block.isVisible() && isFolded(block) && lastLineWidth + foldingSize(block).width() > r.width()) {
                 const auto fm = QFontMetrics(block.document()->defaultFont());
                 r.adjust(0., 0., 0., fm.height());
             }
