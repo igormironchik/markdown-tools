@@ -1720,7 +1720,7 @@ void Editor::showLineNumbers(bool on)
             block = block.next();
         }
 
-        static_cast<DocumentLayoutWithRightAlignment *>(document()->documentLayout())->requestUpdate();
+        document()->adjustSize();
     }
 
     updateLineNumberAreaWidth(0);
@@ -2144,6 +2144,8 @@ void Editor::onParsingDone(QSharedPointer<MD::Document> doc,
                     ++diff.m_start;
                     block = block.next();
                 }
+
+                document()->adjustSize();
             }
         }
 
