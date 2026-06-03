@@ -23,7 +23,9 @@
         <file>res/img/character-set.png</file>
         <file>res/img/edit-find.png</file>
         <file>res/img/view-preview.png</file>
-		<file>res/img/layer-visible-on.png</file>
+        <file>res/img/layer-visible-on.png</file>
+        <file>res/img/arrow-right.png</file>
+        <file>res/img/arrow-down.png</file>
         <file>res/img/preferences-plugin.png</file>
         <file>res/img/window-pin.png</file>
         <file>res/img/window-unpin.png</file>

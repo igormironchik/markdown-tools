@@ -380,7 +380,7 @@ void MainWindow::onFileSave()
 
     m_d->m_editor->document()->setModified(false);
     m_d->m_editor->fileWasSaved();
-    m_d->m_editor->clearUserStateOnAllBlocks();
+    m_d->m_editor->clearAutoListStateOnAllBlocks();
 
     updateWindowTitle();
 
@@ -507,7 +507,7 @@ void MainWindow::onTextChanged()
                                                       true,
                                                       &m_d->m_editor->idsMap()));
 
-            if (m_d->m_editor->settings().m_previewFollowEditor) {    
+            if (m_d->m_editor->settings().m_previewFollowEditor) {
                 scrollToCursor();
             }
         }

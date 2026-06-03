@@ -26,6 +26,40 @@ QT_END_NAMESPACE
 namespace MdEditor
 {
 
+//! \return Whether block is folded.
+bool isFolded(const QTextBlock &block);
+
+//
+// BlockLines
+//
+
+//! Information about lines of the block.
+struct BlockLines {
+    BlockLines(qsizetype start,
+               qsizetype end,
+               BlockLines *parent = nullptr);
+
+    //! Set vector of blocks (from top most parent to most nested children) with the given line.
+    bool find(qsizetype line,
+              QVector<BlockLines *> *ret) const;
+
+    qsizetype m_start;
+    qsizetype m_end;
+    BlockLines *m_parent = nullptr;
+    // Should be sorted.
+    QVector<QSharedPointer<BlockLines>> m_children;
+}; // struct BlockLines
+
+//
+// BlockLinesDiff
+//
+
+//! Difference between two blocks of lines.
+struct BlockLinesDiff {
+    qsizetype m_start = -1;
+    qsizetype m_end = -1;
+}; // struct BlockLinesDiff
+
 struct Settings;
 
 //
@@ -77,7 +111,8 @@ signals:
                    const QString &fileName,
                    unsigned long long int counter,
                    SyntaxVisitor syntax,
-                   const MdShared::PluginsCfg &pluginsCfg);
+                   const MdShared::PluginsCfg &pluginsCfg,
+                   QSharedPointer<BlockLines> blocks);
     //! Link clicked.
     void linkClicked(const QString &url);
 
@@ -97,8 +132,10 @@ public:
 
     //! Draw line number area.
     void lineNumberAreaPaintEvent(QPaintEvent *event);
+    //! \return Width of collapsing blocks handles.
+    int collapsingBlockHandleWidth() const;
     //! \return Width of line number area.
-    int lineNumberAreaWidth();
+    int lineNumberAreaWidth() const;
     //! \return Is any text in editor highlighted?
     bool foundHighlighted() const;
     //! \return Is any highlighted text in editor selected?
@@ -137,6 +174,9 @@ public:
     void enableAutoCompletionOfLinks(bool on = true);
     //! Enable auto-completion of Emojies.
     void enableAutoCompletionOfEmojies(bool on = true);
+    //! Collapse/uncollapse block.
+    void collapse(qsizetype line,
+                  bool on);
 
     //! Indent mode.
     enum class IndentMode {
@@ -152,9 +192,10 @@ public:
     void setIndentSpacesCount(int s);
     //! Enable preview to follow editor.
     void setPreviewFollowEditor(bool on = true);
-
     //! \return Settings.
     const Settings &settings() const;
+    //! \return Lines of blocks.
+    const BlockLines &blockLines() const;
 
 public slots:
     //! Enable/disable showing of unprintable characters.
@@ -187,7 +228,7 @@ public slots:
     //! Update editor.
     void doUpdate();
     //! Clear user state on all blocks.
-    void clearUserStateOnAllBlocks();
+    void clearAutoListStateOnAllBlocks();
     //! Try to navigate to reference.
     void tryToNavigate(const QString &ref);
     //! Notify that file was saved.
@@ -214,7 +255,9 @@ private slots:
                        unsigned long long int counter,
                        SyntaxVisitor syntax,
                        MD::details::IdsMap idsMap,
-                       Editor::ItemsMap itemsMap);
+                       Editor::ItemsMap itemsMap,
+                       QSharedPointer<BlockLines> blockLines,
+                       BlockLinesDiff diff);
     //! Link clicked.
     void onLinkClicked(const QString &url);
     //! Check for URL auto-completion.
@@ -229,6 +272,9 @@ private slots:
 private:
     //! Navigate to reference.
     bool navigate(const QString &place);
+    //! Show/hide lines.
+    void setBlockVisible(qsizetype line,
+                         bool on);
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
@@ -296,6 +342,11 @@ public:
         return QSize(m_codeEditor->lineNumberAreaWidth(), 0);
     }
 
+    //! \return Whether folding handle is on the given line.
+    bool isFoldingHandleHere(qsizetype line) const;
+    //! \return Folding line for the given line.
+    qsizetype foldedLineNumber(qsizetype line) const;
+
 protected:
     void paintEvent(QPaintEvent *event) override
     {
@@ -304,6 +355,8 @@ protected:
 
     void enterEvent(QEnterEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
+    void mousePressEvent(QMouseEvent *e) override;
+    void mouseReleaseEvent(QMouseEvent *e) override;
     void leaveEvent(QEvent *event) override;
     void contextMenuEvent(QContextMenuEvent *event) override;
 
@@ -314,6 +367,7 @@ private:
 private:
     Editor *m_codeEditor;
     int m_lineNumber = -1;
+    bool m_leftBtnPressed = false;
 }; // class LineNumberArea
 
 } /* namespace MdEditor */
