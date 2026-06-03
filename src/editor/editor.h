@@ -26,6 +26,8 @@ QT_END_NAMESPACE
 namespace MdEditor
 {
 
+class LineNumberArea;
+
 //! \return Whether block is folded.
 bool isFolded(const QTextBlock &block);
 
@@ -196,6 +198,8 @@ public:
     const Settings &settings() const;
     //! \return Lines of blocks.
     const BlockLines &blockLines() const;
+    //! \return Line number area widget.
+    LineNumberArea *lineNumberArea() const;
 
 public slots:
     //! Enable/disable showing of unprintable characters.

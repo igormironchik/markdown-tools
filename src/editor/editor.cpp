@@ -966,6 +966,11 @@ const BlockLines &Editor::blockLines() const
     return *m_d->m_blockLines.get();
 }
 
+LineNumberArea *Editor::lineNumberArea() const
+{
+    return m_d->m_lineNumberArea;
+}
+
 bool isFolded(const QTextBlock &block)
 {
     return (block.userState() > 0 ? block.userState() & s_foldingState : false);
