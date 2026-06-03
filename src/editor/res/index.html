@@ -19,6 +19,7 @@
 
             let s_id = '';
             let s_ln = -1;
+            let s_st = -1;
 
             window.scrollToId = function(itemId) {
                 const element = document.getElementById(itemId);
@@ -31,14 +32,7 @@
                 }
             }
 
-            window.scrollToLineInCode = function(preId, lineText) {
-                const preElement = document.getElementById(preId);
-                if (!preElement) {
-                    s_id = preId;
-                    s_ln = lineText;
-                    return;
-                }
-
+            function scrollToLineFromPre(preElement, lineText) {
                 const codeElement = preElement.querySelector('code');
                 if (!codeElement) {
                     s_id = preId;
@@ -54,6 +48,36 @@
                 } else if (lines[lines.length - 1]) {
                     lines[lines.length - 1].scrollIntoView({ block: "center" });
                 }
+            }
+
+            window.scrollToLineInCode = function(preId, lineText) {
+                const preElement = document.getElementById(preId);
+                if (!preElement) {
+                    s_id = preId;
+                    s_ln = lineText;
+                    return;
+                }
+
+                scrollToLineFromPre(preElement, lineText);
+            }
+
+            window.scrollToLineInCodeFromTopElem = function(topId, lineNumberInCode, startLineNumber) {
+                const spanElem = document.getElementById(`${topId}-${startLineNumber}`);
+
+                if (!spanElem) {
+                    s_id = topId;
+                    s_ln = lineNumberInCode;
+                    s_st = startLineNumber;
+                    return;
+                }
+
+                const preElem = spanElem.nextElementSibling;
+
+                if (!preElem) {
+                    return;
+                }
+
+                scrollToLineFromPre(preElem, lineNumberInCode);
             }
 
             function findParent(elem) {
@@ -148,14 +172,19 @@
             function scroll() {
                 if (s_id) {
                     if (s_ln != -1) {
-                        scrollToLineInCode(s_id, s_ln);
-                        s_id = '';
-                        s_ln = -1;
+                        if (s_st != -1) {
+                            scrollToLineInCodeFromTopElem(s_id, s_ln, s_st);
+                        } else {
+                            scrollToLineInCode(s_id, s_ln);
+                        }
                     } else {
                         scrollToId(s_id);
-                        s_id = '';
                     }
                 }
+
+                s_id = '';
+                s_ln = -1;
+                s_st = -1;
             }
 
             let prepareCode = function() {

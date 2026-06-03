@@ -638,14 +638,16 @@ void MainWindow::onLineHovered(int lineNumber,
 
 void MainWindow::scrollPreview(const QString &id,
                                qsizetype count,
-                               bool code)
+                               bool code,
+                               qsizetype fromTop)
 {
     if (code) {
-        if (count > 0) {
+        if (fromTop == 0) {
             m_d->m_page->runJavaScript(
                 QStringLiteral("scrollToLineInCode('%1', '%2')").arg(id, QString::number(count)));
         } else {
-            m_d->m_page->runJavaScript(QStringLiteral("scrollToLineInCode('%1', '0')").arg(id));
+            m_d->m_page->runJavaScript(QStringLiteral("scrollToLineInCodeFromTopElem('%1', '%2', '%3')")
+                                           .arg(id, QString::number(count), QString::number(fromTop)));
         }
     } else {
         if (count > 0) {
@@ -665,8 +667,8 @@ void MainWindow::onEditorScrolled(int)
 
     scrollPreview(
         c.blockNumber(),
-        [this](const QString &id, qsizetype count, bool code, const QPoint &pos) {
-            this->scrollPreview(id, count, code);
+        [this](const QString &id, qsizetype count, bool code, const QPoint &, qsizetype fromTop) {
+            this->scrollPreview(id, count, code, fromTop);
         },
         QPoint());
 }
@@ -675,8 +677,8 @@ void MainWindow::scrollToCursor()
 {
     scrollPreview(
         m_d->m_editor->textCursor().blockNumber(),
-        [this](const QString &id, qsizetype count, bool code, const QPoint &) {
-            this->scrollPreview(id, count, code);
+        [this](const QString &id, qsizetype count, bool code, const QPoint &, qsizetype fromTop) {
+            this->scrollPreview(id, count, code, fromTop);
         },
         QPoint());
 }
@@ -703,11 +705,11 @@ void MainWindow::onLineNumberContextMenuRequested(int lineNumber,
 {
     scrollPreview(
         lineNumber,
-        [this](const QString &id, qsizetype count, bool code, const QPoint &pos) {
+        [this](const QString &id, qsizetype count, bool code, const QPoint &pos, qsizetype fromTop) {
             QMenu menu;
 
-            menu.addAction(tr("Scroll Web Preview To"), [id, this, count, code]() {
-                this->scrollPreview(id, count, code);
+            menu.addAction(tr("Scroll Web Preview To"), [id, this, count, code, fromTop]() {
+                this->scrollPreview(id, count, code, fromTop);
             });
 
             menu.exec(pos);

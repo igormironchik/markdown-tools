@@ -105,7 +105,8 @@ private slots:
     void onScrollEditor(const QString &id);
     void scrollPreview(const QString &id,
                        qsizetype count,
-                       bool code);
+                       bool code,
+                       qsizetype fromTop);
     void onEditorScrolled(int);
     void scrollToCursor();
     void onPinPreviewEditor(bool checked);
@@ -124,16 +125,18 @@ private:
 
             if (it != m_d->m_editor->idsMap().cend()) {
                 qsizetype count = 0;
+                qsizetype fromTop = -1;
                 bool code = false;
 
                 if (items.back()->type() == MD::ItemType::Code && !static_cast<MD::Code *>(items.back())->isInline()) {
                     count = lineNumber - items.back()->startLine();
+                    fromTop = items.back()->startLine() - items.front()->startLine();
                     code = true;
                 } else {
                     count = lineNumber - items.front()->startLine();
                 }
 
-                func(it.value(), count, code, pos);
+                func(it.value(), count, code, pos, fromTop);
             }
         }
     }
