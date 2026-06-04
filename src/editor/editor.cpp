@@ -85,6 +85,11 @@ bool BlockLines::find(qsizetype line,
     return false;
 }
 
+bool BlockLines::isNull() const
+{
+    return m_start == -1 || m_end == -1;
+}
+
 bool operator!=(const Margins &l,
                 const Margins &r)
 {
@@ -1633,6 +1638,57 @@ void Editor::lineNumberAreaPaintEvent(QPaintEvent *event)
     int top = qRound(blockBoundingGeometry(block).translated(contentOffset()).top());
     int bottom = top + qRound(blockBoundingRect(block).height());
 
+    if (!m_d->m_lineNumberArea->highlightedBlock().isNull()) {
+        auto hBlock = block;
+        auto hTop = top;
+        auto hHeight = 0;
+        auto hBlockNumber = blockNumber;
+        auto topFound = false;
+        auto tmpTop = hTop;
+
+        while (hBlock.isValid() && tmpTop <= event->rect().bottom()) {
+            if (!topFound && hBlock.isVisible()) {
+                if (hBlockNumber >= m_d->m_lineNumberArea->highlightedBlock().m_start
+                    && hBlockNumber <= m_d->m_lineNumberArea->highlightedBlock().m_end) {
+                    hHeight = qRound(blockBoundingRect(hBlock).height());
+                    topFound = true;
+                }
+            }
+
+            if (hBlock.isVisible()) {
+                tmpTop += qRound(blockBoundingRect(hBlock).height());
+            }
+
+            if (hBlock.isVisible() && !topFound) {
+                hTop = tmpTop;
+            }
+
+            hBlock = hBlock.next();
+            ++hBlockNumber;
+
+            if (hBlock.isVisible()) {
+                if (hBlockNumber >= m_d->m_lineNumberArea->highlightedBlock().m_start
+                    && hBlockNumber <= m_d->m_lineNumberArea->highlightedBlock().m_end) {
+                    hHeight += qRound(blockBoundingRect(hBlock).height());
+                } else if (topFound) {
+                    break;
+                }
+            }
+        }
+
+        if (topFound) {
+            painter.save();
+            const auto color = m_d->m_lineNumberArea->palette().color(QPalette::Mid);
+            painter.setPen(color);
+            painter.setBrush(color);
+            painter.drawRect(QRect(m_d->m_lineNumberArea->width() - collapsingBlockHandleWidth() + 3,
+                                   hTop,
+                                   collapsingBlockHandleWidth() - 3,
+                                   hHeight));
+            painter.restore();
+        }
+    }
+
     QVector<BlockLines *> collaps;
 
     while (block.isValid() && top <= event->rect().bottom()) {
@@ -1747,6 +1803,32 @@ qsizetype LineNumberArea::foldedLineNumber(qsizetype line) const
     return -1;
 }
 
+qsizetype LineNumberArea::nearestFoldingLineNumber(qsizetype line) const
+{
+    QVector<BlockLines *> blocks;
+    m_codeEditor->blockLines().find(line, &blocks);
+
+    if (!blocks.isEmpty()) {
+        for (auto it = blocks.crbegin(), last = blocks.crend(); it != last; ++it) {
+            if (((*it)->m_children.size() > 1 || (*it)->m_end - (*it)->m_start)
+                && isFoldingHandleHere((*it)->m_start)) {
+                return (*it)->m_start;
+            }
+        }
+
+        if (isFoldingHandleHere(blocks.back()->m_start)) {
+            return blocks.back()->m_start;
+        }
+    }
+
+    return -1;
+}
+
+const BlockLines &LineNumberArea::highlightedBlock() const
+{
+    return m_highlightedBlock;
+}
+
 void LineNumberArea::mouseReleaseEvent(QMouseEvent *e)
 {
     if (m_leftBtnPressed) {
@@ -1776,6 +1858,10 @@ void LineNumberArea::leaveEvent(QEvent *event)
 {
     m_lineNumber = -1;
 
+    m_highlightedBlock = {};
+
+    update();
+
     emit hoverLeaved();
 
     event->ignore();
@@ -1794,6 +1880,24 @@ void LineNumberArea::onHover(const QPoint &p)
 
     if (ln != m_lineNumber) {
         m_lineNumber = ln;
+
+        const auto foldedLine = nearestFoldingLineNumber(m_lineNumber);
+
+        if (foldedLine >= 0) {
+            QVector<BlockLines *> blocks;
+            m_codeEditor->blockLines().find(foldedLine, &blocks);
+
+            auto block = findBlock(blocks, foldedLine);
+
+            if (block) {
+                m_highlightedBlock.m_start = block->m_start;
+                m_highlightedBlock.m_end = block->m_end;
+            } else {
+                m_highlightedBlock = {};
+            }
+        }
+
+        update();
 
         emit lineHovered(m_lineNumber, mapToGlobal(QPoint(width(), p.y())));
     }

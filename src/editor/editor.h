@@ -37,6 +37,7 @@ bool isFolded(const QTextBlock &block);
 
 //! Information about lines of the block.
 struct BlockLines {
+    BlockLines() = default;
     BlockLines(qsizetype start,
                qsizetype end,
                BlockLines *parent = nullptr);
@@ -45,8 +46,11 @@ struct BlockLines {
     bool find(qsizetype line,
               QVector<BlockLines *> *ret) const;
 
-    qsizetype m_start;
-    qsizetype m_end;
+    //! \return Whether this block is null.
+    bool isNull() const;
+
+    qsizetype m_start = -1;
+    qsizetype m_end = -1;
     BlockLines *m_parent = nullptr;
     // Should be sorted.
     QVector<QSharedPointer<BlockLines>> m_children;
@@ -350,6 +354,10 @@ public:
     bool isFoldingHandleHere(qsizetype line) const;
     //! \return Folding line for the given line.
     qsizetype foldedLineNumber(qsizetype line) const;
+    //! \return Neares folding marker for the given line.
+    qsizetype nearestFoldingLineNumber(qsizetype line) const;
+    //! \return Currently highlighed block.
+    const BlockLines &highlightedBlock() const;
 
 protected:
     void paintEvent(QPaintEvent *event) override
@@ -372,6 +380,7 @@ private:
     Editor *m_codeEditor;
     int m_lineNumber = -1;
     bool m_leftBtnPressed = false;
+    BlockLines m_highlightedBlock;
 }; // class LineNumberArea
 
 } /* namespace MdEditor */
