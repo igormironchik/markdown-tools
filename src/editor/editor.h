@@ -335,9 +335,11 @@ signals:
                      const QPoint &pos);
     //! Hover leaved a line number.
     void hoverLeaved();
-    //! COntext menu requested on line number.
+    //! Context menu requested on line number.
     void lineNumberContextMenuRequested(int lineNumber,
                                         const QPoint &pos);
+    //! Shading area changed.
+    void shadingAreaChanged();
 
 public:
     LineNumberArea(Editor *editor)
@@ -360,6 +362,19 @@ public:
     qsizetype nearestFoldingLineNumber(qsizetype line) const;
     //! \return Currently highlighed block.
     const BlockLines &highlightedBlock() const;
+    //! Set shading area.
+    void setShadingArea(int top,
+                        int bottom);
+    //! \return Shading area.
+    const QPair<int,
+                int> &
+    shadingArea() const;
+    //! \return Whether area is hovered.
+    bool isHovered() const;
+
+public slots:
+    //! Update hover.
+    void updateHover();
 
 protected:
     void paintEvent(QPaintEvent *event) override
@@ -383,6 +398,8 @@ private:
     int m_lineNumber = -1;
     bool m_leftBtnPressed = false;
     BlockLines m_highlightedBlock;
+    QPair<int, int> m_shadingArea = {-1, -1};
+    bool m_isHovered = false;
 }; // class LineNumberArea
 
 } /* namespace MdEditor */

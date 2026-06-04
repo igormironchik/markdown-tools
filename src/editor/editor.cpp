@@ -34,6 +34,7 @@
 #include <QTextDocument>
 #include <QTextLayout>
 #include <QThread>
+#include <QTimer>
 
 // C++ include.
 #include <algorithm>
@@ -567,6 +568,10 @@ struct EditorPrivate {
                          &LineNumberArea::lineNumberContextMenuRequested,
                          m_q,
                          &Editor::lineNumberContextMenuRequested);
+        QObject::connect(m_lineNumberArea,
+                         &LineNumberArea::shadingAreaChanged,
+                         m_q->viewport(),
+                         qOverload<>(&QWidget::update));
 
         m_q->showLineNumbers(true);
         m_q->applyFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
@@ -1335,6 +1340,19 @@ void Editor::paintEvent(QPaintEvent *event)
             }
         }
     }
+
+    if (m_d->m_lineNumberArea->shadingArea().first != -1) {
+        QPainter painter(viewport());
+        painter.setPen(Qt::NoPen);
+        auto c = palette().color(QPalette::Dark);
+        c.setAlpha(75);
+        painter.setBrush(c);
+        painter.drawRect(0, 0, contentsRect().width(), m_d->m_lineNumberArea->shadingArea().first);
+        painter.drawRect(0,
+                         m_d->m_lineNumberArea->shadingArea().second,
+                         contentsRect().width(),
+                         contentsRect().height() - m_d->m_lineNumberArea->shadingArea().second);
+    }
 }
 
 void Editor::contextMenuEvent(QContextMenuEvent *event)
@@ -1646,7 +1664,7 @@ void Editor::lineNumberAreaPaintEvent(QPaintEvent *event)
         auto topFound = false;
         auto tmpTop = hTop;
 
-        while (hBlock.isValid() && tmpTop <= event->rect().bottom()) {
+        while (hBlock.isValid() && tmpTop <= m_d->m_lineNumberArea->height()) {
             if (!topFound && hBlock.isVisible()) {
                 if (hBlockNumber >= m_d->m_lineNumberArea->highlightedBlock().m_start
                     && hBlockNumber <= m_d->m_lineNumberArea->highlightedBlock().m_end) {
@@ -1686,7 +1704,11 @@ void Editor::lineNumberAreaPaintEvent(QPaintEvent *event)
                                    collapsingBlockHandleWidth() - 3,
                                    hHeight));
             painter.restore();
+
+            m_d->m_lineNumberArea->setShadingArea(hTop, hTop + hHeight);
         }
+    } else {
+        m_d->m_lineNumberArea->setShadingArea(-1, -1);
     }
 
     QVector<BlockLines *> collaps;
@@ -1764,6 +1786,8 @@ int Editor::lineNumber(const QPoint &p)
 
 void LineNumberArea::enterEvent(QEnterEvent *event)
 {
+    m_isHovered = true;
+
     onHover(event->position().toPoint());
 
     event->ignore();
@@ -1829,6 +1853,31 @@ const BlockLines &LineNumberArea::highlightedBlock() const
     return m_highlightedBlock;
 }
 
+void LineNumberArea::setShadingArea(int top,
+                                    int bottom)
+{
+    m_shadingArea = {top, bottom};
+
+    emit shadingAreaChanged();
+}
+
+const QPair<int,
+            int> &
+LineNumberArea::shadingArea() const
+{
+    return m_shadingArea;
+}
+
+bool LineNumberArea::isHovered() const
+{
+    return m_isHovered;
+}
+
+void LineNumberArea::updateHover()
+{
+    onHover(m_codeEditor->mapFromGlobal(QCursor::pos(QApplication::primaryScreen())));
+}
+
 void LineNumberArea::mouseReleaseEvent(QMouseEvent *e)
 {
     if (m_leftBtnPressed) {
@@ -1859,6 +1908,8 @@ void LineNumberArea::leaveEvent(QEvent *event)
     m_lineNumber = -1;
 
     m_highlightedBlock = {};
+
+    m_isHovered = false;
 
     update();
 
@@ -1895,6 +1946,8 @@ void LineNumberArea::onHover(const QPoint &p)
             } else {
                 m_highlightedBlock = {};
             }
+        } else {
+            m_highlightedBlock = {};
         }
 
         update();
@@ -2737,6 +2790,17 @@ void Editor::keyPressEvent(QKeyEvent *event)
 
         if (!tmp.block().isVisible()) {
             collapse(m_d->m_lineNumberArea->foldedLineNumber(tmp.block().blockNumber()), false);
+        }
+    }
+
+    if (event == QKeySequence::MoveToEndOfDocument
+        || event == QKeySequence::MoveToNextLine
+        || event == QKeySequence::MoveToNextPage
+        || event == QKeySequence::MoveToPreviousLine
+        || event == QKeySequence::MoveToPreviousPage
+        || event == QKeySequence::MoveToStartOfDocument) {
+        if (m_d->m_lineNumberArea->isHovered()) {
+            QTimer::singleShot(0, m_d->m_lineNumberArea, &LineNumberArea::updateHover);
         }
     }
 
