@@ -1656,9 +1656,7 @@ void MainWindow::onScrollEditor(const QString &id)
                           ->findBlockByNumber(item->startLine() + (withNum ? number.toInt() : 0))
                           .position());
 
-        while (!c.block().isVisible()) {
-            m_d->m_editor->collapse(m_d->m_editor->lineNumberArea()->foldedLineNumber(c.block().blockNumber()), false);
-        }
+        m_d->m_editor->unfoldLine(c);
 
         m_d->m_editor->setTextCursor(c);
 

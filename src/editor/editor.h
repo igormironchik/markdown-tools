@@ -243,6 +243,8 @@ public slots:
     void fileWasSaved();
     //! Enable/disable auto saving of content.
     void enableAutoSave(bool on = true);
+    //! Unfold the line.
+    void unfoldLine(const QTextCursor &cursor);
 
 private slots:
     //! Calculate and change line number area width.

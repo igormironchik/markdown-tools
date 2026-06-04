@@ -2038,6 +2038,10 @@ void Editor::onFindNext()
             c.setPosition(s.selectionStart());
             c.setPosition(s.selectionEnd(), QTextCursor::KeepAnchor);
             setTextCursor(c);
+
+            unfoldLine(c);
+        } else {
+            unfoldLine(textCursor());
         }
     }
 }
@@ -2055,6 +2059,10 @@ void Editor::onFindPrev()
             c.setPosition(s.selectionStart());
             c.setPosition(s.selectionEnd(), QTextCursor::KeepAnchor);
             setTextCursor(c);
+
+            unfoldLine(c);
+        } else {
+            unfoldLine(textCursor());
         }
     }
 }
@@ -2298,6 +2306,13 @@ void Editor::fileWasSaved()
 void Editor::enableAutoSave(bool on)
 {
     m_d->m_autosavingEnabled = on;
+}
+
+void Editor::unfoldLine(const QTextCursor &cursor)
+{
+    while (!cursor.block().isVisible()) {
+        collapse(lineNumberArea()->foldedLineNumber(cursor.block().blockNumber()), false);
+    }
 }
 
 void Editor::onContentChanged()
