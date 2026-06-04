@@ -375,6 +375,8 @@ public:
 public slots:
     //! Update hover.
     void updateHover();
+    //! Clear any hovering state.
+    void clearHovering();
 
 protected:
     void paintEvent(QPaintEvent *event) override

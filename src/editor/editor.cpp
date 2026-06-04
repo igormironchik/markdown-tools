@@ -1878,6 +1878,15 @@ void LineNumberArea::updateHover()
     onHover(m_codeEditor->mapFromGlobal(QCursor::pos(QApplication::primaryScreen())));
 }
 
+void LineNumberArea::clearHovering()
+{
+    m_lineNumber = -1;
+    m_leftBtnPressed = false;
+    m_highlightedBlock = {};
+    m_shadingArea = {-1, -1};
+    m_isHovered = false;
+}
+
 void LineNumberArea::mouseReleaseEvent(QMouseEvent *e)
 {
     if (m_leftBtnPressed) {
@@ -1998,6 +2007,7 @@ void Editor::showLineNumbers(bool on)
 
         m_d->m_lineNumberArea->hide();
         m_d->m_showLineNumberArea = false;
+        m_d->m_lineNumberArea->clearHovering();
 
         auto block = document()->firstBlock();
 
