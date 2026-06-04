@@ -2519,6 +2519,8 @@ void Editor::setText(const QString &t)
 void Editor::onNextMisspelled()
 {
     syntaxHighlighter().highlightNextMisspelled(this);
+
+    unfoldLine(textCursor());
 }
 
 void Editor::onWorkingDirectoryChange(const QString &wd,
