@@ -15,6 +15,7 @@
 
 // Qt include.
 #include <QApplication>
+#include <QCommonStyle>
 #include <QCompleter>
 #include <QCursor>
 #include <QDesktopServices>
@@ -23,9 +24,12 @@
 #include <QMenu>
 #include <QMimeData>
 #include <QPainter>
+#include <QPixmapCache>
+#include <QPointer>
 #include <QScrollBar>
 #include <QStringListModel>
 #include <QStyle>
+#include <QStyleFactory>
 #include <QTextBlock>
 #include <QTextDocument>
 #include <QTextLayout>
@@ -1498,10 +1502,131 @@ inline bool collapsStartHereAndIsNotOnOneLine(const QVector<BlockLines *> &colla
     return false;
 }
 
+/*
+ * drawArrow(), drawFoldingMarker()
+ *
+ * Changed by Igor Mironchik (igor.mironchik at gmail.com)
+ *
+ * Copyright (C) 2016 The Qt Company Ltd.
+ * SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+ */
+
+void drawArrow(QStyle::PrimitiveElement element,
+               QPainter *painter,
+               const QStyleOption *option)
+{
+    if (option->rect.width() <= 1 || option->rect.height() <= 1) {
+        return;
+    }
+
+    const qreal devicePixelRatio = painter->device()->devicePixelRatio();
+    const bool enabled = option->state & QStyle::State_Enabled;
+    QRect r = option->rect;
+    int size = qMin(r.height(), r.width());
+    QPixmap pixmap;
+    const QString pixmapName =
+        QString::asprintf("StyleHelper::drawArrow-%d-%d-%d-%f", element, size, enabled, devicePixelRatio);
+    if (!QPixmapCache::find(pixmapName, &pixmap)) {
+        QImage image(size * devicePixelRatio, size * devicePixelRatio, QImage::Format_ARGB32_Premultiplied);
+        image.fill(Qt::transparent);
+        QPainter painter(&image);
+
+        QStyleOption tweakedOption(*option);
+        tweakedOption.state = QStyle::State_Enabled;
+
+        const QCommonStyle *const style = qobject_cast<QCommonStyle *>(QApplication::style());
+        auto drawCommonStyleArrow = [&tweakedOption, element, &painter, style](const QRect &rect,
+                                                                               const QColor &color) -> void {
+            if (!style)
+                return;
+
+            // Workaround for QTCREATORBUG-28470
+            QPalette pal = tweakedOption.palette;
+            pal.setBrush(QPalette::Base, pal.text()); // Base and Text differ, causing a detachment.
+                                                      // Inspired by tst_QPalette::cacheKey()
+            pal.setColor(QPalette::ButtonText, color.rgb());
+
+            tweakedOption.palette = pal;
+            tweakedOption.rect = rect;
+            painter.setOpacity(color.alphaF());
+            style->QCommonStyle::drawPrimitive(element, &tweakedOption, &painter);
+        };
+
+        if (!enabled) {
+            drawCommonStyleArrow(image.rect(), tweakedOption.palette.color(QPalette::Mid));
+        } else {
+            drawCommonStyleArrow(image.rect(), tweakedOption.palette.color(QPalette::Dark));
+        }
+        painter.end();
+        pixmap = QPixmap::fromImage(image);
+        pixmap.setDevicePixelRatio(devicePixelRatio);
+        QPixmapCache::insert(pixmapName, pixmap);
+    }
+    int xOffset = r.x() + (r.width() - size) / 2;
+    int yOffset = r.y() + (r.height() - size) / 2;
+    painter->drawPixmap(xOffset, yOffset, pixmap);
+}
+
+void drawFoldingMarker(QPainter *painter,
+                       const QPalette &pal,
+                       const QRect &rect,
+                       bool expanded,
+                       bool active,
+                       bool hovered,
+                       QWidget *w)
+{
+    QStyle *s = w->style();
+
+    QStyleOptionViewItem opt;
+    opt.rect = rect;
+    opt.state = QStyle::State_Active | QStyle::State_Item | QStyle::State_Children;
+    if (expanded) {
+        opt.state |= QStyle::State_Open;
+    }
+    if (active) {
+        opt.state |= QStyle::State_MouseOver | QStyle::State_Enabled | QStyle::State_Selected;
+    }
+    if (hovered) {
+        opt.palette.setBrush(QPalette::Window, pal.highlight());
+    }
+
+    const char *className = s->metaObject()->className();
+
+    // Do not use the windows folding marker since we cannot style them and the default hover color
+    // is a blue which does not guarantee an high contrast on all themes.
+    static QPointer<QStyle> fusionStyleOverwrite = nullptr;
+    if (!qstrcmp(className, "QWindowsVistaStyle")) {
+        if (fusionStyleOverwrite.isNull()) {
+            fusionStyleOverwrite = QStyleFactory::create("fusion");
+        }
+        if (!fusionStyleOverwrite.isNull()) {
+            s = fusionStyleOverwrite.data();
+            className = s->metaObject()->className();
+        }
+    }
+
+    if (!qstrcmp(className, "OxygenStyle")) {
+        const QStyle::PrimitiveElement direction =
+            expanded ? QStyle::PE_IndicatorArrowDown : QStyle::PE_IndicatorArrowRight;
+        drawArrow(direction, painter, &opt);
+    } else {
+        // QGtkStyle needs a small correction to draw the marker in the right place
+        if (!qstrcmp(className, "QGtkStyle")) {
+            opt.rect.translate(-2, 0);
+        } else if (!qstrcmp(className, "QMacStyle")) {
+            opt.rect.translate(-2, 0);
+        } else if (!qstrcmp(className, "QFusionStyle")) {
+            opt.rect.translate(0, -1);
+        }
+
+        s->drawPrimitive(QStyle::PE_IndicatorBranch, &opt, painter, w);
+    }
+}
+
 void Editor::lineNumberAreaPaintEvent(QPaintEvent *event)
 {
     QPainter painter(m_d->m_lineNumberArea);
-    painter.fillRect(event->rect(), Qt::lightGray);
+    painter.fillRect(event->rect(), m_d->m_lineNumberArea->palette().color(QPalette::Window));
 
     QTextBlock block = firstVisibleBlock();
     int blockNumber = block.blockNumber();
@@ -1526,17 +1651,16 @@ void Editor::lineNumberAreaPaintEvent(QPaintEvent *event)
             const auto folded = isFolded(block);
 
             if (folded || m_d->m_lineNumberArea->isFoldingHandleHere(blockNumber)) {
-                painter.drawPixmap(
-                    m_d->m_lineNumberArea->width() - collapsingBlockHandleWidth() + 3,
-                    top + (fontMetrics().height() - collapsingBlockHandleWidth() + 3) / 2,
-                    collapsingBlockHandleWidth() - 3,
-                    fontMetrics().height(),
-                    folded ? QIcon::fromTheme(QStringLiteral("arrow-right"),
-                                              QIcon(QStringLiteral(":/res/img/arrow-right.png")))
-                                 .pixmap(std::min(fontMetrics().height(), 16), std::min(fontMetrics().height(), 16))
-                           : QIcon::fromTheme(QStringLiteral("arrow-down"),
-                                              QIcon(QStringLiteral(":/res/img/arrow-down.png")))
-                                 .pixmap(std::min(fontMetrics().height(), 16), std::min(fontMetrics().height(), 16)));
+                drawFoldingMarker(&painter,
+                                  m_d->m_lineNumberArea->palette(),
+                                  QRect(m_d->m_lineNumberArea->width() - collapsingBlockHandleWidth() + 3,
+                                        top + (fontMetrics().height() - collapsingBlockHandleWidth() + 3) / 2,
+                                        collapsingBlockHandleWidth() - 3,
+                                        fontMetrics().height()),
+                                  !folded,
+                                  false,
+                                  false,
+                                  m_d->m_lineNumberArea);
             }
         }
 
