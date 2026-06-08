@@ -4,5 +4,6 @@
 project(src)
 
 add_subdirectory(shared)
+add_subdirectory(utils)
 add_subdirectory(editor)
 add_subdirectory(converter)

@@ -12,6 +12,9 @@
 // md-editor include.
 #include "syntaxvisitor.h"
 
+// md-utils include.
+#include "diff.h"
+
 // md4qt include.
 #include <md4qt/src/html.h>
 #include <md4qt/src/parser.h>
@@ -30,41 +33,6 @@ class LineNumberArea;
 
 //! \return Whether block is folded.
 bool isFolded(const QTextBlock &block);
-
-//
-// BlockLines
-//
-
-//! Information about lines of the block.
-struct BlockLines {
-    BlockLines() = default;
-    BlockLines(qsizetype start,
-               qsizetype end,
-               BlockLines *parent = nullptr);
-
-    //! Set vector of blocks (from top most parent to most nested children) with the given line.
-    bool find(qsizetype line,
-              QVector<BlockLines *> *ret) const;
-
-    //! \return Whether this block is null.
-    bool isNull() const;
-
-    qsizetype m_start = -1;
-    qsizetype m_end = -1;
-    BlockLines *m_parent = nullptr;
-    // Should be sorted.
-    QVector<QSharedPointer<BlockLines>> m_children;
-}; // struct BlockLines
-
-//
-// BlockLinesDiff
-//
-
-//! Difference between two blocks of lines.
-struct BlockLinesDiff {
-    qsizetype m_start = -1;
-    qsizetype m_end = -1;
-}; // struct BlockLinesDiff
 
 struct Settings;
 
@@ -118,7 +86,7 @@ signals:
                    unsigned long long int counter,
                    SyntaxVisitor syntax,
                    const MdShared::PluginsCfg &pluginsCfg,
-                   QSharedPointer<BlockLines> blocks);
+                   QSharedPointer<MdUtils::BlockLines> blocks);
     //! Link clicked.
     void linkClicked(const QString &url);
 
@@ -201,7 +169,7 @@ public:
     //! \return Settings.
     const Settings &settings() const;
     //! \return Lines of blocks.
-    const BlockLines &blockLines() const;
+    const MdUtils::BlockLines &blockLines() const;
     //! \return Line number area widget.
     LineNumberArea *lineNumberArea() const;
 
@@ -266,8 +234,8 @@ private slots:
                        SyntaxVisitor syntax,
                        MD::details::IdsMap idsMap,
                        Editor::ItemsMap itemsMap,
-                       QSharedPointer<BlockLines> blockLines,
-                       BlockLinesDiff diff);
+                       QSharedPointer<MdUtils::BlockLines> blockLines,
+                       MdUtils::BlockLinesDiff diff);
     //! Link clicked.
     void onLinkClicked(const QString &url);
     //! Check for URL auto-completion.
@@ -361,7 +329,7 @@ public:
     //! \return Neares folding marker for the given line.
     qsizetype nearestFoldingLineNumber(qsizetype line) const;
     //! \return Currently highlighed block.
-    const BlockLines &highlightedBlock() const;
+    const MdUtils::BlockLines &highlightedBlock() const;
     //! Set shading area.
     void setShadingArea(int top,
                         int bottom);
@@ -399,7 +367,7 @@ private:
     Editor *m_codeEditor;
     int m_lineNumber = -1;
     bool m_leftBtnPressed = false;
-    BlockLines m_highlightedBlock;
+    MdUtils::BlockLines m_highlightedBlock;
     QPair<int, int> m_shadingArea = {-1, -1};
     bool m_isHovered = false;
 }; // class LineNumberArea

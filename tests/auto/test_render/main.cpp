@@ -3,12 +3,12 @@
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 
-#include "src/converter/renderer.h"
 #include "src/converter/const.h"
+#include "src/converter/renderer.h"
 
-#include "src/shared/utils.h"
 #include "src/shared/plugins_page.h"
 #include "src/shared/syntax.h"
+#include "src/shared/utils.h"
 
 // md4qt include.
 #include <md4qt/src/parser.h>
@@ -281,7 +281,8 @@ DrawPrimitive::Type toType(const QString &t)
     }
 }
 
-QString readQuotedString(QTextStream &s, int length)
+QString readQuotedString(QTextStream &s,
+                         int length)
 {
     QString ret;
     QChar c;
@@ -300,7 +301,8 @@ QString readQuotedString(QTextStream &s, int length)
     return ret;
 }
 
-QVector<DrawPrimitive> loadTestData(const QString &fileName, const QString &suffix)
+QVector<DrawPrimitive> loadTestData(const QString &fileName,
+                                    const QString &suffix)
 {
     QVector<DrawPrimitive> data;
 
@@ -352,7 +354,10 @@ QVector<DrawPrimitive> loadTestData(const QString &fileName, const QString &suff
 
 } /* namespace MdPdf */
 
-void doTest(const QString &fileName, const QString &suffix, double textFontSize, double codeFontSize,
+void doTest(const QString &fileName,
+            const QString &suffix,
+            double textFontSize,
+            double codeFontSize,
             MdPdf::Render::ImageAlignment align = MdPdf::Render::ImageAlignment::Center,
             bool withPlugins = false)
 {
@@ -507,12 +512,12 @@ void TestRender::testTaskListBigFont()
 
 void TestRender::testMath()
 {
-    doTest( QStringLiteral( "math.md" ), QString(), 8.0, 8.0 );
+    doTest(QStringLiteral("math.md"), QString(), 8.0, 8.0);
 }
 
 void TestRender::testMathBigFont()
 {
-    doTest( QStringLiteral( "math.md" ), QStringLiteral( "_big" ), 16.0, 14.0 );
+    doTest(QStringLiteral("math.md"), QStringLiteral("_big"), 16.0, 14.0);
 }
 
 void TestRender::testVeryLongFootnote()

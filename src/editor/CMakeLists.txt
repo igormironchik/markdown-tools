@@ -80,11 +80,12 @@ endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/widgets/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/../shared)
+    ${CMAKE_CURRENT_SOURCE_DIR}/../shared
+    ${CMAKE_CURRENT_SOURCE_DIR}/../utils)
 
 add_library(md-editor-lib STATIC ${LIB_SRC})
 
-target_link_libraries(md-editor-lib md4qt::md4qt markdown-widgets
+target_link_libraries(md-editor-lib md4qt::md4qt markdown-widgets md-utils
     KF${KF_MAJOR_VERSION}::SyntaxHighlighting
     KF${KF_MAJOR_VERSION}::SonnetUi KF${KF_MAJOR_VERSION}::SonnetCore
     Qt6::WebEngineWidgets Qt6::Widgets Qt6::Core)

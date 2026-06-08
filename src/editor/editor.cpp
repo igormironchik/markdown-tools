@@ -52,45 +52,6 @@
 namespace MdEditor
 {
 
-//
-// BlockLines
-//
-
-BlockLines::BlockLines(qsizetype start,
-                       qsizetype end,
-                       BlockLines *parent)
-    : m_start(start)
-    , m_end(end)
-    , m_parent(parent)
-{
-}
-
-bool BlockLines::find(qsizetype line,
-                      QVector<BlockLines *> *ret) const
-{
-    const auto it = std::lower_bound(m_children.cbegin(),
-                                     m_children.cend(),
-                                     line,
-                                     [](const QSharedPointer<BlockLines> &block, qsizetype line) {
-                                         return (line > block->m_end);
-                                     });
-
-    if (it != m_children.cend() && line >= (*it)->m_start && line <= (*it)->m_end) {
-        ret->append(it->get());
-
-        (*it)->find(line, ret);
-
-        return true;
-    }
-
-    return false;
-}
-
-bool BlockLines::isNull() const
-{
-    return m_start == -1 || m_end == -1;
-}
-
 bool operator!=(const Margins &l,
                 const Margins &r)
 {
@@ -115,8 +76,8 @@ signals:
               SyntaxVisitor syntax,
               MD::details::IdsMap idsMap,
               Editor::ItemsMap itemsMap,
-              QSharedPointer<BlockLines> blockLines,
-              BlockLinesDiff diff);
+              QSharedPointer<MdUtils::BlockLines> blockLines,
+              MdUtils::BlockLinesDiff diff);
 
 public:
     DataParser()
@@ -140,7 +101,7 @@ public slots:
                 unsigned long long int counter,
                 SyntaxVisitor syntax,
                 const MdShared::PluginsCfg &pluginsCfg,
-                QSharedPointer<BlockLines> blocks)
+                QSharedPointer<MdUtils::BlockLines> blocks)
     {
         m_data.clear();
         m_data.push_back(md);
@@ -195,17 +156,14 @@ private slots:
                 },
                 1);
 
-            auto block = QSharedPointer<BlockLines>::create(-1, -1, nullptr);
+            auto block = QSharedPointer<MdUtils::BlockLines>::create(-1, -1, nullptr);
 
             collectBlockLines(*block, *doc, tmp);
 
-            BlockLinesDiff diff;
+            MdUtils::BlockLinesDiff diff;
 
             if (!block->m_children.isEmpty()) {
-                diff = compareBlocks(m_oldBlocks->m_children,
-                                     block->m_children,
-                                     block->m_children.front()->m_start,
-                                     block->m_children.back()->m_end);
+                diff = MdUtils::compareBlocks(m_oldBlocks->m_children, block->m_children);
             }
 
             emit done(doc, m_counter, m_syntax, idsMap, itemsMap, block, diff);
@@ -213,85 +171,7 @@ private slots:
     }
 
 private:
-    BlockLinesDiff compareBlocks(const QVector<QSharedPointer<BlockLines>> &oldBlocks,
-                                 const QVector<QSharedPointer<BlockLines>> &newBlocks,
-                                 qsizetype startParent,
-                                 qsizetype endParent)
-    {
-        if (oldBlocks.isEmpty() || newBlocks.isEmpty()) {
-            return {};
-        }
-
-        qsizetype oldStart = 0;
-        qsizetype newStart = 0;
-
-        while (oldStart < oldBlocks.size() && newStart < newBlocks.size()) {
-            BlockLinesDiff diff = compareBlocks(*oldBlocks[oldStart], *newBlocks[newStart]);
-            if (diff.m_start != -1) {
-                break;
-            }
-            ++oldStart;
-            ++newStart;
-        }
-
-        if (oldStart == oldBlocks.size() && newStart == newBlocks.size()) {
-            return {};
-        }
-
-        qsizetype oldEnd = oldBlocks.size() - 1;
-        qsizetype newEnd = newBlocks.size() - 1;
-
-        while (oldEnd >= oldStart && newEnd >= newStart) {
-            BlockLinesDiff diff = compareBlocks(*oldBlocks[oldEnd], *newBlocks[newEnd]);
-            if (diff.m_start != -1) {
-                break;
-            }
-            --oldEnd;
-            --newEnd;
-        }
-
-        qsizetype diffStart = startParent;
-        qsizetype diffEnd = endParent;
-
-        if (newStart > 0) {
-            diffStart = newBlocks[newStart]->m_start;
-        } else if (newStart < newBlocks.size()) {
-            diffStart = newBlocks[newStart]->m_start;
-        }
-
-        if (newEnd >= 0 && newEnd < newBlocks.size()) {
-            diffEnd = newBlocks[newEnd]->m_end;
-        }
-
-        if (diffStart > diffEnd) {
-            return {startParent, endParent};
-        }
-
-        return {diffStart, diffEnd};
-    }
-
-    BlockLinesDiff compareBlocks(const BlockLines &oldBlock,
-                                 const BlockLines &newBlock)
-    {
-        const qsizetype oldLength = oldBlock.m_end - oldBlock.m_start;
-        const qsizetype newLength = newBlock.m_end - newBlock.m_start;
-
-        if (oldLength != newLength) {
-            return {newBlock.m_start, newBlock.m_end};
-        }
-
-        if (oldBlock.m_children.size() != newBlock.m_children.size()) {
-            return {newBlock.m_start, newBlock.m_end};
-        }
-
-        if (newBlock.m_children.isEmpty()) {
-            return {};
-        }
-
-        return compareBlocks(oldBlock.m_children, newBlock.m_children, newBlock.m_start, newBlock.m_end);
-    }
-
-    void setEndLine(BlockLines *block,
+    void setEndLine(MdUtils::BlockLines *block,
                     qsizetype line,
                     MD::TextStream &stream)
     {
@@ -306,13 +186,13 @@ private:
             }
         }
     }
-    void collectBlockLines(BlockLines &lines,
+    void collectBlockLines(MdUtils::BlockLines &lines,
                            MD::Block &block,
                            MD::TextStream &stream)
     {
         for (const auto &b : std::as_const(block.items())) {
             if (b->type() != MD::ItemType::Anchor) {
-                lines.m_children.append(QSharedPointer<BlockLines>::create(-1, -1, &lines));
+                lines.m_children.append(QSharedPointer<MdUtils::BlockLines>::create(-1, -1, &lines));
 
                 if (b->type() != MD::ItemType::Code) {
                     lines.m_children.back()->m_start = b->startLine();
@@ -383,7 +263,7 @@ private:
     //! Plugins configuration.
     MdShared::PluginsCfg m_pluginsCfg;
     //! Old blocks of lines.
-    QSharedPointer<BlockLines> m_oldBlocks;
+    QSharedPointer<MdUtils::BlockLines> m_oldBlocks;
 };
 
 //
@@ -493,9 +373,9 @@ struct EditorPrivate {
                                      m_q))
         , m_emojiCompleter(new QCompleter(m_emojiModel,
                                           m_q))
-        , m_blockLines(QSharedPointer<BlockLines>::create(-1,
-                                                          -1,
-                                                          nullptr))
+        , m_blockLines(QSharedPointer<MdUtils::BlockLines>::create(-1,
+                                                                   -1,
+                                                                   nullptr))
         , m_parsingThread(new QThread(m_q))
         , m_parser(new DataParser)
     {
@@ -747,7 +627,7 @@ struct EditorPrivate {
     //! Map of items be theirs IDs.
     Editor::ItemsMap m_itemsMap;
     //! Lines of blocks.
-    QSharedPointer<BlockLines> m_blockLines;
+    QSharedPointer<MdUtils::BlockLines> m_blockLines;
     //! Syntax highlighter.
     SyntaxVisitor m_syntax;
     //! Tread for parsing.
@@ -889,8 +769,8 @@ void Editor::enableAutoCompletionOfEmojies(bool on)
     m_d->m_settings.m_isEmojiAutoCompletionEnabled = on;
 }
 
-inline BlockLines *findBlock(const QVector<BlockLines *> &blocks,
-                             qsizetype startLine)
+inline MdUtils::BlockLines *findBlock(const QVector<MdUtils::BlockLines *> &blocks,
+                                      qsizetype startLine)
 {
     for (const auto &block : std::as_const(blocks)) {
         if (block->m_start == startLine) {
@@ -904,7 +784,7 @@ inline BlockLines *findBlock(const QVector<BlockLines *> &blocks,
 void Editor::setBlockVisible(qsizetype line,
                              bool on)
 {
-    QVector<BlockLines *> blocks;
+    QVector<MdUtils::BlockLines *> blocks;
     m_d->m_blockLines->find(line, &blocks);
 
     if (!blocks.isEmpty()) {
@@ -915,7 +795,7 @@ void Editor::setBlockVisible(qsizetype line,
                 auto d = document()->findBlockByNumber(i);
 
                 if (on) {
-                    QVector<BlockLines *> tmp;
+                    QVector<MdUtils::BlockLines *> tmp;
                     m_d->m_blockLines->find(i, &tmp);
                     auto n = findBlock(tmp, i);
 
@@ -975,7 +855,7 @@ const Settings &Editor::settings() const
     return m_d->m_settings;
 }
 
-const BlockLines &Editor::blockLines() const
+const MdUtils::BlockLines &Editor::blockLines() const
 {
     return *m_d->m_blockLines.get();
 }
@@ -1513,7 +1393,7 @@ void Editor::highlightCurrentLine()
     }
 }
 
-inline bool collapsStartHereAndIsNotOnOneLine(const QVector<BlockLines *> &collaps,
+inline bool collapsStartHereAndIsNotOnOneLine(const QVector<MdUtils::BlockLines *> &collaps,
                                               qsizetype line)
 {
     for (const auto &c : std::as_const(collaps)) {
@@ -1711,7 +1591,7 @@ void Editor::lineNumberAreaPaintEvent(QPaintEvent *event)
         m_d->m_lineNumberArea->setShadingArea(-1, -1);
     }
 
-    QVector<BlockLines *> collaps;
+    QVector<MdUtils::BlockLines *> collaps;
 
     while (block.isValid() && top <= event->rect().bottom()) {
         collaps.clear();
@@ -1806,7 +1686,7 @@ void LineNumberArea::mousePressEvent(QMouseEvent *e)
 
 bool LineNumberArea::isFoldingHandleHere(qsizetype line) const
 {
-    QVector<BlockLines *> blocks;
+    QVector<MdUtils::BlockLines *> blocks;
 
     return (m_codeEditor->blockLines().find(line, &blocks) && collapsStartHereAndIsNotOnOneLine(blocks, line));
 }
@@ -1829,7 +1709,7 @@ qsizetype LineNumberArea::foldedLineNumber(qsizetype line) const
 
 qsizetype LineNumberArea::nearestFoldingLineNumber(qsizetype line) const
 {
-    QVector<BlockLines *> blocks;
+    QVector<MdUtils::BlockLines *> blocks;
     m_codeEditor->blockLines().find(line, &blocks);
 
     if (!blocks.isEmpty()) {
@@ -1848,7 +1728,7 @@ qsizetype LineNumberArea::nearestFoldingLineNumber(qsizetype line) const
     return -1;
 }
 
-const BlockLines &LineNumberArea::highlightedBlock() const
+const MdUtils::BlockLines &LineNumberArea::highlightedBlock() const
 {
     return m_highlightedBlock;
 }
@@ -1944,7 +1824,7 @@ void LineNumberArea::onHover(const QPoint &p)
         const auto foldedLine = nearestFoldingLineNumber(m_lineNumber);
 
         if (foldedLine >= 0) {
-            QVector<BlockLines *> blocks;
+            QVector<MdUtils::BlockLines *> blocks;
             m_codeEditor->blockLines().find(foldedLine, &blocks);
 
             auto block = findBlock(blocks, foldedLine);
@@ -2415,8 +2295,8 @@ void Editor::onContentChanged()
                    m_d->m_blockLines);
 }
 
-bool operator!=(const QVector<BlockLines *> &b1,
-                const QVector<BlockLines *> &b2)
+bool operator!=(const QVector<MdUtils::BlockLines *> &b1,
+                const QVector<MdUtils::BlockLines *> &b2)
 {
     if (b1.size() != b2.size()) {
         return true;
@@ -2438,8 +2318,8 @@ void Editor::onParsingDone(QSharedPointer<MD::Document> doc,
                            SyntaxVisitor syntax,
                            MD::details::IdsMap idsMap,
                            Editor::ItemsMap itemsMap,
-                           QSharedPointer<BlockLines> blockLines,
-                           BlockLinesDiff diff)
+                           QSharedPointer<MdUtils::BlockLines> blockLines,
+                           MdUtils::BlockLinesDiff diff)
 {
     if (m_d->m_currentParsingCounter == counter) {
         m_d->m_currentDoc = doc;

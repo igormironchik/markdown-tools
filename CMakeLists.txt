@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.19)
 
 project(markdown-tools)
 
-option(BUILD_MDPDF_TESTS "Build tests? Default OFF." OFF)
+option(BUILD_MD_TESTS "Build tests? Default OFF." OFF)
 option(BUILD_WITH_SYSTEM_LIBS "Build with system's libraries? Default OFF." OFF)
 
 set(ENV{PKG_CONFIG_PATH} "${CMAKE_CURRENT_BINARY_DIR}")
@@ -33,7 +33,7 @@ execute_process(COMMAND git rev-parse --short HEAD
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-set(MD_TOOLS_VERSION_NUMBER "0.16.33")
+set(MD_TOOLS_VERSION_NUMBER "0.16.34")
 set(HomeDir "@HomeDir@")
 string(TIMESTAMP MD_CURRENT_DATE "%Y-%m-%d")
 
@@ -144,7 +144,7 @@ string(REPLACE "-DNDEBUG" "" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}
 
 add_subdirectory(src)
 
-if(BUILD_MDPDF_TESTS)
+if(BUILD_MD_TESTS)
 	enable_testing()
 
 	add_subdirectory(tests)
