@@ -1647,8 +1647,10 @@ void MainWindow::onScrollEditor(const QString &id)
         tmp = id.sliced(0, i);
     }
 
-    if (!tmp.isEmpty() && m_d->m_editor->itemsMap().contains(tmp)) {
-        auto item = m_d->m_editor->itemsMap()[tmp];
+    const auto fit = m_d->m_mdDoc->footnotesMap().find(tmp);
+
+    if (!tmp.isEmpty() && (fit != m_d->m_mdDoc->footnotesMap().cend() || m_d->m_editor->itemsMap().contains(tmp))) {
+        auto item = (fit != m_d->m_mdDoc->footnotesMap().cend() ? fit->get() : m_d->m_editor->itemsMap()[tmp]);
 
         auto c = m_d->m_editor->textCursor();
 

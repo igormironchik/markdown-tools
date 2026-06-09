@@ -366,4 +366,69 @@ QString HtmlConv::prepareTextForHtml(const QString &t)
     return tmp;
 }
 
+void HtmlConv::onFootnotes(const QString &footnoteBackLinkContent)
+{
+    if (!m_fns.empty()) {
+        m_html.push_back(QStringLiteral("<section class=\"footnotes\"><ol dir=\"auto\">"));
+    }
+
+    int i = 1;
+
+    // This copy is needed. First time we want to iterate on non-modified container.
+    const auto tmpFns = m_fns;
+    m_justCollectFootnoteRefs = true;
+
+    for (const auto &id : tmpFns) {
+        const auto fit = this->m_doc->footnotesMap().find(id.m_id);
+
+        if (fit != this->m_doc->footnotesMap().cend()) {
+            this->onFootnote(fit->get());
+        }
+    }
+
+    m_justCollectFootnoteRefs = false;
+    m_dontIncrementFootnoteCount = true;
+
+    for (const auto &id : m_fns) {
+        m_html.push_back(QStringLiteral("<li id=\""));
+        m_html.push_back(id.m_id);
+        m_html.push_back(QStringLiteral("\">"));
+        ++i;
+
+        const auto fit = this->m_doc->footnotesMap().find(id.m_id);
+
+        if (fit != this->m_doc->footnotesMap().cend()) {
+            m_id = id.m_id;
+            m_top = fit->get();
+            m_count = 0;
+            m_lastCount = 0;
+
+            this->onFootnote(fit->get());
+
+            if (!footnoteBackLinkContent.isEmpty()) {
+                QString backRef;
+                qsizetype backRefPos = m_html.endsWith(QStringLiteral("</p>")) ? 4 : 0;
+
+                for (qsizetype i = 1; i <= id.m_count; ++i) {
+                    backRef.push_back(QStringLiteral("<a href=\"#ref-"));
+                    backRef.push_back(id.m_id);
+                    backRef.push_back(QStringLiteral("-"));
+                    backRef.push_back(QString::number(i));
+                    backRef.push_back(QStringLiteral("\">"));
+                    backRef.push_back(footnoteBackLinkContent);
+                    backRef.push_back(QStringLiteral("</a>"));
+                }
+
+                m_html.insert(m_html.length() - backRefPos, backRef);
+            }
+
+            m_html.push_back(QStringLiteral("</li>"));
+        }
+    }
+
+    if (!m_fns.empty()) {
+        m_html.push_back(QStringLiteral("</ol></section>\n"));
+    }
+}
+
 } /* namespace MdEditor */

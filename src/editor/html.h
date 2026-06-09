@@ -37,6 +37,7 @@ protected:
     void onHorizontalLine(MD::HorizontalLine *l) override;
     void onUserDefined(MD::Item *item) override;
     QString prepareTextForHtml(const QString &t) override;
+    void onFootnotes(const QString &footnoteBackLinkContent) override;
 
 private:
     void printLineId(MD::Item *item);

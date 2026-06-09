@@ -82,9 +82,19 @@
 
             function findParent(elem) {
                 let topParent = elem;
+                let previous = null;
 
                 while (topParent && topParent.parentElement && topParent.parentElement.tagName !== 'ARTICLE') {
-                    topParent = topParent.parentElement;
+
+                    let tmp = topParent.parentElement;
+
+                    if (tmp.classList.contains('footnotes')) {
+                        topParent = previous;
+                        break;
+                    } else {
+                        previous = topParent;
+                        topParent = tmp;
+                    }
                 }
 
                 return topParent;
@@ -122,7 +132,7 @@
                     .slice(0, targetIndex)
                     .filter(node => node.tagName === 'SPAN' &&
                             node.id &&
-                            node.id.startsWith('md4qt-line-id-'))
+                            (node.id.startsWith('md4qt-line-id-') || (elem.id && node.id.startsWith(elem.id))))
                     .at(-1);
 
                 return lastSpan;
