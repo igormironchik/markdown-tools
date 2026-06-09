@@ -3304,7 +3304,8 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
                               pdfData.m_layout.y()
                                   + cw.descent()
                                   + (size.height() - descent) * imgScale
-                                  + previousBaseline.m_stack.back().m_baselineDelta,
+                                  + previousBaseline.m_stack.back().m_baselineDelta
+                                  - size.height() * imgScale,
                               size.width() * imgScale,
                               size.height() * imgScale};
 
