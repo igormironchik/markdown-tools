@@ -61,18 +61,15 @@ minimum versions:
 
 * msvc++ 14.16 (VS 2017 15.9)
 * gcc 9.0
-* clang/llvm 7.0
+* clang/llvm 9.0
+* XCode 11.0
 
 It is regularly tested with the following IDE/toolchains versions:
 
-* Visual Studio 2017 15.9
-* Visual Studio 2019 16.11
-* Visual Studio 2022 17.3
+* Visual Studio 2022 17.14
 * gcc 9.3.1
-* XCode 13.3
-* NDK r23b
-
-GCC 8.1 support [broke](https://github.com/podofo/podofo/issues/116), but it could be reinstanced.
+* XCode 15.4
+* NDK r28
 
 ## Licensing
 
@@ -88,7 +85,7 @@ PoDoFo is known to compile through a multitude of package managers (including [A
 [Windows](https://github.com/podofo/podofo/blob/master/.github/workflows/build-win.yml), bootstrapping the CMake project, building and testing the library. It's highly recommended to build PoDoFo using such package managers. 
 
 There's also a playground area in the repository where you can have
-access to pre-build dependencies for some popular architectures/operating systems:
+access to pre-built dependencies for some popular architectures/operating systems:
 the playground is the recommended setting to develop the library and reproduce bugs,
 while it's not recommended for the deployment of your application using PoDoFo.
 Have a look to the [Readme](https://github.com/podofo/podofo/tree/master/playground) there.
@@ -189,6 +186,10 @@ This unconditionally disable building tests, examples and tools;
 - `PODOFO_BUILD_STATIC`: If TRUE, build the library as a static object and use it in tests,
 examples and tools. By default a shared library is built;
 
+- `PODOFO_WITH_FONTMANAGER`: Enable search of fonts in the system. It generally requires Fontconfig, unless specific platforms fallbacks are enabled. Defaults to ON;
+
+- `PODOFO_WITH_WIN32GDI_FONT_SEARCH`: In Windows, enable use of Win32 GDI for font search (Fontconfig is always prefered, is available), defaults to OFF;
+
 - `PODOFO_WITH_AFDKO`: Enable the [Adobe Font Development Kit for OpenType](https://github.com/adobe-type-tools/afdko) integration (used in Type1/OpenType font subsetting), defaults to ON;
 
 - `PODOFO_DEVENDOR_TCBSPAN`: If TRUE, the [`tcb::span`](https://github.com/tcbrindle/span) library will be devendored;
@@ -242,7 +243,7 @@ Open a terminal or command prompt and run the following command:
     ```
 ## Software life cycle and API stability
 
-Refer to the main article in the [Wiki](https://github.com/podofo/podofo/wiki/PoDoFo-releases-life-cycle-and-API-stability). 
+Refer to the main article in the [Wiki](https://github.com/podofo/podofo/wiki/Home). 
 At this [page](https://github.com/podofo/podofo/blob/master/API-MIGRATION.md) you can find an incomplete guide on migrating 0.9.8 code to 0.10.x, and from 0.10.x to 1.0.
 
 ## String encoding and buffer conventions
