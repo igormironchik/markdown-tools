@@ -3155,7 +3155,7 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
                 (pdfData.m_layout.pageHeight() - pdfData.m_layout.y() + descent * imgScale) / 72.0 * pd.physicalDpiY());
 
             const QRectF r = {pdfData.m_layout.startX(size.width() * imgScale),
-                              pdfData.m_layout.y() - descent * imgScale,
+                              pdfData.m_layout.y() - descent * imgScale - size.height() * imgScale,
                               size.width() * imgScale,
                               size.height() * imgScale};
             const auto idx = pdfData.m_currentPainterIdx;
