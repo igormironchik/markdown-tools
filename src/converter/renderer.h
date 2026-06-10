@@ -45,6 +45,23 @@ namespace MdPdf
 namespace Render
 {
 
+struct RectF {
+    RectF() = default;
+    RectF(qreal leftX, qreal bottomY, qreal width, qreal height);
+
+    qreal x() const;
+    qreal bottomY() const;
+    qreal width() const;
+    qreal height() const;
+
+    void setWidth(qreal w);
+
+    qreal m_leftX = 0.0;
+    qreal m_bottomY = 0.0;
+    qreal m_width = 0.0;
+    qreal m_height = 0.0;
+}; // struct RectF
+
 struct Utf8String {
     QByteArray data;
 
@@ -316,11 +333,11 @@ struct LayoutDirectionHandler {
     {
         return (isRightToLeft() ? -1.0 : 1.0);
     }
-    QRectF currentRect(double width,
+    RectF currentRect(double width,
                        double height,
                        double baseline = 0.0) const
     {
-        return QRectF(startX(width), y() + baseline, width, height);
+        return RectF(startX(width), y() + baseline, width, height);
     }
     double startX(double width) const
     {
@@ -1047,7 +1064,7 @@ private:
     };
 
     //! Draw text.
-    QVector<QPair<QRectF,
+    QVector<QPair<RectF,
                   unsigned int>>
     drawText(PdfAuxData &pdfData,
              MD::Text *item,
@@ -1066,7 +1083,7 @@ private:
              const QColor &color = Qt::black,
              RTLFlag *rtl = nullptr);
     //! Draw inlined code.
-    QVector<QPair<QRectF,
+    QVector<QPair<RectF,
                   unsigned int>>
     drawInlinedCode(PdfAuxData &pdfData,
                     MD::Code *item,
@@ -1081,7 +1098,7 @@ private:
                     bool inLink = false);
 
     //! Draw string.
-    QVector<QPair<QRectF,
+    QVector<QPair<RectF,
                   unsigned int>>
     drawString(PdfAuxData &pdfData,
                const QString &str,
@@ -1115,7 +1132,7 @@ private:
                double regularSpaceFontScale = 0.0,
                RTLFlag *rtl = nullptr);
     //! Draw link.
-    QVector<QPair<QRectF,
+    QVector<QPair<RectF,
                   unsigned int>>
     drawLink(PdfAuxData &pdfData,
              MD::Link *item,
@@ -1334,7 +1351,7 @@ private:
                        double lineHeight,
                        bool scaleImagesToLineHeight);
     //! Draw image.
-    QPair<QRectF,
+    QPair<RectF,
           unsigned int>
     drawImage(PdfAuxData &pdfData,
               MD::Image *item,
@@ -1355,7 +1372,7 @@ private:
               bool scaleImagesToLineHeight = false);
 
     //! Draw math expression.
-    QPair<QRectF,
+    QPair<RectF,
           unsigned int>
     drawMathExpr(PdfAuxData &pdfData,
                  MD::Math *item,
@@ -1429,9 +1446,9 @@ private:
     //! All destinations in the document.
     QMap<QString, std::shared_ptr<Destination>> m_dests;
     //! Links that not yet clickable.
-    QMultiMap<QString, QVector<QPair<QRectF, unsigned int>>> m_unresolvedLinks;
+    QMultiMap<QString, QVector<QPair<RectF, unsigned int>>> m_unresolvedLinks;
     //! Footnotes links.
-    QMultiMap<QString, QPair<QRectF, unsigned int>> m_unresolvedFootnotesLinks;
+    QMultiMap<QString, QPair<RectF, unsigned int>> m_unresolvedFootnotesLinks;
     //! Cache of images.
     QMap<QString, QByteArray> m_imageCache;
     //! Footnotes to draw.

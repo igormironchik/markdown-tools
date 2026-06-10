@@ -50,6 +50,39 @@ namespace Render
 const double PdfRenderer::PrevBaselineStateStack::s_scale = 1.5;
 const double PdfRenderer::PrevBaselineStateStack::s_baselineScale = 0.5;
 
+RectF::RectF(qreal leftX, qreal bottomY, qreal width, qreal height)
+    : m_leftX(leftX)
+    , m_bottomY(bottomY)
+    , m_width(width)
+    , m_height(height)
+{
+}
+
+qreal RectF::x() const
+{
+    return m_leftX;
+}
+
+qreal RectF::bottomY() const
+{
+    return m_bottomY;
+}
+
+qreal RectF::width() const
+{
+    return m_width;
+}
+
+qreal RectF::height() const
+{
+    return m_height;
+}
+
+void RectF::setWidth(qreal w)
+{
+    m_width = w;
+}
+
 //
 // PdfRendererError
 //
@@ -950,7 +983,7 @@ void PdfRenderer::resolveLinks(PdfAuxData &pdfData)
             for (const auto &r : std::as_const(it.value())) {
                 auto &page = pdfData.m_doc->GetPages().GetPageAt(r.second);
                 auto &annot = page.GetAnnotations().CreateAnnot<PoDoFo::PdfAnnotationLink>(
-                    Rect(r.first.x(), r.first.y(), r.first.width(), r.first.height()));
+                    Rect(r.first.x(), r.first.bottomY(), r.first.width(), r.first.height()));
                 annot.SetBorderStyle(0.0, 0.0, 0.0);
                 annot.SetDestination(*m_dests.value(it.key()).get());
             }
@@ -968,7 +1001,7 @@ void PdfRenderer::resolveLinks(PdfAuxData &pdfData)
         if (m_dests.contains(it.key())) {
             auto &page = pdfData.m_doc->GetPages().GetPageAt(it.value().second);
             auto &annot = page.GetAnnotations().CreateAnnot<PoDoFo::PdfAnnotationLink>(
-                Rect(it.value().first.x(), it.value().first.y(), it.value().first.width(), it.value().first.height()));
+                Rect(it.value().first.x(), it.value().first.bottomY(), it.value().first.width(), it.value().first.height()));
             annot.SetBorderStyle(0.0, 0.0, 0.0);
             annot.SetDestination(*m_dests.value(it.key()).get());
         }
@@ -1300,7 +1333,7 @@ void PdfRenderer::deinitSubSupScript(MD::ItemWithOpts *item,
     }
 }
 
-QVector<QPair<QRectF,
+QVector<QPair<RectF,
               unsigned int>>
 PdfRenderer::drawText(PdfAuxData &pdfData,
                       MD::Text *item,
@@ -1374,21 +1407,21 @@ namespace /* anonymous */
 {
 
 //! Combine smaller rectangles standing next each other to bigger one.
-QVector<QPair<QRectF,
+QVector<QPair<RectF,
               unsigned int>>
-normalizeRects(const QVector<QPair<QRectF,
+normalizeRects(const QVector<QPair<RectF,
                                    unsigned int>> &rects)
 {
-    QVector<QPair<QRectF, unsigned int>> ret;
+    QVector<QPair<RectF, unsigned int>> ret;
 
     if (!rects.isEmpty()) {
-        QPair<QRectF, int> to(rects.first());
+        QPair<RectF, int> to(rects.first());
 
         auto it = rects.cbegin();
         ++it;
 
         for (auto last = rects.cend(); it != last; ++it) {
-            if (qAbs(it->first.y() - to.first.y()) < 0.001) {
+            if (qAbs(it->first.bottomY() - to.first.bottomY()) < 0.001) {
                 to.first.setWidth(to.first.width() + it->first.width());
             } else {
                 ret.append(to);
@@ -1490,7 +1523,7 @@ MD::Block::Items::const_iterator PdfRenderer::skipRawHtmlAndSpacesBackward(MD::B
     return last;
 }
 
-QVector<QPair<QRectF,
+QVector<QPair<RectF,
               unsigned int>>
 PdfRenderer::drawLink(PdfAuxData &pdfData,
                       MD::Link *item,
@@ -1515,7 +1548,7 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
                       PrevBaselineStateStack &previousBaseline,
                       RTLFlag *rtl)
 {
-    QVector<QPair<QRectF, unsigned int>> rects;
+    QVector<QPair<RectF, unsigned int>> rects;
 
     QString url = item->url();
 
@@ -1728,7 +1761,7 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
                         .GetPageAt(static_cast<unsigned int>(r.second))
                         .GetAnnotations()
                         .CreateAnnot<PoDoFo::PdfAnnotationLink>(
-                            Rect(r.first.x(), r.first.y(), r.first.width(), r.first.height())));
+                            Rect(r.first.x(), r.first.bottomY(), r.first.width(), r.first.height())));
                 annot.SetBorderStyle(0.0, 0.0, 0.0);
 
                 auto actionSmart = pdfData.m_doc->CreateAction(PoDoFo::PdfActionType::URI);
@@ -1793,7 +1826,7 @@ void PdfRenderer::alignLine(PdfAuxData &pdfData,
     }
 }
 
-QVector<QPair<QRectF,
+QVector<QPair<RectF,
               unsigned int>>
 PdfRenderer::drawString(PdfAuxData &pdfData,
                         const QString &str,
@@ -1892,7 +1925,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
         }
     };
 
-    QVector<QPair<QRectF, unsigned int>> ret;
+    QVector<QPair<RectF, unsigned int>> ret;
 
     {
         QMutexLocker lock(&m_mutex);
@@ -2198,7 +2231,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
     return ret;
 }
 
-QVector<QPair<QRectF,
+QVector<QPair<RectF,
               unsigned int>>
 PdfRenderer::drawInlinedCode(PdfAuxData &pdfData,
                              MD::Code *item,
@@ -2303,7 +2336,7 @@ void PdfRenderer::moveToNewLine(PdfAuxData &pdfData,
 namespace /* anonymous */
 {
 
-QVector<WhereDrawn> toWhereDrawn(const QVector<QPair<QRectF,
+QVector<WhereDrawn> toWhereDrawn(const QVector<QPair<RectF,
                                                      unsigned int>> &rects,
                                  double pageHeight)
 {
@@ -2319,12 +2352,12 @@ QVector<WhereDrawn> toWhereDrawn(const QVector<QPair<QRectF,
             map[r.second] = {pageHeight, 0.0};
         }
 
-        if (r.first.y() < map[r.second].m_minY) {
-            map[r.second].m_minY = r.first.y();
+        if (r.first.bottomY() < map[r.second].m_minY) {
+            map[r.second].m_minY = r.first.bottomY();
         }
 
-        if (r.first.height() + r.first.y() > map[r.second].m_maxY) {
-            map[r.second].m_maxY = r.first.height() + r.first.y();
+        if (r.first.height() + r.first.bottomY() > map[r.second].m_maxY) {
+            map[r.second].m_maxY = r.first.height() + r.first.bottomY();
         }
     }
 
@@ -2436,7 +2469,7 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
 
     const auto wasRightToLeft = pdfData.m_layout.isRightToLeft();
 
-    QVector<QPair<QRectF, unsigned int>> rects;
+    QVector<QPair<RectF, unsigned int>> rects;
 
     {
         QMutexLocker lock(&m_mutex);
@@ -2940,7 +2973,7 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
                 tmpDest->SetDestination(
                     pdfData.m_doc->GetPages().GetPageAt(static_cast<unsigned int>(pdfData.m_currentPainterIdx)),
                     rect.x(),
-                    rect.y() + rect.height(),
+                    rect.bottomY() + rect.height(),
                     0.0);
 
                 auto dest = std::shared_ptr<Destination>(std::move(tmpDest));
@@ -3004,7 +3037,7 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
     return {where, {firstLinePageIdx, firstLineY, firstLineHeight}};
 }
 
-QPair<QRectF,
+QPair<RectF,
       unsigned int>
 PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
                           MD::Math *item,
@@ -3154,7 +3187,7 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
                 pdfData.m_layout.startX(size.width() * imgScale) / 72.0 * pd.physicalDpiX(),
                 (pdfData.m_layout.pageHeight() - pdfData.m_layout.y() + descent * imgScale) / 72.0 * pd.physicalDpiY());
 
-            const QRectF r = {pdfData.m_layout.startX(size.width() * imgScale),
+            const RectF r = {pdfData.m_layout.startX(size.width() * imgScale),
                               pdfData.m_layout.y() - descent * imgScale - size.height() * imgScale,
                               size.width() * imgScale,
                               size.height() * imgScale};
@@ -3300,7 +3333,7 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
                              / 72.0
                              * pd.physicalDpiY());
 
-            const QRectF r = {pdfData.m_layout.startX(size.width() * imgScale),
+            const RectF r = {pdfData.m_layout.startX(size.width() * imgScale),
                               pdfData.m_layout.y()
                                   + cw.descent()
                                   + (size.height() - descent) * imgScale
@@ -3704,7 +3737,7 @@ ParagraphAlignment imageToParagraphAlignment(ImageAlignment alignment)
     }
 }
 
-QPair<QRectF,
+QPair<RectF,
       unsigned int>
 PdfRenderer::drawImage(PdfAuxData &pdfData,
                        MD::Image *item,
@@ -3863,7 +3896,7 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
             height += iHeight * imgScale;
         }
 
-        QRectF r(pdfData.m_layout.startX(iWidth * imgScale),
+        RectF r(pdfData.m_layout.startX(iWidth * imgScale),
                  pdfData.m_layout.y() + dy,
                  iWidth * imgScale,
                  iHeight * imgScale);
