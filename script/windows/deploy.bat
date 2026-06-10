@@ -1,9 +1,13 @@
 echo "Installing Qt Installer Framework..."
 
-aqt install-tool --outputdir Qt windows desktop tools_ifw qt.tools.ifw.47
+IF EXIST "Qt\Tools\QtInstallerFramework" (
+   echo "Qt Installer Framework is installed already. Skipping."
+) ELSE (
+  aqt install-tool --outputdir Qt windows desktop tools_ifw qt.tools.ifw.47
 
-IF %ERRORLEVEL% NEQ 0 (
+  IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
+  )
 )
 
 echo "Creating installer..."
