@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.23)
 
 project(PoDoFo)
 
+set(CMAKE_FIND_PACKAGE_PREFER_CONFIG TRUE)
+
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 9.0)
         message(FATAL_ERROR "GCC version must be at least 9.0")
