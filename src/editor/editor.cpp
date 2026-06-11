@@ -1817,10 +1817,12 @@ void LineNumberArea::contextMenuEvent(QContextMenuEvent *event)
 void LineNumberArea::onHover(const QPoint &p)
 {
     const auto ln = m_codeEditor->lineNumber(p);
+    const auto onNewLine = (ln != m_lineNumber);
 
-    if (ln != m_lineNumber) {
-        m_lineNumber = ln;
+    m_lineNumber = ln;
 
+    if (p.x() >= width() - m_codeEditor->collapsingBlockHandleWidth() + 3
+        && p.x() <= width() - 3) {
         const auto foldedLine = nearestFoldingLineNumber(m_lineNumber);
 
         if (foldedLine >= 0) {
@@ -1838,9 +1840,13 @@ void LineNumberArea::onHover(const QPoint &p)
         } else {
             m_highlightedBlock = {};
         }
+    } else {
+        m_highlightedBlock = {};
+    }
 
-        update();
+    update();
 
+    if (onNewLine) {
         emit lineHovered(m_lineNumber, mapToGlobal(QPoint(width(), p.y())));
     }
 }
