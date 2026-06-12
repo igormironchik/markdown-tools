@@ -343,7 +343,7 @@ public:
 
                 for (int i = 0; i < tl->lineCount(); ++i) {
                     auto line = tl->lineAt(i);
-                    line.setPosition({margin + availableWidth - line.naturalTextWidth(), line.position().y()});
+                    line.setPosition({margin + availableWidth - line.horizontalAdvance(), line.position().y()});
                 }
             }
 
