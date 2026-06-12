@@ -47,7 +47,10 @@ namespace Render
 
 struct RectF {
     RectF() = default;
-    RectF(qreal leftX, qreal bottomY, qreal width, qreal height);
+    RectF(qreal leftX,
+          qreal bottomY,
+          qreal width,
+          qreal height);
 
     qreal x() const;
     qreal bottomY() const;
@@ -334,8 +337,8 @@ struct LayoutDirectionHandler {
         return (isRightToLeft() ? -1.0 : 1.0);
     }
     RectF currentRect(double width,
-                       double height,
-                       double baseline = 0.0) const
+                      double height,
+                      double baseline = 0.0) const
     {
         return RectF(startX(width), y() + baseline, width, height);
     }

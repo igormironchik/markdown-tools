@@ -50,7 +50,10 @@ namespace Render
 const double PdfRenderer::PrevBaselineStateStack::s_scale = 1.5;
 const double PdfRenderer::PrevBaselineStateStack::s_baselineScale = 0.5;
 
-RectF::RectF(qreal leftX, qreal bottomY, qreal width, qreal height)
+RectF::RectF(qreal leftX,
+             qreal bottomY,
+             qreal width,
+             qreal height)
     : m_leftX(leftX)
     , m_bottomY(bottomY)
     , m_width(width)
@@ -1000,8 +1003,10 @@ void PdfRenderer::resolveLinks(PdfAuxData &pdfData)
     for (auto it = m_unresolvedFootnotesLinks.cbegin(), last = m_unresolvedFootnotesLinks.cend(); it != last; ++it) {
         if (m_dests.contains(it.key())) {
             auto &page = pdfData.m_doc->GetPages().GetPageAt(it.value().second);
-            auto &annot = page.GetAnnotations().CreateAnnot<PoDoFo::PdfAnnotationLink>(
-                Rect(it.value().first.x(), it.value().first.bottomY(), it.value().first.width(), it.value().first.height()));
+            auto &annot = page.GetAnnotations().CreateAnnot<PoDoFo::PdfAnnotationLink>(Rect(it.value().first.x(),
+                                                                                            it.value().first.bottomY(),
+                                                                                            it.value().first.width(),
+                                                                                            it.value().first.height()));
             annot.SetBorderStyle(0.0, 0.0, 0.0);
             annot.SetDestination(*m_dests.value(it.key()).get());
         }
@@ -3188,9 +3193,9 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
                 (pdfData.m_layout.pageHeight() - pdfData.m_layout.y() + descent * imgScale) / 72.0 * pd.physicalDpiY());
 
             const RectF r = {pdfData.m_layout.startX(size.width() * imgScale),
-                              pdfData.m_layout.y() - descent * imgScale - size.height() * imgScale,
-                              size.width() * imgScale,
-                              size.height() * imgScale};
+                             pdfData.m_layout.y() - descent * imgScale - size.height() * imgScale,
+                             size.width() * imgScale,
+                             size.height() * imgScale};
             const auto idx = pdfData.m_currentPainterIdx;
 
             pdfData.m_layout.addY(cw.isDrawing() ? cw.height() : 0.0);
@@ -3334,13 +3339,13 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
                              * pd.physicalDpiY());
 
             const RectF r = {pdfData.m_layout.startX(size.width() * imgScale),
-                              pdfData.m_layout.y()
-                                  + cw.descent()
-                                  + (size.height() - descent) * imgScale
-                                  + previousBaseline.m_stack.back().m_baselineDelta
-                                  - size.height() * imgScale,
-                              size.width() * imgScale,
-                              size.height() * imgScale};
+                             pdfData.m_layout.y()
+                                 + cw.descent()
+                                 + (size.height() - descent) * imgScale
+                                 + previousBaseline.m_stack.back().m_baselineDelta
+                                 - size.height() * imgScale,
+                             size.width() * imgScale,
+                             size.height() * imgScale};
 
             pdfData.m_layout.addX(size.width() * imgScale);
             const auto idx = pdfData.m_currentPainterIdx;
@@ -3897,9 +3902,9 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
         }
 
         RectF r(pdfData.m_layout.startX(iWidth * imgScale),
-                 pdfData.m_layout.y() + dy,
-                 iWidth * imgScale,
-                 iHeight * imgScale);
+                pdfData.m_layout.y() + dy,
+                iWidth * imgScale,
+                iHeight * imgScale);
 
         if (onLine) {
             pdfData.m_layout.addX(iWidth * imgScale);

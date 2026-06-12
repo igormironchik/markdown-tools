@@ -30,6 +30,7 @@ int main(int argc,
     QWebEngineUrlScheme::registerScheme(qrc);
 
     QApplication app(argc, argv);
+    app.setLayoutDirection(Qt::RightToLeft);
     app.setOrganizationName(QStringLiteral("Igor Mironchik"));
     app.setOrganizationDomain(QStringLiteral("github.com/igormironchik"));
     app.setApplicationName(QStringLiteral("Markdown Editor"));

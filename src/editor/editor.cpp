@@ -1579,10 +1579,11 @@ void Editor::lineNumberAreaPaintEvent(QPaintEvent *event)
             const auto color = m_d->m_lineNumberArea->palette().color(QPalette::Mid);
             painter.setPen(color);
             painter.setBrush(color);
-            painter.drawRect(QRect(m_d->m_lineNumberArea->width() - collapsingBlockHandleWidth() + 3,
-                                   hTop,
-                                   collapsingBlockHandleWidth() - 3,
-                                   hHeight));
+            painter.drawRect(
+                QRect(QApplication::isRightToLeft() ? 3 : m_d->m_lineNumberArea->width() - collapsingBlockHandleWidth(),
+                      hTop,
+                      collapsingBlockHandleWidth() - 3,
+                      hHeight));
             painter.restore();
 
             m_d->m_lineNumberArea->setShadingArea(hTop, hTop + hHeight);
@@ -1599,11 +1600,11 @@ void Editor::lineNumberAreaPaintEvent(QPaintEvent *event)
         if (block.isVisible() && bottom >= event->rect().top()) {
             QString number = QString::number(blockNumber + 1);
             painter.setPen(Qt::black);
-            painter.drawText(0,
+            painter.drawText(QApplication::isRightToLeft() ? collapsingBlockHandleWidth() + 3 : 0,
                              top,
-                             m_d->m_lineNumberArea->width() - collapsingBlockHandleWidth(),
+                             m_d->m_lineNumberArea->width() - collapsingBlockHandleWidth() - 6,
                              fontMetrics().height(),
-                             Qt::AlignRight,
+                             QApplication::isRightToLeft() ? Qt::AlignLeft : Qt::AlignRight,
                              number);
 
             const auto folded = isFolded(block);
@@ -1611,7 +1612,9 @@ void Editor::lineNumberAreaPaintEvent(QPaintEvent *event)
             if (folded || m_d->m_lineNumberArea->isFoldingHandleHere(blockNumber)) {
                 drawFoldingMarker(&painter,
                                   m_d->m_lineNumberArea->palette(),
-                                  QRect(m_d->m_lineNumberArea->width() - collapsingBlockHandleWidth() + 3,
+                                  QRect(QApplication::isRightToLeft()
+                                            ? 3
+                                            : m_d->m_lineNumberArea->width() - collapsingBlockHandleWidth(),
                                         top + (fontMetrics().height() - collapsingBlockHandleWidth() + 3) / 2,
                                         collapsingBlockHandleWidth() - 3,
                                         fontMetrics().height()),
@@ -1771,7 +1774,8 @@ void LineNumberArea::mouseReleaseEvent(QMouseEvent *e)
 {
     if (m_leftBtnPressed) {
         const auto x = qRound(e->position().x());
-        if (x >= width() - m_codeEditor->collapsingBlockHandleWidth() + 3 && x <= width()) {
+        if (x >= (QApplication::isRightToLeft() ? 3 : width() - m_codeEditor->collapsingBlockHandleWidth())
+            && x <= (QApplication::isRightToLeft() ? m_codeEditor->collapsingBlockHandleWidth() : width() - 3)) {
             if (isFoldingHandleHere(m_lineNumber)) {
                 m_codeEditor->collapse(m_lineNumber,
                                        !isFolded(m_codeEditor->document()->findBlockByNumber(m_lineNumber)));
@@ -1821,8 +1825,8 @@ void LineNumberArea::onHover(const QPoint &p)
 
     m_lineNumber = ln;
 
-    if (p.x() >= width() - m_codeEditor->collapsingBlockHandleWidth() + 3
-        && p.x() <= width() - 3) {
+    if (p.x() >= (QApplication::isRightToLeft() ? 3 : width() - m_codeEditor->collapsingBlockHandleWidth())
+        && p.x() <= (QApplication::isRightToLeft() ? m_codeEditor->collapsingBlockHandleWidth() : width() - 3)) {
         const auto foldedLine = nearestFoldingLineNumber(m_lineNumber);
 
         if (foldedLine >= 0) {
