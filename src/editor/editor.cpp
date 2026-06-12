@@ -965,9 +965,7 @@ int Editor::lineNumberAreaWidth() const
         digits = 2;
     }
 
-    int space = 3 + fontMetrics().horizontalAdvance(QLatin1Char('9')) * digits + collapsingBlockHandleWidth() + 3;
-
-    return space;
+    return 3 + fontMetrics().horizontalAdvance(QLatin1Char('9')) * digits + collapsingBlockHandleWidth() + 3;
 }
 
 void Editor::updateLineNumberAreaWidth(int /* newBlockCount */)
