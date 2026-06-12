@@ -334,7 +334,12 @@ public:
                 if (availableWidth <= 0) {
                     availableWidth = qreal(INT_MAX);
                 }
+
                 availableWidth -= 2 * margin + extraMargin;
+
+                if (r.width() > availableWidth) {
+                    r.setWidth(availableWidth);
+                }
 
                 for (int i = 0; i < tl->lineCount(); ++i) {
                     auto line = tl->lineAt(i);
