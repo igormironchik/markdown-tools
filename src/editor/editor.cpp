@@ -1821,6 +1821,11 @@ void LineNumberArea::contextMenuEvent(QContextMenuEvent *event)
     event->accept();
 }
 
+void LineNumberArea::wheelEvent(QWheelEvent *e)
+{
+    m_codeEditor->wheelEvent(e);
+}
+
 void LineNumberArea::onHover(const QPoint &p)
 {
     const auto ln = m_codeEditor->lineNumber(p);

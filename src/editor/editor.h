@@ -358,6 +358,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *e) override;
     void leaveEvent(QEvent *event) override;
     void contextMenuEvent(QContextMenuEvent *event) override;
+    void wheelEvent(QWheelEvent *e) override;
 
 private:
     //! Actual processing of hover event on line numbers.
