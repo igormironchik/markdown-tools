@@ -114,6 +114,7 @@ struct MainWindowPrivate {
     QMenu *m_actionMenu = nullptr;
     QMenu *m_standardEditMenu = nullptr;
     QMenu *m_settingsMenu = nullptr;
+    QMenu *m_formatMenu = nullptr;
     QToolButton *m_backBtn = nullptr;
     QToolButton *m_fwdBtn = nullptr;
     QWidget *m_filePanel = nullptr;

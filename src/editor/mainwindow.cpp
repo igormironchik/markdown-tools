@@ -1708,6 +1708,8 @@ void MainWindow::onTogglePreviewAction(bool checked)
         m_d->m_livePreviewAction->setEnabled(false);
         m_d->m_orientAction->setVisible(false);
         m_d->m_orientAction->setEnabled(false);
+        m_d->m_formatMenu->menuAction()->setEnabled(false);
+        m_d->m_formatMenu->menuAction()->setVisible(false);
         m_d->m_sidebarPanel->hide();
         m_d->m_tabEditorSplitter->handle(1)->setCursor(Qt::ArrowCursor);
         m_d->m_editorPreviewSplitter->handle(1)->setCursor(Qt::ArrowCursor);
@@ -1744,6 +1746,8 @@ void MainWindow::onTogglePreviewAction(bool checked)
         m_d->m_sidebarPanel->show();
         m_d->m_livePreviewAction->setVisible(true);
         m_d->m_livePreviewAction->setEnabled(true);
+        m_d->m_formatMenu->menuAction()->setEnabled(true);
+        m_d->m_formatMenu->menuAction()->setVisible(true);
 
         m_d->m_cursorPosLabel->show();
 

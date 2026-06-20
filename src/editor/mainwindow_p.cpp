@@ -314,23 +314,23 @@ void MainWindowPrivate::initUi()
     m_nextMisspelled->setEnabled(false);
     m_q->addAction(m_nextMisspelled);
 
-    auto formatMenu = m_q->menuBar()->addMenu(MainWindow::tr("F&ormat"));
+    m_formatMenu = m_q->menuBar()->addMenu(MainWindow::tr("F&ormat"));
 
-    m_tabAction = new QAction(MainWindow::tr("Indent"), formatMenu);
+    m_tabAction = new QAction(MainWindow::tr("Indent"), m_formatMenu);
     m_tabAction->setShortcut(MainWindow::tr("Tab"));
     m_tabAction->setShortcutContext(Qt::WidgetShortcut);
     QObject::connect(m_tabAction, &QAction::triggered, [this]() {
         qApp->postEvent(this->m_editor, new QKeyEvent(QEvent::KeyPress, Qt::Key_Tab, Qt::NoModifier));
     });
-    formatMenu->addAction(m_tabAction);
+    m_formatMenu->addAction(m_tabAction);
 
-    m_backtabAction = new QAction(MainWindow::tr("Unindent"), formatMenu);
+    m_backtabAction = new QAction(MainWindow::tr("Unindent"), m_formatMenu);
     m_backtabAction->setShortcut(MainWindow::tr("Shift+Tab"));
     m_backtabAction->setShortcutContext(Qt::WidgetShortcut);
     QObject::connect(m_backtabAction, &QAction::triggered, [this]() {
         qApp->postEvent(this->m_editor, new QKeyEvent(QEvent::KeyPress, Qt::Key_Backtab, Qt::NoModifier));
     });
-    formatMenu->addAction(m_backtabAction);
+    m_formatMenu->addAction(m_backtabAction);
 
     m_actionMenu = m_q->menuBar()->addMenu(MainWindow::tr("&Action"));
     m_goBackAction =
