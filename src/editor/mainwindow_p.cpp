@@ -538,8 +538,6 @@ void MainWindowPrivate::initUi()
     m_q->setTabOrder(m_find->editLine(), m_find->replaceLine());
     m_q->setTabOrder(m_find->replaceLine(), m_findWeb->line());
 
-    m_q->onFileNew();
-
     m_q->setAcceptDrops(true);
 }
 

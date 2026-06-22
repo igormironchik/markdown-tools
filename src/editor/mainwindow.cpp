@@ -1404,6 +1404,8 @@ void MainWindow::onFirstTimeShown()
 
     if (!m_d->m_startupState.m_fileName.isEmpty()) {
         openFile(m_d->m_startupState.m_fileName);
+    } else {
+        onFileNew();
     }
 
     if (!m_d->m_startupState.m_workingDir.isEmpty()) {
