@@ -501,7 +501,6 @@ void MainWindowPrivate::initUi()
                      m_q,
                      &MainWindow::onWorkingDirectoryChange);
     QObject::connect(m_editor->document(), &QTextDocument::modificationChanged, m_saveAction, &QAction::setEnabled);
-    QObject::connect(m_editor->document(), &QTextDocument::modificationChanged, m_q, &MainWindow::setWindowModified);
     QObject::connect(m_editor, &Editor::ready, m_q, &MainWindow::onTextChanged);
     QObject::connect(m_editor, &Editor::misspelled, m_q, &MainWindow::onMisspelledFount);
     QObject::connect(m_editor, &Editor::lineHovered, m_q, &MainWindow::onLineHovered);

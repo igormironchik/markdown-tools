@@ -164,15 +164,8 @@ void MainWindow::resizeEvent(QResizeEvent *e)
 
         auto w = (centralWidget()->width() - m_d->m_minTabWidth);
 
-        if (!m_d->m_previewMode) {
-            m_d->m_tabEditorSplitter->setSizes({m_d->m_minTabWidth, w});
-            m_d->m_editorPreviewSplitter->setSizes({w / 2, w / 2});
-        } else {
-            m_d->m_tabEditorSplitter->setSizes({0, centralWidget()->width()});
-            m_d->m_editorPreviewSplitter->setSizes({0, centralWidget()->width()});
-            m_d->m_tabEditorSplitter->handle(1)->setCursor(Qt::ArrowCursor);
-            m_d->m_editorPreviewSplitter->handle(1)->setCursor(Qt::ArrowCursor);
-        }
+        m_d->m_tabEditorSplitter->setSizes({m_d->m_minTabWidth, w});
+        m_d->m_editorPreviewSplitter->setSizes({w / 2, w / 2});
     }
 
     e->accept();
@@ -1424,6 +1417,8 @@ void MainWindow::onFirstTimeShown()
     if (m_d->m_startupState.m_previewMode) {
         openInPreviewMode();
     }
+
+    connect(m_d->m_editor->document(), &QTextDocument::modificationChanged, this, &MainWindow::setWindowModified);
 }
 
 void MainWindow::onGoBack()
