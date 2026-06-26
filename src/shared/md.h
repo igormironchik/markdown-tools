@@ -1,0 +1,358 @@
+/*
+    SPDX-FileCopyrightText: 2026 Igor Mironchik <igor.mironchik@gmail.com>
+    SPDX-License-Identifier: GPL-3.0-or-later
+*/
+
+#pragma once
+
+// Qt include.
+#include <QString>
+
+namespace MdSyntax
+{
+
+static const char *s_thematicBreaks = QT_TRANSLATE_NOOP(
+    "Markdown",
+    "<p><b>Thematic breaks</b></p>\n"
+    "<p>A line consisting of optionally up to three spaces of indentation, followed by a sequence of three or more "
+    "matching <code>-</code>, <code>_</code>, or <code>*</code> characters, each followed optionally by any number of "
+    "spaces or tabs, forms a thematic break.</p>\n"
+    "<p><b>Example</b>\n"
+    "<pre><code>***</code></pre></p>");
+
+static const char *s_atxHeadings = QT_TRANSLATE_NOOP(
+    "Markdown",
+    "<p><b>ATX headings</b></p>\n"
+    "<p>An ATX heading consists of a string of characters, parsed as inline content, between an opening sequence "
+    "of 1–6 unescaped <code>#</code> characters and an optional closing sequence of any number of unescaped "
+    "<code>#</code> characters. The opening sequence of <code>#</code> characters must be followed by spaces or tabs, "
+    "or by the end of line. The optional closing sequence of <code>#</code>s must be preceded by spaces or tabs and "
+    "may be followed by spaces or tabs only. The opening <code>#</code> character may be preceded by up to three "
+    "spaces of indentation. The raw contents of the heading are stripped of leading and trailing space or tabs "
+    "before being parsed as inline content. The heading level is equal to the number of <code>#</code> characters in "
+    "the opening sequence.</p>\n"
+    "<p><b>Example</b>\n"
+    "<pre><code># foo</code></pre></p>");
+
+static const char *s_setextHeadings = QT_TRANSLATE_NOOP(
+    "Markdown",
+    "<p><b>Setext headings</b></p>\n"
+    "<p>A setext heading consists of one or more lines of text, not interrupted by a blank line, of which the "
+    "first line does not have more than 3 spaces of indentation, followed by a setext heading underline. The lines "
+    "of text must be such that, were they not followed by the setext heading underline, they would be interpreted as "
+    "a paragraph: they cannot be interpretable as a code fence, ATX heading, block quote, thematic break, "
+    "list item, or HTML block.</p>\n"
+    "<p>A setext heading underline is a sequence of <code>=</code> characters or a sequence of <code>-</code> "
+    "characters, with no more than 3 spaces of indentation and any number of trailing spaces or tabs.</p>\n"
+    "<p>The heading is a level 1 heading if <code>=</code> characters are used in the setext heading underline, "
+    "and a level 2 heading if <code>-</code> characters are used. The contents of the heading are the result of "
+    "parsing the preceding lines of text as CommonMark inline content.</p>\n"
+    "<p>In general, a setext heading need not be preceded or followed by a blank line. However, it cannot interrupt "
+    "a paragraph, so when a setext heading comes after a paragraph, a blank line is needed between them.</p>\n"
+    "<p><b>Example</b>\n"
+    "<pre><code>foo\n"
+    "---</code></pre></p>");
+
+static const char *s_indentedCodeBlocks = QT_TRANSLATE_NOOP(
+    "Markdown",
+    "<p><b>Indented code blocks</b></p>\n"
+    "<p>An indented code block is composed of one or more indented chunks separated by blank lines. An indented "
+    "chunk is a sequence of non-blank lines, each preceded by four or more spaces of indentation. The contents "
+    "of the code block are the literal contents of the lines, including trailing line endings, minus four spaces "
+    "of indentation. An indented code block has no info string.<\p>\n"
+    "<p>An indented code block cannot interrupt a paragraph, so there must be a blank line between a paragraph and a "
+    "following indented code block. (A blank line is not needed, however, between a code block and a following "
+    "paragraph.)</p>\n"
+    "<p><b>Example</b>\n"
+    "<pre><code>    a simple\n"
+    "      indented code block</code></pre></p>");
+
+static const char *s_fencedCodeBlocks = QT_TRANSLATE_NOOP(
+    "Markdown",
+    "<p><b>Fenced code blocks</b></p>\n"
+    "<p>A code fence is a sequence of at least three consecutive backtick characters (<code>`</code>) or tildes "
+    "(<code>~</code>). (Tildes and backticks cannot be mixed.) A fenced code block begins with a code fence, preceded "
+    "by up to three spaces of indentation.</p>\n"
+    "<p>The line with the opening code fence may optionally contain some text following the code fence; this is "
+    "trimmed of leading and trailing spaces or tabs and called the info string. If the info string comes after a "
+    "backtick fence, it may not contain any backtick characters. (The reason for this restriction is that otherwise "
+    "some inline code would be incorrectly interpreted as the beginning of a fenced code block.)</p>\n"
+    "<p>The content of the code block consists of all subsequent lines, until a closing code fence of the same type "
+    "as the code block began with (backticks or tildes), and with at least as many backticks or tildes as the opening "
+    "code fence. If the leading code fence is preceded by N spaces of indentation, then up to N spaces of indentation "
+    "are removed from each line of the content (if present). (If a content line is not indented, it is preserved "
+    "unchanged. If it is indented N spaces or less, all of the indentation is removed.)</p>\n"
+    "<p>The closing code fence may be preceded by up to three spaces of indentation, and may be followed only by "
+    "spaces or tabs, which are ignored. If the end of the containing block (or document) is reached and no closing "
+    "code fence has been found, the code block contains all of the lines after the opening code fence until the end "
+    "of the containing block (or document). (An alternative spec would require backtracking in the event that a "
+    "closing code fence is not found. But this makes parsing much less efficient, and there seems to be no real "
+    "downside to the behavior described here.)</p>\n"
+    "<p>A fenced code block may interrupt a paragraph, and does not require a blank line either before or after.</p>\n"
+    "<p>The content of a code fence is treated as literal text, not parsed as inlines. The first word of the info "
+    "string is typically used to specify the language of the code sample, and rendered in the <code>class</code> "
+    "attribute of the <code>code</code> tag. However, this spec does not mandate any particular treatment of the "
+    "info string.</p>\n"
+    "<p><b>Example</b>\n"
+    "<pre><code>```cpp\n"
+    "int i = 0;\n"
+    "```</code></pre></p>");
+
+static const char *s_htmlBlocks = QT_TRANSLATE_NOOP(
+    "Markdown",
+    "<p><b>HTML blocks</b></p>\n"
+    "<p>An HTML block is a group of lines that is treated as raw HTML (and will not be escaped in HTML output).</p>\n"
+    "<p>There are seven kinds of HTML block, which can be defined by their start and end conditions. The block begins "
+    "with a line that meets a start condition (after up to three optional spaces of indentation). It ends with the "
+    "first subsequent line that meets a matching end condition, or the last line of the document, or the last line "
+    "of the container block containing the current HTML block, if no line is encountered that meets the end "
+    "condition. If the first line meets both the start condition and the end condition, the block will contain just "
+    "that line.</p>\n"
+    "<ol>\n"
+    "<li>"
+    "<p><b>Start condition:</b> line begins with the string <code>&lt;pre</code>, <code>&lt;script</code>, "
+    "<code>&lt;style</code>, or <code>&lt;textarea</code> (case-insensitive), followed by a space, a tab, the string "
+    "<code>&gt;</code>, or the end of the line.</p>\n"
+    "<p><b>End condition:</b> line contains an end tag <code>&lt;/pre&gt;</code>, <code>&lt;/script&gt;</code>, "
+    "<code>&lt;/style&gt;</code>, or <code>&lt;/textarea&gt;</code> (case-insensitive; it need not match the start "
+    "tag).</p>\n"
+    "</li>\n"
+    "<li>\n"
+    "<p><b>Start condition:</b> line begins with the string <code>&lt;!--</code>.</p>\n"
+    "<p><b>End condition:</b> line contains the string <code>--&gt;</code>.</p>\n"
+    "</li>\n"
+    "<li>\n"
+    "<p><b>Start condition:</b> line begins with the string <code>&lt;?</code>.</p>\n"
+    "<p><b>End condition:</b> line contains the string <code>?&gt;</code>.</p>\n"
+    "</li>\n"
+    "<li>\n"
+    "<p><b>Start condition:</b> line begins with the string <code>&lt;!</code> followed by an ASCII letter.</p>\n"
+    "<p><b>End condition:</b> line contains the character <code>&gt;</code>.</p>\n"
+    "</li>\n"
+    "<li>\n"
+    "<p><b>Start condition:</b> line begins with the string <code>&lt;![CDATA[</code>.</p>\n"
+    "<p><b>End condition:</b> line contains the string <code>]]&gt;</code>.</p>\n"
+    "</li>\n"
+    "<li>\n"
+    "<p><b>Start condition:</b> line begins with the string <code>&lt;</code> or <code>&lt;/</code> followed by one "
+    "of the strings (case-insensitive) <code>address</code>, <code>article</code>, <code>aside</code>, "
+    "<code>base</code>, <code>basefont</code>, <code>blockquote</code>, <code>body</code>, <code>caption</code>, "
+    "<code>center</code>, <code>col</code>, <code>colgroup</code>, <code>dd</code>, <code>details</code>, "
+    "<code>dialog</code>, <code>dir</code>, <code>div</code>, <code>dl</code>, <code>dt</code>, <code>fieldset</code>, "
+    "<code>figcaption</code>, <code>figure</code>, <code>footer</code>, <code>form</code>, <code>frame</code>, "
+    "<code>frameset</code>, <code>h1</code>, <code>h2</code>, <code>h3</code>, <code>h4</code>, <code>h5</code>, "
+    "<code>h6</code>, <code>head</code>, <code>header</code>, <code>hr</code>, <code>html</code>, <code>iframe</code>, "
+    "<code>legend</code>, <code>li</code>, <code>link</code>, <code>main</code>, <code>menu</code>, "
+    "<code>menuitem</code>, <code>nav</code>, <code>noframes</code>, <code>ol</code>, <code>optgroup</code>, "
+    "<code>option</code>, <code>p</code>, <code>param</code>, <code>search</code>, <code>section</code>, "
+    "<code>summary</code>, <code>table</code>, <code>tbody</code>, <code>td</code>, <code>tfoot</code>, "
+    "<code>th</code>, <code>thead</code>, <code>title</code>, <code>tr</code>, <code>track</code>, <code>ul</code>, "
+    "followed by a space, a tab, the end of the line, the string <code>&gt;</code>, or the string <code>/&gt;</code>."
+    "</p>\n"
+    "<p><b>End condition:</b> line is followed by a blank line.</p>\n"
+    "</li>\n"
+    "<li>\n"
+    "<p><b>Start condition:</b> line begins with a complete open tag (with any tag name other than <code>pre</code>, "
+    "<code>script</code>, <code>style</code>, or <code>textarea</code>) or a complete closing tag, followed by zero or "
+    "more spaces and tabs, followed by the end of the line.</p>\n"
+    "<p><b>End condition:</b> line is followed by a blank line.</p>\n"
+    "</li>\n"
+    "</ol>\n"
+    "<p>HTML blocks continue until they are closed by their appropriate end condition, or the last line of the "
+    "document or other container block. This means any HTML within an HTML block that might otherwise be recognised "
+    "as a start condition will be ignored by the parser and passed through as-is, without changing the parser’s "
+    "state.</p>\n"
+    "<p><b>Example</b>\n"
+    "<pre><code>&lt;div&gt;</code></pre></p>");
+
+static const char *s_linkReferenceDefinitions = QT_TRANSLATE_NOOP(
+    "Markdown",
+    "<p><b>Link reference definitions</b></p>\n"
+    "<p>A link reference definition consists of a link label, optionally preceded by up to three spaces of "
+    "indentation, followed by a colon (<code>:</code>), optional spaces or tabs (including up to one line ending), a "
+    "link destination, optional spaces or tabs (including up to one line ending), and an optional link title, which "
+    "if it is present must be separated from the link destination by spaces or tabs. No further character may "
+    "occur.</p>\n"
+    "<p>A link reference definition does not correspond to a structural element of a document. Instead, it defines a "
+    "label which can be used in reference links and reference-style images elsewhere in the document. Link reference "
+    "definitions can come either before or after the links that use them.</p>\n"
+    "<p><b>Example</b>\n"
+    "<pre><code>[foo]: /url \"title\"</code></pre></p>");
+
+static const char *s_paragraphs = QT_TRANSLATE_NOOP(
+    "Markdown",
+    "<p><b>Paragraphs</b></p>\n"
+    "<p>A sequence of non-blank lines that cannot be interpreted as other kinds of blocks forms a paragraph. The "
+    "contents of the paragraph are the result of parsing the paragraph’s raw content as inlines. The paragraph’s "
+    "raw content is formed by concatenating the lines and removing initial and final spaces or tabs.</p>\n"
+    "<p><b>Example</b>\n"
+    "<pre><code>Text</code></pre></p>");
+
+static const char *s_blockQuotes = QT_TRANSLATE_NOOP(
+    "Markdown",
+    "<p><b>Block quotes</b></p>\n"
+    "<p>A block quote marker, optionally preceded by up to three spaces of indentation, consists of (a) the character "
+    "<code>&gt;</code> together with a following space of indentation, or (b) a single character <code>&gt;</code> not "
+    "followed by a space of indentation.</p>\n"
+    "<p>The following rules define block quotes:</p>\n"
+    "<ol>\n"
+    "<li>\n"
+    "<p><b>Basic case.</b> If a string of lines <i>Ls</i> constitute a sequence of blocks <i>Bs</i>, then the result "
+    "of prepending a block quote marker to the beginning of each line in <i>Ls</i> is a block quote containing "
+    "<i>Bs</i>.</p>\n"
+    "</li>\n"
+    "<li>\n"
+    "<p><b>Laziness.</b> If a string of lines <i>Ls</i> constitute a block quote with contents <i>Bs</i>, then the "
+    "result of deleting the initial block quote marker from one or more lines in which the next character other than "
+    "a space or tab after the block quote marker is paragraph continuation text is a block quote with <i>Bs</i> as "
+    "its content. Paragraph continuation text is text that will be parsed as part of the content of a paragraph, but "
+    "does not occur at the beginning of the paragraph.</p>\n"
+    "</li>\n"
+    "<li>\n"
+    "<p><b>Consecutiveness.</b> A document cannot contain two block quotes in a row unless there is a blank line "
+    "between them.</p>\n"
+    "</li>\n"
+    "</ol>\n"
+    "<p>Nothing else counts as a block quote.</p>\n"
+    "<p><b>Example</b>\n"
+    "<pre><code>&gt; Quote</code></pre></p>");
+
+static const char *s_listItems = QT_TRANSLATE_NOOP(
+    "Markdown",
+    "<p><b>List items</b></p>\n"
+    "<p>A list marker is a bullet list marker or an ordered list marker.</p>\n"
+    "<p>A bullet list marker is a <code>-</code>, <code>+</code>, or <code>*</code> character.</p>\n"
+    "<p>An ordered list marker is a sequence of 1–9 arabic digits (<code>0-9</code>), followed by either a "
+    "<code>.</code> character or a <code>)</code> character. (The reason for the length limit is that with 10 digits "
+    "we start seeing integer overflows in some browsers.)</p>\n"
+    "<p>The following rules define list items:</p>\n"
+    "<ol>\n"
+    "<li>\n"
+    "<p><b>Basic case.</b> If a sequence of lines <i>Ls</i> constitute a sequence of blocks <i>Bs</i> starting with "
+    "a character other than a space or tab, and <i>M</i> is a list marker of width <i>W</i> followed by <i>1 ≤ N ≤ "
+    "4</i>"
+    " spaces of indentation, then the result of prepending <i>M</i> and the following spaces to the first line of "
+    "<i>Ls</i>, and indenting subsequent lines of <i>Ls</i> by <i>W + N</i> spaces, is a list item with <i>Bs</i> as "
+    "its contents. The type of the list item (bullet or ordered) is determined by the type of its list marker. If the "
+    "list item is ordered, then it is also assigned a start number, based on the ordered list marker.</p>\n"
+    "<p>Exceptions:</p>\n"
+    "<ol>\n"
+    "<li>\n"
+    "<p>When the first list item in a list interrupts a paragraph—that is, when it starts on a line that would "
+    "otherwise count as paragraph continuation text—then (a) the lines <i>Ls</i> must not begin with a blank line, "
+    "and (b) if the list item is ordered, the start number must be 1.</p>\n"
+    "</li>\n"
+    "<li>\n"
+    "<p>If any line is a thematic break then that line is not a list item.</p>\n"
+    "</li>\n"
+    "</ol>\n"
+    "</li>\n"
+    "<li>\n"
+    "<p><b>Item starting with indented code.</b> If a sequence of lines <i>Ls</i> constitute a sequence of blocks "
+    "<i>Bs</i> starting with an indented code block, and <i>M</i> is a list marker of width <i>W</i> followed by one "
+    "space of indentation, then the result of prepending <i>M</i> and the following space to the first line of "
+    "<i>Ls</i>, and indenting subsequent lines of <i>Ls</i> by <i>W + 1</i> spaces, is a list item with <i>Bs</i> "
+    "as its contents. If a line is empty, then it need not be indented. The type of the list item (bullet or ordered) "
+    "is determined by the type of its list marker. If the list item is ordered, then it is also assigned a start "
+    "number, based on the ordered list marker.</p>\n"
+    "</li>\n"
+    "<li>\n"
+    "<p><b>Item starting with a blank line.</b> If a sequence of lines <i>Ls</i> starting with a single blank line "
+    "constitute a (possibly empty) sequence of blocks <i>Bs</i>, and <i>M</i> is a list marker of width <i>W</i>, "
+    "then the result of prepending <i>M</i> to the first line of <i>Ls</i>, and preceding subsequent lines of "
+    "<i>Ls</i> by <i>W + 1</i> spaces of indentation, is a list item with <i>Bs</i> as its contents. If a line is "
+    "empty, then it need not be indented. The type of the list item (bullet or ordered) is determined by the type of "
+    "its list marker. If the list item is ordered, then it is also assigned a start number, based on the ordered "
+    "list marker.</p>\n"
+    "</li>\n"
+    "<li>\n"
+    "<p><b>Indentation.</b> If a sequence of lines <i>Ls</i> constitutes a list item according to rule #1, #2, or #3, "
+    "then the result of preceding each line of <i>Ls</i> by up to three spaces of indentation (the same for each "
+    "line) also constitutes a list item with the same contents and attributes. If a line is empty, then it need not be "
+    "indented.</p>\n"
+    "</li>\n"
+    "<li>\n"
+    "<p><b>Laziness.</b> If a string of lines <i>Ls</i> constitute a list item with contents <i>Bs</i>, then the "
+    "result of deleting some or all of the indentation from one or more lines in which the next character other than "
+    "a space or tab after the indentation is paragraph continuation text is a list item with the same contents and "
+    "attributes. The unindented lines are called lazy continuation lines.</p>\n"
+    "</li>\n"
+    "<li>\n"
+    "<p>That’s all. Nothing that is not counted as a list item by rules #1–5 counts as a list item.</p>\n"
+    "</li>\n"
+    "</ol>\n"
+    "<p><b>Example</b>\n"
+    "<pre><code>* List</code></pre></p>");
+
+static const char *s_lists = QT_TRANSLATE_NOOP(
+    "Markdown",
+    "<p><b>Lists</b></p>\n"
+    "<p>A list is a sequence of one or more list items of the same type. The list items may be separated by any "
+    "number of blank lines.</p>\n"
+    "<p>Two list items are of the same type if they begin with a list marker of the same type. Two list markers are "
+    "of the same type if (a) they are bullet list markers using the same character (<code>-</code>, <code>+</code>, "
+    "or <code>*</code>) or (b) they are ordered list numbers with the same delimiter (either <code>.</code> or "
+    "<code>)</code>).</p>\n"
+    "<p>A list is an ordered list if its constituent list items begin with ordered list markers, and a bullet "
+    "list if its constituent list items begin with bullet list markers.</p>\n"
+    "<p>The start number of an ordered list is determined by the list number of its initial list item. The numbers "
+    "of subsequent list items are disregarded.</p>\n"
+    "<p>A list is loose if any of its constituent list items are separated by blank lines, or if any of its "
+    "constituent list items directly contain two block-level elements with a blank line between them. Otherwise a "
+    "list is tight. (The difference in HTML output is that paragraphs in a loose list are wrapped in "
+    "<code>&lt;p&gt;</code> tags, while paragraphs in a tight list are not.)</p>\n"
+    "<p><b>Example</b>\n"
+    "<pre><code>* List</code></pre></p>");
+
+static const char *s_tables = QT_TRANSLATE_NOOP(
+    "Markdown",
+    "<p><b>Tables</b></p>\n"
+    "<p>A table is an arrangement of data with rows and columns, consisting of a single header row, a delimiter row "
+    "separating the header from the data, and zero or more data rows.</p>\n"
+    "<p>Each row consists of cells containing arbitrary text, in which inlines are parsed, separated by pipes "
+    "(<code>|</code>). A leading and trailing pipe is also recommended for clarity of reading, and if there’s "
+    "otherwise parsing ambiguity. Spaces between pipes and cell content are trimmed. Block-level elements cannot be "
+    "inserted in a table.</p>\n"
+    "<p>The delimiter row consists of cells whose only content are hyphens (<code>-</code>), and optionally, a "
+    "leading or trailing colon (<code>:</code>), or both, to indicate left, right, or center alignment "
+    "respectively.</p>\n"
+    "<p><b>Example</b>\n"
+    "<pre><code>| Header |\n"
+    "| ------ |\n"
+    "| Row    |</code></pre></p>");
+
+static const char *s_taskListItems = QT_TRANSLATE_NOOP(
+    "Markdown",
+    "<p><b>Task list items</b></p>\n"
+    "<p>A task list item is a list item where the first block in it is a paragraph which begins with a task list "
+    "item marker and at least one whitespace character before any other content.</p>\n"
+    "<p>A task list item marker consists of an optional number of spaces, a left bracket (<code>[</code>), either "
+    "a whitespace character or the letter <code>x</code> in either lowercase or uppercase, and then a right bracket "
+    "(<code>]</code>).</p>\n"
+    "<p>If the character between the brackets is a whitespace character, the checkbox is unchecked. "
+    "Otherwise, the checkbox is checked.</p>\n"
+    "<p><b>Example</b>\n"
+    "<pre><code>* [ ] Task list item</code></pre></p>");
+
+static const char *s_codeSpans = QT_TRANSLATE_NOOP(
+    "Markdown",
+    "<p><b>Code spans</b></p>\n"
+    "<p>A backtick string is a string of one or more backtick characters (<code>`</code>) that is neither preceded "
+    "nor followed by a backtick.</p>\n"
+    "<p>A code span begins with a backtick string and ends with a backtick string of equal length. The contents of "
+    "the code span are the characters between these two backtick strings, normalized in the following ways:</p>\n"
+    "<ul>\n"
+    "<li>\n"
+    "<p>First, line endings are converted to spaces.</p>\n"
+    "</li>\n"
+    "<li>\n"
+    "<p>If the resulting string both begins and ends with a space character, but does not consist entirely of space "
+    "characters, a single space character is removed from the front and back. This allows you to include code that "
+    "begins or ends with backtick characters, which must be separated by whitespace from the opening or closing "
+    "backtick strings.</p>\n"
+    "</li>\n"
+    "</ul>\n"
+    "<p><b>Example</b>\n"
+    "<pre><code>`foo`</code></pre></p>");
+
+} /* namespace MdSyntax */
