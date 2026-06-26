@@ -59,7 +59,7 @@ static const char *s_indentedCodeBlocks = QT_TRANSLATE_NOOP(
     "<p>An indented code block is composed of one or more indented chunks separated by blank lines. An indented "
     "chunk is a sequence of non-blank lines, each preceded by four or more spaces of indentation. The contents "
     "of the code block are the literal contents of the lines, including trailing line endings, minus four spaces "
-    "of indentation. An indented code block has no info string.<\p>\n"
+    "of indentation. An indented code block has no info string.</p>\n"
     "<p>An indented code block cannot interrupt a paragraph, so there must be a blank line between a paragraph and a "
     "following indented code block. (A blank line is not needed, however, between a code block and a following "
     "paragraph.)</p>\n"
@@ -624,7 +624,7 @@ static const char *s_autolinks = QT_TRANSLATE_NOOP(
     "be present in the last two segments of the domain.</p>\n"
     "<p>The scheme http will be inserted automatically.</p>\n"
     "<p><b>Example</b>\n"
-    "<pre><code><http://foo.bar.baz></code></pre></p>");
+    "<pre><code>&lt;http://foo.bar.baz&gt;</code></pre></p>");
 
 static const char *s_rawHtml = QT_TRANSLATE_NOOP(
     "Markdown",
@@ -675,7 +675,7 @@ static const char *s_hardLineBreaks = QT_TRANSLATE_NOOP(
     "<p>A line ending (not in a code span or HTML tag) that is preceded by two or more spaces and does not occur at "
     "the end of a block is parsed as a hard line break (rendered in HTML as a <code>&lt;br /&gt;</code> tag):</p>\n"
     "<p><b>Example</b>\n"
-    "<pre><code>foo\</code></pre></p>");
+    "<pre><code>foo\\</code></pre></p>");
 
 static const char *s_strikethrough = QT_TRANSLATE_NOOP(
     "Markdown",

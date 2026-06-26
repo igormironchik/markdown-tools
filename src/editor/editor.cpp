@@ -1242,7 +1242,8 @@ void Editor::contextMenuEvent(QContextMenuEvent *event)
 {
     auto menu = createStandardContextMenu(event->pos());
 
-    auto c = cursorForPosition(event->pos());
+    auto posCursor = cursorForPosition(event->pos());
+    auto c = posCursor;
     const auto line = c.block().blockNumber();
     const auto pos = c.position() - c.block().position();
 
@@ -1280,6 +1281,12 @@ void Editor::contextMenuEvent(QContextMenuEvent *event)
             sonnet.save();
         });
     }
+
+    menu->addAction(QIcon(QStringLiteral(":/icon/icon_24x24.png")),
+                    MainWindow::tr("Extract from the standard"),
+                    [posCursor, this]() {
+                        this->m_d->m_mainWindow->showMarkdownStandard(posCursor);
+                    });
 
     auto action = menu->exec(event->globalPos());
 
