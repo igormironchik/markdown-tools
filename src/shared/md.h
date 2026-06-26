@@ -613,14 +613,73 @@ static const char *s_autolinks = QT_TRANSLATE_NOOP(
     "(“-”).</p>\n"
     "<p>An email autolink consists of <code>&lt;</code>, followed by an email address, followed by <code>&gt;</code>. "
     "The link’s label is the email address, and the URL is mailto: followed by the email address.</p>\n"
+    "<p>Autolinks can also be constructed without requiring the use of <code>&lt;</code> and to <code>&gt;</code> to "
+    "delimit them, although they will be recognized under a smaller set of circumstances. All such recognized autolinks "
+    "can only come at the beginning of a line, after whitespace, or any of the delimiting characters <code>*</code>, "
+    "<code>_</code>, <code>~</code>, and <code>(</code>.</p>\n"
+    "<p>An extended www autolink will be recognized when the text <code>www</code>. is found followed by a valid "
+    "domain. A valid domain consists of segments of alphanumeric characters, underscores (<code>_</code>) and hyphens "
+    "(<code>-</code>) separated by periods (<code>.</code>). There must be at least one period, and no underscores may "
+    "be present in the last two segments of the domain.</p>\n"
+    "<p>The scheme http will be inserted automatically.</p>\n"
     "<p><b>Example</b>\n"
     "<pre><code><http://foo.bar.baz></code></pre></p>");
 
 static const char *s_rawHtml = QT_TRANSLATE_NOOP(
     "Markdown",
     "<p><b>Raw HTML</b></p>\n"
-    "<p></p>\n"
+    "<p>Text between <code>&lt;</code> and <code>&gt;</code> that looks like an HTML tag is parsed as a raw HTML "
+    "tag and will be rendered in HTML without escaping. Tag and attribute names are not limited to current HTML tags, "
+    "so custom tags (and even, say, DocBook tags) may be used.</p>\n"
+    "<p>Here is the grammar for tags:</p>\n"
+    "<p>A tag name consists of an ASCII letter followed by zero or more ASCII letters, digits, or hyphens "
+    "(<code>-</code>).</p>\n"
+    "<p>An attribute consists of spaces, tabs, and up to one line ending, an attribute name, and an optional attribute "
+    "value specification.</p>\n"
+    "<p>An attribute name consists of an ASCII letter, <code>_</code>, or <code>:</code>, followed by zero or more "
+    "ASCII letters, digits, <code>_</code>, <code>.</code>, <code>:</code>, or <code>-</code>. (Note: This is the "
+    "XML specification restricted to ASCII. HTML5 is laxer.)</p>\n"
+    "<p>An attribute value specification consists of optional spaces, tabs, and up to one line ending, "
+    "a <code>=</code> character, optional spaces, tabs, and up to one line ending, and an attribute value.</p>\n"
+    "<p>An attribute value consists of an unquoted attribute value, a single-quoted attribute value, or a "
+    "double-quoted attribute value.</p>\n"
+    "<p>An unquoted attribute value is a nonempty string of characters not including spaces, tabs, line endings, "
+    "<code>\"</code>, <code>'</code>, <code>=</code>, <code>&lt;</code>, <code>&gt;</code>, or <code>`</code>.</p>\n"
+    "<p>A single-quoted attribute value consists of <code>'</code>, zero or more characters not "
+    "including <code>'</code>, and a final <code>'</code>.</p>\n"
+    "<p>A double-quoted attribute value consists of <code>\"</code>, zero or more characters not "
+    "including <code>\"</code>, and a final <code>\"</code>.</p>\n"
+    "<p>An open tag consists of a <code>&lt;</code> character, a tag name, zero or more attributes, optional spaces, "
+    "tabs, and up to one line ending, an optional <code>/</code> character, and a <code>&gt;</code> character.</p>\n"
+    "<p>A closing tag consists of the string <code>&lt;/</code>, a tag name, optional spaces, tabs, and up to one line "
+    "ending, and the character <code>&gt;</code>.</p>\n"
+    "<p>An HTML comment consists of <code>&lt;!--&gt;</code>, <code>&lt;!---&gt;</code>, or <code>&lt;!--</code>, "
+    "a string of characters not including the string <code>--&gt;</code>, and <code>--&gt;</code> "
+    "(see the HTML spec).</p>\n"
+    "<p>A processing instruction consists of the string <code>&lt;?</code>, a string of characters not including the "
+    "string <code>?&gt;</code>, and the string <code>?&gt;</code>.</p>\n"
+    "<p>A declaration consists of the string <code>&lt;!</code>, an ASCII letter, zero or more characters not including "
+    "the character <code>&gt;</code>, and the character <code>&gt;</code>.</p>\n"
+    "<p>A CDATA section consists of the string <code>&lt;![CDATA[</code>, a string of characters not including the "
+    "string <code>]]&gt;</code>, and the string <code>]]&gt;</code>.</p>\n"
+    "<p>An HTML tag consists of an open tag, a closing tag, an HTML comment, a processing instruction, a declaration, "
+    "or a CDATA section.</p>\n"
     "<p><b>Example</b>\n"
     "<pre><code>&lt;a hre=\"/url\"&gt;Text&lt;/a&gt;<code></pre></p>");
+
+static const char *s_hardLineBreaks = QT_TRANSLATE_NOOP(
+    "Markdown",
+    "<p><b>Hard line breaks</b></p>\n"
+    "<p>A line ending (not in a code span or HTML tag) that is preceded by two or more spaces and does not occur at "
+    "the end of a block is parsed as a hard line break (rendered in HTML as a <code>&lt;br /&gt;</code> tag):</p>\n"
+    "<p><b>Example</b>\n"
+    "<pre><code>foo\</code></pre></p>");
+
+static const char *s_strikethrough = QT_TRANSLATE_NOOP(
+    "Markdown",
+    "<p><b>Strikethrough</b></p>\n"
+    "<p>Strikethrough text is any text wrapped in a matching pair of one or two tildes (<code>~</code>).</p>\n"
+    "<p><b>Example</b>\n"
+    "<pre><code>~~Text~~</code></pre></p>");
 
 } /* namespace MdSyntax */
