@@ -9,6 +9,7 @@
 
 // Qt include.
 #include <QAbstractButton>
+#include <QFontDatabase>
 #include <QLabel>
 #include <QPainter>
 #include <QPainterPath>
@@ -150,10 +151,11 @@ void LicenseDialog::addLicense(const QString &title,
                                        "<style>\n"
                                        "code {\n"
                                        "background-color: %1;\n"
-                                       "font-family: monospace;\n"
+                                       "font-family: '%2', monospace;\n"
                                        "}\n"
                                        "</style>")
-                                       .arg(palette().color(QPalette::Base).name());
+                                       .arg(palette().color(QPalette::Base).name(),
+                                            QFontDatabase::systemFont(QFontDatabase::FixedFont).family());
 
     QLabel *label = new QLabel(d->m_ui.m_stack);
     label->setText(s_style + license);
