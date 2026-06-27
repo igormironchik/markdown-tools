@@ -146,8 +146,17 @@ void LicenseDialog::addLicense(const QString &title,
     scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     scroll->setWidgetResizable(true);
 
+    static const QString s_style = QStringLiteral(
+                                       "<style>\n"
+                                       "code {\n"
+                                       "background-color: %1;\n"
+                                       "font-family: monospace;\n"
+                                       "}\n"
+                                       "</style>")
+                                       .arg(palette().color(QPalette::Base).name());
+
     QLabel *label = new QLabel(d->m_ui.m_stack);
-    label->setText(license);
+    label->setText(s_style + license);
     label->setWordWrap(true);
     label->setAlignment(Qt::AlignTop | Qt::AlignLeft);
     label->setTextInteractionFlags(Qt::TextSelectableByMouse
