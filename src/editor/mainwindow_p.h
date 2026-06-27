@@ -111,6 +111,7 @@ struct MainWindowPrivate {
     QAction *m_goBackAction = nullptr;
     QAction *m_goFwdAction = nullptr;
     QAction *m_orientAction = nullptr;
+    QAction *m_mdStandardAction = nullptr;
     QMenu *m_actionMenu = nullptr;
     QMenu *m_standardEditMenu = nullptr;
     QMenu *m_settingsMenu = nullptr;

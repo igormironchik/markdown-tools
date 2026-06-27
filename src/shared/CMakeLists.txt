@@ -37,7 +37,8 @@ set(SRC license_dialog.h
     emphasis.cpp
     emoji_parser.h
     emoji_parser.cpp
-    emoji.h)
+    emoji.h
+    md.h)
 
 qt6_add_resources(SRC qt.qrc)
 qt6_add_resources(SRC icon.qrc)

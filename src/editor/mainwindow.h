@@ -50,6 +50,8 @@ public slots:
     void setWorkingDirectory(const QString &path);
     //! Set startup state.
     void setStartupState(const StartupState &st);
+    //! Show the extract from Markdown Standard for the cursor.
+    void showMarkdownStandard(QTextCursor c);
 
 protected:
     void resizeEvent(QResizeEvent *e) override;
@@ -110,6 +112,7 @@ private slots:
     void onEditorScrolled(int);
     void scrollToCursor();
     void onPinPreviewEditor(bool checked);
+    void onMarkdownStandardHelp();
 
 private:
     template<class Func>

@@ -50,6 +50,7 @@
 // shared include.
 #include "folder_chooser.h"
 #include "license_dialog.h"
+#include "md.h"
 #include "plugins_page.h"
 #include "utils.h"
 #include "version.h"
@@ -691,6 +692,166 @@ void MainWindow::onPinPreviewEditor(bool checked)
     }
 
     m_d->m_editor->setPreviewFollowEditor(checked);
+}
+
+void MainWindow::showMarkdownStandard(QTextCursor c)
+{
+    auto b = c.block();
+
+    const auto items = m_d->m_editor->syntaxHighlighter().findFirstInCache(
+        {c.positionInBlock(), b.blockNumber(), c.positionInBlock(), b.blockNumber()});
+
+    bool inlineSpan = false;
+
+    auto handleEmphasis = [](MD::ItemWithOpts *i, MdShared::LicenseDialog &dlg) {
+        if (i->opts() & MD::TextOption::BoldText || i->opts() & MD::TextOption::ItalicText) {
+            dlg.addLicense(tr("Emphasis and strong emphasis"),
+                           QApplication::translate("Markdown", MdSyntax::s_emphasisAndStrongEmphasis));
+        }
+
+        if (i->opts() & MD::TextOption::StrikethroughText) {
+            dlg.addLicense(tr("Strikethrough"), QApplication::translate("Markdown", MdSyntax::s_strikethrough));
+        }
+    };
+
+    MdShared::LicenseDialog dlg(this);
+    dlg.setWindowTitle(tr("Extract from the Markdown Standard"));
+
+    if (!items.empty()) {
+        for (const auto &i : items) {
+            switch (i->type()) {
+            case MD::ItemType::Heading: {
+                auto h = static_cast<MD::Heading *>(i);
+
+                b = m_d->m_editor->document()->findBlockByNumber(h->delims().front().startLine());
+                c = QTextCursor(b);
+                c.setPosition(c.position() + h->delims().front().startColumn());
+                c.setPosition(c.position() + 1, QTextCursor::KeepAnchor);
+
+                if (c.selectedText() == QStringLiteral("#")) {
+                    dlg.addLicense(tr("ATX headings"), QApplication::translate("Markdown", MdSyntax::s_atxHeadings));
+                } else {
+                    dlg.addLicense(tr("Setext headings"),
+                                   QApplication::translate("Markdown", MdSyntax::s_setextHeadings));
+                }
+            } break;
+
+            case MD::ItemType::Text: {
+                auto t = static_cast<MD::Text *>(i);
+
+                handleEmphasis(t, dlg);
+            } break;
+
+            case MD::ItemType::Paragraph: {
+                dlg.addLicense(tr("Paragraphs"), QApplication::translate("Markdown", MdSyntax::s_paragraphs));
+                inlineSpan = true;
+            } break;
+
+            case MD::ItemType::LineBreak: {
+                dlg.addLicense(tr("Hard line breaks"), QApplication::translate("Markdown", MdSyntax::s_hardLineBreaks));
+            } break;
+
+            case MD::ItemType::Blockquote: {
+                dlg.addLicense(tr("Block quotes"), QApplication::translate("Markdown", MdSyntax::s_blockQuotes));
+            } break;
+
+            case MD::ItemType::ListItem: {
+                auto li = static_cast<MD::ListItem *>(i);
+
+                dlg.addLicense(tr("List items"), QApplication::translate("Markdown", MdSyntax::s_listItems));
+
+                if (li->isTaskList()) {
+                    dlg.addLicense(tr("Task list items"),
+                                   QApplication::translate("Markdown", MdSyntax::s_taskListItems));
+                }
+            } break;
+
+            case MD::ItemType::List: {
+                dlg.addLicense(tr("Lists"), QApplication::translate("Markdown", MdSyntax::s_lists));
+            } break;
+
+            case MD::ItemType::Link: {
+                dlg.addLicense(tr("Links"), QApplication::translate("Markdown", MdSyntax::s_links));
+                dlg.addLicense(tr("Reference links"),
+                               QApplication::translate("Markdown", MdSyntax::s_linkReferenceDefinitions));
+                dlg.addLicense(tr("Autolinks"), QApplication::translate("Markdown", MdSyntax::s_autolinks));
+
+                auto l = static_cast<MD::Link *>(i);
+
+                handleEmphasis(l, dlg);
+            } break;
+
+            case MD::ItemType::Image: {
+                dlg.addLicense(tr("Links"), QApplication::translate("Markdown", MdSyntax::s_links));
+                dlg.addLicense(tr("Reference links"),
+                               QApplication::translate("Markdown", MdSyntax::s_linkReferenceDefinitions));
+                dlg.addLicense(tr("Autolinks"), QApplication::translate("Markdown", MdSyntax::s_autolinks));
+                dlg.addLicense(tr("Images"), QApplication::translate("Markdown", MdSyntax::s_images));
+
+                auto img = static_cast<MD::Image *>(i);
+
+                handleEmphasis(img, dlg);
+            } break;
+
+            case MD::ItemType::Code: {
+                auto c = static_cast<MD::Code *>(i);
+
+                if (c->isInline()) {
+                    dlg.addLicense(tr("Code spans"), QApplication::translate("Markdown", MdSyntax::s_codeSpans));
+
+                    handleEmphasis(c, dlg);
+                } else {
+                    if (c->isFensedCode()) {
+                        dlg.addLicense(tr("Fenced code blocks"),
+                                       QApplication::translate("Markdown", MdSyntax::s_fencedCodeBlocks));
+                    } else {
+                        dlg.addLicense(tr("Indented code blocks"),
+                                       QApplication::translate("Markdown", MdSyntax::s_indentedCodeBlocks));
+                    }
+                }
+            } break;
+
+            case MD::ItemType::FootnoteRef:
+            case MD::ItemType::Footnote:
+                break;
+
+            case MD::ItemType::HorizontalLine: {
+                dlg.addLicense(tr("Thematic breaks"), QApplication::translate("Markdown", MdSyntax::s_thematicBreaks));
+            } break;
+
+            case MD::ItemType::RawHtml: {
+                if (inlineSpan) {
+                    dlg.addLicense(tr("Raw HTML"), QApplication::translate("Markdown", MdSyntax::s_rawHtml));
+
+                    auto h = static_cast<MD::RawHtml *>(i);
+
+                    handleEmphasis(h, dlg);
+                } else {
+                    dlg.addLicense(tr("HTML blocks"), QApplication::translate("Markdown", MdSyntax::s_htmlBlocks));
+                }
+            } break;
+
+            case MD::ItemType::Math:
+                break;
+
+            case MD::ItemType::Table: {
+                dlg.addLicense(tr("Tables"), QApplication::translate("Markdown", MdSyntax::s_tables));
+            } break;
+
+            default:
+                break;
+            }
+        }
+    } else {
+        dlg.addLicense(tr("Blank lines"), QApplication::translate("Markdown", MdSyntax::s_blankLines));
+    }
+
+    dlg.exec();
+}
+
+void MainWindow::onMarkdownStandardHelp()
+{
+    showMarkdownStandard(m_d->m_editor->textCursor());
 }
 
 void MainWindow::onLineNumberContextMenuRequested(int lineNumber,
@@ -1708,6 +1869,7 @@ void MainWindow::onTogglePreviewAction(bool checked)
         m_d->m_formatMenu->menuAction()->setEnabled(false);
         m_d->m_formatMenu->menuAction()->setVisible(false);
         m_d->m_sidebarPanel->hide();
+        m_d->m_mdStandardAction->setEnabled(false);
         m_d->m_tabEditorSplitter->handle(1)->setCursor(Qt::ArrowCursor);
         m_d->m_editorPreviewSplitter->handle(1)->setCursor(Qt::ArrowCursor);
         m_d->m_cursorPosLabel->hide();
@@ -1745,6 +1907,7 @@ void MainWindow::onTogglePreviewAction(bool checked)
         m_d->m_livePreviewAction->setEnabled(true);
         m_d->m_formatMenu->menuAction()->setEnabled(true);
         m_d->m_formatMenu->menuAction()->setVisible(true);
+        m_d->m_mdStandardAction->setEnabled(true);
 
         m_d->m_cursorPosLabel->show();
 
