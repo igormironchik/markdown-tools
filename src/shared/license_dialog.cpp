@@ -144,10 +144,12 @@ void LicenseDialog::addLicense(const QString &title,
 {
     QScrollArea *scroll = new QScrollArea(d->m_ui.m_stack);
     scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    scroll->setWidgetResizable(true);
 
     QLabel *label = new QLabel(d->m_ui.m_stack);
     label->setText(license);
     label->setWordWrap(true);
+    label->setAlignment(Qt::AlignTop | Qt::AlignLeft);
     label->setTextInteractionFlags(Qt::TextSelectableByMouse
                                    | Qt::TextSelectableByKeyboard
                                    | Qt::LinksAccessibleByMouse

@@ -684,4 +684,11 @@ static const char *s_strikethrough = QT_TRANSLATE_NOOP(
     "<p><b>Example</b>\n"
     "<pre><code>~~Text~~</code></pre></p>");
 
+static const char *s_blankLines = QT_TRANSLATE_NOOP(
+    "Markdown",
+    "<p><b>Blank lines</b></p>\n"
+    "<p>Blank lines between block-level elements are ignored, except for the role they play in determining whether "
+    "a list is tight or loose.</p>\n"
+    "<p>Blank lines at the beginning and end of the document are also ignored.</p>");
+
 } /* namespace MdSyntax */

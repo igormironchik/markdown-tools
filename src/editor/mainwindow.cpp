@@ -714,10 +714,10 @@ void MainWindow::showMarkdownStandard(QTextCursor c)
         }
     };
 
-    if (!items.empty()) {
-        MdShared::LicenseDialog dlg(this);
-        dlg.setWindowTitle(tr("Extract from the Markdown Standard"));
+    MdShared::LicenseDialog dlg(this);
+    dlg.setWindowTitle(tr("Extract from the Markdown Standard"));
 
+    if (!items.empty()) {
         for (const auto &i : items) {
             switch (i->type()) {
             case MD::ItemType::Heading: {
@@ -842,9 +842,11 @@ void MainWindow::showMarkdownStandard(QTextCursor c)
                 break;
             }
         }
-
-        dlg.exec();
+    } else {
+        dlg.addLicense(tr("Blank lines"), QApplication::translate("Markdown", MdSyntax::s_blankLines));
     }
+
+    dlg.exec();
 }
 
 void MainWindow::onMarkdownStandardHelp()
