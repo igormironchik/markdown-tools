@@ -22,6 +22,7 @@
 #include <QDesktopServices>
 #include <QDir>
 #include <QFile>
+#include <QFutureWatcher>
 #include <QHeaderView>
 #include <QMenuBar>
 #include <QSortFilterProxyModel>
@@ -57,6 +58,15 @@ void MainWindowPrivate::notifyTocTree(QAbstractItemModel *model,
             notifyTocTree(model, delegate, idx);
         }
     }
+}
+
+QFrame *MainWindowPrivate::makeSeparator()
+{
+    auto separator = new QFrame(this->m_q->statusBar());
+    separator->setFrameShape(QFrame::VLine);
+    separator->setFrameShadow(QFrame::Sunken);
+
+    return separator;
 }
 
 void MainWindowPrivate::initUi()
@@ -486,14 +496,6 @@ void MainWindowPrivate::initUi()
 
     QObject::connect(m_pinPreviewEditor, &QToolButton::toggled, m_q, &MainWindow::onPinPreviewEditor);
 
-    auto makeSeparator = [this]() -> QFrame * {
-        auto separator = new QFrame(this->m_q->statusBar());
-        separator->setFrameShape(QFrame::VLine);
-        separator->setFrameShadow(QFrame::Sunken);
-
-        return separator;
-    };
-
     m_q->statusBar()->addPermanentWidget(m_pinPreviewEditor);
     m_q->statusBar()->addPermanentWidget(makeSeparator());
     m_q->statusBar()->addPermanentWidget(m_workingDirectoryWidget);
@@ -543,6 +545,10 @@ void MainWindowPrivate::initUi()
     m_q->setTabOrder(m_find->replaceLine(), m_findWeb->line());
 
     m_q->setAcceptDrops(true);
+
+    m_updateWatcher = new QFutureWatcher<Update>(m_q);
+
+    QObject::connect(m_updateWatcher, &QFutureWatcher<Update>::finished, m_q, &MainWindow::onCheckForUpdatesFinished);
 }
 
 void MainWindowPrivate::handleCurrentTab()

@@ -142,6 +142,8 @@ endif()
 string(REPLACE "/DNDEBUG" "" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
 string(REPLACE "-DNDEBUG" "" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
 
+add_subdirectory(3rdparty/github-release)
+
 add_subdirectory(src)
 
 if(BUILD_MD_TESTS)

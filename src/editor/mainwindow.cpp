@@ -31,6 +31,7 @@
 #include <QSortFilterProxyModel>
 #include <QSplitter>
 #include <QStandardPaths>
+#include <QStatusBar>
 #include <QTextDocument>
 #include <QTextDocumentFragment>
 #include <QTimer>
@@ -38,6 +39,7 @@
 #include <QToolTip>
 #include <QTreeWidgetItem>
 #include <QWindow>
+#include <QtConcurrent>
 
 // Sonnet include.
 #include <Sonnet/ConfigWidget>
@@ -54,6 +56,9 @@
 #include "plugins_page.h"
 #include "utils.h"
 #include "version.h"
+
+// github-release include.
+#include <github.h>
 
 namespace MdEditor
 {
@@ -854,6 +859,63 @@ void MainWindow::onMarkdownStandardHelp()
     showMarkdownStandard(m_d->m_editor->textCursor());
 }
 
+void checkForUpdates(QPromise<Update> &promise,
+                     const QString &currentVersion)
+{
+    Update info;
+    info.m_available = GHRelease::isUpdateAvailable(QStringLiteral("igormironchik"),
+                                                    QStringLiteral("markdown-tools"),
+                                                    currentVersion,
+                                                    GHRelease::majorMinorPatchCompare,
+                                                    info.m_url,
+                                                    info.m_tag);
+
+    promise.addResult(info);
+}
+
+void MainWindow::onCheckForUpdates()
+{
+    if (QDateTime::currentDateTime() - m_d->m_lastCheckForUpdates
+            > std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::hours(1))
+        && !GHRelease::majorMinorPatchCompare(MdShared::c_versionNumbers, m_d->m_updatesAbailable)) {
+        auto future = QtConcurrent::run(checkForUpdates, MdShared::c_versionNumbers);
+        m_d->m_updateWatcher->setFuture(future);
+    } else {
+        onAddUpdatesButton();
+    }
+}
+
+void MainWindow::onCheckForUpdatesFinished()
+{
+    const auto update = m_d->m_updateWatcher->result();
+    m_d->m_lastCheckForUpdates = QDateTime::currentDateTime();
+
+    if (update.m_available) {
+        m_d->m_updatesAbailable = update.m_tag;
+        m_d->m_updatesUrl = update.m_url;
+    } else {
+        m_d->m_updatesAbailable.clear();
+        m_d->m_updatesUrl.clear();
+    }
+
+    saveCfg();
+
+    onAddUpdatesButton();
+}
+
+void MainWindow::onAddUpdatesButton()
+{
+    if (!m_d->m_updatesAbailable.isEmpty() && !m_d->m_updatesUrl.isEmpty()) {
+        auto btn = new GHRelease::NewVersionAvailableButton(m_d->m_updatesUrl,
+                                                            GHRelease::NewVersionAvailableButton::OpenUrlOnClick,
+                                                            statusBar());
+        btn->setMinimumHeight(m_d->m_workingDirectoryWidget->labelHeight());
+        btn->setMaximumHeight(m_d->m_workingDirectoryWidget->labelHeight());
+        statusBar()->addPermanentWidget(m_d->makeSeparator());
+        statusBar()->addPermanentWidget(btn);
+    }
+}
+
 void MainWindow::onLineNumberContextMenuRequested(int lineNumber,
                                                   const QPoint &pos)
 {
@@ -975,6 +1037,10 @@ const QString s_dontUseAutoListInCodeBlock = QStringLiteral("dontUseAutoListInCo
 const QString s_autoCodeBlocks = QStringLiteral("autoCodeBlocks");
 const QString s_horizontalOrient = QStringLiteral("horizontalUi");
 const QString s_previewFollowEditor = QStringLiteral("previewFollowEditor");
+const QString s_lastCheckForUpdates = QStringLiteral("lastCheckForUpdates");
+const QString s_updatesAvailable = QStringLiteral("updatesAvailable");
+const QString s_updates = QStringLiteral("updates");
+const QString s_updatesUrl = QStringLiteral("updatesUrl");
 
 void MainWindow::saveCfg() const
 {
@@ -1068,6 +1134,12 @@ void MainWindow::saveCfg() const
 
     s.setValue(s_yaml, m_d->m_editor->settings().m_pluginsCfg.m_yamlEnabled);
 
+    s.endGroup();
+
+    s.beginGroup(s_updates);
+    s.setValue(s_lastCheckForUpdates, m_d->m_lastCheckForUpdates);
+    s.setValue(s_updatesAvailable, m_d->m_updatesAbailable);
+    s.setValue(s_updatesUrl, m_d->m_updatesUrl);
     s.endGroup();
 }
 
@@ -1265,6 +1337,17 @@ void MainWindow::readCfg()
 
     s.endGroup();
 
+    s.beginGroup(s_updates);
+    m_d->m_lastCheckForUpdates =
+        s.value(s_lastCheckForUpdates,
+                QDateTime::currentDateTime()
+                    - std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::hours(2)))
+            .toDateTime();
+    m_d->m_updatesAbailable = s.value(s_updatesAvailable, QString()).toString();
+    m_d->m_updatesUrl = s.value(s_updatesUrl, QString()).toString();
+    s.endGroup();
+
+    onCheckForUpdates();
     m_d->m_editor->setPluginsCfg(pluginsCfg);
     m_d->m_editor->doUpdate();
 }

@@ -113,6 +113,9 @@ private slots:
     void scrollToCursor();
     void onPinPreviewEditor(bool checked);
     void onMarkdownStandardHelp();
+    void onCheckForUpdates();
+    void onCheckForUpdatesFinished();
+    void onAddUpdatesButton();
 
 private:
     template<class Func>

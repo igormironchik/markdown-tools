@@ -5,9 +5,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-find_package(Qt6Core REQUIRED)
-find_package(Qt6Widgets REQUIRED)
-find_package(Qt6WebEngineWidgets REQUIRED)
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets WebEngineWidgets Concurrent)
 find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
     Sonnet SyntaxHighlighting WidgetsAddons
 )
@@ -81,19 +79,21 @@ endif()
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/widgets/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../shared
-    ${CMAKE_CURRENT_SOURCE_DIR}/../utils)
+    ${CMAKE_CURRENT_SOURCE_DIR}/../utils
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/github-release/src)
 
 add_library(md-editor-lib STATIC ${LIB_SRC})
 
 target_link_libraries(md-editor-lib md4qt::md4qt markdown-widgets md-utils
     KF${KF_MAJOR_VERSION}::SyntaxHighlighting
     KF${KF_MAJOR_VERSION}::SonnetUi KF${KF_MAJOR_VERSION}::SonnetCore
-    Qt6::WebEngineWidgets Qt6::Widgets Qt6::Core)
+    Qt6::WebEngineWidgets Qt6::Widgets Qt6::Concurrent Qt6::Core)
 
 add_executable(md-editor WIN32 ${SRC})
 
 install(TARGETS md-editor)
 
-target_link_libraries(md-editor md-editor-lib markdown-widgets KF${KF_MAJOR_VERSION}::SonnetUi KF${KF_MAJOR_VERSION}::SonnetCore
+target_link_libraries(md-editor md-editor-lib markdown-widgets github-release
+    KF${KF_MAJOR_VERSION}::SonnetUi KF${KF_MAJOR_VERSION}::SonnetCore
     KF${KF_MAJOR_VERSION}::WidgetsAddons
     Qt6::WebEngineWidgets Qt6::Widgets Qt6::Core)

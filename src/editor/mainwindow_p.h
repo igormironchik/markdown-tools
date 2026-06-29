@@ -15,6 +15,10 @@ class QTreeWidget;
 class QSortFilterProxyModel;
 QT_END_NAMESPACE
 
+// Qt include.
+#include <QDateTime>
+#include <QFutureWatcher>
+
 namespace MdEditor
 {
 
@@ -47,6 +51,17 @@ struct StartupState {
 }; // strucy StartupState
 
 //
+// Update
+//
+
+//! Information about update.
+struct Update {
+    QString m_url;
+    QString m_tag;
+    bool m_available = false;
+}; // struct Update
+
+//
 // MainWindowPrivate
 //
 
@@ -56,6 +71,9 @@ struct MainWindowPrivate {
     void notifyTocTree(QAbstractItemModel *model,
                        WordWrapItemDelegate *delegate,
                        const QModelIndex &parent);
+
+    //! \return Separator for status bar.
+    QFrame *makeSeparator();
 
     void initUi();
 
@@ -161,6 +179,10 @@ struct MainWindowPrivate {
     StartupState m_startupState;
     //! Names of files available in navigation toolbar.
     QSet<QString> m_fullFileNames;
+    QDateTime m_lastCheckForUpdates;
+    QString m_updatesAbailable;
+    QString m_updatesUrl;
+    QFutureWatcher<Update> *m_updateWatcher = nullptr;
 }; // struct MainWindowPrivate
 
 } /* namespace MdEditor */
