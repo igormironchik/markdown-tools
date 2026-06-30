@@ -905,7 +905,9 @@ void MainWindow::onCheckForUpdatesFinished()
 
 void MainWindow::onAddUpdatesButton()
 {
-    if (!m_d->m_updatesAbailable.isEmpty() && !m_d->m_updatesUrl.isEmpty()) {
+    if (!m_d->m_updatesAbailable.isEmpty()
+        && !m_d->m_updatesUrl.isEmpty()
+        && GHRelease::majorMinorPatchCompare(MdShared::c_versionNumbers, m_d->m_updatesAbailable)) {
         auto btn = new GHRelease::NewVersionAvailableButton(m_d->m_updatesUrl,
                                                             GHRelease::NewVersionAvailableButton::OpenUrlOnClick,
                                                             statusBar());
