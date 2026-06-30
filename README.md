@@ -126,7 +126,7 @@ with spaces in converter to `PDF`.
 To translate these applications into  your language you need to run
 
 ```bash
-lupdate . -ts ../translate/md_{locale}.ts
+lupdate6 . ../3rdparty/github-release/src -ts ../translate/md_{locale}.ts
 ```
 
 from `src` directory.
@@ -134,7 +134,7 @@ from `src` directory.
 Make a translation of that file with Qt Linguist and run in `translate` directory
 
 ```bash
-lrelease md_{locale}.ts -qm ../src/shared/tr/md_{locale}.qm
+lrelease6 md_{locale}.ts -qm ../src/shared/tr/md_{locale}.qm
 ```
 
 And put new line into `src/shared/tr.qrc` file with record about new translation.

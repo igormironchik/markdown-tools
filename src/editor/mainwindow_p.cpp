@@ -60,9 +60,9 @@ void MainWindowPrivate::notifyTocTree(QAbstractItemModel *model,
     }
 }
 
-QFrame *MainWindowPrivate::makeSeparator()
+QFrame *MainWindowPrivate::makeSeparator() const
 {
-    auto separator = new QFrame(this->m_q->statusBar());
+    auto separator = new QFrame(m_q->statusBar());
     separator->setFrameShape(QFrame::VLine);
     separator->setFrameShadow(QFrame::Sunken);
 

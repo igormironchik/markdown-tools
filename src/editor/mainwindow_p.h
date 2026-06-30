@@ -73,7 +73,7 @@ struct MainWindowPrivate {
                        const QModelIndex &parent);
 
     //! \return Separator for status bar.
-    QFrame *makeSeparator();
+    QFrame *makeSeparator() const;
 
     void initUi();
 
