@@ -1394,7 +1394,8 @@ bool Editor::eventFilter(QObject *watched,
 
 void Editor::highlightCurrentLine()
 {
-    static const QColor lineColor = QColor(255, 255, 0, 75);
+    const auto isDark = (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark);
+    const QColor lineColor = isDark ? QColor(255, 215, 0, 40) : QColor(255, 255, 0, 75);
 
     if (textCursor().block().userData()
         && m_d->m_settings.m_colors.m_codeThemeEnabled
