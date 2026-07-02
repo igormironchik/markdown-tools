@@ -186,7 +186,7 @@ void MainWindow::showEvent(QShowEvent *e)
     if (!m_d->m_shownAlready) {
         m_d->m_shownAlready = true;
 
-        updateStyle();
+        updateStyle(false, false);
 
         QTimer::singleShot(0, this, &MainWindow::onFirstTimeShown);
     }
@@ -474,7 +474,7 @@ void refreshStyleRecursively(QWidget *widget,
     widget->repaint();
 }
 
-void MainWindow::updateStyle()
+void MainWindow::updateStyle(bool updateHtml, bool switchToDefaultColors)
 {
     qApp->setStyle(QStyleFactory::create(qApp->style()->objectName()));
 
@@ -484,8 +484,14 @@ void MainWindow::updateStyle()
 
     m_d->m_preview->settings()->setAttribute(QWebEngineSettings::WebAttribute::ForceDarkMode, isDark);
 
-    m_d->m_page->runJavaScript(
-        QStringLiteral("changeCodeTheme('%1')").arg(isDark ? QStringLiteral("github-dark") : QStringLiteral("github")));
+    if (updateHtml) {
+        m_d->m_page->runJavaScript(QStringLiteral("changeCodeTheme('%1')")
+                                       .arg(isDark ? QStringLiteral("github-dark") : QStringLiteral("github")));
+    }
+
+    if (switchToDefaultColors) {
+        m_d->m_editor->applyColors(Colors(isDark));
+    }
 }
 
 bool MainWindow::event(QEvent *event)
@@ -510,7 +516,7 @@ bool MainWindow::event(QEvent *event)
     } break;
 
     case QEvent::ApplicationPaletteChange: {
-        updateStyle();
+        updateStyle(true, true);
     } break;
 
     default:

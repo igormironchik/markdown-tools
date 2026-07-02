@@ -1611,7 +1611,7 @@ void Editor::lineNumberAreaPaintEvent(QPaintEvent *event)
 
         if (block.isVisible() && bottom >= event->rect().top()) {
             QString number = QString::number(blockNumber + 1);
-            painter.setPen(Qt::black);
+            painter.setPen(m_d->m_lineNumberArea->palette().color(QPalette::WindowText));
             painter.drawText(QApplication::isRightToLeft() ? collapsingBlockHandleWidth() + 3 : 0,
                              top,
                              m_d->m_lineNumberArea->width() - collapsingBlockHandleWidth() - 6,

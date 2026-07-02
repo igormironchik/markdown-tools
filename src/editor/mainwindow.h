@@ -148,7 +148,7 @@ private:
     }
 
     //! Update style setting of the application.
-    void updateStyle();
+    void updateStyle(bool updateHtml, bool switchToDefaultColors);
 
 private:
     //! \return Is document was changed?
