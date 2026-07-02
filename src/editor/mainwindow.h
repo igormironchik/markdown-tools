@@ -147,6 +147,9 @@ private:
         }
     }
 
+    //! Update style setting of the application.
+    void updateStyle();
+
 private:
     //! \return Is document was changed?
     bool isModified() const;

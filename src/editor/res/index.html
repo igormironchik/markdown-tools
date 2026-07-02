@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <head>
     <script src="qrc:/qtwebchannel/qwebchannel.js"></script>
-    <link rel="stylesheet" href="qrc:/res/css/github.css">
+    <link id="highlight-js-theme" rel="stylesheet" href="qrc:/res/css/github.css">
     <link rel="stylesheet" href="qrc:/res/css/github-markdown.css">
     <script src="qrc:/res/highlight.js"></script>
     <script>hljs.configure({languages:[]});</script>
@@ -30,6 +30,10 @@
                     s_id = itemId;
                     s_ln = -1;
                 }
+            }
+
+            window.changeCodeTheme = function(themeName) {
+                document.getElementById('highlight-js-theme').href = `qrc:/res/css/{themeName}.css`;
             }
 
             function scrollToLineFromPre(preElement, lineText) {

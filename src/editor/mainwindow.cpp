@@ -22,6 +22,7 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QMenu>
+#include <QMenuBar>
 #include <QMessageBox>
 #include <QMimeData>
 #include <QMimeDatabase>
@@ -32,12 +33,15 @@
 #include <QSplitter>
 #include <QStandardPaths>
 #include <QStatusBar>
+#include <QStyleFactory>
+#include <QStyleHints>
 #include <QTextDocument>
 #include <QTextDocumentFragment>
 #include <QTimer>
 #include <QToolButton>
 #include <QToolTip>
 #include <QTreeWidgetItem>
+#include <QWebEngineSettings>
 #include <QWindow>
 #include <QtConcurrent>
 
@@ -181,6 +185,8 @@ void MainWindow::showEvent(QShowEvent *e)
 {
     if (!m_d->m_shownAlready) {
         m_d->m_shownAlready = true;
+
+        updateStyle();
 
         QTimer::singleShot(0, this, &MainWindow::onFirstTimeShown);
     }
@@ -448,6 +454,40 @@ void MainWindow::closeEvent(QCloseEvent *e)
     }
 }
 
+void refreshStyleRecursively(QWidget *widget,
+                             const QPalette &p)
+{
+    if (!widget) {
+        return;
+    }
+
+    widget->setPalette(p);
+    widget->style()->unpolish(widget);
+    widget->style()->polish(widget);
+
+    for (QObject *child : std::as_const(widget->children())) {
+        if (QWidget *childWidget = qobject_cast<QWidget *>(child)) {
+            refreshStyleRecursively(childWidget, p);
+        }
+    }
+
+    widget->repaint();
+}
+
+void MainWindow::updateStyle()
+{
+    qApp->setStyle(QStyleFactory::create(qApp->style()->objectName()));
+
+    refreshStyleRecursively(this, qApp->palette());
+
+    const auto isDark = (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark);
+
+    m_d->m_preview->settings()->setAttribute(QWebEngineSettings::WebAttribute::ForceDarkMode, isDark);
+
+    m_d->m_page->runJavaScript(
+        QStringLiteral("changeCodeTheme('%1')").arg(isDark ? QStringLiteral("github-dark") : QStringLiteral("github")));
+}
+
 bool MainWindow::event(QEvent *event)
 {
     switch (event->type()) {
@@ -467,6 +507,10 @@ bool MainWindow::event(QEvent *event)
 
             return true;
         }
+    } break;
+
+    case QEvent::ApplicationPaletteChange: {
+        updateStyle();
     } break;
 
     default:
