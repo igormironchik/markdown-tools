@@ -96,6 +96,7 @@
         <file>res/img/bookmarks-organize.png</file>
         <file>res/img/go-jump.png</file>
         <file>res/css/github.css</file>
+        <file>res/css/github-dark.css</file>
         <file>res/highlight.js</file>
         <file>res/katex/contrib/auto-render.js</file>
         <file>res/katex/contrib/auto-render.min.js</file>

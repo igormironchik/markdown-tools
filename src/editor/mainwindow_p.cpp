@@ -29,6 +29,7 @@
 #include <QSplitter>
 #include <QStatusBar>
 #include <QStringListModel>
+#include <QStyleHints>
 #include <QToolButton>
 #include <QTreeWidget>
 #include <QWebChannel>
@@ -80,6 +81,9 @@ void MainWindowPrivate::initUi()
             QTextStream stream(&wrapperHtmlFile);
             m_htmlContent = stream.readAll();
             wrapperHtmlFile.close();
+            const auto isDark = (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark);
+            m_htmlContent = m_htmlContent.arg(isDark ? QStringLiteral("qrc:/res/css/github-dark.css")
+                                                     : QStringLiteral("qrc:/res/css/github.css"));
         }
     }
 

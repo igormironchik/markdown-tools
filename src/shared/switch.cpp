@@ -10,10 +10,12 @@
 #include "fingergeometry.h"
 
 // Qt include.
+#include <QApplication>
 #include <QLinearGradient>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPainterPath>
+#include <QStyleHints>
 #include <QStyleOption>
 
 namespace MdShared
@@ -34,10 +36,12 @@ void drawSliderHandle(QPainter *p,
     p->setBrush(lightColor);
     p->drawRoundedRect(r, xRadius, yRadius);
 
+    const auto isDark = (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark);
+
     QLinearGradient g(QPointF(0.0, 0.0), QPointF(0.0, 1.0));
     g.setCoordinateMode(QGradient::ObjectBoundingMode);
-    g.setColorAt(0.0, darkerColor(lightColor, 75));
-    g.setColorAt(1.0, darkerColor(lightColor, 10));
+    g.setColorAt(0.0, isDark ? lighterColor(lightColor, 10) : darkerColor(lightColor, 75));
+    g.setColorAt(1.0, isDark ? lighterColor(lightColor, 75) : darkerColor(lightColor, 10));
 
     p->setPen(Qt::NoPen);
     p->setBrush(g);
@@ -303,20 +307,22 @@ void Switch::paintEvent(QPaintEvent *)
     p.translate(1.0, 1.0);
     p.setRenderHint(QPainter::Antialiasing);
 
+    const auto isDark = (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark);
+
     switch (d->state) {
     case NotAcceptedUncheck:
     case AcceptedUncheck: {
         QLinearGradient g(QPointF(0.0, 0.0), QPointF(0.0, 1.0));
         g.setCoordinateMode(QGradient::ObjectBoundingMode);
-        g.setColorAt(0.0, darkerColor(lightColor, 75));
-        g.setColorAt(0.1, darkerColor(lightColor, 25));
-        g.setColorAt(1.0, darkerColor(lightColor, 10));
+        g.setColorAt(0.0, isDark ? lighterColor(lightColor, 75) : darkerColor(lightColor, 75));
+        g.setColorAt(0.1, isDark ? lighterColor(lightColor, 25) : darkerColor(lightColor, 25));
+        g.setColorAt(1.0, isDark ? lighterColor(lightColor, 10) : darkerColor(lightColor, 10));
 
         p.setBrush(g);
     } break;
 
     case NotAcceptedCheck:
-        p.setBrush(darkerColor(d->onColor, 50));
+        p.setBrush(isDark ? lighterColor(lightColor, 50) : darkerColor(d->onColor, 50));
         break;
 
     case AcceptedCheck:

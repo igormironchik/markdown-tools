@@ -30,6 +30,7 @@
 #include <QStringListModel>
 #include <QStyle>
 #include <QStyleFactory>
+#include <QStyleHints>
 #include <QTextBlock>
 #include <QTextDocument>
 #include <QTextLayout>
@@ -1135,6 +1136,8 @@ void Editor::drawCodeBlocksBackground(QPainter &p)
 
 void Editor::paintEvent(QPaintEvent *event)
 {
+    const auto isDark = (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark);
+
     {
         QPainter painter(viewport());
 
@@ -1155,7 +1158,7 @@ void Editor::paintEvent(QPaintEvent *event)
                            - document()->documentMargin());
             }
 
-            painter.setBrush(QColor(239, 239, 239, 200));
+            painter.setBrush(isDark ? QColor(45, 48, 52, 200) : QColor(239, 239, 239, 200));
             painter.setPen(Qt::NoPen);
             painter.drawRect(r);
         }
@@ -1191,7 +1194,7 @@ void Editor::paintEvent(QPaintEvent *event)
                     painter.save();
                     painter.translate(br.topLeft());
 
-                    painter.setPen(Qt::black);
+                    painter.setPen(palette().color(QPalette::Text));
 
                     auto layout = static_cast<DocumentLayoutWithRightAlignment *>(document()->documentLayout());
 
@@ -1227,7 +1230,7 @@ void Editor::paintEvent(QPaintEvent *event)
     if (m_d->m_lineNumberArea->shadingArea().first != -1) {
         QPainter painter(viewport());
         painter.setPen(Qt::NoPen);
-        auto c = palette().color(QPalette::Dark);
+        auto c = palette().color(isDark ? QPalette::Light : QPalette::Dark);
         c.setAlpha(75);
         painter.setBrush(c);
         painter.drawRect(0, 0, contentsRect().width(), m_d->m_lineNumberArea->shadingArea().first);
@@ -1391,7 +1394,8 @@ bool Editor::eventFilter(QObject *watched,
 
 void Editor::highlightCurrentLine()
 {
-    static const QColor lineColor = QColor(255, 255, 0, 75);
+    const auto isDark = (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark);
+    const QColor lineColor = isDark ? QColor(255, 215, 0, 40) : QColor(255, 255, 0, 75);
 
     if (textCursor().block().userData()
         && m_d->m_settings.m_colors.m_codeThemeEnabled
@@ -1588,7 +1592,8 @@ void Editor::lineNumberAreaPaintEvent(QPaintEvent *event)
 
         if (topFound) {
             painter.save();
-            const auto color = m_d->m_lineNumberArea->palette().color(QPalette::Mid);
+            const auto isDark = (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark);
+            const auto color = m_d->m_lineNumberArea->palette().color(isDark ? QPalette::Midlight : QPalette::Mid);
             painter.setPen(color);
             painter.setBrush(color);
             painter.drawRect(
@@ -1611,7 +1616,7 @@ void Editor::lineNumberAreaPaintEvent(QPaintEvent *event)
 
         if (block.isVisible() && bottom >= event->rect().top()) {
             QString number = QString::number(blockNumber + 1);
-            painter.setPen(Qt::black);
+            painter.setPen(m_d->m_lineNumberArea->palette().color(QPalette::WindowText));
             painter.drawText(QApplication::isRightToLeft() ? collapsingBlockHandleWidth() + 3 : 0,
                              top,
                              m_d->m_lineNumberArea->width() - collapsingBlockHandleWidth() - 6,

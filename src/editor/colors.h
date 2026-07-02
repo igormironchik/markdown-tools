@@ -25,6 +25,8 @@ namespace MdEditor
 
 //! Color scheme.
 struct Colors {
+    explicit Colors(bool isDark = false);
+
     //! Color for text.
     QColor m_textColor = QColor(0, 0, 128);
     //! Color for link.
@@ -55,6 +57,10 @@ struct Colors {
 
 //! Not-equal operator for color schemes.
 bool operator!=(const Colors &c1,
+                const Colors &c2);
+
+//! Equal operator for color schemes.
+bool operator==(const Colors &c1,
                 const Colors &c2);
 
 //
