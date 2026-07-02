@@ -1591,7 +1591,8 @@ void Editor::lineNumberAreaPaintEvent(QPaintEvent *event)
 
         if (topFound) {
             painter.save();
-            const auto color = m_d->m_lineNumberArea->palette().color(QPalette::Mid);
+            const auto isDark = (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark);
+            const auto color = m_d->m_lineNumberArea->palette().color(isDark ? QPalette::Midlight : QPalette::Mid);
             painter.setPen(color);
             painter.setBrush(color);
             painter.drawRect(
