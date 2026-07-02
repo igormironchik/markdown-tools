@@ -13,14 +13,10 @@
 #include <QPainter>
 #include <QSortFilterProxyModel>
 #include <QStyle>
-
-#include <chrono>
+#include <QStyleHints>
 
 namespace MdEditor
 {
-
-static const QColor s_codeColor = QColor(33, 122, 255);
-static const QColor s_codeBackgroundColor = QColor(239, 239, 239);
 
 //
 // WordWrapItemDelegate
@@ -254,6 +250,10 @@ void WordWrapItemDelegate::paint(QPainter *painter,
 {
     QStyledItemDelegate::paint(painter, option, index);
 
+    const auto isDark = (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark);
+    const QColor codeColor = (isDark ? QColor(100, 180, 255) : QColor(33, 122, 255));
+    const QColor codeBackgroundColor = (isDark ? QColor(37, 55, 73) : QColor(239, 239, 239));
+
     const auto &data = m_model->stringData(m_sortModel->mapToSource(index));
 
     if (data.isEmpty()) {
@@ -267,7 +267,7 @@ void WordWrapItemDelegate::paint(QPainter *painter,
 
     for (const auto &d : std::as_const(data)) {
         painter->setPen(Qt::NoPen);
-        painter->setBrush(s_codeBackgroundColor);
+        painter->setBrush(codeBackgroundColor);
 
         for (const auto &r : std::as_const(d.m_backgroundRects)) {
             auto tmp = r;
@@ -278,7 +278,7 @@ void WordWrapItemDelegate::paint(QPainter *painter,
 
         for (const auto &p : std::as_const(d.m_textRects)) {
             if (p.second.m_code) {
-                painter->setPen(s_codeColor);
+                painter->setPen(codeColor);
             } else {
                 painter->setPen(option.palette.color(QPalette::Text));
             }
