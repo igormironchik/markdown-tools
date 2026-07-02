@@ -15,8 +15,8 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPainterPath>
-#include <QStyleOption>
 #include <QStyleHints>
+#include <QStyleOption>
 
 namespace MdShared
 {
@@ -40,8 +40,8 @@ void drawSliderHandle(QPainter *p,
 
     QLinearGradient g(QPointF(0.0, 0.0), QPointF(0.0, 1.0));
     g.setCoordinateMode(QGradient::ObjectBoundingMode);
-    g.setColorAt(0.0, isDark ? lighterColor(lightColor, 75) : darkerColor(lightColor, 75));
-    g.setColorAt(1.0, isDark ? lighterColor(lightColor, 10) : darkerColor(lightColor, 10));
+    g.setColorAt(0.0, isDark ? lighterColor(lightColor, 10) : darkerColor(lightColor, 75));
+    g.setColorAt(1.0, isDark ? lighterColor(lightColor, 75) : darkerColor(lightColor, 10));
 
     p->setPen(Qt::NoPen);
     p->setBrush(g);
