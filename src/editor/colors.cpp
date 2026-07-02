@@ -92,6 +92,12 @@ bool operator!=(const Colors &c1,
             || c1.m_drawCodeBackground != c2.m_drawCodeBackground);
 }
 
+bool operator==(const Colors &c1,
+                const Colors &c2)
+{
+    return !(c1 != c2);
+}
+
 //
 // ColorsPage
 //

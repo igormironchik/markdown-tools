@@ -59,6 +59,10 @@ struct Colors {
 bool operator!=(const Colors &c1,
                 const Colors &c2);
 
+//! Equal operator for color schemes.
+bool operator==(const Colors &c1,
+                const Colors &c2);
+
 //
 // ColorsPage
 //

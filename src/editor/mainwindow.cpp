@@ -186,8 +186,6 @@ void MainWindow::showEvent(QShowEvent *e)
     if (!m_d->m_shownAlready) {
         m_d->m_shownAlready = true;
 
-        updateStyle(false, false);
-
         QTimer::singleShot(0, this, &MainWindow::onFirstTimeShown);
     }
 
@@ -491,7 +489,11 @@ void MainWindow::updateStyle(bool updateHtml,
     }
 
     if (switchToDefaultColors) {
-        m_d->m_editor->applyColors(Colors(isDark));
+        if (m_d->m_editor->settings().m_colors == Colors(true) || m_d->m_editor->settings().m_colors == Colors(false)) {
+            m_d->m_editor->applyColors(Colors(isDark));
+
+            m_d->m_editor->doUpdate();
+        }
     }
 }
 
@@ -1691,6 +1693,8 @@ void MainWindow::onProcessQueue()
 void MainWindow::onFirstTimeShown()
 {
     readCfg();
+
+    updateStyle(false, true);
 
     if (!m_d->m_startupState.m_fileName.isEmpty()) {
         openFile(m_d->m_startupState.m_fileName);

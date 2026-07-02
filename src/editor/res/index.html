@@ -33,7 +33,7 @@
             }
 
             window.changeCodeTheme = function(themeName) {
-                document.getElementById('highlight-js-theme').href = `qrc:/res/css/{themeName}.css`;
+                document.getElementById('highlight-js-theme').href = 'qrc:/res/css/' + themeName + '.css';
             }
 
             function scrollToLineFromPre(preElement, lineText) {
