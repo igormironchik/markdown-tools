@@ -70,7 +70,7 @@ SPDX-FileCopyrightText = "Sindre Sorhus <sindresorhus@gmail.com>"
 SPDX-License-Identifier = "MIT"
 
 [[annotations]]
-path = ["src/editor/res/css/github.css", "src/editor/res/highlight.js"]
+path = ["src/editor/res/css/github.css", "src/editor/res/css/github-dark.css", "src/editor/res/highlight.js"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2006 Ivan Sagalaev"
 SPDX-License-Identifier = "BSD-3-Clause"
