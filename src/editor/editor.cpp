@@ -30,6 +30,7 @@
 #include <QStringListModel>
 #include <QStyle>
 #include <QStyleFactory>
+#include <QStyleHints>
 #include <QTextBlock>
 #include <QTextDocument>
 #include <QTextLayout>
@@ -1135,6 +1136,8 @@ void Editor::drawCodeBlocksBackground(QPainter &p)
 
 void Editor::paintEvent(QPaintEvent *event)
 {
+    const auto isDark = (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark);
+
     {
         QPainter painter(viewport());
 
@@ -1155,7 +1158,7 @@ void Editor::paintEvent(QPaintEvent *event)
                            - document()->documentMargin());
             }
 
-            painter.setBrush(QColor(239, 239, 239, 200));
+            painter.setBrush(isDark ? QColor(45, 48, 52, 200) : QColor(239, 239, 239, 200));
             painter.setPen(Qt::NoPen);
             painter.drawRect(r);
         }
@@ -1191,7 +1194,7 @@ void Editor::paintEvent(QPaintEvent *event)
                     painter.save();
                     painter.translate(br.topLeft());
 
-                    painter.setPen(Qt::black);
+                    painter.setPen(palette().color(QPalette::Text));
 
                     auto layout = static_cast<DocumentLayoutWithRightAlignment *>(document()->documentLayout());
 
