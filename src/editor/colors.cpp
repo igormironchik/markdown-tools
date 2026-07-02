@@ -18,15 +18,54 @@ namespace MdEditor
 //
 
 Colors::Colors(bool isDark)
-    : m_textColor(isDark ? QColor(220, 224, 232) : QColor(0, 0, 128))
-    , m_linkColor(isDark ? QColor(100, 149, 237) : QColor(0, 128, 0))
-    , m_inlineColor(isDark ? QColor(240, 240, 240) : Qt::black)
-    , m_htmlColor(isDark ? QColor(224, 108, 117) : QColor(128, 0, 0))
-    , m_tableColor(isDark ? QColor(171, 178, 191) : Qt::black)
-    , m_codeColor(isDark ? QColor(152, 195, 121) : Qt::black)
-    , m_mathColor(isDark ? QColor(209, 154, 102) : QColor(128, 0, 0))
-    , m_referenceColor(isDark ? QColor(198, 120, 221) : QColor(128, 0, 0))
-    , m_specialColor(isDark ? QColor(86, 182, 244) : QColor(128, 0, 0))
+    : m_textColor(isDark ? QColor(220,
+                                  224,
+                                  232)
+                         : QColor(0,
+                                  0,
+                                  128))
+    , m_linkColor(isDark ? QColor(100,
+                                  149,
+                                  237)
+                         : QColor(0,
+                                  128,
+                                  0))
+    , m_inlineColor(isDark ? QColor(240,
+                                    240,
+                                    240)
+                           : Qt::black)
+    , m_htmlColor(isDark ? QColor(224,
+                                  108,
+                                  117)
+                         : QColor(128,
+                                  0,
+                                  0))
+    , m_tableColor(isDark ? QColor(171,
+                                   178,
+                                   191)
+                          : Qt::black)
+    , m_codeColor(isDark ? QColor(152,
+                                  195,
+                                  121)
+                         : Qt::black)
+    , m_mathColor(isDark ? QColor(209,
+                                  154,
+                                  102)
+                         : QColor(128,
+                                  0,
+                                  0))
+    , m_referenceColor(isDark ? QColor(198,
+                                       120,
+                                       221)
+                              : QColor(128,
+                                       0,
+                                       0))
+    , m_specialColor(isDark ? QColor(86,
+                                     182,
+                                     244)
+                            : QColor(128,
+                                     0,
+                                     0))
     , m_codeTheme(isDark ? QStringLiteral("GitHub Dark") : QStringLiteral("GitHub Light"))
     , m_enabled(true)
     , m_codeThemeEnabled(true)

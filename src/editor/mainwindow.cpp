@@ -474,7 +474,8 @@ void refreshStyleRecursively(QWidget *widget,
     widget->repaint();
 }
 
-void MainWindow::updateStyle(bool updateHtml, bool switchToDefaultColors)
+void MainWindow::updateStyle(bool updateHtml,
+                             bool switchToDefaultColors)
 {
     qApp->setStyle(QStyleFactory::create(qApp->style()->objectName()));
 
