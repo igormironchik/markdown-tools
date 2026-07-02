@@ -1230,7 +1230,7 @@ void Editor::paintEvent(QPaintEvent *event)
     if (m_d->m_lineNumberArea->shadingArea().first != -1) {
         QPainter painter(viewport());
         painter.setPen(Qt::NoPen);
-        auto c = palette().color(QPalette::Dark);
+        auto c = palette().color(isDark ? QPalette::Light : QPalette::Dark);
         c.setAlpha(75);
         painter.setBrush(c);
         painter.drawRect(0, 0, contentsRect().width(), m_d->m_lineNumberArea->shadingArea().first);
