@@ -138,6 +138,9 @@ struct LayoutDirectionHandler {
 
 } /* namespace anonymous */
 
+static const int s_xContentOffset = 4;
+static const int s_yContentOffset = 3;
+
 QSize WordWrapItemDelegate::sizeHint(const QStyleOptionViewItem &option,
                                      const QModelIndex &index) const
 {
@@ -158,7 +161,7 @@ QSize WordWrapItemDelegate::sizeHint(const QStyleOptionViewItem &option,
     }
 
     const auto sw = option.fontMetrics.horizontalAdvance(QLatin1Char(' '));
-    const auto width = m_parent->header()->sectionSize(index.column()) - w * level;
+    const auto width = m_parent->header()->sectionSize(index.column()) - w * level - s_xContentOffset * 2;
 
     int startCodeX, startCodeY, codeWidth;
     LayoutDirectionHandler layout(data.first().m_data.m_text.isRightToLeft(), 0, width, 0, option.fontMetrics.height());
@@ -241,7 +244,7 @@ QSize WordWrapItemDelegate::sizeHint(const QStyleOptionViewItem &option,
         }
     }
 
-    return {layout.width(), layout.height()};
+    return {layout.width() + s_xContentOffset * 2, layout.height() + s_yContentOffset * 2};
 }
 
 void WordWrapItemDelegate::paint(QPainter *painter,
@@ -273,7 +276,10 @@ void WordWrapItemDelegate::paint(QPainter *painter,
             auto tmp = r;
             tmp.moveTo(x + tmp.x(), y + tmp.y());
 
-            painter->drawRoundedRect(tmp.adjusted(0, 1, 0, -1), 3, 3);
+            painter->drawRoundedRect(
+                tmp.adjusted(s_xContentOffset, 1 + s_yContentOffset, s_xContentOffset, s_yContentOffset - 1),
+                3,
+                3);
         }
 
         for (const auto &p : std::as_const(d.m_textRects)) {
@@ -292,7 +298,8 @@ void WordWrapItemDelegate::paint(QPainter *painter,
             auto tmp = p.first;
             tmp.moveTo(x + tmp.x(), y + tmp.y());
 
-            painter->drawText(tmp.bottomLeft() - QPoint(0, descend), p.second.m_text);
+            painter->drawText(tmp.bottomLeft() - QPoint(0, descend) + QPoint(s_xContentOffset, s_yContentOffset),
+                              p.second.m_text);
         }
     }
 }
