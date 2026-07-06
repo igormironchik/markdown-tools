@@ -716,6 +716,8 @@ void MainWindow::showEvent(QShowEvent *event)
     if (!m_alreadyShown) {
         m_alreadyShown = true;
 
+        applyTheme(qApp->style()->objectName(), (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark));
+
         readCfg();
     }
 

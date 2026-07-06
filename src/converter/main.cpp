@@ -14,6 +14,7 @@
 
 #ifdef Q_OS_WIN
 #include <QStyleFactory>
+#include <QStyleHints>
 #endif
 
 // shared include.
@@ -24,6 +25,10 @@
 
 #ifdef MD_BREEZE
 #include <KIconTheme>
+#endif
+
+#if defined(Q_OS_WIN) && defined(MD_BREEZE)
+#include <KColorSchemeManager>
 #endif
 
 using namespace MdPdf;
@@ -42,6 +47,14 @@ int main(int argc,
 
 #ifdef Q_OS_WIN
     app.setStyle(QStyleFactory::create("Breeze"));
+
+#ifdef MD_BREEZE
+    if (KColorSchemeManager::instance()->activeSchemeId().toLower().endsWith(QStringLiteral("dark"))) {
+        app.styleHints()->setColorScheme(Qt::ColorScheme::Dark);
+    } else {
+        app.styleHints()->setColorScheme(Qt::ColorScheme::Light);
+    }
+#endif
 #endif
 
     QCommandLineParser parser;

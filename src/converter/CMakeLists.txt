@@ -61,7 +61,7 @@ endif()
 
 add_definitions(-DBUILD_QT)
 
-add_executable(md-pdf-gui WIN32 ${GUI_SRC})
+add_executable(md-pdf-gui ${GUI_SRC})
 
 if(KF${KF_MAJOR_VERSION}IconThemes_FOUND AND KF${KF_MAJOR_VERSION}ColorScheme_FOUND)
     list(APPEND ADDITIONAL_TARGETS KF${KF_MAJOR_VERSION}::IconThemes KF${KF_MAJOR_VERSION}::ColorScheme)

@@ -11,12 +11,9 @@
 #include <QTranslator>
 #include <QWebEngineUrlScheme>
 
-#ifdef MD_BREEZE
-#include <KIconTheme>
-#endif
-
 #ifdef Q_OS_WIN
 #include <QStyleFactory>
+#include <QStyleHints>
 #endif
 
 // md-editor include.
@@ -24,6 +21,10 @@
 
 // shared include.
 #include "utils.h"
+
+#ifdef MD_BREEZE
+#include <KIconTheme>
+#endif
 
 #if defined(Q_OS_WIN) && defined(MD_BREEZE)
 #include <KColorSchemeManager>
@@ -48,10 +49,14 @@ int main(int argc,
 
 #ifdef Q_OS_WIN
     app.setStyle(QStyleFactory::create("Breeze"));
-#endif
 
-#if defined(Q_OS_WIN) && defined(MD_BREEZE)
-    Q_UNUSED(KColorSchemeManager::instance());
+#ifdef MD_BREEZE
+    if (KColorSchemeManager::instance()->activeSchemeId().toLower().endsWith(QStringLiteral("dark"))) {
+        app.styleHints()->setColorScheme(Qt::ColorScheme::Dark);
+    } else {
+        app.styleHints()->setColorScheme(Qt::ColorScheme::Light);
+    }
+#endif
 #endif
 
     QCommandLineParser parser;

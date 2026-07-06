@@ -11,7 +11,6 @@
 
 // Qt include.
 #include <QModelIndex>
-#include <QPixmapCache>
 #include <QStyle>
 #include <QtResource>
 
@@ -42,7 +41,6 @@
 
 #ifdef MD_BREEZE
 #include <KColorSchemeManager>
-#include <KIconTheme>
 #include <QStyleHints>
 #endif // MD_BREEZE
 
@@ -80,23 +78,17 @@ void applyTheme(const QString &name, bool isDark)
     const auto scheme = upper + (isDark ? QStringLiteral("Dark") : QString("Light"));
     const auto idx = KColorSchemeManager::instance()->indexForSchemeId(scheme);
 
+    qDebug() << scheme;
+
     if (idx.isValid()) {
         qApp->styleHints()->setColorScheme(isDark ? Qt::ColorScheme::Dark : Qt::ColorScheme::Light);
         KColorSchemeManager::instance()->activateScheme(idx);
     }
-
-    KIconTheme::reconfigure();
 #else
     qApp->setStyle(QStyleFactory::create(qApp->style()->objectName()));
 #endif
 
-    QPixmapCache::clear();
-
-    const auto currentIconTheme = QIcon::themeName();
-    QIcon::setThemeName(QString());
-    QIcon::setThemeName(currentIconTheme);
-
-    refreshStyleRecursively(this, qApp->palette());
+    refreshStyleRecursively(QApplication::activeWindow(), qApp->palette());
 }
 
 void initSharedResources()

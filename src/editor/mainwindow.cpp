@@ -962,8 +962,6 @@ void MainWindow::onChangeTheme()
     }
 
     applyTheme(qApp->style()->name(), !isDark);
-
-    saveCfg();
 }
 
 #endif
