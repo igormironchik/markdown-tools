@@ -41,6 +41,10 @@
 
 #ifdef MD_BREEZE
 #include <KColorSchemeManager>
+#include <KIconTheme>
+#include <KIconLoader>
+
+#include <QIcon>
 #include <QStyleHints>
 #endif // MD_BREEZE
 
@@ -61,6 +65,9 @@ void refreshStyleRecursively(QWidget *widget,
     QEvent paletteEvent(QEvent::PaletteChange);
     qApp->sendEvent(widget, &paletteEvent);
 
+    QEvent themeEvent(QEvent::ThemeChange);
+    qApp->sendEvent(widget, &themeEvent);
+
     for (QObject *child : std::as_const(widget->children())) {
         if (QWidget *childWidget = qobject_cast<QWidget *>(child)) {
             refreshStyleRecursively(childWidget, p);
@@ -78,11 +85,20 @@ void applyTheme(const QString &name, bool isDark)
     const auto scheme = upper + (isDark ? QStringLiteral("Dark") : QString("Light"));
     const auto idx = KColorSchemeManager::instance()->indexForSchemeId(scheme);
 
-    qDebug() << scheme;
-
     if (idx.isValid()) {
         qApp->styleHints()->setColorScheme(isDark ? Qt::ColorScheme::Dark : Qt::ColorScheme::Light);
         KColorSchemeManager::instance()->activateScheme(idx);
+
+        if (isDark) {
+            qDebug() << "dark";
+            QIcon::setThemeName(QStringLiteral("breeze-dark"));
+        } else {
+            QIcon::setThemeName(QStringLiteral("breeze"));
+        }
+
+        KIconLoader::global()->newIconLoader();
+        KIconLoader::global()->reconfigure(qApp->applicationName());
+        qDebug() << KIconTheme::current();
     }
 #else
     qApp->setStyle(QStyleFactory::create(qApp->style()->objectName()));

@@ -629,13 +629,15 @@ MainWindow::MainWindow()
         &MainWindow::quit);
 
     auto settings = menuBar()->addMenu(tr("&Settings"));
+
 #if defined(Q_OS_WIN) && defined(MD_BREEZE)
     const auto isDark = (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark);
 
-    m_themeAction = m_settingsMenu->addAction(isDark ? MainWindow::tr("Light Mode") : MainWindow::tr("Dark Mode"), m_q, &MainWindow::onChangeTheme);
+    m_themeAction = settings->addAction(isDark ? tr("Light Mode") : tr("Dark Mode"), this, &MainWindow::onChangeTheme);
 
-    m_settingsMenu->addSeparator();
+    settings->addSeparator();
 #endif
+
     settings->addAction(QIcon::fromTheme(QStringLiteral("configure"), QIcon(QStringLiteral(":/img/configure.png"))),
                         tr("Settings"),
                         this,
@@ -822,9 +824,9 @@ void MainWindow::onChangeTheme()
     const auto isDark = (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark);
 
     if (isDark) {
-        m_d->m_themeAction->setText(tr("Dark Mode"));
+        m_themeAction->setText(tr("Dark Mode"));
     } else {
-        m_d->m_themeAction->setText(tr("Light Mode"));
+        m_themeAction->setText(tr("Light Mode"));
     }
 
     applyTheme(qApp->style()->name(), !isDark);
