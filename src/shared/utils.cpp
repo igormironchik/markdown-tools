@@ -13,6 +13,7 @@
 #include <QModelIndex>
 #include <QStyle>
 #include <QtResource>
+#include <QWindow>
 
 // md4qt inclide.
 #include <md4qt/src/asterisk_emphasis_parser.h>
@@ -47,8 +48,12 @@
 #include <KSharedConfig>
 
 #include <QIcon>
+#include <QPixmapCache>
 #include <QStyleHints>
 #endif // MD_BREEZE
+
+#include <QPixmap>
+#include <QDir>
 
 void refreshStyleRecursively(QWidget *widget,
                              const QPalette &p)
@@ -60,6 +65,9 @@ void refreshStyleRecursively(QWidget *widget,
     widget->setPalette(p);
     widget->style()->unpolish(widget);
     widget->style()->polish(widget);
+
+    QEvent themeChange(QEvent::ThemeChange);
+    QApplication::sendEvent(widget, &themeChange);
 
     for (QObject *child : std::as_const(widget->children())) {
         if (QWidget *childWidget = qobject_cast<QWidget *>(child)) {
@@ -84,15 +92,20 @@ void applyTheme(const QString &name,
         KColorSchemeManager::instance()->activateScheme(idx);
 
         auto cfg = KSharedConfig::openConfig();
-        cfg->group(QStringLiteral("Icons"))
-            .writeEntry(QStringLiteral("Theme"),
-                        QStringLiteral("breeze") + (isDark ? QStringLiteral("-dark") : QString()));
-        KIconLoader::global()->emitChange(KIconLoader::NoGroup);
-        qDebug() << KIconTheme::current();
+        const auto iconThemeName = QStringLiteral("breeze") + (isDark ? QStringLiteral("-dark") : QString());
+        auto cg = cfg->group(QStringLiteral("Icons"));
+        cg.writeEntry(QStringLiteral("Theme"), iconThemeName);
+        cg.sync();
+        KIconTheme::forceThemeForTests(iconThemeName);
+        KIconLoader::global()->reconfigure(qApp->applicationName());
+        QPixmapCache::clear();
     }
 #else
     qApp->setStyle(QStyleFactory::create(qApp->style()->objectName()));
 #endif
+
+    QEvent themeChange(QEvent::ThemeChange);
+    QApplication::sendEvent(qApp, &themeChange);
 
     refreshStyleRecursively(QApplication::activeWindow(), qApp->palette());
 }
