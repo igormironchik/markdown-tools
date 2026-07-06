@@ -96,8 +96,10 @@ void applyTheme(const QString &name, bool isDark)
             QIcon::setThemeName(QStringLiteral("breeze"));
         }
 
-        KIconLoader::global()->newIconLoader();
         KIconLoader::global()->reconfigure(qApp->applicationName());
+        KIconLoader::global()->newIconLoader();
+        Event themeChangeEvent(QEvent::ThemeChange);
+        QApplication::sendEvent(qApp, &themeChangeEvent);
         qDebug() << KIconTheme::current();
     }
 #else
