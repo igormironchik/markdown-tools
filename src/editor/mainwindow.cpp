@@ -452,34 +452,12 @@ void MainWindow::closeEvent(QCloseEvent *e)
     }
 }
 
-void refreshStyleRecursively(QWidget *widget,
-                             const QPalette &p)
-{
-    if (!widget) {
-        return;
-    }
-
-    widget->setPalette(p);
-    widget->style()->unpolish(widget);
-    widget->style()->polish(widget);
-
-    for (QObject *child : std::as_const(widget->children())) {
-        if (QWidget *childWidget = qobject_cast<QWidget *>(child)) {
-            refreshStyleRecursively(childWidget, p);
-        }
-    }
-
-    widget->repaint();
-}
-
 void MainWindow::updateStyle(bool updateHtml,
                              bool switchToDefaultColors)
 {
-    qApp->setStyle(QStyleFactory::create(qApp->style()->objectName()));
-
-    refreshStyleRecursively(this, qApp->palette());
-
     const auto isDark = (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark);
+
+    applyTheme(qApp->style()->name(), isDark);
 
     m_d->m_preview->settings()->setAttribute(QWebEngineSettings::WebAttribute::ForceDarkMode, isDark);
 

@@ -27,6 +27,7 @@
 #include <QPushButton>
 #include <QShowEvent>
 #include <QStandardPaths>
+#include <QStyleHints>
 #include <QTextStream>
 #include <QThread>
 #include <QToolButton>
@@ -719,6 +720,20 @@ void MainWindow::showEvent(QShowEvent *event)
     }
 
     event->accept();
+}
+
+bool MainWindow::event(QEvent *event)
+{
+    switch (event->type()) {
+    case QEvent::ApplicationPaletteChange: {
+        applyTheme(qApp->style()->name(), (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark));
+    } break;
+
+    default:
+        break;
+    }
+
+    return QMainWindow::event(event);
 }
 
 void MainWindow::setMarkdownFile(const QString &fileName)

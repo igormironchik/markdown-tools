@@ -15,6 +15,9 @@
 // shared include.
 #include "plugins_page.h"
 
+//! Apply theme.
+void applyTheme(const QString &name, bool isDark);
+
 //! Init shared resources, like *.qrc.
 void initSharedResources();
 

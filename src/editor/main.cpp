@@ -11,6 +11,10 @@
 #include <QTranslator>
 #include <QWebEngineUrlScheme>
 
+#ifdef MD_BREEZE
+#include <KIconTheme>
+#endif
+
 #ifdef Q_OS_WIN
 #include <QStyleFactory>
 #endif
@@ -28,6 +32,10 @@ int main(int argc,
     qrc.setFlags(QWebEngineUrlScheme::CorsEnabled);
     qrc.setSyntax(QWebEngineUrlScheme::Syntax::Path);
     QWebEngineUrlScheme::registerScheme(qrc);
+
+#ifdef MD_BREEZE
+    KIconTheme::initTheme();
+#endif
 
     QApplication app(argc, argv);
     app.setOrganizationName(QStringLiteral("Igor Mironchik"));

@@ -10,6 +10,8 @@
 #include "syntax.h"
 
 // Qt include.
+#include <QModelIndex>
+#include <QStyle>
 #include <QtResource>
 
 // md4qt inclide.
@@ -36,6 +38,49 @@
 #include <md4qt/src/thematic_break_parser.h>
 #include <md4qt/src/underline_emphasis_parser.h>
 #include <md4qt/src/yaml_parser.h>
+
+#ifdef MD_BREEZE
+#include <KColorSchemeManager>
+#include <KIconTheme>
+#endif // MD_BREEZE
+
+void refreshStyleRecursively(QWidget *widget,
+                             const QPalette &p)
+{
+    if (!widget) {
+        return;
+    }
+
+    widget->setPalette(p);
+    widget->style()->unpolish(widget);
+    widget->style()->polish(widget);
+
+    for (QObject *child : std::as_const(widget->children())) {
+        if (QWidget *childWidget = qobject_cast<QWidget *>(child)) {
+            refreshStyleRecursively(childWidget, p);
+        }
+    }
+
+    widget->repaint();
+}
+
+void applyTheme(const QString &name, bool isDark)
+{
+#ifdef MD_BREEZE
+    const auto scheme = name + (isDark ? QStringLiteral("Dark") : QString());
+    const auto idx = KColorSchemeManager::instance()->indexForScheme(scheme);
+
+    if (idx.isValid()) {
+        KColorSchemeManager::instance()->activateScheme(idx);
+    }
+
+    KIconTheme::reconfigure();
+#else
+    qApp->setStyle(QStyleFactory::create(qApp->style()->objectName()));
+
+    refreshStyleRecursively(this, qApp->palette());
+#endif
+}
 
 void initSharedResources()
 {

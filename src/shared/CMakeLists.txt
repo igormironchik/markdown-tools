@@ -12,6 +12,9 @@ find_package(Qt6Widgets REQUIRED)
 find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
     SyntaxHighlighting WidgetsAddons
 )
+find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} COMPONENTS
+    IconThemes ColorScheme
+)
 
 set(SRC license_dialog.h
 	license_dialog.cpp
@@ -56,10 +59,15 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_library(markdown-widgets STATIC ${SRC})
 
+if(KF${KF_MAJOR_VERSION}IconThemes_FOUND AND KF${KF_MAJOR_VERSION}ColorScheme_FOUND)
+    list(APPEND ADDITIONAL_TARGETS KF${KF_MAJOR_VERSION}::IconThemes KF${KF_MAJOR_VERSION}::ColorScheme)
+    target_compile_definitions(markdown-widgets PRIVATE MD_BREEZE)
+endif()
+
 configure_file(version.h.in ${CMAKE_CURRENT_BINARY_DIR}/version.h)
 
 target_link_libraries(markdown-widgets KF${KF_MAJOR_VERSION}::SyntaxHighlighting KF${KF_MAJOR_VERSION}::WidgetsAddons
-    Qt6::Widgets Qt6::Core)
+    ${ADDITIONAL_TARGETS} Qt6::Widgets Qt6::Core)
 
 target_include_directories(markdown-widgets INTERFACE ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}/markdown-widgets_autogen/include)

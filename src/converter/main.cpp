@@ -22,11 +22,19 @@
 // MicroTeX include.
 #include <latex.h>
 
+#ifdef MD_BREEZE
+#include <KIconTheme>
+#endif
+
 using namespace MdPdf;
 
 int main(int argc,
          char **argv)
 {
+#ifdef MD_BREEZE
+    KIconTheme::initTheme();
+#endif
+
     QApplication app(argc, argv);
     app.setOrganizationName(QStringLiteral("Igor Mironchik"));
     app.setOrganizationDomain(QStringLiteral("github.com/igormironchik"));

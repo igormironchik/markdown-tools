@@ -103,6 +103,7 @@ public:
 protected:
     void closeEvent(QCloseEvent *event) override;
     void showEvent(QShowEvent *event) override;
+    bool event(QEvent *event) override;
 
 private slots:
     //! About.
