@@ -11,6 +11,7 @@
 
 // Qt include.
 #include <QModelIndex>
+#include <QPixmapCache>
 #include <QStyle>
 #include <QtResource>
 
@@ -56,6 +57,12 @@ void refreshStyleRecursively(QWidget *widget,
     widget->style()->unpolish(widget);
     widget->style()->polish(widget);
 
+    QEvent styleEvent(QEvent::StyleChange);
+    qApp->sendEvent(widget, &styleEvent);
+
+    QEvent paletteEvent(QEvent::PaletteChange);
+    qApp->sendEvent(widget, &paletteEvent);
+
     for (QObject *child : std::as_const(widget->children())) {
         if (QWidget *childWidget = qobject_cast<QWidget *>(child)) {
             refreshStyleRecursively(childWidget, p);
@@ -81,9 +88,15 @@ void applyTheme(const QString &name, bool isDark)
     KIconTheme::reconfigure();
 #else
     qApp->setStyle(QStyleFactory::create(qApp->style()->objectName()));
+#endif
+
+    QPixmapCache::clear();
+
+    const auto currentIconTheme = QIcon::themeName();
+    QIcon::setThemeName(QString());
+    QIcon::setThemeName(currentIconTheme);
 
     refreshStyleRecursively(this, qApp->palette());
-#endif
 }
 
 void initSharedResources()
