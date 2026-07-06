@@ -13,7 +13,7 @@ find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
     SyntaxHighlighting WidgetsAddons
 )
 find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} COMPONENTS
-    IconThemes ColorScheme
+    IconThemes ColorScheme Config
 )
 
 set(SRC license_dialog.h
@@ -59,8 +59,10 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_library(markdown-widgets STATIC ${SRC})
 
-if(KF${KF_MAJOR_VERSION}IconThemes_FOUND AND KF${KF_MAJOR_VERSION}ColorScheme_FOUND)
-    list(APPEND ADDITIONAL_TARGETS KF${KF_MAJOR_VERSION}::IconThemes KF${KF_MAJOR_VERSION}::ColorScheme)
+if(KF${KF_MAJOR_VERSION}IconThemes_FOUND AND KF${KF_MAJOR_VERSION}ColorScheme_FOUND
+    AND KF${KF_MAJOR_VERSION}Config_FOUND)
+    list(APPEND ADDITIONAL_TARGETS KF${KF_MAJOR_VERSION}::ConfigCore
+        KF${KF_MAJOR_VERSION}::IconThemes KF${KF_MAJOR_VERSION}::ColorScheme)
     target_compile_definitions(markdown-widgets PRIVATE MD_BREEZE)
 endif()
 

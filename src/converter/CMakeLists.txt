@@ -12,7 +12,7 @@ find_package(Qt6Network 6.5.0 REQUIRED)
 find_package(Qt6Svg 6.5.0 REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} COMPONENTS
-    IconThemes ColorScheme
+    IconThemes ColorScheme Config
 )
 
 add_definitions(-DPODOFO_SHARED)
@@ -63,8 +63,10 @@ add_definitions(-DBUILD_QT)
 
 add_executable(md-pdf-gui WIN32 ${GUI_SRC})
 
-if(KF${KF_MAJOR_VERSION}IconThemes_FOUND AND KF${KF_MAJOR_VERSION}ColorScheme_FOUND)
-    list(APPEND ADDITIONAL_TARGETS KF${KF_MAJOR_VERSION}::IconThemes KF${KF_MAJOR_VERSION}::ColorScheme)
+if(KF${KF_MAJOR_VERSION}IconThemes_FOUND AND KF${KF_MAJOR_VERSION}ColorScheme_FOUND
+    AND KF${KF_MAJOR_VERSION}Config_FOUND)
+    list(APPEND ADDITIONAL_TARGETS KF${KF_MAJOR_VERSION}::ConfigCore
+        KF${KF_MAJOR_VERSION}::IconThemes KF${KF_MAJOR_VERSION}::ColorScheme)
     target_compile_definitions(md-pdf-gui PRIVATE MD_BREEZE)
 endif()
 

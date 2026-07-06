@@ -41,8 +41,9 @@
 
 #ifdef MD_BREEZE
 #include <KColorSchemeManager>
+#include <KConfigGroup>
 #include <KIconTheme>
-#include <KIconLoader>
+#include <KSharedConfig>
 
 #include <QIcon>
 #include <QStyleHints>
@@ -59,15 +60,6 @@ void refreshStyleRecursively(QWidget *widget,
     widget->style()->unpolish(widget);
     widget->style()->polish(widget);
 
-    QEvent styleEvent(QEvent::StyleChange);
-    qApp->sendEvent(widget, &styleEvent);
-
-    QEvent paletteEvent(QEvent::PaletteChange);
-    qApp->sendEvent(widget, &paletteEvent);
-
-    QEvent themeEvent(QEvent::ThemeChange);
-    qApp->sendEvent(widget, &themeEvent);
-
     for (QObject *child : std::as_const(widget->children())) {
         if (QWidget *childWidget = qobject_cast<QWidget *>(child)) {
             refreshStyleRecursively(childWidget, p);
@@ -77,7 +69,8 @@ void refreshStyleRecursively(QWidget *widget,
     widget->repaint();
 }
 
-void applyTheme(const QString &name, bool isDark)
+void applyTheme(const QString &name,
+                bool isDark)
 {
 #ifdef MD_BREEZE
     auto upper = name;
@@ -89,17 +82,10 @@ void applyTheme(const QString &name, bool isDark)
         qApp->styleHints()->setColorScheme(isDark ? Qt::ColorScheme::Dark : Qt::ColorScheme::Light);
         KColorSchemeManager::instance()->activateScheme(idx);
 
-        if (isDark) {
-            qDebug() << "dark";
-            QIcon::setThemeName(QStringLiteral("breeze-dark"));
-        } else {
-            QIcon::setThemeName(QStringLiteral("breeze"));
-        }
-
-        KIconLoader::global()->reconfigure(qApp->applicationName());
-        KIconLoader::global()->newIconLoader();
-        Event themeChangeEvent(QEvent::ThemeChange);
-        QApplication::sendEvent(qApp, &themeChangeEvent);
+        auto cfg = KSharedConfig::openConfig();
+        cfg->group("Icons").writeEntry(QStringLiteral("Theme"),
+                                       QStringLiteral("breeze") + (isDark ? QStringLiteral("-dark") : QString()));
+        KIconTheme::reconfigure();
         qDebug() << KIconTheme::current();
     }
 #else
