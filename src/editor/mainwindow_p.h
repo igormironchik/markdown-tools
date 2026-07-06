@@ -130,6 +130,9 @@ struct MainWindowPrivate {
     QAction *m_goFwdAction = nullptr;
     QAction *m_orientAction = nullptr;
     QAction *m_mdStandardAction = nullptr;
+#if defined(Q_OS_WIN) && defined(MD_BREEZE)
+    QAction *m_themeAction = nullptr;
+#endif
     QMenu *m_actionMenu = nullptr;
     QMenu *m_standardEditMenu = nullptr;
     QMenu *m_settingsMenu = nullptr;

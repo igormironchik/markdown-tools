@@ -442,6 +442,12 @@ void MainWindowPrivate::initUi()
         m_q,
         &MainWindow::onChangeColors);
 
+#if defined(Q_OS_WIN) && defined(MD_BREEZE)
+    m_settingsMenu->addSeparator();
+
+    m_themeAction = m_settingsMenu->addAction(MainWindow::tr("Dark Mode"), m_q, &MainWindow::onChangeTheme);
+#endif
+
     m_settingsMenu->addSeparator();
 
     m_settingsMenu->addAction(

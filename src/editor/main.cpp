@@ -25,6 +25,10 @@
 // shared include.
 #include "utils.h"
 
+#if defined(Q_OS_WIN) && defined(MD_BREEZE)
+#include <KColorSchemeManager>
+#endif
+
 int main(int argc,
          char **argv)
 {
@@ -44,6 +48,10 @@ int main(int argc,
 
 #ifdef Q_OS_WIN
     app.setStyle(QStyleFactory::create("Breeze"));
+#endif
+
+#if defined(Q_OS_WIN) && defined(MD_BREEZE)
+    Q_UNUSED(KColorSchemeManager::instance());
 #endif
 
     QCommandLineParser parser;

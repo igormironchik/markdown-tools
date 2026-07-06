@@ -92,7 +92,7 @@ target_link_libraries(md-editor-lib md4qt::md4qt markdown-widgets md-utils
     KF${KF_MAJOR_VERSION}::SonnetUi KF${KF_MAJOR_VERSION}::SonnetCore
     Qt6::WebEngineWidgets Qt6::Widgets Qt6::Concurrent Qt6::Core)
 
-add_executable(md-editor WIN32 ${SRC})
+add_executable(md-editor ${SRC})
 
 if(KF${KF_MAJOR_VERSION}IconThemes_FOUND AND KF${KF_MAJOR_VERSION}ColorScheme_FOUND)
     list(APPEND ADDITIONAL_TARGETS KF${KF_MAJOR_VERSION}::IconThemes KF${KF_MAJOR_VERSION}::ColorScheme)

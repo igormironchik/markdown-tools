@@ -726,7 +726,7 @@ bool MainWindow::event(QEvent *event)
 {
     switch (event->type()) {
     case QEvent::ApplicationPaletteChange: {
-        applyTheme(qApp->style()->name(), (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark));
+        applyTheme(qApp->style()->objectName(), (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark));
     } break;
 
     default:

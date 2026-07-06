@@ -42,6 +42,7 @@
 #ifdef MD_BREEZE
 #include <KColorSchemeManager>
 #include <KIconTheme>
+#include <QStyleHints>
 #endif // MD_BREEZE
 
 void refreshStyleRecursively(QWidget *widget,
@@ -67,10 +68,13 @@ void refreshStyleRecursively(QWidget *widget,
 void applyTheme(const QString &name, bool isDark)
 {
 #ifdef MD_BREEZE
-    const auto scheme = name + (isDark ? QStringLiteral("Dark") : QString());
-    const auto idx = KColorSchemeManager::instance()->indexForScheme(scheme);
+    auto upper = name;
+    upper[0] = upper[0].toUpper();
+    const auto scheme = upper + (isDark ? QStringLiteral("Dark") : QString("Light"));
+    const auto idx = KColorSchemeManager::instance()->indexForSchemeId(scheme);
 
     if (idx.isValid()) {
+        qApp->styleHints()->setColorScheme(isDark ? Qt::ColorScheme::Dark : Qt::ColorScheme::Light);
         KColorSchemeManager::instance()->activateScheme(idx);
     }
 

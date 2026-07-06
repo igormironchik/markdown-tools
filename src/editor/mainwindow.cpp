@@ -457,7 +457,7 @@ void MainWindow::updateStyle(bool updateHtml,
 {
     const auto isDark = (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark);
 
-    applyTheme(qApp->style()->name(), isDark);
+    applyTheme(qApp->style()->objectName(), isDark);
 
     m_d->m_preview->settings()->setAttribute(QWebEngineSettings::WebAttribute::ForceDarkMode, isDark);
 
@@ -948,6 +948,25 @@ void MainWindow::onAddUpdatesButton()
         statusBar()->addPermanentWidget(btn);
     }
 }
+
+#if defined(Q_OS_WIN) && defined(MD_BREEZE)
+
+void MainWindow::onChangeTheme()
+{
+    const auto isDark = (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark);
+
+    if (isDark) {
+        m_d->m_themeAction->setText(tr("Dark Mode"));
+    } else {
+        m_d->m_themeAction->setText(tr("Light Mode"));
+    }
+
+    applyTheme(qApp->style()->name(), !isDark);
+
+    saveCfg();
+}
+
+#endif
 
 void MainWindow::onLineNumberContextMenuRequested(int lineNumber,
                                                   const QPoint &pos)
