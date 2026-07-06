@@ -76,7 +76,7 @@ void applyTheme(const QString &name,
 #ifdef MD_BREEZE
     auto upper = name;
     upper[0] = upper[0].toUpper();
-    const auto scheme = upper + (isDark ? QStringLiteral("Dark") : QString("Light"));
+    const auto scheme = upper + (isDark ? QStringLiteral("Dark") : QStringLiteral("Light"));
     const auto idx = KColorSchemeManager::instance()->indexForSchemeId(scheme);
 
     if (idx.isValid()) {
