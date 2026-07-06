@@ -42,8 +42,9 @@
 #ifdef MD_BREEZE
 #include <KColorSchemeManager>
 #include <KConfigGroup>
-#include <KIconTheme>
+#include <KIconLoader>
 #include <KSharedConfig>
+#include <KIconTheme>
 
 #include <QIcon>
 #include <QStyleHints>
@@ -83,9 +84,10 @@ void applyTheme(const QString &name,
         KColorSchemeManager::instance()->activateScheme(idx);
 
         auto cfg = KSharedConfig::openConfig();
-        cfg->group("Icons").writeEntry(QStringLiteral("Theme"),
-                                       QStringLiteral("breeze") + (isDark ? QStringLiteral("-dark") : QString()));
-        KIconTheme::reconfigure();
+        cfg->group(QStringLiteral("Icons"))
+            .writeEntry(QStringLiteral("Theme"),
+                        QStringLiteral("breeze") + (isDark ? QStringLiteral("-dark") : QString()));
+        KIconLoader::global()->emitChange(KIconLoader::NoGroup);
         qDebug() << KIconTheme::current();
     }
 #else
