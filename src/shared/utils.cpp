@@ -43,8 +43,8 @@
 #include <KColorSchemeManager>
 #include <KConfigGroup>
 #include <KIconLoader>
-#include <KSharedConfig>
 #include <KIconTheme>
+#include <KSharedConfig>
 
 #include <QIcon>
 #include <QStyleHints>
