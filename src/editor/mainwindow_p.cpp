@@ -445,7 +445,9 @@ void MainWindowPrivate::initUi()
 #if defined(Q_OS_WIN) && defined(MD_BREEZE)
     m_settingsMenu->addSeparator();
 
-    m_themeAction = m_settingsMenu->addAction(MainWindow::tr("Dark Mode"), m_q, &MainWindow::onChangeTheme);
+    const auto isDark = (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark);
+
+    m_themeAction = m_settingsMenu->addAction(isDark ? MainWindow::tr("Light Mode") : MainWindow::tr("Dark Mode"), m_q, &MainWindow::onChangeTheme);
 #endif
 
     m_settingsMenu->addSeparator();
