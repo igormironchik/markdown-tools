@@ -212,7 +212,7 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-copy /Y ..\Qt\%qt_version%\%qt_arch%\bin\QtWebEngineProcess.exe installer\packages\mironchik.igor.markdown\data\bin\QtWebEngineProcess.exe
+copy /Y ..\Qt\%qt_version%\%qt_arch%\bin\QtWebEngineProcessd.exe installer\packages\mironchik.igor.markdown\data\bin\QtWebEngineProcessd.exe
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
