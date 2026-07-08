@@ -90,8 +90,6 @@ void applyTheme(const QString &name,
 
     if (idx.isValid()) {
         qApp->styleHints()->setColorScheme(isDark ? Qt::ColorScheme::Dark : Qt::ColorScheme::Light);
-        KColorSchemeManager::instance()->activateScheme(idx);
-
         auto cfg = KSharedConfig::openConfig();
         const auto iconThemeName = QStringLiteral("breeze") + (isDark ? QStringLiteral("-dark") : QString());
         auto cg = cfg->group(QStringLiteral("Icons"));
@@ -100,13 +98,11 @@ void applyTheme(const QString &name,
         KIconTheme::forceThemeForTests(iconThemeName);
         KIconLoader::global()->reconfigure(qApp->applicationName());
         QPixmapCache::clear();
+        KColorSchemeManager::instance()->activateScheme(idx);
     }
 #else
     qApp->setStyle(QStyleFactory::create(qApp->style()->objectName()));
 #endif
-
-    QEvent themeChange(QEvent::ThemeChange);
-    QApplication::sendEvent(qApp, &themeChange);
 
     static int i = 1;
     qDebug() << i << KIconLoader::global()->theme()->iconPathByName(QStringLiteral("document-open"), 22, KIconLoader::MatchBest);
