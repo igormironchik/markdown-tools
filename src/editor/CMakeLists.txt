@@ -102,11 +102,11 @@ if(KF${KF_MAJOR_VERSION}IconThemes_FOUND AND KF${KF_MAJOR_VERSION}ColorScheme_FO
     target_compile_definitions(md-editor-lib PRIVATE MD_BREEZE)
 endif()
 
+install(TARGETS md-editor)
+
 if(WIN32)
     set(WIN_LIBS "Dwmapi")
 endif()
-
-install(TARGETS md-editor)
 
 target_link_libraries(md-editor md-editor-lib markdown-widgets github-release
     KF${KF_MAJOR_VERSION}::SonnetUi KF${KF_MAJOR_VERSION}::SonnetCore

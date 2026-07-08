@@ -54,8 +54,8 @@
 #endif // MD_BREEZE
 
 #ifdef Q_OS_WIN
+#include <Windows.h>
 #include <dwmapi.h>
-#include <WinUser.h>
 #endif
 
 void refreshStyleRecursively(QWidget *widget,

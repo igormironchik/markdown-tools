@@ -33,14 +33,14 @@
 int main(int argc,
          char **argv)
 {
+#ifdef MD_BREEZE
+    KIconTheme::initTheme();
+#endif
+
     QWebEngineUrlScheme qrc("qrc");
     qrc.setFlags(QWebEngineUrlScheme::CorsEnabled);
     qrc.setSyntax(QWebEngineUrlScheme::Syntax::Path);
     QWebEngineUrlScheme::registerScheme(qrc);
-
-#ifdef MD_BREEZE
-    KIconTheme::initTheme();
-#endif
 
     QApplication app(argc, argv);
     app.setOrganizationName(QStringLiteral("Igor Mironchik"));
