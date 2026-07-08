@@ -53,8 +53,10 @@
 #include <QStyleHints>
 #endif // MD_BREEZE
 
-#include <QPixmap>
-#include <QDir>
+#ifdef Q_OS_WIN
+#include <dwmapi.h>
+#include <WinUser.h>
+#endif
 
 void refreshStyleRecursively(QWidget *widget,
                              const QPalette &p)
@@ -102,6 +104,15 @@ void applyTheme(const QString &name,
 #endif
 
     refreshStyleRecursively(QApplication::activeWindow(), qApp->palette());
+
+#ifdef Q_OS_WIN
+    HWND hwnd = reinterpret_cast<HWND>(QApplication::activeWindow()->winId());
+    BOOL useDarkMode = isDark;
+    DWORD attribute = DWMWA_USE_IMMERSIVE_DARK_MODE;
+    DwmSetWindowAttribute(hwnd, attribute, &useDarkMode, sizeof(useDarkMode));
+    SendMessage(hwnd, WM_NCACTIVATE, FALSE, 0);
+    SendMessage(hwnd, WM_NCACTIVATE, TRUE, 0);
+#endif
 }
 
 void initSharedResources()

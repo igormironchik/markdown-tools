@@ -63,6 +63,10 @@ add_definitions(-DBUILD_QT)
 
 add_executable(md-pdf-gui WIN32 ${GUI_SRC})
 
+if(WIN32)
+    set(WIN_LIBS "Dwmapi")
+endif()
+
 if(KF${KF_MAJOR_VERSION}IconThemes_FOUND AND KF${KF_MAJOR_VERSION}ColorScheme_FOUND
     AND KF${KF_MAJOR_VERSION}Config_FOUND)
     list(APPEND ADDITIONAL_TARGETS KF${KF_MAJOR_VERSION}::ConfigCore
@@ -78,5 +82,5 @@ install(TARGETS md-pdf-gui)
 install(TARGETS md-launcher)
 
 target_link_libraries(md-pdf-gui md4qt::md4qt markdown-widgets LaTeX ${ADDITIONAL_TARGETS}
-	Qt6::Widgets Qt6::Network Qt6::Core
-    podofo_shared resvg)
+    Qt6::Widgets Qt6::Network Qt6::Core
+    podofo_shared resvg ${WIN_LIBS})

@@ -92,7 +92,7 @@ target_link_libraries(md-editor-lib md4qt::md4qt markdown-widgets md-utils
     KF${KF_MAJOR_VERSION}::SonnetUi KF${KF_MAJOR_VERSION}::SonnetCore
     Qt6::WebEngineWidgets Qt6::Widgets Qt6::Concurrent Qt6::Core)
 
-add_executable(md-editor ${SRC})
+add_executable(md-editor WIN32 ${SRC})
 
 if(KF${KF_MAJOR_VERSION}IconThemes_FOUND AND KF${KF_MAJOR_VERSION}ColorScheme_FOUND
     AND KF${KF_MAJOR_VERSION}Config_FOUND)
@@ -102,9 +102,13 @@ if(KF${KF_MAJOR_VERSION}IconThemes_FOUND AND KF${KF_MAJOR_VERSION}ColorScheme_FO
     target_compile_definitions(md-editor-lib PRIVATE MD_BREEZE)
 endif()
 
+if(WIN32)
+    set(WIN_LIBS "Dwmapi")
+endif()
+
 install(TARGETS md-editor)
 
 target_link_libraries(md-editor md-editor-lib markdown-widgets github-release
     KF${KF_MAJOR_VERSION}::SonnetUi KF${KF_MAJOR_VERSION}::SonnetCore
     KF${KF_MAJOR_VERSION}::WidgetsAddons ${ADDITIONAL_TARGETS}
-    Qt6::WebEngineWidgets Qt6::Widgets Qt6::Core)
+    Qt6::WebEngineWidgets Qt6::Widgets Qt6::Core ${WIN_LIBS})
