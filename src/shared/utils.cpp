@@ -104,13 +104,6 @@ void applyTheme(const QString &name,
     qApp->setStyle(QStyleFactory::create(qApp->style()->objectName()));
 #endif
 
-    static int i = 1;
-    qDebug() << i << KIconLoader::global()->theme()->iconPathByName(QStringLiteral("document-open"), 22, KIconLoader::MatchBest);
-    QIcon icon(new KIconEngine(QStringLiteral("document-open"), KIconLoader::global()));
-    icon.pixmap(22, 22).save(QApplication::applicationDirPath() + QDir::separator() + QStringLiteral("%1-0.png").arg(QString::number(i)));
-    QIcon::fromTheme(QStringLiteral("document-open"), QIcon(QStringLiteral(":/res/img/document-open.png"))).pixmap(22, 22)
-        .save(QApplication::applicationDirPath() + QDir::separator() + QStringLiteral("%1.png").arg(QString::number(i++)));
-
     refreshStyleRecursively(QApplication::activeWindow(), qApp->palette());
 }
 
