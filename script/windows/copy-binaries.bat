@@ -86,6 +86,12 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
+del /Q installer\packages\mironchik.igor.markdown\data\bin\*.pdb
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
 copy /Y %CD%\..\builds\build-markdown-tools\bin installer\packages\mironchik.igor.markdown\data\bin
 
 IF %ERRORLEVEL% NEQ 0 (
