@@ -48,61 +48,61 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-mkdir installer\packages\mironchik.igor.markdown\data\plugins\kf6
+mkdir installer\packages\mironchik.igor.markdown\data\bin\kf6
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-mkdir installer\packages\mironchik.igor.markdown\data\plugins\kf6\sonnet
+mkdir installer\packages\mironchik.igor.markdown\data\bin\kf6\sonnet
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-mkdir installer\packages\mironchik.igor.markdown\data\plugins\kf6\kio
+mkdir installer\packages\mironchik.igor.markdown\data\bin\kf6\kio
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-mkdir installer\packages\mironchik.igor.markdown\data\plugins\kf6\kio_dnd
+mkdir installer\packages\mironchik.igor.markdown\data\bin\kf6\kio_dnd
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-mkdir installer\packages\mironchik.igor.markdown\data\plugins\kf6\urifilters
+mkdir installer\packages\mironchik.igor.markdown\data\bin\kf6\urifilters
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-mkdir installer\packages\mironchik.igor.markdown\data\plugins\kiconthemes6
+mkdir installer\packages\mironchik.igor.markdown\data\bin\kiconthemes6
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-mkdir installer\packages\mironchik.igor.markdown\data\plugins\kiconthemes6\iconengines
+mkdir installer\packages\mironchik.igor.markdown\data\bin\kiconthemes6\iconengines
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-mkdir installer\packages\mironchik.igor.markdown\data\plugins\styles
+mkdir installer\packages\mironchik.igor.markdown\data\bin\styles
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-xcopy %CD%\..\KDE\lib\plugins\kf6 installer\packages\mironchik.igor.markdown\data\plugins\kf6 /S /Y
+xcopy %CD%\..\KDE\lib\plugins\kf6 installer\packages\mironchik.igor.markdown\data\bin\kf6 /S /Y
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-del /Q installer\packages\mironchik.igor.markdown\data\plugins\kf6\sonnet\sonnet_ispellchecker.dll
+del /Q installer\packages\mironchik.igor.markdown\data\bin\kf6\sonnet\sonnet_ispellchecker.dll
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
@@ -120,13 +120,13 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-xcopy %CD%\..\KDE\lib\plugins\kiconthemes6 installer\packages\mironchik.igor.markdown\data\plugins\kiconthemes6 /S /Y
+xcopy %CD%\..\KDE\lib\plugins\kiconthemes6 installer\packages\mironchik.igor.markdown\data\bin\kiconthemes6 /S /Y
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-xcopy %CD%\..\KDE\lib\plugins\styles installer\packages\mironchik.igor.markdown\data\plugins\styles /S /Y
+xcopy %CD%\..\KDE\lib\plugins\styles installer\packages\mironchik.igor.markdown\data\bin\styles /S /Y
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
@@ -151,6 +151,12 @@ IF %ERRORLEVEL% NEQ 0 (
 )
 
 copy /Y 3rdparty\resvg-%resvg_version%\target\release\resvg.dll installer\packages\mironchik.igor.markdown\data\bin\resvg.dll
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+cd installer\packages\mironchik.igor.markdown\data\bin
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
