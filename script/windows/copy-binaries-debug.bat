@@ -85,3 +85,69 @@ copy /Y 3rdparty\resvg-%resvg_version%\target\release\resvg.dll installer\packag
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
+
+mkdir %CD%\..\Qt\%qt_version%\msvc2022_64\plugins\kf6
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+mkdir %CD%\..\Qt\%qt_version%\msvc2022_64\plugins\kf6\sonnet
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+mkdir %CD%\..\Qt\%qt_version%\msvc2022_64\plugins\kf6\kio
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+mkdir %CD%\..\Qt\%qt_version%\msvc2022_64\plugins\kf6\kio_dnd
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+mkdir %CD%\..\Qt\%qt_version%\msvc2022_64\plugins\kf6\urifilters
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+mkdir %CD%\..\Qt\%qt_version%\msvc2022_64\plugins\kiconthemes6
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+mkdir %CD%\..\Qt\%qt_version%\msvc2022_64\plugins\kiconthemes6\iconengines
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+xcopy %CD%\..\KDE\lib\plugins\kf6 %CD%\..\Qt\%qt_version%\msvc2022_64\plugins\kf6 /S /Y
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+del /Q %CD%\..\Qt\%qt_version%\msvc2022_64\plugins\kf6\sonnet\sonnet_ispellchecker.dll
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+xcopy %CD%\..\KDE\lib\plugins\kiconthemes6 %CD%\..\Qt\%qt_version%\msvc2022_64\plugins\kiconthemes6 /S /Y
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+xcopy %CD%\..\KDE\lib\plugins\styles %CD%\..\Qt\%qt_version%\msvc2022_64\plugins\styles /S /Y
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
