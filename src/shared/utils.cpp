@@ -67,9 +67,6 @@ void refreshStyleRecursively(QWidget *widget,
     widget->style()->unpolish(widget);
     widget->style()->polish(widget);
 
-    QEvent themeChange(QEvent::ThemeChange);
-    QApplication::sendEvent(widget, &themeChange);
-
     for (QObject *child : std::as_const(widget->children())) {
         if (QWidget *childWidget = qobject_cast<QWidget *>(child)) {
             refreshStyleRecursively(childWidget, p);

@@ -6,87 +6,7 @@ echo "Copying binaries..."
 
 rmdir /S /Q installer\packages\mironchik.igor.markdown\data\bin
 
-rmdir /S /Q installer\packages\mironchik.igor.markdown\data\plugins
-
-rmdir /S /Q installer\packages\mironchik.igor.markdown\data\libexec
-
-rmdir /S /Q installer\packages\mironchik.igor.markdown\data\resources
-
-rmdir /S /Q installer\packages\mironchik.igor.markdown\data\translations
-
 mkdir installer\packages\mironchik.igor.markdown\data\bin
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
-mkdir installer\packages\mironchik.igor.markdown\data\plugins
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
-mkdir installer\packages\mironchik.igor.markdown\data\resources
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
-mkdir installer\packages\mironchik.igor.markdown\data\translations
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
-copy /Y ..\Qt\%qt_version%\%qt_arch%\bin installer\packages\mironchik.igor.markdown\data\bin
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
-del /Q installer\packages\mironchik.igor.markdown\data\bin\*.exe
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
-del /Q installer\packages\mironchik.igor.markdown\data\bin\*.bat
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
-del /Q installer\packages\mironchik.igor.markdown\data\bin\*.cmake
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
-del /Q installer\packages\mironchik.igor.markdown\data\bin\*.pl
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
-del /Q installer\packages\mironchik.igor.markdown\data\bin\*.py
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
-del /Q installer\packages\mironchik.igor.markdown\data\bin\*.sh
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
-del /Q installer\packages\mironchik.igor.markdown\data\bin\Qt6*d.dll
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
-del /Q installer\packages\mironchik.igor.markdown\data\bin\*.pdb
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
@@ -219,30 +139,6 @@ IF %ERRORLEVEL% NEQ 0 (
 )
 
 del /Q installer\packages\mironchik.igor.markdown\data\bin\test.render.bat
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
-copy /Y ..\Qt\%qt_version%\%qt_arch%\bin\QtWebEngineProcess.exe installer\packages\mironchik.igor.markdown\data\bin\QtWebEngineProcess.exe
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
-xcopy ..\Qt\%qt_version%\%qt_arch%\plugins installer\packages\mironchik.igor.markdown\data\plugins /S /Y
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
-xcopy ..\Qt\%qt_version%\%qt_arch%\resources installer\packages\mironchik.igor.markdown\data\resources /S /Y
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
-xcopy ..\Qt\%qt_version%\%qt_arch%\translations installer\packages\mironchik.igor.markdown\data\translations /S /Y
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%

@@ -6,14 +6,6 @@ echo "Copying binaries..."
 
 rmdir /S /Q installer\packages\mironchik.igor.markdown\data\bin
 
-rmdir /S /Q installer\packages\mironchik.igor.markdown\data\plugins
-
-rmdir /S /Q installer\packages\mironchik.igor.markdown\data\libexec
-
-rmdir /S /Q installer\packages\mironchik.igor.markdown\data\resources
-
-rmdir /S /Q installer\packages\mironchik.igor.markdown\data\translations
-
 mkdir installer\packages\mironchik.igor.markdown\data\bin
 
 IF %ERRORLEVEL% NEQ 0 (
