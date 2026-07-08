@@ -155,9 +155,3 @@ copy /Y 3rdparty\resvg-%resvg_version%\target\release\resvg.dll installer\packag
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
-
-cd installer\packages\mironchik.igor.markdown\data\bin
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)

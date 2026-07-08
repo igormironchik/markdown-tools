@@ -100,6 +100,7 @@ them available through the `PATH`, `INCLUDE`, `LIB` environment variables.
    * `script\windows\build.bat`
    * `script\windows\copy-binaries.bat`
    * `script\windows\copy-openssl.bat`
+   * `script\windows\copy-qt.bat`
    * `script\windows\deploy.bat`
 
 After these steps in the root of `markdown-tools` repository you will get
