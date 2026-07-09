@@ -81,8 +81,7 @@ void refreshStyleRecursively(QWidget *widget,
 void applyTheme(const QString &name,
                 bool isDark)
 {
-#ifdef MD_BREEZE
-#ifdef Q_OS_WIN
+#if defined(MD_BREEZE) && defined(Q_OS_WIN)
     auto upper = name;
     upper[0] = upper[0].toUpper();
     const auto scheme = upper + (isDark ? QStringLiteral("Dark") : QStringLiteral("Light"));
@@ -96,19 +95,14 @@ void applyTheme(const QString &name,
         cg.writeEntry(QStringLiteral("Theme"), iconThemeName);
         cg.sync();
         KIconTheme::forceThemeForTests(iconThemeName);
-        KIconLoader::global()->reconfigure(
-            qApp->applicationName(),
-            QStringList()
-                << QStringLiteral(":/pics/%1").arg(isDark ? QStringLiteral("md-dark") : QStringLiteral("md")));
+        KIconLoader::global()->reconfigure(qApp->applicationName());
         QPixmapCache::clear();
         KColorSchemeManager::instance()->activateScheme(idx);
     }
-#else
-    KIconLoader::global()->reconfigure(
-        qApp->applicationName(),
+#endif
+
+    QIcon::setFallbackSearchPaths(
         QStringList() << QStringLiteral(":/pics/%1").arg(isDark ? QStringLiteral("md-dark") : QStringLiteral("md")));
-#endif
-#endif
 
     const auto windows = QApplication::topLevelWidgets();
 
