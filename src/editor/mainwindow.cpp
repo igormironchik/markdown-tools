@@ -1564,7 +1564,7 @@ void MainWindow::loadAllLinkedFilesImpl()
                         if (!current->m_keys.contains(f)) {
                             auto tmp = QSharedPointer<Node>::create();
                             auto item = new QTreeWidgetItem(current->m_self);
-                            item->setIcon(0, QIcon(":/icon/icon_16x16.png"));
+                            item->setIcon(0, mdIcon());
                             item->setData(0, Qt::UserRole, fullFileName);
                             m_d->m_fullFileNames.insert(fullFileName);
                             tmp->m_self = item;

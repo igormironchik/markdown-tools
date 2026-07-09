@@ -15,6 +15,9 @@
 #include "widgets.h"
 #include "wordwrapdelegate.h"
 
+// md-shared include.
+#include "utils.h"
+
 // md4qt include.
 #include <md4qt/src/algo.h>
 
@@ -461,7 +464,7 @@ void MainWindowPrivate::initUi()
         &MainWindow::onSettings);
 
     auto helpMenu = m_q->menuBar()->addMenu(MainWindow::tr("&Help"));
-    helpMenu->addAction(QIcon(QStringLiteral(":/icon/icon_24x24.png")),
+    helpMenu->addAction(mdIcon(),
                         MainWindow::tr("About"),
                         m_q,
                         &MainWindow::onAbout);
@@ -469,10 +472,10 @@ void MainWindowPrivate::initUi()
                         MainWindow::tr("About Qt"),
                         m_q,
                         &MainWindow::onAboutQt);
-    helpMenu->addAction(QIcon(QStringLiteral(":/icon/icon_24x24.png")), MainWindow::tr("About Markdown"), []() {
+    helpMenu->addAction(mdIcon(), MainWindow::tr("About Markdown"), []() {
         QDesktopServices::openUrl(QUrl(QStringLiteral("https://spec.commonmark.org/0.31.2/")));
     });
-    m_mdStandardAction = helpMenu->addAction(QIcon(QStringLiteral(":/icon/icon_24x24.png")),
+    m_mdStandardAction = helpMenu->addAction(mdIcon(),
                                              MainWindow::tr("Extract from the standard"),
                                              m_q,
                                              &MainWindow::onMarkdownStandardHelp);

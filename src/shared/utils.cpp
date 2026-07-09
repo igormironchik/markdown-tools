@@ -11,9 +11,12 @@
 
 // Qt include.
 #include <QModelIndex>
+#include <QPainter>
+#include <QPalette>
+#include <QPixmap>
 #include <QStyle>
-#include <QtResource>
 #include <QWindow>
+#include <QtResource>
 
 // md4qt inclide.
 #include <md4qt/src/asterisk_emphasis_parser.h>
@@ -43,10 +46,10 @@
 #ifdef MD_BREEZE
 #include <KColorSchemeManager>
 #include <KConfigGroup>
+#include <KIconEngine>
 #include <KIconLoader>
 #include <KIconTheme>
 #include <KSharedConfig>
-#include <KIconEngine>
 
 #include <QIcon>
 #include <QPixmapCache>
@@ -57,6 +60,36 @@
 #include <Windows.h>
 #include <dwmapi.h>
 #endif
+
+//
+// MdIconEngine
+//
+
+QIconEngine *MdIconEngine::clone() const
+{
+    return new MdIconEngine;
+}
+
+void MdIconEngine::paint(QPainter *painter,
+                         const QRect &rect,
+                         QIcon::Mode mode,
+                         QIcon::State)
+{
+    const auto isDark = (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark);
+
+    QPixmap pix(isDark ? QStringLiteral(":/icon/icon_%1x%1-dark.png")
+                             .arg(rect.width() < 20 ? QString::number(16) : QString::number(24))
+                       : QStringLiteral(":/icon/icon_%1x%1.png")
+                             .arg(rect.width() < 20 ? QString::number(16) : QString::number(24)));
+    pix = pix.scaledToWidth(rect.width(), Qt::SmoothTransformation);
+    painter->fillRect(rect, Qt::transparent);
+    painter->drawPixmap(QRect(rect.x(), qAbs(rect.height() - pix.height()) / 2, rect.width(), pix.height()), pix);
+}
+
+QIcon mdIcon()
+{
+    return QIcon(new MdIconEngine);
+}
 
 void refreshStyleRecursively(QWidget *widget,
                              const QPalette &p)
@@ -120,6 +153,26 @@ void applyTheme(const QString &name,
             }
 #endif
         }
+    }
+
+    if (isDark) {
+        QIcon appIcon(QStringLiteral(":/icon/icon_256x256-dark.png"));
+        appIcon.addFile(QStringLiteral(":/icon/icon_128x128-dark.png"));
+        appIcon.addFile(QStringLiteral(":/icon/icon_64x64-dark.png"));
+        appIcon.addFile(QStringLiteral(":/icon/icon_48x48-dark.png"));
+        appIcon.addFile(QStringLiteral(":/icon/icon_32x32-dark.png"));
+        appIcon.addFile(QStringLiteral(":/icon/icon_24x24-dark.png"));
+        appIcon.addFile(QStringLiteral(":/icon/icon_16x16-dark.png"));
+        qApp->setWindowIcon(appIcon);
+    } else {
+        QIcon appIcon(QStringLiteral(":/icon/icon_256x256.png"));
+        appIcon.addFile(QStringLiteral(":/icon/icon_128x128.png"));
+        appIcon.addFile(QStringLiteral(":/icon/icon_64x64.png"));
+        appIcon.addFile(QStringLiteral(":/icon/icon_48x48.png"));
+        appIcon.addFile(QStringLiteral(":/icon/icon_32x32.png"));
+        appIcon.addFile(QStringLiteral(":/icon/icon_24x24.png"));
+        appIcon.addFile(QStringLiteral(":/icon/icon_16x16.png"));
+        qApp->setWindowIcon(appIcon);
     }
 }
 

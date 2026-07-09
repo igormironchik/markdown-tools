@@ -11,5 +11,16 @@
 		<file>icon/icon_64x64.png</file>
 		<file>icon/icon_128x128.png</file>
 		<file>icon/icon_256x256.png</file>
+		<file>icon/icon_16x16-dark.png</file>
+		<file>icon/icon_24x24-dark.png</file>
+		<file>icon/icon_32x32-dark.png</file>
+		<file>icon/icon_48x48-dark.png</file>
+		<file>icon/icon_64x64-dark.png</file>
+		<file>icon/icon_128x128-dark.png</file>
+		<file>icon/icon_256x256-dark.png</file>
+		<file>icon/md/index.theme</file>
+		<file>icon/md/scalable/logo-markdown.svg</file>
+		<file>icon/md-dark/index.theme</file>
+		<file>icon/md-dark/scalable/logo-markdown.svg</file>
     </qresource>
 </RCC>

@@ -1287,7 +1287,7 @@ void Editor::contextMenuEvent(QContextMenuEvent *event)
 
     menu->addSeparator();
 
-    menu->addAction(QIcon(QStringLiteral(":/icon/icon_24x24.png")),
+    menu->addAction(mdIcon(),
                     MainWindow::tr("Extract from the standard"),
                     [posCursor, this]() {
                         this->m_d->m_mainWindow->showMarkdownStandard(posCursor);

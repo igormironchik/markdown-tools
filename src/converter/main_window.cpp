@@ -644,7 +644,7 @@ MainWindow::MainWindow()
                         &MainWindow::settings);
 
     auto help = menuBar()->addMenu(tr("&Help"));
-    help->addAction(QIcon(QStringLiteral(":/icon/icon_24x24.png")), tr("About"), this, &MainWindow::about);
+    help->addAction(mdIcon(), tr("About"), this, &MainWindow::about);
     help->addAction(QIcon(QStringLiteral(":/img/Qt-logo-neon-transparent.png")),
                     tr("About Qt"),
                     this,
