@@ -12,11 +12,6 @@
 #include <QString>
 #include <QTranslator>
 
-#ifdef Q_OS_WIN
-#include <QStyleFactory>
-#include <QStyleHints>
-#endif
-
 // shared include.
 #include "utils.h"
 
@@ -45,17 +40,7 @@ int main(int argc,
     app.setOrganizationDomain(QStringLiteral("github.com/igormironchik"));
     app.setApplicationName(QStringLiteral("Markdown Converter"));
 
-#ifdef Q_OS_WIN
-    app.setStyle(QStyleFactory::create("Breeze"));
-
-#ifdef MD_BREEZE
-    if (KColorSchemeManager::instance()->activeSchemeId().toLower().endsWith(QStringLiteral("dark"))) {
-        app.styleHints()->setColorScheme(Qt::ColorScheme::Dark);
-    } else {
-        app.styleHints()->setColorScheme(Qt::ColorScheme::Light);
-    }
-#endif
-#endif
+    initTheme(app);
 
     QCommandLineParser parser;
     parser.setApplicationDescription(QStringLiteral("Markdown converter to PDF."));

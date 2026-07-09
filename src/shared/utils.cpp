@@ -56,7 +56,39 @@
 #ifdef Q_OS_WIN
 #include <Windows.h>
 #include <dwmapi.h>
+
+#include <QStyleFactory>
+#include <QStyleHints>
 #endif
+
+void initTheme(QApplication &app)
+{
+#ifdef Q_OS_WIN
+    app.setStyle(QStyleFactory::create("Breeze"));
+#endif
+
+#ifdef Q_OS_LINUX
+    setFallbackPathForIcons(app.styleHints()->colorScheme() == Qt::ColorScheme::Dark);
+#endif
+
+#if defined(MD_BREEZE) && defined(Q_OS_WIN)
+    const auto isDark = KColorSchemeManager::instance()->activeSchemeId().toLower().endsWith(QStringLiteral("dark"));
+
+    setFallbackPathForIcons(isDark);
+
+    if (isDark) {
+        app.styleHints()->setColorScheme(Qt::ColorScheme::Dark);
+    } else {
+        app.styleHints()->setColorScheme(Qt::ColorScheme::Light);
+    }
+#endif
+}
+
+void setFallbackPathForIcons(bool isDark)
+{
+    QIcon::setFallbackSearchPaths(
+        QStringList() << QStringLiteral(":/pics/%1").arg(isDark ? QStringLiteral("md-dark") : QStringLiteral("md")));
+}
 
 void refreshStyleRecursively(QWidget *widget,
                              const QPalette &p)
@@ -81,6 +113,12 @@ void refreshStyleRecursively(QWidget *widget,
 void applyTheme(const QString &name,
                 bool isDark)
 {
+    setFallbackPathForIcons(isDark);
+
+#ifdef Q_OS_LINUX
+    QPixmapCache::clear();
+#endif
+
 #if defined(MD_BREEZE) && defined(Q_OS_WIN)
     auto upper = name;
     upper[0] = upper[0].toUpper();
@@ -100,9 +138,6 @@ void applyTheme(const QString &name,
         KColorSchemeManager::instance()->activateScheme(idx);
     }
 #endif
-
-    QIcon::setFallbackSearchPaths(
-        QStringList() << QStringLiteral(":/pics/%1").arg(isDark ? QStringLiteral("md-dark") : QStringLiteral("md")));
 
     const auto windows = QApplication::topLevelWidgets();
 

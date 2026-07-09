@@ -11,11 +11,6 @@
 #include <QTranslator>
 #include <QWebEngineUrlScheme>
 
-#ifdef Q_OS_WIN
-#include <QStyleFactory>
-#include <QStyleHints>
-#endif
-
 // md-editor include.
 #include "mainwindow.h"
 
@@ -24,10 +19,6 @@
 
 #ifdef MD_BREEZE
 #include <KIconTheme>
-#endif
-
-#if defined(Q_OS_WIN) && defined(MD_BREEZE)
-#include <KColorSchemeManager>
 #endif
 
 int main(int argc,
@@ -47,17 +38,7 @@ int main(int argc,
     app.setOrganizationDomain(QStringLiteral("github.com/igormironchik"));
     app.setApplicationName(QStringLiteral("Markdown Editor"));
 
-#ifdef Q_OS_WIN
-    app.setStyle(QStyleFactory::create("Breeze"));
-
-#ifdef MD_BREEZE
-    if (KColorSchemeManager::instance()->activeSchemeId().toLower().endsWith(QStringLiteral("dark"))) {
-        app.styleHints()->setColorScheme(Qt::ColorScheme::Dark);
-    } else {
-        app.styleHints()->setColorScheme(Qt::ColorScheme::Light);
-    }
-#endif
-#endif
+    initTheme(app);
 
     QCommandLineParser parser;
     parser.setApplicationDescription(QStringLiteral("Markdown editor and viewer."));

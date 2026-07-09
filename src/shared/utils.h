@@ -15,6 +15,12 @@
 // shared include.
 #include "plugins_page.h"
 
+//! Init theme.
+void initTheme(QApplication &app);
+
+//! Set fallback path for icons.
+void setFallbackPathForIcons(bool isDark);
+
 //! Apply theme.
 void applyTheme(const QString &name,
                 bool isDark);
