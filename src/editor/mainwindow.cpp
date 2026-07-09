@@ -1564,7 +1564,11 @@ void MainWindow::loadAllLinkedFilesImpl()
                         if (!current->m_keys.contains(f)) {
                             auto tmp = QSharedPointer<Node>::create();
                             auto item = new QTreeWidgetItem(current->m_self);
-                            item->setIcon(0, mdIcon());
+                            const auto isDark = (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark);
+                            item->setIcon(0,
+                                          QIcon::fromTheme(QStringLiteral("logo-markdown"),
+                                                           QIcon(isDark ? QStringLiteral(":/icon/icon_16x16-dark.png")
+                                                                        : QStringLiteral(":/icon/icon_16x16.png"))));
                             item->setData(0, Qt::UserRole, fullFileName);
                             m_d->m_fullFileNames.insert(fullFileName);
                             tmp->m_self = item;

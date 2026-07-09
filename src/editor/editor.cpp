@@ -1287,7 +1287,11 @@ void Editor::contextMenuEvent(QContextMenuEvent *event)
 
     menu->addSeparator();
 
-    menu->addAction(mdIcon(),
+    const auto isDark = (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark);
+
+    menu->addAction(QIcon::fromTheme(QStringLiteral("logo-markdown"),
+                                     QIcon(isDark ? QStringLiteral(":/icon/icon_24x24-dark.png")
+                                                  : QStringLiteral(":/icon/icon_24x24.png"))),
                     MainWindow::tr("Extract from the standard"),
                     [posCursor, this]() {
                         this->m_d->m_mainWindow->showMarkdownStandard(posCursor);

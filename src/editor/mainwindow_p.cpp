@@ -445,10 +445,10 @@ void MainWindowPrivate::initUi()
         m_q,
         &MainWindow::onChangeColors);
 
+    const auto isDark = (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark);
+
 #if defined(Q_OS_WIN) && defined(MD_BREEZE)
     m_settingsMenu->addSeparator();
-
-    const auto isDark = (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark);
 
     m_themeAction = m_settingsMenu->addAction(isDark ? MainWindow::tr("Light Mode") : MainWindow::tr("Dark Mode"),
                                               m_q,
@@ -464,7 +464,9 @@ void MainWindowPrivate::initUi()
         &MainWindow::onSettings);
 
     auto helpMenu = m_q->menuBar()->addMenu(MainWindow::tr("&Help"));
-    helpMenu->addAction(mdIcon(),
+    helpMenu->addAction(QIcon::fromTheme(QStringLiteral("logo-markdown"),
+                                         QIcon(isDark ? QStringLiteral(":/icon/icon_24x24-dark.png")
+                                                      : QStringLiteral(":/icon/icon_24x24.png"))),
                         MainWindow::tr("About"),
                         m_q,
                         &MainWindow::onAbout);
@@ -472,13 +474,20 @@ void MainWindowPrivate::initUi()
                         MainWindow::tr("About Qt"),
                         m_q,
                         &MainWindow::onAboutQt);
-    helpMenu->addAction(mdIcon(), MainWindow::tr("About Markdown"), []() {
-        QDesktopServices::openUrl(QUrl(QStringLiteral("https://spec.commonmark.org/0.31.2/")));
-    });
-    m_mdStandardAction = helpMenu->addAction(mdIcon(),
-                                             MainWindow::tr("Extract from the standard"),
-                                             m_q,
-                                             &MainWindow::onMarkdownStandardHelp);
+    helpMenu->addAction(QIcon::fromTheme(QStringLiteral("logo-markdown"),
+                                         QIcon(isDark ? QStringLiteral(":/icon/icon_24x24-dark.png")
+                                                      : QStringLiteral(":/icon/icon_24x24.png"))),
+                        MainWindow::tr("About Markdown"),
+                        []() {
+                            QDesktopServices::openUrl(QUrl(QStringLiteral("https://spec.commonmark.org/0.31.2/")));
+                        });
+    m_mdStandardAction =
+        helpMenu->addAction(QIcon::fromTheme(QStringLiteral("logo-markdown"),
+                                             QIcon(isDark ? QStringLiteral(":/icon/icon_24x24-dark.png")
+                                                          : QStringLiteral(":/icon/icon_24x24.png"))),
+                            MainWindow::tr("Extract from the standard"),
+                            m_q,
+                            &MainWindow::onMarkdownStandardHelp);
     m_mdStandardAction->setShortcut(MainWindow::tr("F1"));
     helpMenu->addAction(QIcon::fromTheme(QStringLiteral("bookmarks-organize"),
                                          QIcon(QStringLiteral(":/res/img/bookmarks-organize.png"))),

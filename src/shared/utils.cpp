@@ -11,9 +11,6 @@
 
 // Qt include.
 #include <QModelIndex>
-#include <QPainter>
-#include <QPalette>
-#include <QPixmap>
 #include <QStyle>
 #include <QWindow>
 #include <QtResource>
@@ -61,36 +58,6 @@
 #include <dwmapi.h>
 #endif
 
-//
-// MdIconEngine
-//
-
-QIconEngine *MdIconEngine::clone() const
-{
-    return new MdIconEngine;
-}
-
-void MdIconEngine::paint(QPainter *painter,
-                         const QRect &rect,
-                         QIcon::Mode mode,
-                         QIcon::State)
-{
-    const auto isDark = (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark);
-
-    QPixmap pix(isDark ? QStringLiteral(":/icon/icon_%1x%1-dark.png")
-                             .arg(rect.width() < 20 ? QString::number(16) : QString::number(24))
-                       : QStringLiteral(":/icon/icon_%1x%1.png")
-                             .arg(rect.width() < 20 ? QString::number(16) : QString::number(24)));
-    pix = pix.scaledToWidth(rect.width(), Qt::SmoothTransformation);
-    painter->fillRect(rect, Qt::transparent);
-    painter->drawPixmap(QRect(rect.x(), qAbs(rect.height() - pix.height()) / 2, rect.width(), pix.height()), pix);
-}
-
-QIcon mdIcon()
-{
-    return QIcon(new MdIconEngine);
-}
-
 void refreshStyleRecursively(QWidget *widget,
                              const QPalette &p)
 {
@@ -129,6 +96,8 @@ void applyTheme(const QString &name,
         cg.sync();
         KIconTheme::forceThemeForTests(iconThemeName);
         KIconLoader::global()->reconfigure(qApp->applicationName());
+        KIconLoader::global()->addAppDir(qApp->applicationName(),
+                                         isDark ? QStringLiteral(":/icon/md-dark") : QStringLiteral(":/icon/md"));
         QPixmapCache::clear();
         KColorSchemeManager::instance()->activateScheme(idx);
     }

@@ -630,9 +630,9 @@ MainWindow::MainWindow()
 
     auto settings = menuBar()->addMenu(tr("&Settings"));
 
-#if defined(Q_OS_WIN) && defined(MD_BREEZE)
     const auto isDark = (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark);
 
+#if defined(Q_OS_WIN) && defined(MD_BREEZE)
     m_themeAction = settings->addAction(isDark ? tr("Light Mode") : tr("Dark Mode"), this, &MainWindow::onChangeTheme);
 
     settings->addSeparator();
@@ -644,7 +644,12 @@ MainWindow::MainWindow()
                         &MainWindow::settings);
 
     auto help = menuBar()->addMenu(tr("&Help"));
-    help->addAction(mdIcon(), tr("About"), this, &MainWindow::about);
+    help->addAction(QIcon::fromTheme(QStringLiteral("logo-markdown"),
+                                     QIcon(isDark ? QStringLiteral(":/icon/icon_24x24-dark.png")
+                                                  : QStringLiteral(":/icon/icon_24x24.png"))),
+                    tr("About"),
+                    this,
+                    &MainWindow::about);
     help->addAction(QIcon(QStringLiteral(":/img/Qt-logo-neon-transparent.png")),
                     tr("About Qt"),
                     this,

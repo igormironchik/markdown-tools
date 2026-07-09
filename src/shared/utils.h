@@ -6,8 +6,6 @@
 #pragma once
 
 // Qt include.
-#include <QIcon>
-#include <QIconEngine>
 #include <QString>
 #include <QVector>
 
@@ -16,24 +14,6 @@
 
 // shared include.
 #include "plugins_page.h"
-
-//
-// MdIconEngine
-//
-
-//! Engine for 24x24 Markdown icon.
-class MdIconEngine : public QIconEngine
-{
-public:
-    QIconEngine *clone() const override;
-    void paint(QPainter *painter,
-               const QRect &rect,
-               QIcon::Mode mode,
-               QIcon::State state) override;
-}; // class MdIconEngine
-
-//! \return Icon with Markdown logo.
-QIcon mdIcon();
 
 //! Apply theme.
 void applyTheme(const QString &name,

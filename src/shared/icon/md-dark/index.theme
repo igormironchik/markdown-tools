@@ -3,6 +3,29 @@ Name=Markdown
 
 Directories=scalable
 
+Inherits=hicolor
+
+DisplayDepth=32
+
+Example=folder
+
+FollowsColorScheme=true
+
+DesktopDefault=48
+DesktopSizes=16,22,32,48,64,128,256
+ToolbarDefault=22
+ToolbarSizes=16,22,32,48
+MainToolbarDefault=22
+MainToolbarSizes=16,22,32,48
+SmallDefault=16
+SmallSizes=16,22,32,48
+PanelDefault=48
+PanelSizes=16,22,32,48,64,128,256
+DialogDefault=32
+DialogSizes=16,22,32,48,64,128,256
+
+KDE-Extensions=.svg
+
 [scalable]
 Size=64
 MinSize=16
