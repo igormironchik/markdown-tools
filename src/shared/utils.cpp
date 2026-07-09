@@ -96,12 +96,17 @@ void applyTheme(const QString &name,
         cg.writeEntry(QStringLiteral("Theme"), iconThemeName);
         cg.sync();
         KIconTheme::forceThemeForTests(iconThemeName);
-        KIconLoader::global()->reconfigure(qApp->applicationName(), QStringList() << QStringLiteral(":/pics/%1").arg(isDark ? QStringLiteral("md-dark") : QStringLiteral("md")));
+        KIconLoader::global()->reconfigure(
+            qApp->applicationName(),
+            QStringList()
+                << QStringLiteral(":/pics/%1").arg(isDark ? QStringLiteral("md-dark") : QStringLiteral("md")));
         QPixmapCache::clear();
         KColorSchemeManager::instance()->activateScheme(idx);
     }
 #else
-    KIconLoader::global()->reconfigure(qApp->applicationName(), QStringList() << QStringLiteral(":/pics/%1").arg(isDark ? QStringLiteral("md-dark") : QStringLiteral("md")));
+    KIconLoader::global()->reconfigure(
+        qApp->applicationName(),
+        QStringList() << QStringLiteral(":/pics/%1").arg(isDark ? QStringLiteral("md-dark") : QStringLiteral("md")));
 #endif
 #endif
 
