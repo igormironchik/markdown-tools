@@ -68,13 +68,13 @@ int main(int argc,
 
     const auto fileName = (args.isEmpty() ? QString() : args.at(0));
 
-    QIcon appIcon(QStringLiteral(":/icon/icon_256x256.png"));
-    appIcon.addFile(QStringLiteral(":/icon/icon_128x128.png"));
-    appIcon.addFile(QStringLiteral(":/icon/icon_64x64.png"));
-    appIcon.addFile(QStringLiteral(":/icon/icon_48x48.png"));
-    appIcon.addFile(QStringLiteral(":/icon/icon_32x32.png"));
-    appIcon.addFile(QStringLiteral(":/icon/icon_24x24.png"));
-    appIcon.addFile(QStringLiteral(":/icon/icon_16x16.png"));
+    QIcon appIcon(QStringLiteral(":/pics/icon_256x256.png"));
+    appIcon.addFile(QStringLiteral(":/pics/icon_128x128.png"));
+    appIcon.addFile(QStringLiteral(":/pics/icon_64x64.png"));
+    appIcon.addFile(QStringLiteral(":/pics/icon_48x48.png"));
+    appIcon.addFile(QStringLiteral(":/pics/icon_32x32.png"));
+    appIcon.addFile(QStringLiteral(":/pics/icon_24x24.png"));
+    appIcon.addFile(QStringLiteral(":/pics/icon_16x16.png"));
     app.setWindowIcon(appIcon);
 
     tex::LaTeX::init(":/res");

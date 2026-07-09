@@ -82,6 +82,7 @@ void applyTheme(const QString &name,
                 bool isDark)
 {
 #ifdef MD_BREEZE
+#ifdef Q_OS_WIN
     auto upper = name;
     upper[0] = upper[0].toUpper();
     const auto scheme = upper + (isDark ? QStringLiteral("Dark") : QStringLiteral("Light"));
@@ -95,14 +96,13 @@ void applyTheme(const QString &name,
         cg.writeEntry(QStringLiteral("Theme"), iconThemeName);
         cg.sync();
         KIconTheme::forceThemeForTests(iconThemeName);
-        KIconLoader::global()->reconfigure(qApp->applicationName());
-        KIconLoader::global()->addAppDir(qApp->applicationName(),
-                                         isDark ? QStringLiteral(":/icon/md-dark") : QStringLiteral(":/icon/md"));
+        KIconLoader::global()->reconfigure(qApp->applicationName(), QStringList() << QStringLiteral(":/pics/%1").arg(isDark ? QStringLiteral("md-dark") : QStringLiteral("md")));
         QPixmapCache::clear();
         KColorSchemeManager::instance()->activateScheme(idx);
     }
 #else
-    qApp->setStyle(QStyleFactory::create(qApp->style()->objectName()));
+    KIconLoader::global()->reconfigure(qApp->applicationName(), QStringList() << QStringLiteral(":/pics/%1").arg(isDark ? QStringLiteral("md-dark") : QStringLiteral("md")));
+#endif
 #endif
 
     const auto windows = QApplication::topLevelWidgets();
@@ -125,22 +125,22 @@ void applyTheme(const QString &name,
     }
 
     if (isDark) {
-        QIcon appIcon(QStringLiteral(":/icon/icon_256x256-dark.png"));
-        appIcon.addFile(QStringLiteral(":/icon/icon_128x128-dark.png"));
-        appIcon.addFile(QStringLiteral(":/icon/icon_64x64-dark.png"));
-        appIcon.addFile(QStringLiteral(":/icon/icon_48x48-dark.png"));
-        appIcon.addFile(QStringLiteral(":/icon/icon_32x32-dark.png"));
-        appIcon.addFile(QStringLiteral(":/icon/icon_24x24-dark.png"));
-        appIcon.addFile(QStringLiteral(":/icon/icon_16x16-dark.png"));
+        QIcon appIcon(QStringLiteral(":/pics/icon_256x256-dark.png"));
+        appIcon.addFile(QStringLiteral(":/pics/icon_128x128-dark.png"));
+        appIcon.addFile(QStringLiteral(":/pics/icon_64x64-dark.png"));
+        appIcon.addFile(QStringLiteral(":/pics/icon_48x48-dark.png"));
+        appIcon.addFile(QStringLiteral(":/pics/icon_32x32-dark.png"));
+        appIcon.addFile(QStringLiteral(":/pics/icon_24x24-dark.png"));
+        appIcon.addFile(QStringLiteral(":/pics/icon_16x16-dark.png"));
         qApp->setWindowIcon(appIcon);
     } else {
-        QIcon appIcon(QStringLiteral(":/icon/icon_256x256.png"));
-        appIcon.addFile(QStringLiteral(":/icon/icon_128x128.png"));
-        appIcon.addFile(QStringLiteral(":/icon/icon_64x64.png"));
-        appIcon.addFile(QStringLiteral(":/icon/icon_48x48.png"));
-        appIcon.addFile(QStringLiteral(":/icon/icon_32x32.png"));
-        appIcon.addFile(QStringLiteral(":/icon/icon_24x24.png"));
-        appIcon.addFile(QStringLiteral(":/icon/icon_16x16.png"));
+        QIcon appIcon(QStringLiteral(":/pics/icon_256x256.png"));
+        appIcon.addFile(QStringLiteral(":/pics/icon_128x128.png"));
+        appIcon.addFile(QStringLiteral(":/pics/icon_64x64.png"));
+        appIcon.addFile(QStringLiteral(":/pics/icon_48x48.png"));
+        appIcon.addFile(QStringLiteral(":/pics/icon_32x32.png"));
+        appIcon.addFile(QStringLiteral(":/pics/icon_24x24.png"));
+        appIcon.addFile(QStringLiteral(":/pics/icon_16x16.png"));
         qApp->setWindowIcon(appIcon);
     }
 }

@@ -496,7 +496,7 @@ bool MainWindow::event(QEvent *event)
         }
     } break;
 
-    case QEvent::ApplicationPaletteChange: {
+    case QEvent::ThemeChange: {
         updateStyle(true, true);
     } break;
 
@@ -1567,8 +1567,8 @@ void MainWindow::loadAllLinkedFilesImpl()
                             const auto isDark = (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark);
                             item->setIcon(0,
                                           QIcon::fromTheme(QStringLiteral("logo-markdown"),
-                                                           QIcon(isDark ? QStringLiteral(":/icon/icon_16x16-dark.png")
-                                                                        : QStringLiteral(":/icon/icon_16x16.png"))));
+                                                           QIcon(isDark ? QStringLiteral(":/pics/icon_16x16-dark.png")
+                                                                        : QStringLiteral(":/pics/icon_16x16.png"))));
                             item->setData(0, Qt::UserRole, fullFileName);
                             m_d->m_fullFileNames.insert(fullFileName);
                             tmp->m_self = item;

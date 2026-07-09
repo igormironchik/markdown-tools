@@ -645,8 +645,8 @@ MainWindow::MainWindow()
 
     auto help = menuBar()->addMenu(tr("&Help"));
     help->addAction(QIcon::fromTheme(QStringLiteral("logo-markdown"),
-                                     QIcon(isDark ? QStringLiteral(":/icon/icon_24x24-dark.png")
-                                                  : QStringLiteral(":/icon/icon_24x24.png"))),
+                                     QIcon(isDark ? QStringLiteral(":/pics/icon_24x24-dark.png")
+                                                  : QStringLiteral(":/pics/icon_24x24.png"))),
                     tr("About"),
                     this,
                     &MainWindow::about);
@@ -741,7 +741,7 @@ void MainWindow::showEvent(QShowEvent *event)
 bool MainWindow::event(QEvent *event)
 {
     switch (event->type()) {
-    case QEvent::ApplicationPaletteChange: {
+    case QEvent::ThemeChange: {
         applyTheme(qApp->style()->objectName(), (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark));
     } break;
 

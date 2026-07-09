@@ -465,8 +465,8 @@ void MainWindowPrivate::initUi()
 
     auto helpMenu = m_q->menuBar()->addMenu(MainWindow::tr("&Help"));
     helpMenu->addAction(QIcon::fromTheme(QStringLiteral("logo-markdown"),
-                                         QIcon(isDark ? QStringLiteral(":/icon/icon_24x24-dark.png")
-                                                      : QStringLiteral(":/icon/icon_24x24.png"))),
+                                         QIcon(isDark ? QStringLiteral(":/pics/icon_24x24-dark.png")
+                                                      : QStringLiteral(":/pics/icon_24x24.png"))),
                         MainWindow::tr("About"),
                         m_q,
                         &MainWindow::onAbout);
@@ -475,16 +475,16 @@ void MainWindowPrivate::initUi()
                         m_q,
                         &MainWindow::onAboutQt);
     helpMenu->addAction(QIcon::fromTheme(QStringLiteral("logo-markdown"),
-                                         QIcon(isDark ? QStringLiteral(":/icon/icon_24x24-dark.png")
-                                                      : QStringLiteral(":/icon/icon_24x24.png"))),
+                                         QIcon(isDark ? QStringLiteral(":/pics/icon_24x24-dark.png")
+                                                      : QStringLiteral(":/pics/icon_24x24.png"))),
                         MainWindow::tr("About Markdown"),
                         []() {
                             QDesktopServices::openUrl(QUrl(QStringLiteral("https://spec.commonmark.org/0.31.2/")));
                         });
     m_mdStandardAction =
         helpMenu->addAction(QIcon::fromTheme(QStringLiteral("logo-markdown"),
-                                             QIcon(isDark ? QStringLiteral(":/icon/icon_24x24-dark.png")
-                                                          : QStringLiteral(":/icon/icon_24x24.png"))),
+                                             QIcon(isDark ? QStringLiteral(":/pics/icon_24x24-dark.png")
+                                                          : QStringLiteral(":/pics/icon_24x24.png"))),
                             MainWindow::tr("Extract from the standard"),
                             m_q,
                             &MainWindow::onMarkdownStandardHelp);
