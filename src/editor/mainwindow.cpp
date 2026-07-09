@@ -453,11 +453,14 @@ void MainWindow::closeEvent(QCloseEvent *e)
 }
 
 void MainWindow::updateStyle(bool updateHtml,
-                             bool switchToDefaultColors)
+                             bool switchToDefaultColors,
+                             bool doApplyTheme)
 {
     const auto isDark = (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark);
 
-    applyTheme(qApp->style()->objectName(), isDark);
+    if (doApplyTheme) {
+        applyTheme(qApp->style()->objectName(), isDark);
+    }
 
     m_d->m_preview->settings()->setAttribute(QWebEngineSettings::WebAttribute::ForceDarkMode, isDark);
 
@@ -497,7 +500,9 @@ bool MainWindow::event(QEvent *event)
     } break;
 
     case QEvent::ThemeChange: {
-        updateStyle(true, true);
+#ifndef Q_OS_WIN
+        updateStyle(true, true, true);
+#endif
     } break;
 
     default:
@@ -962,6 +967,8 @@ void MainWindow::onChangeTheme()
     }
 
     applyTheme(qApp->style()->name(), !isDark);
+
+    updateStyle(true, true, false);
 }
 
 #endif
@@ -1693,7 +1700,7 @@ void MainWindow::onFirstTimeShown()
 {
     readCfg();
 
-    updateStyle(false, true);
+    updateStyle(false, true, true);
 
     if (!m_d->m_startupState.m_fileName.isEmpty()) {
         openFile(m_d->m_startupState.m_fileName);

@@ -742,7 +742,9 @@ bool MainWindow::event(QEvent *event)
 {
     switch (event->type()) {
     case QEvent::ThemeChange: {
+#ifndef Q_OS_WIN
         applyTheme(qApp->style()->objectName(), (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark));
+#endif
     } break;
 
     default:
