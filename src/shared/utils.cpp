@@ -86,8 +86,8 @@ void initTheme(QApplication &app)
 
 void setFallbackPathForIcons(bool isDark)
 {
-    QIcon::setFallbackSearchPaths(
-        QStringList() << QStringLiteral(":/pics/%1").arg(isDark ? QStringLiteral("md-dark") : QStringLiteral("md")));
+    QIcon::setFallbackSearchPaths(QStringList() << QStringLiteral(":/pics/%1/scalable/apps")
+                                                       .arg(isDark ? QStringLiteral("md-dark") : QStringLiteral("md")));
 }
 
 void refreshStyleRecursively(QWidget *widget,
