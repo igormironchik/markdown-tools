@@ -10,8 +10,11 @@
 #include "syntax.h"
 
 // Qt include.
+#include <QIcon>
 #include <QModelIndex>
+#include <QPixmapCache>
 #include <QStyle>
+#include <QStyleHints>
 #include <QWindow>
 #include <QtResource>
 
@@ -47,10 +50,6 @@
 #include <KIconLoader>
 #include <KIconTheme>
 #include <KSharedConfig>
-
-#include <QIcon>
-#include <QPixmapCache>
-#include <QStyleHints>
 #endif // MD_BREEZE
 
 #ifdef Q_OS_WIN
@@ -58,7 +57,6 @@
 #include <dwmapi.h>
 
 #include <QStyleFactory>
-#include <QStyleHints>
 #endif
 
 void initTheme(QApplication &app)
