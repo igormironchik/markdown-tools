@@ -633,7 +633,13 @@ MainWindow::MainWindow()
     const auto isDark = (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark);
 
 #if defined(Q_OS_WIN) && defined(MD_BREEZE)
-    m_themeAction = settings->addAction(isDark ? tr("Light Mode") : tr("Dark Mode"), this, &MainWindow::onChangeTheme);
+    m_themeAction = settings->addAction(
+        isDark ? QIcon::fromTheme(QStringLiteral("weather-clear"), QIcon(QStringLiteral(":/img/weather-clear.png")))
+               : QIcon::fromTheme(QStringLiteral("weather-clear-night"),
+                                  QIcon(QStringLiteral(":/img/weather-clear-night.png"))),
+        isDark ? tr("Light Mode") : tr("Dark Mode"),
+        this,
+        &MainWindow::onChangeTheme);
 
     settings->addSeparator();
 #endif
@@ -832,8 +838,12 @@ void MainWindow::onChangeTheme()
 
     if (isDark) {
         m_themeAction->setText(tr("Dark Mode"));
+        m_themeAction->setIcon(QIcon::fromTheme(QStringLiteral("weather-clear-night"),
+                                                QIcon(QStringLiteral(":/img/weather-clear-night.png"))));
     } else {
         m_themeAction->setText(tr("Light Mode"));
+        m_themeAction->setIcon(
+            QIcon::fromTheme(QStringLiteral("weather-clear"), QIcon(QStringLiteral(":/img/weather-clear.png"))));
     }
 
     applyTheme(qApp->style()->name(), !isDark);

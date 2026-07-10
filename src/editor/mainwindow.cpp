@@ -959,11 +959,20 @@ void MainWindow::onAddUpdatesButton()
 void MainWindow::onChangeTheme()
 {
     const auto isDark = (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark);
-
-    if (isDark) {
+    isDark ? QIcon::fromTheme(QStringLiteral("weather-clear"), QIcon(QStringLiteral(":/res/img/weather-clear.png")))
+           : QIcon::fromTheme(QStringLiteral("weather-clear-night"),
+                              QIcon(QStringLiteral(":/res/img/weather-clear-night.png"))),
+        if (isDark)
+    {
         m_d->m_themeAction->setText(tr("Dark Mode"));
-    } else {
+        m_d->m_themeAction->setIcon(QIcon::fromTheme(QStringLiteral("weather-clear-night"),
+                                                     QIcon(QStringLiteral(":/res/img/weather-clear-night.png"))));
+    }
+    else
+    {
         m_d->m_themeAction->setText(tr("Light Mode"));
+        m_d->m_themeAction->setIcon(
+            QIcon::fromTheme(QStringLiteral("weather-clear"), QIcon(QStringLiteral(":/res/img/weather-clear.png"))));
     }
 
     applyTheme(qApp->style()->name(), !isDark);
