@@ -9,6 +9,9 @@ find_package(Qt6 REQUIRED COMPONENTS Core Widgets WebEngineWidgets Concurrent)
 find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
     Sonnet SyntaxHighlighting WidgetsAddons
 )
+find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} COMPONENTS
+    IconThemes ColorScheme Config
+)
 
 set(LIB_SRC
 	editor.h
@@ -91,9 +94,21 @@ target_link_libraries(md-editor-lib md4qt::md4qt markdown-widgets md-utils
 
 add_executable(md-editor WIN32 ${SRC})
 
+if(KF${KF_MAJOR_VERSION}IconThemes_FOUND AND KF${KF_MAJOR_VERSION}ColorScheme_FOUND
+    AND KF${KF_MAJOR_VERSION}Config_FOUND)
+    list(APPEND ADDITIONAL_TARGETS KF${KF_MAJOR_VERSION}::ConfigCore
+        KF${KF_MAJOR_VERSION}::IconThemes KF${KF_MAJOR_VERSION}::ColorScheme)
+    target_compile_definitions(md-editor PRIVATE MD_BREEZE)
+    target_compile_definitions(md-editor-lib PRIVATE MD_BREEZE)
+endif()
+
 install(TARGETS md-editor)
+
+if(WIN32)
+    set(WIN_LIBS "Dwmapi")
+endif()
 
 target_link_libraries(md-editor md-editor-lib markdown-widgets github-release
     KF${KF_MAJOR_VERSION}::SonnetUi KF${KF_MAJOR_VERSION}::SonnetCore
-    KF${KF_MAJOR_VERSION}::WidgetsAddons
-    Qt6::WebEngineWidgets Qt6::Widgets Qt6::Core)
+    KF${KF_MAJOR_VERSION}::WidgetsAddons ${ADDITIONAL_TARGETS}
+    Qt6::WebEngineWidgets Qt6::Widgets Qt6::Core ${WIN_LIBS})

@@ -1,0 +1,11 @@
+[Icon Theme]
+Name=Markdown
+
+Directories=scalable/apps
+
+[scalable/apps]
+Size=48
+MinSize=16
+MaxSize=256
+Context=Applications
+Type=Scalable

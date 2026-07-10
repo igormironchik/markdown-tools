@@ -99,6 +99,7 @@ them available through the `PATH`, `INCLUDE`, `LIB` environment variables.
    * `script\windows\install-kde.bat`
    * `script\windows\build.bat`
    * `script\windows\copy-binaries.bat`
+   * `script\windows\copy-qt.bat`
    * `script\windows\copy-openssl.bat`
    * `script\windows\deploy.bat`
 

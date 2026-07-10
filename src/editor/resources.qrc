@@ -1,6 +1,8 @@
 <RCC>
     <qresource prefix="/">
         <file>res/index.html</file>
+        <file>res/img/weather-clear.png</file>
+        <file>res/img/weather-clear-night.png</file>
         <file>res/img/preferences-desktop-font.png</file>
         <file>res/img/help-hint.png</file>
         <file>res/img/go-previous.png</file>

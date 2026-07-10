@@ -116,6 +116,9 @@ private slots:
     void onCheckForUpdates();
     void onCheckForUpdatesFinished();
     void onAddUpdatesButton();
+#if defined(Q_OS_WIN) && defined(MD_BREEZE)
+    void onChangeTheme();
+#endif
 
 private:
     template<class Func>
@@ -149,7 +152,8 @@ private:
 
     //! Update style setting of the application.
     void updateStyle(bool updateHtml,
-                     bool switchToDefaultColors);
+                     bool switchToDefaultColors,
+                     bool doApplyTheme);
 
 private:
     //! \return Is document was changed?

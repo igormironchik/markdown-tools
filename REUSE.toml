@@ -42,8 +42,8 @@ SPDX-License-Identifier = "CC0-1.0"
 [[annotations]]
 path = "src/shared/icon/**"
 precedence = "aggregate"
-SPDX-FileCopyrightText = "none"
-SPDX-License-Identifier = "GPL-3.0-or-later"
+SPDX-FileCopyrightText = "2015-present Ionic (http://ionic.io/)"
+SPDX-License-Identifier = "MIT"
 
 [[annotations]]
 path = "3rdparty/doctest/**"

@@ -27,6 +27,7 @@
 #include <QPushButton>
 #include <QShowEvent>
 #include <QStandardPaths>
+#include <QStyleHints>
 #include <QTextStream>
 #include <QThread>
 #include <QToolButton>
@@ -628,13 +629,33 @@ MainWindow::MainWindow()
         &MainWindow::quit);
 
     auto settings = menuBar()->addMenu(tr("&Settings"));
+
+    const auto isDark = (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark);
+
+#if defined(Q_OS_WIN) && defined(MD_BREEZE)
+    m_themeAction = settings->addAction(
+        isDark ? QIcon::fromTheme(QStringLiteral("weather-clear"), QIcon(QStringLiteral(":/img/weather-clear.png")))
+               : QIcon::fromTheme(QStringLiteral("weather-clear-night"),
+                                  QIcon(QStringLiteral(":/img/weather-clear-night.png"))),
+        isDark ? tr("Light Mode") : tr("Dark Mode"),
+        this,
+        &MainWindow::onChangeTheme);
+
+    settings->addSeparator();
+#endif
+
     settings->addAction(QIcon::fromTheme(QStringLiteral("configure"), QIcon(QStringLiteral(":/img/configure.png"))),
                         tr("Settings"),
                         this,
                         &MainWindow::settings);
 
     auto help = menuBar()->addMenu(tr("&Help"));
-    help->addAction(QIcon(QStringLiteral(":/icon/icon_24x24.png")), tr("About"), this, &MainWindow::about);
+    help->addAction(QIcon::fromTheme(QStringLiteral("logo-markdown"),
+                                     QIcon(isDark ? QStringLiteral(":/pics/icon_24x24-dark.png")
+                                                  : QStringLiteral(":/pics/icon_24x24.png"))),
+                    tr("About"),
+                    this,
+                    &MainWindow::about);
     help->addAction(QIcon(QStringLiteral(":/img/Qt-logo-neon-transparent.png")),
                     tr("About Qt"),
                     this,
@@ -715,10 +736,28 @@ void MainWindow::showEvent(QShowEvent *event)
     if (!m_alreadyShown) {
         m_alreadyShown = true;
 
+        applyTheme(qApp->style()->objectName(), (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark));
+
         readCfg();
     }
 
     event->accept();
+}
+
+bool MainWindow::event(QEvent *event)
+{
+    switch (event->type()) {
+    case QEvent::ThemeChange: {
+#ifndef Q_OS_WIN
+        applyTheme(qApp->style()->objectName(), (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark));
+#endif
+    } break;
+
+    default:
+        break;
+    }
+
+    return QMainWindow::event(event);
 }
 
 void MainWindow::setMarkdownFile(const QString &fileName)
@@ -790,5 +829,26 @@ void MainWindow::settings()
         }
     }
 }
+
+#if defined(Q_OS_WIN) && defined(MD_BREEZE)
+
+void MainWindow::onChangeTheme()
+{
+    const auto isDark = (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark);
+
+    if (isDark) {
+        m_themeAction->setText(tr("Dark Mode"));
+        m_themeAction->setIcon(QIcon::fromTheme(QStringLiteral("weather-clear-night"),
+                                                QIcon(QStringLiteral(":/img/weather-clear-night.png"))));
+    } else {
+        m_themeAction->setText(tr("Light Mode"));
+        m_themeAction->setIcon(
+            QIcon::fromTheme(QStringLiteral("weather-clear"), QIcon(QStringLiteral(":/img/weather-clear.png"))));
+    }
+
+    applyTheme(qApp->style()->name(), !isDark);
+}
+
+#endif
 
 } /* namespace MdPdf */

@@ -4,12 +4,23 @@
 -->
 <RCC>
     <qresource prefix="/">
-        <file>icon/icon_16x16.png</file>
-		<file>icon/icon_24x24.png</file>
-		<file>icon/icon_32x32.png</file>
-		<file>icon/icon_48x48.png</file>
-		<file>icon/icon_64x64.png</file>
-		<file>icon/icon_128x128.png</file>
-		<file>icon/icon_256x256.png</file>
+        <file>pics/icon_16x16.png</file>
+		<file>pics/icon_24x24.png</file>
+		<file>pics/icon_32x32.png</file>
+		<file>pics/icon_48x48.png</file>
+		<file>pics/icon_64x64.png</file>
+		<file>pics/icon_128x128.png</file>
+		<file>pics/icon_256x256.png</file>
+		<file>pics/icon_16x16-dark.png</file>
+		<file>pics/icon_24x24-dark.png</file>
+		<file>pics/icon_32x32-dark.png</file>
+		<file>pics/icon_48x48-dark.png</file>
+		<file>pics/icon_64x64-dark.png</file>
+		<file>pics/icon_128x128-dark.png</file>
+		<file>pics/icon_256x256-dark.png</file>
+		<file>pics/md/index.theme</file>
+		<file>pics/md/scalable/apps/logo-markdown.svg</file>
+		<file>pics/md-dark/index.theme</file>
+		<file>pics/md-dark/scalable/apps/logo-markdown.svg</file>
     </qresource>
 </RCC>

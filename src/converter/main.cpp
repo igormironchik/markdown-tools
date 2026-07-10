@@ -12,29 +12,35 @@
 #include <QString>
 #include <QTranslator>
 
-#ifdef Q_OS_WIN
-#include <QStyleFactory>
-#endif
-
 // shared include.
 #include "utils.h"
 
 // MicroTeX include.
 #include <latex.h>
 
+#ifdef MD_BREEZE
+#include <KIconTheme>
+#endif
+
+#if defined(Q_OS_WIN) && defined(MD_BREEZE)
+#include <KColorSchemeManager>
+#endif
+
 using namespace MdPdf;
 
 int main(int argc,
          char **argv)
 {
+#ifdef MD_BREEZE
+    KIconTheme::initTheme();
+#endif
+
     QApplication app(argc, argv);
     app.setOrganizationName(QStringLiteral("Igor Mironchik"));
     app.setOrganizationDomain(QStringLiteral("github.com/igormironchik"));
     app.setApplicationName(QStringLiteral("Markdown Converter"));
 
-#ifdef Q_OS_WIN
-    app.setStyle(QStyleFactory::create("Breeze"));
-#endif
+    initTheme(app);
 
     QCommandLineParser parser;
     parser.setApplicationDescription(QStringLiteral("Markdown converter to PDF."));
@@ -47,13 +53,13 @@ int main(int argc,
 
     const auto fileName = (args.isEmpty() ? QString() : args.at(0));
 
-    QIcon appIcon(QStringLiteral(":/icon/icon_256x256.png"));
-    appIcon.addFile(QStringLiteral(":/icon/icon_128x128.png"));
-    appIcon.addFile(QStringLiteral(":/icon/icon_64x64.png"));
-    appIcon.addFile(QStringLiteral(":/icon/icon_48x48.png"));
-    appIcon.addFile(QStringLiteral(":/icon/icon_32x32.png"));
-    appIcon.addFile(QStringLiteral(":/icon/icon_24x24.png"));
-    appIcon.addFile(QStringLiteral(":/icon/icon_16x16.png"));
+    QIcon appIcon(QStringLiteral(":/pics/icon_256x256.png"));
+    appIcon.addFile(QStringLiteral(":/pics/icon_128x128.png"));
+    appIcon.addFile(QStringLiteral(":/pics/icon_64x64.png"));
+    appIcon.addFile(QStringLiteral(":/pics/icon_48x48.png"));
+    appIcon.addFile(QStringLiteral(":/pics/icon_32x32.png"));
+    appIcon.addFile(QStringLiteral(":/pics/icon_24x24.png"));
+    appIcon.addFile(QStringLiteral(":/pics/icon_16x16.png"));
     app.setWindowIcon(appIcon);
 
     tex::LaTeX::init(":/res");

@@ -10,6 +10,9 @@
 #include "syntax.h"
 
 // Qt include.
+#include <QModelIndex>
+#include <QStyle>
+#include <QWindow>
 #include <QtResource>
 
 // md4qt inclide.
@@ -36,6 +39,145 @@
 #include <md4qt/src/thematic_break_parser.h>
 #include <md4qt/src/underline_emphasis_parser.h>
 #include <md4qt/src/yaml_parser.h>
+
+#ifdef MD_BREEZE
+#include <KColorSchemeManager>
+#include <KConfigGroup>
+#include <KIconEngine>
+#include <KIconLoader>
+#include <KIconTheme>
+#include <KSharedConfig>
+
+#include <QIcon>
+#include <QPixmapCache>
+#include <QStyleHints>
+#endif // MD_BREEZE
+
+#ifdef Q_OS_WIN
+#include <Windows.h>
+#include <dwmapi.h>
+
+#include <QStyleFactory>
+#include <QStyleHints>
+#endif
+
+void initTheme(QApplication &app)
+{
+#ifdef Q_OS_WIN
+    app.setStyle(QStyleFactory::create("Breeze"));
+#endif
+
+#ifdef Q_OS_LINUX
+    setFallbackPathForIcons(app.styleHints()->colorScheme() == Qt::ColorScheme::Dark);
+#endif
+
+#if defined(MD_BREEZE) && defined(Q_OS_WIN)
+    const auto isDark = KColorSchemeManager::instance()->activeSchemeId().toLower().endsWith(QStringLiteral("dark"));
+
+    setFallbackPathForIcons(isDark);
+
+    if (isDark) {
+        app.styleHints()->setColorScheme(Qt::ColorScheme::Dark);
+    } else {
+        app.styleHints()->setColorScheme(Qt::ColorScheme::Light);
+    }
+#endif
+}
+
+void setFallbackPathForIcons(bool isDark)
+{
+    QIcon::setFallbackSearchPaths(QStringList() << QStringLiteral(":/pics/%1/scalable/apps")
+                                                       .arg(isDark ? QStringLiteral("md-dark") : QStringLiteral("md")));
+}
+
+void refreshStyleRecursively(QWidget *widget,
+                             const QPalette &p)
+{
+    if (!widget) {
+        return;
+    }
+
+    widget->setPalette(p);
+    widget->style()->unpolish(widget);
+    widget->style()->polish(widget);
+
+    for (QObject *child : std::as_const(widget->children())) {
+        if (QWidget *childWidget = qobject_cast<QWidget *>(child)) {
+            refreshStyleRecursively(childWidget, p);
+        }
+    }
+
+    widget->repaint();
+}
+
+void applyTheme(const QString &name,
+                bool isDark)
+{
+    setFallbackPathForIcons(isDark);
+
+#ifdef Q_OS_LINUX
+    QPixmapCache::clear();
+#endif
+
+#if defined(MD_BREEZE) && defined(Q_OS_WIN)
+    auto upper = name;
+    upper[0] = upper[0].toUpper();
+    const auto scheme = upper + (isDark ? QStringLiteral("Dark") : QStringLiteral("Light"));
+    const auto idx = KColorSchemeManager::instance()->indexForSchemeId(scheme);
+
+    if (idx.isValid()) {
+        qApp->styleHints()->setColorScheme(isDark ? Qt::ColorScheme::Dark : Qt::ColorScheme::Light);
+        auto cfg = KSharedConfig::openConfig();
+        const auto iconThemeName = QStringLiteral("breeze") + (isDark ? QStringLiteral("-dark") : QString());
+        auto cg = cfg->group(QStringLiteral("Icons"));
+        cg.writeEntry(QStringLiteral("Theme"), iconThemeName);
+        cg.sync();
+        KIconTheme::forceThemeForTests(iconThemeName);
+        KIconLoader::global()->reconfigure(qApp->applicationName());
+        QPixmapCache::clear();
+        KColorSchemeManager::instance()->activateScheme(idx);
+    }
+#endif
+
+    const auto windows = QApplication::topLevelWidgets();
+
+    for (const auto &w : windows) {
+        if (w) {
+            refreshStyleRecursively(w, qApp->palette());
+
+#ifdef Q_OS_WIN
+            if (w->winId()) {
+                HWND hwnd = reinterpret_cast<HWND>(w->winId());
+                BOOL useDarkMode = isDark;
+                DWORD attribute = DWMWA_USE_IMMERSIVE_DARK_MODE;
+                DwmSetWindowAttribute(hwnd, attribute, &useDarkMode, sizeof(useDarkMode));
+                SendMessage(hwnd, WM_NCACTIVATE, FALSE, 0);
+                SendMessage(hwnd, WM_NCACTIVATE, TRUE, 0);
+            }
+#endif
+        }
+    }
+
+    if (isDark) {
+        QIcon appIcon(QStringLiteral(":/pics/icon_256x256-dark.png"));
+        appIcon.addFile(QStringLiteral(":/pics/icon_128x128-dark.png"));
+        appIcon.addFile(QStringLiteral(":/pics/icon_64x64-dark.png"));
+        appIcon.addFile(QStringLiteral(":/pics/icon_48x48-dark.png"));
+        appIcon.addFile(QStringLiteral(":/pics/icon_32x32-dark.png"));
+        appIcon.addFile(QStringLiteral(":/pics/icon_24x24-dark.png"));
+        appIcon.addFile(QStringLiteral(":/pics/icon_16x16-dark.png"));
+        qApp->setWindowIcon(appIcon);
+    } else {
+        QIcon appIcon(QStringLiteral(":/pics/icon_256x256.png"));
+        appIcon.addFile(QStringLiteral(":/pics/icon_128x128.png"));
+        appIcon.addFile(QStringLiteral(":/pics/icon_64x64.png"));
+        appIcon.addFile(QStringLiteral(":/pics/icon_48x48.png"));
+        appIcon.addFile(QStringLiteral(":/pics/icon_32x32.png"));
+        appIcon.addFile(QStringLiteral(":/pics/icon_24x24.png"));
+        appIcon.addFile(QStringLiteral(":/pics/icon_16x16.png"));
+        qApp->setWindowIcon(appIcon);
+    }
+}
 
 void initSharedResources()
 {

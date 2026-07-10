@@ -11,19 +11,23 @@
 #include <QTranslator>
 #include <QWebEngineUrlScheme>
 
-#ifdef Q_OS_WIN
-#include <QStyleFactory>
-#endif
-
 // md-editor include.
 #include "mainwindow.h"
 
 // shared include.
 #include "utils.h"
 
+#ifdef MD_BREEZE
+#include <KIconTheme>
+#endif
+
 int main(int argc,
          char **argv)
 {
+#ifdef MD_BREEZE
+    KIconTheme::initTheme();
+#endif
+
     QWebEngineUrlScheme qrc("qrc");
     qrc.setFlags(QWebEngineUrlScheme::CorsEnabled);
     qrc.setSyntax(QWebEngineUrlScheme::Syntax::Path);
@@ -34,9 +38,7 @@ int main(int argc,
     app.setOrganizationDomain(QStringLiteral("github.com/igormironchik"));
     app.setApplicationName(QStringLiteral("Markdown Editor"));
 
-#ifdef Q_OS_WIN
-    app.setStyle(QStyleFactory::create("Breeze"));
-#endif
+    initTheme(app);
 
     QCommandLineParser parser;
     parser.setApplicationDescription(QStringLiteral("Markdown editor and viewer."));
@@ -77,13 +79,13 @@ int main(int argc,
         }
     }
 
-    QIcon appIcon(QStringLiteral(":/icon/icon_256x256.png"));
-    appIcon.addFile(QStringLiteral(":/icon/icon_128x128.png"));
-    appIcon.addFile(QStringLiteral(":/icon/icon_64x64.png"));
-    appIcon.addFile(QStringLiteral(":/icon/icon_48x48.png"));
-    appIcon.addFile(QStringLiteral(":/icon/icon_32x32.png"));
-    appIcon.addFile(QStringLiteral(":/icon/icon_24x24.png"));
-    appIcon.addFile(QStringLiteral(":/icon/icon_16x16.png"));
+    QIcon appIcon(QStringLiteral(":/pics/icon_256x256.png"));
+    appIcon.addFile(QStringLiteral(":/pics/icon_128x128.png"));
+    appIcon.addFile(QStringLiteral(":/pics/icon_64x64.png"));
+    appIcon.addFile(QStringLiteral(":/pics/icon_48x48.png"));
+    appIcon.addFile(QStringLiteral(":/pics/icon_32x32.png"));
+    appIcon.addFile(QStringLiteral(":/pics/icon_24x24.png"));
+    appIcon.addFile(QStringLiteral(":/pics/icon_16x16.png"));
     app.setWindowIcon(appIcon);
 
     MdEditor::MainWindow w;

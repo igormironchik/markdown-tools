@@ -10,5 +10,7 @@
         <file>svg/tip.svg</file>
         <file>svg/warning.svg</file>
         <file>img/configure.png</file>
+        <file>img/weather-clear.png</file>
+        <file>img/weather-clear-night.png</file>
     </qresource>
 </RCC>

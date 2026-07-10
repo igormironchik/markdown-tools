@@ -103,6 +103,7 @@ public:
 protected:
     void closeEvent(QCloseEvent *event) override;
     void showEvent(QShowEvent *event) override;
+    bool event(QEvent *event) override;
 
 private slots:
     //! About.
@@ -115,6 +116,9 @@ private slots:
     void quit();
     //! Settings.
     void settings();
+#if defined(Q_OS_WIN) && defined(MD_BREEZE)
+    void onChangeTheme();
+#endif
 
 private:
     QString configFileName(bool inPlace) const;
@@ -124,6 +128,7 @@ private:
 private:
     MainWidget *ui = nullptr;
     bool m_alreadyShown = false;
+    QAction *m_themeAction = nullptr;
 }; // class MainWindow
 
 } /* namespace MdPdf */

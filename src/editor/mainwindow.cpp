@@ -452,34 +452,15 @@ void MainWindow::closeEvent(QCloseEvent *e)
     }
 }
 
-void refreshStyleRecursively(QWidget *widget,
-                             const QPalette &p)
-{
-    if (!widget) {
-        return;
-    }
-
-    widget->setPalette(p);
-    widget->style()->unpolish(widget);
-    widget->style()->polish(widget);
-
-    for (QObject *child : std::as_const(widget->children())) {
-        if (QWidget *childWidget = qobject_cast<QWidget *>(child)) {
-            refreshStyleRecursively(childWidget, p);
-        }
-    }
-
-    widget->repaint();
-}
-
 void MainWindow::updateStyle(bool updateHtml,
-                             bool switchToDefaultColors)
+                             bool switchToDefaultColors,
+                             bool doApplyTheme)
 {
-    qApp->setStyle(QStyleFactory::create(qApp->style()->objectName()));
-
-    refreshStyleRecursively(this, qApp->palette());
-
     const auto isDark = (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark);
+
+    if (doApplyTheme) {
+        applyTheme(qApp->style()->objectName(), isDark);
+    }
 
     m_d->m_preview->settings()->setAttribute(QWebEngineSettings::WebAttribute::ForceDarkMode, isDark);
 
@@ -518,8 +499,10 @@ bool MainWindow::event(QEvent *event)
         }
     } break;
 
-    case QEvent::ApplicationPaletteChange: {
-        updateStyle(true, true);
+    case QEvent::ThemeChange: {
+#ifndef Q_OS_WIN
+        updateStyle(true, true, true);
+#endif
     } break;
 
     default:
@@ -970,6 +953,29 @@ void MainWindow::onAddUpdatesButton()
         statusBar()->addPermanentWidget(btn);
     }
 }
+
+#if defined(Q_OS_WIN) && defined(MD_BREEZE)
+
+void MainWindow::onChangeTheme()
+{
+    const auto isDark = (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark);
+
+    if (isDark) {
+        m_d->m_themeAction->setText(tr("Dark Mode"));
+        m_d->m_themeAction->setIcon(QIcon::fromTheme(QStringLiteral("weather-clear-night"),
+                                                     QIcon(QStringLiteral(":/res/img/weather-clear-night.png"))));
+    } else {
+        m_d->m_themeAction->setText(tr("Light Mode"));
+        m_d->m_themeAction->setIcon(
+            QIcon::fromTheme(QStringLiteral("weather-clear"), QIcon(QStringLiteral(":/res/img/weather-clear.png"))));
+    }
+
+    applyTheme(qApp->style()->name(), !isDark);
+
+    updateStyle(true, true, false);
+}
+
+#endif
 
 void MainWindow::onLineNumberContextMenuRequested(int lineNumber,
                                                   const QPoint &pos)
@@ -1569,7 +1575,11 @@ void MainWindow::loadAllLinkedFilesImpl()
                         if (!current->m_keys.contains(f)) {
                             auto tmp = QSharedPointer<Node>::create();
                             auto item = new QTreeWidgetItem(current->m_self);
-                            item->setIcon(0, QIcon(":/icon/icon_16x16.png"));
+                            const auto isDark = (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark);
+                            item->setIcon(0,
+                                          QIcon::fromTheme(QStringLiteral("logo-markdown"),
+                                                           QIcon(isDark ? QStringLiteral(":/pics/icon_16x16-dark.png")
+                                                                        : QStringLiteral(":/pics/icon_16x16.png"))));
                             item->setData(0, Qt::UserRole, fullFileName);
                             m_d->m_fullFileNames.insert(fullFileName);
                             tmp->m_self = item;
@@ -1694,7 +1704,7 @@ void MainWindow::onFirstTimeShown()
 {
     readCfg();
 
-    updateStyle(false, true);
+    updateStyle(false, true, true);
 
     if (!m_d->m_startupState.m_fileName.isEmpty()) {
         openFile(m_d->m_startupState.m_fileName);
