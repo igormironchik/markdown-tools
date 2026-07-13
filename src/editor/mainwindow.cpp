@@ -501,7 +501,9 @@ bool MainWindow::event(QEvent *event)
 
     case QEvent::ThemeChange: {
 #ifndef Q_OS_WIN
+        const auto ret = QMainWindow::event(event);
         updateStyle(true, true, true);
+        return ret;
 #endif
     } break;
 
