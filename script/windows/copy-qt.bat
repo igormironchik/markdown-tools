@@ -4,28 +4,6 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-windeployqt.exe kf6\kio\kio_file.dll
-windeployqt.exe kf6\kio\kio_ftp.dll
-windeployqt.exe kf6\kio\kio_http.dll
-windeployqt.exe kf6\kio\kio_remote.dll
-windeployqt.exe kf6\kio\kio_trash.dll
-
-windeployqt.exe kf6\kio_dnd\dropintonewfolder.dll
-
-windeployqt.exe kf6\sonnet\sonnet_hunspell.dll
-
-windeployqt.exe kf6\urifilters\fixhosturifilter.dll
-windeployqt.exe kf6\urifilters\kshorturifilter.dll
-windeployqt.exe kf6\urifilters\kuriikwsfilter.dll
-windeployqt.exe kf6\urifilters\kurisearchfilter.dll
-windeployqt.exe kf6\urifilters\localdomainurifilter.dll
-
-windeployqt.exe kf6\ktranscript.dll
-
-windeployqt.exe kiconthemes6\iconengines\KIconEnginePlugin.dll
-
-windeployqt.exe styles\breeze6.dll
-
 windeployqt.exe KF6Archive.dll
 windeployqt.exe KF6Bookmarks.dll
 windeployqt.exe KF6BookmarksWidgets.dll
