@@ -1109,7 +1109,7 @@ void MainWindow::saveCfg() const
 {
     const auto f = m_d->m_editor->font();
 
-    QSettings s;
+    QSettings s(QStringLiteral("Igor Mironchik"), QStringLiteral("Markdown Editor"));
 
     s.beginGroup(s_ui);
 
@@ -1208,7 +1208,7 @@ void MainWindow::saveCfg() const
 
 void MainWindow::readCfg()
 {
-    QSettings s;
+    QSettings s(QStringLiteral("Igor Mironchik"), QStringLiteral("Markdown Editor"));
 
     s.beginGroup(s_ui);
 

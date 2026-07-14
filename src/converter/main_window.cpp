@@ -571,9 +571,23 @@ void MainWidget::mmButtonToggled(bool on)
     }
 }
 
+void MainWidget::onStyleChangeBegin()
+{
+    m_ui->m_textFont->setStyleSheet(QString());
+    m_ui->m_codeFont->setStyleSheet(QString());
+}
+
+void MainWidget::onStyleChangeEnd()
+{
+    textFontChanged(m_ui->m_textFont->currentFont());
+    codeFontChanged(m_ui->m_codeFont->currentFont());
+    m_ui->m_textFont->ensurePolished();
+    m_ui->m_codeFont->ensurePolished();
+}
+
 void MainWidget::textFontChanged(const QFont &f)
 {
-    static const QString defaultColor = m_ui->m_textFont->palette().color(QPalette::Text).name();
+    const QString defaultColor = qApp->palette().color(QPalette::Text).name();
 
     if (!Render::PdfRenderer::isFontCreatable(f.family(), false)) {
         m_ui->m_textFont->setStyleSheet(QStringLiteral("QFontComboBox { color: red }"));
@@ -594,7 +608,7 @@ void MainWidget::textFontChanged(const QFont &f)
 
 void MainWidget::codeFontChanged(const QFont &f)
 {
-    static const QString defaultColor = m_ui->m_codeFont->palette().color(QPalette::Text).name();
+    const QString defaultColor = qApp->palette().color(QPalette::Text).name();
 
     if (!Render::PdfRenderer::isFontCreatable(f.family(), true)) {
         m_ui->m_codeFont->setStyleSheet(QStringLiteral("QFontComboBox { color: red }"));
@@ -680,7 +694,7 @@ MainWindow::MainWindow()
 
 void MainWindow::readCfg()
 {
-    QSettings s;
+    QSettings s(QStringLiteral("Igor Mironchik"), QStringLiteral("Markdown Converter"));
 
     ui->applyCfg(s);
 
@@ -709,7 +723,7 @@ void MainWindow::readCfg()
 
 void MainWindow::saveCfg()
 {
-    QSettings s;
+    QSettings s(QStringLiteral("Igor Mironchik"), QStringLiteral("Markdown Converter"));
 
     ui->saveCfg(s);
 
@@ -748,11 +762,13 @@ bool MainWindow::event(QEvent *event)
 {
     switch (event->type()) {
     case QEvent::ThemeChange: {
-#ifndef Q_OS_WIN
+        ui->onStyleChangeBegin();
         const auto ret = QMainWindow::event(event);
+#ifndef Q_OS_WIN
         applyTheme(qApp->style()->objectName(), (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark));
-        return ret;
 #endif
+        ui->onStyleChangeEnd();
+        return ret;
     } break;
 
     default:

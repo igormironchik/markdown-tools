@@ -36,9 +36,6 @@ int main(int argc,
 #endif
 
     QApplication app(argc, argv);
-    app.setOrganizationName(QStringLiteral("Igor Mironchik"));
-    app.setOrganizationDomain(QStringLiteral("github.com/igormironchik"));
-    app.setApplicationName(QStringLiteral("Markdown Converter"));
 
     initTheme(app);
 

@@ -34,9 +34,6 @@ int main(int argc,
     QWebEngineUrlScheme::registerScheme(qrc);
 
     QApplication app(argc, argv);
-    app.setOrganizationName(QStringLiteral("Igor Mironchik"));
-    app.setOrganizationDomain(QStringLiteral("github.com/igormironchik"));
-    app.setApplicationName(QStringLiteral("Markdown Editor"));
 
     initTheme(app);
 

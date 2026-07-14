@@ -54,6 +54,10 @@ public:
     //! Set mark color.
     void setMarkColor(const QColor &c);
 
+protected:
+    void onStyleChangeBegin();
+    void onStyleChangeEnd();
+
 private slots:
     void linkColorChanged(const QColor &c);
     void borderColorChanged(const QColor &c);
@@ -72,6 +76,8 @@ protected:
     void showEvent(QShowEvent *event) override;
 
 private:
+    friend class MainWindow;
+
     QScopedPointer<Ui::MainWindow> m_ui;
     QThread *m_thread;
     bool m_textFontOk;
