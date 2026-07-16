@@ -61,11 +61,13 @@ endif()
 
 add_definitions(-DBUILD_QT)
 
+link_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../../builds/skia")
+
 add_executable(md-pdf-gui WIN32 ${GUI_SRC})
 
 if(KF${KF_MAJOR_VERSION}IconThemes_FOUND AND KF${KF_MAJOR_VERSION}ColorScheme_FOUND
     AND KF${KF_MAJOR_VERSION}Config_FOUND)
-    list(APPEND ADDITIONAL_TARGETS KF${KF_MAJOR_VERSION}::ConfigCore
+    list(APPEND ADDITIONAL_KDE_TARGETS KF${KF_MAJOR_VERSION}::ConfigCore
         KF${KF_MAJOR_VERSION}::IconThemes KF${KF_MAJOR_VERSION}::ColorScheme)
     target_compile_definitions(md-pdf-gui PRIVATE MD_BREEZE)
 endif()
@@ -78,9 +80,52 @@ install(TARGETS md-pdf-gui)
 install(TARGETS md-launcher)
 
 if(WIN32)
-    set(WIN_LIBS "Dwmapi")
+    set(WIN_LIBS Dwmapi)
 endif()
 
-target_link_libraries(md-pdf-gui md4qt::md4qt markdown-widgets LaTeX ${ADDITIONAL_TARGETS}
-    Qt6::Widgets Qt6::Network Qt6::Core
-    podofo_shared resvg ${WIN_LIBS})
+if(UNIX)
+    set(UNIX_LIBS freetype fontconfig)
+endif()
+
+target_link_libraries(md-pdf-gui
+    md4qt::md4qt
+    markdown-widgets
+    LaTeX
+    ${ADDITIONAL_KDE_TARGETS}
+    Qt6::Widgets
+    Qt6::Network
+    Qt6::Core
+    bentleyottmann
+    compression_utils_portable
+    skresources
+    dng_sdk
+    piex
+    skcms
+    skottie
+    skparagraph
+    sksg
+    svg
+    webp
+    wuffs
+    skshaper
+    skia
+    skunicode_icu
+    skunicode_core
+    png
+    expat
+    harfbuzz
+    icu
+    jpeg
+    zlib
+    ${WIN_LIBS}
+    ${UNIX_LIBS})
+    
+add_custom_command(
+    TARGET md-pdf-gui
+    PRE_BUILD
+    COMMAND "bin/gn" gen "../../../builds/skia" "--args=is_official_build=true skia_use_system_expat=false skia_use_system_harfbuzz=false skia_use_system_icu=false skia_use_system_libjpeg_turbo=false skia_use_system_libpng=false skia_use_system_libwebp=false skia_use_system_zlib=false"
+    COMMAND ninja -C "../../../builds/skia" skia
+    COMMENT "Configuring and building Skia..."
+    VERBATIM
+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/Skia"
+)
