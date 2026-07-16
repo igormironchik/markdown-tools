@@ -35,9 +35,9 @@
 
 // Skia include.
 #include <include/core/SkCanvas.h>
-#include <include/core/SkPictureRecorder.h>
 #include <include/core/SkFont.h>
 #include <include/core/SkImage.h>
+#include <include/core/SkPictureRecorder.h>
 
 namespace MdPdf
 {
@@ -92,7 +92,7 @@ struct Utf8String {
 using Font = SkFont;
 using Painter = SkCanvas;
 using String = Utf8String;
-using Image = sk_sp<SkImage>;
+using Image = SkImage;
 
 struct Page {
     std::shared_ptr<SkPictureRecorder> m_recorder;
@@ -442,6 +442,8 @@ struct PdfAuxData {
     QMap<int, char> m_cachedPainters;
     //! Flag when drawing table.
     bool m_tableDrawing = false;
+    //! Current SkPaint.
+    SkPaint m_currentPaint;
 
 #ifdef MD_PDF_TESTING
     QMap<QString, QString> m_fonts;
@@ -469,7 +471,7 @@ struct PdfAuxData {
     //! Draw text
     void drawText(double x,
                   double y,
-                  const char *text,
+                  const Utf8String &text,
                   const Font &font,
                   double size,
                   double scale,
@@ -477,7 +479,7 @@ struct PdfAuxData {
     //! Draw image.
     void drawImage(double x,
                    double y,
-                   Image *img,
+                   const Image *img,
                    double xScale,
                    double yScale);
     //! Draw line.
@@ -492,7 +494,7 @@ struct PdfAuxData {
                        double y,
                        double width,
                        double height,
-                       const SkPaint &m);
+                       SkPaint::Style m);
 
     //! Set color.
     void setColor(const QColor &c);
@@ -502,20 +504,20 @@ struct PdfAuxData {
     void repeatColor();
 
     //! \return String width.
-    double stringWidth(Font *font,
+    double stringWidth(const Font &font,
                        double size,
                        double scale,
                        const String &s) const;
     //! \return Line spacing.
-    double lineSpacing(Font *font,
+    double lineSpacing(const Font &font,
                        double size,
                        double scale) const;
     //! \return Font ascent.
-    double fontAscent(Font *font,
+    double fontAscent(const Font &font,
                       double size,
                       double scale) const;
     //! \return Font descent.
-    double fontDescent(Font *font,
+    double fontDescent(const Font &font,
                        double size,
                        double scale) const;
 }; // struct PdfAuxData;
@@ -585,7 +587,7 @@ protected:
 #endif
 
     //! Create font.
-    Font *createFont(const QString &name,
+    Font createFont(const QString &name,
                      bool bold,
                      bool italic,
                      double size,
@@ -1433,8 +1435,8 @@ private:
     //! Termination flag.
     bool m_terminate;
     //! All destinations in the document.
-// TODO!
-//    QMap<QString, std::shared_ptr<Destination>> m_dests;
+    // TODO!
+    //    QMap<QString, std::shared_ptr<Destination>> m_dests;
     //! Links that not yet clickable.
     QMultiMap<QString, QVector<QPair<RectF, unsigned int>>> m_unresolvedLinks;
     //! Footnotes links.

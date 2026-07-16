@@ -18,9 +18,9 @@
 #include <fonts/font_info.h>
 
 // Skia include.
-#include <include/core/SkPathBuilder.h>
 #include <include/core/SkFont.h>
 #include <include/core/SkFontMgr.h>
+#include <include/core/SkPathBuilder.h>
 #include <include/core/SkTypeface.h>
 
 #ifdef Q_OS_LINUX
@@ -80,24 +80,20 @@ int PoDoFoPaintDevice::metric(QPaintDevice::PaintDeviceMetric metric) const
 {
     switch (metric) {
     case PdmWidth:
-        return qRound(d->m_engine.pdfPainter()
-                          ? d->m_engine.pdfPainter()->getBaseLayerSize().width() / 72.0 * 1200.0
-                          : 100);
+        return qRound(d->m_engine.pdfPainter() ? d->m_engine.pdfPainter()->getBaseLayerSize().width() / 72.0 * 1200.0
+                                               : 100);
 
     case PdmHeight:
-        return qRound(d->m_engine.pdfPainter()
-                          ? d->m_engine.pdfPainter()->getBaseLayerSize().height() / 72.0 * 1200.0
-                          : 100);
+        return qRound(d->m_engine.pdfPainter() ? d->m_engine.pdfPainter()->getBaseLayerSize().height() / 72.0 * 1200.0
+                                               : 100);
 
     case PdmWidthMM:
-        return qRound(d->m_engine.pdfPainter()
-                          ? d->m_engine.pdfPainter()->getBaseLayerSize().width() / 72.0 * 25.4
-                          : 100.0 / 1200.0 * 25.4);
+        return qRound(d->m_engine.pdfPainter() ? d->m_engine.pdfPainter()->getBaseLayerSize().width() / 72.0 * 25.4
+                                               : 100.0 / 1200.0 * 25.4);
 
     case PdmHeightMM:
-        return qRound(d->m_engine.pdfPainter()
-                          ? d->m_engine.pdfPainter()->getBaseLayerSize().height() / 72.0 * 25.4
-                          : 100.0 / 1200.0 * 25.4);
+        return qRound(d->m_engine.pdfPainter() ? d->m_engine.pdfPainter()->getBaseLayerSize().height() / 72.0 * 25.4
+                                               : 100.0 / 1200.0 * 25.4);
 
     case PdmNumColors:
         return INT_MAX;
@@ -269,11 +265,11 @@ void PoDoFoPaintEngine::drawPath(const QPainterPath &path)
                 end = {pp.x(), pp.y()};
 
                 p.cubicTo(qXtoSkia(pp.x()),
-                                   qYtoSkia(pp.y()),
-                                   qXtoSkia(pp1.x()),
-                                   qYtoSkia(pp1.y()),
-                                   qXtoSkia(pp2.x()),
-                                   qYtoSkia(pp2.y()));
+                          qYtoSkia(pp.y()),
+                          qXtoSkia(pp1.x()),
+                          qYtoSkia(pp1.y()),
+                          qXtoSkia(pp2.x()),
+                          qYtoSkia(pp2.y()));
 
                 i += 2;
             } break;
@@ -334,12 +330,10 @@ double PoDoFoPaintEngine::qHtoSkia(double h)
 
 SkRect PoDoFoPaintEngine::qRectFtoSkia(const QRectF &r)
 {
-    return SkRect::MakeLTRB(
-            static_cast<float>(r.left()),
-            static_cast<float>(r.top()),
-            static_cast<float>(r.right()),
-            static_cast<float>(r.bottom())
-        );
+    return SkRect::MakeLTRB(static_cast<float>(r.left()),
+                            static_cast<float>(r.top()),
+                            static_cast<float>(r.right()),
+                            static_cast<float>(r.bottom()));
 }
 
 void PoDoFoPaintEngine::drawRects(const QRectF *rects,
@@ -489,7 +483,7 @@ PoDoFoPaintEngine::qFontToSkia(const QFont &f)
 #endif
 
         return {SkFont(fontMgr->makeFromFile(fileName.toLocal8Bit().constData()), size), size};
-    } else {        
+    } else {
 #ifdef Q_OS_LINUX
         auto scanner = SkFontScanner_Make_FreeType();
         auto fontMgr = SkFontMgr_New_FontConfig(nullptr, std::move(scanner));

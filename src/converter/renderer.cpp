@@ -33,6 +33,14 @@
 #include <platform/qt/graphic_qt.h>
 #include <utils/exceptions.h>
 
+// Skia include.
+#include <include/core/SkFontMetrics.h>
+
+#ifdef Q_OS_LINUX
+#include <include/ports/SkFontMgr_fontconfig.h>
+#include <include/ports/SkFontScanner_FreeType.h>
+#endif
+
 // C++ include.
 #include <cmath>
 #include <functional>
@@ -181,7 +189,7 @@ void PdfAuxData::freeSpaceOn(int page)
 
 void PdfAuxData::drawText(double x,
                           double y,
-                          const char *text,
+                          const Utf8String &text,
                           const Font &font,
                           double size,
                           double scale,
@@ -189,26 +197,26 @@ void PdfAuxData::drawText(double x,
 {
     m_firstOnPage = false;
 
+    auto copyFont = font;
+    copyFont.setSize(size * scale);
+    SkPaint paint = m_currentPaint;
+    paint.setAntiAlias(true);
+
 #ifndef MD_PDF_TESTING
-    (*m_painters)[m_currentPainterIdx]->TextObject.Begin();
-    (*m_painters)[m_currentPainterIdx]->TextObject.MoveTo(x, y);
-    (*m_painters)[m_currentPainterIdx]->TextState.SetFont(*font, size);
-    (*m_painters)[m_currentPainterIdx]->TextState.SetFontScale(scale);
-    const auto st = (*m_painters)[m_currentPainterIdx]->TextState;
-    (*m_painters)[m_currentPainterIdx]->TextObject.AddText(text);
-    (*m_painters)[m_currentPainterIdx]->TextObject.End();
+    (*m_pages)[m_currentPainterIdx].m_canvas->drawString(text, x, y, copyFont, paint);
 
     if (strikeout) {
-        (*m_painters)[m_currentPainterIdx]->Save();
+        SkPaint paint = m_currentPaint;
+        SkFontMetrics fm;
+        copyFont.getMetrics(&fm);
+        paint.setStrokeWidth(fm.fStrikeoutThickness);
 
-        (*m_painters)[m_currentPainterIdx]->GraphicsState.SetLineWidth(font->GetStrikeThroughThickness(st));
-
-        (*m_painters)[m_currentPainterIdx]->DrawLine(x,
-                                                     y + font->GetStrikeThroughPosition(st),
-                                                     x + font->GetStringLength(text, st),
-                                                     y + font->GetStrikeThroughPosition(st));
-
-        (*m_painters)[m_currentPainterIdx]->Restore();
+        (*m_pages)[m_currentPainterIdx].m_canvas->drawLine(
+            x,
+            y + fm.fStrikeoutPosition,
+            x + copyFont.measureText(text, text.data.size(), SkTextEncoding::kUTF8),
+            y + fm.fStrikeoutPosition,
+            paint);
     }
 #else
     if (m_printDrawings) {
@@ -220,25 +228,20 @@ void PdfAuxData::drawText(double x,
                                         QString::number(x, 'f', 16),
                                         QString::number(y, 'f', 16));
     } else {
-        (*m_painters)[m_currentPainterIdx]->TextObject.Begin();
-        (*m_painters)[m_currentPainterIdx]->TextObject.MoveTo(x, y);
-        (*m_painters)[m_currentPainterIdx]->TextState.SetFont(*font, size);
-        (*m_painters)[m_currentPainterIdx]->TextState.SetFontScale(scale);
-        const auto st = (*m_painters)[m_currentPainterIdx]->TextState;
-        (*m_painters)[m_currentPainterIdx]->TextObject.AddText(text);
-        (*m_painters)[m_currentPainterIdx]->TextObject.End();
+        (*m_pages)[m_currentPainterIdx].m_canvas->drawString(text, x, y, copyFont, paint);
 
         if (strikeout) {
-            (*m_painters)[m_currentPainterIdx]->Save();
+            SkPaint paint = m_currentPaint;
+            SkFontMetrics fm;
+            copyFont.getMetrics(&fm);
+            paint.setStrokeWidth(fm.fStrikeoutThickness);
 
-            (*m_painters)[m_currentPainterIdx]->GraphicsState.SetLineWidth(font->GetStrikeThroughThickness(st));
-
-            (*m_painters)[m_currentPainterIdx]->DrawLine(x,
-                                                         y + font->GetStrikeThroughPosition(st),
-                                                         x + font->GetStringLength(text, st),
-                                                         y + font->GetStrikeThroughPosition(st));
-
-            (*m_painters)[m_currentPainterIdx]->Restore();
+            (*m_pages)[m_currentPainterIdx].m_canvas->drawLine(
+                x,
+                y + fm.fStrikeoutPosition,
+                x + copyFont.measureText(text, text.data.size(), SkTextEncoding::kUTF8),
+                y + fm.fStrikeoutPosition,
+                paint);
         }
 
         if (QTest::currentTestFailed()) {
@@ -256,14 +259,19 @@ void PdfAuxData::drawText(double x,
 
 void PdfAuxData::drawImage(double x,
                            double y,
-                           Image *img,
+                           const Image *img,
                            double xScale,
                            double yScale)
 {
     m_firstOnPage = false;
 
+    const auto info =
+        SkImageInfo::Make(SkISize(img->width() * xScale, img->height() * yScale), img->imageInfo().colorInfo());
+
+    const auto scaled = img->makeScaled(info, SkSamplingOptions());
+
 #ifndef MD_PDF_TESTING
-    (*m_painters)[m_currentPainterIdx]->DrawImage(*img, x, y, xScale, yScale);
+    (*m_pages)[m_currentPainterIdx].m_canvas->drawImage(scaled, x, y);
 #else
     if (m_printDrawings) {
         (*m_drawingsStream) << QStringLiteral("Image 0 \"\" %2 %3 0.0 0.0 0.0 0.0 %4 %5\n")
@@ -272,7 +280,7 @@ void PdfAuxData::drawImage(double x,
                                         QString::number(xScale, 'f', 16),
                                         QString::number(yScale, 'f', 16));
     } else {
-        (*m_painters)[m_currentPainterIdx]->DrawImage(*img, x, y, xScale, yScale);
+        (*m_pages)[m_currentPainterIdx].m_canvas->drawImage(scaled, x, y);
 
         if (QTest::currentTestFailed()) {
             m_self->terminate();
@@ -293,7 +301,7 @@ void PdfAuxData::drawLine(double x1,
                           double y2)
 {
 #ifndef MD_PDF_TESTING
-    (*m_painters)[m_currentPainterIdx]->DrawLine(x1, y1, x2, y2);
+    (*m_pages)[m_currentPainterIdx].m_canvas->drawLine(x1, y1, x2, y2, m_currentPaint);
 #else
     if (m_printDrawings) {
         (*m_drawingsStream) << QStringLiteral("Line 0 \"\" %1 %2 %3 %4 0.0 0.0 0.0 0.0\n")
@@ -302,7 +310,7 @@ void PdfAuxData::drawLine(double x1,
                                         QString::number(x2, 'f', 16),
                                         QString::number(y2, 'f', 16));
     } else {
-        (*m_painters)[m_currentPainterIdx]->DrawLine(x1, y1, x2, y2);
+        (*m_pages)[m_currentPainterIdx].m_canvas->drawLine(x1, y1, x2, y2, m_currentPaint);
 
         if (QTest::currentTestFailed()) {
             m_self->terminate();
@@ -319,23 +327,27 @@ void PdfAuxData::drawLine(double x1,
 
 void PdfAuxData::save(const QString &fileName)
 {
-#ifndef MD_PDF_TESTING
-    m_doc->Save(fileName.toLocal8Bit().data());
-#else
-    if (!m_printDrawings) {
-        m_doc->Save(fileName.toLocal8Bit().data());
-    }
-#endif // MD_PDF_TESTING
+// TODO!
+// #ifndef MD_PDF_TESTING
+//     m_doc->Save(fileName.toLocal8Bit().data());
+// #else
+//     if (!m_printDrawings) {
+//         m_doc->Save(fileName.toLocal8Bit().data());
+//     }
+// #endif // MD_PDF_TESTING
 }
 
 void PdfAuxData::drawRectangle(double x,
                                double y,
                                double width,
                                double height,
-                               PoDoFo::PdfPathDrawMode m)
+                               SkPaint::Style m)
 {
+    auto paint = m_currentPaint;
+    paint.setStyle(m);
+
 #ifndef MD_PDF_TESTING
-    (*m_painters)[m_currentPainterIdx]->DrawRectangle(x, y, width, height, m);
+    (*m_pages)[m_currentPainterIdx].m_canvas->drawRect(SkRect::MakeXYWH(x, y, width, height), paint);
 #else
     if (m_printDrawings) {
         (*m_drawingsStream) << QStringLiteral("Rectangle 0 \"\" %1 %2 0.0 0.0 %3 %4 0.0 0.0\n")
@@ -344,7 +356,7 @@ void PdfAuxData::drawRectangle(double x,
                                         QString::number(width, 'f', 16),
                                         QString::number(height, 'f', 16));
     } else {
-        (*m_painters)[m_currentPainterIdx]->DrawRectangle(x, y, width, height, m);
+        (*m_pages)[m_currentPainterIdx].m_canvas->drawRect(SkRect::MakeXYWH(x, y, width, height), paint);
 
         if (QTest::currentTestFailed()) {
             m_self->terminate();
@@ -362,9 +374,7 @@ void PdfAuxData::drawRectangle(double x,
 void PdfAuxData::setColor(const QColor &c)
 {
     m_colorsStack.push(c);
-
-    (*m_painters)[m_currentPainterIdx]->GraphicsState.SetNonStrokingColor(Color(c.redF(), c.greenF(), c.blueF()));
-    (*m_painters)[m_currentPainterIdx]->GraphicsState.SetStrokingColor(Color(c.redF(), c.greenF(), c.blueF()));
+    m_currentPaint.setColor(SkColorSetRGB(c.redF(), c.greenF(), c.blueF()));
 }
 
 void PdfAuxData::restoreColor()
@@ -379,50 +389,54 @@ void PdfAuxData::restoreColor()
 void PdfAuxData::repeatColor()
 {
     const auto &c = m_colorsStack.top();
-
-    (*m_painters)[m_currentPainterIdx]->GraphicsState.SetNonStrokingColor(Color(c.redF(), c.greenF(), c.blueF()));
-    (*m_painters)[m_currentPainterIdx]->GraphicsState.SetStrokingColor(Color(c.redF(), c.greenF(), c.blueF()));
+    m_currentPaint.setColor(SkColorSetRGB(c.redF(), c.greenF(), c.blueF()));
 }
 
-double PdfAuxData::stringWidth(Font *font,
+double PdfAuxData::stringWidth(const Font &font,
                                double size,
                                double scale,
                                const String &s) const
 {
-    PoDoFo::PdfTextState st;
-    st.FontSize = size * scale;
+    auto copyFont = font;
+    copyFont.setSize(size * scale);
+    SkFontMetrics fm;
+    copyFont.getMetrics(&fm);
 
-    return font->GetStringLength(s, st);
+    return copyFont.measureText(s, s.data.size(), SkTextEncoding::kUTF8);
 }
 
-double PdfAuxData::lineSpacing(Font *font,
+double PdfAuxData::lineSpacing(const Font &font,
                                double size,
                                double scale) const
 {
-    PoDoFo::PdfTextState st;
-    st.FontSize = size * scale;
+    auto copyFont = font;
+    copyFont.setSize(size * scale);
 
-    return font->GetLineSpacing(st);
+    return copyFont.getMetrics(nullptr);
 }
 
-double PdfAuxData::fontAscent(Font *font,
+double PdfAuxData::fontAscent(const Font &font,
                               double size,
                               double scale) const
 {
-    PoDoFo::PdfTextState st;
-    st.FontSize = size * scale;
+    auto copyFont = font;
+    copyFont.setSize(size * scale);
+    SkFontMetrics fm;
+    copyFont.getMetrics(&fm);
 
-    return font->GetAscent(st);
+    return fm.fAscent;
 }
 
-double PdfAuxData::fontDescent(Font *font,
+double PdfAuxData::fontDescent(const Font &font,
                                double size,
                                double scale) const
 {
-    PoDoFo::PdfTextState st;
-    st.FontSize = size * scale;
+    auto copyFont = font;
+    copyFont.setSize(size * scale);
+    SkFontMetrics fm;
+    copyFont.getMetrics(&fm);
 
-    return font->GetDescent(st);
+    return fm.fDescent;
 }
 
 //
@@ -572,22 +586,18 @@ void PdfRenderer::renderImpl()
         emit progress(0);
         emit status(tr("Rendering PDF..."));
 
-        Document document;
-        document.GetMetadata().SetCreator(
-            PoDoFo::PdfString("This PDF was generated with Markdown Tools\n"
-                              "https://github.com/igormironchik/markdown-tools"));
-        std::vector<QSharedPointer<Painter>> painters;
-
-        pdfData.m_doc = &document;
-        pdfData.m_painters = &painters;
+        // TODO!
+        // Document document;
+        // document.GetMetadata().SetCreator(
+        //     PoDoFo::PdfString("This PDF was generated with Markdown Tools\n"
+        //                       "https://github.com/igormironchik/markdown-tools"));
+        std::vector<Page> pages;
+        pdfData.m_pages = &pages;
 
         pdfData.m_layout.margins().m_left = m_opts.m_left;
         pdfData.m_layout.margins().m_right = m_opts.m_right;
         pdfData.m_layout.margins().m_top = m_opts.m_top;
         pdfData.m_layout.margins().m_bottom = m_opts.m_bottom;
-        pdfData.m_resvgOpts.reset(new ResvgOptions);
-        pdfData.m_resvgOpts->setDpi(m_opts.m_dpi);
-        pdfData.m_resvgOpts->loadSystemFonts();
 
         pdfData.m_colorsStack.push(Qt::black);
 
@@ -756,7 +766,7 @@ void PdfRenderer::renderImpl()
         int itemIdx = 0;
 
         pdfData.m_lineHeight = pdfData.lineSpacing(
-            createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, pdfData.m_doc, 1.0, pdfData),
+            createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, 1.0, pdfData),
             m_opts.m_textFontSize,
             1.0);
         pdfData.m_extraInFootnote = pdfData.m_lineHeight / 3.0;
@@ -967,7 +977,7 @@ void PdfRenderer::handleException(PdfAuxData &pdfData,
 
 void PdfRenderer::finishPages(PdfAuxData &pdfData)
 {
-    for (const auto &p : *pdfData.m_painters) {
+    for (const auto &p : *pdfData.m_pages) {
         p->FinishDrawing();
     }
 }
@@ -1020,47 +1030,32 @@ void PdfRenderer::resolveLinks(PdfAuxData &pdfData)
     }
 }
 
-Font *PdfRenderer::createFont(const QString &name,
+Font PdfRenderer::createFont(const QString &name,
                               bool bold,
                               bool italic,
                               double size,
-                              Document *doc,
                               double scale,
                               const PdfAuxData &pdfData)
 {
-    PoDoFo::PdfFontSearchParams params;
-    PoDoFo::PdfFontStyle style = PoDoFo::PdfFontStyle::Regular;
-
-    if (bold) {
-        style |= PoDoFo::PdfFontStyle::Bold;
-    }
-    if (italic) {
-        style |= PoDoFo::PdfFontStyle::Italic;
-    }
-
-    params.Style = style;
+#ifdef Q_OS_LINUX
+        auto scanner = SkFontScanner_Make_FreeType();
+        auto fontMgr = SkFontMgr_New_FontConfig(nullptr, std::move(scanner));
+#endif
 
 #ifdef MD_PDF_TESTING
     const QString internalName =
         name + (bold ? QStringLiteral(" Bold") : QString()) + (italic ? QStringLiteral(" Italic") : QString());
 
-    auto &font = doc->GetFonts().GetOrCreateFont(pdfData.m_fonts[internalName].toLocal8Bit().data());
-
-    return &font;
+    return SkFont(fontMgr->makeFromFile(pdfData.m_fonts[internalName].toLocal8Bit().data()), size * scale);
 #else
     Q_UNUSED(pdfData)
 
-    auto *font = doc->GetFonts().SearchFont(name.toLocal8Bit().data(), params);
+    SkFontStyle::Slant slant = italic ? SkFontStyle::kItalic_Slant : SkFontStyle::kUpright_Slant;
+    int weight = bold ? SkFontStyle::kBold_Weight : SkFontStyle::kNormal_Weight;
 
-    if (!font) {
-        throw PdfRendererError(
-            tr("Unable to create font: %1. Please choose another one.\n\n"
-               "This application uses PoDoFo C++ library to create PDF. And not all fonts supported by Qt "
-               "are supported by PoDoFo. I'm sorry for the inconvenience.")
-                .arg(name));
-    }
+    SkFontStyle style(weight, SkFontStyle::kNormal_Width, slant);
 
-    return font;
+    return SkFont(fontMgr->matchFamilyStyle(name.toLocal8Bit().data(), style), size * scale);
 #endif // MD_PDF_TESTING
 }
 
@@ -1129,8 +1124,8 @@ void PdfRenderer::createPage(PdfAuxData &pdfData)
         auto painter = QSharedPointer<Painter>::create();
         painter->SetCanvas(*pdfData.m_page);
 
-        (*pdfData.m_painters).push_back(painter);
-        pdfData.m_currentPainterIdx = pdfData.m_painters->size() - 1;
+        (*pdfData.m_pages).push_back(painter);
+        pdfData.m_currentPainterIdx = pdfData.m_pages->size() - 1;
 
         pdfData.m_layout.m_coords.m_pageWidth = pdfData.m_page->GetRect().Width;
         pdfData.m_layout.m_coords.m_pageHeight = pdfData.m_page->GetRect().Height;
@@ -4795,7 +4790,7 @@ PdfRenderer::drawListItem(PdfAuxData &pdfData,
 
                 pdfData.setColor(Qt::black);
                 const auto r = unorderedMarkWidth / 2.0;
-                (*pdfData.m_painters)[pdfData.m_currentPainterIdx]->DrawCircle(
+                (*pdfData.m_pages)[pdfData.m_currentPainterIdx]->DrawCircle(
                     pdfData.m_layout.borderStartX()
                         + pdfData.m_layout.xIncrementDirection() * (offset + r - (orderedListNumberWidth + spaceWidth)),
                     firstLine.m_y + qAbs(firstLine.m_height - unorderedMarkWidth) / 2.0 + unorderedMarkWidth / 2.0,
