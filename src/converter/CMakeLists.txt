@@ -15,8 +15,6 @@ find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} COMPONENTS
     IconThemes ColorScheme Config
 )
 
-add_definitions(-DPODOFO_SHARED)
-
 if(ENABLE_COVERAGE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
@@ -26,8 +24,8 @@ set(GUI_SRC main.cpp
 	main_window.cpp
 	main_window.h
 	main_window.ui
-	podofo_paintdevice.h
-	podofo_paintdevice.cpp
+	skia_paintdevice.h
+	skia_paintdevice.cpp
 	renderer.h
 	renderer.cpp
 	progress.h
@@ -48,16 +46,8 @@ endif()
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/MicroTeX/src
 	${CMAKE_CURRENT_BINARY_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/../shared)
-
-if(NOT BUILD_WITH_SYSTEM_LIBS)
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/podofo/src
-        ${CMAKE_CURRENT_BINARY_DIR}/../../3rdparty/podofo/src/podofo
-        ${CMAKE_CURRENT_BINARY_DIR}/../../3rdparty/podofo/src/podofo/podofo/auxiliary)
-
-    link_directories(${CMAKE_CURRENT_BINARY_DIR}/../../3rdparty/podofo/src/podofo
-        ${CMAKE_CURRENT_BINARY_DIR}/../../3rdparty/podofo/src)
-endif()
+    ${CMAKE_CURRENT_SOURCE_DIR}/../shared
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/Skia)
 
 add_definitions(-DBUILD_QT)
 

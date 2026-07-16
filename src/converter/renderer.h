@@ -33,11 +33,11 @@
 #include <string_view>
 #include <vector>
 
-// podofo include.
-#include <podofo/podofo.h>
-
-// resvg include.
-#include <ResvgQt.h>
+// Skia include.
+#include <include/core/SkCanvas.h>
+#include <include/core/SkPictureRecorder.h>
+#include <include/core/SkFont.h>
+#include <include/core/SkImage.h>
 
 namespace MdPdf
 {
@@ -89,20 +89,15 @@ struct Utf8String {
     }
 }; // struct Utf8String
 
-#define MD_PDF_USE_PODOFO
-#ifdef MD_PDF_USE_PODOFO
-
-using Font = PoDoFo::PdfFont;
-using Document = PoDoFo::PdfMemDocument;
-using Page = PoDoFo::PdfPage;
-using Painter = PoDoFo::PdfPainter;
-using Image = PoDoFo::PdfImage;
-using Destination = PoDoFo::PdfDestination;
-using Color = PoDoFo::PdfColor;
-using Rect = PoDoFo::Rect;
+using Font = SkFont;
+using Painter = SkCanvas;
 using String = Utf8String;
+using Image = sk_sp<SkImage>;
 
-#endif // MD_PDF_USE_PODOFO
+struct Page {
+    std::shared_ptr<SkPictureRecorder> m_recorder;
+    Painter *m_canvas = nullptr;
+}; // struct Page
 
 //! Footnote scale.
 static const double s_footnoteScale = 0.75;
@@ -393,12 +388,8 @@ private:
 
 //! Auxiliary struct for rendering.
 struct PdfAuxData {
-    //! Document.
-    Document *m_doc = nullptr;
     //! Painters.
-    std::vector<QSharedPointer<Painter>> *m_painters = nullptr;
-    //! Page.
-    Page *m_page = nullptr;
+    std::vector<Page> *m_pages = nullptr;
     //! Index of the current page.
     int m_currentPageIdx = -1;
     //! Layout direction handler.
@@ -443,8 +434,6 @@ struct PdfAuxData {
     QMap<MD::Footnote *, QPair<QString, int>> m_footnotesAnchorsMap;
     //! Map of footnotes references to its counter (uses for back links from footnote).
     QMap<MD::Footnote *, int> m_footnoteRefCount;
-    //! Resvg options.
-    QSharedPointer<ResvgOptions> m_resvgOpts;
     //! Special blockquotes that should be highlighted.
     QMap<MD::Blockquote *, QColor> m_highlightedBlockquotes;
     //! Cache of fonts.
@@ -481,7 +470,7 @@ struct PdfAuxData {
     void drawText(double x,
                   double y,
                   const char *text,
-                  Font *font,
+                  const Font &font,
                   double size,
                   double scale,
                   bool strikeout);
@@ -503,7 +492,7 @@ struct PdfAuxData {
                        double y,
                        double width,
                        double height,
-                       PoDoFo::PdfPathDrawMode m);
+                       const SkPaint &m);
 
     //! Set color.
     void setColor(const QColor &c);
@@ -600,7 +589,6 @@ protected:
                      bool bold,
                      bool italic,
                      double size,
-                     Document *doc,
                      double scale,
                      const PdfAuxData &pdfData);
 
@@ -624,8 +612,6 @@ private:
     QByteArray loadImage(
         //! Image.
         MD::Image *item,
-        //! Options for SVG rendering.
-        const ResvgOptions &opts,
         //! Height to scale image to.
         double height = 1.0,
         //! Should image be scaled?
@@ -1447,7 +1433,8 @@ private:
     //! Termination flag.
     bool m_terminate;
     //! All destinations in the document.
-    QMap<QString, std::shared_ptr<Destination>> m_dests;
+// TODO!
+//    QMap<QString, std::shared_ptr<Destination>> m_dests;
     //! Links that not yet clickable.
     QMultiMap<QString, QVector<QPair<RectF, unsigned int>>> m_unresolvedLinks;
     //! Footnotes links.
@@ -1476,7 +1463,6 @@ signals:
 public:
     LoadImageFromNetwork(const QUrl &url,
                          QThread *thread,
-                         const ResvgOptions &opts,
                          double height,
                          bool scale);
     ~LoadImageFromNetwork() override = default;
@@ -1496,7 +1482,6 @@ private:
     QImage m_img;
     QNetworkReply *m_reply;
     QUrl m_url;
-    const ResvgOptions &m_opts;
     double m_height;
     bool m_scale;
 }; // class LoadImageFromNetwork

@@ -6,7 +6,7 @@
 // md-pdf include.
 #include "renderer.h"
 #include "const.h"
-#include "podofo_paintdevice.h"
+#include "skia_paintdevice.h"
 
 // shared include.
 #include "utils.h"
@@ -182,7 +182,7 @@ void PdfAuxData::freeSpaceOn(int page)
 void PdfAuxData::drawText(double x,
                           double y,
                           const char *text,
-                          Font *font,
+                          const Font &font,
                           double size,
                           double scale,
                           bool strikeout)

@@ -12,8 +12,8 @@
 #include <QSharedPointer>
 #include <QTemporaryFile>
 
-// podofo include.
-#include <podofo/podofo.h>
+// Skia include.
+#include <include/core/SkCanvas.h>
 
 namespace MdPdf
 {
@@ -66,7 +66,7 @@ public:
 
     void enableDrawing(bool on = true);
 
-    PoDoFo::PdfPainter *pdfPainter() const;
+    SkCanvas *pdfPainter() const;
 
     bool begin(QPaintDevice *pdev) override;
     void drawEllipse(const QRectF &rect) override;
@@ -107,14 +107,14 @@ public:
     void updateState(const QPaintEngineState &state) override;
 
 private:
-    double qXtoPoDoFo(double x);
-    double qYtoPoDoFo(double y);
-    double qWtoPoDoFo(double w);
-    double qHtoPoDoFo(double h);
-    PoDoFo::Rect qRectFtoPoDoFo(const QRectF &r);
-    QPair<PoDoFo::PdfFont *,
+    double qXtoSkia(double x);
+    double qYtoSkia(double y);
+    double qWtoSkia(double w);
+    double qHtoSkia(double h);
+    SkRect qRectFtoSkia(const QRectF &r);
+    QPair<SkFont,
           double>
-    qFontToPoDoFo(const QFont &f);
+    qFontToSkia(const QFont &f);
 
 private:
     Q_DISABLE_COPY(PoDoFoPaintEngine)
