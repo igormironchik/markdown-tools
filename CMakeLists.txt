@@ -36,6 +36,8 @@ set(MD_TOOLS_VERSION_NUMBER "0.17.0")
 set(HomeDir "@HomeDir@")
 string(TIMESTAMP MD_CURRENT_DATE "%Y-%m-%d")
 
+add_compile_definitions(QT_NO_KEYWORDS)
+
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.xml.in ${CMAKE_CURRENT_SOURCE_DIR}/installer/config/config.xml @ONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/package.xml.in ${CMAKE_CURRENT_SOURCE_DIR}/installer/packages/mironchik.igor.markdown/meta/package.xml @ONLY)
 

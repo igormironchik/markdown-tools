@@ -35,7 +35,7 @@ class TabBar : public QTabBar
 {
     Q_OBJECT
 
-signals:
+Q_SIGNALS:
     void activated();
 
 public:
@@ -55,7 +55,7 @@ class TabWidget : public QTabWidget
 {
     Q_OBJECT
 
-signals:
+Q_SIGNALS:
     //! Return key was pressed on tab or tab was activated by shortcut.
     void activated();
     //! Tab removed.
@@ -79,7 +79,7 @@ class TocTreeView : public QTreeView
 {
     Q_OBJECT
 
-signals:
+Q_SIGNALS:
     //! Scroll Web preview to a given ID.
     void scrollWebViewToRequested(const QString &id);
 
@@ -101,7 +101,7 @@ class WorkingDirectoryWidget : public QWidget
 {
     Q_OBJECT
 
-signals:
+Q_SIGNALS:
     void workingDirectoryChanged(const QString &);
 
 public:
@@ -119,12 +119,12 @@ public:
 
     int labelHeight() const;
 
-public slots:
+public Q_SLOTS:
     //! Set working directory.
     void setWorkingDirectory(const QString &wd,
                              bool notify = true);
 
-private slots:
+private Q_SLOTS:
     void onChangeButtonClicked();
     void onPathChanged(const QString &path);
     void onUseWorkingDirChanged(Qt::CheckState);

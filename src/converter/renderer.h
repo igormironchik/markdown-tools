@@ -199,7 +199,7 @@ class Renderer : public QObject
 {
     Q_OBJECT
 
-signals:
+Q_SIGNALS:
     //! Progress of rendering.
     void progress(int percent);
     //! Error.
@@ -542,7 +542,7 @@ class PdfRenderer : public Renderer
 {
     Q_OBJECT
 
-signals:
+Q_SIGNALS:
     //! Internal signal for start rendering.
     void start();
 
@@ -559,7 +559,7 @@ public:
     bool isError() const;
 #endif
 
-public slots:
+public Q_SLOTS:
     //! Render document. \note Document can be changed during rendering.
     //! Don't reuse the same document twice.
     //! Renderer will delete himself on job finish.
@@ -570,7 +570,7 @@ public slots:
     //! Terminate rendering.
     void terminate();
 
-private slots:
+private Q_SLOTS:
     //! Real rendering.
     void renderImpl();
 
@@ -1440,7 +1440,7 @@ class LoadImageFromNetwork final : public QObject
 {
     Q_OBJECT
 
-signals:
+Q_SIGNALS:
     void start();
 
 public:
@@ -1455,7 +1455,7 @@ public:
     bool isSvg() const;
     const QByteArray &svgData() const;
 
-private slots:
+private Q_SLOTS:
     void loadImpl();
     void loadFinished();
     void loadError(QNetworkReply::NetworkError);

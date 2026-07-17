@@ -95,7 +95,7 @@ public:
     //! \return Sonnet configuration widget.
     Sonnet::ConfigWidget *sonnetConfigWidget() const;
 
-private slots:
+private Q_SLOTS:
     void onPageChanged(KPageWidgetItem *current,
                        KPageWidgetItem *before);
     void onButtonclicked(QAbstractButton *btn);

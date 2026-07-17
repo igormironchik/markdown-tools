@@ -16,18 +16,6 @@
 #include <test_const.h>
 #endif // MD_PDF_TESTING
 
-// Qt include.
-#include <QApplication>
-#include <QBuffer>
-#include <QFileInfo>
-#include <QNetworkAccessManager>
-#include <QPainter>
-#include <QRegularExpression>
-#include <QScopedValueRollback>
-#include <QScreen>
-#include <QTemporaryFile>
-#include <QThread>
-
 // MicroTeX include.
 #include <latex.h>
 #include <platform/qt/graphic_qt.h>
@@ -39,13 +27,32 @@
 #include <include/core/SkFontMetrics.h>
 #include <include/core/SkFontMgr.h>
 #include <include/core/SkImage.h>
+#include <include/core/SkPicture.h>
 #include <include/ports/SkFontMgr_fontconfig.h>
 #include <include/ports/SkFontScanner_FreeType.h>
+#include <include/core/SkDocument.h>
+#include <include/core/SkStream.h>
+#include <include/docs/SkPDFDocument.h>
+#include <include/docs/SkPDFJpegHelpers.h>
+#include <modules/svg/include/SkSVGDOM.h>
 
 // C++ include.
 #include <cmath>
 #include <functional>
 #include <utility>
+#include <fstream>
+
+// Qt include.
+#include <QApplication>
+#include <QBuffer>
+#include <QFileInfo>
+#include <QNetworkAccessManager>
+#include <QPainter>
+#include <QRegularExpression>
+#include <QScopedValueRollback>
+#include <QScreen>
+#include <QTemporaryFile>
+#include <QThread>
 
 // md4qt include.
 #include <md4qt/src/algo.h>
@@ -144,7 +151,7 @@ double PdfAuxData::topFootnoteY(int page) const
     if (m_reserved.contains(page)) {
         return m_reserved[page];
     } else {
-        return 0.0;
+        return m_layout.m_coords.m_pageHeight;
     }
 }
 
@@ -328,14 +335,46 @@ void PdfAuxData::drawLine(double x1,
 
 void PdfAuxData::save(const QString &fileName)
 {
-    // TODO!
-    // #ifndef MD_PDF_TESTING
-    //     m_doc->Save(fileName.toLocal8Bit().data());
-    // #else
-    //     if (!m_printDrawings) {
-    //         m_doc->Save(fileName.toLocal8Bit().data());
-    //     }
-    // #endif // MD_PDF_TESTING
+    const auto write = [this](const QString &fileName) {
+        SkDynamicMemoryWStream buffer;
+
+        const float inchToPoint = 72.0f;
+        const float widthInInches = 8.27f;
+        const float heightInInches = 11.69f;
+
+        const float p4Width = widthInInches * inchToPoint;
+        const float p4Height = heightInInches * inchToPoint;
+
+        SkPDF::Metadata metadata;
+        metadata.jpegDecoder = SkPDF::JPEG::Decode;
+        metadata.jpegEncoder = SkPDF::JPEG::Encode;
+        // metadata.fTitle = documentTitle;
+        metadata.fCreator = "This PDF was generated with Markdown Tools\n"
+                            "https://github.com/igormironchik/markdown-tools";
+        auto pdfDocument = SkPDF::MakeDocument(&buffer, metadata);
+
+        for (const auto &p : *m_pages) {
+            SkCanvas* pageCanvas = pdfDocument->beginPage(p4Width,
+                                                                  p4Height);
+            pageCanvas->drawPicture(p.m_recorder->finishRecordingAsPicture());
+        }
+
+        sk_sp<SkData> pdfData = buffer.detachAsData();
+
+        std::fstream f(fileName.toLocal8Bit().data(), std::ios::binary | std::ios::out );
+
+        f.write( static_cast< const char * >( pdfData->writable_data() ), pdfData->size() );
+
+        f.close();
+    };
+
+#ifndef MD_PDF_TESTING
+    write(fileName);
+#else
+    if (!m_printDrawings) {
+        write(fileName);
+    }
+#endif // MD_PDF_TESTING
 }
 
 void PdfAuxData::drawRectangle(double x,
@@ -555,7 +594,7 @@ void PdfRenderer::render(const QString &fileName,
     m_opts = opts;
 
     if (!testing) {
-        emit start();
+        Q_EMIT start();
     }
 }
 
@@ -584,14 +623,9 @@ void PdfRenderer::renderImpl()
     try {
         const int itemsCount = m_doc->items().size();
 
-        emit progress(0);
-        emit status(tr("Rendering PDF..."));
+        Q_EMIT progress(0);
+        Q_EMIT status(tr("Rendering PDF..."));
 
-        // TODO!
-        // Document document;
-        // document.GetMetadata().SetCreator(
-        //     PoDoFo::PdfString("This PDF was generated with Markdown Tools\n"
-        //                       "https://github.com/igormironchik/markdown-tools"));
         std::vector<Page> pages;
         pdfData.m_pages = &pages;
 
@@ -874,7 +908,7 @@ void PdfRenderer::renderImpl()
                 break;
             }
 
-            emit progress(static_cast<int>(static_cast<double>(itemIdx) / static_cast<double>(itemsCount) * 100.0));
+            Q_EMIT progress(static_cast<int>(static_cast<double>(itemIdx) / static_cast<double>(itemsCount) * 100.0));
         }
 
         pdfData.m_lineHeight *= s_footnoteScale;
@@ -894,11 +928,11 @@ void PdfRenderer::renderImpl()
             }
         }
 
-        emit status(tr("Saving PDF..."));
+        Q_EMIT status(tr("Saving PDF..."));
 
         pdfData.save(m_fileName);
 
-        emit done(m_terminate);
+        Q_EMIT done(m_terminate);
 
 #ifdef MD_PDF_TESTING
         if (m_opts.m_printDrawings) {
@@ -939,7 +973,7 @@ void PdfRenderer::handleException(PdfAuxData &pdfData,
                                   QString::number(pdfData.m_endPos + 1),
                                   QString::number(pdfData.m_endLine + 1));
 
-    emit error(fullMsg);
+    Q_EMIT error(fullMsg);
 }
 
 Font PdfRenderer::createFont(const QString &name,
@@ -1241,7 +1275,7 @@ PdfRenderer::drawText(PdfAuxData &pdfData,
                                           static_cast<MD::ItemWithOpts *>(item),
                                           previousBaseline,
                                           lineHeight,
-                                          -pdfData.fontDescent(font, m_opts.m_textFontSize, scale));
+                                          pdfData.fontDescent(font, m_opts.m_textFontSize, scale));
 
     return drawString(pdfData,
                       item->text(),
@@ -1448,7 +1482,7 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
                                           static_cast<MD::ItemWithOpts *>(item),
                                           previousBaseline,
                                           pdfData.lineSpacing(font, m_opts.m_textFontSize, scale),
-                                          -pdfData.fontDescent(font, m_opts.m_textFontSize, scale));
+                                          pdfData.fontDescent(font, m_opts.m_textFontSize, scale));
 
     if (!item->p()->isEmpty()) {
         for (auto it = item->p()->items().cbegin(), last = item->p()->items().cend(); it != last; ++it) {
@@ -1469,7 +1503,7 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
                                                       static_cast<MD::ItemWithOpts *>(text.get()),
                                                       previousBaseline,
                                                       pdfData.lineSpacing(font, m_opts.m_textFontSize, scale),
-                                                      -pdfData.fontDescent(font, m_opts.m_textFontSize, scale));
+                                                      pdfData.fontDescent(font, m_opts.m_textFontSize, scale));
 
                 rects.append(drawString(pdfData,
                                         text->text(),
@@ -1562,7 +1596,7 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
                                               static_cast<MD::ItemWithOpts *>(item),
                                               previousBaseline,
                                               pdfData.lineSpacing(font, m_opts.m_textFontSize, scale),
-                                              -pdfData.fontDescent(font, m_opts.m_textFontSize, scale));
+                                              pdfData.fontDescent(font, m_opts.m_textFontSize, scale));
 
         rects = drawString(pdfData,
                            url,
@@ -1976,7 +2010,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                                false,
                                true,
                                it->first,
-                               -pdfData.fontDescent(font, fontSize, fontScale) + lineInfo.second});
+                               pdfData.fontDescent(font, fontSize, fontScale) + lineInfo.second});
                 }
 
                 pdfData.m_layout.addX(length);
@@ -2027,7 +2061,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                                        false,
                                        true,
                                        tmp,
-                                       -pdfData.fontDescent(font, fontSize, fontScale) + lineInfo.second});
+                                       pdfData.fontDescent(font, fontSize, fontScale) + lineInfo.second});
                         }
 
                         newLine = false;
@@ -2048,7 +2082,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                                    false,
                                    true,
                                    QString::number(footnoteNum),
-                                   -pdfData.fontDescent(font, fontSize, fontScale) + lineInfo.second});
+                                   pdfData.fontDescent(font, fontSize, fontScale) + lineInfo.second});
                     }
                 }; // splitAndDraw
 
@@ -2133,7 +2167,7 @@ PdfRenderer::drawInlinedCode(PdfAuxData &pdfData,
                                           static_cast<MD::ItemWithOpts *>(item),
                                           previousBaseline,
                                           pdfData.lineSpacing(font, m_opts.m_codeFontSize, scale),
-                                          -pdfData.fontDescent(font, m_opts.m_codeFontSize, scale));
+                                          pdfData.fontDescent(font, m_opts.m_codeFontSize, scale));
 
     return drawString(pdfData,
                       item->text(),
@@ -2335,7 +2369,7 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
     }
 
     if (heightCalcOpt == CalcHeightOpt::Unknown) {
-        emit status(tr("Drawing paragraph."));
+        Q_EMIT status(tr("Drawing paragraph."));
     }
 
     auto font = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, scale, pdfData);
@@ -2358,7 +2392,7 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
     bool lineBreak = false;
     bool firstInParagraph = true;
 
-    PrevBaselineStateStack previous(lineHeight, -pdfData.fontDescent(font, m_opts.m_textFontSize, scale));
+    PrevBaselineStateStack previous(lineHeight, pdfData.fontDescent(font, m_opts.m_textFontSize, scale));
 
     // Calculate words/lines/spaces widthes.
     for (auto it = item->items().begin(), last = item->items().end(); it != last; ++it) {
@@ -2943,7 +2977,7 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
         pxSize = {(qreal)render->getWidth(), (qreal)render->getHeight()};
         size = {pxSize.width() / (qreal)pd.physicalDpiX() * 72.0, pxSize.height() / (qreal)pd.physicalDpiY() * 72.0};
         descent = (item->isInline() ? ((1.0 - render->getBaseline()) * size.height())
-                                    : (-pdfData.fontDescent(font, m_opts.m_textFontSize, scale)));
+                                    : (pdfData.fontDescent(font, m_opts.m_textFontSize, scale)));
     };
 
     calculateSize();
@@ -3623,7 +3657,7 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
     if (!cw.isDrawing())
         draw = false;
 
-    emit status(tr("Loading image."));
+    Q_EMIT status(tr("Loading image."));
 
     const auto img =
         loadImage(item, lineHeight / 72.0 * m_opts.m_dpi, scaleImagesToLineHeight, !scaleImagesToLineHeight);
@@ -3824,7 +3858,7 @@ const QImage &LoadImageFromNetwork::image() const
 
 void LoadImageFromNetwork::load()
 {
-    emit start();
+    Q_EMIT start();
 }
 
 bool LoadImageFromNetwork::isSvg() const
@@ -4001,7 +4035,7 @@ PdfRenderer::drawCode(PdfAuxData &pdfData,
     }
 
     if (heightCalcOpt == CalcHeightOpt::Unknown) {
-        emit status(tr("Drawing code."));
+        Q_EMIT status(tr("Drawing code."));
     }
 
     auto textFont = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, scale, pdfData);
@@ -4175,7 +4209,7 @@ PdfRenderer::drawBlockquote(PdfAuxData &pdfData,
     QVector<WhereDrawn> ret;
 
     if (heightCalcOpt == CalcHeightOpt::Unknown) {
-        emit status(tr("Drawing blockquote."));
+        Q_EMIT status(tr("Drawing blockquote."));
     }
 
     bool first = true;
@@ -4401,7 +4435,7 @@ PdfRenderer::drawList(PdfAuxData &pdfData,
     }
 
     if (heightCalcOpt == CalcHeightOpt::Unknown) {
-        emit status(tr("Drawing list."));
+        Q_EMIT status(tr("Drawing list."));
     }
 
     int idx = 1;
@@ -4787,7 +4821,7 @@ PdfRenderer::drawTable(PdfAuxData &pdfData,
     }
 
     if (heightCalcOpt == CalcHeightOpt::Unknown) {
-        emit status(tr("Drawing table."));
+        Q_EMIT status(tr("Drawing table."));
     }
 
     auto font = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, scale, pdfData);

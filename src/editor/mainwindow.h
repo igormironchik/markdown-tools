@@ -39,7 +39,7 @@ public:
     //! Try to navigate to file.
     bool tryToNavigate(const QString &fileName);
 
-public slots:
+public Q_SLOTS:
     //! Open file.
     void openFile(const QString &path);
     //! Reorganize UI to show only Web preview.
@@ -59,7 +59,7 @@ protected:
     bool event(QEvent *event) override;
     void showEvent(QShowEvent *e) override;
 
-private slots:
+private Q_SLOTS:
     void onFileNew();
     void onFileOpen();
     void onFileSave();

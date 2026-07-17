@@ -34,7 +34,7 @@ public:
 protected:
     void closeEvent(QCloseEvent *e) override;
 
-private slots:
+private Q_SLOTS:
     void progress(int value);
     void finished(bool terminated);
     void cancel();

@@ -98,7 +98,7 @@ class Switch : public QWidget
     */
     Q_PROPERTY(QColor onColor READ onColor WRITE setOnColor)
 
-signals:
+Q_SIGNALS:
     /*!
         This signal emits when user switches state of the button.
         If state of the button toggled programmaticaly this signal
@@ -164,7 +164,7 @@ public:
 
     QSize sizeHint() const override;
 
-public slots:
+public Q_SLOTS:
     /*!
         Set state of the button.
     */

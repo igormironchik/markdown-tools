@@ -54,7 +54,7 @@ public:
     //! Set mark color.
     void setMarkColor(const QColor &c);
 
-private slots:
+private Q_SLOTS:
     void linkColorChanged(const QColor &c);
     void borderColorChanged(const QColor &c);
     void selectMarkdown();
@@ -100,7 +100,7 @@ protected:
     void showEvent(QShowEvent *event) override;
     bool event(QEvent *event) override;
 
-private slots:
+private Q_SLOTS:
     //! About.
     void about();
     //! About Qt.

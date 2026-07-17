@@ -66,7 +66,7 @@ class Editor : public QPlainTextEdit
 {
     Q_OBJECT
 
-signals:
+Q_SIGNALS:
     //! Line number hovered.
     void lineHovered(int lineNumber,
                      const QPoint &pos);
@@ -173,7 +173,7 @@ public:
     //! \return Line number area widget.
     LineNumberArea *lineNumberArea() const;
 
-public slots:
+public Q_SLOTS:
     //! Enable/disable showing of unprintable characters.
     void showUnprintableCharacters(bool on);
     //! Enable/disable showing of line number area.
@@ -214,7 +214,7 @@ public slots:
     //! Unfold the line.
     void unfoldLine(const QTextCursor &cursor);
 
-private slots:
+private Q_SLOTS:
     //! Calculate and change line number area width.
     void updateLineNumberAreaWidth(int newBlockCount);
     //! Highlight current line (line on which cursor is positioned).
@@ -297,7 +297,7 @@ class LineNumberArea : public QWidget
 {
     Q_OBJECT
 
-signals:
+Q_SIGNALS:
     //! Line number hovered.
     void lineHovered(int lineNumber,
                      const QPoint &pos);
@@ -340,7 +340,7 @@ public:
     //! \return Whether area is hovered.
     bool isHovered() const;
 
-public slots:
+public Q_SLOTS:
     //! Update hover.
     void updateHover();
     //! Clear any hovering state.

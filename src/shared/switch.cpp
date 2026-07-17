@@ -137,8 +137,8 @@ void SwitchPrivate::init()
 
 void SwitchPrivate::emitSignals()
 {
-    emit q->toggled(isChecked());
-    emit q->stateChanged((int)state);
+    Q_EMIT q->toggled(isChecked());
+    Q_EMIT q->stateChanged((int)state);
 }
 
 void SwitchPrivate::drawText(QPainter *p,

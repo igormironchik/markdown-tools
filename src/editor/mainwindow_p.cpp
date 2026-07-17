@@ -56,7 +56,7 @@ void MainWindowPrivate::notifyTocTree(QAbstractItemModel *model,
     for (int i = 0; i < model->rowCount(parent); ++i) {
         const auto idx = model->index(i, 0, parent);
 
-        emit delegate->sizeHintChanged(idx);
+        Q_EMIT delegate->sizeHintChanged(idx);
 
         if (model->rowCount(idx) > 0) {
             notifyTocTree(model, delegate, idx);

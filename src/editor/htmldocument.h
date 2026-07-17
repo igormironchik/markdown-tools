@@ -22,7 +22,7 @@ class HtmlDocument : public QObject
     Q_OBJECT
     Q_PROPERTY(QString text MEMBER m_text NOTIFY textChanged FINAL)
 
-signals:
+Q_SIGNALS:
     void textChanged(const QString &text);
 
 public:

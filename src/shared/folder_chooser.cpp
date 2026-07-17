@@ -54,7 +54,7 @@ class FolderWidget : public QWidget
 {
     Q_OBJECT
 
-signals:
+Q_SIGNALS:
     /*!
      * Clicked.
      *
@@ -121,7 +121,7 @@ public:
         return m_folderName;
     }
 
-public slots:
+public Q_SLOTS:
     /*!
      * Set this folder widget as selected.
      *
@@ -135,7 +135,7 @@ public slots:
         m_selected = on;
 
         if (m_selected && notify) {
-            emit clicked(m_idx);
+            Q_EMIT clicked(m_idx);
         }
 
         update();
@@ -334,7 +334,7 @@ void FolderChooser::onClicked(int idx)
     updateFolders();
 
     if (m_d->m_idx != -1) {
-        emit pathSelected(currentPath());
+        Q_EMIT pathSelected(currentPath());
     }
 }
 

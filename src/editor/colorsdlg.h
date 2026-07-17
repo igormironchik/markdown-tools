@@ -47,7 +47,7 @@ public:
     //! \return Current colors scheme.
     const Colors &colors() const;
 
-private slots:
+private Q_SLOTS:
     //! On button in buttons group clicked.
     void clicked(QAbstractButton *btn);
 
