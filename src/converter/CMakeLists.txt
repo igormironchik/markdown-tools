@@ -10,7 +10,6 @@ set(CMAKE_AUTOUIC ON)
 find_package(Qt6Widgets 6.5.0 REQUIRED)
 find_package(Qt6Network 6.5.0 REQUIRED)
 find_package(Qt6Svg 6.5.0 REQUIRED)
-find_package(OpenSSL REQUIRED)
 find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} COMPONENTS
     IconThemes ColorScheme Config
 )
@@ -64,7 +63,7 @@ endif()
 
 add_executable(md-launcher launcher.cpp)
 
-target_link_libraries(md-launcher Qt6::Core OpenSSL::SSL)
+target_link_libraries(md-launcher Qt6::Core)
 
 install(TARGETS md-pdf-gui)
 install(TARGETS md-launcher)

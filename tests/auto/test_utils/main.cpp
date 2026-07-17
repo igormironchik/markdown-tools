@@ -25,7 +25,7 @@ class TestUtils final : public QObject
 {
     Q_OBJECT
 
-private slots:
+private Q_SLOTS:
     void test_simple_equal()
     {
         QVector<QSharedPointer<BlockLines>> bv1, bv2;

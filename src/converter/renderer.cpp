@@ -151,7 +151,7 @@ double PdfAuxData::topFootnoteY(int page) const
     if (m_reserved.contains(page)) {
         return m_reserved[page];
     } else {
-        return m_layout.m_coords.m_pageHeight;
+        return m_layout.m_coords.m_pageHeight - m_layout.m_coords.m_margins.m_bottom;
     }
 }
 
@@ -3261,7 +3261,7 @@ void PdfRenderer::reserveSpaceForFootnote(PdfAuxData &pdfData,
                                           bool addExtraLine)
 {
     const auto topY = pdfData.topFootnoteY(currentPage);
-    const auto available = currentY - topY - (qAbs(topY) < 0.01 ? pdfData.m_layout.margins().m_bottom : 0.0);
+    const auto available = topY - currentY;
 
     auto height = totalHeight(h) + (addExtraLine ? lineHeight : 0.0);
     auto extra = 0.0;
@@ -4119,11 +4119,11 @@ PdfRenderer::drawCode(PdfAuxData &pdfData,
         int j = i;
         double h = 0.0;
 
-        while ((y - lineHeight > pdfData.currentPageAllowedY()
-                || qAbs(y - lineHeight - pdfData.currentPageAllowedY()) < 0.1)
+        while ((y + lineHeight < pdfData.currentPageAllowedY()
+                || qAbs(y + lineHeight - pdfData.currentPageAllowedY()) < 0.1)
                && j < lines.size()) {
             h += lineHeight;
-            y -= lineHeight;
+            y += lineHeight;
             ++j;
         }
 
