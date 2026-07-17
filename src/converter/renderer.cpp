@@ -333,31 +333,34 @@ void PdfAuxData::drawLine(double x1,
 #endif // MD_PDF_TESTING
 }
 
+inline SkSize a4Size()
+{
+    static const float inchToPoint = 72.0f;
+    static const float widthInInches = 8.27f;
+    static const float heightInInches = 11.69f;
+
+    return {widthInInches * inchToPoint, heightInInches * inchToPoint};
+}
+
 void PdfAuxData::save(const QString &fileName)
 {
     const auto write = [this](const QString &fileName) {
         SkDynamicMemoryWStream buffer;
-
-        const float inchToPoint = 72.0f;
-        const float widthInInches = 8.27f;
-        const float heightInInches = 11.69f;
-
-        const float p4Width = widthInInches * inchToPoint;
-        const float p4Height = heightInInches * inchToPoint;
-
         SkPDF::Metadata metadata;
         metadata.jpegDecoder = SkPDF::JPEG::Decode;
         metadata.jpegEncoder = SkPDF::JPEG::Encode;
-        // metadata.fTitle = documentTitle;
+        metadata.fTitle = SkString(fileName.toUtf8().data());
         metadata.fCreator = "This PDF was generated with Markdown Tools\n"
                             "https://github.com/igormironchik/markdown-tools";
         auto pdfDocument = SkPDF::MakeDocument(&buffer, metadata);
 
         for (const auto &p : *m_pages) {
-            SkCanvas* pageCanvas = pdfDocument->beginPage(p4Width,
-                                                                  p4Height);
+            SkCanvas* pageCanvas = pdfDocument->beginPage(a4Size().width(),
+                                                                  a4Size().height());
             pageCanvas->drawPicture(p.m_recorder->finishRecordingAsPicture());
         }
+
+        pdfDocument->close();
 
         sk_sp<SkData> pdfData = buffer.detachAsData();
 
@@ -1020,13 +1023,7 @@ void PdfRenderer::createPage(PdfAuxData &pdfData)
     std::function<void(PdfAuxData &)> create;
 
     create = [&create](PdfAuxData &pdfData) {
-        const float inchToPoint = 72.0f;
-        const float widthInInches = 8.27f;
-        const float heightInInches = 11.69f;
-
-        const float p4Width = widthInInches * inchToPoint;
-        const float p4Height = heightInInches * inchToPoint;
-        SkRect bounds = SkRect::MakeWH(p4Width, p4Height);
+        static const SkRect bounds = SkRect::MakeSize(a4Size());
 
         Page page;
         page.m_recorder = std::make_shared<SkPictureRecorder>();
@@ -1037,8 +1034,8 @@ void PdfRenderer::createPage(PdfAuxData &pdfData)
         (*pdfData.m_pages).push_back(page);
         pdfData.m_currentPainterIdx = pdfData.m_pages->size() - 1;
 
-        pdfData.m_layout.m_coords.m_pageWidth = p4Width;
-        pdfData.m_layout.m_coords.m_pageHeight = p4Height;
+        pdfData.m_layout.m_coords.m_pageWidth = bounds.width();
+        pdfData.m_layout.m_coords.m_pageHeight = bounds.height();
         pdfData.m_layout.moveXToBegin();
         pdfData.m_layout.setY(pdfData.m_layout.topY());
 
@@ -2213,7 +2210,7 @@ void PdfRenderer::moveToNewLine(PdfAuxData &pdfData,
     pdfData.m_layout.moveXToBegin();
     pdfData.m_layout.addY(yOffset * yOffsetMultiplier);
 
-    if (pdfData.m_layout.y() < pdfData.currentPageAllowedY()
+    if (pdfData.m_layout.y() > pdfData.currentPageAllowedY()
         && qAbs(pdfData.m_layout.y() - pdfData.currentPageAllowedY()) > 0.1) {
         createPage(pdfData);
 
