@@ -217,7 +217,6 @@ public:
                         QSharedPointer<MD::Document> doc,
                         const RenderOpts &opts,
                         bool testing = false) = 0;
-    virtual void clean() = 0;
 }; // class Renderer
 
 static const double s_margin = 72.0 / 25.4 * 20.0;
@@ -282,7 +281,7 @@ struct LayoutDirectionHandler {
     void addY(double value,
               double direction = 1.0)
     {
-        m_coords.m_y -= direction * value;
+        m_coords.m_y += direction * value;
     }
     double leftBorderXWithOffset() const
     {
@@ -305,7 +304,7 @@ struct LayoutDirectionHandler {
 
     double topY() const
     {
-        return m_coords.m_pageHeight - m_coords.m_margins.m_top;
+        return m_coords.m_margins.m_top;
     }
     const PageMargins &margins() const
     {
@@ -335,7 +334,7 @@ struct LayoutDirectionHandler {
                       double height,
                       double baseline = 0.0) const
     {
-        return RectF(startX(width), y() + baseline, width, height);
+        return RectF(startX(width), y() + height, width, height);
     }
     double startX(double width) const
     {
@@ -551,10 +550,6 @@ public:
     PdfRenderer();
     ~PdfRenderer() override = default;
 
-    //! \return Is font can be created?
-    static bool isFontCreatable(const QString &font,
-                                bool monospace);
-
     //! Convert QString to UTF-8.
     static Utf8String createUtf8String(const QString &text);
     //! Convert UTF-8 to QString.
@@ -578,8 +573,6 @@ public slots:
 private slots:
     //! Real rendering.
     void renderImpl();
-    //! Clean render.
-    void clean() override;
 
 protected:
 #ifdef MD_PDF_TESTING
@@ -588,11 +581,11 @@ protected:
 
     //! Create font.
     Font createFont(const QString &name,
-                     bool bold,
-                     bool italic,
-                     double size,
-                     double scale,
-                     const PdfAuxData &pdfData);
+                    bool bold,
+                    bool italic,
+                    double size,
+                    double scale,
+                    const PdfAuxData &pdfData);
 
 private:
     //! Create new page.
@@ -620,8 +613,6 @@ private:
         bool scale = false,
         //! Store in cache loaded image data?
         bool cache = true);
-    //! Make all links clickable.
-    void resolveLinks(PdfAuxData &pdfData);
     //! Max width of numbered list bullet.
     int maxListNumberWidth(MD::List *list) const;
 
@@ -634,9 +625,6 @@ private:
         //! Calculate full height.
         Full = 2
     }; // enum class CalcHeightOpt
-
-    //! Finish pages.
-    void finishPages(PdfAuxData &pdfData);
 
     //! Flag for RTL languages support.
     struct RTLFlag {
@@ -1061,7 +1049,7 @@ private:
              MD::Text *item,
              QSharedPointer<MD::Document> doc,
              bool &newLine,
-             Font *footnoteFont,
+             const Font *footnoteFont,
              double footnoteFontSize,
              double footnoteFontScale,
              MD::Item *nextItem,
@@ -1093,16 +1081,16 @@ private:
                   unsigned int>>
     drawString(PdfAuxData &pdfData,
                const QString &str,
-               Font *spaceFont,
+               const Font &spaceFont,
                double spaceFontSize,
                double spaceFontScale,
-               Font *font,
+               const Font &font,
                double fontSize,
                double fontScale,
                double lineHeight,
                QSharedPointer<MD::Document> doc,
                bool &newLine,
-               Font *footnoteFont,
+               const Font *footnoteFont,
                double footnoteFontSize,
                double footnoteFontScale,
                MD::Item *nextItem,
@@ -1118,7 +1106,7 @@ private:
                long long int endPos,
                PrevBaselineStateStack &currentBaseline,
                const QColor &color = Qt::black,
-               Font *regularSpaceFont = nullptr,
+               const Font *regularSpaceFont = nullptr,
                double regularSpaceFontSize = 0.0,
                double regularSpaceFontScale = 0.0,
                RTLFlag *rtl = nullptr);
@@ -1129,7 +1117,7 @@ private:
              MD::Link *item,
              QSharedPointer<MD::Document> doc,
              bool &newLine,
-             Font *footnoteFont,
+             const Font &footnoteFont,
              double footnoteFontSize,
              double footnoteFontScale,
              MD::Item *prevItem,
@@ -1434,13 +1422,6 @@ private:
     QMutex m_mutex;
     //! Termination flag.
     bool m_terminate;
-    //! All destinations in the document.
-    // TODO!
-    //    QMap<QString, std::shared_ptr<Destination>> m_dests;
-    //! Links that not yet clickable.
-    QMultiMap<QString, QVector<QPair<RectF, unsigned int>>> m_unresolvedLinks;
-    //! Footnotes links.
-    QMultiMap<QString, QPair<RectF, unsigned int>> m_unresolvedFootnotesLinks;
     //! Cache of images.
     QMap<QString, QByteArray> m_imageCache;
     //! Footnotes to draw.

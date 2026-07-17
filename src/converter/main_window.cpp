@@ -51,8 +51,6 @@ MainWidget::MainWidget(QWidget *parent)
     : QWidget(parent)
     , m_ui(new Ui::MainWindow())
     , m_thread(new QThread(this))
-    , m_textFontOk(false)
-    , m_codeFontOk(false)
     , m_syntax(new MdShared::Syntax)
 {
     m_ui->setupUi(this);
@@ -61,8 +59,6 @@ MainWidget::MainWidget(QWidget *parent)
     connect(m_ui->m_borderColor, &KColorButton::changed, this, &MainWidget::borderColorChanged);
     connect(m_ui->m_fileNameBtn, &QToolButton::clicked, this, &MainWidget::selectMarkdown);
     connect(m_ui->m_startBtn, &QPushButton::clicked, this, &MainWidget::process);
-    connect(m_ui->m_textFont, &QFontComboBox::currentFontChanged, this, &MainWidget::textFontChanged);
-    connect(m_ui->m_codeFont, &QFontComboBox::currentFontChanged, this, &MainWidget::codeFontChanged);
 
     void (QSpinBox::*signal)(int) = &QSpinBox::valueChanged;
 
@@ -79,29 +75,6 @@ MainWidget::MainWidget(QWidget *parent)
     adjustSize();
 
     m_thread->start();
-
-    if (!Render::PdfRenderer::isFontCreatable(m_ui->m_textFont->currentText(), false)) {
-        for (int i = 0; i < m_ui->m_textFont->count(); ++i) {
-            if (Render::PdfRenderer::isFontCreatable(m_ui->m_textFont->itemText(i), false)) {
-                m_ui->m_textFont->setCurrentIndex(i);
-
-                break;
-            }
-        }
-    }
-
-    if (!Render::PdfRenderer::isFontCreatable(m_ui->m_codeFont->currentText(), true)) {
-        for (int i = 0; i < m_ui->m_codeFont->count(); ++i) {
-            if (Render::PdfRenderer::isFontCreatable(m_ui->m_codeFont->itemText(i), true)) {
-                m_ui->m_codeFont->setCurrentIndex(i);
-
-                break;
-            }
-        }
-    }
-
-    textFontChanged(m_ui->m_textFont->currentFont());
-    codeFontChanged(m_ui->m_codeFont->currentFont());
 
     QStringList themeNames;
     const auto themes = m_syntax->repository().themes();
@@ -427,7 +400,7 @@ void MainWidget::setMarkdownFile(const QString &fileName)
     m_ui->m_workingDirectory->setPath(QFileInfo(fileName).absolutePath());
     m_ui->m_workingDirBox->setChecked(false);
 
-    changeStateOfStartButton();
+    m_ui->m_startBtn->setEnabled(true);
 }
 
 void MainWidget::linkColorChanged(const QColor &c)
@@ -438,15 +411,6 @@ void MainWidget::linkColorChanged(const QColor &c)
 void MainWidget::borderColorChanged(const QColor &c)
 {
     m_ui->m_borderColor->setColor(c);
-}
-
-void MainWidget::changeStateOfStartButton()
-{
-    if (m_textFontOk && m_codeFontOk) {
-        m_ui->m_startBtn->setEnabled(true);
-    } else {
-        m_ui->m_startBtn->setEnabled(false);
-    }
 }
 
 void MainWidget::selectMarkdown()
@@ -568,62 +532,6 @@ void MainWidget::mmButtonToggled(bool on)
         m_ui->m_right->setValue(qRound(m_ui->m_right->value() / s_mmInPt));
         m_ui->m_top->setValue(qRound(m_ui->m_top->value() / s_mmInPt));
         m_ui->m_bottom->setValue(qRound(m_ui->m_bottom->value() / s_mmInPt));
-    }
-}
-
-void MainWidget::onStyleChangeBegin()
-{
-    m_ui->m_textFont->setStyleSheet(QString());
-    m_ui->m_codeFont->setStyleSheet(QString());
-}
-
-void MainWidget::onStyleChangeEnd()
-{
-    textFontChanged(m_ui->m_textFont->currentFont());
-    codeFontChanged(m_ui->m_codeFont->currentFont());
-    m_ui->m_textFont->ensurePolished();
-    m_ui->m_codeFont->ensurePolished();
-}
-
-void MainWidget::textFontChanged(const QFont &f)
-{
-    const QString defaultColor = qApp->palette().color(QPalette::Text).name();
-
-    if (!Render::PdfRenderer::isFontCreatable(f.family(), false)) {
-        m_ui->m_textFont->setStyleSheet(QStringLiteral("QFontComboBox { color: red }"));
-        m_textFontOk = false;
-
-        m_ui->m_startBtn->setEnabled(false);
-    } else {
-        m_ui->m_textFont->setStyleSheet(QStringLiteral("QFontComboBox { color: %1 }").arg(defaultColor));
-        m_textFontOk = true;
-
-        if (!m_ui->m_fileName->text().isEmpty() && m_codeFontOk) {
-            m_ui->m_startBtn->setEnabled(true);
-        } else {
-            m_ui->m_startBtn->setEnabled(false);
-        }
-    }
-}
-
-void MainWidget::codeFontChanged(const QFont &f)
-{
-    const QString defaultColor = qApp->palette().color(QPalette::Text).name();
-
-    if (!Render::PdfRenderer::isFontCreatable(f.family(), true)) {
-        m_ui->m_codeFont->setStyleSheet(QStringLiteral("QFontComboBox { color: red }"));
-        m_codeFontOk = false;
-
-        m_ui->m_startBtn->setEnabled(false);
-    } else {
-        m_ui->m_codeFont->setStyleSheet(QStringLiteral("QFontComboBox { color: %1 }").arg(defaultColor));
-        m_codeFontOk = true;
-
-        if (!m_ui->m_fileName->text().isEmpty() && m_textFontOk) {
-            m_ui->m_startBtn->setEnabled(true);
-        } else {
-            m_ui->m_startBtn->setEnabled(false);
-        }
     }
 }
 
@@ -762,13 +670,11 @@ bool MainWindow::event(QEvent *event)
 {
     switch (event->type()) {
     case QEvent::ThemeChange: {
-        ui->onStyleChangeBegin();
-        const auto ret = QMainWindow::event(event);
 #ifndef Q_OS_WIN
+        const auto ret = QMainWindow::event(event);
         applyTheme(qApp->style()->objectName(), (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark));
-#endif
-        ui->onStyleChangeEnd();
         return ret;
+#endif
     } break;
 
     default:
