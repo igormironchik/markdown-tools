@@ -422,7 +422,7 @@ inline SkPaint::Join joinStyle(Qt::PenJoinStyle s)
 
 inline SkColor color(const QColor &c)
 {
-    return SkColorSetRGB(c.redF(), c.greenF(), c.blueF());
+    return SkColorSetRGB(c.red(), c.green(), c.blue());
 }
 
 inline double scaleOfTransform(const QTransform &t)

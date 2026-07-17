@@ -417,7 +417,7 @@ void PdfAuxData::drawRectangle(double x,
 void PdfAuxData::setColor(const QColor &c)
 {
     m_colorsStack.push(c);
-    m_currentPaint.setColor(SkColorSetRGB(c.redF(), c.greenF(), c.blueF()));
+    m_currentPaint.setColor(SkColorSetRGB(c.red(), c.green(), c.blue()));
 }
 
 void PdfAuxData::restoreColor()
@@ -432,7 +432,7 @@ void PdfAuxData::restoreColor()
 void PdfAuxData::repeatColor()
 {
     const auto &c = m_colorsStack.top();
-    m_currentPaint.setColor(SkColorSetRGB(c.redF(), c.greenF(), c.blueF()));
+    m_currentPaint.setColor(SkColorSetRGB(c.red(), c.green(), c.blue()));
 }
 
 double PdfAuxData::stringWidth(const Font &font,
@@ -1874,7 +1874,8 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                                           pdfData.m_layout.y()
                                               + cw.descent()
                                               + pdfData.fontDescent(font, fontSize, fontScale)
-                                              + currentBaseline.m_stack.back().m_baselineDelta,
+                                              + currentBaseline.m_stack.back().m_baselineDelta
+                                              - cw.height(),
                                           width,
                                           pdfData.lineSpacing(font, fontSize, fontScale),
                                           SkPaint::kFill_Style);
@@ -1970,6 +1971,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                         pdfData.setColor(background);
                         pdfData.drawRectangle(pdfData.m_layout.startX(length),
                                               pdfData.m_layout.y()
+                                                  - cw.height()
                                                   + cw.descent()
                                                   + pdfData.fontDescent(font, fontSize, fontScale)
                                                   + currentBaseline.m_stack.back().m_baselineDelta,
