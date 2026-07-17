@@ -38,9 +38,9 @@
 #include <include/core/SkData.h>
 #include <include/core/SkFontMetrics.h>
 #include <include/core/SkFontMgr.h>
+#include <include/core/SkImage.h>
 #include <include/ports/SkFontMgr_fontconfig.h>
 #include <include/ports/SkFontScanner_FreeType.h>
-#include <include/core/SkImage.h>
 
 // C++ include.
 #include <cmath>
@@ -3506,10 +3506,8 @@ bool PdfRenderer::isOnlineImage(PdfAuxData &pdfData,
                                 double lineHeight,
                                 bool scaleImagesToLineHeight)
 {
-    const auto img = loadImage(item,
-                               lineHeight / 72.0 * m_opts.m_dpi,
-                               scaleImagesToLineHeight,
-                               !scaleImagesToLineHeight);
+    const auto img =
+        loadImage(item, lineHeight / 72.0 * m_opts.m_dpi, scaleImagesToLineHeight, !scaleImagesToLineHeight);
 
     if (!img.isNull()) {
         sk_sp<SkData> data = SkData::MakeWithoutCopy(img.data(), static_cast<size_t>(img.size()));
@@ -3627,19 +3625,24 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
 
     emit status(tr("Loading image."));
 
-    const auto img = loadImage(item,
-                               lineHeight / 72.0 * m_opts.m_dpi,
-                               scaleImagesToLineHeight,
-                               !scaleImagesToLineHeight);
+    const auto img =
+        loadImage(item, lineHeight / 72.0 * m_opts.m_dpi, scaleImagesToLineHeight, !scaleImagesToLineHeight);
 
     const auto autoOffset = pdfData.m_layout.addOffset(offset, !pdfData.m_layout.isRightToLeft());
 
     if (!img.isNull()) {
-        auto pdfImg = pdfData.m_doc->CreateImage();
-        pdfImg->LoadFromBuffer({img.data(), static_cast<size_t>(img.size())});
+        sk_sp<SkData> data = SkData::MakeWithoutCopy(img.data(), static_cast<size_t>(img.size()));
+        sk_sp<SkImage> image = SkImages::DeferredFromEncodedData(data);
 
-        const double iWidth = std::round((double)pdfImg->GetWidth() / (double)m_opts.m_dpi * 72.0);
-        const double iHeight = std::round((double)pdfImg->GetHeight() / (double)m_opts.m_dpi * 72.0);
+        if (!image) {
+            throw PdfRendererError(tr("Unable to load image: %1.\n\n"
+                                      "If this image is in Web, please be sure you are connected to the Internet. I'm "
+                                      "sorry for the inconvenience.")
+                                       .arg(item->url()));
+        }
+
+        const double iWidth = std::round((double)image->width() / (double)m_opts.m_dpi * 72.0);
+        const double iHeight = std::round((double)image->height() / (double)m_opts.m_dpi * 72.0);
 
         double imgScale = (scaleImagesToLineHeight ? lineHeight / iHeight : 1.0);
         const double totalAvailableWidth = pdfData.m_layout.pageWidth()
@@ -3707,7 +3710,7 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
             }
         }
 
-        const double dpiScale = (double)pdfImg->GetWidth() / iWidth;
+        const double dpiScale = (double)image->width() / iWidth;
         double dy = 0.0;
 
         const AutoSubSupScriptInit subSupInit(this,
@@ -3719,14 +3722,6 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
         imgScale *= scale * previousBaseline.currentScale();
 
         if (draw) {
-            if (!onLine) {
-                newLine = true;
-                pdfData.m_layout.addY(iHeight * imgScale);
-            } else if (firstInParagraph) {
-                newLine = false;
-                pdfData.m_layout.addY(cw.height());
-            }
-
             if (onLine && addSpace) {
                 pdfData.m_layout.addX(spaceWidth * cw.scale() / 100.0);
             }
@@ -3739,10 +3734,18 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
 
             // y - is bottom.
             pdfData.drawImage(pdfData.m_layout.startX(iWidth * imgScale),
-                              pdfData.m_layout.y() + dy,
-                              pdfImg.get(),
+                              pdfData.m_layout.y() - dy,
+                              image.get(),
                               imgScale / dpiScale,
                               imgScale / dpiScale);
+
+            if (!onLine) {
+                newLine = true;
+                pdfData.m_layout.addY(iHeight * imgScale);
+            } else if (firstInParagraph) {
+                newLine = false;
+                pdfData.m_layout.addY(cw.height());
+            }
         } else {
             if (onLine && addSpace) {
                 cw.append({spaceWidth, 0.0, true, false, true, " "});
@@ -3803,13 +3806,11 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
 
 LoadImageFromNetwork::LoadImageFromNetwork(const QUrl &url,
                                            QThread *thread,
-                                           const ResvgOptions &opts,
                                            double height,
                                            bool scale)
     : m_thread(thread)
     , m_reply(nullptr)
     , m_url(url)
-    , m_opts(opts)
     , m_height(height)
     , m_scale(scale)
 {
@@ -3824,6 +3825,16 @@ const QImage &LoadImageFromNetwork::image() const
 void LoadImageFromNetwork::load()
 {
     emit start();
+}
+
+bool LoadImageFromNetwork::isSvg() const
+{
+    return !m_svgData.isEmpty();
+}
+
+const QByteArray &LoadImageFromNetwork::svgData() const
+{
+    return m_svgData;
 }
 
 void LoadImageFromNetwork::loadImpl()
@@ -3842,17 +3853,21 @@ void LoadImageFromNetwork::loadImpl()
 
 void LoadImageFromNetwork::loadFinished()
 {
-    const auto data = m_reply->readAll();
+    auto data = m_reply->readAll();
     const auto svg = QString(data.mid(0, 4).toLower());
 
-    if (svg == QStringLiteral("<svg") || svg == QStringLiteral("<?xm")) {
-        ResvgRenderer r(data, m_opts);
+    if (svg == QStringLiteral("<svg")
+        || svg == QStringLiteral("<?xm")
+        || m_reply->url().fileName().toLower().endsWith(QStringLiteral("svgz"))
+        || m_reply->url().fileName().toLower().endsWith(QStringLiteral("svg"))) {
+        if (m_reply->url().fileName().toLower().endsWith(QStringLiteral("svgz"))) {
+            if (data.size() > 10 && (quint8)data[0] == 0x1f && (quint8)data[1] == 0x8b) {
+                data.remove(0, 10);
+            }
 
-        if (r.isValid()) {
-            double s = m_height / (double)r.defaultSize().height();
-            m_img = r.renderToImage(m_scale ? QSize(qRound((double)r.defaultSize().width() * s),
-                                                    qRound((double)r.defaultSize().height() * s))
-                                            : r.defaultSize());
+            m_svgData = qUncompress(data);
+        } else {
+            m_svgData = data;
         }
     } else {
         m_img.loadFromData(data);
@@ -3870,7 +3885,6 @@ void LoadImageFromNetwork::loadError(QNetworkReply::NetworkError)
 }
 
 QByteArray PdfRenderer::loadImage(MD::Image *item,
-                                  const ResvgOptions &opts,
                                   double height,
                                   bool scale,
                                   bool cache)
@@ -3884,13 +3898,22 @@ QByteArray PdfRenderer::loadImage(MD::Image *item,
     if (QFileInfo::exists(item->url())) {
         if (item->url().toLower().endsWith(QStringLiteral("svg"))
             || item->url().toLower().endsWith(QStringLiteral("svgz"))) {
-            ResvgRenderer r(item->url(), opts);
+            QFile file(item->url());
+            if (file.open(QIODevice::ReadOnly)) {
+                auto data = file.readAll();
+                file.close();
 
-            if (r.isValid()) {
-                double s = height / (double)r.defaultSize().height();
-                img = r.renderToImage(scale ? QSize(qRound((double)r.defaultSize().width() * s),
-                                                    qRound((double)r.defaultSize().height() * s))
-                                            : r.defaultSize());
+                if (data.size() > 10 && (quint8)data[0] == 0x1f && (quint8)data[1] == 0x8b) {
+                    data.remove(0, 10);
+                }
+
+                data = qUncompress(data);
+
+                if (cache) {
+                    m_imageCache.insert(item->url(), data);
+                }
+
+                return data;
             }
         } else {
             img = QImage(item->url());
@@ -3898,7 +3921,7 @@ QByteArray PdfRenderer::loadImage(MD::Image *item,
     } else if (!QUrl(item->url()).isRelative()) {
         QThread thread;
 
-        LoadImageFromNetwork load(QUrl(item->url()), &thread, opts, height, scale);
+        LoadImageFromNetwork load(QUrl(item->url()), &thread, height, scale);
 
         load.moveToThread(&thread);
         thread.start();
@@ -3906,6 +3929,14 @@ QByteArray PdfRenderer::loadImage(MD::Image *item,
         thread.wait();
 
         img = load.image();
+
+        if (load.isSvg()) {
+            if (cache) {
+                m_imageCache.insert(item->url(), load.svgData());
+            }
+
+            return load.svgData();
+        }
 
 #ifdef MD_PDF_TESTING
         if (img.isNull()) {
@@ -3973,11 +4004,11 @@ PdfRenderer::drawCode(PdfAuxData &pdfData,
         emit status(tr("Drawing code."));
     }
 
-    auto *textFont = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, pdfData.m_doc, scale, pdfData);
+    auto textFont = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, scale, pdfData);
 
     const auto textLHeight = pdfData.lineSpacing(textFont, m_opts.m_textFontSize, scale);
 
-    auto *font = createFont(m_opts.m_codeFont, false, false, m_opts.m_codeFontSize, pdfData.m_doc, scale, pdfData);
+    auto font = createFont(m_opts.m_codeFont, false, false, m_opts.m_codeFontSize, scale, pdfData);
 
     const auto lineHeight = pdfData.lineSpacing(font, m_opts.m_codeFontSize, scale);
 
@@ -4069,7 +4100,7 @@ PdfRenderer::drawCode(PdfAuxData &pdfData,
                                   y,
                                   pdfData.m_layout.availableWidth(),
                                   h,
-                                  PoDoFo::PdfPathDrawMode::Fill);
+                                  SkPaint::kFill_Style);
             pdfData.restoreColor();
 
             ret.append({pdfData.m_currentPainterIdx, y, h});
@@ -4089,19 +4120,13 @@ PdfRenderer::drawCode(PdfAuxData &pdfData,
 
                 const auto length = colored[currentWord].endPos - colored[currentWord].startPos + 1;
 
-                Font *f = font;
+                Font f = font;
 
                 const auto italic = colored[currentWord].format.isItalic(m_opts.m_syntax->theme());
                 const auto bold = colored[currentWord].format.isBold(m_opts.m_syntax->theme());
 
                 if (italic || bold) {
-                    f = createFont(m_opts.m_codeFont,
-                                   bold,
-                                   italic,
-                                   m_opts.m_codeFontSize,
-                                   pdfData.m_doc,
-                                   scale,
-                                   pdfData);
+                    f = createFont(m_opts.m_codeFont, bold, italic, m_opts.m_codeFontSize, scale, pdfData);
                 }
 
                 pdfData.drawText(pdfData.m_layout.startX(spaceWidth * length),
@@ -4339,7 +4364,7 @@ PdfRenderer::drawBlockquote(PdfAuxData &pdfData,
                               it.value().m_y,
                               s_blockquoteMarkWidth,
                               it.value().m_height,
-                              PoDoFo::PdfPathDrawMode::Fill);
+                              SkPaint::kFill_Style);
         pdfData.restoreColor();
     }
 
@@ -4437,7 +4462,7 @@ PdfRenderer::drawListItem(PdfAuxData &pdfData,
     pdfData.m_endLine = item->endLine();
     pdfData.m_endPos = item->endColumn();
 
-    auto *font = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, pdfData.m_doc, scale, pdfData);
+    auto font = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, scale, pdfData);
 
     const auto lineHeight = pdfData.lineSpacing(font, m_opts.m_textFontSize, scale);
     const auto orderedListNumberWidth = pdfData.stringWidth(font, m_opts.m_textFontSize, scale, "9") * bulletWidth
@@ -4606,7 +4631,7 @@ PdfRenderer::drawListItem(PdfAuxData &pdfData,
                                       firstLine.m_y + qAbs(firstLine.m_height - orderedListNumberWidth) / 2.0,
                                       orderedListNumberWidth,
                                       orderedListNumberWidth,
-                                      PoDoFo::PdfPathDrawMode::Stroke);
+                                      SkPaint::kStroke_Style);
 
                 if (item->isChecked()) {
                     const auto d = orderedListNumberWidth * 0.2;
@@ -4617,7 +4642,7 @@ PdfRenderer::drawListItem(PdfAuxData &pdfData,
                                           firstLine.m_y + qAbs(firstLine.m_height - orderedListNumberWidth) / 2.0 + d,
                                           orderedListNumberWidth - 2.0 * d,
                                           orderedListNumberWidth - 2.0 * d,
-                                          PoDoFo::PdfPathDrawMode::Fill);
+                                          SkPaint::kFill_Style);
                 }
 
                 pdfData.restoreColor();
@@ -4646,12 +4671,15 @@ PdfRenderer::drawListItem(PdfAuxData &pdfData,
 
                 pdfData.setColor(Qt::black);
                 const auto r = unorderedMarkWidth / 2.0;
-                (*pdfData.m_pages)[pdfData.m_currentPainterIdx]->DrawCircle(
+                const auto style = pdfData.m_currentPaint.getStyle();
+                pdfData.m_currentPaint.setStyle(SkPaint::kFill_Style);
+                (*pdfData.m_pages)[pdfData.m_currentPainterIdx].m_canvas->drawCircle(
                     pdfData.m_layout.borderStartX()
                         + pdfData.m_layout.xIncrementDirection() * (offset + r - (orderedListNumberWidth + spaceWidth)),
                     firstLine.m_y + qAbs(firstLine.m_height - unorderedMarkWidth) / 2.0 + unorderedMarkWidth / 2.0,
                     r,
-                    PoDoFo::PdfPathDrawMode::Fill);
+                    pdfData.m_currentPaint);
+                pdfData.m_currentPaint.setStyle(style);
                 pdfData.restoreColor();
             }
 
@@ -4762,7 +4790,7 @@ PdfRenderer::drawTable(PdfAuxData &pdfData,
         emit status(tr("Drawing table."));
     }
 
-    auto *font = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, pdfData.m_doc, scale, pdfData);
+    auto font = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, scale, pdfData);
     const auto lineHeight = pdfData.lineSpacing(font, m_opts.m_textFontSize, scale);
     const auto columnWidth =
         (pdfData.m_layout.pageWidth() - pdfData.m_layout.margins().m_left - pdfData.m_layout.margins().m_right - offset)
@@ -5070,10 +5098,10 @@ void PdfRenderer::addFootnote(const QString &refId,
                                       pdfData.m_layout.margins().m_right,
                                       pdfData.m_layout.margins().m_top,
                                       pdfData.m_layout.margins().m_bottom},
-                                     pdfData.m_page->GetRect().Width,
-                                     pdfData.m_page->GetRect().Height,
+                                     pdfData.m_layout.pageWidth(),
+                                     pdfData.m_layout.pageHeight(),
                                      0.0,
-                                     pdfData.m_page->GetRect().Height - pdfData.m_layout.margins().m_top};
+                                     pdfData.m_layout.margins().m_top};
         tmpData.m_layout.moveXToBegin();
 
         double lineHeight = 0.0;

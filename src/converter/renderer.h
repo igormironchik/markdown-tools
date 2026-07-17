@@ -1452,6 +1452,8 @@ public:
 
     const QImage &image() const;
     void load();
+    bool isSvg() const;
+    const QByteArray &svgData() const;
 
 private slots:
     void loadImpl();
@@ -1463,6 +1465,7 @@ private:
 
     QThread *m_thread;
     QImage m_img;
+    QByteArray m_svgData;
     QNetworkReply *m_reply;
     QUrl m_url;
     double m_height;
