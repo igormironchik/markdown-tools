@@ -2323,12 +2323,12 @@ void Editor::onContentChanged()
     m_d->m_keyPressed = false;
 
     Q_EMIT doParsing(md,
-                   (m_d->m_useWorkingDir ? m_d->m_workingDirectory : info.absolutePath()),
-                   info.fileName(),
-                   m_d->m_currentParsingCounter,
-                   m_d->m_syntax,
-                   m_d->m_settings.m_pluginsCfg,
-                   m_d->m_blockLines);
+                     (m_d->m_useWorkingDir ? m_d->m_workingDirectory : info.absolutePath()),
+                     info.fileName(),
+                     m_d->m_currentParsingCounter,
+                     m_d->m_syntax,
+                     m_d->m_settings.m_pluginsCfg,
+                     m_d->m_blockLines);
 }
 
 bool operator!=(const QVector<MdUtils::BlockLines *> &b1,

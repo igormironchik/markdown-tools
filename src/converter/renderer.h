@@ -334,7 +334,7 @@ struct LayoutDirectionHandler {
                       double height,
                       double baseline = 0.0) const
     {
-        return RectF(startX(width), y() + height, width, height);
+        return RectF(startX(width), y(), width, height);
     }
     double startX(double width) const
     {

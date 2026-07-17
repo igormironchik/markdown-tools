@@ -24,23 +24,23 @@
 // Skia include.
 #include <include/core/SkAnnotation.h>
 #include <include/core/SkData.h>
+#include <include/core/SkDocument.h>
 #include <include/core/SkFontMetrics.h>
 #include <include/core/SkFontMgr.h>
 #include <include/core/SkImage.h>
 #include <include/core/SkPicture.h>
-#include <include/ports/SkFontMgr_fontconfig.h>
-#include <include/ports/SkFontScanner_FreeType.h>
-#include <include/core/SkDocument.h>
 #include <include/core/SkStream.h>
 #include <include/docs/SkPDFDocument.h>
 #include <include/docs/SkPDFJpegHelpers.h>
+#include <include/ports/SkFontMgr_fontconfig.h>
+#include <include/ports/SkFontScanner_FreeType.h>
 #include <modules/svg/include/SkSVGDOM.h>
 
 // C++ include.
 #include <cmath>
+#include <fstream>
 #include <functional>
 #include <utility>
-#include <fstream>
 
 // Qt include.
 #include <QApplication>
@@ -149,9 +149,9 @@ int PdfAuxData::currentPageIndex() const
 double PdfAuxData::topFootnoteY(int page) const
 {
     if (m_reserved.contains(page)) {
-        return m_reserved[page];
+        return m_layout.pageHeight() - m_reserved[page];
     } else {
-        return m_layout.m_coords.m_pageHeight - m_layout.m_coords.m_margins.m_bottom;
+        return m_layout.pageHeight() - m_layout.m_coords.m_margins.m_bottom;
     }
 }
 
@@ -164,7 +164,7 @@ double PdfAuxData::allowedY(int page) const
 {
     if (!m_drawFootnotes) {
         if (m_reserved.contains(page)) {
-            return m_reserved[page];
+            return m_layout.pageHeight() - m_reserved[page];
         } else {
             return m_layout.pageHeight() - m_layout.margins().m_bottom;
         }
@@ -350,13 +350,13 @@ void PdfAuxData::save(const QString &fileName)
         metadata.jpegDecoder = SkPDF::JPEG::Decode;
         metadata.jpegEncoder = SkPDF::JPEG::Encode;
         metadata.fTitle = SkString(fileName.toUtf8().data());
-        metadata.fCreator = "This PDF was generated with Markdown Tools\n"
-                            "https://github.com/igormironchik/markdown-tools";
+        metadata.fCreator =
+            "This PDF was generated with Markdown Tools\n"
+            "https://github.com/igormironchik/markdown-tools";
         auto pdfDocument = SkPDF::MakeDocument(&buffer, metadata);
 
         for (const auto &p : *m_pages) {
-            SkCanvas* pageCanvas = pdfDocument->beginPage(a4Size().width(),
-                                                                  a4Size().height());
+            SkCanvas *pageCanvas = pdfDocument->beginPage(a4Size().width(), a4Size().height());
             pageCanvas->drawPicture(p.m_recorder->finishRecordingAsPicture());
         }
 
@@ -364,9 +364,9 @@ void PdfAuxData::save(const QString &fileName)
 
         sk_sp<SkData> pdfData = buffer.detachAsData();
 
-        std::fstream f(fileName.toLocal8Bit().data(), std::ios::binary | std::ios::out );
+        std::fstream f(fileName.toLocal8Bit().data(), std::ios::binary | std::ios::out);
 
-        f.write( static_cast< const char * >( pdfData->writable_data() ), pdfData->size() );
+        f.write(static_cast<const char *>(pdfData->writable_data()), pdfData->size());
 
         f.close();
     };
@@ -919,12 +919,14 @@ void PdfRenderer::renderImpl()
         if (!m_footnotes.isEmpty()) {
             pdfData.m_drawFootnotes = true;
             pdfData.m_layout.moveXToBegin();
-            pdfData.m_layout.setY(pdfData.topFootnoteY(pdfData.m_reserved.firstKey()) - pdfData.m_extraInFootnote);
+            pdfData.m_layout.setY(pdfData.topFootnoteY(pdfData.m_reserved.firstKey()));
 
             pdfData.m_currentPainterIdx = pdfData.m_reserved.firstKey();
             pdfData.m_footnotePageIdx = pdfData.m_reserved.firstKey();
 
             drawHorizontalLine(pdfData);
+
+            pdfData.m_layout.addY(pdfData.m_extraInFootnote);
 
             for (const auto &f : std::as_const(m_footnotes)) {
                 drawFootnote(pdfData, m_doc, f.first, f.second.get(), CalcHeightOpt::Unknown);
@@ -1043,7 +1045,7 @@ void PdfRenderer::createPage(PdfAuxData &pdfData)
 
         const auto topY = pdfData.topFootnoteY(pdfData.m_currentPageIdx);
 
-        if (topY - pdfData.m_extraInFootnote - pdfData.m_layout.topY() < pdfData.m_lineHeight) {
+        if (topY - pdfData.m_layout.topY() < pdfData.m_lineHeight) {
             create(pdfData);
         } else if (pdfData.m_tableDrawing) {
             pdfData.m_cachedPainters.insert(pdfData.m_currentPainterIdx, 0);
@@ -1080,9 +1082,9 @@ void PdfRenderer::createPage(PdfAuxData &pdfData)
                 pdfData.m_layout.setY(pdfData.topFootnoteY(pdfData.m_footnotePageIdx));
             }
 
-            pdfData.m_layout.addY(pdfData.m_extraInFootnote, -1.0);
-
             drawHorizontalLine(pdfData);
+
+            pdfData.m_layout.addY(pdfData.m_extraInFootnote);
 
             if (pdfData.m_continueParagraph) {
                 pdfData.m_layout.addY(pdfData.m_lineHeight);
@@ -1872,10 +1874,9 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                     pdfData.setColor(background);
                     pdfData.drawRectangle(pdfData.m_layout.startX(width),
                                           pdfData.m_layout.y()
-                                              + cw.descent()
-                                              + pdfData.fontDescent(font, fontSize, fontScale)
-                                              + currentBaseline.m_stack.back().m_baselineDelta
-                                              - cw.height(),
+                                              - cw.descent()
+                                              - currentBaseline.m_stack.back().m_baselineDelta
+                                              + pdfData.fontAscent(font, fontSize, fontScale),
                                           width,
                                           pdfData.lineSpacing(font, fontSize, fontScale),
                                           SkPaint::kFill_Style);
@@ -1886,7 +1887,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                 const auto size = (useRegularSpace && regularSpaceFont ? regularSpaceFontSize * regularSpaceFontScale
                                                                        : spaceFontSize * spaceFontScale);
                 pdfData.drawText(pdfData.m_layout.startX(width),
-                                 pdfData.m_layout.y() + cw.descent() + currentBaseline.m_stack.back().m_baselineDelta,
+                                 pdfData.m_layout.y() - cw.descent() - currentBaseline.m_stack.back().m_baselineDelta,
                                  " ",
                                  font,
                                  size,
@@ -1971,10 +1972,9 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                         pdfData.setColor(background);
                         pdfData.drawRectangle(pdfData.m_layout.startX(length),
                                               pdfData.m_layout.y()
-                                                  - cw.height()
-                                                  + cw.descent()
-                                                  + pdfData.fontDescent(font, fontSize, fontScale)
-                                                  + currentBaseline.m_stack.back().m_baselineDelta,
+                                                  - cw.descent()
+                                                  - currentBaseline.m_stack.back().m_baselineDelta
+                                                  + pdfData.fontAscent(font, fontSize, fontScale),
                                               length,
                                               pdfData.lineSpacing(font, fontSize, fontScale),
                                               SkPaint::kFill_Style);
@@ -1989,7 +1989,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
 
                     pdfData.drawText(
                         pdfData.m_layout.startX(length),
-                        pdfData.m_layout.y() + cw.descent() + currentBaseline.m_stack.back().m_baselineDelta,
+                        pdfData.m_layout.y() - cw.descent() - currentBaseline.m_stack.back().m_baselineDelta,
                         createUtf8String(it->first),
                         font,
                         fontSize * fontScale,
@@ -2040,7 +2040,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
 
                             pdfData.drawText(
                                 pdfData.m_layout.startX(w),
-                                pdfData.m_layout.y() + cw.descent() + currentBaseline.m_stack.back().m_baselineDelta,
+                                pdfData.m_layout.y() - cw.descent() - currentBaseline.m_stack.back().m_baselineDelta,
                                 createUtf8String(tmp),
                                 font,
                                 fontSize * fontScale,
@@ -2240,19 +2240,19 @@ QVector<WhereDrawn> toWhereDrawn(const QVector<QPair<RectF,
             map[r.second] = {pageHeight, 0.0};
         }
 
-        if (r.first.bottomY() < map[r.second].m_minY) {
-            map[r.second].m_minY = r.first.bottomY();
+        if (r.first.bottomY() - r.first.height() < map[r.second].m_minY) {
+            map[r.second].m_minY = r.first.bottomY() - r.first.height();
         }
 
-        if (r.first.height() + r.first.bottomY() > map[r.second].m_maxY) {
-            map[r.second].m_maxY = r.first.height() + r.first.bottomY();
+        if (r.first.bottomY() > map[r.second].m_maxY) {
+            map[r.second].m_maxY = r.first.bottomY();
         }
     }
 
     QVector<WhereDrawn> ret;
 
     for (auto it = map.cbegin(), last = map.cend(); it != last; ++it) {
-        ret.append({it.key(), it.value().m_minY, it.value().m_maxY - it.value().m_minY});
+        ret.append({it.key(), it.value().m_maxY, it.value().m_maxY - it.value().m_minY});
     }
 
     return ret;
@@ -2923,7 +2923,7 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
 
     const auto where = toWhereDrawn(normalizeRects(rects), pdfData.m_layout.pageHeight());
 
-    return {where, {firstLinePageIdx, firstLineY, firstLineHeight}};
+    return qMakePair(where, WhereDrawn(firstLinePageIdx, firstLineY, firstLineHeight));
 }
 
 QPair<RectF,
@@ -4050,9 +4050,9 @@ PdfRenderer::drawCode(PdfAuxData &pdfData,
     QScopedValueRollback continueParagraph(pdfData.m_continueParagraph, true);
 
     if (heightCalcOpt == CalcHeightOpt::Unknown) {
-        if ((pdfData.m_layout.y() - (pdfData.m_firstOnPage ? 0.0 : textLHeight) - lineHeight)
-                < pdfData.currentPageAllowedY()
-            && qAbs(pdfData.m_layout.y() - (textLHeight * 2.0) - pdfData.currentPageAllowedY()) > 0.1) {
+        if ((pdfData.m_layout.y() + (pdfData.m_firstOnPage ? 0.0 : textLHeight) + lineHeight)
+                > pdfData.currentPageAllowedY()
+            && qAbs(pdfData.m_layout.y() + (textLHeight * 2.0) - pdfData.currentPageAllowedY()) > 0.1) {
             createPage(pdfData);
         } else if (!pdfData.m_firstOnPage) {
             pdfData.m_layout.addY(textLHeight);
@@ -4379,8 +4379,8 @@ PdfRenderer::drawBlockquote(PdfAuxData &pdfData,
             map.insert(where.m_pageIdx, {where.m_y, where.m_height});
         }
 
-        if (map[where.m_pageIdx].m_y > where.m_y) {
-            map[where.m_pageIdx].m_height = map[where.m_pageIdx].m_y + map[where.m_pageIdx].m_height - where.m_y;
+        if (map[where.m_pageIdx].m_y < where.m_y) {
+            map[where.m_pageIdx].m_height = where.m_y - map[where.m_pageIdx].m_y + map[where.m_pageIdx].m_height;
             map[where.m_pageIdx].m_y = where.m_y;
         }
     }
@@ -4394,7 +4394,7 @@ PdfRenderer::drawBlockquote(PdfAuxData &pdfData,
         pdfData.drawRectangle(pdfData.m_layout.borderStartX()
                                   + pdfData.m_layout.xIncrementDirection()
                                       * (offset + (pdfData.m_layout.isRightToLeft() ? s_blockquoteMarkWidth : 0.0)),
-                              it.value().m_y,
+                              it.value().m_y - it.value().m_height,
                               s_blockquoteMarkWidth,
                               it.value().m_height,
                               SkPaint::kFill_Style);
@@ -4709,7 +4709,7 @@ PdfRenderer::drawListItem(PdfAuxData &pdfData,
                 (*pdfData.m_pages)[pdfData.m_currentPainterIdx].m_canvas->drawCircle(
                     pdfData.m_layout.borderStartX()
                         + pdfData.m_layout.xIncrementDirection() * (offset + r - (orderedListNumberWidth + spaceWidth)),
-                    firstLine.m_y + qAbs(firstLine.m_height - unorderedMarkWidth) / 2.0 + unorderedMarkWidth / 2.0,
+                    firstLine.m_y - firstLine.m_height / 2.0,
                     r,
                     pdfData.m_currentPaint);
                 pdfData.m_currentPaint.setStyle(style);
@@ -4858,8 +4858,8 @@ PdfRenderer::drawTable(PdfAuxData &pdfData,
 
     QScopedValueRollback continueParagraph(pdfData.m_continueParagraph, true);
 
-    if ((pdfData.m_layout.y() - nonSplittableHeight) < pdfData.currentPageAllowedY()
-        && qAbs(pdfData.m_layout.y() - nonSplittableHeight - pdfData.currentPageAllowedY()) > 0.1) {
+    if ((pdfData.m_layout.y() + nonSplittableHeight) > pdfData.currentPageAllowedY()
+        && qAbs(pdfData.m_layout.y() + nonSplittableHeight - pdfData.currentPageAllowedY()) > 0.1) {
         createPage(pdfData);
 
         pdfData.freeSpaceOn(pdfData.m_currentPainterIdx);
@@ -4966,28 +4966,27 @@ PdfRenderer::drawTableRow(QSharedPointer<MD::TableRow> row,
         double tmpY = 0.0;
 
         if (!w.first.isEmpty()) {
-            tmpY = w.first.last().m_y - s_tableMargin;
+            tmpY = w.first.last().m_y + s_tableMargin;
             endPage = w.first.last().m_pageIdx;
 
             if (i == 0) {
                 firstLine = w.second;
             }
         } else {
-            tmpY = y - s_tableMargin * 2.0;
+            tmpY = y + s_tableMargin * 2.0;
 
             firstLine.m_pageIdx = startPage;
-            firstLine.m_y = y - s_tableMargin * 2.0;
+            firstLine.m_y = y + s_tableMargin * 2.0;
             firstLine.m_height = s_tableMargin * 2.0;
 
-            if (firstLine.m_y < pdfData.m_layout.margins().m_bottom) {
+            if (firstLine.m_y > pdfData.m_layout.pageHeight() - pdfData.m_layout.margins().m_bottom) {
                 createPage(pdfData);
-                firstLine.m_y = pdfData.m_layout.margins().m_bottom;
 
-                tmpY = pdfData.m_layout.pageHeight()
-                    - pdfData.m_layout.margins().m_top
-                    - (s_tableMargin * 2.0 - (y - pdfData.m_layout.margins().m_bottom))
-                    - (pdfData.m_drawFootnotes ? pdfData.m_extraInFootnote : 0.0);
-                firstLine.m_height = y - pdfData.m_layout.margins().m_bottom;
+                tmpY = pdfData.m_layout.margins().m_top
+                    + (s_tableMargin * 2.0 - (pdfData.allowedY(pdfData.m_currentPageIdx - 1) - y))
+                    + (pdfData.m_drawFootnotes ? pdfData.m_extraInFootnote : 0.0);
+                firstLine.m_height = (s_tableMargin * 2.0 - (pdfData.allowedY(pdfData.m_currentPageIdx - 1) - y));
+                firstLine.m_y = pdfData.m_layout.margins().m_top + firstLine.m_height;
             }
 
             endPage = pdfData.m_currentPainterIdx;
