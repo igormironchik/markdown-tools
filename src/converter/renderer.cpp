@@ -4116,6 +4116,7 @@ PdfRenderer::drawCode(PdfAuxData &pdfData,
 
     while (i < lines.size()) {
         auto y = pdfData.m_layout.y();
+        const auto startY = y;
         int j = i;
         double h = 0.0;
 
@@ -4130,7 +4131,7 @@ PdfRenderer::drawCode(PdfAuxData &pdfData,
         if (i < j) {
             pdfData.setColor(m_opts.m_syntax->theme().editorColor(KSyntaxHighlighting::Theme::CodeFolding));
             pdfData.drawRectangle(pdfData.m_layout.startX(pdfData.m_layout.availableWidth()),
-                                  y,
+                                  startY,
                                   pdfData.m_layout.availableWidth(),
                                   h,
                                   SkPaint::kFill_Style);
