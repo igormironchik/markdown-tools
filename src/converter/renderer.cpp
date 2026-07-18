@@ -3572,7 +3572,11 @@ bool PdfRenderer::isOnlineImage(double totalAvailableWidth,
     return (totalAvailableWidth / 5.0 > iWidth && iHeight < lineHeight * 2.0);
 }
 
-inline void initSvgSize(SkSVGDOM *svg, double &iWidth, double &iHeight, double &dpiScale, quint16 dpi)
+inline void initSvgSize(SkSVGDOM *svg,
+                        double &iWidth,
+                        double &iHeight,
+                        double &dpiScale,
+                        quint16 dpi)
 {
     auto root = svg->getRoot();
 
@@ -3745,8 +3749,6 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
 
     if (!cw.isDrawing()) {
         draw = false;
-    } else {
-        int i = 0;
     }
 
     Q_EMIT status(tr("Loading image."));
@@ -3898,19 +3900,9 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
 
         imgScale *= scale * previousBaseline.currentScale();
 
+        RectF r;
+
         if (draw) {
-            if (onLine && addSpace) {
-                pdfData.m_layout.addX(spaceWidth * cw.scale() / 100.0);
-            }
-
-            dy = (onLine ? (cw.height() - cw.descent() - iHeight * imgScale) / 2.0
-                          + previousBaseline.m_stack.back().m_baselineDelta
-                         : 0.0);
-
-            alignLine(pdfData, cw);
-
-            drawImage();
-
             if (!onLine) {
                 newLine = true;
                 pdfData.m_layout.addY(iHeight * imgScale);
@@ -3918,6 +3910,21 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
                 newLine = false;
                 pdfData.m_layout.addY(cw.height());
             }
+
+            if (onLine && addSpace) {
+                pdfData.m_layout.addX(spaceWidth * cw.scale() / 100.0);
+            }
+
+            dy = (onLine ? cw.descent() + iHeight * imgScale + previousBaseline.m_stack.back().m_baselineDelta : 0.0);
+
+            alignLine(pdfData, cw);
+
+            drawImage();
+
+            r = RectF(pdfData.m_layout.startX(iWidth * imgScale),
+                      pdfData.m_layout.y() - cw.descent() - previousBaseline.m_stack.back().m_baselineDelta,
+                      iWidth * imgScale,
+                      iHeight * imgScale);
         } else {
             if (onLine && addSpace) {
                 cw.append({spaceWidth, 0.0, true, false, true, " "});
@@ -3926,11 +3933,6 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
 
             height += iHeight * imgScale;
         }
-
-        RectF r(pdfData.m_layout.startX(iWidth * imgScale),
-                pdfData.m_layout.y() - dy,
-                iWidth * imgScale,
-                iHeight * imgScale);
 
         if (onLine) {
             pdfData.m_layout.addX(iWidth * imgScale);
