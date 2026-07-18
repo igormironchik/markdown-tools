@@ -34,6 +34,7 @@
 #include <include/docs/SkPDFJpegHelpers.h>
 #include <include/ports/SkFontMgr_fontconfig.h>
 #include <include/ports/SkFontScanner_FreeType.h>
+#include <modules/svg/include/SkSVGRenderContext.h>
 
 // C++ include.
 #include <cmath>
@@ -3571,6 +3572,35 @@ bool PdfRenderer::isOnlineImage(double totalAvailableWidth,
     return (totalAvailableWidth / 5.0 > iWidth && iHeight < lineHeight * 2.0);
 }
 
+inline void initSvgSize(SkSVGDOM *svg, double &iWidth, double &iHeight, double &dpiScale, quint16 dpi)
+{
+    auto root = svg->getRoot();
+
+    if (root) {
+        if (root->getViewBox()) {
+            SkRect viewBox = root->getViewBox().value();
+            dpiScale = viewBox.width();
+            iWidth = viewBox.width() / (double)dpi * 72.0;
+            iHeight = viewBox.height() / (double)dpi * 72.0;
+        } else {
+            SkSize intrinsicSize = root->intrinsicSize(SkSVGLengthContext(SkSize::Make(0, 0), dpi));
+            dpiScale = intrinsicSize.width();
+            iWidth = intrinsicSize.width() / (double)dpi * 72.0;
+            iHeight = intrinsicSize.height() / (double)dpi * 72.0;
+        }
+
+        if (iWidth < 0.1) {
+            iWidth = 100;
+        }
+
+        if (iHeight < 0.1) {
+            iHeight = 100;
+        }
+
+        dpiScale = dpiScale / iWidth;
+    }
+}
+
 bool PdfRenderer::isOnlineImage(PdfAuxData &pdfData,
                                 MD::Image *item,
                                 double offset,
@@ -3603,12 +3633,11 @@ bool PdfRenderer::isOnlineImage(PdfAuxData &pdfData,
             if (fDom) {
                 auto root = fDom->getRoot();
 
-                if (root && root->getViewBox()) {
-                    SkRect viewBox = root->getViewBox().value();
-                    iWidth = viewBox.width() / (double)m_opts.m_dpi * 72.0;
-                    iHeight = viewBox.height() / (double)m_opts.m_dpi * 72.0;
+                if (root) {
+                    double dpiScale = 0.0;
+                    initSvgSize(fDom.get(), iWidth, iHeight, dpiScale, m_opts.m_dpi);
                 } else {
-                    return false;
+                    return true;
                 }
             }
         }
@@ -3714,8 +3743,11 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
     pdfData.m_endLine = item->endLine();
     pdfData.m_endPos = item->endColumn();
 
-    if (!cw.isDrawing())
+    if (!cw.isDrawing()) {
         draw = false;
+    } else {
+        int i = 0;
+    }
 
     Q_EMIT status(tr("Loading image."));
 
@@ -3766,11 +3798,8 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
             if (svg) {
                 auto root = svg->getRoot();
 
-                if (root && root->getViewBox()) {
-                    SkRect viewBox = root->getViewBox().value();
-                    iWidth = viewBox.width() / (double)m_opts.m_dpi * 72.0;
-                    iHeight = viewBox.height() / (double)m_opts.m_dpi * 72.0;
-                    dpiScale = viewBox.width() / iWidth;
+                if (root) {
+                    initSvgSize(svg.get(), iWidth, iHeight, dpiScale, m_opts.m_dpi);
 
                     drawImage = [&pdfData, &svg, &iWidth, &dy, &imgScale, &dpiScale]() {
                         pdfData.drawImage(pdfData.m_layout.startX(iWidth * imgScale),
@@ -3899,7 +3928,7 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
         }
 
         RectF r(pdfData.m_layout.startX(iWidth * imgScale),
-                pdfData.m_layout.y() + dy,
+                pdfData.m_layout.y() - dy,
                 iWidth * imgScale,
                 iHeight * imgScale);
 
