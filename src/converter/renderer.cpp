@@ -32,8 +32,6 @@
 #include <include/core/SkStream.h>
 #include <include/docs/SkPDFDocument.h>
 #include <include/docs/SkPDFJpegHelpers.h>
-#include <include/ports/SkFontMgr_fontconfig.h>
-#include <include/ports/SkFontScanner_FreeType.h>
 #include <modules/svg/include/SkSVGRenderContext.h>
 
 // C++ include.
@@ -1029,14 +1027,11 @@ Font PdfRenderer::createFont(const QString &name,
                              double scale,
                              const PdfAuxData &pdfData)
 {
-    static auto scanner = SkFontScanner_Make_FreeType();
-    static auto fontMgr = SkFontMgr_New_FontConfig(nullptr, std::move(scanner));
-
 #ifdef MD_PDF_TESTING
     const QString internalName =
         name + (bold ? QStringLiteral(" Bold") : QString()) + (italic ? QStringLiteral(" Italic") : QString());
 
-    return SkFont(fontMgr->makeFromFile(pdfData.m_fonts[internalName].toLocal8Bit().data()), size * scale);
+    return SkFont(pdfData.m_fontMgr->makeFromFile(pdfData.m_fonts[internalName].toLocal8Bit().data()), size * scale);
 #else
     Q_UNUSED(pdfData)
 
@@ -1045,7 +1040,7 @@ Font PdfRenderer::createFont(const QString &name,
 
     SkFontStyle style(weight, SkFontStyle::kNormal_Width, slant);
 
-    return SkFont(fontMgr->matchFamilyStyle(name.toLocal8Bit().data(), style), size * scale);
+    return SkFont(pdfData.m_fontMgr->matchFamilyStyle(name.toLocal8Bit().data(), style), size * scale);
 #endif // MD_PDF_TESTING
 }
 
@@ -2987,7 +2982,7 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
     float fontSize = (float)m_opts.m_textFontSize;
 
     {
-        PoDoFoPaintDevice pd(pdfData);
+        SkiaPaintDevice pd(pdfData);
         fontSize = fontSize / 72.f * (float)pd.physicalDpiY();
     }
 
@@ -3008,7 +3003,7 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
     auto render = latexRender(1.0);
 
     const auto calculateSize = [&]() {
-        PoDoFoPaintDevice pd(pdfData);
+        SkiaPaintDevice pd(pdfData);
         QPainter p(&pd);
         tex::Graphics2D_qt g2(&p);
         render->draw(g2, 0, 0);
@@ -3101,7 +3096,7 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
                 x = (availableWidth - size.width() * imgScale) / 2.0;
             }
 
-            PoDoFoPaintDevice pd(pdfData);
+            SkiaPaintDevice pd(pdfData);
             pd.enableDrawing();
             QPainter p(&pd);
 
@@ -3244,7 +3239,7 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
         if (draw) {
             pdfData.m_firstOnPage = false;
 
-            PoDoFoPaintDevice pd(pdfData);
+            SkiaPaintDevice pd(pdfData);
             pd.enableDrawing();
             QPainter p(&pd);
 
@@ -3632,7 +3627,9 @@ bool PdfRenderer::isOnlineImage(PdfAuxData &pdfData,
         } else {
             auto data = SkData::MakeWithoutCopy(img.data(), img.size());
             auto stream = SkMemoryStream::Make(data);
-            auto fDom = SkSVGDOM::Builder().make(*stream);
+            auto builder = SkSVGDOM::Builder();
+            builder.setFontManager(pdfData.m_fontMgr);
+            auto fDom = builder.make(*stream);
 
             if (fDom) {
                 auto root = fDom->getRoot();
@@ -3795,7 +3792,9 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
         } else {
             auto data = SkData::MakeWithoutCopy(img.data(), img.size());
             auto stream = SkMemoryStream::Make(data);
-            svg = SkSVGDOM::Builder().make(*stream);
+            auto builder = SkSVGDOM::Builder();
+            builder.setFontManager(pdfData.m_fontMgr);
+            svg = builder.make(*stream);
 
             if (svg) {
                 auto root = svg->getRoot();

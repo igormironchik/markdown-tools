@@ -32,48 +32,48 @@ namespace MdPdf
 {
 
 //
-// PoDoFoPaintDevicePrivate
+// SkiaPaintDevicePrivate
 //
 
-struct PoDoFoPaintDevicePrivate {
-    PoDoFoPaintDevicePrivate(PoDoFoPaintDevice *parent,
-                             Render::PdfAuxData &pdfData)
+struct SkiaPaintDevicePrivate {
+    SkiaPaintDevicePrivate(SkiaPaintDevice *parent,
+                           Render::PdfAuxData &pdfData)
         : m_q(parent)
         , m_engine(pdfData)
     {
     }
 
     //! Parent.
-    PoDoFoPaintDevice *m_q = nullptr;
+    SkiaPaintDevice *m_q = nullptr;
     //! Paint m_engine.
-    PoDoFoPaintEngine m_engine;
-}; // struct PoDoFoPaintDevicePrivate
+    SkiaPaintEngine m_engine;
+}; // struct SkiaPaintDevicePrivate
 
 //
-// PoDoFoPaintDevice
+// SkiaPaintDevice
 //
 
-PoDoFoPaintDevice::PoDoFoPaintDevice(Render::PdfAuxData &pdfData)
-    : d(new PoDoFoPaintDevicePrivate(this,
-                                     pdfData))
+SkiaPaintDevice::SkiaPaintDevice(Render::PdfAuxData &pdfData)
+    : d(new SkiaPaintDevicePrivate(this,
+                                   pdfData))
 {
 }
 
-PoDoFoPaintDevice::~PoDoFoPaintDevice()
+SkiaPaintDevice::~SkiaPaintDevice()
 {
 }
 
-void PoDoFoPaintDevice::enableDrawing(bool on)
+void SkiaPaintDevice::enableDrawing(bool on)
 {
     d->m_engine.enableDrawing(on);
 }
 
-QPaintEngine *PoDoFoPaintDevice::paintEngine() const
+QPaintEngine *SkiaPaintDevice::paintEngine() const
 {
     return &d->m_engine;
 }
 
-int PoDoFoPaintDevice::metric(QPaintDevice::PaintDeviceMetric metric) const
+int SkiaPaintDevice::metric(QPaintDevice::PaintDeviceMetric metric) const
 {
     switch (metric) {
     case PdmWidth:
@@ -116,19 +116,19 @@ int PoDoFoPaintDevice::metric(QPaintDevice::PaintDeviceMetric metric) const
 }
 
 //
-// PoDoFoPaintEnginePrivate
+// SkiaPaintEnginePrivate
 //
 
-struct PoDoFoPaintEnginePrivate {
-    PoDoFoPaintEnginePrivate(PoDoFoPaintEngine *parent,
-                             Render::PdfAuxData &pdfData)
+struct SkiaPaintEnginePrivate {
+    SkiaPaintEnginePrivate(SkiaPaintEngine *parent,
+                           Render::PdfAuxData &pdfData)
         : m_q(parent)
         , m_pdfData(pdfData)
     {
     }
 
     //! Parent.
-    PoDoFoPaintEngine *m_q = nullptr;
+    SkiaPaintEngine *m_q = nullptr;
     //! Is drawing enabled?
     bool m_isDrawing = false;
     //! Transformation.
@@ -139,67 +139,67 @@ struct PoDoFoPaintEnginePrivate {
     SkPaint m_currentPaint;
     //! Current fill color.
     SkColor m_fillColor;
-}; // struct PoDoFoPaintEnginePrivate
+}; // struct SkiaPaintEnginePrivate
 
 //
-// PoDoFoPaintEngine
+// SkiaPaintEngine
 //
 
-PoDoFoPaintEngine::PoDoFoPaintEngine(Render::PdfAuxData &pdfData)
+SkiaPaintEngine::SkiaPaintEngine(Render::PdfAuxData &pdfData)
     : QPaintEngine(QPaintEngine::AllFeatures)
-    , d(new PoDoFoPaintEnginePrivate(this,
-                                     pdfData))
+    , d(new SkiaPaintEnginePrivate(this,
+                                   pdfData))
 {
     pdfPainter()->save();
 }
 
-PoDoFoPaintEngine::~PoDoFoPaintEngine()
+SkiaPaintEngine::~SkiaPaintEngine()
 {
     pdfPainter()->restore();
 }
 
-void PoDoFoPaintEngine::enableDrawing(bool on)
+void SkiaPaintEngine::enableDrawing(bool on)
 {
     d->m_isDrawing = on;
 }
 
-SkCanvas *PoDoFoPaintEngine::pdfPainter() const
+SkCanvas *SkiaPaintEngine::pdfPainter() const
 {
     return (*d->m_pdfData.m_pages)[d->m_pdfData.m_currentPainterIdx].m_canvas;
 }
 
-bool PoDoFoPaintEngine::begin(QPaintDevice *)
+bool SkiaPaintEngine::begin(QPaintDevice *)
 {
     return true;
 }
 
-void PoDoFoPaintEngine::drawEllipse(const QRectF &)
+void SkiaPaintEngine::drawEllipse(const QRectF &)
 {
 }
 
-void PoDoFoPaintEngine::drawEllipse(const QRect &)
+void SkiaPaintEngine::drawEllipse(const QRect &)
 {
 }
 
-void PoDoFoPaintEngine::drawImage(const QRectF &,
-                                  const QImage &,
-                                  const QRectF &,
-                                  Qt::ImageConversionFlags)
+void SkiaPaintEngine::drawImage(const QRectF &,
+                                const QImage &,
+                                const QRectF &,
+                                Qt::ImageConversionFlags)
 {
 }
 
-double PoDoFoPaintEngine::qXtoSkia(double x)
+double SkiaPaintEngine::qXtoSkia(double x)
 {
     return x / paintDevice()->physicalDpiX() * 72.0;
 }
 
-double PoDoFoPaintEngine::qYtoSkia(double y)
+double SkiaPaintEngine::qYtoSkia(double y)
 {
     return (paintDevice()->height() - y) / paintDevice()->physicalDpiY() * 72.0;
 }
 
-void PoDoFoPaintEngine::drawLines(const QLineF *lines,
-                                  int lineCount)
+void SkiaPaintEngine::drawLines(const QLineF *lines,
+                                int lineCount)
 {
     if (d->m_isDrawing) {
         for (int i = 0; i < lineCount; ++i) {
@@ -210,8 +210,8 @@ void PoDoFoPaintEngine::drawLines(const QLineF *lines,
     }
 }
 
-void PoDoFoPaintEngine::drawLines(const QLine *lines,
-                                  int lineCount)
+void SkiaPaintEngine::drawLines(const QLine *lines,
+                                int lineCount)
 {
     if (d->m_isDrawing) {
         for (int i = 0; i < lineCount; ++i) {
@@ -222,7 +222,7 @@ void PoDoFoPaintEngine::drawLines(const QLine *lines,
     }
 }
 
-void PoDoFoPaintEngine::drawPath(const QPainterPath &path)
+void SkiaPaintEngine::drawPath(const QPainterPath &path)
 {
     if (d->m_isDrawing) {
         SkPathBuilder p;
@@ -287,45 +287,45 @@ void PoDoFoPaintEngine::drawPath(const QPainterPath &path)
     }
 }
 
-void PoDoFoPaintEngine::drawPixmap(const QRectF &,
-                                   const QPixmap &,
-                                   const QRectF &)
+void SkiaPaintEngine::drawPixmap(const QRectF &,
+                                 const QPixmap &,
+                                 const QRectF &)
 {
 }
 
-void PoDoFoPaintEngine::drawPoints(const QPointF *,
-                                   int)
+void SkiaPaintEngine::drawPoints(const QPointF *,
+                                 int)
 {
 }
 
-void PoDoFoPaintEngine::drawPoints(const QPoint *,
-                                   int)
+void SkiaPaintEngine::drawPoints(const QPoint *,
+                                 int)
 {
 }
 
-void PoDoFoPaintEngine::drawPolygon(const QPointF *,
-                                    int,
-                                    QPaintEngine::PolygonDrawMode)
+void SkiaPaintEngine::drawPolygon(const QPointF *,
+                                  int,
+                                  QPaintEngine::PolygonDrawMode)
 {
 }
 
-void PoDoFoPaintEngine::drawPolygon(const QPoint *,
-                                    int,
-                                    QPaintEngine::PolygonDrawMode)
+void SkiaPaintEngine::drawPolygon(const QPoint *,
+                                  int,
+                                  QPaintEngine::PolygonDrawMode)
 {
 }
 
-double PoDoFoPaintEngine::qWtoSkia(double w)
+double SkiaPaintEngine::qWtoSkia(double w)
 {
     return w / paintDevice()->physicalDpiX() * 72.0;
 }
 
-double PoDoFoPaintEngine::qHtoSkia(double h)
+double SkiaPaintEngine::qHtoSkia(double h)
 {
     return h / paintDevice()->physicalDpiY() * 72.0;
 }
 
-SkRect PoDoFoPaintEngine::qRectFtoSkia(const QRectF &r)
+SkRect SkiaPaintEngine::qRectFtoSkia(const QRectF &r)
 {
     return SkRect::MakeLTRB(static_cast<float>(r.left()),
                             static_cast<float>(r.top()),
@@ -333,8 +333,8 @@ SkRect PoDoFoPaintEngine::qRectFtoSkia(const QRectF &r)
                             static_cast<float>(r.bottom()));
 }
 
-void PoDoFoPaintEngine::drawRects(const QRectF *rects,
-                                  int rectCount)
+void SkiaPaintEngine::drawRects(const QRectF *rects,
+                                int rectCount)
 {
     if (d->m_isDrawing) {
         SkPaint paint = d->m_currentPaint;
@@ -346,8 +346,8 @@ void PoDoFoPaintEngine::drawRects(const QRectF *rects,
     }
 }
 
-void PoDoFoPaintEngine::drawRects(const QRect *rects,
-                                  int rectCount)
+void SkiaPaintEngine::drawRects(const QRect *rects,
+                                int rectCount)
 {
     if (d->m_isDrawing) {
         SkPaint paint = d->m_currentPaint;
@@ -359,8 +359,8 @@ void PoDoFoPaintEngine::drawRects(const QRect *rects,
     }
 }
 
-void PoDoFoPaintEngine::drawTextItem(const QPointF &p,
-                                     const QTextItem &textItem)
+void SkiaPaintEngine::drawTextItem(const QPointF &p,
+                                   const QTextItem &textItem)
 {
     if (d->m_isDrawing) {
         const auto f = qFontToSkia(textItem.font());
@@ -371,18 +371,18 @@ void PoDoFoPaintEngine::drawTextItem(const QPointF &p,
     }
 }
 
-void PoDoFoPaintEngine::drawTiledPixmap(const QRectF &,
-                                        const QPixmap &,
-                                        const QPointF &)
+void SkiaPaintEngine::drawTiledPixmap(const QRectF &,
+                                      const QPixmap &,
+                                      const QPointF &)
 {
 }
 
-bool PoDoFoPaintEngine::end()
+bool SkiaPaintEngine::end()
 {
     return true;
 }
 
-QPaintEngine::Type PoDoFoPaintEngine::type() const
+QPaintEngine::Type SkiaPaintEngine::type() const
 {
     return QPaintEngine::Pdf;
 }
@@ -432,11 +432,8 @@ inline double scaleOfTransform(const QTransform &t)
 
 QPair<SkFont,
       double>
-PoDoFoPaintEngine::qFontToSkia(const QFont &f)
+SkiaPaintEngine::qFontToSkia(const QFont &f)
 {
-    static auto scanner = SkFontScanner_Make_FreeType();
-    static auto fontMgr = SkFontMgr_New_FontConfig(nullptr, std::move(scanner));
-
     // const double size = (f.pointSizeF() > 0.0 ? f.pointSizeF() : f.pixelSize() / paintDevice()->physicalDpiY()
     // * 72.0);
 
@@ -477,18 +474,18 @@ PoDoFoPaintEngine::qFontToSkia(const QFont &f)
 
         const auto fileName = d->m_pdfData.m_fontsCache[path]->fileName();
 
-        return {SkFont(fontMgr->makeFromFile(fileName.toLocal8Bit().constData()), size), size};
+        return {SkFont(d->m_pdfData.m_fontMgr->makeFromFile(fileName.toLocal8Bit().constData()), size), size};
     } else {
         SkFontStyle::Slant slant = f.italic() ? SkFontStyle::kItalic_Slant : SkFontStyle::kUpright_Slant;
         int weight = f.bold() ? SkFontStyle::kBold_Weight : SkFontStyle::kNormal_Weight;
 
         SkFontStyle style(weight, SkFontStyle::kNormal_Width, slant);
 
-        return {SkFont(fontMgr->matchFamilyStyle(f.family().toLocal8Bit().data(), style), size), size};
+        return {SkFont(d->m_pdfData.m_fontMgr->matchFamilyStyle(f.family().toLocal8Bit().data(), style), size), size};
     }
 }
 
-void PoDoFoPaintEngine::updateState(const QPaintEngineState &state)
+void SkiaPaintEngine::updateState(const QPaintEngineState &state)
 {
     if (!d->m_isDrawing) {
         return;

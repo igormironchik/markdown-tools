@@ -26,17 +26,17 @@ struct PdfAuxData;
 }
 
 //
-// PoDoFoPaintDevice
+// SkiaPaintDevice
 //
 
-struct PoDoFoPaintDevicePrivate;
+struct SkiaPaintDevicePrivate;
 
-//! Paint device to draw on PoDoFo page.
-class PoDoFoPaintDevice final : public QPaintDevice
+//! Paint device to draw on Skia canvas.
+class SkiaPaintDevice final : public QPaintDevice
 {
 public:
-    PoDoFoPaintDevice(Render::PdfAuxData &pdfData);
-    ~PoDoFoPaintDevice() override;
+    SkiaPaintDevice(Render::PdfAuxData &pdfData);
+    ~SkiaPaintDevice() override;
 
     void enableDrawing(bool on = true);
 
@@ -46,23 +46,23 @@ protected:
     int metric(QPaintDevice::PaintDeviceMetric metric) const override;
 
 private:
-    Q_DISABLE_COPY(PoDoFoPaintDevice)
+    Q_DISABLE_COPY(SkiaPaintDevice)
 
-    QScopedPointer<PoDoFoPaintDevicePrivate> d;
-}; // class PoDoFoPaintDevice
+    QScopedPointer<SkiaPaintDevicePrivate> d;
+}; // class SkiaPaintDevice
 
 //
-// PoDoFoPaintEngine
+// SkiaPaintEngine
 //
 
-struct PoDoFoPaintEnginePrivate;
+struct SkiaPaintEnginePrivate;
 
-//! Paint engine to draw on PoDoFo page.
-class PoDoFoPaintEngine final : public QPaintEngine
+//! Paint engine to draw on Skia canvas.
+class SkiaPaintEngine final : public QPaintEngine
 {
 public:
-    PoDoFoPaintEngine(Render::PdfAuxData &pdfData);
-    ~PoDoFoPaintEngine() override;
+    SkiaPaintEngine(Render::PdfAuxData &pdfData);
+    ~SkiaPaintEngine() override;
 
     void enableDrawing(bool on = true);
 
@@ -117,9 +117,9 @@ private:
     qFontToSkia(const QFont &f);
 
 private:
-    Q_DISABLE_COPY(PoDoFoPaintEngine)
+    Q_DISABLE_COPY(SkiaPaintEngine)
 
-    QScopedPointer<PoDoFoPaintEnginePrivate> d;
-}; // class PoDoFoPaintEngine
+    QScopedPointer<SkiaPaintEnginePrivate> d;
+}; // class SkiaPaintEngine
 
 } /* namespace MdPdf */
