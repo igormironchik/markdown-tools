@@ -3847,10 +3847,6 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
             if (draw) {
                 cw.moveToNextLine();
             } else {
-                if (!onLine) {
-                    height += lineHeight;
-                }
-
                 cw.append({0.0, 0.0, false, true, onLine});
             }
 
@@ -3863,8 +3859,10 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
             addSpace = false;
         }
 
-        double availableHeight = pdfData.m_layout.y() - pdfData.currentPageAllowedY();
-        const double pageHeight = pdfData.topY(pdfData.m_currentPainterIdx) - pdfData.m_layout.margins().m_bottom;
+        double availableHeight = pdfData.currentPageAllowedY() - pdfData.m_layout.y();
+        const double pageHeight = pdfData.m_layout.pageHeight()
+            - pdfData.topY(pdfData.m_currentPainterIdx)
+            - pdfData.m_layout.margins().m_bottom;
 
         if (!onLine && !scaleImagesToLineHeight) {
             if (iWidth > totalAvailableWidth) {
@@ -3905,7 +3903,7 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
         if (draw) {
             if (!onLine) {
                 newLine = true;
-                pdfData.m_layout.addY(iHeight * imgScale);
+                pdfData.m_layout.addY(cw.height());
             } else if (firstInParagraph) {
                 newLine = false;
                 pdfData.m_layout.addY(cw.height());
@@ -3915,7 +3913,8 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
                 pdfData.m_layout.addX(spaceWidth * cw.scale() / 100.0);
             }
 
-            dy = (onLine ? cw.descent() + iHeight * imgScale + previousBaseline.m_stack.back().m_baselineDelta : 0.0);
+            dy = (onLine ? cw.descent() + iHeight * imgScale + previousBaseline.m_stack.back().m_baselineDelta
+                         : iHeight * imgScale);
 
             alignLine(pdfData, cw);
 
