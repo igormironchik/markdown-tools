@@ -1691,7 +1691,7 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
                 SkRect::MakeXYWH(r.first.x(), r.first.bottomY() - r.first.height(), r.first.width(), r.first.height());
             sk_sp<SkData> destName(SkData::MakeWithCString(url.toUtf8().data()));
 
-            if (url.startsWith(QLatin1Char('#'))) {
+            if (url.startsWith(QLatin1Char('#')) || pdfData.m_anchors.contains(url)) {
                 SkAnnotateLinkToDestination((*pdfData.m_pages)[r.second].m_canvas, linkRect, destName.get());
             } else {
                 SkAnnotateRectWithURL((*pdfData.m_pages)[r.second].m_canvas, linkRect, destName.get());
@@ -2906,10 +2906,7 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
 
                 pdfData.drawText(
                     pdfData.m_layout.startX(w),
-                    pdfData.m_layout.y()
-                        + lineHeight
-                        - pdfData.lineSpacing(footnoteFont, m_opts.m_textFontSize * s_footnoteScale, scale)
-                        - pdfData.fontDescent(footnoteFont, m_opts.m_textFontSize * s_footnoteScale, scale),
+                    pdfData.m_layout.y() - cw.descent() * 2.0,
                     str,
                     footnoteFont,
                     m_opts.m_textFontSize * s_footnoteScale * scale,
