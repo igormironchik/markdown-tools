@@ -3835,7 +3835,7 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
             && !newLine
             && (isOnlineImageOrOnlineImageInLink(pdfData, prevItem, offset, lineHeight, scaleImagesToLineHeight)
                 || (prevItem ? prevItem->endLine() != item->startLine() : false));
-        double height = (!onLine ? lineHeight : 0.0);
+        double height = (!onLine ? (firstInParagraph && pdfData.m_tableDrawing ? 0.0 : lineHeight) : 0.0);
         const auto availableAfter = pdfData.m_layout.availableWidth()
             - (iWidth * imgScale + (addSpace ? spaceWidth * (draw ? cw.scale() / 100.0 : 1.0) : 0.0));
 
@@ -5082,7 +5082,7 @@ PdfRenderer::drawTableRow(QSharedPointer<MD::TableRow> row,
     int endPage = startPage;
     int currentPage = startPage;
 
-    auto endY = pdfData.m_layout.pageHeight();
+    auto endY = 0.0;
 
     pdfData.m_startLine = row->startLine();
     pdfData.m_startPos = row->startColumn();
@@ -5152,7 +5152,7 @@ PdfRenderer::drawTableRow(QSharedPointer<MD::TableRow> row,
             endPage = pdfData.m_currentPainterIdx;
         }
 
-        if ((tmpY < endY && endPage == currentPage) || endPage > currentPage) {
+        if ((tmpY > endY && endPage == currentPage) || endPage > currentPage) {
             endY = tmpY;
             currentPage = endPage;
         }
