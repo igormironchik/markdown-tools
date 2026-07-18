@@ -204,7 +204,8 @@ void PdfAuxData::drawText(double x,
     m_firstOnPage = false;
 
     auto copyFont = font;
-    copyFont.setSize(size * scale);
+    copyFont.setSize(size);
+    copyFont.setScaleX(scale);
     SkPaint paint = m_currentPaint;
     paint.setAntiAlias(true);
 
@@ -1293,8 +1294,6 @@ PdfRenderer::drawText(PdfAuxData &pdfData,
                       const QColor &color,
                       RTLFlag *rtl)
 {
-    auto spaceFont = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, scale, pdfData);
-
     auto font = createFont(m_opts.m_textFont,
                            item->opts() & MD::TextOption::BoldText,
                            item->opts() & MD::TextOption::ItalicText,
@@ -1312,7 +1311,7 @@ PdfRenderer::drawText(PdfAuxData &pdfData,
 
     return drawString(pdfData,
                       item->text(),
-                      spaceFont,
+                      font,
                       m_opts.m_textFontSize,
                       scale,
                       font,

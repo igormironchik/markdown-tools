@@ -25,7 +25,7 @@
 #include <QtTest/QtTest>
 
 //! Prepare test data or do actual test?
-static const bool s_printData = true;
+static const bool s_printData = false;
 
 //
 // TestRender
