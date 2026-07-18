@@ -34,7 +34,6 @@
 #include <include/docs/SkPDFJpegHelpers.h>
 #include <include/ports/SkFontMgr_fontconfig.h>
 #include <include/ports/SkFontScanner_FreeType.h>
-#include <modules/svg/include/SkSVGDOM.h>
 
 // C++ include.
 #include <cmath>
@@ -289,6 +288,47 @@ void PdfAuxData::drawImage(double x,
                                         QString::number(yScale, 'f', 16));
     } else {
         (*m_pages)[m_currentPainterIdx].m_canvas->drawImage(scaled, x, y);
+
+        if (QTest::currentTestFailed()) {
+            m_self->terminate();
+        }
+
+        int pos = m_testPos++;
+        QCOMPARE(x, m_testData.at(pos).m_x);
+        QCOMPARE(y, m_testData.at(pos).m_y);
+        QCOMPARE(xScale, m_testData.at(pos).m_xScale);
+        QCOMPARE(yScale, m_testData.at(pos).m_yScale);
+    }
+#endif // MD_PDF_TESTING
+}
+
+void PdfAuxData::drawImage(double x,
+                           double y,
+                           const SkSVGDOM *img,
+                           double xScale,
+                           double yScale)
+{
+    m_firstOnPage = false;
+
+#ifndef MD_PDF_TESTING
+    (*m_pages)[m_currentPainterIdx].m_canvas->save();
+    (*m_pages)[m_currentPainterIdx].m_canvas->translate(x, y);
+    (*m_pages)[m_currentPainterIdx].m_canvas->scale(xScale, yScale);
+    img->render((*m_pages)[m_currentPainterIdx].m_canvas);
+    (*m_pages)[m_currentPainterIdx].m_canvas->restore();
+#else
+    if (m_printDrawings) {
+        (*m_drawingsStream) << QStringLiteral("Image 0 \"\" %2 %3 0.0 0.0 0.0 0.0 %4 %5\n")
+                                   .arg(QString::number(x, 'f', 16),
+                                        QString::number(y, 'f', 16),
+                                        QString::number(xScale, 'f', 16),
+                                        QString::number(yScale, 'f', 16));
+    } else {
+        (*m_pages)[m_currentPainterIdx].m_canvas->save();
+        (*m_pages)[m_currentPainterIdx].m_canvas->translate(x, y);
+        (*m_pages)[m_currentPainterIdx].m_canvas->scale(xScale, yScale);
+        img->render((*m_pages)[m_currentPainterIdx].m_canvas);
+        (*m_pages)[m_currentPainterIdx].m_canvas->restore();
 
         if (QTest::currentTestFailed()) {
             m_self->terminate();
@@ -3537,24 +3577,47 @@ bool PdfRenderer::isOnlineImage(PdfAuxData &pdfData,
                                 double lineHeight,
                                 bool scaleImagesToLineHeight)
 {
+    auto isSvg = false;
     const auto img =
-        loadImage(item, lineHeight / 72.0 * m_opts.m_dpi, scaleImagesToLineHeight, !scaleImagesToLineHeight);
+        loadImage(item, lineHeight / 72.0 * m_opts.m_dpi, scaleImagesToLineHeight, !scaleImagesToLineHeight, &isSvg);
 
     if (!img.isNull()) {
-        sk_sp<SkData> data = SkData::MakeWithoutCopy(img.data(), static_cast<size_t>(img.size()));
-        sk_sp<SkImage> image = SkImages::DeferredFromEncodedData(data);
+        double iWidth = 0.0;
+        double iHeight = 0.0;
 
-        if (!image) {
-            return true;
+        if (!isSvg) {
+            sk_sp<SkData> data = SkData::MakeWithoutCopy(img.data(), static_cast<size_t>(img.size()));
+            sk_sp<SkImage> image = SkImages::DeferredFromEncodedData(data);
+
+            if (!image) {
+                return true;
+            }
+
+            iWidth = std::round((double)image->width() / (double)m_opts.m_dpi * 72.0);
+            iHeight = std::round((double)image->height() / (double)m_opts.m_dpi * 72.0);
+        } else {
+            auto data = SkData::MakeWithoutCopy(img.data(), img.size());
+            auto stream = SkMemoryStream::Make(data);
+            auto fDom = SkSVGDOM::Builder().make(*stream);
+
+            if (fDom) {
+                auto root = fDom->getRoot();
+
+                if (root && root->getViewBox()) {
+                    SkRect viewBox = root->getViewBox().value();
+                    iWidth = viewBox.width() / (double)m_opts.m_dpi * 72.0;
+                    iHeight = viewBox.height() / (double)m_opts.m_dpi * 72.0;
+                } else {
+                    return false;
+                }
+            }
         }
-
-        const double iWidth = std::round((double)image->width() / (double)m_opts.m_dpi * 72.0);
-        const double iHeight = std::round((double)image->height() / (double)m_opts.m_dpi * 72.0);
 
         const double totalAvailableWidth = pdfData.m_layout.pageWidth()
             - pdfData.m_layout.margins().m_left
             - pdfData.m_layout.margins().m_right
             - offset;
+
         return isOnlineImage(totalAvailableWidth, iWidth, iHeight, lineHeight);
     } else {
         return true;
@@ -3656,26 +3719,83 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
 
     Q_EMIT status(tr("Loading image."));
 
+    auto isSvg = false;
     const auto img =
-        loadImage(item, lineHeight / 72.0 * m_opts.m_dpi, scaleImagesToLineHeight, !scaleImagesToLineHeight);
+        loadImage(item, lineHeight / 72.0 * m_opts.m_dpi, scaleImagesToLineHeight, !scaleImagesToLineHeight, &isSvg);
 
     const auto autoOffset = pdfData.m_layout.addOffset(offset, !pdfData.m_layout.isRightToLeft());
 
     if (!img.isNull()) {
-        sk_sp<SkData> data = SkData::MakeWithoutCopy(img.data(), static_cast<size_t>(img.size()));
-        sk_sp<SkImage> image = SkImages::DeferredFromEncodedData(data);
+        double iWidth = 0.0;
+        double iHeight = 0.0;
+        double dpiScale = 0.0;
+        double imgScale = 0.0;
+        double dy = 0.0;
+        sk_sp<SkImage> image;
+        sk_sp<SkSVGDOM> svg;
+        std::function<void()> drawImage;
 
-        if (!image) {
-            throw PdfRendererError(tr("Unable to load image: %1.\n\n"
-                                      "If this image is in Web, please be sure you are connected to the Internet. I'm "
-                                      "sorry for the inconvenience.")
-                                       .arg(item->url()));
+        if (!isSvg) {
+            sk_sp<SkData> data = SkData::MakeWithoutCopy(img.data(), static_cast<size_t>(img.size()));
+            image = SkImages::DeferredFromEncodedData(data);
+
+            if (!image) {
+                throw PdfRendererError(
+                    tr("Unable to load image: %1.\n\n"
+                       "If this image is in Web, please be sure you are connected to the Internet. I'm "
+                       "sorry for the inconvenience.")
+                        .arg(item->url()));
+            }
+
+            iWidth = std::round((double)image->width() / (double)m_opts.m_dpi * 72.0);
+            iHeight = std::round((double)image->height() / (double)m_opts.m_dpi * 72.0);
+            dpiScale = (double)image->width() / iWidth;
+
+            drawImage = [&pdfData, &image, &iWidth, &dy, &imgScale, &dpiScale]() {
+                pdfData.drawImage(pdfData.m_layout.startX(iWidth * imgScale),
+                                  pdfData.m_layout.y() - dy,
+                                  image.get(),
+                                  imgScale / dpiScale,
+                                  imgScale / dpiScale);
+            };
+        } else {
+            auto data = SkData::MakeWithoutCopy(img.data(), img.size());
+            auto stream = SkMemoryStream::Make(data);
+            svg = SkSVGDOM::Builder().make(*stream);
+
+            if (svg) {
+                auto root = svg->getRoot();
+
+                if (root && root->getViewBox()) {
+                    SkRect viewBox = root->getViewBox().value();
+                    iWidth = viewBox.width() / (double)m_opts.m_dpi * 72.0;
+                    iHeight = viewBox.height() / (double)m_opts.m_dpi * 72.0;
+                    dpiScale = viewBox.width() / iWidth;
+
+                    drawImage = [&pdfData, &svg, &iWidth, &dy, &imgScale, &dpiScale]() {
+                        pdfData.drawImage(pdfData.m_layout.startX(iWidth * imgScale),
+                                          pdfData.m_layout.y() - dy,
+                                          svg.get(),
+                                          imgScale / dpiScale,
+                                          imgScale / dpiScale);
+                    };
+                } else {
+                    throw PdfRendererError(
+                        tr("Unable to load image: %1.\n\n"
+                           "If this image is in Web, please be sure you are connected to the Internet. I'm "
+                           "sorry for the inconvenience.")
+                            .arg(item->url()));
+                }
+            } else {
+                throw PdfRendererError(
+                    tr("Unable to load image: %1.\n\n"
+                       "If this image is in Web, please be sure you are connected to the Internet. I'm "
+                       "sorry for the inconvenience.")
+                        .arg(item->url()));
+            }
         }
 
-        const double iWidth = std::round((double)image->width() / (double)m_opts.m_dpi * 72.0);
-        const double iHeight = std::round((double)image->height() / (double)m_opts.m_dpi * 72.0);
-
-        double imgScale = (scaleImagesToLineHeight ? lineHeight / iHeight : 1.0);
+        imgScale = (scaleImagesToLineHeight ? lineHeight / iHeight : 1.0);
         const double totalAvailableWidth = pdfData.m_layout.pageWidth()
             - pdfData.m_layout.margins().m_left
             - pdfData.m_layout.margins().m_right
@@ -3741,9 +3861,6 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
             }
         }
 
-        const double dpiScale = (double)image->width() / iWidth;
-        double dy = 0.0;
-
         const AutoSubSupScriptInit subSupInit(this,
                                               static_cast<MD::ItemWithOpts *>(item),
                                               previousBaseline,
@@ -3763,12 +3880,7 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
 
             alignLine(pdfData, cw);
 
-            // y - is bottom.
-            pdfData.drawImage(pdfData.m_layout.startX(iWidth * imgScale),
-                              pdfData.m_layout.y() - dy,
-                              image.get(),
-                              imgScale / dpiScale,
-                              imgScale / dpiScale);
+            drawImage();
 
             if (!onLine) {
                 newLine = true;
@@ -3918,10 +4030,15 @@ void LoadImageFromNetwork::loadError(QNetworkReply::NetworkError)
 QByteArray PdfRenderer::loadImage(MD::Image *item,
                                   double height,
                                   bool scale,
-                                  bool cache)
+                                  bool cache,
+                                  bool *isSvg)
 {
     if (cache && m_imageCache.contains(item->url())) {
-        return m_imageCache[item->url()];
+        if (isSvg) {
+            *isSvg = m_imageCache[item->url()].second;
+        }
+
+        return m_imageCache[item->url()].first;
     }
 
     QImage img;
@@ -3934,6 +4051,10 @@ QByteArray PdfRenderer::loadImage(MD::Image *item,
                 auto data = file.readAll();
                 file.close();
 
+                if (isSvg) {
+                    *isSvg = true;
+                }
+
                 if (data.size() > 10 && (quint8)data[0] == 0x1f && (quint8)data[1] == 0x8b) {
                     data.remove(0, 10);
                 }
@@ -3941,12 +4062,16 @@ QByteArray PdfRenderer::loadImage(MD::Image *item,
                 data = qUncompress(data);
 
                 if (cache) {
-                    m_imageCache.insert(item->url(), data);
+                    m_imageCache.insert(item->url(), qMakePair(data, true));
                 }
 
                 return data;
             }
         } else {
+            if (isSvg) {
+                *isSvg = false;
+            }
+
             img = QImage(item->url());
         }
     } else if (!QUrl(item->url()).isRelative()) {
@@ -3962,8 +4087,12 @@ QByteArray PdfRenderer::loadImage(MD::Image *item,
         img = load.image();
 
         if (load.isSvg()) {
+            if (isSvg) {
+                *isSvg = true;
+            }
+
             if (cache) {
-                m_imageCache.insert(item->url(), load.svgData());
+                m_imageCache.insert(item->url(), qMakePair(load.svgData(), true));
             }
 
             return load.svgData();
@@ -3989,6 +4118,10 @@ QByteArray PdfRenderer::loadImage(MD::Image *item,
                                    .arg(item->url()));
     }
 
+    if (isSvg) {
+        *isSvg = false;
+    }
+
     QByteArray data;
     QBuffer buf(&data);
 
@@ -4001,7 +4134,7 @@ QByteArray PdfRenderer::loadImage(MD::Image *item,
     img.save(&buf, fmt.toLatin1().constData());
 
     if (cache) {
-        m_imageCache.insert(item->url(), data);
+        m_imageCache.insert(item->url(), qMakePair(data, false));
     }
 
     return data;

@@ -38,6 +38,7 @@
 #include <include/core/SkFont.h>
 #include <include/core/SkImage.h>
 #include <include/core/SkPictureRecorder.h>
+#include <modules/svg/include/SkSVGDOM.h>
 
 namespace MdPdf
 {
@@ -481,6 +482,12 @@ struct PdfAuxData {
                    const Image *img,
                    double xScale,
                    double yScale);
+    //! Draw image.
+    void drawImage(double x,
+                   double y,
+                   const SkSVGDOM *img,
+                   double xScale,
+                   double yScale);
     //! Draw line.
     void drawLine(double x1,
                   double y1,
@@ -612,7 +619,9 @@ private:
         //! Should image be scaled?
         bool scale = false,
         //! Store in cache loaded image data?
-        bool cache = true);
+        bool cache = true,
+        //! Is this an SVG?
+        bool *isSvg = nullptr);
     //! Max width of numbered list bullet.
     int maxListNumberWidth(MD::List *list) const;
 
@@ -1423,7 +1432,7 @@ private:
     //! Termination flag.
     bool m_terminate;
     //! Cache of images.
-    QMap<QString, QByteArray> m_imageCache;
+    QMap<QString, QPair<QByteArray, bool>> m_imageCache;
     //! Footnotes to draw.
     QVector<QPair<QString, QSharedPointer<MD::Footnote>>> m_footnotes;
 #ifdef MD_PDF_TESTING
