@@ -22,11 +22,8 @@
 #include <include/core/SkFontMgr.h>
 #include <include/core/SkPathBuilder.h>
 #include <include/core/SkTypeface.h>
-
-#ifdef Q_OS_LINUX
 #include <include/ports/SkFontMgr_fontconfig.h>
 #include <include/ports/SkFontScanner_FreeType.h>
-#endif
 
 // C++ include.
 #include <stdexcept>
@@ -437,6 +434,9 @@ QPair<SkFont,
       double>
 PoDoFoPaintEngine::qFontToSkia(const QFont &f)
 {
+    static auto scanner = SkFontScanner_Make_FreeType();
+    static auto fontMgr = SkFontMgr_New_FontConfig(nullptr, std::move(scanner));
+
     // const double size = (f.pointSizeF() > 0.0 ? f.pointSizeF() : f.pixelSize() / paintDevice()->physicalDpiY()
     // * 72.0);
 
@@ -477,18 +477,8 @@ PoDoFoPaintEngine::qFontToSkia(const QFont &f)
 
         const auto fileName = d->m_pdfData.m_fontsCache[path]->fileName();
 
-#ifdef Q_OS_LINUX
-        auto scanner = SkFontScanner_Make_FreeType();
-        auto fontMgr = SkFontMgr_New_FontConfig(nullptr, std::move(scanner));
-#endif
-
         return {SkFont(fontMgr->makeFromFile(fileName.toLocal8Bit().constData()), size), size};
     } else {
-#ifdef Q_OS_LINUX
-        auto scanner = SkFontScanner_Make_FreeType();
-        auto fontMgr = SkFontMgr_New_FontConfig(nullptr, std::move(scanner));
-#endif
-
         SkFontStyle::Slant slant = f.italic() ? SkFontStyle::kItalic_Slant : SkFontStyle::kUpright_Slant;
         int weight = f.bold() ? SkFontStyle::kBold_Weight : SkFontStyle::kNormal_Weight;
 

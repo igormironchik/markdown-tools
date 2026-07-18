@@ -988,10 +988,8 @@ Font PdfRenderer::createFont(const QString &name,
                              double scale,
                              const PdfAuxData &pdfData)
 {
-#ifdef Q_OS_LINUX
-    auto scanner = SkFontScanner_Make_FreeType();
-    auto fontMgr = SkFontMgr_New_FontConfig(nullptr, std::move(scanner));
-#endif
+    static auto scanner = SkFontScanner_Make_FreeType();
+    static auto fontMgr = SkFontMgr_New_FontConfig(nullptr, std::move(scanner));
 
 #ifdef MD_PDF_TESTING
     const QString internalName =
