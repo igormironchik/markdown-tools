@@ -1909,9 +1909,9 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                                           pdfData.m_layout.y()
                                               - cw.descent()
                                               - currentBaseline.m_stack.back().m_baselineDelta
-                                              + pdfData.fontAscent(font, fontSize, fontScale),
+                                              + pdfData.fontAscent(font, fontSize, fontScale) * 0.85,
                                           width,
-                                          pdfData.lineSpacing(font, fontSize, fontScale),
+                                          pdfData.lineSpacing(font, fontSize, fontScale) * 0.85,
                                           SkPaint::kFill_Style);
                     pdfData.restoreColor();
                 }
@@ -2007,9 +2007,9 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                                               pdfData.m_layout.y()
                                                   - cw.descent()
                                                   - currentBaseline.m_stack.back().m_baselineDelta
-                                                  + pdfData.fontAscent(font, fontSize, fontScale),
+                                                  + pdfData.fontAscent(font, fontSize, fontScale) * 0.85,
                                               length,
-                                              pdfData.lineSpacing(font, fontSize, fontScale),
+                                              pdfData.lineSpacing(font, fontSize, fontScale) * 0.85,
                                               SkPaint::kFill_Style);
                         pdfData.restoreColor();
                     }
