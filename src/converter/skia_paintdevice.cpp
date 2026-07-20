@@ -195,7 +195,7 @@ double SkiaPaintEngine::qXtoSkia(double x)
 
 double SkiaPaintEngine::qYtoSkia(double y)
 {
-    return (paintDevice()->height() - y) / paintDevice()->physicalDpiY() * 72.0;
+    return y / paintDevice()->physicalDpiY() * 72.0;
 }
 
 void SkiaPaintEngine::drawLines(const QLineF *lines,

@@ -2904,14 +2904,13 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
 
                 pdfData.setColor(m_opts.m_linkColor);
 
-                pdfData.drawText(
-                    pdfData.m_layout.startX(w),
-                    pdfData.m_layout.y() - cw.descent() * 2.0,
-                    str,
-                    footnoteFont,
-                    m_opts.m_textFontSize * s_footnoteScale * scale,
-                    1.0,
-                    false);
+                pdfData.drawText(pdfData.m_layout.startX(w),
+                                 pdfData.m_layout.y() - cw.descent() * 2.0,
+                                 str,
+                                 footnoteFont,
+                                 m_opts.m_textFontSize * s_footnoteScale * scale,
+                                 1.0,
+                                 false);
 
                 pdfData.restoreColor();
 
@@ -3005,8 +3004,7 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
         render->draw(g2, 0, 0);
         pxSize = {(qreal)render->getWidth(), (qreal)render->getHeight()};
         size = {pxSize.width() / (qreal)pd.physicalDpiX() * 72.0, pxSize.height() / (qreal)pd.physicalDpiY() * 72.0};
-        descent = (item->isInline() ? ((1.0 - render->getBaseline()) * size.height())
-                                    : (pdfData.fontDescent(font, m_opts.m_textFontSize, scale)));
+        descent = (item->isInline() ? ((1.0 - render->getBaseline()) * size.height()) : 0.0);
     };
 
     calculateSize();
@@ -3055,13 +3053,15 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
             - pdfData.m_layout.margins().m_left
             - pdfData.m_layout.margins().m_right
             - offset;
-        double availableHeight = pdfData.m_layout.y() - pdfData.currentPageAllowedY();
+        double availableHeight = pdfData.currentPageAllowedY() - pdfData.m_layout.y();
 
         if (size.width() - availableWidth > 0.01) {
             imgScale = (availableWidth / size.width()) * scale;
         }
 
-        const double pageHeight = pdfData.topY(pdfData.m_currentPainterIdx) - pdfData.m_layout.margins().m_bottom;
+        const double pageHeight = pdfData.m_layout.pageHeight()
+            - pdfData.topY(pdfData.m_currentPainterIdx)
+            - pdfData.m_layout.margins().m_bottom;
 
         if (size.height() * imgScale - pageHeight > 0.01) {
             imgScale = (pageHeight / (size.height() * imgScale)) * scale;
@@ -3101,13 +3101,12 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
             // y - is a top of a line.
             tex::Graphics2D_qt g2(&p);
 
-            render->draw(
-                g2,
-                pdfData.m_layout.startX(size.width() * imgScale) / 72.0 * pd.physicalDpiX(),
-                (pdfData.m_layout.pageHeight() - pdfData.m_layout.y() + descent * imgScale) / 72.0 * pd.physicalDpiY());
+            render->draw(g2,
+                         pdfData.m_layout.startX(size.width() * imgScale) / 72.0 * pd.physicalDpiX(),
+                         pdfData.m_layout.y() / 72.0 * pd.physicalDpiY());
 
             const RectF r = {pdfData.m_layout.startX(size.width() * imgScale),
-                             pdfData.m_layout.y() - descent * imgScale - size.height() * imgScale,
+                             pdfData.m_layout.y() + size.height() * imgScale,
                              size.width() * imgScale,
                              size.height() * imgScale};
             const auto idx = pdfData.m_currentPainterIdx;
@@ -3208,9 +3207,11 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
             imgScale = (pdfData.m_layout.availableWidth() / size.width()) * scale;
         }
 
-        double availableHeight = pdfData.m_layout.y() - pdfData.currentPageAllowedY();
+        double availableHeight = pdfData.currentPageAllowedY() - pdfData.m_layout.y();
 
-        const double pageHeight = pdfData.topY(pdfData.m_currentPainterIdx) - pdfData.m_layout.margins().m_bottom;
+        const double pageHeight = pdfData.m_layout.pageHeight()
+            - pdfData.topY(pdfData.m_currentPainterIdx)
+            - pdfData.m_layout.margins().m_bottom;
 
         if (size.height() * imgScale - pageHeight > 0.01) {
             imgScale = (pageHeight / (size.height() * imgScale)) * scale;
@@ -3244,8 +3245,7 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
             tex::Graphics2D_qt g2(&p);
             render->draw(g2,
                          pdfData.m_layout.startX(size.width() * imgScale) / 72.0 * pd.physicalDpiX(),
-                         (pdfData.m_layout.pageHeight()
-                          - pdfData.m_layout.y()
+                         (pdfData.m_layout.y()
                           - cw.descent()
                           - (size.height() - descent) * imgScale
                           - previousBaseline.m_stack.back().m_baselineDelta)
@@ -3254,10 +3254,10 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
 
             const RectF r = {pdfData.m_layout.startX(size.width() * imgScale),
                              pdfData.m_layout.y()
-                                 + cw.descent()
-                                 + (size.height() - descent) * imgScale
-                                 + previousBaseline.m_stack.back().m_baselineDelta
-                                 - size.height() * imgScale,
+                                 - cw.descent()
+                                 - (size.height() - descent) * imgScale
+                                 - previousBaseline.m_stack.back().m_baselineDelta
+                                 + size.height() * imgScale,
                              size.width() * imgScale,
                              size.height() * imgScale};
 
@@ -3832,7 +3832,7 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
             && !newLine
             && (isOnlineImageOrOnlineImageInLink(pdfData, prevItem, offset, lineHeight, scaleImagesToLineHeight)
                 || (prevItem ? prevItem->endLine() != item->startLine() : false));
-        double height = (!onLine ? (firstInParagraph && pdfData.m_tableDrawing ? 0.0 : lineHeight) : 0.0);
+        double height = 0.0;
         const auto availableAfter = pdfData.m_layout.availableWidth()
             - (iWidth * imgScale + (addSpace ? spaceWidth * (draw ? cw.scale() / 100.0 : 1.0) : 0.0));
 
@@ -3846,7 +3846,7 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
             }
 
             if (draw) {
-                moveToNewLine(pdfData, offset, (onLine ? cw.height() : lineHeight), 1.0, lineHeight);
+                moveToNewLine(pdfData, offset, (onLine ? cw.height() + lineHeight : lineHeight), 1.0, lineHeight);
             } else {
                 pdfData.m_layout.moveXToBegin();
             }
@@ -3949,13 +3949,15 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
         const auto lineInfo = previousBaseline.fullLineHeight();
 
         if (!draw) {
+            auto font = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, scale, pdfData);
             cw.append({iWidth * imgScale,
                        (subSupInit.wasAdded() ? lineInfo.first : std::max(height, lineHeight)),
                        false,
                        !onLine,
                        false,
                        "",
-                       (subSupInit.wasAdded() ? lineInfo.second : 0.0),
+                       (onLine ? pdfData.fontDescent(font, m_opts.m_textFontSize, scale) : 0.0)
+                           + (subSupInit.wasAdded() ? lineInfo.second : 0.0),
                        (!onLine ? imageToParagraphAlignment(alignment) : ParagraphAlignment::Unknown)});
         }
 
