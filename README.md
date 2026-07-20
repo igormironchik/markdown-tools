@@ -44,19 +44,12 @@ Look at the release page for the installer for some Linux and Windows distributi
 
 To build these applications first of all install dependencies:
 
- * `openssl`
- * `freetype`
- * `libjpeg`
- * `libpng`
  * `zlib`
- * `libxml2`
- * `fontconfig`
  * `extra-cmake-modules`
  * `kf6-syntax-highlighting`
  * `kf6-sonnet`
  * `kf6-kwidgetsaddons`
  * `Qt >= 6.7`
- * `tinyxml2`
 
 With these dependencies installed just open `CMakeLists.txt` in `QtCreator`
 (or use `CMake` from command line) and run build.
@@ -100,7 +93,6 @@ them available through the `PATH`, `INCLUDE`, `LIB` environment variables.
    * `script\windows\build.bat`
    * `script\windows\copy-binaries.bat`
    * `script\windows\copy-qt.bat`
-   * `script\windows\copy-openssl.bat`
    * `script\windows\deploy.bat`
 
 After these steps in the root of `markdown-tools` repository you will get
