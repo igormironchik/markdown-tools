@@ -4131,8 +4131,10 @@ void LoadImageFromNetwork::loadFinished()
     if (svg == QStringLiteral("<svg")
         || svg == QStringLiteral("<?xm")
         || m_reply->url().fileName().toLower().endsWith(QStringLiteral("svgz"))
+        || m_reply->url().fileName().toLower().endsWith(QStringLiteral("svg.gz"))
         || m_reply->url().fileName().toLower().endsWith(QStringLiteral("svg"))) {
-        if (m_reply->url().fileName().toLower().endsWith(QStringLiteral("svgz"))) {
+        if (m_reply->url().fileName().toLower().endsWith(QStringLiteral("svgz"))
+            || m_reply->url().fileName().toLower().endsWith(QStringLiteral("svg.gz"))) {
             m_reply->seek(0);
             m_svgData = qt_inflateSvgzDataFrom(m_reply, true);
         } else {
@@ -4191,7 +4193,8 @@ QByteArray PdfRenderer::loadImage(MD::Image *item,
                        "This image is not a local existing file, and not in the Web. Check your Markdown.")
                         .arg(item->url()));
             }
-        } else if (item->url().toLower().endsWith(QStringLiteral("svgz"))) {
+        } else if (item->url().toLower().endsWith(QStringLiteral("svgz"))
+                   || item->url().toLower().endsWith(QStringLiteral("svg.gz"))) {
             QFile file(item->url());
             if (file.open(QIODevice::ReadOnly)) {
                 const auto data = qt_inflateSvgzDataFrom(&file, true);
