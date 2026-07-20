@@ -5,8 +5,8 @@
 */
 
 // md-pdf include.
-#include "renderer.h"
 #include "const.h"
+#include "renderer.h"
 #include "skia_paintdevice.h"
 
 // shared include.
@@ -61,7 +61,8 @@
 
 // Copyright (C) 2016 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-static QByteArray qt_inflateSvgzDataFrom(QIODevice *device, bool doCheckContent)
+static QByteArray qt_inflateSvgzDataFrom(QIODevice *device,
+                                         bool doCheckContent)
 {
     Q_UNUSED(doCheckContent)
 
@@ -97,7 +98,6 @@ static QByteArray qt_inflateSvgzDataFrom(QIODevice *device, bool doCheckContent)
 
     bool stillMoreWorkToDo = true;
     while (stillMoreWorkToDo) {
-
         if (!zlibStream.avail_in) {
             source = device->read(CHUNK_SIZE);
 
@@ -105,7 +105,7 @@ static QByteArray qt_inflateSvgzDataFrom(QIODevice *device, bool doCheckContent)
                 break;
 
             zlibStream.avail_in = source.size();
-            zlibStream.next_in = reinterpret_cast<Bytef*>(source.data());
+            zlibStream.next_in = reinterpret_cast<Bytef *>(source.data());
         }
 
         do {
@@ -117,23 +117,22 @@ static QByteArray qt_inflateSvgzDataFrom(QIODevice *device, bool doCheckContent)
             }
 
             destination.resize(oldSize + CHUNK_SIZE);
-            zlibStream.next_out = reinterpret_cast<Bytef*>(
-                    destination.data() + oldSize - zlibStream.avail_out);
+            zlibStream.next_out = reinterpret_cast<Bytef *>(destination.data() + oldSize - zlibStream.avail_out);
             zlibStream.avail_out += CHUNK_SIZE;
 
             zlibResult = inflate(&zlibStream, Z_NO_FLUSH);
             switch (zlibResult) {
-                case Z_NEED_DICT:
-                case Z_DATA_ERROR:
-                case Z_STREAM_ERROR:
-                case Z_MEM_ERROR: {
-                    inflateEnd(&zlibStream);
-                    return QByteArray();
-                }
+            case Z_NEED_DICT:
+            case Z_DATA_ERROR:
+            case Z_STREAM_ERROR:
+            case Z_MEM_ERROR: {
+                inflateEnd(&zlibStream);
+                return QByteArray();
+            }
             }
 
-        // If the output buffer still has more room after calling inflate
-        // it means we have to provide more data, so exit the loop here
+            // If the output buffer still has more room after calling inflate
+            // it means we have to provide more data, so exit the loop here
         } while (!zlibStream.avail_out);
 
         if (zlibResult == Z_STREAM_END) {
@@ -4179,9 +4178,10 @@ QByteArray PdfRenderer::loadImage(MD::Image *item,
 
                 return data;
             } else {
-                throw PdfRendererError(tr("Hmm, I don't know how to load this image: %1.\n\n"
-                                          "This image is not a local existing file, and not in the Web. Check your Markdown.")
-                                           .arg(item->url()));
+                throw PdfRendererError(
+                    tr("Hmm, I don't know how to load this image: %1.\n\n"
+                       "This image is not a local existing file, and not in the Web. Check your Markdown.")
+                        .arg(item->url()));
             }
         } else if (item->url().toLower().endsWith(QStringLiteral("svgz"))) {
             QFile file(item->url());
@@ -4198,9 +4198,10 @@ QByteArray PdfRenderer::loadImage(MD::Image *item,
 
                 return data;
             } else {
-                throw PdfRendererError(tr("Hmm, I don't know how to load this image: %1.\n\n"
-                                          "This image is not a local existing file, and not in the Web. Check your Markdown.")
-                                           .arg(item->url()));
+                throw PdfRendererError(
+                    tr("Hmm, I don't know how to load this image: %1.\n\n"
+                       "This image is not a local existing file, and not in the Web. Check your Markdown.")
+                        .arg(item->url()));
             }
 
         } else {
@@ -4926,13 +4927,13 @@ PdfRenderer::drawListItem(PdfAuxData &pdfData,
 
             if (item->isTaskList()) {
                 pdfData.setColor(Qt::black);
-                pdfData.drawRectangle(pdfData.m_layout.borderStartX()
-                                          + pdfData.m_layout.xIncrementDirection()
-                                              * (offset - (orderedListNumberWidth + spaceWidth)),
-                                      firstLine.m_y + qAbs(firstLine.m_height - orderedListNumberWidth) / 2.0,
-                                      orderedListNumberWidth,
-                                      orderedListNumberWidth,
-                                      SkPaint::kStroke_Style);
+                pdfData.drawRectangle(
+                    pdfData.m_layout.borderStartX()
+                        + pdfData.m_layout.xIncrementDirection() * (offset - (orderedListNumberWidth + spaceWidth)),
+                    firstLine.m_y - firstLine.m_height + qAbs(firstLine.m_height - orderedListNumberWidth) / 2.0,
+                    orderedListNumberWidth,
+                    orderedListNumberWidth,
+                    SkPaint::kStroke_Style);
 
                 if (item->isChecked()) {
                     const auto d = orderedListNumberWidth * 0.2;
@@ -4940,7 +4941,10 @@ PdfRenderer::drawListItem(PdfAuxData &pdfData,
                     pdfData.drawRectangle(pdfData.m_layout.borderStartX()
                                               + pdfData.m_layout.xIncrementDirection()
                                                   * (offset + d - (orderedListNumberWidth + spaceWidth)),
-                                          firstLine.m_y + qAbs(firstLine.m_height - orderedListNumberWidth) / 2.0 + d,
+                                          firstLine.m_y
+                                              - firstLine.m_height
+                                              + qAbs(firstLine.m_height - orderedListNumberWidth) / 2.0
+                                              + d,
                                           orderedListNumberWidth - 2.0 * d,
                                           orderedListNumberWidth - 2.0 * d,
                                           SkPaint::kFill_Style);
