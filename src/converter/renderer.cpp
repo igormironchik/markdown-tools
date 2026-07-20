@@ -3989,6 +3989,7 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
         imgScale *= scale * previousBaseline.currentScale();
 
         RectF r;
+        auto font = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, scale, pdfData);
 
         if (draw) {
             if (!onLine) {
@@ -4020,7 +4021,7 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
                 pdfData.m_layout.addX(spaceWidth);
             }
 
-            height += iHeight * imgScale;
+            height += iHeight * imgScale + (onLine ? pdfData.fontDescent(font, m_opts.m_textFontSize, scale) : 0.0);
         }
 
         if (onLine) {
@@ -4044,7 +4045,6 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
         const auto lineInfo = previousBaseline.fullLineHeight();
 
         if (!draw) {
-            auto font = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, scale, pdfData);
             cw.append({iWidth * imgScale,
                        (subSupInit.wasAdded() ? lineInfo.first : std::max(height, lineHeight)),
                        false,
