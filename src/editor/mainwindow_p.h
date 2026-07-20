@@ -164,7 +164,6 @@ struct MainWindowPrivate {
     QString m_baseUrl;
     QString m_rootFilePath;
     QString m_mdPdfExe;
-    QString m_launcherExe;
     QString m_htmlContent;
     QString m_tmpWorkingDir;
     QString m_requestedRef;

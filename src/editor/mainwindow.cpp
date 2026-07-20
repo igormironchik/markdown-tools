@@ -146,16 +146,10 @@ void MainWindow::onConvertToPdf()
 {
     QDir workingDir(QApplication::applicationDirPath());
     const auto mdPdfExeFiles = workingDir.entryInfoList({m_d->m_mdPdfExe}, QDir::Executable | QDir::Files);
-    const auto starterExeFiles = workingDir.entryInfoList({m_d->m_launcherExe}, QDir::Executable | QDir::Files);
 
-    if (!mdPdfExeFiles.isEmpty() && !starterExeFiles.isEmpty()) {
-        QProcess::startDetached(starterExeFiles.at(0).absoluteFilePath(),
-                                {QStringLiteral("--exe"),
-                                 mdPdfExeFiles.at(0).fileName(),
-                                 QStringLiteral("--mode"),
-                                 QStringLiteral("detached"),
-                                 QStringLiteral("--arg"),
-                                 m_d->m_rootFilePath},
+    if (!mdPdfExeFiles.isEmpty()) {
+        QProcess::startDetached(mdPdfExeFiles.at(0).absoluteFilePath(),
+                                {m_d->m_rootFilePath},
                                 workingDir.absolutePath());
     }
 }

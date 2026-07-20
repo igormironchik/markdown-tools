@@ -243,15 +243,12 @@ void MainWindowPrivate::initUi()
 
 #ifdef Q_OS_WIN
     m_mdPdfExe = QStringLiteral("md-pdf-gui.exe");
-    m_launcherExe = QStringLiteral("md-launcher.exe");
 #else
     m_mdPdfExe = QStringLiteral("md-pdf-gui");
-    m_launcherExe = QStringLiteral("md-launcher");
 #endif
 
     QDir workingDir(QApplication::applicationDirPath());
     const auto mdPdfExeFiles = workingDir.entryInfoList({m_mdPdfExe}, QDir::Executable | QDir::Files);
-    const auto starterExeFiles = workingDir.entryInfoList({m_launcherExe}, QDir::Executable | QDir::Files);
 
     auto fileMenu = m_q->menuBar()->addMenu(MainWindow::tr("&File"));
     m_newAction = fileMenu->addAction(
@@ -285,7 +282,7 @@ void MainWindowPrivate::initUi()
                                           &MainWindow::loadAllLinkedFiles);
     m_loadAllAction->setEnabled(false);
 
-    if (!mdPdfExeFiles.isEmpty() && !starterExeFiles.isEmpty()) {
+    if (!mdPdfExeFiles.isEmpty()) {
         fileMenu->addSeparator();
 
         m_convertToPdfAction =
