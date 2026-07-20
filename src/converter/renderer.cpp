@@ -3724,7 +3724,7 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
                        bool firstInParagraph,
                        bool lastInParagraph,
                        bool isPrevText,
-                       bool isNextText,
+                       bool isNextTextOrOnlineImage,
                        CustomWidth &cw,
                        double scale,
                        PrevBaselineStateStack &previousBaseline,
@@ -3846,7 +3846,7 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
             }
 
             if (draw) {
-                moveToNewLine(pdfData, offset, (onLine ? cw.height() + lineHeight : lineHeight), 1.0, lineHeight);
+                moveToNewLine(pdfData, offset, (onLine ? cw.height() : lineHeight), 1.0, lineHeight);
             } else {
                 pdfData.m_layout.moveXToBegin();
             }
@@ -3942,7 +3942,7 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
             }
         }
 
-        if (draw && !onLine && !lastInParagraph && isNextText) {
+        if (draw && !onLine && !lastInParagraph && isNextTextOrOnlineImage) {
             moveToNewLine(pdfData, offset, lineHeight + cw.height(), 1.0, cw.height());
         }
 
