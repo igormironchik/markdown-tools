@@ -448,6 +448,8 @@ struct PdfAuxData {
     SkPaint m_currentPaint;
     //! Fonts manager.
     sk_sp<SkFontMgr> m_fontMgr = SkFontMgr_New_FontConfig(nullptr, std::move(SkFontScanner_Make_FreeType()));
+    //! Cache of typesets.
+    QHash<QString, sk_sp<SkTypeface>> m_typefaceCache;
 
 #ifdef MD_PDF_TESTING
     QMap<QString, QString> m_fonts;
@@ -596,7 +598,7 @@ protected:
                     bool italic,
                     double size,
                     double scale,
-                    const PdfAuxData &pdfData);
+                    PdfAuxData &pdfData);
 
 private:
     //! Create new page.

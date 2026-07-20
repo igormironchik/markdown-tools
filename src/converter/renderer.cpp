@@ -1120,23 +1120,31 @@ Font PdfRenderer::createFont(const QString &name,
                              bool italic,
                              double size,
                              double scale,
-                             const PdfAuxData &pdfData)
+                             PdfAuxData &pdfData)
 {
-#ifdef MD_PDF_TESTING
     const QString internalName =
         name + (bold ? QStringLiteral(" Bold") : QString()) + (italic ? QStringLiteral(" Italic") : QString());
 
-    return SkFont(pdfData.m_fontMgr->makeFromFile(pdfData.m_fonts[internalName].toLocal8Bit().data()), size * scale);
+    sk_sp<SkTypeface> typeface;
+
+    if (pdfData.m_typefaceCache.contains(internalName)) {
+        typeface = pdfData.m_typefaceCache[internalName];
+    } else {
+#ifdef MD_PDF_TESTING
+        typeface = pdfData.m_fontMgr->makeFromFile(pdfData.m_fonts[internalName].toLocal8Bit().data());
 #else
-    Q_UNUSED(pdfData)
+        SkFontStyle::Slant slant = italic ? SkFontStyle::kItalic_Slant : SkFontStyle::kUpright_Slant;
+        int weight = bold ? SkFontStyle::kBold_Weight : SkFontStyle::kNormal_Weight;
 
-    SkFontStyle::Slant slant = italic ? SkFontStyle::kItalic_Slant : SkFontStyle::kUpright_Slant;
-    int weight = bold ? SkFontStyle::kBold_Weight : SkFontStyle::kNormal_Weight;
+        SkFontStyle style(weight, SkFontStyle::kNormal_Width, slant);
 
-    SkFontStyle style(weight, SkFontStyle::kNormal_Width, slant);
+        typeface = pdfData.m_fontMgr->matchFamilyStyle(name.toLocal8Bit().data(), style);
 
-    return SkFont(pdfData.m_fontMgr->matchFamilyStyle(name.toLocal8Bit().data(), style), size * scale);
-#endif // MD_PDF_TESTING
+        pdfData.m_typefaceCache.insert(internalName, typeface);
+#endif
+    }
+
+    return SkFont(typeface, size * scale);
 }
 
 namespace /* anonymous */
