@@ -13,6 +13,7 @@ find_package(Qt6Svg 6.5.0 REQUIRED)
 find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} COMPONENTS
     IconThemes ColorScheme Config
 )
+find_package(ZLIB REQUIRED)
 
 if(ENABLE_COVERAGE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
@@ -61,12 +62,7 @@ if(KF${KF_MAJOR_VERSION}IconThemes_FOUND AND KF${KF_MAJOR_VERSION}ColorScheme_FO
     target_compile_definitions(md-pdf-gui PRIVATE MD_BREEZE)
 endif()
 
-add_executable(md-launcher launcher.cpp)
-
-target_link_libraries(md-launcher Qt6::Core)
-
 install(TARGETS md-pdf-gui)
-install(TARGETS md-launcher)
 
 if(WIN32)
     set(WIN_LIBS Dwmapi)
@@ -107,7 +103,8 @@ target_link_libraries(md-pdf-gui
     jpeg
     zlib
     ${WIN_LIBS}
-    ${UNIX_LIBS})
+    ${UNIX_LIBS}
+    ZLIB::ZLIB)
     
 add_custom_command(
     TARGET md-pdf-gui

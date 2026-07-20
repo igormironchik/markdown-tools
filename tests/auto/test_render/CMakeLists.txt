@@ -7,6 +7,7 @@ find_package(Qt6Test 6.5.0 REQUIRED)
 find_package(Qt6Gui 6.5.0 REQUIRED)
 find_package(Qt6Widgets 6.5.0 REQUIRED)
 find_package(Qt6Network 6.5.0 REQUIRED)
+find_package(ZLIB REQUIRED)
 
 find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
     SyntaxHighlighting
@@ -91,7 +92,8 @@ target_link_libraries(test.render
     icu
     jpeg
     zlib
-    ${UNIX_LIBS})
+    ${UNIX_LIBS}
+    ZLIB::ZLIB)
 
 add_test(NAME test.render
     COMMAND test.render${CMAKE_EXECUTABLE_SUFFIX}

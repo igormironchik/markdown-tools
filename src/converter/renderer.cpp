@@ -1,3 +1,4 @@
+#include <QDirIterator>
 /*
     SPDX-FileCopyrightText: 2026 Igor Mironchik <igor.mironchik@gmail.com>
     SPDX-License-Identifier: GPL-3.0-or-later
@@ -54,6 +55,100 @@
 
 // md4qt include.
 #include <md4qt/src/algo.h>
+
+// zlib include.
+#include <zlib.h>
+
+// Copyright (C) 2016 The Qt Company Ltd.
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+static QByteArray qt_inflateSvgzDataFrom(QIODevice *device, bool doCheckContent)
+{
+    Q_UNUSED(doCheckContent)
+
+    if (!device) {
+        return QByteArray();
+    }
+
+    if (!device->isOpen()) {
+        device->open(QIODevice::ReadOnly);
+    }
+
+    Q_ASSERT(device->isOpen() && device->isReadable());
+
+    static const int CHUNK_SIZE = 4096;
+    int zlibResult = Z_OK;
+
+    QByteArray source;
+    QByteArray destination;
+
+    // Initialize zlib stream struct
+    z_stream zlibStream;
+    zlibStream.next_in = Z_NULL;
+    zlibStream.avail_in = 0;
+    zlibStream.avail_out = 0;
+    zlibStream.zalloc = Z_NULL;
+    zlibStream.zfree = Z_NULL;
+    zlibStream.opaque = Z_NULL;
+
+    // Adding 16 to the window size gives us gzip decoding
+    if (inflateInit2(&zlibStream, MAX_WBITS + 16) != Z_OK) {
+        return QByteArray();
+    }
+
+    bool stillMoreWorkToDo = true;
+    while (stillMoreWorkToDo) {
+
+        if (!zlibStream.avail_in) {
+            source = device->read(CHUNK_SIZE);
+
+            if (source.isEmpty())
+                break;
+
+            zlibStream.avail_in = source.size();
+            zlibStream.next_in = reinterpret_cast<Bytef*>(source.data());
+        }
+
+        do {
+            // Prepare the destination buffer
+            int oldSize = destination.size();
+            if (oldSize > INT_MAX - CHUNK_SIZE) {
+                inflateEnd(&zlibStream);
+                return QByteArray();
+            }
+
+            destination.resize(oldSize + CHUNK_SIZE);
+            zlibStream.next_out = reinterpret_cast<Bytef*>(
+                    destination.data() + oldSize - zlibStream.avail_out);
+            zlibStream.avail_out += CHUNK_SIZE;
+
+            zlibResult = inflate(&zlibStream, Z_NO_FLUSH);
+            switch (zlibResult) {
+                case Z_NEED_DICT:
+                case Z_DATA_ERROR:
+                case Z_STREAM_ERROR:
+                case Z_MEM_ERROR: {
+                    inflateEnd(&zlibStream);
+                    return QByteArray();
+                }
+            }
+
+        // If the output buffer still has more room after calling inflate
+        // it means we have to provide more data, so exit the loop here
+        } while (!zlibStream.avail_out);
+
+        if (zlibResult == Z_STREAM_END) {
+            // Make sure there are no more members to process before exiting
+            if (!(zlibStream.avail_in && inflateReset(&zlibStream) == Z_OK))
+                stillMoreWorkToDo = false;
+        }
+    }
+
+    // Chop off trailing space in the buffer
+    destination.chop(zlibStream.avail_out);
+
+    inflateEnd(&zlibStream);
+    return destination;
+}
 
 namespace MdPdf
 {
@@ -834,7 +929,7 @@ void PdfRenderer::renderImpl()
 
                 auto p = static_cast<MD::Paragraph *>(fit.value()->items().back().get());
                 auto link = QSharedPointer<MD::Link>::create();
-                link->img()->setUrl(QStringLiteral("qrc:/img/go-jump.png"));
+                link->img()->setUrl(QStringLiteral(":/svg/go-jump.svgz"));
                 link->p()->appendItem(link->img());
                 link->setUrl(ref->id() + QStringLiteral("-%1").arg(QString::number(++pfit->second)));
                 p->appendItem(link);
@@ -1080,7 +1175,7 @@ void PdfRenderer::createPage(PdfAuxData &pdfData)
 
         const auto topY = pdfData.topFootnoteY(pdfData.m_currentPageIdx);
 
-        if (topY - pdfData.m_layout.topY() < pdfData.m_lineHeight) {
+        if (topY - pdfData.m_layout.topY() < pdfData.m_lineHeight * 2.0) {
             create(pdfData);
         } else if (pdfData.m_tableDrawing) {
             pdfData.m_cachedPainters.insert(pdfData.m_currentPainterIdx, 0);
@@ -4031,11 +4126,8 @@ void LoadImageFromNetwork::loadFinished()
         || m_reply->url().fileName().toLower().endsWith(QStringLiteral("svgz"))
         || m_reply->url().fileName().toLower().endsWith(QStringLiteral("svg"))) {
         if (m_reply->url().fileName().toLower().endsWith(QStringLiteral("svgz"))) {
-            if (data.size() > 10 && (quint8)data[0] == 0x1f && (quint8)data[1] == 0x8b) {
-                data.remove(0, 10);
-            }
-
-            m_svgData = qUncompress(data);
+            m_reply->seek(0);
+            m_svgData = qt_inflateSvgzDataFrom(m_reply, true);
         } else {
             m_svgData = data;
         }
@@ -4070,9 +4162,8 @@ QByteArray PdfRenderer::loadImage(MD::Image *item,
 
     QImage img;
 
-    if (QFileInfo::exists(item->url())) {
-        if (item->url().toLower().endsWith(QStringLiteral("svg"))
-            || item->url().toLower().endsWith(QStringLiteral("svgz"))) {
+    if (QFile::exists(item->url())) {
+        if (item->url().toLower().endsWith(QStringLiteral("svg"))) {
             QFile file(item->url());
             if (file.open(QIODevice::ReadOnly)) {
                 auto data = file.readAll();
@@ -4082,18 +4173,36 @@ QByteArray PdfRenderer::loadImage(MD::Image *item,
                     *isSvg = true;
                 }
 
-                if (data.size() > 10 && (quint8)data[0] == 0x1f && (quint8)data[1] == 0x8b) {
-                    data.remove(0, 10);
+                if (cache) {
+                    m_imageCache.insert(item->url(), qMakePair(data, true));
                 }
 
-                data = qUncompress(data);
+                return data;
+            } else {
+                throw PdfRendererError(tr("Hmm, I don't know how to load this image: %1.\n\n"
+                                          "This image is not a local existing file, and not in the Web. Check your Markdown.")
+                                           .arg(item->url()));
+            }
+        } else if (item->url().toLower().endsWith(QStringLiteral("svgz"))) {
+            QFile file(item->url());
+            if (file.open(QIODevice::ReadOnly)) {
+                const auto data = qt_inflateSvgzDataFrom(&file, true);
+
+                if (isSvg) {
+                    *isSvg = true;
+                }
 
                 if (cache) {
                     m_imageCache.insert(item->url(), qMakePair(data, true));
                 }
 
                 return data;
+            } else {
+                throw PdfRendererError(tr("Hmm, I don't know how to load this image: %1.\n\n"
+                                          "This image is not a local existing file, and not in the Web. Check your Markdown.")
+                                           .arg(item->url()));
             }
+
         } else {
             if (isSvg) {
                 *isSvg = false;

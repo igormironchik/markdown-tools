@@ -2,7 +2,7 @@
     <qresource prefix="/">
         <file>img/application-exit.png</file>
         <file>img/bookmarks-organize.png</file>
-        <file>img/go-jump.png</file>
+        <file>svg/go-jump.svgz</file>
         <file>img/tools-report-bug.png</file>
         <file>svg/caution.svg</file>
         <file>svg/important.svg</file>
