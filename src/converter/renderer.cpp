@@ -3516,8 +3516,8 @@ QVector<WhereDrawn> PdfRenderer::drawFootnote(PdfAuxData &pdfData,
             const auto str = createUtf8String(QString::number(pdfData.m_currentFootnote));
             const auto w = pdfData.stringWidth(font, m_opts.m_textFontSize, s_footnoteScale, str);
             const auto y = ret.constFirst().m_y
-                + ret.constFirst().m_height
-                - pdfData.lineSpacing(font, m_opts.m_textFontSize, s_footnoteScale)
+                - ret.constFirst().m_height
+                + pdfData.lineSpacing(font, m_opts.m_textFontSize, s_footnoteScale)
                 - pdfData.fontDescent(font, m_opts.m_textFontSize, s_footnoteScale);
             const auto x = pdfData.m_layout.borderStartX()
                 + pdfData.m_layout.xIncrementDirection()
@@ -3528,7 +3528,7 @@ QVector<WhereDrawn> PdfRenderer::drawFootnote(PdfAuxData &pdfData,
                 SkPoint::Make(x,
                               y
                                   - pdfData.lineSpacing(font, m_opts.m_textFontSize, s_footnoteScale)
-                                  - pdfData.fontDescent(font, m_opts.m_textFontSize, s_footnoteScale));
+                                  + pdfData.fontDescent(font, m_opts.m_textFontSize, s_footnoteScale));
             sk_sp<SkData> pageName(SkData::MakeWithCString(footnoteRefId.toUtf8().data()));
             SkAnnotateNamedDestination((*pdfData.m_pages)[p].m_canvas, targetPoint, pageName.get());
 
@@ -5352,14 +5352,14 @@ void PdfRenderer::drawRowBorder(PdfAuxData &pdfData,
 
             ret.append({i,
                         (i < pdfData.currentPageIndex() ? pdfData.allowedY(i) : endY),
-                        (i < pdfData.currentPageIndex() ? startY - pdfData.allowedY(i) : startY - endY)});
+                        (i < pdfData.currentPageIndex() ? pdfData.allowedY(i) - startY : endY - startY)});
         } else if (i < pdfData.currentPageIndex()) {
             auto x = startX;
             auto y = pdfData.allowedY(i);
             auto sy = pdfData.topY(i);
 
             if (pdfData.m_drawFootnotes) {
-                sy -= pdfData.m_extraInFootnote + s_tableMargin;
+                sy += pdfData.m_extraInFootnote + s_tableMargin;
             }
 
             pdfData.drawLine(x, sy, x, y);
@@ -5370,14 +5370,14 @@ void PdfRenderer::drawRowBorder(PdfAuxData &pdfData,
                 pdfData.drawLine(x, sy, x, y);
             }
 
-            ret.append({i, pdfData.allowedY(i), sy - pdfData.allowedY(i)});
+            ret.append({i, pdfData.allowedY(i), pdfData.allowedY(i) - sy});
         } else {
             auto x = startX;
             auto y = endY;
             auto sy = pdfData.topY(i);
 
             if (pdfData.m_drawFootnotes) {
-                sy -= pdfData.m_extraInFootnote + s_tableMargin;
+                sy += pdfData.m_extraInFootnote + s_tableMargin;
             }
 
             pdfData.drawLine(x, sy, x, y);
@@ -5390,7 +5390,7 @@ void PdfRenderer::drawRowBorder(PdfAuxData &pdfData,
 
             pdfData.drawLine(startX, y, endX, y);
 
-            ret.append({pdfData.currentPageIndex(), endY, sy - endY});
+            ret.append({pdfData.currentPageIndex(), endY, endY - sy});
         }
 
         pdfData.restoreColor();
