@@ -7,6 +7,8 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
+set(CMAKE_FIND_PACKAGE_PREFER_CONFIG TRUE)
+
 find_package(Qt6Widgets 6.5.0 REQUIRED)
 find_package(Qt6Network 6.5.0 REQUIRED)
 find_package(Qt6Svg 6.5.0 REQUIRED)
@@ -18,9 +20,10 @@ find_package(Fontconfig REQUIRED)
 
 get_target_property(FONTCONFIG_INCLUDE_DIR Fontconfig::Fontconfig INTERFACE_INCLUDE_DIRECTORIES)
 get_target_property(FONTCONFIG_LIBRARY Fontconfig::Fontconfig IMPORTED_LOCATION)
+get_filename_component(FONTCONFIG_LIB_DIR "${FONTCONFIG_LIBRARY}" DIRECTORY)
 
 set(SKIA_CFLAGS "-I${FONTCONFIG_INCLUDE_DIR}")
-set(SKIA_LDFLAGS "${FONTCONFIG_LIBRARY}")
+set(SKIA_LDFLAGS "-L${FONTCONFIG_LIB_DIR} -lfontconfig")
 
 if(ENABLE_COVERAGE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
