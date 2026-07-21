@@ -14,14 +14,10 @@ find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} COMPONENTS
     IconThemes ColorScheme Config
 )
 find_package(ZLIB REQUIRED)
-find_package(Fontconfig REQUIRED)
 
-get_target_property(FONTCONFIG_INCLUDE_DIR Fontconfig::Fontconfig INTERFACE_INCLUDE_DIRECTORIES)
-get_target_property(FONTCONFIG_LIBRARY Fontconfig::Fontconfig IMPORTED_LOCATION)
-get_filename_component(FONTCONFIG_LIB_DIR "${FONTCONFIG_LIBRARY}" DIRECTORY)
-
-set(SKIA_CFLAGS "-I${FONTCONFIG_INCLUDE_DIR}")
-set(SKIA_LDFLAGS "-L${FONTCONFIG_LIB_DIR} -lfontconfig")
+if(WIN32)
+    set(SKIA_CFLAGS "/MD")
+endif()
 
 if(ENABLE_COVERAGE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
@@ -55,8 +51,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/MicroTeX/src
 	${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../shared
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/Skia
-    ${FONTCONFIG_INCLUDE_DIR})
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/Skia)
 
 add_definitions(-DBUILD_QT)
 
@@ -74,11 +69,11 @@ endif()
 install(TARGETS md-pdf-gui)
 
 if(WIN32)
-    set(WIN_LIBS Dwmapi)
+    set(PLATFORM_LIBS Dwmapi Dwrite libwebp libpng libjpeg jsonreader)
 endif()
 
 if(UNIX)
-    set(UNIX_LIBS freetype fontconfig)
+    set(PLATFORM_LIBS freetype fontconfig dng_sdk piex webp png jpeg)
 endif()
 
 target_link_libraries(md-pdf-gui
@@ -92,34 +87,28 @@ target_link_libraries(md-pdf-gui
     bentleyottmann
     compression_utils_portable
     skresources
-    dng_sdk
-    piex
     skcms
     skottie
     skparagraph
     sksg
     svg
-    webp
     wuffs
     skshaper
     skia
     skunicode_icu
     skunicode_core
-    png
     expat
     harfbuzz
     icu
-    jpeg
     zlib
-    ${WIN_LIBS}
-    ${UNIX_LIBS}
+    ${PLATFORM_LIBS}
     ZLIB::ZLIB)
     
 add_custom_command(
     TARGET md-pdf-gui
     PRE_BUILD
     COMMAND python3 bin/fetch-gn
-    COMMAND "bin/gn" gen "../../../builds/skia" "--args=is_official_build=true skia_use_system_expat=false skia_use_system_harfbuzz=false skia_use_system_icu=false skia_use_system_libjpeg_turbo=false skia_use_system_libpng=false skia_use_system_libwebp=false skia_use_system_zlib=false extra_cflags=[\"${SKIA_CFLAGS}\"] extra_ldflags=[\"${SKIA_LDFLAGS}\"]"
+    COMMAND "bin/gn" gen "../../../builds/skia" "--args=is_official_build=true skia_use_system_expat=false skia_use_system_harfbuzz=false skia_use_system_icu=false skia_use_system_libjpeg_turbo=false skia_use_system_libpng=false skia_use_system_libwebp=false skia_use_system_zlib=false extra_cflags=[\"${SKIA_CFLAGS}\"]"
     COMMAND ninja -C "../../../builds/skia"
     COMMENT "Configuring and building Skia..."
     VERBATIM

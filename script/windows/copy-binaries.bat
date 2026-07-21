@@ -1,6 +1,5 @@
 set /P qt_version=<%CD%\script\qt.version
 set /P qt_arch=<%CD%\script\qt.arch.win
-set /P resvg_version=<%CD%\3rdparty\resvg.version
 
 echo "Copying binaries..."
 
@@ -145,12 +144,6 @@ IF %ERRORLEVEL% NEQ 0 (
 )
 
 copy /Y 3rdparty\Windows\VC_Redist\VC_redist.x64.exe installer\packages\mironchik.igor.markdown\data\bin\VC_redist.x64.exe
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
-copy /Y 3rdparty\resvg-%resvg_version%\target\release\resvg.dll installer\packages\mironchik.igor.markdown\data\bin\resvg.dll
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%

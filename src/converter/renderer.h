@@ -38,8 +38,12 @@
 #include <include/core/SkFont.h>
 #include <include/core/SkImage.h>
 #include <include/core/SkPictureRecorder.h>
+
+#ifdef Q_OS_LINUX
 #include <include/ports/SkFontMgr_fontconfig.h>
 #include <include/ports/SkFontScanner_FreeType.h>
+#endif
+
 #include <modules/svg/include/SkSVGDOM.h>
 
 namespace MdPdf
@@ -446,8 +450,16 @@ struct PdfAuxData {
     bool m_tableDrawing = false;
     //! Current SkPaint.
     SkPaint m_currentPaint;
+
     //! Fonts manager.
+#ifdef Q_OS_LINUX
     sk_sp<SkFontMgr> m_fontMgr = SkFontMgr_New_FontConfig(nullptr, std::move(SkFontScanner_Make_FreeType()));
+#endif
+
+#ifdef Q_OS_WIN
+    sk_sp<SkFontMgr> m_fontMgr;
+#endif
+
     //! Cache of typesets.
     QHash<QString, sk_sp<SkTypeface>> m_typefaceCache;
 

@@ -22,8 +22,6 @@
 #include <include/core/SkFontMgr.h>
 #include <include/core/SkPathBuilder.h>
 #include <include/core/SkTypeface.h>
-#include <include/ports/SkFontMgr_fontconfig.h>
-#include <include/ports/SkFontScanner_FreeType.h>
 
 // C++ include.
 #include <stdexcept>

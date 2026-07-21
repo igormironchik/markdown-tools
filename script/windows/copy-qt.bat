@@ -59,7 +59,6 @@ windeployqt.exe KirigamiTemplates.dll
 windeployqt.exe kuriikwsfiltereng_private.dll
 windeployqt.exe kioworker.exe
 windeployqt.exe md-editor.exe
-windeployqt.exe md-launcher.exe
 windeployqt.exe md-pdf-gui.exe
 
 cd ..\..\..\..\..

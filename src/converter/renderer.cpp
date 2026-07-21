@@ -35,7 +35,16 @@
 #include <include/docs/SkPDFJpegHelpers.h>
 #include <modules/svg/include/SkSVGRenderContext.h>
 
+#ifdef Q_OS_WIN
+#define NOMINMAX
+#include <dwrite.h>
+#include <wrl/client.h>
+
+#include <include/ports/SkTypeface_win.h>
+#endif
+
 // C++ include.
+#include <algorithm>
 #include <cmath>
 #include <fstream>
 #include <functional>
@@ -758,6 +767,20 @@ void PdfRenderer::renderImpl()
     PdfAuxData pdfData;
 
     try {
+#ifdef Q_OS_WIN
+        Microsoft::WRL::ComPtr<IDWriteFactory> factory;
+
+        const auto hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED,
+                                            __uuidof(IDWriteFactory),
+                                            reinterpret_cast<IUnknown **>(factory.GetAddressOf()));
+
+        if (FAILED(hr)) {
+            throw PdfRendererError(tr("Unable to create font manager."));
+        }
+
+        pdfData.m_fontMgr = SkFontMgr_New_DirectWrite(factory.Get());
+#endif
+
         const int itemsCount = m_doc->items().size();
 
         Q_EMIT progress(0);
