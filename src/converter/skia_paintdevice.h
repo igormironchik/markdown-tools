@@ -107,11 +107,6 @@ public:
     void updateState(const QPaintEngineState &state) override;
 
 private:
-    double qXtoSkia(double x);
-    double qYtoSkia(double y);
-    double qWtoSkia(double w);
-    double qHtoSkia(double h);
-    SkRect qRectFtoSkia(const QRectF &r);
     QPair<SkFont,
           double>
     qFontToSkia(const QFont &f);

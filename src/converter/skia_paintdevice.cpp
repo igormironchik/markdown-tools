@@ -77,20 +77,18 @@ int SkiaPaintDevice::metric(QPaintDevice::PaintDeviceMetric metric) const
 {
     switch (metric) {
     case PdmWidth:
-        return qRound(d->m_engine.pdfPainter() ? d->m_engine.pdfPainter()->getBaseLayerSize().width() / 72.0 * 1200.0
-                                               : 100);
+        return qRound(d->m_engine.pdfPainter() ? d->m_engine.pdfPainter()->getBaseLayerSize().width() : 100.0);
 
     case PdmHeight:
-        return qRound(d->m_engine.pdfPainter() ? d->m_engine.pdfPainter()->getBaseLayerSize().height() / 72.0 * 1200.0
-                                               : 100);
+        return qRound(d->m_engine.pdfPainter() ? d->m_engine.pdfPainter()->getBaseLayerSize().height() : 100.0);
 
     case PdmWidthMM:
         return qRound(d->m_engine.pdfPainter() ? d->m_engine.pdfPainter()->getBaseLayerSize().width() / 72.0 * 25.4
-                                               : 100.0 / 1200.0 * 25.4);
+                                               : 100.0 / 72.0 * 25.4);
 
     case PdmHeightMM:
         return qRound(d->m_engine.pdfPainter() ? d->m_engine.pdfPainter()->getBaseLayerSize().height() / 72.0 * 25.4
-                                               : 100.0 / 1200.0 * 25.4);
+                                               : 100.0 / 72.0 * 25.4);
 
     case PdmNumColors:
         return INT_MAX;
@@ -132,7 +130,7 @@ struct SkiaPaintEnginePrivate {
     //! Is drawing enabled?
     bool m_isDrawing = false;
     //! Transformation.
-    QTransform m_transform;
+    SkMatrix m_transform;
     //! PDF auxiliary data.
     Render::PdfAuxData &m_pdfData;
     //! Current SkPaint.
@@ -150,12 +148,10 @@ SkiaPaintEngine::SkiaPaintEngine(Render::PdfAuxData &pdfData)
     , d(new SkiaPaintEnginePrivate(this,
                                    pdfData))
 {
-    pdfPainter()->save();
 }
 
 SkiaPaintEngine::~SkiaPaintEngine()
 {
-    pdfPainter()->restore();
 }
 
 void SkiaPaintEngine::enableDrawing(bool on)
@@ -188,25 +184,18 @@ void SkiaPaintEngine::drawImage(const QRectF &,
 {
 }
 
-double SkiaPaintEngine::qXtoSkia(double x)
-{
-    return x / paintDevice()->physicalDpiX() * 72.0;
-}
-
-double SkiaPaintEngine::qYtoSkia(double y)
-{
-    return y / paintDevice()->physicalDpiY() * 72.0;
-}
-
 void SkiaPaintEngine::drawLines(const QLineF *lines,
                                 int lineCount)
 {
     if (d->m_isDrawing) {
-        for (int i = 0; i < lineCount; ++i) {
-            const auto l = d->m_transform.map(lines[i]);
+        pdfPainter()->save();
+        pdfPainter()->setMatrix(d->m_transform);
 
-            d->m_pdfData.drawLine(qXtoSkia(l.x1()), qYtoSkia(l.y1()), qXtoSkia(l.x2()), qYtoSkia(l.y2()));
+        for (int i = 0; i < lineCount; ++i) {
+            d->m_pdfData.drawLine(lines[i].x1(), lines[i].y1(), lines[i].x2(), lines[i].y2());
         }
+
+        pdfPainter()->restore();
     }
 }
 
@@ -214,11 +203,14 @@ void SkiaPaintEngine::drawLines(const QLine *lines,
                                 int lineCount)
 {
     if (d->m_isDrawing) {
-        for (int i = 0; i < lineCount; ++i) {
-            const auto l = d->m_transform.map(lines[i]);
+        pdfPainter()->save();
+        pdfPainter()->setMatrix(d->m_transform);
 
-            d->m_pdfData.drawLine(qXtoSkia(l.x1()), qYtoSkia(l.y1()), qXtoSkia(l.x2()), qYtoSkia(l.y2()));
+        for (int i = 0; i < lineCount; ++i) {
+            d->m_pdfData.drawLine(lines[i].x1(), lines[i].y1(), lines[i].x2(), lines[i].y2());
         }
+
+        pdfPainter()->restore();
     }
 }
 
@@ -234,39 +226,34 @@ void SkiaPaintEngine::drawPath(const QPainterPath &path)
 
             switch (e.type) {
             case QPainterPath::MoveToElement: {
-                const auto pp = d->m_transform.map(QPointF(e.x, e.y));
-
                 if (!initialized) {
-                    start = {pp.x(), pp.y()};
+                    start = {e.x, e.y};
                     initialized = true;
                 }
 
-                p.moveTo(qXtoSkia(pp.x()), qYtoSkia(pp.y()));
+                p.moveTo(e.x, e.y);
             } break;
 
             case QPainterPath::LineToElement: {
-                const auto pp = d->m_transform.map(QPointF(e.x, e.y));
-
-                p.lineTo(qXtoSkia(pp.x()), qYtoSkia(pp.y()));
-                end = {pp.x(), pp.y()};
+                p.lineTo(e.x, e.y);
+                end = {e.x, e.y};
             } break;
 
             case QPainterPath::CurveToElement: {
                 Q_ASSERT(path.elementAt(i + 1).type == QPainterPath::CurveToDataElement);
                 Q_ASSERT(path.elementAt(i + 2).type == QPainterPath::CurveToDataElement);
 
-                const auto pp = d->m_transform.map(QPointF(e.x, e.y));
-                const auto pp1 = d->m_transform.map(QPointF(path.elementAt(i + 1).x, path.elementAt(i + 1).y));
-                const auto pp2 = d->m_transform.map(QPointF(path.elementAt(i + 2).x, path.elementAt(i + 2).y));
+                const auto pp1 = QPointF(path.elementAt(i + 1).x, path.elementAt(i + 1).y);
+                const auto pp2 = QPointF(path.elementAt(i + 2).x, path.elementAt(i + 2).y);
 
-                end = {pp.x(), pp.y()};
+                end = {e.x, e.y};
 
-                p.cubicTo(qXtoSkia(pp.x()),
-                          qYtoSkia(pp.y()),
-                          qXtoSkia(pp1.x()),
-                          qYtoSkia(pp1.y()),
-                          qXtoSkia(pp2.x()),
-                          qYtoSkia(pp2.y()));
+                p.cubicTo(e.x,
+                          e.y,
+                          pp1.x(),
+                          pp1.y(),
+                          pp2.x(),
+                          pp2.y());
 
                 i += 2;
             } break;
@@ -283,7 +270,10 @@ void SkiaPaintEngine::drawPath(const QPainterPath &path)
             paint.setColor(d->m_fillColor);
         }
 
+        pdfPainter()->save();
+        pdfPainter()->setMatrix(d->m_transform);
         pdfPainter()->drawPath(p.detach(), paint);
+        pdfPainter()->restore();
     }
 }
 
@@ -315,23 +305,14 @@ void SkiaPaintEngine::drawPolygon(const QPoint *,
 {
 }
 
-double SkiaPaintEngine::qWtoSkia(double w)
-{
-    return w / paintDevice()->physicalDpiX() * 72.0;
-}
-
-double SkiaPaintEngine::qHtoSkia(double h)
-{
-    return h / paintDevice()->physicalDpiY() * 72.0;
-}
-
-SkRect SkiaPaintEngine::qRectFtoSkia(const QRectF &r)
+inline SkRect qRectFtoSkia(const QRectF &r)
 {
     return SkRect::MakeLTRB(static_cast<float>(r.left()),
                             static_cast<float>(r.top()),
                             static_cast<float>(r.right()),
                             static_cast<float>(r.bottom()));
 }
+
 
 void SkiaPaintEngine::drawRects(const QRectF *rects,
                                 int rectCount)
@@ -340,9 +321,14 @@ void SkiaPaintEngine::drawRects(const QRectF *rects,
         SkPaint paint = d->m_currentPaint;
         paint.setStyle(SkPaint::kStroke_Style);
 
+        pdfPainter()->save();
+        pdfPainter()->setMatrix(d->m_transform);
+
         for (int i = 0; i < rectCount; ++i) {
-            pdfPainter()->drawRect(qRectFtoSkia(d->m_transform.mapRect(rects[i])), paint);
+            pdfPainter()->drawRect(qRectFtoSkia(rects[i]), paint);
         }
+
+        pdfPainter()->restore();
     }
 }
 
@@ -353,9 +339,14 @@ void SkiaPaintEngine::drawRects(const QRect *rects,
         SkPaint paint = d->m_currentPaint;
         paint.setStyle(SkPaint::kStroke_Style);
 
+        pdfPainter()->save();
+        pdfPainter()->setMatrix(d->m_transform);
+
         for (int i = 0; i < rectCount; ++i) {
-            pdfPainter()->drawRect(qRectFtoSkia(d->m_transform.mapRect(rects[i])), paint);
+            pdfPainter()->drawRect(qRectFtoSkia(rects[i]), paint);
         }
+
+        pdfPainter()->restore();
     }
 }
 
@@ -364,10 +355,12 @@ void SkiaPaintEngine::drawTextItem(const QPointF &p,
 {
     if (d->m_isDrawing) {
         const auto f = qFontToSkia(textItem.font());
-        const auto pp = d->m_transform.map(p);
         const auto utf8 = textItem.text().toUtf8();
 
-        d->m_pdfData.drawText(qXtoSkia(pp.x()), qYtoSkia(pp.y()), utf8.constData(), f.first, f.second, 1.0, false);
+        pdfPainter()->save();
+        pdfPainter()->setMatrix(d->m_transform);
+        d->m_pdfData.drawText(p.x(), p.y(), utf8.constData(), f.first, f.second, 1.0, false);
+        pdfPainter()->restore();
     }
 }
 
@@ -422,26 +415,10 @@ inline SkColor color(const QColor &c)
     return SkColorSetRGB(c.red(), c.green(), c.blue());
 }
 
-inline double scaleOfTransform(const QTransform &t)
-{
-    const auto bv = t.m21();
-    const auto dv = t.m22();
-
-    return std::sqrt(bv * bv + dv * dv);
-}
-
 QPair<SkFont,
       double>
 SkiaPaintEngine::qFontToSkia(const QFont &f)
 {
-    // const double size = (f.pointSizeF() > 0.0 ? f.pointSizeF() : f.pixelSize() / paintDevice()->physicalDpiY()
-    // * 72.0);
-
-    // This code is for MicroTeX, the author do things not right with font sizes.
-    const auto scale = scaleOfTransform(d->m_transform);
-
-    const double size = f.pointSize() * scale / paintDevice()->physicalDpiY() * 72.0;
-
     auto id = tex::FontInfo::__id(f.family().toStdString());
 
     if (id != -1) {
@@ -474,15 +451,26 @@ SkiaPaintEngine::qFontToSkia(const QFont &f)
 
         const auto fileName = d->m_pdfData.m_fontsCache[path]->fileName();
 
-        return {SkFont(d->m_pdfData.m_fontMgr->makeFromFile(fileName.toLocal8Bit().constData()), size), size};
+        return {SkFont(d->m_pdfData.m_fontMgr->makeFromFile(fileName.toLocal8Bit().constData()), f.pointSize()), f.pointSize()};
     } else {
         SkFontStyle::Slant slant = f.italic() ? SkFontStyle::kItalic_Slant : SkFontStyle::kUpright_Slant;
         int weight = f.bold() ? SkFontStyle::kBold_Weight : SkFontStyle::kNormal_Weight;
 
         SkFontStyle style(weight, SkFontStyle::kNormal_Width, slant);
 
-        return {SkFont(d->m_pdfData.m_fontMgr->matchFamilyStyle(f.family().toLocal8Bit().data(), style), size), size};
+        return {SkFont(d->m_pdfData.m_fontMgr->matchFamilyStyle(f.family().toLocal8Bit().data(), style), f.pointSize()), f.pointSize()};
     }
+}
+
+SkMatrix convertQTransformToSkMatrix(const QTransform& qTransform) {
+    SkMatrix skMatrix;
+    skMatrix.setAll(
+            qTransform.m11(),  qTransform.m21(),  qTransform.m31(),
+            qTransform.m12(),  qTransform.m22(),  qTransform.m32(),
+            qTransform.m13(),  qTransform.m23(),  qTransform.m33()
+        );
+
+    return skMatrix;
 }
 
 void SkiaPaintEngine::updateState(const QPaintEngineState &state)
@@ -496,10 +484,7 @@ void SkiaPaintEngine::updateState(const QPaintEngineState &state)
     if (st & QPaintEngine::DirtyPen) {
         const auto p = state.pen();
 
-        // This code is for MicroTeX, the author do things not right with pen width.
-        const auto scale = scaleOfTransform(d->m_transform);
-
-        d->m_currentPaint.setStrokeWidth(p.widthF() * scale / paintDevice()->physicalDpiX() * 72.0);
+        d->m_currentPaint.setStrokeWidth(p.widthF());
         d->m_currentPaint.setStrokeCap(capStyle(p.capStyle()));
         d->m_currentPaint.setStrokeJoin(joinStyle(p.joinStyle()));
         d->m_currentPaint.setColor(color(p.color()));
@@ -518,7 +503,7 @@ void SkiaPaintEngine::updateState(const QPaintEngineState &state)
     // }
 
     if (st && QPaintEngine::DirtyTransform) {
-        d->m_transform = state.transform();
+        d->m_transform = convertQTransformToSkMatrix(state.transform());
     }
 }
 

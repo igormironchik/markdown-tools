@@ -3078,11 +3078,6 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
 
     float fontSize = (float)m_opts.m_textFontSize;
 
-    {
-        SkiaPaintDevice pd(pdfData);
-        fontSize = fontSize / 72.f * (float)pd.physicalDpiY();
-    }
-
     auto font = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, scale, pdfData);
     const auto lineHeight = pdfData.lineSpacing(font, m_opts.m_textFontSize, scale);
 
@@ -3095,7 +3090,7 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
                               tex::black));
     };
 
-    QSizeF pxSize = {}, size = {};
+    QSizeF size = {};
     double descent = 0.0;
     auto render = latexRender(1.0);
 
@@ -3104,8 +3099,7 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
         QPainter p(&pd);
         tex::Graphics2D_qt g2(&p);
         render->draw(g2, 0, 0);
-        pxSize = {(qreal)render->getWidth(), (qreal)render->getHeight()};
-        size = {pxSize.width() / (qreal)pd.physicalDpiX() * 72.0, pxSize.height() / (qreal)pd.physicalDpiY() * 72.0};
+        size = {(qreal)render->getWidth(), (qreal)render->getHeight()};
         descent = (item->isInline() ? ((1.0 - render->getBaseline()) * size.height()) : 0.0);
     };
 
@@ -3204,8 +3198,8 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
             tex::Graphics2D_qt g2(&p);
 
             render->draw(g2,
-                         pdfData.m_layout.startX(size.width() * imgScale) / 72.0 * pd.physicalDpiX(),
-                         pdfData.m_layout.y() / 72.0 * pd.physicalDpiY());
+                         pdfData.m_layout.startX(size.width() * imgScale),
+                         pdfData.m_layout.y());
 
             const RectF r = {pdfData.m_layout.startX(size.width() * imgScale),
                              pdfData.m_layout.y() + size.height() * imgScale,
@@ -3346,13 +3340,11 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
 
             tex::Graphics2D_qt g2(&p);
             render->draw(g2,
-                         pdfData.m_layout.startX(size.width() * imgScale) / 72.0 * pd.physicalDpiX(),
+                         pdfData.m_layout.startX(size.width() * imgScale),
                          (pdfData.m_layout.y()
                           - cw.descent()
                           - (size.height() - descent) * imgScale
-                          - previousBaseline.m_stack.back().m_baselineDelta)
-                             / 72.0
-                             * pd.physicalDpiY());
+                          - previousBaseline.m_stack.back().m_baselineDelta));
 
             const RectF r = {pdfData.m_layout.startX(size.width() * imgScale),
                              pdfData.m_layout.y()
