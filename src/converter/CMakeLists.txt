@@ -120,7 +120,7 @@ add_custom_command(
     TARGET md-pdf-gui
     PRE_BUILD
     COMMAND "bin/gn" gen "../../../builds/skia" "--args=is_official_build=true skia_use_system_expat=false skia_use_system_harfbuzz=false skia_use_system_icu=false skia_use_system_libjpeg_turbo=false skia_use_system_libpng=false skia_use_system_libwebp=false skia_use_system_zlib=false extra_cflags=[\"${SKIA_CFLAGS}\"] extra_ldflags=[\"${SKIA_LDFLAGS}\"]"
-    COMMAND ninja -C "../../../builds/skia" skia
+    COMMAND ninja -C "../../../builds/skia"
     COMMENT "Configuring and building Skia..."
     VERBATIM
     WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/Skia"
