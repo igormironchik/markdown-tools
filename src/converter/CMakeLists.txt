@@ -7,8 +7,6 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-set(CMAKE_FIND_PACKAGE_PREFER_CONFIG TRUE)
-
 find_package(Qt6Widgets 6.5.0 REQUIRED)
 find_package(Qt6Network 6.5.0 REQUIRED)
 find_package(Qt6Svg 6.5.0 REQUIRED)
