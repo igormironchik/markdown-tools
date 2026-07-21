@@ -55,7 +55,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/MicroTeX/src
 	${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../shared
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/Skia)
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/Skia
+    ${FONTCONFIG_INCLUDE_DIR})
 
 add_definitions(-DBUILD_QT)
 

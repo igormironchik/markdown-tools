@@ -33,9 +33,6 @@
 #include <QToolButton>
 #include <QWindow>
 
-// podofo include.
-#include <podofo/podofo.h>
-
 // shared include.
 #include "license_dialog.h"
 #include "utils.h"
