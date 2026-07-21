@@ -1,0 +1,85 @@
+name: crossbuild-mingw
+
+on:
+  push:
+    branches: [ main ]
+    tags: ["*.*.*"]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    name: ${{ matrix.name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: win32
+            ARCH: 32
+            PACKAGES: g++-mingw-w64-i686 wine wine32
+          - name: win64
+            ARCH: 64
+            PACKAGES: g++-mingw-w64-x86-64 wine wine64 wine32:i386
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+    - name: Setup Ccache
+      uses: hendrikmuhs/ccache-action@5ebbd400eff9e74630f759d94ddd7b6c26299639 # v1.2.20
+    - name: Install Dependencies
+      run: |
+        sudo dpkg --add-architecture i386
+        sudo apt-get update
+        sudo apt install -y \
+          zip \
+          ${{ matrix.PACKAGES }}
+    - name: Setup Python
+      uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+      with:
+        python-version: '3.12'
+    - name: Install Python Dependencies
+      run: pip3 install -r .ci/requirements.txt --require-hashes
+    - name: Build
+      run: bash .ci/build-win.sh ${{ matrix.ARCH }}
+    - name: Test
+      run: meson devenv -Cbuild-win${{ matrix.ARCH }} meson test -t 10 --print-errorlogs --suite=harfbuzz
+    - name: Archive artifacts
+      uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+      with:
+        name: harfbuzz-win${{ matrix.ARCH }}
+        path: harfbuzz-win${{ matrix.ARCH }}.zip
+        if-no-files-found: error
+
+  release:
+    name: Create and populate release
+    permissions:
+      contents: write
+    needs: build
+    runs-on: ubuntu-24.04
+    if: contains(github.ref, 'refs/tags/')
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Download artifacts
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
+        with:
+          merge-multiple: true
+      - name: Rename artifacts
+        run: |
+          for file in harfbuzz-win*.zip; do
+            mv -v "$file" "${file%.zip}-${{ github.ref_name }}.zip"
+          done
+      - name: Check for release
+        id: create_release
+        run: |
+          if ! gh release view ${{ github.ref_name }}; then
+            gh release create ${{ github.ref_name }} --title ${{ github.ref_name }}
+          fi
+      - name: Populate release
+        run: |
+          gh release upload ${{ github.ref_name }} harfbuzz-win*-${{ github.ref_name }}.zip --clobber

@@ -1,0 +1,4 @@
+$Base = [\p{L}\p{N}\p{P}\p{S}\p{Zs}] ;
+$Extend = [\p{M}\p{Join_Control}] ;
+
+cluster = $Base? $Extend+ | . ;

@@ -1,0 +1,10 @@
+#include <metal_stdlib>
+using namespace metal;
+
+[[max_total_threads_per_threadgroup(1)]]
+kernel void v() {
+  int i = 123;
+  thread int* const p = (&i);
+  (*p) = 123;
+  (*p) = 123;
+}

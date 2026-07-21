@@ -1,0 +1,17 @@
+#include <metal_stdlib>
+using namespace metal;
+
+[[max_total_threads_per_threadgroup(1)]]
+kernel void f() {
+  {
+    uint2 tint_loop_idx = uint2(4294967295u);
+    int must_not_collide = 0;
+    while(true) {
+      if (all((tint_loop_idx == uint2(0u)))) {
+        break;
+      }
+      break;
+    }
+  }
+  int must_not_collide = 0;
+}

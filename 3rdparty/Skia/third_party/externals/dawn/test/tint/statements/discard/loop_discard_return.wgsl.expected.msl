@@ -1,0 +1,25 @@
+#include <metal_stdlib>
+using namespace metal;
+
+struct tint_module_vars_struct {
+  thread bool* continue_execution;
+};
+
+fragment void f() {
+  thread bool continue_execution = true;
+  tint_module_vars_struct const tint_module_vars = tint_module_vars_struct{.continue_execution=(&continue_execution)};
+  {
+    uint2 tint_loop_idx = uint2(4294967295u);
+    while(true) {
+      if (all((tint_loop_idx == uint2(0u)))) {
+        break;
+      }
+      (*tint_module_vars.continue_execution) = false;
+      if (!((*tint_module_vars.continue_execution))) {
+        discard_fragment();
+      }
+      return;
+    }
+  }
+  /* unreachable */
+}

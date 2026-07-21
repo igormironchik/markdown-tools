@@ -1,0 +1,14 @@
+#include <metal_stdlib>
+using namespace metal;
+
+struct a {
+  int a;
+};
+
+[[max_total_threads_per_threadgroup(1)]]
+kernel void f() {
+  a a_1 = a{};
+  a b = a_1;
+  a a_2 = a{};
+  a b_1 = a_2;
+}

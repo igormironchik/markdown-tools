@@ -1,0 +1,37 @@
+[package]
+name = "vello_shaders"
+version.workspace = true # We mimic Vello's version
+description = "Vello infrastructure to preprocess and cross-compile shaders at compile time."
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[features]
+default = ["wgsl", "full", "cpu"]
+compile = ["dep:naga", "dep:thiserror"]
+
+# Enables the complete imaging model. When this feature is disabled, the fine rasterization
+# stage only supports drawing paths with a solid brush and clipping, and the shaders can
+# not be run with an encoding that contains gradient fills and images.
+full = []
+
+# Target shading language variants of the vello shaders to link into the library.
+wgsl = []
+msl = ["naga?/msl-out"]
+
+# Enable the CPU versions of the shaders
+cpu = ["dep:bytemuck", "dep:vello_encoding"]
+
+[lints]
+workspace = true
+
+[dependencies]
+bytemuck = { workspace = true, optional = true }
+naga = { version = "0.20.0", features = ["wgsl-in"], optional = true }
+thiserror = { workspace = true, optional = true }
+vello_encoding = { workspace = true, optional = true }
+
+[build-dependencies]
+naga = { version = "0.20.0", features = ["wgsl-in"] }
+thiserror = { workspace = true }

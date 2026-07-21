@@ -1,0 +1,140 @@
+; SPIR-V
+; Version: 1.3
+; Generator: Google Tint Compiler; 1
+; Bound: 75
+; Schema: 0
+               OpCapability Shader
+         %50 = OpExtInstImport "GLSL.std.450"
+               OpMemoryModel Logical GLSL450
+               OpEntryPoint GLCompute %main "main"
+               OpExecutionMode %main LocalSize 1 1 1
+               OpName %deref_const "deref_const"
+               OpName %a "a"
+               OpName %a "p"
+               OpName %b "b"
+               OpName %no_deref_const "no_deref_const"
+               OpName %a_0 "a"
+               OpName %a_0 "p"
+               OpName %b_0 "b"
+               OpName %deref_let "deref_let"
+               OpName %a_1 "a"
+               OpName %a_1 "p"
+               OpName %i "i"
+               OpName %b_1 "b"
+               OpName %no_deref_let "no_deref_let"
+               OpName %a_2 "a"
+               OpName %a_2 "p"
+               OpName %i "i"
+               OpName %b_2 "b"
+               OpName %deref_var "deref_var"
+               OpName %a_3 "a"
+               OpName %a_3 "p"
+               OpName %i_0 "i"
+               OpName %b_3 "b"
+               OpName %no_deref_var "no_deref_var"
+               OpName %a_4 "a"
+               OpName %a_4 "p"
+               OpName %i_1 "i"
+               OpName %b_4 "b"
+               OpName %main "main"
+       %void = OpTypeVoid
+          %3 = OpTypeFunction %void
+        %int = OpTypeInt 32 1
+       %uint = OpTypeInt 32 0
+    %uint_10 = OpConstant %uint 10
+%_arr_int_uint_10 = OpTypeArray %int %uint_10
+%_ptr_Function__arr_int_uint_10 = OpTypePointer Function %_arr_int_uint_10
+         %11 = OpConstantNull %_arr_int_uint_10
+%_ptr_Function_int = OpTypePointer Function %int
+     %uint_0 = OpConstant %uint 0
+     %int_42 = OpConstant %int 42
+          %i = OpConstant %int 0
+     %uint_9 = OpConstant %uint 9
+%deref_const = OpFunction %void None %3
+          %4 = OpLabel
+          %a = OpVariable %_ptr_Function__arr_int_uint_10 Function %11
+          %b = OpVariable %_ptr_Function_int Function
+         %12 = OpAccessChain %_ptr_Function_int %a %uint_0
+         %15 = OpLoad %int %12 None
+               OpStore %b %15
+         %17 = OpAccessChain %_ptr_Function_int %a %uint_0
+               OpStore %17 %int_42 None
+               OpReturn
+               OpFunctionEnd
+%no_deref_const = OpFunction %void None %3
+         %20 = OpLabel
+        %a_0 = OpVariable %_ptr_Function__arr_int_uint_10 Function %11
+        %b_0 = OpVariable %_ptr_Function_int Function
+         %22 = OpAccessChain %_ptr_Function_int %a_0 %uint_0
+         %23 = OpLoad %int %22 None
+               OpStore %b_0 %23
+         %25 = OpAccessChain %_ptr_Function_int %a_0 %uint_0
+               OpStore %25 %int_42 None
+               OpReturn
+               OpFunctionEnd
+  %deref_let = OpFunction %void None %3
+         %27 = OpLabel
+        %a_1 = OpVariable %_ptr_Function__arr_int_uint_10 Function %11
+        %b_1 = OpVariable %_ptr_Function_int Function
+         %31 = OpBitcast %uint %i
+         %30 = OpAccessChain %_ptr_Function_int %a_1 %31
+         %32 = OpLoad %int %30 None
+               OpStore %b_1 %32
+         %34 = OpAccessChain %_ptr_Function_int %a_1 %uint_0
+               OpStore %34 %int_42 None
+               OpReturn
+               OpFunctionEnd
+%no_deref_let = OpFunction %void None %3
+         %36 = OpLabel
+        %a_2 = OpVariable %_ptr_Function__arr_int_uint_10 Function %11
+        %b_2 = OpVariable %_ptr_Function_int Function
+         %39 = OpBitcast %uint %i
+         %38 = OpAccessChain %_ptr_Function_int %a_2 %39
+         %40 = OpLoad %int %38 None
+               OpStore %b_2 %40
+         %42 = OpAccessChain %_ptr_Function_int %a_2 %uint_0
+               OpStore %42 %int_42 None
+               OpReturn
+               OpFunctionEnd
+  %deref_var = OpFunction %void None %3
+         %44 = OpLabel
+        %a_3 = OpVariable %_ptr_Function__arr_int_uint_10 Function %11
+        %i_0 = OpVariable %_ptr_Function_int Function
+        %b_3 = OpVariable %_ptr_Function_int Function
+               OpStore %i_0 %i
+         %47 = OpLoad %int %i_0 None
+         %48 = OpBitcast %uint %47
+         %49 = OpExtInst %uint %50 UMin %48 %uint_9
+         %52 = OpAccessChain %_ptr_Function_int %a_3 %49
+         %53 = OpLoad %int %52 None
+               OpStore %b_3 %53
+         %55 = OpAccessChain %_ptr_Function_int %a_3 %uint_0
+               OpStore %55 %int_42 None
+               OpReturn
+               OpFunctionEnd
+%no_deref_var = OpFunction %void None %3
+         %57 = OpLabel
+        %a_4 = OpVariable %_ptr_Function__arr_int_uint_10 Function %11
+        %i_1 = OpVariable %_ptr_Function_int Function
+        %b_4 = OpVariable %_ptr_Function_int Function
+               OpStore %i_1 %i
+         %60 = OpLoad %int %i_1 None
+         %61 = OpBitcast %uint %60
+         %62 = OpExtInst %uint %50 UMin %61 %uint_9
+         %63 = OpAccessChain %_ptr_Function_int %a_4 %62
+         %64 = OpLoad %int %63 None
+               OpStore %b_4 %64
+         %66 = OpAccessChain %_ptr_Function_int %a_4 %uint_0
+               OpStore %66 %int_42 None
+               OpReturn
+               OpFunctionEnd
+       %main = OpFunction %void None %3
+         %68 = OpLabel
+         %69 = OpFunctionCall %void %deref_const
+         %70 = OpFunctionCall %void %no_deref_const
+         %71 = OpFunctionCall %void %deref_let
+         %72 = OpFunctionCall %void %no_deref_let
+         %73 = OpFunctionCall %void %deref_var
+         %74 = OpFunctionCall %void %no_deref_var
+               OpReturn
+               OpFunctionEnd

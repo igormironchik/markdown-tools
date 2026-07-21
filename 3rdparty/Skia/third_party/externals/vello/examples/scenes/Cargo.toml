@@ -1,0 +1,24 @@
+[package]
+name = "scenes"
+description = "Vello scenes used in the other examples."
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[lints]
+workspace = true
+
+[dependencies]
+vello = { workspace = true }
+anyhow = { workspace = true }
+clap = { workspace = true, features = ["derive"] }
+image = { version = "0.25.1", default-features = false, features = ["jpeg"] }
+rand = "0.8.5"
+
+# for pico_svg
+roxmltree = "0.20.0"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+getrandom = { version = "0.2.15", features = ["js"] }
+web-time = { workspace = true }

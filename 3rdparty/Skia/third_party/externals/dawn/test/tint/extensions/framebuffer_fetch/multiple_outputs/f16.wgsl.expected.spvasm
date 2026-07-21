@@ -1,0 +1,84 @@
+; SPIR-V
+; Version: 1.3
+; Generator: Google Tint Compiler; 1
+; Bound: 39
+; Schema: 0
+               OpCapability Shader
+               OpCapability InputAttachment
+               OpCapability Float16
+               OpCapability StorageBuffer16BitAccess
+               OpCapability StorageInputOutput16
+               OpMemoryModel Logical GLSL450
+               OpEntryPoint Fragment %f "f" %f_loc0_Output %f_loc2_Output %f_loc4_Output
+               OpExecutionMode %f OriginUpperLeft
+               OpName %f_Input "f_Input"
+               OpName %f_Input_0 "f_Input"
+               OpName %f_loc0_Output "f_loc0_Output"
+               OpName %f_loc2_Output "f_loc2_Output"
+               OpName %f_loc4_Output "f_loc4_Output"
+               OpName %f_inner "f_inner"
+               OpMemberName %Out 0 "x"
+               OpMemberName %Out 1 "y"
+               OpMemberName %Out 2 "z"
+               OpName %Out "Out"
+               OpName %fbf_1 "fbf_1"
+               OpName %fbf_3 "fbf_3"
+               OpName %f "f"
+               OpDecorate %f_Input DescriptorSet 66
+               OpDecorate %f_Input Binding 0
+               OpDecorate %f_Input InputAttachmentIndex 1
+               OpDecorate %f_Input_0 DescriptorSet 66
+               OpDecorate %f_Input_0 Binding 1
+               OpDecorate %f_Input_0 InputAttachmentIndex 3
+               OpDecorate %f_loc0_Output Location 0
+               OpDecorate %f_loc2_Output Location 2
+               OpDecorate %f_loc4_Output Location 4
+               OpDecorate %26 RelaxedPrecision
+               OpDecorate %f_Input RelaxedPrecision
+               OpDecorate %33 RelaxedPrecision
+               OpDecorate %f_Input_0 RelaxedPrecision
+      %float = OpTypeFloat 32
+          %3 = OpTypeImage %float SubpassData 0 0 0 2 Unknown
+%_ptr_UniformConstant_3 = OpTypePointer UniformConstant %3
+    %f_Input = OpVariable %_ptr_UniformConstant_3 UniformConstant
+  %f_Input_0 = OpVariable %_ptr_UniformConstant_3 UniformConstant
+       %half = OpTypeFloat 16
+     %v4half = OpTypeVector %half 4
+%_ptr_Output_v4half = OpTypePointer Output %v4half
+%f_loc0_Output = OpVariable %_ptr_Output_v4half Output
+%f_loc2_Output = OpVariable %_ptr_Output_v4half Output
+%f_loc4_Output = OpVariable %_ptr_Output_v4half Output
+        %Out = OpTypeStruct %v4half %v4half %v4half
+         %16 = OpTypeFunction %Out %v4half %v4half
+%half_0x1p_1 = OpConstant %half 0x1p+1
+         %19 = OpConstantComposite %v4half %half_0x1p_1 %half_0x1p_1 %half_0x1p_1 %half_0x1p_1
+       %void = OpTypeVoid
+         %23 = OpTypeFunction %void
+    %v4float = OpTypeVector %float 4
+        %int = OpTypeInt 32 1
+      %v2int = OpTypeVector %int 2
+         %28 = OpConstantNull %v2int
+    %f_inner = OpFunction %Out None %16
+      %fbf_1 = OpFunctionParameter %v4half
+      %fbf_3 = OpFunctionParameter %v4half
+         %17 = OpLabel
+         %18 = OpCompositeConstruct %Out %fbf_1 %19 %fbf_3
+               OpReturnValue %18
+               OpFunctionEnd
+          %f = OpFunction %void None %23
+         %24 = OpLabel
+         %25 = OpLoad %3 %f_Input None
+         %26 = OpImageRead %v4float %25 %28
+         %31 = OpFConvert %v4half %26
+         %32 = OpLoad %3 %f_Input_0 None
+         %33 = OpImageRead %v4float %32 %28
+         %34 = OpFConvert %v4half %33
+         %35 = OpFunctionCall %Out %f_inner %31 %34
+         %36 = OpCompositeExtract %v4half %35 0
+               OpStore %f_loc0_Output %36 None
+         %37 = OpCompositeExtract %v4half %35 1
+               OpStore %f_loc2_Output %37 None
+         %38 = OpCompositeExtract %v4half %35 2
+               OpStore %f_loc4_Output %38 None
+               OpReturn
+               OpFunctionEnd

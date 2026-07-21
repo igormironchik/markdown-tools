@@ -1,0 +1,6 @@
+@compute @workgroup_size(1)
+fn f() {
+  let m : mat4x4<f32> = mat4x4<f32>(vec4<f32>(1.0, 1.0, 1.0, 1.0), vec4<f32>(1.0, 1.0, 1.0, 1.0), vec4<f32>(1.0, 1.0, 1.0, 1.0), vec4<f32>(1.0, 1.0, 1.0, 1.0));
+  let v1 : vec4<f32> = m[0];
+  let a : f32 = v1[0];
+}

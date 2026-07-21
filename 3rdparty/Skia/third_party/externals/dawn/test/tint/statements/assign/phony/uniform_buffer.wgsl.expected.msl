@@ -1,0 +1,18 @@
+#include <metal_stdlib>
+using namespace metal;
+
+struct S {
+  /* 0x0000 */ int i;
+};
+
+struct tint_module_vars_struct {
+  const constant S* u;
+  const constant float* v1;
+  const constant packed_uint3* v2;
+};
+
+[[max_total_threads_per_threadgroup(1)]]
+kernel void v(const constant S* u [[buffer(0)]], const constant float* v1 [[buffer(1)]], const constant packed_uint3* v2 [[buffer(2)]]) {
+  tint_module_vars_struct const tint_module_vars = tint_module_vars_struct{.u=u, .v1=v1, .v2=v2};
+  (uint3((*tint_module_vars.v2)));
+}

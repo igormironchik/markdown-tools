@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Untitled Document</title>
+<link href="../jsp/index.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<h1>Unicode Utilities: UnicodeSet</h1>
+<p><a target="help" href="https://unicode-org.github.io/unicodetools/help/list-unicodeset"><strong>help</strong></a> | <a target="character" href="http://unicode.org/cldr/utility/character.jsp">character</a> | <a target="properties" href="http://unicode.org/cldr/utility/properties.jsp">properties</a> | <a target="confusables" href="http://unicode.org/cldr/utility/confusables.jsp">confusables</a> | <a target="list" href="http://unicode.org/cldr/utility/list-unicodeset.jsp">unicode-set</a> | <a target="compare" href="http://unicode.org/cldr/utility/unicodeset.jsp">compare-sets</a> | <a target="regex" href="http://unicode.org/cldr/utility/regex.jsp">regex</a> | <a target="bnf" href="http://unicode.org/cldr/utility/bnf.jsp">bnf-regex</a> | <a target="breaks" href="http://unicode.org/cldr/utility/breaks.jsp">breaks</a> | <a target="transform" href="http://unicode.org/cldr/utility/transform.jsp">transform</a> | <a target="bidi" href="http://unicode.org/cldr/utility/bidi.jsp">bidi</a> | <a target="idna" href="http://unicode.org/cldr/utility/idna.jsp">idna</a> | <a target="languageid" href="http://unicode.org/cldr/utility/languageid.jsp">languageid</a></p>
+<form name="myform" id="myform">
+  <table border="1" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <th>Input</th>
+      </tr>
+      <tr>
+        <td><textarea name="a" rows="8" cols="10"></textarea></td>
+      </tr>
+      <tr>
+        <td><input id="main" type="submit" value="Show Set" onclick="window.location.href='list-unicodeset.jsp?a='+document.getElementById('main').value" />
+             
+          <input type="checkbox" name="abb" />
+          <label for="abb">Abbreviate</label>
+             
+          <input type="checkbox" name="ucd" />
+          <label for="ucd">UCD format</label>
+             
+          <input type="checkbox" name="esc" />
+          <label for="esc">Escape</label>
+             
+          <label for="g">Group by:</label>
+          <input type="text" name="g" size="20" value="" /></td>
+      </tr>
+    </tbody>
+  </table>
+  <p>729 Code Points</p>
+  <hr />
+  <p>[⃣      〰 ‼ ⁉ © ® 〽 </p>
+</form>
+<p>Test page
+</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>[⃣      〰 ‼ ⁉ © ® 〽 ↔-↙ ↩ ↪ ⌚ ⌛ ▪ ▫ ▶ ◀ ◻-◾ ☀ ☁ ☎ ☑ ☔ ☕ ☝ ☺ ♈-♓ ♠ ♣ ♥ ♦ ♨ ♻ ♿ ⚓ ⚠ ⚡ ⚪ ⚫ ⚽ ⚾ ⛄ ⛅ ⛔ ⛪ ⛲ ⛳ ⛵ ⛺ ⛽ ✂ ✈ ✉ ✌ ✏ ✒ ✔ ✖ ✳ ✴ ❄ ❇ ❗ ❤ ➡ ⤴ ⤵ ⬅-⬇ ⬛ ⬜ ⭐ ⭕ 🀄 ℹ Ⓜ 🅿 ™ 🈯 🈚 ㊗ ㊙ ⏩-⏬ ⏰ ⏳ ⛎ ✅ ✊ ✋ ✨ ❌ ❎ ❓-❕ ➕-➗ ➰ ➿ 🃏 🅰 🅱 🅾 🆎 🆑-🆚 🇦-🇿 🈁 🈂 🈲-🈺 🉐 🉑 🌀-🌌 🌏 🌑 🌓-🌕 🌙 🌛 🌟 🌠 🌰 🌱 🌴 🌵 🌷-🍊 🍌-🍏 🍑-🍻 🎀-🎓 🎠-🏄 🏆 🏈 🏊 🏠-🏣 🏥-🏰 🐌-🐎 🐑 🐒 🐔 🐗-🐩 🐫-🐾 👀 👂-👤 👦-👫 👮-💬 💮-💵 💸-📫 📮 📰-📴 📶 📷 📹-📼 🔃 🔊-🔔 🔖-🔫 🔮-🔽 🕐-🕛 🗻-🗿 😁-😆 😉-😍 😏 😒-😔 😖 😘 😚 😜-😞 😠-😥 😨-😫 😭 😰-😳 😵 😷-🙀 🙅-🙏 🚀 🚃-🚅 🚇 🚉 🚌 🚏 🚑-🚓 🚕 🚗 🚙 🚚 🚢 🚤 🚥 🚧-🚭 🚲 🚶 🚹-🚾 🛀]</p>
+</body>
+</html>

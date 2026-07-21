@@ -1,0 +1,137 @@
+# This file is part of ICU4X. For terms of use, please see the file
+# called LICENSE at the top level of the ICU4X source tree
+# (online at: https://github.com/unicode-org/icu4x/blob/main/LICENSE ).
+
+# This is a cargo-make file included in the toplevel Makefile.toml
+
+[tasks.download-repo-sources]
+description = "Download fresh source testing data into the icu_datagen crate."
+category = "ICU4X Data"
+command = "cargo"
+args = [
+    "run",
+    "--bin=download-repo-sources",
+    "--",
+    "-v",
+]
+
+[tasks.testdata]
+description = "Run the testdata generation test in icu_datagen"
+category = "ICU4X Data"
+command = "cargo"
+args = [
+    "test",
+    "-p=icu_datagen",
+    "--no-default-features",
+    "--features=fs_exporter,use_wasm,rayon,experimental_components",
+    "--",
+    "--ignored",
+    "--nocapture",
+    "generate_json_and_verify_postcard",
+]
+
+[tasks.testdata-hello-world]
+description = "Builds all hello-world testdata for use in provider/{adapters,blob,fs} tests"
+category = "ICU4X Data"
+script_runner = "@duckscript"
+script = '''
+exit_on_error true
+
+exec --fail-on-error cargo build -p icu_datagen --no-default-features --features fs_exporter,blob_exporter,bin,networking
+
+exec --fail-on-error target/debug/icu4x-datagen --keys "core/helloworld@1" --locales full --format dir --syntax json --out provider/fs/tests/data/json --overwrite
+exec --fail-on-error target/debug/icu4x-datagen --keys "core/helloworld@1" --locales full --format dir --syntax bincode --out provider/fs/tests/data/bincode --overwrite
+exec --fail-on-error target/debug/icu4x-datagen --keys "core/helloworld@1" --locales full --format dir --syntax postcard --out provider/fs/tests/data/postcard --overwrite
+
+exec --fail-on-error target/debug/icu4x-datagen --keys "core/helloworld@1" --locales full --format blob --overwrite --out provider/blob/tests/data/v1.postcard
+exec --fail-on-error target/debug/icu4x-datagen --keys "core/helloworld@1" --locales full --format blob2 --overwrite --out provider/blob/tests/data/v2.postcard
+
+exec --fail-on-error target/debug/icu4x-datagen --keys "core/helloworld@1" "fallback/likelysubtags@1" "fallback/parents@1" "fallback/supplement/co@1" --locales full --format blob --out provider/adapters/tests/data/blob.postcard --overwrite
+exec --fail-on-error target/debug/icu4x-datagen --keys "core/helloworld@1" --fallback preresolved --locales de --format dir --syntax json --out provider/adapters/tests/data/langtest/de --overwrite
+exec --fail-on-error target/debug/icu4x-datagen --keys "core/helloworld@1" --fallback preresolved --locales ro --format dir --syntax json --out provider/adapters/tests/data/langtest/ro --overwrite
+'''
+
+[tasks.testdata-check]
+description = "Rebuild all testdata and ensure that the working copy is clean"
+category = "ICU4X Data"
+dependencies = [
+    "download-repo-sources",
+    "testdata",
+    "testdata-hello-world",
+]
+script_runner = "@duckscript"
+script = '''
+exit_on_error true
+
+output = exec git status --porcelain=v1 provider/datagen/tests/data provider/fs/tests/data provider/blob/tests/data provider/adapters/tests/data
+output_length = length ${output.stdout}
+if greater_than ${output_length} 0
+    msg = array "" ""
+    array_push ${msg} "Test data needs to be updated. Please run `cargo make download-repo-sources`, `cargo make testdata` and `cargo make testdata-hello-world:"
+    array_push ${msg} ""
+    array_push ${msg} "${output.stdout}"
+    msg = array_join ${msg} "\n"
+    trigger_error ${msg}
+end
+'''
+
+[tasks.testdata-legacy]
+description = "Build the data for the legacy icu_testdata crate"
+category = "ICU4X Data"
+command = "cargo"
+args = [
+    "run",
+    "--bin=make-testdata-legacy",
+    "--release",
+    "--manifest-path=tools/testdata-scripts/Cargo.toml", # avoid global feature resolution
+]
+
+[tasks.testdata-legacy-test]
+description = "Verify the data for the legacy icu_testdata crate"
+category = "ICU4X Data"
+script_runner = "@duckscript"
+script = """
+    cd provider/testdata
+    set_env CARGO_TARGET_DIR "../../target"
+    exec --fail-on-error cargo check-all-features
+    exec --fail-on-error cargo test --all-features --all-targets
+    set_env RUSTDOCFLAGS -Dwarnings
+    exec --fail-on-error cargo doc --all-features --no-deps
+"""
+
+[tasks.bakeddata]
+description = "Builds full baked data"
+category = "ICU4X Data"
+script_runner = "@duckscript"
+script = '''
+exit_on_error true
+
+if array_is_empty ${@}
+    exec --fail-on-error cargo run -p bakeddata-scripts --release
+else
+    exec --fail-on-error cargo build -p bakeddata-scripts
+    for component in ${@}
+        exec --fail-on-error target/debug/bakeddata-scripts "${component}"
+    end
+end
+'''
+
+[tasks.bakeddata-check]
+description = "Rebuild baked data and ensure that the working copy is clean"
+category = "ICU4X Data"
+dependencies = ["bakeddata"]
+script_runner = "@duckscript"
+script = '''
+exit_on_error true
+
+output = exec git status --porcelain=v1
+output_length = length ${output.stdout}
+if greater_than ${output_length} 0
+    msg = array "" ""
+    array_push ${msg} "Baked data needs to be updated. Please run `cargo make bakeddata`"
+    array_push ${msg} ""
+    array_push ${msg} "${output.stdout}"
+    msg = array_join ${msg} "\n"
+    trigger_error ${msg}
+end
+'''

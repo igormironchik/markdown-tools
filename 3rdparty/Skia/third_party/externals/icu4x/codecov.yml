@@ -1,0 +1,16 @@
+# This file is part of ICU4X. For terms of use, please see the file
+# called LICENSE at the top level of the ICU4X source tree
+# (online at: https://github.com/unicode-org/icu4x/blob/main/LICENSE ).
+
+ignore:
+  - "/*"
+  - "C:/*"
+  - "../*"
+  - "components/locid/macros"
+  - "**/tests/**/*"
+  - "**/benches/**/*"
+  - "**/examples/**/*"
+
+# Disable Codecov action from leaving comments on PRs
+# https://docs.codecov.com/docs/pull-request-comments#disable-comment
+comment: false

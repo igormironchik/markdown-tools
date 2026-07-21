@@ -1,0 +1,12 @@
+{
+  "name": "generate-reference-triangles",
+  "requires": true,
+  "lockfileVersion": 1,
+  "dependencies": {
+    "delaunator": {
+      "version": "3.0.1",
+      "resolved": "https://registry.npmjs.org/delaunator/-/delaunator-3.0.1.tgz",
+      "integrity": "sha512-UDOXpkVpycXOQyGQajsyz72MfTMJfkWZ7/cfElX08MNtes1TkZVFKow6BxzNba4TU7Y56nnG2Ajr/+wpeS4y8Q=="
+    }
+  }
+}

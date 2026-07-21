@@ -1,0 +1,154 @@
+#Code Point	Chart Glyph	Sample Colored Glyph	Name
+#main data is in /unicodetools/data/emoji/N.M/source/emojiOrdering.txt
+#Warnings:
+# — The Status, Proposal, and After must come before the character/sequence (U+)
+# — Those are "sticky", and don't have to be repeated.
+# — The Name, UName, Keywords,... must come after the character/sequence
+# — Any character must be listed BEFORE any sequence it is in.
+#   — That includes any emojified character.
+# TODO
+#   Put Proposal, and After also after the characters, but keep them sticky.
+#
+### WARNING ###
+# At the end of the release, the Status=Draft Candidate will be changed to Status=Final Candidate
+# Then run ProposalData.java to generate an updated version of proposalData.txt that incorporates all the proposal data from this file.
+
+#================================
+Status=Final Candidate
+#================================
+
+Proposal=L2/21-214
+After=🤥
+U+1FAE8
+Name=shaking face
+Keywords=shock | shaking | face | earthquake | vibrate
+
+Proposal=L2/21-202, L2/21-075
+After=💜
+U+1FA75
+Name=light blue heart
+Keywords=cyan | teal | light blue | heart
+
+Proposal=L2/21-201, L2/21-075
+After=💜
+U+1FA76
+Name=grey heart
+Keywords=gray | silver | slate | heart
+
+Proposal=L2/21-203, L2/21-075
+After=💜
+U+1FA77
+Name=pink heart
+Keywords=pink | like | cute | love | heart
+
+Proposal=L2/21-216
+After=🙏
+U+1FAF7
+Name=leftwards pushing hand
+Keywords=push | refuse | leftward | stop | wait | high five
+Emoji_Modifier_Base
+U+1FAF7 U+1F3FB
+U+1FAF7 U+1F3FC
+U+1FAF7 U+1F3FD
+U+1FAF7 U+1F3FE
+U+1FAF7 U+1F3FF
+
+U+1FAF8
+Name=rightwards pushing hand
+Keywords=push | refuse | rightward | stop | wait | high five
+Emoji_Modifier_Base
+U+1FAF8 U+1F3FB
+U+1FAF8 U+1F3FC
+U+1FAF8 U+1F3FD
+U+1FAF8 U+1F3FE
+U+1FAF8 U+1F3FF
+
+Proposal=L2/21-197
+After=🐴
+U+1FACE
+Name=moose
+Keywords=antlers | mammal | animal | elk
+
+Proposal=L2/21-196
+After=🐴
+U+1FACF
+Name=donkey
+Keywords=mule | burro | ass | stubborn | mammal | animal
+
+Proposal=L2/21-198
+After=🦜
+U+1FABD
+Name=wing
+Keywords=flying | angelic | aviation | bird | mythology
+
+Proposal=L2/19-307
+After=🦜
+U+1F426 U+200D U+2B1B
+Name=black bird
+Keywords=bird | crow | raven | rook | black
+
+Proposal=L2/21-219
+After=🦜
+U+1FABF
+Name=goose
+Keywords=bird | honk | fowl | silly
+
+Proposal=L2/21-217
+After=🪸
+U+1FABC
+Name=jellyfish
+Keywords=marine | invertebrate | jelly | stinger | burn | ouch
+
+Proposal=L2/21-215
+After=🌷
+U+1FABB
+Name=hyacinth
+Keywords=flower | lavender | bluebonnet | lupine | snapdragon
+
+Proposal=L2/21-200
+After=🌰
+U+1FADA
+Name=ginger root
+Keywords=spice | root | beer
+
+Proposal=L2/21-199
+After=🌰
+U+1FADB
+Name=pea pod
+Keywords=edamame | pod | beans | vegetable | legume | pea
+
+Proposal=L2/21-192
+After=👚
+U+1FAAD
+Name=folding hand fan
+Keywords=fan | cooling | hot | shy | flutter | dance
+
+Proposal=L2/21-218
+After=👚
+U+1FAAE
+Name=hair pick
+Keywords=Afro | hair | pick | comb
+
+Proposal=L2/21-194
+After=🪘
+U+1FA87
+Name=maracas
+Keywords=music | shake | instrument | rattle | percussion
+
+Proposal=L2/21-193
+After=🪘
+U+1FA88
+Name=flute
+Keywords=recorder | music | woodwind | pipe | fife
+
+Proposal=L2/21-223
+After=🔯
+U+1FAAF
+Name=khanda
+Keywords=Sikh | religion
+
+Proposal=L2/21-191
+After=📴
+U+1F6DC
+Name=wireless
+Keywords=internet | computer | network

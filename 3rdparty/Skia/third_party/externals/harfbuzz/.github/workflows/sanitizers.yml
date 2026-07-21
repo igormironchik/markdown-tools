@@ -1,0 +1,70 @@
+name: sanitizers
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    name: ${{ matrix.name }}
+    env:
+      CC: clang
+      CXX: clang++
+      ASAN_OPTIONS: log_path=stderr:halt_on_error=1:abort_on_error=1
+      UBSAN_OPTIONS: log_path=stderr:halt_on_error=1:abort_on_error=1:print_stacktrace=1
+      TSAN_OPTIONS: log_path=stderr:halt_on_error=1:abort_on_error=1
+      MSAN_OPTIONS: log_path=stderr:halt_on_error=1:abort_on_error=1:print_stacktrace=1
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: asan-ubsan
+            SANITIZE: address,undefined
+          - name: tsan
+            SANITIZE: thread
+          - name: msan
+            SANITIZE: memory
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+    - name: Setup Ccache
+      uses: hendrikmuhs/ccache-action@5ebbd400eff9e74630f759d94ddd7b6c26299639 # v1.2.20
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt install -y \
+          clang \
+          lld \
+          binutils \
+          pkg-config \
+          libfreetype6-dev \
+          libglib2.0-dev \
+          libcairo2-dev \
+          libicu-dev \
+          libgraphite2-dev
+    - name: Setup Python
+      uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+      with:
+        python-version: '3.12'
+    - name: Install Python Dependencies
+      run: pip3 install -r .ci/requirements.txt --require-hashes
+    - name: Setup Meson
+      run: |
+        ccache --version
+        meson setup build \
+          --default-library=static \
+          --buildtype=debugoptimized \
+          --wrap-mode=nodownload \
+          -Db_sanitize=${{ matrix.SANITIZE }} \
+          -Dexperimental_api=true
+    - name: Build
+      run: meson compile -Cbuild
+    - name: Test
+      run: meson test -Cbuild -t 10 --print-errorlogs | asan_symbolize | c++filt

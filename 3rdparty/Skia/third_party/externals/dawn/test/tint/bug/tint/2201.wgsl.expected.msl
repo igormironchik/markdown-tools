@@ -1,0 +1,24 @@
+<dawn>/test/tint/bug/tint/2201.wgsl:9:9 warning: code is unreachable
+        let _e16_ = vec2(false, false);
+        ^^^^^^^^^
+
+#include <metal_stdlib>
+using namespace metal;
+
+[[max_total_threads_per_threadgroup(1)]]
+kernel void v() {
+  {
+    uint2 tint_loop_idx = uint2(4294967295u);
+    while(true) {
+      if (all((tint_loop_idx == uint2(0u)))) {
+        break;
+      }
+      if (true) {
+        break;
+      } else {
+        break;
+      }
+      /* unreachable */
+    }
+  }
+}

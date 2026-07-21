@@ -1,0 +1,11 @@
+#include <metal_stdlib>
+using namespace metal;
+
+float v() {
+  return 0.40000000596046447754f;
+}
+
+[[max_total_threads_per_threadgroup(2)]]
+kernel void ep() {
+  float const a = v();
+}

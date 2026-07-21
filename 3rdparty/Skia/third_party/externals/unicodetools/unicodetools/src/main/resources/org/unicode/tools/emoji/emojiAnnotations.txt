@@ -1,0 +1,1235 @@
+#Draft Emoji Annotations
+
+#Finer-grained character annotations. For details about the format and other information, see Unicode Emoji.
+
+face	😀  😁  😂  😃  😄  😅  😆  😉  😊  😋  😎  😍  😘  😗 😙  😚 
+☺  🙂  🤗  😇  🤔  😐  😑  😶  🙄  😏  😣  😥  😮  🤐 😯  😪 
+😫  😴  😌  🤓  😛  😜  😝  ☹  🙁  😒  😓  😔  😕  😖 🙃  😷 
+🤒  🤕  🤑  😲  😞  😟  😤  😢  😭  😦  😧  😨  😩  😬 😰  😱 
+😳  😵  😡  😠  👿  😈  👼    🗣  👀  👹 👺  👻 
+💀  ☠  👽  👾  🤖  🐵  🙈  🙉  🙊  🐶  🐺  🐱  😸  😹 😺  😻 
+😼  😽  😾  😿  🙀  🦁  🐯  🐴  🦄  🐮  🐷  🐽  🐭  🐹 🐰  🐻 
+🐼  🐸  🐲  🐳  🗿   🌚  🌛 ⛑
+🌜  🌝  🌞  🌬 🤗  🤔  🙄  🤐  🤓  🙃  🤒  🤕  🤑 🤖😎🌝  🌞💩👾👹  👺  👻  💀  ☠  👽  👾  🤖 
+mask, entertainment	🎭
+travel	🗿  🚂  🚃  🚄  🚅  🚆  🚇  🚈  🚉  🚊  🚝 🚞  🚋 
+🚌  🚍  🚎  🚏  🚐  🚑  🚒  🚓  🚔  🚕  🚖  🚗  🚘  🚙 🚚  🚛 
+🚜  🚲  🚳  ⛽  🛣  🛤  🚨  ⎈  ⚓  ⛵  🚣  🚤  🛳  ⛴ 🛥  🚢 
+✈  🛩  🛫  🛬  💺  🚁  🚟  🚠  🚡  🚀  🚮  🚥  🚦  🚧 🚫  🚭 
+🚯  🚰  🚱  🚷  🚸  ♿  🚹  🚺  🚻  🚼  🚾  🛂  🛃  🛄 🛅  ⚠ 
+⛔  🚪  🚽  🚿  🛀  🛁  ⛱  ⛳  ⛸  ⛷  🏇  🏊  ⛹  🚴 🚵  🏎 
+🏍     🚩    ⭕
+animal	 🐵  🙈  🙉  🙊  🐒  🐶  🐕  🐩  🐺  🐱  😸  😹 😺  😻 
+😼  😽  😾  😿  🙀  🐈  🦁  🐯  🐅  🐆  🐴  🐎  🦄  🐮 🐂  🐃 
+🐄  🐷  🐖  🐗  🐽  🐏  🐑  🐐  🐪  🐫  🐘  🐭  🐁  🐀 🐹  🐰 
+🐇  🐿  🐻  🐨  🐼  🐾  🦃  🐔  🐓  🐣  🐤  🐥  🐦  🐧 🕊  🐸 
+🐊  🐢  🐍  🐲  🐉  🐳  🐋  🐬  🐟  🐠  🐡  🐙  🐚  🦀 🐌  🐛 
+🐜  🐝  🐞  🕷  🕸  🦂 🦁  🦄  🦃  🦀  🦂 
+office	🏢  🏣  🏤  🖼  💺  ☎  📟  📠  💻  🖥  🖨  🖱  🖲  💽 💾  💿 
+📀  📡  📔  📕  📖  📗  📘  📙  📚  📓  📒  📃  📜  📄 📑  💰 
+💴  💵  💶  💷  💸  💱  💲  💳  💹  ✉  📧  📨  📩  📤 📥  📦 
+📫  📪  📬  📭  📮  ✏  ✒  🖋  🖊  🖌  🖍  📝  💼  📁 📂  🗂 
+📅  📆  🗒  🗓  📇  📈  📉  📊  📋  📌  📍  📎  🖇  📏 📐  📛 
+✂  🗃  🗄  🗑  💯
+food	😋  🍇  🍈  🍉  🍊  🍋  🍌  🍍  🍎  🍏  🍐  🍑  🍒  🍓 🍅  🍆 
+🌶  🍞  🧀  🍖  🍗  🍔  🍟  🍕  🌭  🌮  🌯  🍿  🍲  🍱 🍘  🍙 
+🍚  🍛  🍜  🍝  🍠  🍢  🍣  🍤  🍥  🍡  🍦  🍧  🍨  🍩 🍪  🎂 
+🍰  🍫  🍬  🍭  🍮  🍯 🧀  🌭  🌮  🌯  🍿🍴  🍳
+cooking	🍽 🍴  🍳🏺
+sign	🚳  🏧  🚭  🚯  🚰  🚱  🚷  🚸  ♿  🚹  🚺  🚻  🚼  🚾 🛂  🛃 
+🛄  🛅  ✨    🔅  🔆  ☯  ☮  ♻  ☢  ☣  ✅  ☑  ✔ ✖  ❌ 
+❎  ➕  ➖  ➗  ➰  ➿  〽  ✳  ✴  ❇  🅿  ▪  ▫  ◻ ◼  ◽ 
+◾  ⬛  ⬜  🔶  🔷  🔸  🔹  🔺  🔻  💠  🔘  🔲  🔳  ⚪ ⚫  🔴 
+🔵
+word	💤    #⃣  0⃣  1⃣  2⃣  3⃣  4⃣  5⃣  6⃣  7⃣  8⃣  9⃣  🔟 ‼  ⁉ 
+❓  ❔  ❕  ❗  ©  ®  ™  🔞  🔠  🔡  🔢  🔣  🔤  🅰 🆎  🅱 
+🆑  🆒  🆓  ℹ  🆔  Ⓜ  🆕  🆖  🅾  🆗  🅿  🆘  🆙  🆚 🈁  🈂 
+🈹  🉑  🈴  🈺  🉐  🈯  🈷  🈶  🈵  🈚  🈸  ㊗  🈲  ㊙ 🈳
+time	🌄  🌅  🌆  🌇  ⌛  ⏳  ⌚  ⏰  ⏱  ⏲  🕛  🕧  🕐  🕜 🕑  🕝 
+🕒  🕞  🕓  🕟  🕔  🕠  🕕  🕡  🕖  🕢  🕗  🕣  🕘  🕤 🕙  🕥 
+🕚  🕦  ♈  ♉  ♊  ♋  ♌  ♍  ♎  ♏  ♐  ♑  ♒  ♓ 🌑  🌒 
+🌓  🌔  🌕  🌖  🌗  🌘  🌙  🌚
+person	👦  👧  👨  👩  👴  👵  👶  👱  👮  👲  👳  👷  👸  💂 🎅  🕵 
+👯  💆  💇  👰  🙍  🙎  🙅  🙆  💁  🙋  🙇  🙌  🙏  🗣 👤  👥 
+🚶  🏃  💃  🕴  💏  💑  👪  👫  👬  👭  🏌  ⛷  🏂  🏄 🏇  🏊 
+⛹  🏋  🚴  🚵  🏍💆  🙎  🙅  🙆🚶🏃
+weather	😎  💧  🌋  🌁  🌃  🌄  🌅  🌆  🌇  🌉  🌊  🌌  🌑  🌒 🌓  🌔 
+🌕  🌖  🌗  🌘  🌙  🌚  🌛  🌜  🌡  ☀  🌝  🌞  ☁  ⛅ ⛈  🌤 
+🌥  🌦  🌧  🌨  🌩  🌪  🌫  🌬  🌀  🌈  🌂  ☂  ☔  ⛱ ❄  ☃ 
+⛄
+activity	🎅  🎒  🎩  💒  🎠  🎡  🎢  🎪  🎭  🎨  🎰  🌠  🎃  🎄 🎆  🎇 
+🎈  🎉  🎊  🎋  🎌  🎍  🎎  🎏  🎐  🎑  🎓  🎯  🎴  🎫 🎼  🎵 
+🎶  🎤  🎧  🎷  🎸  🎹  🎺  🎻  🎥  🎦  🎬  🚬
+vehicle	🚂  🚃  🚄  🚅  🚆  🚇  🚈  🚉  🚊  🚝  🚞  🚋  🚌  🚍 🚎  🚐 
+🚑  🚒  🚓  🚔  🚕  🚖  🚗  🚘  🚙  🚚  🚛  🚜  🚲  🚳 🚣  🚤 
+🛳  🛥  🚢  🛩  🛫  🛬  🚁  🚟  🚠  🚡  🚀  🛰✈🚨⛵
+food	🍞  🍖  🍗  🍔  🍟  🍕  🍲  🍱  🍘  🍙  🍚  🍛  🍜  🍝 🍠  🍢 
+🍣  🍤  🍥  🍡  🍦  🍧  🍨  🍩  🍪  🍰  🍫  🍬  🍭  🍮 🍯🍽  🍴 🍳
+drink	🍶 🍷  🍸  🍹  🍺  🍻 	🍼  ☕  🍵  🍶  🍷  🍸  🍹  🍺 🍻 🍾 
+arrow	💘  🔀  🔁  🔂  ▶  ⏩  ⏭  ⏯  ◀  ⏪  ⏮  🔼  ⏫  🔽 ⏬  📲 
+📩  🏹  ⬆  ↗  ➡  ↘  ⬇  ↙  ⬅  ↖  ↕  ↔  ↩  ↪ ⤴  ⤵ 
+🔃  🔄  🔙  🔚  🔛  🔜  🔝
+sound	🔇  🔈  🔉  🔊  📢  📣  📯  🔔  🔕  ▶  ⏩  ⏭  ⏯  ◀ ⏪  ⏮ 
+⏫  ⏬  ⏸  ⏹  ⏺  ⏏  🎼  🎵  🎶  🎙  🎚  🎛  🎤  🎧 🎷  🎸 
+🎹  🎺  🎻  ☎  📞  〰
+plant	🌸  🌹  🌺  🌻  🌼  🌷  ☘  🌱  🌲  🌳  🌴  🌵  🌾  🌿 🍀  🍁 
+🍂  🍃  🍇  🍈  🍉  🍊  🍋  🍌  🍍  🍎  🍏  🍐  🍑  🍒 🍓  🍅 
+🍆  🌽  🌶  🍄  🌰  🎍💐🏵
+sport	 🚲  🚳  ⚽  ⚾  🏀  🏈  🏉  🎾  🎱  🎳  ⛳  🏌  ⛸ 🎣  🎽 
+🎿  ⛷  🏂  🏄  🏇  🏊  ⛹  🏋  🚴  🚵  🏎  🏍  🏅  🏆 🏏  🏐 
+🏑  🏒  🏓  🏸  🏁🏏  🏐  🏑  🏒  🏓  🏸  🏹
+body	🙌  🙏  💪  👈  👉  ☝  👆  🖕  👇  ✌  🖖  🖐  ✊  ✋ 👊  👌 
+👍  👎  👋  👏  👐  ✍  💅  👣  👀  👁  👂  👃  👅  👄 💀  ☠🤘
+communication	📢  📣  📯  📱  📳  📴  📲  📵  📞  📶  📟  📠  📡  📰 📧  📨 
+📩  📤  📥  📦  📫  📪  📬  📭  📮  🖋  🖊  🖌  🖍  📝 🖇
+emotion	💋  💘  ❤  💓  💔  💕  💖  💗  💙  💚  💛  💜  💝  💞 💟  ❣ 
+💌  💧  💤  💢   💥  💦  💨  💫  💬  💭  🗯  ♥  💎 🎀 💍 ✨
+clock	⌚  ⏰  ⏱  ⏲  🕰  🕛  🕧  🕐  🕜  🕑  🕝  🕒  🕞  🕓 🕟  🕔 
+🕠  🕕  🕡  🕖  🕢  🕗  🕣  🕘  🕤  🕙  🕥  🕚  🕦
+hand	🙋  🙌  🙏  👫  👬  👭  👈  👉  ☝  👆  🖕  👇  ✌  🖖 🤘  🖐 🤘
+✊  ✋  👊  👌  👍  👎  👋  👏  👐  ✍🙅  🙆  💁  🙋    🙌  🙏
+tool	🏺  ⚓  🔱  🔥  🔍  🔎  🔬  🔭  🔦  ✂  🔨  ⛏  ⚒  🛠 🔧  🔩 
+⚙  🗜  ⚗  ⚖  💉  🔪  🔫  🏹  🔰  🔮
+building	🏛  🏗  🏘  🏙  🏚  🏠  🏡  ⛪  🏢  🏣  🏤  🏥  🏦  🏨 🏩  🏪 
+🏫  🏬  🏭  🏯  🏰  🌆  🌇
+geometric	▪  ▫  ◻  ◼  ◽  ◾  ⬛  ⬜  🔶  🔷  🔸  🔹  🔺  🔻 💠  🔘 
+🔲  🔳  ⚪  ⚫  🔴  🔵
+heart	😍  😘  💑  💋  💘  ❤  💓  💔  💕  💖  💗  💙  💚  💛 💜  💝 
+💞  💟  ❣  💌  😻  ♥
+japanese	👹  👺  🍙  🍡  🏣  🏯  🎋  🎌  🎍  🎎  🎴  🏮  🔰  🈁 🈂  🈹 
+🉐  🈯  🈷  🈶  🈚  🈲
+celebration	🎅  🙌  🎂  🎃  🎄  🎆  🎇  🎈  🎉  🎊  🎋  🎌  🎍  🎎 🎏  🎐 
+🎑  🎓  🎀  🎁  🎖  🎗
+zodiac	👧  👬  🐂  🐏  🐐  🐍  🐟  ♈  ♉  ♊  ♋  ♌  ♍  ♎ ♏  ♐ 
+♑  ♒  ♓  ⛎  ⚖🦀🦂🦁🏹🏺
+game	🎰  🎯  🎴  🎱  🎳  🏏  🏐  🏑  🏒  🏓  🏸  🎮  🕹  🎲 ♠  ♥ 
+♦  ♣  🃏  🀄
+entertainment	🎩  🎠  🎡  🎢  🎪  🎭  🎨  🎞  🎟  🎫  🎣  🎮  🕹  🎤 🎧  🎥 
+🎦  🎬  📽  📺🎶 🎉  🎵 🎈  🎁 🎸 🎊 🎄  🎃 🎼 🎐 🔊 🎆 🎇 🎎🎹 📀 🃏 🎲 📹 🎷  🎻 🎋 🎺 📻 💽 🎏 📼 🎴 📯 ✨🎯🎑📷
+clothing	👣  👓  👔  👕  👖  👗  👘  👙  👚  👛  👜  👝  👞  👟 👠  👡 📿 
+👢  👑  👒 👒  🎩  🎓🌂  ☂  ☔
+mark	💋  ❣  📑  🔖  🔛  ✅  ✔  ❌  ❎  〽  ‼  ⁉  ❓  ❔ ❕  ❗ 
+™  🆙
+smile	😁  😃  😄  😅  😆  😊  😋  😎  😍  😙  ☺  🙂  😇  😈 😸  😺 
+😻  😼
+ball	🍙  🎊  ⚽  ⚾  🏀  🏈  🏉  🎾  🎱  🎳  🏌  ⛹  🏏  🏐 🏑  🏓 
+🔮
+eye	😁  😄  😊  😎  😍  😙  😚  😜  😝  👀  👁  👓  🕶  😸 😻  😽 
+🎯
+space	👽  👾  🌌  🚀  🛰  🌑  🌒  🌓  🌔  🌕  🌖  🌗  🌘  🌙 🌠  ☄☀  🌞🌑  🌒  🌓  🌔  🌕  🌖  🌗  🌘  🌙  🌚  🌛  🌜  🌝
+religion	📿  🛐  ⛪  🕋  🕌  🕍  🕎  🕉  ✡  ☸  ☯  ✝  ☦  ⛩ ☪
+forbidden, no, not, prohibited	🙅  🙈  🙉  🙊  🚳  🚫  🚭  🚯  🚱  🚷  ⛔  🔕  📵  🔞
+moon	🌑  🌒  🌓  🌔  🌕  🌖  🌗  🌘  🌙  🌚  🌛  🌜  🌝  🎑
+sweet	🍠  🍡  🍦  🍧  🍨  🍩  🍪  🎂  🍰  🍫  🍬  🍭  🍮  🍯
+open	😃  😄  😅  😆  😮  😦  😰  👐  😺  📖  📬  📭  📂  🔓
+comic	💪  💧  💤  💢  💣  💥  💦  💨  💫  💬  💭  💩  💡  💠
+sun	😎  🌻  🌄  🌅  🌆  🌇  ☀  🌞  ⛅  🌤  🌥  🌦  ⛱
+drink	🍼  ☕  🍵  🍶  🍾  🍷  🍸  🍹  🍺  🍻  🏺  🚰  🚱
+fruit	🍇  🍈  🍉  🍊  🍋  🍌  🍍  🍎  🍏  🍐  🍑  🍒  🍓
+keycap	#⃣  *⃣  0⃣  1⃣  2⃣  3⃣  4⃣  5⃣  6⃣  7⃣  8⃣  9⃣  🔟
+square	⏹  ❎  ▪  ▫  ◻  ◼  ◽  ◾  ⬛  ⬜  🔲  🔳
+cloud	☁  ⛅  ⛈  🌤  🌥  🌦  🌧  🌨  🌩  🌪  🌫  🌬
+dessert	🍡  🍦  🍧  🍨  🍩  🍪  🎂  🍰  🍫  🍬  🍭  🍮
+00, o’clock	🕛  🕐  🕑  🕒  🕓  🕔  🕕  🕖  🕗  🕘  🕙  🕚
+30, thirty	🕧  🕜  🕝  🕞  🕟  🕠  🕡  🕢  🕣  🕤  🕥  🕦
+bar	🍫  🍶  🍷  🍸  🍹  🍺  🍻  ⏸  📶  🏮  📊🍶  🍾  🍷  🍸  🍹  🍺  🍻
+flag	🎌  🎏  ⛳  📫  📪  📬  📭  🏁  🏳  🏴  🚩
+education	✍  🎒  🏫  🎓  📔  📕  📖  📗  📘  📙  📚
+music	🎼  🎵  🎶  🎙  🎚  🎛  🎷  🎸  🎹  🎺  🎻
+cat	🐱  😸  😹  😺  😻  😼  😽  😾  😿  🙀  🐈
+fantasy	😇  👿  😈  👸  🎅  👼  👹  👺  👻  👽  👾    🔮
+fairy tale	👿  👸  👼  👹  👺  👻  💀  👽  👾  🐲  🐉😇  👿  😈  👸  🎅  👼  👹  👺  👻   🔮
+mouth	😃  😄  😆  😶  😮  🤐  🤑  😦  😰  👄  😺
+woman	👩  👵  👯  👫  👭  👚  👠  👡  👢  👒  🚺
+mail	💌  📧  📨  📩  📤  📥  📫  📪  📬  📭  📮
+money	🤑  💰  💴  💵  💶  💷  💸  💱  💲  💳  💹
+gesture	🙍  🙎  🙅  🙆  🙋  🙇  🙌  🙏  🙈  🙉  🙊
+computer	💻  🖥  🖨  ⌨  🖱  🖲  💽  💾  💿  📀
+cold	😅  😓  😷  😰  💧  🏔  🌨  ❄  ☃  ⛄
+card	🎴  ♠  ♥  ♦  ♣  🃏  💳  🗂  📇  🗃
+star	💫  🌃  🌟  🌠  ✨  *⃣  ✡  🔯  ⭐  ✴
+car	🚃  🚞  🚋  🚓  🚔  🚗  🚘  🚨  🚡  🏎
+bank	🏦  🏧  💴  💵  💶  💷  💸  💱  💳  💹
+railway	🚂  🚃  🚄  🚅  🚆  🚈  🚉  🚞  🛤  🚟
+down	👇  👎  🔽  ⏬  📩  📉  ⬇  ⤵  🔻
+red	😡  🍎  🀄  🔼  🔽  🏮  🔺  🔻  🔴
+flower	💐  🌸  💮  🌹  🌺  🌻  🌼  🌷  🎴
+romance	💏  💑  💋  💘  💌  💍  💎  💐  💒
+punctuation	❣  ‼  ⁉  ❓  ❔  ❕  ❗  〰
+direction	⬆  ↗  ➡  ↘  ⬇  ↙  ⬅  ↖
+rain	⛈  🌦  🌧  🌈  🌂  ☂  ☔  ⛱
+snow	🏔  🌨  ❄  ☃  ⛄  🎿  ⛷  🏂
+phone, telephone	📱  📳  📴  📲  📵  ☎  📞  📶
+box	🍱  🎁  📤  📥  📦  🗳  🗃  ☑
+finger	👈  👉  ☝  👆  🖕  👇  🖖  🖐🤘
+diamond	💍  💎  ♦  🔶  🔷  🔸  🔹  💠
+mountain	🏔  ⛰  🌋  🗻  🌄  🚞  🚠  🚵
+note	🎵  🎶  💴  💵  💶  💷  💸  🗒
+circle	⏺  ⭕  Ⓜ  ⚪  ⚫  🔴  🔵
+index	👈  👉  ☝  👆  👇  🗂  📇
+water	🐃  🌊  🚰  🚱  🚾  🚿  ♒
+weapon	🏺  🗡  🔪  ⚔  🔫  🛡  🏹
+baby	👶  👼  🐣  🐤  🐥  🍼  🚼
+hotel	🛍  🏨  🏩  🛎  🛌  🛏  🛋
+light	🚨  🚥  🚦  🕯  💡  🔦  🏮
+pet	🐶  🐕  🐱  🐈  🐹  🐰  🐇
+kiss	😘  😗  😙  😚  💏  💋  😽
+currency	💴  💵  💶  💷  💱  💲  💹
+book	📔  📕  📖  📗  📘  📙  📚
+video	📻  📽  📺  📷  📸  📹  📼
+train	🚂  🚃  🚄  🚅  🚆  🚉  🛤
+double	⏩  ⏪  ⏫  ⏬  ⏸  ➿
+triangle	▶  ⏭  ⏯  ◀  ⏮  📐
+fish	🐟  🐠  🐡  🍥  ♓  🎣
+hat	👲  👷  ⛑  👒  🎩  🎓
+chinese	🉑  🈴  🈺  🈵  🈸  🈳㊗ ㊙ 
+leaf	🌿  🍀  🍁  🍂  🍃  🔰
+love	😍  💑  💕  💌  😻  🏩
+letter	💌  📧  📨  📩  📤  📥
+blue	😰  💙  📘  🔷  🔹  🔵
+closed	😚  📕  📫  📪  🔒  🔐
+mobile, cell	📱  📳  📴  📲  📵  📶
+lock	🔒  🔓  🔏  🔐  🔑  🗝
+button	🔼  🔽  🖱  🔘  🔲  🔳
+exclamation	❣  ‼  ⁉  ❕  ❗
+bright	😎  ☀  🌝  🌞  🔆
+umbrella	🏖  🌂  ☂  ☔  ⛱
+up	☝  👆  👍  🔝  🆙
+point	👈  👉  ☝  👆  👇
+cross	⛑  ⛪  🎌  ✝  ☦
+suit	🕴  ♠  ♥  ♦  ♣
+electric	🚃  🔌  💡  🔦  ⚡
+boat	⛵  🚣  🚤  ⛴  🛥
+ice	🍦  🍧  🍨  ⛸  🏒
+sparkle	💖  🌟  🎇  ✨  ❇
+world	🌍  🌎  🌏  🌐  🗺
+tree	🌲  🌳  🌴  🎄  🎋
+rice	🌾  🍘  🍙  🍚  🍛
+bag	👜  👝  🛍  🎒  💰
+movie	🎞  🎥  🎦  🎬  📽
+camera	🎥  🎦  📷  📸  📹
+instrument	🎷  🎸  🎹  🎺  🎻
+racing	🐎  🏇  🏎  🏍  🏁
+emoji modifier, fitzpatrick, skin, tone	🏻  🏼  🏽  🏾  🏿
+monkey	🐵  🙈  🙉  🙊  🐒
+insect	🐛  🐜  🐝  🐞  🕷
+shoe	👞  👟  👠  👡  👢
+couple	💏  💑  👫  👬  👭
+creature	👹  👺  👻  👽  👾
+sleep	😪  😴  💤  🛌  🛏
+sweat	😅  😓  😰  💧  💦
+banknote, bill	💴  💵  💶  💷  💸
+mailbox, postbox	📫  📪  📬  📭  📮
+cell, mobile	📱  📳  📴  📲  📵
+3, three	🕒  🕞  🔊  3⃣  🖱
+input	🔠  🔡  🔢  🔣  🔤
+tear	😂  😢  😭  😹  😿
+bus	🚌  🚍  🚎  🚏  🚐
+intercardinal	↗  ↘  ↙  ↖
+beverage	☕  🍵  🍶  🍷
+death	💀  ☠  ⚰  ⚱
+frown	☹  🙁  😦  🙍
+outlined	☺  ❔  ❕  🔳
+ship	⚓  🔱  🛳  🚢
+traffic	🚥  🚦  🚸  ⛔
+airplane	✈  🛩  🛫  🛬
+e-mail, email	✉  📧  📨  📩
+pen	✒  🖋  🖊  🔏
+cardinal	⬆  ➡  ⬇  ⬅
+blood	🅰  🆎  🅱  🅾
+earth, globe	🌍  🌎  🌏  🌐
+quarter	🌓  🌗  🌛  🌜
+ear	👯  👂  🌾  🌽
+4, four	🍀  🕓  🕟  4⃣
+orange	🍊  📙  🔶  🔸
+green	💚  🍏  📗  🔰
+stick	🍢  🍡  🏑  🏒
+knife	🍽  🍴  🗡  🔪
+glass	🍷  🍸  🔍  🔎
+balloon	💬  💭  🗯  🎈
+bell	🛎  🎐  🔔  🔕
+cinema	🎞  🎥  🎦  📽
+horse	🐴  🐎  🎠  🏇
+8, eight	🕗  🕣  🎱  8⃣
+house	🏘  🏚  🏠  🏡
+post	🏣  🏤  📯  🚩
+doctor, medicine	😷  🏥  💉  💊
+tongue	😛  😜  😝  👅
+backhand	👈  👉  👆  👇
+police	👮  🚓  🚔  🚨
+sick	😷  🤒  💉  💊
+angry, mad	😡  😠  💢  🗯
+dollar	💰  💵  💸  💲
+chart, graph	💹  📈  📉  📊
+disk	💽  💾  💿  📀
+file	📁  📂  🗃  🗄
+speaker, volume	🔇  🔈  🔉  🔊
+place	🛐  🕋  🕌  🕍 ⭐ 
+tram, trolleybus	🚃  🚊  🚋  🚎
+oncoming	🚍  🚔  🚖  🚘
+bicycle, bike	🚲  🚳  🚴  🚵
+lavatory, restroom, wc	🚹  🚺  🚻  🚾
+symbol	©  ®  ™ ⚡  ⚡
+question	⁉  ❓  ❔
+timer	⌛  ⏳  ⏲
+check	✅  ☑  ✔
+hot	🌶  ☕  ♨
+steaming	🍜  ☕  ♨
+christian	⛪  ✝  ☦
+islam, muslim	🕋  🕌  ☪
+bearer	🐍  ♒  ⛎
+hammer	🔨  ⚒  🛠
+crossed	🎌  🔀  ⚔
+ski	🎿  ⛷  🏂
+envelope	✉  📨  📩
+math	➕  ➖  ➗
+curl	📃  ➰  ➿
+ok	🙆  👌  🆗
+dizzy	😵  💫  🌀
+wave	👋  🌊  🔉
+crescent	🌒  🌘  🌙
+full	🌕  🌝  💯
+falling	🍁  🍂  🌠
+wind	🍃  🌬  🎐
+cake, pastry	🍥  🎂  🍰
+bottle	🍼  🍶  🍾
+ribbon	💝  🎀  🎗
+film	🎞  🎦  📽
+art	🎭  🖼  🎨
+painting	🖼  🎨  🖌
+running	🏃  💨  🎽
+construction	👷  🏗  🚧
+waving	👋  🏳  🏴
+bow	🙇  🙏  🏹
+mouse	🐭  🐁  🖱
+bunny	👯  🐰  🐇
+dog	🐶  🐕  🐩
+pig	🐷  🐖  🐽
+spiral	🐚  🗒  🗓
+chick	🐣  🐤  🐥
+eyewear, glasses	😎  👓  🕶
+silhouette	🗣  👤  👥
+hold	👫  👬  👭
+old	👴  👵  🗝
+bubble	💬  💭  🗯
+trend	💹  📈  📉
+optical	💽  💿  📀
+calendar	📅  📆  🗓
+notebook	📔  📓  📒
+paper	📜  📰  🗞
+receive	📲  📨  📥
+signal	🚥  🚦  📶
+clockwise	🔁  🔂  🔃
+quiet, silent	😶  🔇  🔕
+key	🔐  🔑  🗝
+10, ten	🕙  🕥  🔟
+latin, letters	🔠  🔡  🔤
+1, one	🕐  🕜  1⃣
+2, two	🕑  🕝  2⃣
+5, five	🕔  🕠  5⃣
+6, six	🕕  🕡  6⃣
+7, seven	🕖  🕢  7⃣
+9, nine	🕘  🕤  9⃣
+grin	😀  😁  😸
+pouting	😡  🙎  😾
+cry, sad	😢  😭  😿
+evil	🙈  🙉  🙊
+truck	🚒  🚚  🚛
+pedestrian	🚶  🚷  🚸
+information	💁  ℹ
+hourglass, sand	⌛  ⏳
+keyboard	🎹  ⌨
+pause	⏯  ⏸
+play, right	▶  ⏯
+stop	🚏  ⏹
+snowman	☃  ⛄
+telephone, phone	☎  📞
+ballot	🗳  ☑
+drop	💧  ☔
+tea	☕  🍵
+skull	💀  ☠
+peace	🕊  ☮
+wheel	🎡  ☸
+aries, ram	🐏  ♈
+bull, ox, taurus	🐂  ♉
+gemini, twins	👬  ♊
+cancer, crab	🦀  ♋
+leo, lion	🦁  ♌
+maiden, virgin, virgo	👧  ♍
+balance, justice, libra, scales	♎  ⚖
+scorpio, scorpion, scorpius	🦂  ♏
+archer, sagittarius	♐  🏹
+capricorn, goat	🐐  ♑
+aquarius	🏺  ♒
+pisces	🐟  ♓
+pick	⛏  ⚒
+anchor	⚓  🔱
+weight	🏋  ⚖
+lightning	🌩  ⚡
+electricity	🔌  ⚡
+ophiuchus, serpent, snake	🐍  ⛎
+entry	🚫  ⛔
+fountain	⛲  🖋
+golf	⛳  🏌
+hole	🕳  ⛳
+tent	⛺  🎪
+camping	🏕  ⛺
+station	🚉  ⛽
+clenched, fist, punch	✊  👊
+pencil	✏  📝
+nib	✒  🔏
+cancel, multiplication, multiply, x	✖  ❌
+jew, jewish	🕍  ✡
+asterisk	*⃣  ✳
+loop	➰  ➿
+o	⭕  🅾
+dash	💨  〰
+ideograph	㊗  ㊙
+playing	🎴  🃏
+cool	😎  🆒
+help	💁  🆘
+fog	🌁  🌫
+night	🌃  🌉
+morning, sunrise	🌄  🌅
+dusk, sunset	🌆  🌇
+city	🏙  🌆
+dark	🕶  🌑
+waxing	🌒  🌔
+gibbous	🌔  🌖
+waning	🌖  🌘
+thermometer	🤒  🌡
+blow	🍃  🌬
+mexican	🌮  🌯
+blossom	🌸  🌼
+cherry	🌸  🍒
+vegetable	🍅  🍆
+apple	🍎  🍏
+slice	🍕  🍰
+bone	🍖  🍗
+chicken	🐔  🍗
+skewer	🍢  🍡
+cream	🍦  🍨
+candy	🍬  🍭
+pot	🍲  🍯
+cooking	🍳  🔪
+fork	🍽  🍴
+cup	🍵  🍶
+tropical	🐠  🍹
+beer, mug	🍺  🍻
+lantern	🎃  🏮
+christmas	🎅  🎄
+father	🎅  👪
+fireworks	🎆  🎇
+school	🎒  🏫
+medal	🎖  🏅
+mic, microphone	🎙  🎤
+control	🛂  🎛
+admission, ticket	🎟  🎫
+amusement park	🎡  🎢
+pole	💈  🎣
+museum	🖼  🎨
+top	🎩  🔝
+mask	😷  🎭
+video game	🎮  🕹
+score	🎼  💯
+shirt	👕  🎽
+racquet	🎾  🏸
+racehorse	🐎  🏇
+football	🏈  🏉
+swim	👙  🏊
+bat	🏏  🏓
+hockey	🏑  🏒
+desert	🏜  🏝
+home	🏠  🏡
+european	🏤  🏰
+store	🏪  🏬
+castle	🏯  🏰
+cow	🐮  🐄
+tiger	🐯  🐅
+rabbit	🐰  🐇
+dragon	🐲  🐉
+whale	🐳  🐋
+sheep	🐏  🐑
+ewe	🐑
+sow	🐖
+pig	🐗
+bird	🐦  🕊
+bear	🐻  🐨
+camel, hump	🐪  🐫
+nose	👃  🐽
+print	👣  🐾
+lips	👄  💋
+thumb	👍  👎
+bust	👤  👥
+girl	👧  👯
+child	👪  🚸
+man	👨  👴  👲  👳  🕴  👫  👞	👬  🚹
+dancer	👯  💃
+wedding	👰  💒
+angel	😇  👼
+alien, extraterrestrial, ufo	👽  👾
+cosmetics	💅  💄
+barber, haircut	💇  💈
+excited	💖  💗
+yellow	💛  🔰
+revolving	💞  🚨
+yen	💴  💹
+pound	#⃣  💷
+fly	🕊  💸
+growth, upward	💹  📈
+dvd	💿  📀
+folder	📁  📂
+document, page	📃  📄
+pin, pushpin	📌  📍
+paperclip	📎  🖇
+ruler	📏  📐
+bookmark	📑  🔖
+antenna	📶  📡
+satellite	🛰  📡
+loud	🔊  📢
+tray	📤  📥
+sent	📩  📤
+lowered	📪  📭
+news, newspaper	📰  🗞
+radio	📻  🔘
+object	📿  🕎 ⌨
+brightness	🔅  🔆
+low	🔉  🔅
+mute	🔇  🔕
+magnifying, search	🔍  🔎
+link	🖇  🔗
+fire	🚒  🔥
+wrench	🛠  🔧
+fortune	🔮  🔯
+11, eleven	🕚  🕦
+12, twelve	🕛  🕧
+sunglasses	😎  🕶
+spider	🕷  🕸
+pad	🗒  🗓
+speak	🗣  🙊
+map	🗺  🗾
+statue	🗽  🗿
+joy	😂  😹
+horns	😈  🤘
+wink	😉  😜
+relieved	😥  😌
+disappointed	😥  😞
+fear, fearful, scared	😨  😱
+tired	😫  😩
+weary	😩  🙀
+surprised	😯  🙀
+raised	🙋  🙌
+engine	🚂  🚒
+shinkansen, speed	🚄  🚅
+taxi	🚕  🚖
+automobile	🚗  🚘
+cable, gondola	🚠  🚡
+smoking	🚭  🚬
+litter	🚮  🚯
+potable	🚰  🚱
+bicyclist, cyclist	🚴  🚵
+bath, bathtub	🛀  🛁
+baggage	🛄  🛅
+hash	#⃣
+0, zero	0⃣
+copyright	©
+registered	®
+bangbang	‼
+interrobang	⁉
+tm, trademark	™
+i	ℹ
+northwest	↖
+northeast	↗
+southeast	↘
+southwest	↙
+watch	⌚
+helm	⎈
+eject	⏏
+fast, forward	⏩
+rewind	⏪
+next scene, next track	⏭
+previous scene, previous track	⏮
+alarm	⏰
+stopwatch	⏱
+vertical	⏸
+record	⏺
+m	Ⓜ
+left, reverse	◀
+rays, sunny	☀
+comet	☄
+coffee	☕
+shamrock	☘
+crossbones	☠
+radioactive	☢
+biohazard	☣
+tao, taoist, yang, yin	☯
+buddhist, dharma	☸
+relaxed	☺
+spade	♠
+club, clubs	♣
+hearts	♥
+diamonds	♦
+hotsprings, springs	♨
+recycle	♻
+access, wheelchair	♿
+swords	⚔
+alembic, chemistry	⚗
+gear	⚙
+atheist, atom	⚛
+fleur-de-lis	⚜
+warning	⚠
+danger, voltage, zap	⚡
+coffin	⚰
+funeral, urn	⚱
+soccer	⚽
+baseball	⚾
+thunder	⛈
+mining	⛏
+aid, helmet	⛑
+chain	⛓
+shinto, shrine	⛩
+church	⛪
+ferry	⛴
+resort, sailboat, sea, yacht	⛵
+skate	⛸
+fuel, fuelpump, gas, pump	⛽
+scissors	✂
+v, victory	✌
+write	✍
+david	✡
+snowflake	❄
+plus	➕
+minus	➖
+division	➗
+east	➡
+west	⬅
+north	⬆
+south	⬇
+wavy	〰
+part	〽
+congratulation, congratulations	㊗
+secret	㊙
+mahjong	🀄
+joker	🃏
+a	🅰
+b	🅱
+parking	🅿
+ab	🆎
+cl	🆑
+free	🆓
+id, identity	🆔
+new	🆕
+ng	🆖
+sos	🆘
+versus, vs	🆚
+cyclone, twister, typhoon	🌀
+evening, landscape	🌆
+rainbow	🌈
+bridge	🌉
+ocean	🌊
+eruption, volcano	🌋
+milky way	🌌
+africa, europe	🌍
+americas	🌎
+asia, australia	🌏
+meridians	🌐
+glittery, glow, shining	🌟
+shooting	🌠
+tornado, whirlwind	🌪
+frankfurter, hot dog, hotdog, sausage	🌭
+taco	🌮
+burrito	🌯
+chestnut	🌰
+seedling, young	🌱
+evergreen	🌲
+deciduous, shedding	🌳
+palm	🌴
+cactus	🌵
+pepper	🌶
+tulip	🌷
+rose	🌹
+hibiscus	🌺
+sunflower	🌻
+corn, maize, maze	🌽
+herb	🌿
+clover	🍀
+maple	🍁
+flutter	🍃
+mushroom	🍄
+tomato	🍅
+aubergine, eggplant	🍆
+grape	🍇
+melon	🍈
+watermelon	🍉
+tangerine	🍊
+citrus, lemon	🍋
+banana	🍌
+pineapple	🍍
+pear	🍐
+peach	🍑
+berry, strawberry	🍓
+burger, hamburger	🍔
+pizza	🍕
+meat	🍖
+leg, poultry	🍗
+cracker	🍘
+cooked	🍚
+curry	🍛
+bowl, noodle, ramen	🍜
+pasta, spaghetti	🍝
+bread, loaf	🍞
+french, fries	🍟
+potato, roasted	🍠
+dango	🍡
+kebab, oden, seafood	🍢
+sushi	🍣
+fried, prawn, shrimp, tempura	🍤
+swirl	🍥
+icecream, soft	🍦
+shaved	🍧
+donut, doughnut	🍩
+cookie	🍪
+chocolate	🍫
+lollipop	🍭
+custard, pudding	🍮
+honey, honeypot	🍯
+shortcake	🍰
+bento	🍱
+stew	🍲
+egg, frying, pan	🍳
+teacup	🍵
+sake	🍶
+wine	🍷
+cocktail	🍸
+clink	🍻
+milk	🍼
+plate	🍽
+cork, popping	🍾
+popcorn	🍿
+gift, present, wrapped	🎁
+birthday	🎂
+halloween, jack	🎃
+santa	🎅
+party, popper, tada	🎉
+confetti	🎊
+banner	🎋
+bamboo, pine	🎍
+doll, festival	🎎
+carp, streamer	🎏
+chime	🎐
+ceremony	🎑
+satchel	🎒
+cap, graduation	🎓
+military	🎖
+reminder	🎗
+studio	🎙
+level, slider	🎚
+knobs	🎛
+frames	🎞
+carousel	🎠
+ferris	🎡
+coaster, roller	🎢
+karaoke	🎤
+earbud, headphone	🎧
+palette	🎨
+tophat	🎩
+circus	🎪
+clapper	🎬
+performing, theater, theatre	🎭
+controller	🎮
+bull, bullseye, dart, hit, target	🎯
+slot	🎰
+8 ball, billiard	🎱
+dice, die	🎲
+bowling	🎳
+notes	🎶
+sax, saxophone	🎷
+guitar	🎸
+piano	🎹
+trumpet	🎺
+violin	🎻
+sash	🎽
+tennis	🎾
+basketball, hoop	🏀
+checkered, chequered	🏁
+snowboard	🏂
+marathon, runner	🏃
+surfer, surfing	🏄
+prize, trophy	🏆
+jockey	🏇
+american	🏈
+rugby	🏉
+swimmer	🏊
+lifter	🏋
+motorcycle	🏍
+cricket	🏏
+volleyball	🏐
+field	🏑
+puck	🏒
+paddle, table tennis	🏓
+beach	🏖
+derelict	🏚
+classical	🏛
+island	🏝
+national park, park	🏞
+stadium	🏟
+garden	🏡
+hospital	🏥
+atm, automated, teller	🏧
+convenience	🏪
+department	🏬
+factory	🏭
+rosette	🏵
+label	🏷
+badminton, birdie, shuttlecock	🏸
+amphora, jug	🏺
+rat	🐀
+buffalo	🐃
+leopard	🐆
+crocodile	🐊
+snail	🐌
+rooster	🐓
+boar	🐗
+elephant	🐘
+octopus	🐙
+shell	🐚
+bug	🐛
+ant	🐜
+bee, honeybee	🐝
+beetle, lady beetle, ladybird, ladybug	🐞
+blowfish	🐡
+turtle	🐢
+hatching	🐣
+penguin	🐧
+koala	🐨
+poodle	🐩
+dromedary	🐪
+bactrian	🐫
+dolphin, flipper	🐬
+spouting	🐳
+frog	🐸
+hamster	🐹
+wolf	🐺
+panda	🐼
+feet, paw	🐾
+chipmunk	🐿
++1, thumbs up	👍
+-1, thumbs down	👎
+clap	👏
+crown, king, queen	👑
+eyeglasses	👓
+necktie	👔
+tshirt	👕
+jeans, pants, trousers	👖
+dress	👗
+kimono	👘
+bikini	👙
+coin, purse	👛
+handbag	👜
+pouch	👝
+athletic, sneaker	👟
+heel	👠
+sandal	👡
+boot	👢
+footprint	👣
+boy	👦
+family, mother	👪
+cop, officer	👮
+bride, veil	👰
+blond	👱
+gua pi mao	👲
+turban	👳
+worker	👷
+princess	👸
+ogre	👹
+goblin	👺
+ghost	👻
+monster	👾👹  👺  👻  💀  ☠  👽  👾  🤖 
+💩
+devil, imp, demon	👿
+sassy	💁
+guard, guardsman	💂
+lipstick, makeup	💄
+care, manicure, nail, polish	💅
+massage, salon	💆
+beauty, parlor	💇
+needle, shot, syringe	💉
+pill	💊
+ring	💍
+gem, jewel	💎
+bouquet	💐
+chapel	💒
+beating, heartbeat, pulsating	💓
+break, broken	💔
+growing, heartpulse, nervous	💗
+cupid	💘
+purple	💜
+valentine	💝
+inside	💠
+bulb, idea	💡
+bomb	💣
+zzz	💤 😴
+boom, collision	💥
+splashing	💦
+dung, poo, poop	💩
+biceps, flex, muscle	💪
+dialog, speech	💬🗨
+thought	💭
+100, hundred	💯
+moneybag	💰
+exchange	💱
+credit	💳
+euro	💶
+wings	💸
+market, rise	💹
+chair, seat	💺
+pc, personal	💻
+briefcase	💼
+minidisk	💽
+disk, floppy	💾
+blu-ray, cd, dvd	💿📀
+date	📅
+rolodex	📇
+clipboard	📋
+straight edge	📏
+set	📐
+marker, tabs	📑
+ledger	📒
+cover, decorated	📔
+books	📚
+badge, name	📛
+scroll	📜
+memo	📝
+receiver	📞
+pager	📟
+fax	📠
+dish	📡
+loudspeaker, public address	📢
+cheering, megaphone	📣
+outbox	📤
+inbox	📥
+package, parcel	📦
+incoming	📨
+outgoing	📩
+horn, postal	📯
+call	📲
+mode, vibration	📳
+off	📴
+flash	📸
+television, tv	📺
+tape, vhs, videocassette	📼
+projector	📽
+beads, necklace, prayer	📿
+repeat	🔁
+once	🔂
+reload	🔃
+anticlockwise, counterclockwise, withershins	🔄
+dim	🔅
+high	🔊
+battery	🔋
+plug	🔌
+ink, privacy	🔏
+secure	🔐
+password	🔑
+unlock	🔓
+back	🔙
+end	🔚
+on	🔛
+soon	🔜
+18, age restriction, eighteen, underage	🔞
+uppercase	🔠
+abcd, lowercase	🔡
+1234, numbers	🔢
+abc, alphabet	🔤
+flame	🔥
+flashlight, torch	🔦
+bolt, nut	🔩
+hocho	🔪
+gun, pistol, revolver, handgun	🔫
+microscope	🔬
+telescope	🔭
+crystal	🔮
+beginner, chevron	🔰
+emblem, trident	🔱
+hindu, om	🕉
+dove	🕊
+kaaba	🕋
+mosque	🕌
+synagogue, temple	🕍
+candelabrum, candlestick, menorah	🕎
+1:00	🕐
+2:00	🕑
+3:00	🕒
+4:00	🕓
+5:00	🕔
+6:00	🕕
+7:00	🕖
+8:00	🕗
+9:00	🕘
+10:00	🕙
+11:00	🕚
+12:00	🕛
+1:30	🕜
+2:30	🕝
+3:30	🕞
+4:30	🕟
+5:30	🕠
+6:30	🕡
+7:30	🕢
+8:30	🕣
+9:30	🕤
+10:30	🕥
+11:30	🕦
+12:30	🕧
+candle	🕯
+business	🕴
+sleuth, spy, detective	🕵
+web	🕸
+joystick	🕹
+ballpoint	🖊
+paintbrush	🖌
+crayon	🖍
+splayed	🖐
+middle finger	🖕
+spock, vulcan	🖖
+desktop	🖥
+printer	🖨
+trackball	🖲
+frame, picture	🖼
+dividers	🗂
+cabinet	🗄
+wastebasket	🗑
+compression, vice	🗜
+clue	🗝
+rolled	🗞
+dagger	🗡
+head, speaking	🗣
+fuji	🗻
+tokyo, tower	🗼
+liberty	🗽
+japan	🗾
+moyai	🗿
+laugh, satisfied	😆
+laugh	😂
+halo, innocent, angel	😇
+blush	😊
+delicious, savouring, um, yum	😋
+smirk	😏
+deadpan, neutral	😐
+expressionless, inexpressive, unexpressive	😑
+unamused, unhappy	😒
+dejected, pensive	😔
+confused	😕
+confounded	😖
+joke	😜
+horrible, taste	😝
+worried	😟
+rage	😡
+persevere	😣
+triumph, won	😤
+whew	😥
+anguished	😧
+grimace	😬
+sob	😭
+sympathy	😮
+hushed, stunned	😯
+rushed	😰
+munch, scream	😱
+astonished, shocked, totally	😲
+dazed, flushed	😳
+ironic, wry	😼
+oh	🙀
+upside-down	🙃
+eyes, rolling	🙄
+apology, sorry	🙇
+see	🙈
+hear	🙉
+happy	🙋
+hooray	🙌
+ask, folded, please, pray, thanks	🙏
+rocket	🚀
+helicopter	🚁
+locomotive, steam	🚂
+bullet	🚅
+metro, subway	🚇
+trolley	🚎
+busstop	🚏
+minibus	🚐
+ambulance	🚑
+patrol	🚓
+recreational, rv	🚙
+delivery	🚚
+lorry, semi	🚛
+tractor	🚜
+monorail	🚝
+suspension	🚟
+aerial, ropeway, tramway	🚡
+rowboat	🚣
+speedboat	🚤
+barrier	🚧
+beacon	🚨
+door	🚪
+litterbox	🚮
+hike, walk, walking	🚶
+crossing	🚸
+changing	🚼
+toilet	🚽
+closet	🚾
+shower	🚿
+passport	🛂
+customs	🛃
+claim	🛄
+left luggage, locker, luggage	🛅
+couch, lamp	🛋
+shopping	🛍
+bellhop	🛎
+bed	🛏
+worship	🛐
+shield	🛡
+drum, oil	🛢
+highway, motorway, road	🛣
+motorboat	🛥
+check-in, departure, departures	🛫
+arrivals, arriving, landing	🛬
+passenger	🛳
+zipper	🤐
+ill	🤒
+geek, nerd	🤓
+thinking	🤔
+bandage, hurt, injury	🤕
+robot	🤖
+hug, hugging	🤗
+rock-on	🤘
+turkey	🦃
+unicorn	🦄
+cheese	🧀🍕
+floor, laugh, rolling, face, ROFL, LOL	🤣
+cowboy, face, hat, cowgirl	🤠
+clown, face	🤡
+face, lie, pinocchio	🤥
+drooling, face	🤤
+face, nauseated, vomit	🤢
+face, gesundheit, sneeze	🤧
+prince	🤴
+Mrs. Claus, christmas, mother	🤶
+groom, man, tuxedo	🤵
+shrug, doubt, ignorance, indifference	🤷
+face, palm, disbelief, exasperation	🤦
+pregnant, woman	🤰
+dance, man	🕺
+selfie, camera, phone	🤳
+cross, finger, hand, luck	🤞
+call, hand	🤙
+fist, leftwards	🤛
+fist, rightwards	🤜
+backhand, raised	🤚
+handshake, agreement, meeting, shake, hand	🤝
+black, heart, evil, wicked	🖤
+gorilla, animal	🦍
+face, fox, animal	🦊
+deer, animal	🦌
+rhinoceros, animal	🦏
+bat, vampire, animal	🦇
+eagle, bird	🦅
+duck, bird	🦆
+owl, wise, bird	🦉
+lizard, reptile	🦎
+shark, fish	🦈
+shrimp, small, shellfish, food	🦐
+squid, molusc, food	🦑
+butterfly, insect, pretty	🦋
+flower, wilted	🥀
+kiwi, fruit, food	🥝
+avocado, fruit, food	🥑
+potato, vegetable, food	🥔
+carrot, vegetable, food	🥕
+cucumber, pickle, vegetable, food	🥒
+peanut, nut, food, vegetable	🥜
+croissant, crescent roll, french, food, bread	🥐
+baguette, bread, french, food	🥖
+hotcake, crêpe, pancake, food	🥞
+bacon, meat, food	🥓
+kebab, falafel, gyro, flatbread, stuffed, food	🥙
+egg, food	🥚
+paella, casserole, pan, shallow, food	🥘
+green, salad, food	🥗
+glass, milk, drink	🥛
+clink, glass, drink, celebrate	🥂
+glass, tumbler, whisky, liquor, shot	🥃
+spoon, tableware	🥄
+octagonal, sign, stop	🛑
+scooter, kick	🛴
+motor, scooter	🛵
+canoe, boat	🛶
+first, gold, medal	🥇
+medal, second, silver	🥈
+bronze, medal, third	🥉
+boxing, glove, sport	🥊
+judo, karate, taekwondo, martial arts, uniform, sport	🥋
+cartwheel, gymnastics, person, sport	🤸
+wrestler, wrestle, sport, person	🤼
+polo, water, person, sport	🤽
+handball, ball, sport, person	🤾
+fencer, fencing, sword, sport, person	🤺
+goal, net, sport	🥅
+juggle, multitask, balance, skill	🤹
+drum, drumsticks, music	🥁
+shopping, cart, trolley, shopping	🛒
+constable	👮
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

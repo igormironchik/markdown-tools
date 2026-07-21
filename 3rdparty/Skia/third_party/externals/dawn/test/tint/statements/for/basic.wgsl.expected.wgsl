@@ -1,0 +1,9 @@
+fn some_loop_body() {
+}
+
+@compute @workgroup_size(1)
+fn f() {
+  for(var i : i32 = 0; (i < 5); i = (i + 1)) {
+    some_loop_body();
+  }
+}
