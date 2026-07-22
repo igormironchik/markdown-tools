@@ -104,11 +104,21 @@ target_link_libraries(md-pdf-gui
     ${PLATFORM_LIBS}
     ZLIB::ZLIB)
     
+find_program(SYSTEM_GN gn)
+
+if(SYSTEM_GN)
+    set(GN_EXEC "${SYSTEM_GN}")
+    set(FETCH_GN_COMMAND "")
+else()
+    set(GN_EXEC "bin/gn")
+    set(FETCH_GN_COMMAND COMMAND python3 bin/fetch-gn)
+endif()
+
 add_custom_command(
     TARGET md-pdf-gui
     PRE_BUILD
-    COMMAND python3 bin/fetch-gn
-    COMMAND "bin/gn" gen "../../../builds/skia" "--args=is_official_build=true skia_use_system_expat=false skia_use_system_harfbuzz=false skia_use_system_icu=false skia_use_system_libjpeg_turbo=false skia_use_system_libpng=false skia_use_system_libwebp=false skia_use_system_zlib=false extra_cflags=[\"${SKIA_CFLAGS}\"]"
+    COMMAND ${FETCH_GN_COMMAND}
+    COMMAND "${GN_EXEC}" gen "../../../builds/skia" "--args=is_official_build=true skia_use_system_expat=false skia_use_system_harfbuzz=false skia_use_system_icu=false skia_use_system_libjpeg_turbo=false skia_use_system_libpng=false skia_use_system_libwebp=false skia_use_system_zlib=false extra_cflags=[\"${SKIA_CFLAGS}\"]"
     COMMAND ninja -C "../../../builds/skia"
     COMMENT "Configuring and building Skia..."
     VERBATIM
