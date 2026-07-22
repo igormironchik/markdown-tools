@@ -109,6 +109,20 @@ find_program(SYSTEM_GN gn)
 if(SYSTEM_GN)
     set(GN_EXEC "${SYSTEM_GN}")
     set(FETCH_GN_COMMAND "")
+
+    set(SKIA_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/Skia/bin")
+    set(SKIA_GN_TARGET "${SKIA_BIN_DIR}/gn")
+
+    if(NOT EXISTS "${SKIA_GN_TARGET}")
+        message(STATUS "Creating symlink for system GN: ${SKIA_GN_TARGET} -> ${SYSTEM_GN}")
+        execute_process(
+            COMMAND ${CMAKE_COMMAND} -E create_symlink "${SYSTEM_GN}" "${SKIA_GN_TARGET}"
+            RESULT_VARIABLE LINK_RESULT
+        )
+        if(NOT LINK_RESULT EQUAL 0)
+            message(FATAL_ERROR "Failed to create symlink for GN")
+        endif()
+    endif()
 else()
     set(GN_EXEC "bin/gn")
     set(FETCH_GN_COMMAND COMMAND python3 bin/fetch-gn)
