@@ -1,0 +1,42 @@
+// *** THIS PACKAGE HAS SPECIAL LICENSING CONDITIONS.  PLEASE
+//     CONSULT THE OWNERS AND opensource-licensing@google.com BEFORE
+//     DEPENDING ON IT IN YOUR PROJECT. ***
+package {
+    // See: http://go/android-license-faq
+    // A large-scale-change added 'default_applicable_licenses' to import
+    // all of the 'license_kinds' from "external_dng_sdk_license"
+    // to get the below license kinds:
+    //   SPDX-license-identifier-MIT
+    //   legacy_by_exception_only (by exception only)
+    default_applicable_licenses: ["external_dng_sdk_license"],
+}
+
+cc_fuzz {
+    name: "dng_parser_fuzzer",
+    host_supported: true,
+    srcs: [
+        "dng_parser_fuzzer.cpp",
+    ],
+    cflags: [
+        "-Wno-unused-parameter",
+        "-fexceptions",
+    ],
+    static_libs: [
+        "libdng_sdk",
+        "libjpeg",
+        "liblog",
+        "libz",
+    ],
+    target: {
+        darwin: {
+            enabled: false,
+        },
+    },
+    corpus: [
+        "seeds/CVE_2020_9589/original.dng",
+        "seeds/CVE_2020_9589/poc.dng",
+    ],
+    fuzz_config: {
+       cc: ["android-security-assurance-redteam@google.com"],
+    },
+}

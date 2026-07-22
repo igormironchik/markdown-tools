@@ -33,11 +33,18 @@
 #include <string_view>
 #include <vector>
 
-// podofo include.
-#include <podofo/podofo.h>
+// Skia include.
+#include <include/core/SkCanvas.h>
+#include <include/core/SkFont.h>
+#include <include/core/SkImage.h>
+#include <include/core/SkPictureRecorder.h>
 
-// resvg include.
-#include <ResvgQt.h>
+#ifdef Q_OS_LINUX
+#include <include/ports/SkFontMgr_fontconfig.h>
+#include <include/ports/SkFontScanner_FreeType.h>
+#endif
+
+#include <modules/svg/include/SkSVGDOM.h>
 
 namespace MdPdf
 {
@@ -89,20 +96,15 @@ struct Utf8String {
     }
 }; // struct Utf8String
 
-#define MD_PDF_USE_PODOFO
-#ifdef MD_PDF_USE_PODOFO
-
-using Font = PoDoFo::PdfFont;
-using Document = PoDoFo::PdfMemDocument;
-using Page = PoDoFo::PdfPage;
-using Painter = PoDoFo::PdfPainter;
-using Image = PoDoFo::PdfImage;
-using Destination = PoDoFo::PdfDestination;
-using Color = PoDoFo::PdfColor;
-using Rect = PoDoFo::Rect;
+using Font = SkFont;
+using Painter = SkCanvas;
 using String = Utf8String;
+using Image = SkImage;
 
-#endif // MD_PDF_USE_PODOFO
+struct Page {
+    std::shared_ptr<SkPictureRecorder> m_recorder;
+    Painter *m_canvas = nullptr;
+}; // struct Page
 
 //! Footnote scale.
 static const double s_footnoteScale = 0.75;
@@ -204,7 +206,7 @@ class Renderer : public QObject
 {
     Q_OBJECT
 
-signals:
+Q_SIGNALS:
     //! Progress of rendering.
     void progress(int percent);
     //! Error.
@@ -222,7 +224,6 @@ public:
                         QSharedPointer<MD::Document> doc,
                         const RenderOpts &opts,
                         bool testing = false) = 0;
-    virtual void clean() = 0;
 }; // class Renderer
 
 static const double s_margin = 72.0 / 25.4 * 20.0;
@@ -287,7 +288,7 @@ struct LayoutDirectionHandler {
     void addY(double value,
               double direction = 1.0)
     {
-        m_coords.m_y -= direction * value;
+        m_coords.m_y += direction * value;
     }
     double leftBorderXWithOffset() const
     {
@@ -310,7 +311,7 @@ struct LayoutDirectionHandler {
 
     double topY() const
     {
-        return m_coords.m_pageHeight - m_coords.m_margins.m_top;
+        return m_coords.m_margins.m_top;
     }
     const PageMargins &margins() const
     {
@@ -340,7 +341,7 @@ struct LayoutDirectionHandler {
                       double height,
                       double baseline = 0.0) const
     {
-        return RectF(startX(width), y() + baseline, width, height);
+        return RectF(startX(width), y(), width, height);
     }
     double startX(double width) const
     {
@@ -393,12 +394,8 @@ private:
 
 //! Auxiliary struct for rendering.
 struct PdfAuxData {
-    //! Document.
-    Document *m_doc = nullptr;
     //! Painters.
-    std::vector<QSharedPointer<Painter>> *m_painters = nullptr;
-    //! Page.
-    Page *m_page = nullptr;
+    std::vector<Page> *m_pages = nullptr;
     //! Index of the current page.
     int m_currentPageIdx = -1;
     //! Layout direction handler.
@@ -443,8 +440,6 @@ struct PdfAuxData {
     QMap<MD::Footnote *, QPair<QString, int>> m_footnotesAnchorsMap;
     //! Map of footnotes references to its counter (uses for back links from footnote).
     QMap<MD::Footnote *, int> m_footnoteRefCount;
-    //! Resvg options.
-    QSharedPointer<ResvgOptions> m_resvgOpts;
     //! Special blockquotes that should be highlighted.
     QMap<MD::Blockquote *, QColor> m_highlightedBlockquotes;
     //! Cache of fonts.
@@ -453,6 +448,20 @@ struct PdfAuxData {
     QMap<int, char> m_cachedPainters;
     //! Flag when drawing table.
     bool m_tableDrawing = false;
+    //! Current SkPaint.
+    SkPaint m_currentPaint;
+
+    //! Fonts manager.
+#ifdef Q_OS_LINUX
+    sk_sp<SkFontMgr> m_fontMgr = SkFontMgr_New_FontConfig(nullptr, std::move(SkFontScanner_Make_FreeType()));
+#endif
+
+#ifdef Q_OS_WIN
+    sk_sp<SkFontMgr> m_fontMgr;
+#endif
+
+    //! Cache of typesets.
+    QHash<QString, sk_sp<SkTypeface>> m_typefaceCache;
 
 #ifdef MD_PDF_TESTING
     QMap<QString, QString> m_fonts;
@@ -480,15 +489,21 @@ struct PdfAuxData {
     //! Draw text
     void drawText(double x,
                   double y,
-                  const char *text,
-                  Font *font,
+                  const Utf8String &text,
+                  const Font &font,
                   double size,
                   double scale,
                   bool strikeout);
     //! Draw image.
     void drawImage(double x,
                    double y,
-                   Image *img,
+                   const Image *img,
+                   double xScale,
+                   double yScale);
+    //! Draw image.
+    void drawImage(double x,
+                   double y,
+                   const SkSVGDOM *img,
                    double xScale,
                    double yScale);
     //! Draw line.
@@ -503,7 +518,7 @@ struct PdfAuxData {
                        double y,
                        double width,
                        double height,
-                       PoDoFo::PdfPathDrawMode m);
+                       SkPaint::Style m);
 
     //! Set color.
     void setColor(const QColor &c);
@@ -513,20 +528,20 @@ struct PdfAuxData {
     void repeatColor();
 
     //! \return String width.
-    double stringWidth(Font *font,
+    double stringWidth(const Font &font,
                        double size,
                        double scale,
                        const String &s) const;
     //! \return Line spacing.
-    double lineSpacing(Font *font,
+    double lineSpacing(const Font &font,
                        double size,
                        double scale) const;
     //! \return Font ascent.
-    double fontAscent(Font *font,
+    double fontAscent(const Font &font,
                       double size,
                       double scale) const;
     //! \return Font descent.
-    double fontDescent(Font *font,
+    double fontDescent(const Font &font,
                        double size,
                        double scale) const;
 }; // struct PdfAuxData;
@@ -552,17 +567,13 @@ class PdfRenderer : public Renderer
 {
     Q_OBJECT
 
-signals:
+Q_SIGNALS:
     //! Internal signal for start rendering.
     void start();
 
 public:
     PdfRenderer();
     ~PdfRenderer() override = default;
-
-    //! \return Is font can be created?
-    static bool isFontCreatable(const QString &font,
-                                bool monospace);
 
     //! Convert QString to UTF-8.
     static Utf8String createUtf8String(const QString &text);
@@ -573,7 +584,7 @@ public:
     bool isError() const;
 #endif
 
-public slots:
+public Q_SLOTS:
     //! Render document. \note Document can be changed during rendering.
     //! Don't reuse the same document twice.
     //! Renderer will delete himself on job finish.
@@ -584,11 +595,9 @@ public slots:
     //! Terminate rendering.
     void terminate();
 
-private slots:
+private Q_SLOTS:
     //! Real rendering.
     void renderImpl();
-    //! Clean render.
-    void clean() override;
 
 protected:
 #ifdef MD_PDF_TESTING
@@ -596,13 +605,12 @@ protected:
 #endif
 
     //! Create font.
-    Font *createFont(const QString &name,
-                     bool bold,
-                     bool italic,
-                     double size,
-                     Document *doc,
-                     double scale,
-                     const PdfAuxData &pdfData);
+    Font createFont(const QString &name,
+                    bool bold,
+                    bool italic,
+                    double size,
+                    double scale,
+                    PdfAuxData &pdfData);
 
 private:
     //! Create new page.
@@ -624,16 +632,14 @@ private:
     QByteArray loadImage(
         //! Image.
         MD::Image *item,
-        //! Options for SVG rendering.
-        const ResvgOptions &opts,
         //! Height to scale image to.
         double height = 1.0,
         //! Should image be scaled?
         bool scale = false,
         //! Store in cache loaded image data?
-        bool cache = true);
-    //! Make all links clickable.
-    void resolveLinks(PdfAuxData &pdfData);
+        bool cache = true,
+        //! Is this an SVG?
+        bool *isSvg = nullptr);
     //! Max width of numbered list bullet.
     int maxListNumberWidth(MD::List *list) const;
 
@@ -646,9 +652,6 @@ private:
         //! Calculate full height.
         Full = 2
     }; // enum class CalcHeightOpt
-
-    //! Finish pages.
-    void finishPages(PdfAuxData &pdfData);
 
     //! Flag for RTL languages support.
     struct RTLFlag {
@@ -1073,7 +1076,7 @@ private:
              MD::Text *item,
              QSharedPointer<MD::Document> doc,
              bool &newLine,
-             Font *footnoteFont,
+             const Font *footnoteFont,
              double footnoteFontSize,
              double footnoteFontScale,
              MD::Item *nextItem,
@@ -1105,16 +1108,16 @@ private:
                   unsigned int>>
     drawString(PdfAuxData &pdfData,
                const QString &str,
-               Font *spaceFont,
+               const Font &spaceFont,
                double spaceFontSize,
                double spaceFontScale,
-               Font *font,
+               const Font &font,
                double fontSize,
                double fontScale,
                double lineHeight,
                QSharedPointer<MD::Document> doc,
                bool &newLine,
-               Font *footnoteFont,
+               const Font *footnoteFont,
                double footnoteFontSize,
                double footnoteFontScale,
                MD::Item *nextItem,
@@ -1130,7 +1133,7 @@ private:
                long long int endPos,
                PrevBaselineStateStack &currentBaseline,
                const QColor &color = Qt::black,
-               Font *regularSpaceFont = nullptr,
+               const Font *regularSpaceFont = nullptr,
                double regularSpaceFontSize = 0.0,
                double regularSpaceFontScale = 0.0,
                RTLFlag *rtl = nullptr);
@@ -1141,7 +1144,7 @@ private:
              MD::Link *item,
              QSharedPointer<MD::Document> doc,
              bool &newLine,
-             Font *footnoteFont,
+             const Font &footnoteFont,
              double footnoteFontSize,
              double footnoteFontScale,
              MD::Item *prevItem,
@@ -1446,14 +1449,8 @@ private:
     QMutex m_mutex;
     //! Termination flag.
     bool m_terminate;
-    //! All destinations in the document.
-    QMap<QString, std::shared_ptr<Destination>> m_dests;
-    //! Links that not yet clickable.
-    QMultiMap<QString, QVector<QPair<RectF, unsigned int>>> m_unresolvedLinks;
-    //! Footnotes links.
-    QMultiMap<QString, QPair<RectF, unsigned int>> m_unresolvedFootnotesLinks;
     //! Cache of images.
-    QMap<QString, QByteArray> m_imageCache;
+    QMap<QString, QPair<QByteArray, bool>> m_imageCache;
     //! Footnotes to draw.
     QVector<QPair<QString, QSharedPointer<MD::Footnote>>> m_footnotes;
 #ifdef MD_PDF_TESTING
@@ -1470,21 +1467,22 @@ class LoadImageFromNetwork final : public QObject
 {
     Q_OBJECT
 
-signals:
+Q_SIGNALS:
     void start();
 
 public:
     LoadImageFromNetwork(const QUrl &url,
                          QThread *thread,
-                         const ResvgOptions &opts,
                          double height,
                          bool scale);
     ~LoadImageFromNetwork() override = default;
 
     const QImage &image() const;
     void load();
+    bool isSvg() const;
+    const QByteArray &svgData() const;
 
-private slots:
+private Q_SLOTS:
     void loadImpl();
     void loadFinished();
     void loadError(QNetworkReply::NetworkError);
@@ -1494,9 +1492,9 @@ private:
 
     QThread *m_thread;
     QImage m_img;
+    QByteArray m_svgData;
     QNetworkReply *m_reply;
     QUrl m_url;
-    const ResvgOptions &m_opts;
     double m_height;
     bool m_scale;
 }; // class LoadImageFromNetwork

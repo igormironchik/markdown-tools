@@ -47,7 +47,7 @@ public:
     //! \return QTextDocument::FindFlags of search.
     QTextDocument::FindFlags findFlags() const;
 
-public slots:
+public Q_SLOTS:
     //! Set "find" text.
     void setFindText(const QString &text);
     //! Set focus on "find" line edit.
@@ -57,7 +57,7 @@ public slots:
     //! Set whether search shoulb be for whole word only.
     void setWholeWord(bool on = true);
 
-private slots:
+private Q_SLOTS:
     //! On "Find" text was changed.
     void onFindTextChanged(const QString &str);
     //! On "Replace" button clicked.

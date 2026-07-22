@@ -1,0 +1,32 @@
+# This file is part of ICU4X. For terms of use, please see the file
+# called LICENSE at the top level of the ICU4X source tree
+# (online at: https://github.com/unicode-org/icu4x/blob/main/LICENSE ).
+
+[package]
+name = "yoke-derive"
+description = "Custom derive for the yoke crate"
+version = "0.7.3"
+categories = ["data-structures", "memory-management", "caching", "no-std"]
+keywords = ["zerocopy", "serialization", "lifetime", "borrow", "self-referential"]
+authors = ["Manish Goregaokar <manishsmail@gmail.com>"]
+license-file = "LICENSE"
+
+edition.workspace = true
+repository.workspace = true
+
+[package.metadata.workspaces]
+independent = true
+
+[lib]
+proc_macro = true
+path = "src/lib.rs"
+
+[dependencies]
+proc-macro2 = "1.0.27"
+quote = "1.0.9"
+syn = { version = "2", features = ["derive", "fold"] }
+synstructure = "0.13"
+
+[dev-dependencies]
+yoke = { path = "..", features = ["derive"] }
+zerovec = { path = "../../../utils/zerovec", features = ["yoke"] }

@@ -1,0 +1,35 @@
+# This workflow will install and run the flake8 linter on the project's Python files,
+# then run the tabcheck script (checks Java files for tab characters).
+
+name: Python-based Checks
+
+on:
+  push:
+    branches: [ '*' ]
+  pull_request:
+    branches: [ '*' ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8
+    - name: Lint Python files with flake8
+      run: |
+        flake8
+    - name: Check .java files for tabs
+      run: |
+        python py/tabcheck.py

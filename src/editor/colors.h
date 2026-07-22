@@ -81,7 +81,7 @@ public:
     //! \return Reference for color scheme.
     Colors &colors();
 
-public slots:
+public Q_SLOTS:
     //! Reset to defaults.
     void resetDefaults();
     //! Apply color scheme for settings page UI.
@@ -89,7 +89,7 @@ public slots:
     //! Init code themes combo box.
     void initCodeThemes(QSharedPointer<MdShared::Syntax> syntax);
 
-private slots:
+private Q_SLOTS:
     //! Link color changed.
     void linkColorChanged(const QColor &c);
     //! Text color changed.

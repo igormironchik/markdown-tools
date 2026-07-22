@@ -38,13 +38,13 @@ public:
     //! \return Line edit of "find" text.
     QLineEdit *line() const;
 
-public slots:
+public Q_SLOTS:
     //! Set "find" text.
     void setFindWebText(const QString &text);
     //! Set focus on "find" line edit.
     void setFocusOnFindWeb();
 
-private slots:
+private Q_SLOTS:
     //! On "find" text changed.
     void onFindWebTextChanged(const QString &str);
     //! On "Close" button clicked.

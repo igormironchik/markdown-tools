@@ -1,0 +1,124 @@
+; SPIR-V
+; Version: 1.3
+; Generator: Google Tint Compiler; 1
+; Bound: 71
+; Schema: 0
+               OpCapability Shader
+               OpCapability RuntimeDescriptorArray
+               OpExtension "SPV_EXT_descriptor_indexing"
+               OpMemoryModel Logical GLSL450
+               OpEntryPoint Fragment %fs "fs"
+               OpExecutionMode %fs OriginUpperLeft
+               OpMemberName %o_block 0 "inner"
+               OpName %o_block "o_block"
+               OpMemberName %tint_resource_table_metadata_struct_tint_explicit_layout 0 "array_length"
+               OpMemberName %tint_resource_table_metadata_struct_tint_explicit_layout 1 "bindings"
+               OpName %tint_resource_table_metadata_struct_tint_explicit_layout "tint_resource_table_metadata_struct_tint_explicit_layout"
+               OpName %tint_resource_table_metadata "tint_resource_table_metadata"
+               OpName %fs "fs"
+               OpName %tint_storage_metadata_length "tint_storage_metadata_length"
+               OpName %tint_storage_metadata_length_0 "tint_storage_metadata_length"
+               OpMemberDecorate %o_block 0 Offset 0
+               OpDecorate %o_block Block
+               OpDecorate %1 DescriptorSet 0
+               OpDecorate %1 Binding 0
+               OpDecorate %1 Coherent
+               OpDecorate %5 DescriptorSet 43
+               OpDecorate %5 Binding 51
+               OpDecorate %9 DescriptorSet 43
+               OpDecorate %9 Binding 51
+               OpMemberDecorate %tint_resource_table_metadata_struct_tint_explicit_layout 0 Offset 0
+               OpDecorate %_runtimearr_uint ArrayStride 4
+               OpMemberDecorate %tint_resource_table_metadata_struct_tint_explicit_layout 1 Offset 4
+               OpDecorate %tint_resource_table_metadata_struct_tint_explicit_layout Block
+               OpDecorate %tint_resource_table_metadata DescriptorSet 42
+               OpDecorate %tint_resource_table_metadata Binding 52
+               OpDecorate %tint_resource_table_metadata NonWritable
+       %uint = OpTypeInt 32 0
+    %o_block = OpTypeStruct %uint
+%_ptr_StorageBuffer_o_block = OpTypePointer StorageBuffer %o_block
+          %1 = OpVariable %_ptr_StorageBuffer_o_block StorageBuffer
+          %8 = OpTypeSampler
+%_runtimearr_8 = OpTypeRuntimeArray %8
+%_ptr_UniformConstant__runtimearr_8 = OpTypePointer UniformConstant %_runtimearr_8
+          %5 = OpVariable %_ptr_UniformConstant__runtimearr_8 UniformConstant
+%_runtimearr_8_0 = OpTypeRuntimeArray %8
+%_ptr_UniformConstant__runtimearr_8_0 = OpTypePointer UniformConstant %_runtimearr_8_0
+          %9 = OpVariable %_ptr_UniformConstant__runtimearr_8_0 UniformConstant
+%_runtimearr_uint = OpTypeRuntimeArray %uint
+%tint_resource_table_metadata_struct_tint_explicit_layout = OpTypeStruct %uint %_runtimearr_uint
+%_ptr_StorageBuffer_tint_resource_table_metadata_struct_tint_explicit_layout = OpTypePointer StorageBuffer %tint_resource_table_metadata_struct_tint_explicit_layout
+%tint_resource_table_metadata = OpVariable %_ptr_StorageBuffer_tint_resource_table_metadata_struct_tint_explicit_layout StorageBuffer
+       %void = OpTypeVoid
+         %18 = OpTypeFunction %void
+        %int = OpTypeInt 32 1
+      %int_0 = OpConstant %int 0
+%_ptr_StorageBuffer_uint = OpTypePointer StorageBuffer %uint
+     %uint_0 = OpConstant %uint 0
+       %bool = OpTypeBool
+      %false = OpConstantFalse %bool
+      %int_1 = OpConstant %int 1
+     %uint_1 = OpConstant %uint 1
+     %v2uint = OpTypeVector %uint 2
+    %uint_40 = OpConstant %uint 40
+    %uint_41 = OpConstant %uint 41
+     %v2bool = OpTypeVector %bool 2
+%_ptr_StorageBuffer_uint_0 = OpTypePointer StorageBuffer %uint
+    %uint_42 = OpConstant %uint 42
+         %fs = OpFunction %void None %18
+         %19 = OpLabel
+         %20 = OpBitcast %uint %int_0
+%tint_storage_metadata_length = OpAccessChain %_ptr_StorageBuffer_uint %tint_resource_table_metadata %uint_0
+         %26 = OpLoad %uint %tint_storage_metadata_length None
+         %27 = OpULessThan %bool %20 %26
+               OpSelectionMerge %29 None
+               OpBranchConditional %27 %30 %31
+         %30 = OpLabel
+         %49 = OpAccessChain %_ptr_StorageBuffer_uint %tint_resource_table_metadata %uint_1 %20
+         %51 = OpLoad %uint %49 None
+         %53 = OpCompositeConstruct %v2uint %51 %51
+         %54 = OpCompositeConstruct %v2uint %uint_40 %uint_41
+         %57 = OpIEqual %v2bool %53 %54
+         %33 = OpAny %bool %57
+               OpBranch %29
+         %31 = OpLabel
+               OpBranch %29
+         %29 = OpLabel
+         %32 = OpPhi %bool %33 %30 %false %31
+               OpSelectionMerge %35 None
+               OpBranchConditional %32 %36 %35
+         %36 = OpLabel
+         %59 = OpAccessChain %_ptr_StorageBuffer_uint_0 %1 %uint_0
+         %61 = OpLoad %uint %59 None
+         %62 = OpIAdd %uint %61 %uint_1
+         %63 = OpAccessChain %_ptr_StorageBuffer_uint_0 %1 %uint_0
+               OpStore %63 %62 None
+               OpBranch %35
+         %35 = OpLabel
+         %37 = OpBitcast %uint %int_1
+%tint_storage_metadata_length_0 = OpAccessChain %_ptr_StorageBuffer_uint %tint_resource_table_metadata %uint_0
+         %40 = OpLoad %uint %tint_storage_metadata_length_0 None
+         %41 = OpULessThan %bool %37 %40
+               OpSelectionMerge %42 None
+               OpBranchConditional %41 %43 %44
+         %43 = OpLabel
+         %64 = OpAccessChain %_ptr_StorageBuffer_uint %tint_resource_table_metadata %uint_1 %37
+         %65 = OpLoad %uint %64 None
+         %46 = OpIEqual %bool %65 %uint_42
+               OpBranch %42
+         %44 = OpLabel
+               OpBranch %42
+         %42 = OpLabel
+         %45 = OpPhi %bool %46 %43 %false %44
+               OpSelectionMerge %47 None
+               OpBranchConditional %45 %48 %47
+         %48 = OpLabel
+         %67 = OpAccessChain %_ptr_StorageBuffer_uint_0 %1 %uint_0
+         %68 = OpLoad %uint %67 None
+         %69 = OpIAdd %uint %68 %uint_1
+         %70 = OpAccessChain %_ptr_StorageBuffer_uint_0 %1 %uint_0
+               OpStore %70 %69 None
+               OpBranch %47
+         %47 = OpLabel
+               OpReturn
+               OpFunctionEnd

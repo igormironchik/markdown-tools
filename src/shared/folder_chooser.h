@@ -26,7 +26,7 @@ class FolderChooser : public QWidget
 {
     Q_OBJECT
 
-signals:
+Q_SIGNALS:
     /*!
      * Path choosed.
      */
@@ -55,7 +55,7 @@ public:
      */
     QString currentPath() const;
 
-public slots:
+public Q_SLOTS:
     /*!
      * Set new path.
      *
@@ -75,7 +75,7 @@ public slots:
      */
     void emulateClick(int idx);
 
-private slots:
+private Q_SLOTS:
     void onClicked(int idx);
     void updateFolders();
 

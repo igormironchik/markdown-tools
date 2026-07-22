@@ -30,7 +30,7 @@ public:
     void addLicense(const QString &title,
                     const QString &license);
 
-private slots:
+private Q_SLOTS:
     void anchorClicked();
 
 private:

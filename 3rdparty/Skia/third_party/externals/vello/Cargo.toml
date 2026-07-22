@@ -1,0 +1,58 @@
+[workspace]
+resolver = "2"
+members = [
+    "vello",
+    "vello_encoding",
+    "vello_shaders",
+    "vello_tests",
+
+    "examples/headless",
+    "examples/with_winit",
+    "examples/run_wasm",
+    "examples/scenes",
+    "examples/simple",
+]
+
+[workspace.package]
+# Vello version, also used by other packages which want to mimic Vello's version.
+# Right now those packages include vello_encoding and vello_shaders.
+#
+# NOTE: When bumping this, remember to also bump the aforementioned other packages'
+#       version in the dependencies section at the bottom of this file.
+#       Additionally, bump the Vello dependency version in the 'simple' example.
+version = "0.2.0"
+
+edition = "2021"
+# Keep in sync with RUST_MIN_VER in .github/workflows/ci.yml, with the relevant README.md files
+# and with the MSRV in the `Unreleased` section of CHANGELOG.md.
+rust-version = "1.75"
+license = "Apache-2.0 OR MIT"
+repository = "https://github.com/linebender/vello"
+
+[workspace.lints]
+clippy.doc_markdown = "warn"
+clippy.semicolon_if_nothing_returned = "warn"
+
+[workspace.dependencies]
+vello = { version = "0.2.0", path = "vello" }
+vello_encoding = { version = "0.2.0", path = "vello_encoding" }
+vello_shaders = { version = "0.2.0", path = "vello_shaders" }
+bytemuck = { version = "1.16.0", features = ["derive"] }
+skrifa = "0.19.3"
+peniko = "0.1.1"
+futures-intrusive = "0.5.0"
+raw-window-handle = "0.6.2"
+smallvec = "1.13.2"
+static_assertions = "1.1.0"
+thiserror = "1.0.61"
+
+# NOTE: Make sure to keep this in sync with the version badge in README.md and vello/README.md
+wgpu = { version = "0.20.0" }
+log = "0.4.21"
+
+# Used for examples
+clap = "4.5.4"
+anyhow = "1.0.86"
+pollster = "0.3.0"
+web-time = "1.1.0"
+wgpu-profiler = "0.17.0"

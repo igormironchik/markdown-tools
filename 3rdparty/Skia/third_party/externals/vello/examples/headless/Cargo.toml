@@ -1,0 +1,21 @@
+[package]
+name = "headless"
+description = "An example showing how to use Vello to create raster images."
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[lints]
+workspace = true
+
+[dependencies]
+vello = { workspace = true }
+scenes = { path = "../scenes" }
+anyhow = { workspace = true }
+clap = { workspace = true, features = ["derive"] }
+
+pollster = { workspace = true }
+env_logger = "0.11.3"
+png = "0.17.13"
+futures-intrusive = { workspace = true }

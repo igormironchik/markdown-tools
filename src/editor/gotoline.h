@@ -38,11 +38,11 @@ public:
     //! \return Line edit.
     QLineEdit *line() const;
 
-public slots:
+public Q_SLOTS:
     //! Set focus on line edit.
     void setFocusOnLine();
 
-private slots:
+private Q_SLOTS:
     void onEditingFinished();
     void onClose();
 

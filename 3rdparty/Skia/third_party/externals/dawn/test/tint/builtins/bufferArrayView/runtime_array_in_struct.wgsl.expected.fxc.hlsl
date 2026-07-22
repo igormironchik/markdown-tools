@@ -1,0 +1,12 @@
+
+RWByteAddressBuffer v : register(u0);
+[numthreads(1, 1, 1)]
+void main() {
+  uint v_1 = 0u;
+  v.GetDimensions(v_1);
+  bool v_2 = (v_1 < 64u);
+  uint v_3 = ((v_2) ? (0u) : (0u));
+  uint v_4 = (((((v_2) ? (20u) : (64u)) - 16u) / 4u) - 1u);
+  v.Store(((16u + (v_3 * 1u)) + (min(uint(int(4)), v_4) * 4u)), 4u);
+}
+

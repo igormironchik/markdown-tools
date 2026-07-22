@@ -22,7 +22,7 @@ void HtmlDocument::setText(const QString &text)
 
     m_text = text;
 
-    emit textChanged(m_text);
+    Q_EMIT textChanged(m_text);
 }
 
 } /* namespace MdEditor */

@@ -78,7 +78,7 @@ public:
     //! \return Ui.
     Ui::PluginsPage &ui();
 
-private slots:
+private Q_SLOTS:
     void onButtonStateChanged(int st);
     void onSupDelimChanged(const QString &);
     void onSubDelimChanged(const QString &);

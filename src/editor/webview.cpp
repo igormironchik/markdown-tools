@@ -116,7 +116,7 @@ void WebView::onScroll()
                               .arg(lastContextMenuRequest()->position().x())
                               .arg(lastContextMenuRequest()->position().y()),
                           [this](const QVariant &v) {
-                              emit this->scrollRequested(v.toString());
+                              Q_EMIT this->scrollRequested(v.toString());
                           });
 }
 

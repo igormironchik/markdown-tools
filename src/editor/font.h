@@ -34,7 +34,7 @@ public:
     //! Init UI with font.
     void initWithFont(const QFont &f);
 
-private slots:
+private Q_SLOTS:
     void onShowOnlyMonospaced(Qt::CheckState state);
 
 private:

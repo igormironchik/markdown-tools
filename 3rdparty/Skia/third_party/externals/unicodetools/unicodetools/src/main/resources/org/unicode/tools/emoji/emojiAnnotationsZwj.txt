@@ -1,0 +1,33 @@
+eye, speech, bubble, witness	👁‍🗨
+man, couple, man	👨‍❤️‍👨
+man, kiss, man	👨‍❤️‍💋‍👨
+family, man, man, boy	👨‍👨‍👦
+family, man, man, boy, boy	👨‍👨‍👦‍👦
+family, man, man, girl	👨‍👨‍👧
+family, man, man, girl, boy	👨‍👨‍👧‍👦
+family, man, man, girl, girl	👨‍👨‍👧‍👧
+family, man, woman, boy	👨‍👩‍👦
+family, man, woman, boy, boy	👨‍👩‍👦‍👦
+family, man, woman, girl	👨‍👩‍👧
+family, man, woman, girl, boy	👨‍👩‍👧‍👦
+family, man, woman, girl, girl	👨‍👩‍👧‍👧
+woman, couple, man	👩‍❤️‍👨
+woman, couple, woman	👩‍❤️‍👩
+woman, kiss, man	👩‍❤️‍💋‍👨
+woman, kiss, woman	👩‍❤️‍💋‍👩
+family, woman, woman, boy	👩‍👩‍👦
+family, woman, woman, boy, boy	👩‍👩‍👦‍👦
+family, woman, woman, girl	👩‍👩‍👧
+family, woman, woman, girl, boy	👩‍👩‍👧‍👦
+family, woman, woman, girl, girl	👩‍👩‍👧‍👧
+cook, chef, cooking		👩‍🍳 👨‍🍳
+industrial worker, assembly worker, factory worker, manufacturing	👩‍🏭 👨‍🏭
+farmer, farm worker, rancher, gardener, farming	👩‍🌾👨‍🌾
+healthcare professional, doctor, nurse, therapist,...	👩‍⚕ 👨‍⚕
+tradesperson, mechanic, plumber, electrician	👩‍🔧 👨‍🔧
+office worker, business person, financial analyst, manager, architect, white-collar worker	👩‍💼 👨‍💼
+scientist, technologist, STEM professional, chemist, physicist, biologist, mathematician	👩‍🔬 👨‍🔬
+singer, entertainer, rock star	👩‍🎤 👨‍🎤
+student	👩‍🎓👨‍🎓
+teacher, professor, instructor	👩‍🏫 👨‍🏫
+technology professional, coder, software developer, engineer, inventor	👩‍💻 👨‍💻

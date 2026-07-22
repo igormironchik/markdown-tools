@@ -37,7 +37,7 @@ bool TabBar::event(QEvent *e)
     const auto res = QTabBar::event(e);
 
     if (e->type() == QEvent::Shortcut && res) {
-        emit activated();
+        Q_EMIT activated();
     }
 
     return res;
@@ -60,7 +60,7 @@ TabWidget::TabWidget(QWidget *parent)
 void TabWidget::keyPressEvent(QKeyEvent *e)
 {
     if (e->key() == Qt::Key_Return) {
-        emit activated();
+        Q_EMIT activated();
     }
 
     QTabWidget::keyPressEvent(e);
@@ -70,7 +70,7 @@ void TabWidget::tabRemoved(int index)
 {
     QTabWidget::tabRemoved(index);
 
-    emit removed();
+    Q_EMIT removed();
 }
 
 //
@@ -100,7 +100,7 @@ void TocTreeView::contextMenuEvent(QContextMenuEvent *e)
                         ->m_id;
 
     menu.addAction(tr("Scroll Web Preview To"), [id, this]() {
-        emit this->scrollWebViewToRequested(id);
+        Q_EMIT this->scrollWebViewToRequested(id);
     });
 
     menu.exec(e->globalPos());
@@ -207,13 +207,13 @@ void WorkingDirectoryWidget::onPathChanged(const QString &path)
 
         setWorkingDirectory(path, false);
 
-        emit workingDirectoryChanged(path);
+        Q_EMIT workingDirectoryChanged(path);
     }
 }
 
 void WorkingDirectoryWidget::onUseWorkingDirChanged(Qt::CheckState)
 {
-    emit workingDirectoryChanged(m_currentPath);
+    Q_EMIT workingDirectoryChanged(m_currentPath);
 }
 
 } /* namespace MdEditor */

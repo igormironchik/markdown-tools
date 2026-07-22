@@ -1,0 +1,16 @@
+
+cbuffer cbuffer_S : register(b0) {
+  uint4 S[1];
+};
+float2 func(uint pointer_indices[1]) {
+  uint v = (pointer_indices[0u] * 8u);
+  uint4 v_1 = S[(v / 16u)];
+  return asfloat(select((((v & 15u) >> 2u) == 2u), v_1.zw, v_1.xy));
+}
+
+[numthreads(1, 1, 1)]
+void main() {
+  uint v_2[1] = {1u};
+  float2 r = func(v_2);
+}
+

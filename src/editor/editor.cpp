@@ -68,7 +68,7 @@ class DataParser : public QObject
 {
     Q_OBJECT
 
-signals:
+Q_SIGNALS:
     //! Signals about data available for parsing.
     void newData();
     //! Parsing is done.
@@ -94,7 +94,7 @@ public:
 
     ~DataParser() override = default;
 
-public slots:
+public Q_SLOTS:
     //! New data arrived.
     void onData(const QString &md,
                 const QString &path,
@@ -113,10 +113,10 @@ public slots:
         m_pluginsCfg = pluginsCfg;
         m_oldBlocks = blocks;
 
-        emit newData();
+        Q_EMIT newData();
     }
 
-private slots:
+private Q_SLOTS:
     //! Do parsing.
     void onParse()
     {
@@ -167,7 +167,7 @@ private slots:
                 diff = MdUtils::compareBlocks(m_oldBlocks->m_children, block->m_children);
             }
 
-            emit done(doc, m_counter, m_syntax, idsMap, itemsMap, block, diff);
+            Q_EMIT done(doc, m_counter, m_syntax, idsMap, itemsMap, block, diff);
         }
     }
 
@@ -1340,7 +1340,7 @@ void Editor::mouseReleaseEvent(QMouseEvent *event)
                                                                           m_d->m_underlinedLink.m_startLine}));
 
             if (link) {
-                emit linkClicked(link->url());
+                Q_EMIT linkClicked(link->url());
             }
         }
 
@@ -1762,7 +1762,7 @@ void LineNumberArea::setShadingArea(int top,
 {
     m_shadingArea = {top, bottom};
 
-    emit shadingAreaChanged();
+    Q_EMIT shadingAreaChanged();
 }
 
 const QPair<int,
@@ -1827,14 +1827,14 @@ void LineNumberArea::leaveEvent(QEvent *event)
 
     update();
 
-    emit hoverLeaved();
+    Q_EMIT hoverLeaved();
 
     event->ignore();
 }
 
 void LineNumberArea::contextMenuEvent(QContextMenuEvent *event)
 {
-    emit lineNumberContextMenuRequested(m_lineNumber, event->globalPos());
+    Q_EMIT lineNumberContextMenuRequested(m_lineNumber, event->globalPos());
 
     event->accept();
 }
@@ -1877,7 +1877,7 @@ void LineNumberArea::onHover(const QPoint &p)
     update();
 
     if (onNewLine) {
-        emit lineHovered(m_lineNumber, mapToGlobal(QPoint(width(), p.y())));
+        Q_EMIT lineHovered(m_lineNumber, mapToGlobal(QPoint(width(), p.y())));
     }
 }
 
@@ -2322,13 +2322,13 @@ void Editor::onContentChanged()
     m_d->m_isContentChangedByKey = m_d->m_keyPressed;
     m_d->m_keyPressed = false;
 
-    emit doParsing(md,
-                   (m_d->m_useWorkingDir ? m_d->m_workingDirectory : info.absolutePath()),
-                   info.fileName(),
-                   m_d->m_currentParsingCounter,
-                   m_d->m_syntax,
-                   m_d->m_settings.m_pluginsCfg,
-                   m_d->m_blockLines);
+    Q_EMIT doParsing(md,
+                     (m_d->m_useWorkingDir ? m_d->m_workingDirectory : info.absolutePath()),
+                     info.fileName(),
+                     m_d->m_currentParsingCounter,
+                     m_d->m_syntax,
+                     m_d->m_settings.m_pluginsCfg,
+                     m_d->m_blockLines);
 }
 
 bool operator!=(const QVector<MdUtils::BlockLines *> &b1,
@@ -2393,8 +2393,8 @@ void Editor::onParsingDone(QSharedPointer<MD::Document> doc,
             block = block.next();
         }
 
-        emit ready();
-        emit misspelled(syntaxHighlighter().hasMisspelled());
+        Q_EMIT ready();
+        Q_EMIT misspelled(syntaxHighlighter().hasMisspelled());
 
         viewport()->repaint();
         m_d->m_lineNumberArea->update();

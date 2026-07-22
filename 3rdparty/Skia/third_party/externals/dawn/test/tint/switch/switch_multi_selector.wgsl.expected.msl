@@ -1,0 +1,20 @@
+#include <metal_stdlib>
+using namespace metal;
+
+[[max_total_threads_per_threadgroup(1)]]
+kernel void a() {
+  int a_1 = 0;
+  switch(a_1) {
+    case 0:
+    case 2:
+    case 4:
+    {
+      break;
+    }
+    case 1:
+    default:
+    {
+      return;
+    }
+  }
+}

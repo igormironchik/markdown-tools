@@ -1,0 +1,125 @@
+#include <metal_stdlib>
+using namespace metal;
+
+struct SimParams {
+  /* 0x0000 */ float deltaT;
+  /* 0x0004 */ float rule1Distance;
+  /* 0x0008 */ float rule2Distance;
+  /* 0x000c */ float rule3Distance;
+  /* 0x0010 */ float rule1Scale;
+  /* 0x0014 */ float rule2Scale;
+  /* 0x0018 */ float rule3Scale;
+};
+
+template<typename T, size_t N>
+struct tint_array {
+  const constant T& operator[](size_t i) const constant { return elements[i]; }
+  device T& operator[](size_t i) device { return elements[i]; }
+  const device T& operator[](size_t i) const device { return elements[i]; }
+  thread T& operator[](size_t i) thread { return elements[i]; }
+  const thread T& operator[](size_t i) const thread { return elements[i]; }
+  threadgroup T& operator[](size_t i) threadgroup { return elements[i]; }
+  const threadgroup T& operator[](size_t i) const threadgroup { return elements[i]; }
+  T elements[N];
+};
+
+struct Particle {
+  float2 pos;
+  float2 vel;
+};
+
+struct Particles {
+  tint_array<Particle, 5> particles;
+};
+
+struct tint_arg_buffer_struct_0 {
+  const constant SimParams* params [[id(0)]];
+};
+
+struct tint_arg_buffer_struct_1 {
+  device Particles* particlesA [[id(0)]];
+};
+
+struct tint_arg_buffer_struct_2 {
+  device Particles* particlesB [[id(0)]];
+};
+
+void comp_main_inner(uint3 gl_GlobalInvocationID, const constant SimParams* const params, device Particles* const particlesA, device Particles* const particlesB) {
+  uint index = gl_GlobalInvocationID.x;
+  if ((index >= 5u)) {
+    return;
+  }
+  float2 vPos = (*particlesA).particles[min(index, 4u)].pos;
+  float2 vVel = (*particlesA).particles[min(index, 4u)].vel;
+  float2 cMass = float2(0.0f);
+  float2 cVel = float2(0.0f);
+  float2 colVel = float2(0.0f);
+  int cMassCount = 0;
+  int cVelCount = 0;
+  float2 pos = 0.0f;
+  float2 vel = 0.0f;
+  {
+    uint i = 0u;
+    while(true) {
+      if ((i < 5u)) {
+      } else {
+        break;
+      }
+      if ((i == index)) {
+        {
+          i = (i + 1u);
+        }
+        continue;
+      }
+      pos = (*particlesA).particles[i].pos.xy;
+      vel = (*particlesA).particles[i].vel.xy;
+      if ((distance(pos, vPos) < (*params).rule1Distance)) {
+        cMass = (cMass + pos);
+        cMassCount = as_type<int>((as_type<uint>(cMassCount) + as_type<uint>(1)));
+      }
+      if ((distance(pos, vPos) < (*params).rule2Distance)) {
+        colVel = (colVel - (pos - vPos));
+      }
+      if ((distance(pos, vPos) < (*params).rule3Distance)) {
+        cVel = (cVel + vel);
+        cVelCount = as_type<int>((as_type<uint>(cVelCount) + as_type<uint>(1)));
+      }
+      {
+        i = (i + 1u);
+      }
+    }
+  }
+  if ((cMassCount > 0)) {
+    float2 const v = cMass;
+    float const v_1 = float(cMassCount);
+    float2 const v_2 = (v / float2(v_1, float(cMassCount)));
+    cMass = (v_2 - vPos);
+  }
+  if ((cVelCount > 0)) {
+    float2 const v_3 = cVel;
+    float const v_4 = float(cVelCount);
+    cVel = (v_3 / float2(v_4, float(cVelCount)));
+  }
+  vVel = (((vVel + (cMass * (*params).rule1Scale)) + (colVel * (*params).rule2Scale)) + (cVel * (*params).rule3Scale));
+  vVel = (normalize(vVel) * clamp(length(vVel), 0.0f, 0.10000000149011611938f));
+  vPos = (vPos + (vVel * (*params).deltaT));
+  if ((vPos.x < -1.0f)) {
+    vPos.x = 1.0f;
+  }
+  if ((vPos.x > 1.0f)) {
+    vPos.x = -1.0f;
+  }
+  if ((vPos.y < -1.0f)) {
+    vPos.y = 1.0f;
+  }
+  if ((vPos.y > 1.0f)) {
+    vPos.y = -1.0f;
+  }
+  (*particlesB).particles[min(index, 4u)].pos = vPos;
+  (*particlesB).particles[min(index, 4u)].vel = vVel;
+}
+
+[[max_total_threads_per_threadgroup(1)]]
+kernel void comp_main(uint3 gl_GlobalInvocationID [[thread_position_in_grid]], const constant tint_arg_buffer_struct_0* tint_arg_buffer_0 [[buffer(20)]], const device tint_array<uint, 1>* tint_dynamic_offset_buffer_0 [[buffer(23)]], const constant tint_arg_buffer_struct_1* tint_arg_buffer_1 [[buffer(21)]], const constant tint_arg_buffer_struct_2* tint_arg_buffer_2 [[buffer(22)]]) {
+  (comp_main_inner(gl_GlobalInvocationID, reinterpret_cast<const constant SimParams*>(reinterpret_cast<const constant char*>((*tint_arg_buffer_0).params) + (*tint_dynamic_offset_buffer_0)[2u]), (*tint_arg_buffer_1).particlesA, (*tint_arg_buffer_2).particlesB));
+}

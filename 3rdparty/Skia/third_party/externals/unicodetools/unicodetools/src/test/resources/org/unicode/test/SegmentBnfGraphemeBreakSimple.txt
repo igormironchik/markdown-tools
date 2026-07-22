@@ -1,0 +1,21 @@
+$CR = \p{gcb=cr} ;
+$LF = \p{gcb=lf} ;
+$Control = \p{gcb=control} ;
+$Extend = \p{gcb=Extend} ;
+$RI = \p{gcb=ri} ;
+
+$Any = . ;
+
+cluster = crlf
+	| $Control
+	| core postcore* ;
+
+postcore = $Extend ;
+
+core = (?: ri-sequence | $Any );
+
+crlf = $CR $LF ;
+
+ri-sequence = $RI $RI ;
+
+

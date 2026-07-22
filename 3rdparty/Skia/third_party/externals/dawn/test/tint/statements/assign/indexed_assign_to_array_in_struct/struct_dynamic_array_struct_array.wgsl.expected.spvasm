@@ -1,0 +1,80 @@
+; SPIR-V
+; Version: 1.3
+; Generator: Google Tint Compiler; 1
+; Bound: 43
+; Schema: 0
+               OpCapability Shader
+         %37 = OpExtInstImport "GLSL.std.450"
+               OpMemoryModel Logical GLSL450
+               OpEntryPoint GLCompute %main "main"
+               OpExecutionMode %main LocalSize 1 1 1
+               OpMemberName %uniforms_block_tint_explicit_layout 0 "inner"
+               OpName %uniforms_block_tint_explicit_layout "uniforms_block_tint_explicit_layout"
+               OpMemberName %InnerS 0 "v"
+               OpName %InnerS "InnerS"
+               OpMemberName %S1_tint_explicit_layout 0 "a2"
+               OpName %S1_tint_explicit_layout "S1_tint_explicit_layout"
+               OpMemberName %OuterS_tint_explicit_layout 0 "a1"
+               OpName %OuterS_tint_explicit_layout "OuterS_tint_explicit_layout"
+               OpName %s "s"
+               OpName %main "main"
+               OpName %v "v"
+               OpDecorate %_arr_v4uint_uint_1 ArrayStride 16
+               OpMemberDecorate %uniforms_block_tint_explicit_layout 0 Offset 0
+               OpDecorate %uniforms_block_tint_explicit_layout Block
+               OpDecorate %1 DescriptorSet 1
+               OpDecorate %1 Binding 4
+               OpDecorate %1 NonWritable
+               OpMemberDecorate %InnerS 0 Offset 0
+               OpDecorate %_arr_InnerS_uint_8 ArrayStride 4
+               OpMemberDecorate %S1_tint_explicit_layout 0 Offset 0
+               OpDecorate %_runtimearr_S1_tint_explicit_layout ArrayStride 32
+               OpMemberDecorate %OuterS_tint_explicit_layout 0 Offset 0
+               OpDecorate %OuterS_tint_explicit_layout Block
+               OpDecorate %s DescriptorSet 0
+               OpDecorate %s Binding 0
+               OpDecorate %s Coherent
+       %uint = OpTypeInt 32 0
+     %v4uint = OpTypeVector %uint 4
+     %uint_1 = OpConstant %uint 1
+%_arr_v4uint_uint_1 = OpTypeArray %v4uint %uint_1
+%uniforms_block_tint_explicit_layout = OpTypeStruct %_arr_v4uint_uint_1
+%_ptr_Uniform_uniforms_block_tint_explicit_layout = OpTypePointer Uniform %uniforms_block_tint_explicit_layout
+          %1 = OpVariable %_ptr_Uniform_uniforms_block_tint_explicit_layout Uniform
+        %int = OpTypeInt 32 1
+     %InnerS = OpTypeStruct %int
+     %uint_8 = OpConstant %uint 8
+%_arr_InnerS_uint_8 = OpTypeArray %InnerS %uint_8
+%S1_tint_explicit_layout = OpTypeStruct %_arr_InnerS_uint_8
+%_runtimearr_S1_tint_explicit_layout = OpTypeRuntimeArray %S1_tint_explicit_layout
+%OuterS_tint_explicit_layout = OpTypeStruct %_runtimearr_S1_tint_explicit_layout
+%_ptr_StorageBuffer_OuterS_tint_explicit_layout = OpTypePointer StorageBuffer %OuterS_tint_explicit_layout
+          %s = OpVariable %_ptr_StorageBuffer_OuterS_tint_explicit_layout StorageBuffer
+       %void = OpTypeVoid
+         %19 = OpTypeFunction %void
+%_ptr_Function_InnerS = OpTypePointer Function %InnerS
+         %23 = OpConstantNull %InnerS
+%_ptr_Uniform_v4uint = OpTypePointer Uniform %v4uint
+     %uint_0 = OpConstant %uint 0
+%_ptr_StorageBuffer__runtimearr_S1_tint_explicit_layout = OpTypePointer StorageBuffer %_runtimearr_S1_tint_explicit_layout
+     %uint_7 = OpConstant %uint 7
+%_ptr_StorageBuffer_InnerS = OpTypePointer StorageBuffer %InnerS
+       %main = OpFunction %void None %19
+         %20 = OpLabel
+          %v = OpVariable %_ptr_Function_InnerS Function %23
+         %24 = OpAccessChain %_ptr_Uniform_v4uint %1 %uint_0 %uint_0
+         %27 = OpLoad %v4uint %24 None
+         %28 = OpCompositeExtract %uint %27 0
+         %29 = OpAccessChain %_ptr_Uniform_v4uint %1 %uint_0 %uint_0
+         %30 = OpLoad %v4uint %29 None
+         %31 = OpCompositeExtract %uint %30 1
+         %32 = OpAccessChain %_ptr_StorageBuffer__runtimearr_S1_tint_explicit_layout %s %uint_0
+         %34 = OpArrayLength %uint %s 0
+         %35 = OpISub %uint %34 %uint_1
+         %36 = OpExtInst %uint %37 UMin %28 %35
+         %38 = OpExtInst %uint %37 UMin %31 %uint_7
+         %40 = OpAccessChain %_ptr_StorageBuffer_InnerS %s %uint_0 %36 %uint_0 %38
+         %42 = OpLoad %InnerS %v None
+               OpStore %40 %42 None
+               OpReturn
+               OpFunctionEnd

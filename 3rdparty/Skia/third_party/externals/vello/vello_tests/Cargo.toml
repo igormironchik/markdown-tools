@@ -1,0 +1,18 @@
+[package]
+name = "vello_tests"
+description = "Integration tests for Vello."
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[lints]
+workspace = true
+
+[dependencies]
+vello = { workspace = true }
+anyhow = { workspace = true }
+
+pollster = { workspace = true }
+png = "0.17.13"
+futures-intrusive = { workspace = true }

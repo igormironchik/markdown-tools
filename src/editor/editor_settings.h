@@ -29,7 +29,7 @@ public:
 
     Ui::EditorSettingsPage &ui();
 
-private slots:
+private Q_SLOTS:
     void onEnableRightMargin(Qt::CheckState st);
     void onIndentModeChanged(int index);
 

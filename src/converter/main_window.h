@@ -54,11 +54,7 @@ public:
     //! Set mark color.
     void setMarkColor(const QColor &c);
 
-protected:
-    void onStyleChangeBegin();
-    void onStyleChangeEnd();
-
-private slots:
+private Q_SLOTS:
     void linkColorChanged(const QColor &c);
     void borderColorChanged(const QColor &c);
     void selectMarkdown();
@@ -66,11 +62,6 @@ private slots:
     void codeFontSizeChanged(int i);
     void textFontSizeChanged(int i);
     void mmButtonToggled(bool on);
-    void textFontChanged(const QFont &f);
-    void codeFontChanged(const QFont &f);
-
-private:
-    void changeStateOfStartButton();
 
 protected:
     void showEvent(QShowEvent *event) override;
@@ -80,8 +71,6 @@ private:
 
     QScopedPointer<Ui::MainWindow> m_ui;
     QThread *m_thread;
-    bool m_textFontOk;
-    bool m_codeFontOk;
     QSharedPointer<MdShared::Syntax> m_syntax;
     bool m_alreadyShown = false;
     MdShared::PluginsCfg m_pluginsCfg;
@@ -111,7 +100,7 @@ protected:
     void showEvent(QShowEvent *event) override;
     bool event(QEvent *event) override;
 
-private slots:
+private Q_SLOTS:
     //! About.
     void about();
     //! About Qt.

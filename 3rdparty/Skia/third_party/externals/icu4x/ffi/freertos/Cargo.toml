@@ -1,0 +1,49 @@
+# This file is part of ICU4X. For terms of use, please see the file
+# called LICENSE at the top level of the ICU4X source tree
+# (online at: https://github.com/unicode-org/icu4x/blob/main/LICENSE ).
+
+[package]
+name = "icu_freertos"
+description = "C interface to ICU4X"
+license-file = "LICENSE"
+include = [
+    "build.rs",
+    "src/**/*",
+    "examples/**/*",
+    "benches/**/*",
+    "tests/**/*",
+    "include/**/*",
+    "Cargo.toml",
+    "LICENSE",
+    "README.md"
+]
+
+authors.workspace = true
+categories.workspace = true
+edition.workspace = true
+homepage.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+
+[package.metadata.docs.rs]
+all-features = true
+
+[lib]
+crate-type = ["staticlib", "rlib"]
+path = "src/lib.rs"
+
+[dependencies]
+icu_capi = { workspace = true }
+
+[target.'cfg(target_os = "none")'.dependencies]
+cortex-m = "0.7.3"
+freertos-rust = "0.1.2"
+
+[features]
+# Currently we don't enable anything here as WearOS loads data manually, but the feature remains for future use
+wearos = []
+default = ["icu_capi/default_components"]
+
+[build-dependencies]
+rustc_version = "0.4"

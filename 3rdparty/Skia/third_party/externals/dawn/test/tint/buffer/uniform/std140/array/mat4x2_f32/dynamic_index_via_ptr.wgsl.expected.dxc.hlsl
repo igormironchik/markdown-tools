@@ -1,0 +1,56 @@
+
+cbuffer cbuffer_a : register(b0) {
+  uint4 a[8];
+};
+RWByteAddressBuffer s : register(u1);
+static int counter = int(0);
+int i() {
+  counter = asint((asuint(counter) + asuint(int(1))));
+  return counter;
+}
+
+float4x2 v(uint start_byte_offset) {
+  uint4 v_1 = a[(start_byte_offset / 16u)];
+  uint v_2 = (8u + start_byte_offset);
+  uint4 v_3 = a[(v_2 / 16u)];
+  uint v_4 = (16u + start_byte_offset);
+  uint4 v_5 = a[(v_4 / 16u)];
+  uint v_6 = (24u + start_byte_offset);
+  uint4 v_7 = a[(v_6 / 16u)];
+  return float4x2(asfloat(select((((start_byte_offset & 15u) >> 2u) == 2u), v_1.zw, v_1.xy)), asfloat(select((((v_2 & 15u) >> 2u) == 2u), v_3.zw, v_3.xy)), asfloat(select((((v_4 & 15u) >> 2u) == 2u), v_5.zw, v_5.xy)), asfloat(select((((v_6 & 15u) >> 2u) == 2u), v_7.zw, v_7.xy)));
+}
+
+typedef float4x2 ary_ret[4];
+ary_ret v_8(uint start_byte_offset) {
+  float4x2 a_1[4] = (float4x2[4])0;
+  {
+    uint v_9 = 0u;
+    v_9 = 0u;
+    while(true) {
+      uint v_10 = v_9;
+      if ((v_10 >= 4u)) {
+        break;
+      }
+      a_1[v_10] = v((start_byte_offset + (v_10 * 32u)));
+      {
+        v_9 = (v_10 + 1u);
+      }
+    }
+  }
+  float4x2 v_11[4] = a_1;
+  return v_11;
+}
+
+[numthreads(1, 1, 1)]
+void f() {
+  uint v_12 = (min(uint(i()), 3u) * 32u);
+  uint v_13 = (min(uint(i()), 3u) * 8u);
+  float4x2 l_a[4] = v_8(0u);
+  float4x2 l_a_i = v(v_12);
+  uint v_14 = (v_12 + v_13);
+  uint4 v_15 = a[(v_14 / 16u)];
+  float2 l_a_i_i = asfloat(select((((v_14 & 15u) >> 2u) == 2u), v_15.zw, v_15.xy));
+  uint v_16 = (v_12 + v_13);
+  s.Store(0u, asuint((((asfloat(a[(v_16 / 16u)][((v_16 & 15u) >> 2u)]) + l_a[0u][0u].x) + l_a_i[0u].x) + l_a_i_i.x)));
+}
+

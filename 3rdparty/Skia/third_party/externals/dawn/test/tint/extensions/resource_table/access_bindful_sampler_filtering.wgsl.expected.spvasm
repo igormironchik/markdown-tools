@@ -1,0 +1,144 @@
+; SPIR-V
+; Version: 1.3
+; Generator: Google Tint Compiler; 1
+; Bound: 85
+; Schema: 0
+               OpCapability Shader
+               OpCapability RuntimeDescriptorArray
+               OpExtension "SPV_EXT_descriptor_indexing"
+               OpMemoryModel Logical GLSL450
+               OpEntryPoint Fragment %fs "fs" %fs_loc0_Output
+               OpExecutionMode %fs OriginUpperLeft
+               OpName %s "s"
+               OpMemberName %tint_resource_table_metadata_struct_tint_explicit_layout 0 "array_length"
+               OpMemberName %tint_resource_table_metadata_struct_tint_explicit_layout 1 "bindings"
+               OpName %tint_resource_table_metadata_struct_tint_explicit_layout "tint_resource_table_metadata_struct_tint_explicit_layout"
+               OpName %tint_resource_table_metadata "tint_resource_table_metadata"
+               OpName %fs_loc0_Output "fs_loc0_Output"
+               OpName %fs_inner "fs_inner"
+               OpName %tint_storage_metadata_length "tint_storage_metadata_length"
+               OpName %has_resource "has_resource"
+               OpName %texture_kind "texture_kind"
+               OpName %item_idx "item_idx"
+               OpName %fs "fs"
+               OpDecorate %s DescriptorSet 0
+               OpDecorate %s Binding 0
+               OpDecorate %4 DescriptorSet 43
+               OpDecorate %4 Binding 51
+               OpDecorate %9 DescriptorSet 43
+               OpDecorate %9 Binding 51
+               OpDecorate %12 DescriptorSet 43
+               OpDecorate %12 Binding 51
+               OpMemberDecorate %tint_resource_table_metadata_struct_tint_explicit_layout 0 Offset 0
+               OpDecorate %_runtimearr_uint ArrayStride 4
+               OpMemberDecorate %tint_resource_table_metadata_struct_tint_explicit_layout 1 Offset 4
+               OpDecorate %tint_resource_table_metadata_struct_tint_explicit_layout Block
+               OpDecorate %tint_resource_table_metadata DescriptorSet 42
+               OpDecorate %tint_resource_table_metadata Binding 52
+               OpDecorate %tint_resource_table_metadata NonWritable
+               OpDecorate %fs_loc0_Output Location 0
+          %3 = OpTypeSampler
+%_ptr_UniformConstant_3 = OpTypePointer UniformConstant %3
+          %s = OpVariable %_ptr_UniformConstant_3 UniformConstant
+      %float = OpTypeFloat 32
+          %7 = OpTypeImage %float 2D 0 0 0 1 Unknown
+%_runtimearr_7 = OpTypeRuntimeArray %7
+%_ptr_UniformConstant__runtimearr_7 = OpTypePointer UniformConstant %_runtimearr_7
+          %4 = OpVariable %_ptr_UniformConstant__runtimearr_7 UniformConstant
+%_runtimearr_7_0 = OpTypeRuntimeArray %7
+%_ptr_UniformConstant__runtimearr_7_0 = OpTypePointer UniformConstant %_runtimearr_7_0
+          %9 = OpVariable %_ptr_UniformConstant__runtimearr_7_0 UniformConstant
+%_runtimearr_3 = OpTypeRuntimeArray %3
+%_ptr_UniformConstant__runtimearr_3 = OpTypePointer UniformConstant %_runtimearr_3
+         %12 = OpVariable %_ptr_UniformConstant__runtimearr_3 UniformConstant
+       %uint = OpTypeInt 32 0
+%_runtimearr_uint = OpTypeRuntimeArray %uint
+%tint_resource_table_metadata_struct_tint_explicit_layout = OpTypeStruct %uint %_runtimearr_uint
+%_ptr_StorageBuffer_tint_resource_table_metadata_struct_tint_explicit_layout = OpTypePointer StorageBuffer %tint_resource_table_metadata_struct_tint_explicit_layout
+%tint_resource_table_metadata = OpVariable %_ptr_StorageBuffer_tint_resource_table_metadata_struct_tint_explicit_layout StorageBuffer
+    %v4float = OpTypeVector %float 4
+%_ptr_Output_v4float = OpTypePointer Output %v4float
+%fs_loc0_Output = OpVariable %_ptr_Output_v4float Output
+         %24 = OpTypeFunction %v4float
+        %int = OpTypeInt 32 1
+      %int_0 = OpConstant %int 0
+%_ptr_StorageBuffer_uint = OpTypePointer StorageBuffer %uint
+     %uint_0 = OpConstant %uint 0
+       %bool = OpTypeBool
+      %false = OpConstantFalse %bool
+     %uint_6 = OpConstant %uint 6
+%_ptr_UniformConstant_7 = OpTypePointer UniformConstant %7
+         %62 = OpConstantNull %v4float
+     %uint_1 = OpConstant %uint 1
+     %v3uint = OpTypeVector %uint 3
+     %uint_7 = OpConstant %uint 7
+    %uint_34 = OpConstant %uint 34
+     %v3bool = OpTypeVector %bool 3
+         %77 = OpTypeSampledImage %7
+    %v2float = OpTypeVector %float 2
+         %78 = OpConstantNull %v2float
+       %void = OpTypeVoid
+         %82 = OpTypeFunction %void
+   %fs_inner = OpFunction %v4float None %24
+         %25 = OpLabel
+         %26 = OpBitcast %uint %int_0
+         %29 = OpLoad %3 %s None
+%tint_storage_metadata_length = OpAccessChain %_ptr_StorageBuffer_uint %tint_resource_table_metadata %uint_0
+         %33 = OpLoad %uint %tint_storage_metadata_length None
+         %34 = OpULessThan %bool %26 %33
+               OpSelectionMerge %36 None
+               OpBranchConditional %34 %37 %38
+         %37 = OpLabel
+         %63 = OpAccessChain %_ptr_StorageBuffer_uint %tint_resource_table_metadata %uint_1 %26
+         %65 = OpLoad %uint %63 None
+         %67 = OpCompositeConstruct %v3uint %65 %65 %65
+         %68 = OpCompositeConstruct %v3uint %uint_6 %uint_7 %uint_34
+         %71 = OpIEqual %v3bool %67 %68
+         %40 = OpAny %bool %71
+               OpBranch %36
+         %38 = OpLabel
+               OpBranch %36
+         %36 = OpLabel
+%has_resource = OpPhi %bool %40 %37 %false %38
+               OpSelectionMerge %42 None
+               OpBranchConditional %has_resource %43 %44
+         %43 = OpLabel
+         %73 = OpAccessChain %_ptr_StorageBuffer_uint %tint_resource_table_metadata %uint_1 %26
+         %46 = OpLoad %uint %73 None
+               OpBranch %42
+         %44 = OpLabel
+               OpBranch %42
+         %42 = OpLabel
+%texture_kind = OpPhi %uint %46 %43 %uint_6 %44
+               OpSelectionMerge %48 None
+               OpBranchConditional %has_resource %49 %50
+         %49 = OpLabel
+               OpBranch %48
+         %50 = OpLabel
+         %74 = OpAccessChain %_ptr_StorageBuffer_uint %tint_resource_table_metadata %uint_0
+         %75 = OpLoad %uint %74 None
+         %52 = OpIAdd %uint %uint_0 %75
+               OpBranch %48
+         %48 = OpLabel
+   %item_idx = OpPhi %uint %26 %49 %52 %50
+         %53 = OpAccessChain %_ptr_UniformConstant_7 %4 %item_idx
+         %55 = OpLoad %7 %53 None
+         %56 = OpIEqual %bool %texture_kind %uint_6
+               OpSelectionMerge %57 None
+               OpBranchConditional %56 %58 %59
+         %58 = OpLabel
+         %76 = OpSampledImage %77 %55 %29
+         %61 = OpImageSampleImplicitLod %v4float %76 %78 None
+               OpBranch %57
+         %59 = OpLabel
+               OpBranch %57
+         %57 = OpLabel
+         %60 = OpPhi %v4float %61 %58 %62 %59
+               OpReturnValue %60
+               OpFunctionEnd
+         %fs = OpFunction %void None %82
+         %83 = OpLabel
+         %84 = OpFunctionCall %v4float %fs_inner
+               OpStore %fs_loc0_Output %84 None
+               OpReturn
+               OpFunctionEnd

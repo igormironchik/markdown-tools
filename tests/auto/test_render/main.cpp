@@ -35,7 +35,7 @@ class TestRender final : public QObject
 {
     Q_OBJECT
 
-private slots:
+private Q_SLOTS:
     //! Init tests.
     void initTestCase();
     //! Test footnotes rendering.

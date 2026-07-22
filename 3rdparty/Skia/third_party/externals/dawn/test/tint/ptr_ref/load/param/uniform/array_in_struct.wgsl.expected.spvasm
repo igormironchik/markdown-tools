@@ -1,0 +1,89 @@
+; SPIR-V
+; Version: 1.3
+; Generator: Google Tint Compiler; 1
+; Bound: 51
+; Schema: 0
+               OpCapability Shader
+               OpMemoryModel Logical GLSL450
+               OpEntryPoint GLCompute %main "main"
+               OpExecutionMode %main LocalSize 1 1 1
+               OpMemberName %S_block_tint_explicit_layout 0 "inner"
+               OpName %S_block_tint_explicit_layout "S_block_tint_explicit_layout"
+               OpName %func "func"
+               OpName %main "main"
+               OpName %r "r"
+               OpName %start_byte_offset "start_byte_offset"
+               OpName %a "a"
+               OpDecorate %_arr_v4uint_uint_4 ArrayStride 16
+               OpMemberDecorate %S_block_tint_explicit_layout 0 Offset 0
+               OpDecorate %S_block_tint_explicit_layout Block
+               OpDecorate %1 DescriptorSet 0
+               OpDecorate %1 Binding 0
+               OpDecorate %1 NonWritable
+       %uint = OpTypeInt 32 0
+     %v4uint = OpTypeVector %uint 4
+     %uint_4 = OpConstant %uint 4
+%_arr_v4uint_uint_4 = OpTypeArray %v4uint %uint_4
+%S_block_tint_explicit_layout = OpTypeStruct %_arr_v4uint_uint_4
+%_ptr_Uniform_S_block_tint_explicit_layout = OpTypePointer Uniform %S_block_tint_explicit_layout
+          %1 = OpVariable %_ptr_Uniform_S_block_tint_explicit_layout Uniform
+        %int = OpTypeInt 32 1
+      %v4int = OpTypeVector %int 4
+%_arr_v4int_uint_4 = OpTypeArray %v4int %uint_4
+         %12 = OpTypeFunction %_arr_v4int_uint_4
+     %uint_0 = OpConstant %uint 0
+       %void = OpTypeVoid
+         %19 = OpTypeFunction %void
+         %23 = OpTypeFunction %_arr_v4int_uint_4 %uint
+%_ptr_Function__arr_v4int_uint_4 = OpTypePointer Function %_arr_v4int_uint_4
+         %27 = OpConstantNull %_arr_v4int_uint_4
+       %bool = OpTypeBool
+    %uint_16 = OpConstant %uint 16
+%_ptr_Function_v4int = OpTypePointer Function %v4int
+%_ptr_Uniform_v4uint = OpTypePointer Uniform %v4uint
+     %uint_1 = OpConstant %uint 1
+       %func = OpFunction %_arr_v4int_uint_4 None %12
+         %13 = OpLabel
+         %14 = OpFunctionCall %_arr_v4int_uint_4 %15 %uint_0
+               OpReturnValue %14
+               OpFunctionEnd
+       %main = OpFunction %void None %19
+         %20 = OpLabel
+          %r = OpFunctionCall %_arr_v4int_uint_4 %func
+               OpReturn
+               OpFunctionEnd
+         %15 = OpFunction %_arr_v4int_uint_4 None %23
+%start_byte_offset = OpFunctionParameter %uint
+         %24 = OpLabel
+          %a = OpVariable %_ptr_Function__arr_v4int_uint_4 Function
+               OpStore %a %27
+               OpBranch %28
+         %28 = OpLabel
+               OpBranch %31
+         %31 = OpLabel
+         %33 = OpPhi %uint %uint_0 %28 %34 %30
+               OpLoopMerge %32 %30 None
+               OpBranch %29
+         %29 = OpLabel
+         %36 = OpUGreaterThanEqual %bool %33 %uint_4
+               OpSelectionMerge %38 None
+               OpBranchConditional %36 %39 %38
+         %39 = OpLabel
+               OpBranch %32
+         %38 = OpLabel
+         %40 = OpIMul %uint %33 %uint_16
+         %42 = OpIAdd %uint %start_byte_offset %40
+         %43 = OpAccessChain %_ptr_Function_v4int %a %33
+         %45 = OpUDiv %uint %42 %uint_16
+         %46 = OpAccessChain %_ptr_Uniform_v4uint %1 %uint_0 %45
+         %48 = OpLoad %v4uint %46 None
+         %49 = OpBitcast %v4int %48
+               OpStore %43 %49 None
+               OpBranch %30
+         %30 = OpLabel
+         %34 = OpIAdd %uint %33 %uint_1
+               OpBranch %31
+         %32 = OpLabel
+         %35 = OpLoad %_arr_v4int_uint_4 %a None
+               OpReturnValue %35
+               OpFunctionEnd
