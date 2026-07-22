@@ -717,9 +717,9 @@ void MainWindow::licenses()
 {
     MdShared::LicenseDialog msg(this);
     msg.addLicense(s_oxygenName, s_oxygenLicense);
-    msg.addLicense(s_podofoName, s_podofoLicense);
+    msg.addLicense(s_skiaName, s_skiaLicense);
     msg.addLicense(s_ksyntaxHighlightingName, s_ksyntaxHighlightingLicense);
-    msg.addLicense(s_resvgName, s_resvgLicense);
+    msg.addLicense(s_zlibName, s_zlibLicense);
     msg.addLicense(s_microtexName, s_microtexLicense);
     msg.addLicense(s_md4qtName, s_md4qtLicense);
     msg.addLicense(s_kwidgetsaddonsName, s_kwidgetsaddonsLicense);

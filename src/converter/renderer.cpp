@@ -3220,9 +3220,7 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
             // y - is a top of a line.
             tex::Graphics2D_qt g2(&p);
 
-            render->draw(g2,
-                         pdfData.m_layout.startX(size.width() * imgScale),
-                         pdfData.m_layout.y());
+            render->draw(g2, pdfData.m_layout.startX(size.width() * imgScale), pdfData.m_layout.y());
 
             const RectF r = {pdfData.m_layout.startX(size.width() * imgScale),
                              pdfData.m_layout.y() + size.height() * imgScale,

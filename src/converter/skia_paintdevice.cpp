@@ -246,12 +246,7 @@ void SkiaPaintEngine::drawPath(const QPainterPath &path)
 
                 end = {e.x, e.y};
 
-                p.cubicTo(e.x,
-                          e.y,
-                          pp1.x(),
-                          pp1.y(),
-                          pp2.x(),
-                          pp2.y());
+                p.cubicTo(e.x, e.y, pp1.x(), pp1.y(), pp2.x(), pp2.y());
 
                 i += 2;
             } break;
@@ -310,7 +305,6 @@ inline SkRect qRectFtoSkia(const QRectF &r)
                             static_cast<float>(r.right()),
                             static_cast<float>(r.bottom()));
 }
-
 
 void SkiaPaintEngine::drawRects(const QRectF *rects,
                                 int rectCount)
@@ -449,24 +443,31 @@ SkiaPaintEngine::qFontToSkia(const QFont &f)
 
         const auto fileName = d->m_pdfData.m_fontsCache[path]->fileName();
 
-        return {SkFont(d->m_pdfData.m_fontMgr->makeFromFile(fileName.toLocal8Bit().constData()), f.pointSize()), f.pointSize()};
+        return {SkFont(d->m_pdfData.m_fontMgr->makeFromFile(fileName.toLocal8Bit().constData()), f.pointSize()),
+                f.pointSize()};
     } else {
         SkFontStyle::Slant slant = f.italic() ? SkFontStyle::kItalic_Slant : SkFontStyle::kUpright_Slant;
         int weight = f.bold() ? SkFontStyle::kBold_Weight : SkFontStyle::kNormal_Weight;
 
         SkFontStyle style(weight, SkFontStyle::kNormal_Width, slant);
 
-        return {SkFont(d->m_pdfData.m_fontMgr->matchFamilyStyle(f.family().toLocal8Bit().data(), style), f.pointSize()), f.pointSize()};
+        return {SkFont(d->m_pdfData.m_fontMgr->matchFamilyStyle(f.family().toLocal8Bit().data(), style), f.pointSize()),
+                f.pointSize()};
     }
 }
 
-SkMatrix convertQTransformToSkMatrix(const QTransform& qTransform) {
+SkMatrix convertQTransformToSkMatrix(const QTransform &qTransform)
+{
     SkMatrix skMatrix;
-    skMatrix.setAll(
-            qTransform.m11(),  qTransform.m21(),  qTransform.m31(),
-            qTransform.m12(),  qTransform.m22(),  qTransform.m32(),
-            qTransform.m13(),  qTransform.m23(),  qTransform.m33()
-        );
+    skMatrix.setAll(qTransform.m11(),
+                    qTransform.m21(),
+                    qTransform.m31(),
+                    qTransform.m12(),
+                    qTransform.m22(),
+                    qTransform.m32(),
+                    qTransform.m13(),
+                    qTransform.m23(),
+                    qTransform.m33());
 
     return skMatrix;
 }
