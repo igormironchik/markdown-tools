@@ -22,7 +22,7 @@ SPDX-FileCopyrightText = "2004 Zack Rusin <zack@kde.org>, 2009 Jakub Stachowski 
 SPDX-License-Identifier = "LGPL-2.1-or-later"
 
 [[annotations]]
-path = ["tests/auto/test_render/**.data", "tests/manual/**", "doc/**.png", "doc/**.gif", "src/shared/icon.ico", "src/converter/md-pdf.rc", "src/editor/md-editor.rc", "src/converter/resources.qrc", "src/editor/resources.qrc", "README.md", "roadmap.md", ".gitignore", "src/editor/**.ui", "src/converter/**.ui", "src/shared/**.ui", ".github/**", ".gitmodules", ".gitattributes", "conanfile.py", "codecov.yml", "installer/**", "script/**", "src/converter/svg/**", "REUSE.toml", "src/editor/res/index.html", "3rdparty/resvg.version", "config.xml.in", "package.xml.in", "doc/Doxyfile", "src/shared/tr/*.qm", "translate/*.ts", "markdown-tools.desktop", "apply-clang-format.sh"]
+path = ["tests/auto/test_render/**.data", "tests/manual/**", "doc/**.png", "doc/**.gif", "src/shared/icon.ico", "src/converter/md-pdf.rc", "src/editor/md-editor.rc", "src/converter/resources.qrc", "src/editor/resources.qrc", "README.md", ".gitignore", "src/editor/**.ui", "src/converter/**.ui", "src/shared/**.ui", ".github/**", ".gitmodules", ".gitattributes", "conanfile.py", "codecov.yml", "installer/**", "script/**", "src/converter/svg/**", "REUSE.toml", "src/editor/res/index.html", "config.xml.in", "package.xml.in", "doc/Doxyfile", "src/shared/tr/*.qm", "translate/*.ts", "markdown-tools.desktop", "apply-clang-format.sh"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2026 Igor Mironchik <igor.mironchik@gmail.com>"
 SPDX-License-Identifier = "GPL-3.0-or-later"
@@ -82,48 +82,6 @@ SPDX-FileCopyrightText = "2007 Nuno Pinheiro <nuno@oxygen-icons.org>, 2007 David
 SPDX-License-Identifier = "LGPL-3.0-or-later"
 
 [[annotations]]
-path = "3rdparty/podofo/**"
-precedence = "aggregate"
-SPDX-FileCopyrightText = "2006 Dominik Seichter <domseichter@web.de>, 2021 Francesco Pretto <ceztko@gmail.com>"
-SPDX-License-Identifier = "LGPL-2.0-or-later"
-
-[[annotations]]
-path = "3rdparty/podofo/3rdparty/numerics/**"
-precedence = "aggregate"
-SPDX-FileCopyrightText = "2012 The Chromium Authors"
-SPDX-License-Identifier = "BSD-3-Clause"
-
-[[annotations]]
-path = "3rdparty/podofo/3rdparty/date/**"
-precedence = "aggregate"
-SPDX-FileCopyrightText = "2015, 2016, 2017 Howard Hinnant, 2016 Adrian Colomitchi, 2017 Florian Dang, 2017 Paul Thompson, 2018, 2019 Tomasz Kamiński, 2019 Jiangang Zhuang"
-SPDX-License-Identifier = "MIT"
-
-[[annotations]]
-path = "3rdparty/podofo/3rdparty/fmt/**"
-precedence = "aggregate"
-SPDX-FileCopyrightText = "2012-present Victor Zverovich"
-SPDX-License-Identifier = "MIT"
-
-[[annotations]]
-path = "3rdparty/podofo/3rdparty/pdfium/**"
-precedence = "aggregate"
-SPDX-FileCopyrightText = "2014 The PDFium Authors"
-SPDX-License-Identifier = "BSD-3-Clause"
-
-[[annotations]]
-path = "3rdparty/podofo/3rdparty/utf8cpp/**"
-precedence = "aggregate"
-SPDX-FileCopyrightText = "2006 Nemanja Trifunovic"
-SPDX-License-Identifier = "BSL-1.0"
-
-[[annotations]]
-path = "3rdparty/podofo/3rdparty/fast_float.h"
-precedence = "aggregate"
-SPDX-FileCopyrightText = "Daniel Lemire, João Paulo Magalhaes, Eugene Golushkov, Maksim Kita, Marcin Wojdyr, Neal Richardson, Tim Paine, Fabio Pellacini"
-SPDX-License-Identifier = "MIT"
-
-[[annotations]]
 path = "src/shared/img/Qt-logo-neon-transparent.png"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2023 The Qt Company Ltd and other contributors"
@@ -148,7 +106,295 @@ SPDX-FileCopyrightText = "2024 Ivan Stanevich, 2026 Igor Mironchik <igor.mironch
 SPDX-License-Identifier = "MIT"
 
 [[annotations]]
-path = "3rdparty/resvg-*"
+path = "3rdparty/Skia/**"
 precedence = "aggregate"
-SPDX-FileCopyrightText = "2017 the Resvg Authors"
+SPDX-FileCopyrightText = "2011 Google Inc."
+SPDX-License-Identifier = "BSD-3-Clause"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/abseil-cpp/**"
+precedence = "override"
+SPDX-FileCopyrightText = "Google Inc."
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/angle2/**"
+precedence = "override"
+SPDX-FileCopyrightText = "Google Inc."
+SPDX-License-Identifier = "BSD-3-Clause"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/brotli/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2009, 2010, 2013-2016 by the Brotli Authors"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/d3d12allocator/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2019-2020 Advanced Micro Devices, Inc."
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/dawn/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2017-2026 The Dawn & Tint Authors"
+SPDX-License-Identifier = "BSD-3-Clause"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/delaunator-cpp/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2018 Volodymyr Bilonenko"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/dng_sdk/**"
+precedence = "override"
+SPDX-FileCopyrightText = "Adobe Systems Incorporated"
+SPDX-License-Identifier = "LicenseRef-Adobe-DNG-SDK"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/egl-registry/**"
+precedence = "override"
+SPDX-FileCopyrightText = "The Khronos Group Inc."
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/emsdk/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2018 Emscripten authors"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/expat/**"
+precedence = "override"
+SPDX-FileCopyrightText = "1998-2000 Thai Open Source Software Center Ltd and Clark Cooper, 2001-2025 Expat maintainers"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/freetype/**"
+precedence = "override"
+SPDX-FileCopyrightText = "Freetype authors"
+SPDX-License-Identifier = "GPL-2.0-or-later"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/glslang/**"
+precedence = "override"
+SPDX-FileCopyrightText = "glslang authors"
+SPDX-License-Identifier = "BSD-3-Clause AND GPL-3.0-or-later AND MIT AND Apache-2.0"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/harfbuzz/**"
+precedence = "override"
+SPDX-FileCopyrightText = "harfbuzz authors"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/highway/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2019 Google LLC"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/icu/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2016-2025 Unicode, Inc."
+SPDX-License-Identifier = "Unicode-3.0"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/icu4x/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2016-2025 Unicode, Inc."
+SPDX-License-Identifier = "Unicode-3.0"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/imgui/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2014-2021 Omar Cornut"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/jinja2/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2007 Pallets"
+SPDX-License-Identifier = "BSD-3-Clause"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/libavif/**"
+precedence = "override"
+SPDX-FileCopyrightText = "libavif authors"
+SPDX-License-Identifier = "BSD-2-Clause"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/libgav1/**"
+precedence = "override"
+SPDX-FileCopyrightText = "Google LLC"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/libgrapheme/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2019-2022 Laslo Hunhold <dev@frign.de>"
+SPDX-License-Identifier = "ISC"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/libjpeg-turbo/**"
+precedence = "override"
+SPDX-FileCopyrightText = "libjpeg-turbo authors"
+SPDX-License-Identifier = "IJG"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/libjxl/**"
+precedence = "override"
+SPDX-FileCopyrightText = "the JPEG XL Project Authors"
+SPDX-License-Identifier = "BSD-3-Clause"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/libpng/**"
+precedence = "override"
+SPDX-FileCopyrightText = "1995-2026 The PNG Reference Library Authors"
+SPDX-License-Identifier = "Zlib"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/libwebp/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2010, Google Inc."
+SPDX-License-Identifier = "BSD-3-Clause"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/libyuv/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2011 The LibYuv Project Authors"
+SPDX-License-Identifier = "BSD-3-Clause"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/markupsafe/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2010 by Armin Ronacher and contributors"
+SPDX-License-Identifier = "BSD-3-Clause"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/oboe/**"
+precedence = "override"
+SPDX-FileCopyrightText = "Google Inc."
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/opengl-registry/**"
+precedence = "override"
+SPDX-FileCopyrightText = "The Khronos Group Inc."
+SPDX-License-Identifier = "MIT AND Apache-2.0"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/partition_alloc/**"
+precedence = "override"
+SPDX-FileCopyrightText = "Copyright 2013-2026 The Chromium Authors"
+SPDX-License-Identifier = "BSD-3-Clause"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/perfetto/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2021 The Android Open Source Project"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/piex/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2015 Google Inc."
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/spirv-cross/**"
+precedence = "override"
+SPDX-FileCopyrightText = "Copyright 2015-2026 Arm Limited"
+SPDX-License-Identifier = "Apache-2.0 OR MIT"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/spirv-headers/**"
+precedence = "override"
+SPDX-FileCopyrightText = "The Khronos Group Inc."
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/spirv-tools/**"
+precedence = "override"
+SPDX-FileCopyrightText = "The Khronos Group Inc."
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/swiftshader/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2020 The SwiftShader Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/unicodetools/**"
+precedence = "override"
+SPDX-FileCopyrightText = "1991-2020 Unicode"
+SPDX-License-Identifier = "Unicode-3.0"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/vello/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2020 the Vello Authors"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/vulkan-deps/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2015 The Chromium Authors"
+SPDX-License-Identifier = "BSD-3-Clause"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/vulkan-headers/**"
+precedence = "override"
+SPDX-FileCopyrightText = "The Khronos Group Inc."
+SPDX-License-Identifier = "Apache-2.0 OR MIT"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/vulkan-tools/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2014-2026 LunarG, Inc."
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/vulkan-utility-libraries/**"
+precedence = "override"
+SPDX-FileCopyrightText = "The Khronos Group Inc."
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/vulkanmemoryallocator/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2017-2026 Advanced Micro Devices, Inc."
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/webgpu-headers/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2019, \"WebGPU native\" developers"
+SPDX-License-Identifier = "BSD-3-Clause"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/wuffs/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2017 The Wuffs Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "3rdparty/Skia/third_party/externals/zlib/**"
+precedence = "override"
+SPDX-FileCopyrightText = "1995-2022 Jean-loup Gailly and Mark Adler"
+SPDX-License-Identifier = "Zlib"
+
+[[annotations]]
+path = "src/shared/pics/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Igor Mironchik <igor.mironchik@gmail.com>"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "src/shared/pics/md/scalable/apps/logo-markdown.svg"
+precedence = "override"
+SPDX-FileCopyrightText = "2015-present Ionic (http://ionic.io/)"
 SPDX-License-Identifier = "MIT"
