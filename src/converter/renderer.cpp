@@ -376,12 +376,14 @@ void PdfAuxData::drawImage(double x,
     m_firstOnPage = false;
 
     const auto info =
-        SkImageInfo::Make(SkISize(img->width() * xScale, img->height() * yScale), img->imageInfo().colorInfo());
+        SkImageInfo::Make(SkISize(qRound((double)img->width() * xScale), qRound((double)img->height() * yScale)),
+                          img->imageInfo().colorInfo());
 
-    const auto scaled = img->makeScaled(info, SkSamplingOptions());
+    const auto scaled = img->makeScaled(info, SkSamplingOptions(SkFilterMode::kLinear, SkMipmapMode::kLinear));
 
 #ifndef MD_PDF_TESTING
-    (*m_pages)[m_currentPainterIdx].m_canvas->drawImage(scaled, x, y);
+    (*m_pages)[m_currentPainterIdx]
+        .m_canvas->drawImage(scaled, x, y, SkSamplingOptions(SkFilterMode::kLinear, SkMipmapMode::kLinear));
 #else
     if (m_printDrawings) {
         (*m_drawingsStream) << QStringLiteral("Image 0 \"\" %2 %3 0.0 0.0 0.0 0.0 %4 %5\n")
@@ -390,7 +392,8 @@ void PdfAuxData::drawImage(double x,
                                         QString::number(xScale, 'f', 16),
                                         QString::number(yScale, 'f', 16));
     } else {
-        (*m_pages)[m_currentPainterIdx].m_canvas->drawImage(scaled, x, y);
+        (*m_pages)[m_currentPainterIdx]
+            .m_canvas->drawImage(scaled, x, y, SkSamplingOptions(SkFilterMode::kLinear, SkMipmapMode::kLinear));
 
         if (QTest::currentTestFailed()) {
             m_self->terminate();
