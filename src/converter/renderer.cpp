@@ -375,25 +375,31 @@ void PdfAuxData::drawImage(double x,
 {
     m_firstOnPage = false;
 
-    const auto info =
-        SkImageInfo::Make(SkISize(qRound((double)img->width() * xScale), qRound((double)img->height() * yScale)),
-                          img->imageInfo().colorInfo());
-
-    const auto scaled = img->makeScaled(info, SkSamplingOptions(SkFilterMode::kLinear, SkMipmapMode::kLinear));
-
 #ifndef MD_PDF_TESTING
-    (*m_pages)[m_currentPainterIdx]
-        .m_canvas->drawImage(scaled, x, y, SkSamplingOptions(SkFilterMode::kLinear, SkMipmapMode::kLinear));
+    (*m_pages)[m_currentPainterIdx].m_canvas->save();
+    (*m_pages)[m_currentPainterIdx].m_canvas->scale(xScale, yScale);
+    (*m_pages)[m_currentPainterIdx].m_canvas->drawImage(
+        img,
+        x / xScale,
+        y / yScale,
+        SkSamplingOptions(SkFilterMode::kLinear, SkMipmapMode::kLinear));
+    (*m_pages)[m_currentPainterIdx].m_canvas->restore();
 #else
     if (m_printDrawings) {
-        (*m_drawingsStream) << QStringLiteral("Image 0 \"\" %2 %3 0.0 0.0 0.0 0.0 %4 %5\n")
+        (*m_drawingsStream) << QStringLiteral("Image 0 \"\" %1 %2 0.0 0.0 0.0 0.0 %3 %4\n")
                                    .arg(QString::number(x, 'f', 16),
                                         QString::number(y, 'f', 16),
                                         QString::number(xScale, 'f', 16),
                                         QString::number(yScale, 'f', 16));
     } else {
-        (*m_pages)[m_currentPainterIdx]
-            .m_canvas->drawImage(scaled, x, y, SkSamplingOptions(SkFilterMode::kLinear, SkMipmapMode::kLinear));
+        (*m_pages)[m_currentPainterIdx].m_canvas->save();
+        (*m_pages)[m_currentPainterIdx].m_canvas->scale(xScale, yScale);
+        (*m_pages)[m_currentPainterIdx].m_canvas->drawImage(
+            img,
+            x / xScale,
+            y / yScale,
+            SkSamplingOptions(SkFilterMode::kLinear, SkMipmapMode::kLinear));
+        (*m_pages)[m_currentPainterIdx].m_canvas->restore();
 
         if (QTest::currentTestFailed()) {
             m_self->terminate();
@@ -424,7 +430,7 @@ void PdfAuxData::drawImage(double x,
     (*m_pages)[m_currentPainterIdx].m_canvas->restore();
 #else
     if (m_printDrawings) {
-        (*m_drawingsStream) << QStringLiteral("Image 0 \"\" %2 %3 0.0 0.0 0.0 0.0 %4 %5\n")
+        (*m_drawingsStream) << QStringLiteral("Image 0 \"\" %1 %2 0.0 0.0 0.0 0.0 %3 %4\n")
                                    .arg(QString::number(x, 'f', 16),
                                         QString::number(y, 'f', 16),
                                         QString::number(xScale, 'f', 16),
