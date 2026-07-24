@@ -50,6 +50,7 @@ To build these applications first of all install dependencies:
  * `kf6-sonnet`
  * `kf6-kwidgetsaddons`
  * `Qt >= 6.7`
+ * `fontconfig` for Linux
 
 With these dependencies installed just open `CMakeLists.txt` in `QtCreator`
 (or use `CMake` from command line) and run build.
