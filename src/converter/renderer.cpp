@@ -622,6 +622,18 @@ double PdfAuxData::fontAscent(const Font &font,
     return fm.fAscent;
 }
 
+double PdfAuxData::fontBackgroundBoxScale(const Font &font,
+                                          double size,
+                                          double scale) const
+{
+    auto copyFont = font;
+    copyFont.setSize(size * scale);
+    SkFontMetrics fm;
+    const auto ls = copyFont.getMetrics(&fm);
+
+    return (fm.fDescent + qAbs(fm.fCapHeight)) / ls;
+}
+
 double PdfAuxData::fontDescent(const Font &font,
                                double size,
                                double scale) const
@@ -2043,9 +2055,11 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                                           pdfData.m_layout.y()
                                               - cw.descent()
                                               - currentBaseline.m_stack.back().m_baselineDelta
-                                              + pdfData.fontAscent(font, fontSize, fontScale) * 0.85,
+                                              + pdfData.fontAscent(font, fontSize, fontScale)
+                                                  * pdfData.fontBackgroundBoxScale(font, fontSize, fontScale),
                                           width,
-                                          pdfData.lineSpacing(font, fontSize, fontScale) * 0.85,
+                                          pdfData.lineSpacing(font, fontSize, fontScale)
+                                              * pdfData.fontBackgroundBoxScale(font, fontSize, fontScale),
                                           SkPaint::kFill_Style);
                     pdfData.restoreColor();
                 }
@@ -2141,9 +2155,11 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                                               pdfData.m_layout.y()
                                                   - cw.descent()
                                                   - currentBaseline.m_stack.back().m_baselineDelta
-                                                  + pdfData.fontAscent(font, fontSize, fontScale) * 0.85,
+                                                  + pdfData.fontAscent(font, fontSize, fontScale)
+                                                      * pdfData.fontBackgroundBoxScale(font, fontSize, fontScale),
                                               length,
-                                              pdfData.lineSpacing(font, fontSize, fontScale) * 0.85,
+                                              pdfData.lineSpacing(font, fontSize, fontScale)
+                                                  * pdfData.fontBackgroundBoxScale(font, fontSize, fontScale),
                                               SkPaint::kFill_Style);
                         pdfData.restoreColor();
                     }

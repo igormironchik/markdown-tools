@@ -540,6 +540,10 @@ struct PdfAuxData {
     double fontAscent(const Font &font,
                       double size,
                       double scale) const;
+    //! \return Font bounding box scale of total line height.
+    double fontBackgroundBoxScale(const Font &font,
+                                  double size,
+                                  double scale) const;
     //! \return Font descent.
     double fontDescent(const Font &font,
                        double size,
