@@ -7,7 +7,7 @@ set "cwd=%current_dir:\=/%"
 
 echo "Building markdown-tools..."
 
-cmake -DCMAKE_BUILD_TYPE=Release -S . -B "%cwd%/../builds/build-markdown-tools-test" -DBUILD_MD_TESTS=ON -DCMAKE_MODULE_PATH="%cwd%/../builds/conan" -DCMAKE_PREFIX_PATH="%cwd%/../Qt/%qt_version%/%qt_arch%;%cwd%/../KDE;%cwd%/../builds/conan" -DECM_DIR="%cwd%/../KDE/share/ECM/cmake" -G "NMake Makefiles"
+cmake -DCMAKE_BUILD_TYPE=Debug -S . -B "%cwd%/../builds/build-markdown-tools-test" -DBUILD_MD_TESTS=ON -DCMAKE_MODULE_PATH="%cwd%/../builds/conan" -DCMAKE_PREFIX_PATH="%cwd%/../Qt/%qt_version%/%qt_arch%;%cwd%/../KDE;%cwd%/../builds/conan" -DECM_DIR="%cwd%/../KDE/share/ECM/cmake" -G "NMake Makefiles"
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%

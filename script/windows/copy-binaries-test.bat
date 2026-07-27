@@ -11,7 +11,7 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-copy /Y %CD%\..\builds\build-markdown-tools\bin installer\packages\mironchik.igor.markdown\data\bin
+copy /Y %CD%\..\builds\build-markdown-tools-test\bin installer\packages\mironchik.igor.markdown\data\bin
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%

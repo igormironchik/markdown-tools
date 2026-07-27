@@ -16,7 +16,11 @@ find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} COMPONENTS
 find_package(ZLIB REQUIRED)
 
 if(WIN32)
-    set(SKIA_CFLAGS "/MD")
+    if(CMAKE_BUILD_TYPE STREQUAL "Release")
+        set(SKIA_CFLAGS "/MD")
+    else()
+        set(SKIA_CFLAGS "/MDd")
+    endif()
 endif()
 
 if(ENABLE_COVERAGE)
