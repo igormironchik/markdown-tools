@@ -56,8 +56,12 @@ qt6_add_resources(SRC ../../../3rdparty/MicroTeX/latex.qrc)
 
 add_executable(test.render ${SRC})
 
+if(WIN32)
+    set(PLATFORM_LIBS Dwmapi Dwrite libwebp libpng libjpeg jsonreader)
+endif()
+
 if(UNIX)
-    set(UNIX_LIBS freetype fontconfig)
+    set(PLATFORM_LIBS freetype fontconfig dng_sdk piex webp png jpeg)
 endif()
 
 target_link_libraries(test.render
@@ -65,34 +69,29 @@ target_link_libraries(test.render
     markdown-widgets
     LaTeX
     KF${KF_MAJOR_VERSION}::SyntaxHighlighting
-    Qt6::Widgets
     Qt6::Gui
+    Qt6::Widgets
     Qt6::Network
     Qt6::Test
     Qt6::Core
     bentleyottmann
     compression_utils_portable
     skresources
-    dng_sdk
-    piex
     skcms
     skottie
     skparagraph
     sksg
     svg
-    webp
     wuffs
     skshaper
     skia
     skunicode_icu
     skunicode_core
-    png
     expat
     harfbuzz
     icu
-    jpeg
     zlib
-    ${UNIX_LIBS}
+    ${PLATFORM_LIBS}
     ZLIB::ZLIB)
 
 add_test(NAME test.render
