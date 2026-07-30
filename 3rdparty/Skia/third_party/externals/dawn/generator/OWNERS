@@ -1,3 +1,0 @@
-# Code generators are used almost entirely for Dawn and Emscripten stuff.
-file:../src/dawn/OWNERS
-file:../src/emdawnwebgpu/OWNERS

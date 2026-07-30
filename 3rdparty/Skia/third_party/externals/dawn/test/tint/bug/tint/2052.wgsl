@@ -1,4 +1,0 @@
-@fragment
-fn f() {
-    discard;
-}

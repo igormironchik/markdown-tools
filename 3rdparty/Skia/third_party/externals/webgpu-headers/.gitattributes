@@ -1,3 +1,0 @@
-gen/** -linguist-detectable
-webgpu.json linguist-generated=true
-tests/extensions/extension.json linguist-generated=true

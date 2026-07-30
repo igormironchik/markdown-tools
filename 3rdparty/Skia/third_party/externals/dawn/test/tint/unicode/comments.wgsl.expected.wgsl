@@ -1,3 +1,0 @@
-@fragment
-fn main() {
-}

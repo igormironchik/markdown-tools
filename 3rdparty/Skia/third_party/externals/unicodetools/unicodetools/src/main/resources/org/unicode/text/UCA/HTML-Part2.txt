@@ -1,7 +1,0 @@
-          <hr width="50%">
-        </blockquote>
-      </td>
-  </table>
-</form>
-</body>
-</html>

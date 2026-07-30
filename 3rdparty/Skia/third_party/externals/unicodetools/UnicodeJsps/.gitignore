@@ -1,4 +1,0 @@
-# parent ignores *.d files.
-
-!/jetty.d
-/target
