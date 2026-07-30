@@ -593,8 +593,6 @@ double PdfAuxData::stringWidth(const Font &font,
 {
     auto copyFont = font;
     copyFont.setSize(size * scale);
-    SkFontMetrics fm;
-    copyFont.getMetrics(&fm);
 
     return copyFont.measureText(s, s.data.size(), SkTextEncoding::kUTF8);
 }
