@@ -1936,7 +1936,6 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
     }
 
     Q_UNUSED(doc)
-    Q_UNUSED(m_opts)
 
     const bool onNewMdLine = pdfData.m_endLine != startLine;
 
