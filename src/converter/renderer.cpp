@@ -34,8 +34,9 @@
 #include <include/core/SkTextBlob.h>
 #include <include/docs/SkPDFDocument.h>
 #include <include/docs/SkPDFJpegHelpers.h>
-#include <modules/skshaper/include/SkShaper.h>
+#include <modules/skshaper/include/SkShaper_harfbuzz.h>
 #include <modules/svg/include/SkSVGRenderContext.h>
+#include <modules/skunicode/include/SkUnicode_icu.h>
 
 #ifdef Q_OS_WIN
 #define NOMINMAX
@@ -655,7 +656,12 @@ double PdfAuxData::stringWidth(const Font &font,
     auto copyFont = font;
     copyFont.setSize(size * scale);
 
-    static std::unique_ptr<SkShaper> shaper = SkShaper::Make();
+    static sk_sp<SkUnicode> unicode = SkUnicodes::ICU::Make();
+    static std::unique_ptr<SkShaper> shaper;
+
+    if (unicode && !shaper) {
+        shaper = SkShapers::HB::ShapeDontWrapOrReorder(unicode, m_fontMgr);
+    }
 
     if (shaper) {
         RunHandler handler(s);
