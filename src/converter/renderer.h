@@ -6,6 +6,7 @@
 #pragma once
 
 // shared include.
+#include "emoji_parser.h"
 #include "syntax.h"
 
 // md4qt include.
@@ -531,7 +532,8 @@ struct PdfAuxData {
     double stringWidth(const Font &font,
                        double size,
                        double scale,
-                       const String &s) const;
+                       const String &s,
+                       bool leftToRight) const;
     //! \return Line spacing.
     double lineSpacing(const Font &font,
                        double size,
@@ -1092,6 +1094,25 @@ private:
              PrevBaselineStateStack &previousBaseline,
              const QColor &color = Qt::black,
              RTLFlag *rtl = nullptr);
+    //! Draw emoji.
+    QVector<QPair<RectF,
+                  unsigned int>>
+    drawEmoji(PdfAuxData &pdfData,
+              MdShared::EmojiItem *item,
+              QSharedPointer<MD::Document> doc,
+              bool &newLine,
+              const Font *footnoteFont,
+              double footnoteFontSize,
+              double footnoteFontScale,
+              MD::Item *nextItem,
+              int footnoteNum,
+              double offset,
+              bool firstInParagraph,
+              CustomWidth &cw,
+              double scale,
+              PrevBaselineStateStack &previousBaseline,
+              const QColor &color = Qt::black,
+              RTLFlag *rtl = nullptr);
     //! Draw inlined code.
     QVector<QPair<RectF,
                   unsigned int>>

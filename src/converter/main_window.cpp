@@ -433,7 +433,7 @@ void MainWidget::process()
         }
 
         MD::Parser parser;
-        setPlugins(parser, m_pluginsCfg);
+        setPlugins(parser, m_pluginsCfg, true);
 
         QSharedPointer<MD::Document> doc;
 
