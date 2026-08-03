@@ -41,6 +41,54 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
+mkdir installer\packages\mironchik.igor.markdown\data\bin\kf6
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+mkdir installer\packages\mironchik.igor.markdown\data\bin\kf6\sonnet
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+mkdir installer\packages\mironchik.igor.markdown\data\bin\kf6\kio
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+mkdir installer\packages\mironchik.igor.markdown\data\bin\kf6\kio_dnd
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+mkdir installer\packages\mironchik.igor.markdown\data\bin\kf6\urifilters
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+mkdir installer\packages\mironchik.igor.markdown\data\bin\kiconthemes6
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+mkdir installer\packages\mironchik.igor.markdown\data\bin\kiconthemes6\iconengines
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
+mkdir installer\packages\mironchik.igor.markdown\data\bin\styles
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
 xcopy 3rdparty\Windows\hunspell installer\packages\mironchik.igor.markdown\data\bin\data\hunspell /S /Y
 
 IF %ERRORLEVEL% NEQ 0 (
@@ -71,67 +119,25 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-mkdir %CD%\..\Qt\%qt_version%\msvc2022_64\plugins\kf6
+xcopy %CD%\..\KDE\lib\plugins\kf6 installer\packages\mironchik.igor.markdown\data\bin\kf6 /S /Y
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-mkdir %CD%\..\Qt\%qt_version%\msvc2022_64\plugins\kf6\sonnet
+del /Q installer\packages\mironchik.igor.markdown\data\bin\kf6\sonnet\sonnet_ispellchecker.dll
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-mkdir %CD%\..\Qt\%qt_version%\msvc2022_64\plugins\kf6\kio
+xcopy %CD%\..\KDE\lib\plugins\kiconthemes6 installer\packages\mironchik.igor.markdown\data\bin\kiconthemes6 /S /Y
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
-mkdir %CD%\..\Qt\%qt_version%\msvc2022_64\plugins\kf6\kio_dnd
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
-mkdir %CD%\..\Qt\%qt_version%\msvc2022_64\plugins\kf6\urifilters
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
-mkdir %CD%\..\Qt\%qt_version%\msvc2022_64\plugins\kiconthemes6
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
-mkdir %CD%\..\Qt\%qt_version%\msvc2022_64\plugins\kiconthemes6\iconengines
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
-xcopy %CD%\..\KDE\lib\plugins\kf6 %CD%\..\Qt\%qt_version%\msvc2022_64\plugins\kf6 /S /Y
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
-del /Q %CD%\..\Qt\%qt_version%\msvc2022_64\plugins\kf6\sonnet\sonnet_ispellchecker.dll
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
-xcopy %CD%\..\KDE\lib\plugins\kiconthemes6 %CD%\..\Qt\%qt_version%\msvc2022_64\plugins\kiconthemes6 /S /Y
-
-IF %ERRORLEVEL% NEQ 0 (
-	exit /B %ERRORLEVEL%
-)
-
-xcopy %CD%\..\KDE\lib\plugins\styles %CD%\..\Qt\%qt_version%\msvc2022_64\plugins\styles /S /Y
+xcopy %CD%\..\KDE\lib\plugins\styles installer\packages\mironchik.igor.markdown\data\bin\styles /S /Y
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
