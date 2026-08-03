@@ -119,6 +119,12 @@ IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
 )
 
+copy /Y %CD%\..\builds\skia\icudtl.dat installer\packages\mironchik.igor.markdown\data\bin\icudtl.dat
+
+IF %ERRORLEVEL% NEQ 0 (
+	exit /B %ERRORLEVEL%
+)
+
 xcopy %CD%\..\KDE\lib\plugins\kiconthemes6 installer\packages\mironchik.igor.markdown\data\bin\kiconthemes6 /S /Y
 
 IF %ERRORLEVEL% NEQ 0 (
