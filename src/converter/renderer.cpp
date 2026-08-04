@@ -34,9 +34,11 @@
 #include <include/core/SkTextBlob.h>
 #include <include/docs/SkPDFDocument.h>
 #include <include/docs/SkPDFJpegHelpers.h>
+#include <modules/skshaper/include/SkShaper.h>
 #include <modules/skshaper/include/SkShaper_harfbuzz.h>
-#include <modules/svg/include/SkSVGRenderContext.h>
+#include <modules/skshaper/include/SkShaper_skunicode.h>
 #include <modules/skunicode/include/SkUnicode_icu.h>
+#include <modules/svg/include/SkSVGRenderContext.h>
 
 #ifdef Q_OS_WIN
 #define NOMINMAX
@@ -657,15 +659,43 @@ double PdfAuxData::stringWidth(const Font &font,
     copyFont.setSize(size * scale);
 
     static sk_sp<SkUnicode> unicode = SkUnicodes::ICU::Make();
-    static std::unique_ptr<SkShaper> shaper;
-
-    if (unicode && !shaper) {
-        shaper = SkShapers::HB::ShapeDontWrapOrReorder(unicode, m_fontMgr);
-    }
+    static std::unique_ptr<SkShaper> shaper = SkShapers::HB::ShapeDontWrapOrReorder(unicode, m_fontMgr);
 
     if (shaper) {
         RunHandler handler(s);
-        shaper->shape(s, s.data.size(), copyFont, leftToRight, 999999.0f, &handler);
+        SkBidiIterator::Level defaultLevel = leftToRight ? SkBidiIterator::kLTR : SkBidiIterator::kRTL;
+        std::unique_ptr<SkShaper::BiDiRunIterator> bidi(
+            SkShapers::unicode::BidiRunIterator(unicode, s, s.data.size(), defaultLevel));
+
+        if (!bidi) {
+            return copyFont.measureText(s, s.data.size(), SkTextEncoding::kUTF8);
+        }
+
+        std::unique_ptr<SkShaper::LanguageRunIterator> language(SkShaper::MakeStdLanguageRunIterator(s, s.data.size()));
+
+        if (!language) {
+            return copyFont.measureText(s, s.data.size(), SkTextEncoding::kUTF8);
+        }
+
+        std::unique_ptr<SkShaper::ScriptRunIterator> script(SkShapers::HB::ScriptRunIterator(s, s.data.size()));
+
+        if (!script) {
+            return copyFont.measureText(s, s.data.size(), SkTextEncoding::kUTF8);
+        }
+
+        std::unique_ptr<SkShaper::FontRunIterator> font(
+            SkShaper::MakeFontMgrRunIterator(s, s.data.size(), copyFont, m_fontMgr));
+
+        if (!font) {
+            return copyFont.measureText(s, s.data.size(), SkTextEncoding::kUTF8);
+        }
+
+        SkShaper::Feature features[] = {
+            {SkSetFourByteTag('l', 'i', 'g', 'a'), 0, 0, static_cast<size_t>(s.data.size())},
+            {SkSetFourByteTag('c', 'a', 'l', 't'), 0, 0, static_cast<size_t>(s.data.size())}};
+        size_t featuresSize = sizeof(features) / sizeof(features[0]);
+
+        shaper->shape(s, s.data.size(), *font, *bidi, *script, *language, features, featuresSize, 999999.0f, &handler);
 
         return handler.horizontalAdvance();
     } else {
