@@ -38,6 +38,8 @@ class TestRender final : public QObject
 private Q_SLOTS:
     //! Init tests.
     void initTestCase();
+    void test1();
+    void test1big();
     //! Test footnotes rendering.
     void testFootnotes();
     //! Test table with images.
@@ -388,6 +390,16 @@ void TestRender::initTestCase()
     tex::LaTeX::init(":/res");
 
     initSharedResources();
+}
+
+void TestRender::test1()
+{
+    doTest(QStringLiteral("1.md"), QString(), 8.0, 8.0);
+}
+
+void TestRender::test1big()
+{
+    doTest(QStringLiteral("1.md"), QStringLiteral("_big"), 16.0, 14.0);
 }
 
 void TestRender::testFootnotes()
