@@ -87,7 +87,7 @@ them available through the `PATH`, `INCLUDE`, `LIB` environment variables.
 2. Clone this repository and https://github.com/igormironchik/kde_breeze_win
    in the folder from the point `1`.
 3. From this repository in root of `markdown-tools` launch
-   `script\windows\install-qt.bat`, `script\windows-install-openssl.bat`.
+   `script\windows\install-qt.bat`.
 4. From `kde_breeze_win` repository launch `install-kde.bat`.
 5. From `markdown-tools` repository launch:
    * `script\windows\install-kde.bat`
