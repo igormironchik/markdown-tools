@@ -2068,6 +2068,27 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
                 setRTLFlagToFalseIfCheck(rtl);
             } break;
 
+            case MdShared::EmojiItem::emojiType(): {
+                rects.append(drawEmoji(pdfData,
+                                       static_cast<MdShared::EmojiItem *>(it->get()),
+                                       doc,
+                                       newLine,
+                                       &footnoteFont,
+                                       footnoteFontSize,
+                                       footnoteFontScale,
+                                       (it == std::prev(last) ? nextItem : nullptr),
+                                       footnoteNum,
+                                       offset,
+                                       (it == item->p()->items().begin() && firstInParagraph),
+                                       cw,
+                                       1.0,
+                                       previousBaseline,
+                                       m_opts.m_linkColor,
+                                       rtl));
+
+                setRTLFlagToFalseIfCheck(rtl);
+            } break;
+
             default:
                 break;
             }
