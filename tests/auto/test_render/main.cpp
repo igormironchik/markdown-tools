@@ -100,6 +100,11 @@ private Q_SLOTS:
     //! Test math.
     void testMathBigFont();
 
+    //! Test emoji.
+    void testEmoji();
+    //! Test emoji.
+    void testEmojiBigFont();
+
     //! Test placing of images.
     void testImagesPlacing();
 
@@ -155,7 +160,7 @@ struct TestRendering {
             pluginsCfg.m_sub.m_on = true;
             pluginsCfg.m_mark.m_delimiter = QLatin1Char('=');
             pluginsCfg.m_mark.m_on = true;
-            setPlugins(parser, pluginsCfg);
+            setPlugins(parser, pluginsCfg, true);
         }
 
         auto doc = parser.parse(s_folder + QStringLiteral("/../../manual/") + fileName, true);
@@ -276,6 +281,8 @@ DrawPrimitive::Type toType(const QString &t)
         return DrawPrimitive::Type::Rectangle;
     } else if (t == QStringLiteral("Image")) {
         return DrawPrimitive::Type::Image;
+    } else if (t == QStringLiteral("Blob")) {
+        return DrawPrimitive::Type::Blob;
     } else {
         return DrawPrimitive::Type::Unknown;
     }
@@ -563,6 +570,26 @@ void TestRender::testSuperSubScript()
 void TestRender::testSuperSubScriptBigFont()
 {
     doTest(QStringLiteral("styles.md"), QStringLiteral("_big"), 16.0, 14.0, MdPdf::Render::ImageAlignment::Left, true);
+}
+
+void TestRender::testEmoji()
+{
+    doTest(QStringLiteral("conan_adding_packages_readme.md"),
+           QString(),
+           8.0,
+           8.0,
+           MdPdf::Render::ImageAlignment::Center,
+           true);
+}
+
+void TestRender::testEmojiBigFont()
+{
+    doTest(QStringLiteral("conan_adding_packages_readme.md"),
+           QStringLiteral("_big"),
+           16.0,
+           14.0,
+           MdPdf::Render::ImageAlignment::Center,
+           true);
 }
 
 QTEST_MAIN(TestRender)

@@ -39,6 +39,10 @@
 #include <include/core/SkFont.h>
 #include <include/core/SkImage.h>
 #include <include/core/SkPictureRecorder.h>
+#include <modules/skshaper/include/SkShaper.h>
+#include <modules/skshaper/include/SkShaper_harfbuzz.h>
+#include <modules/skshaper/include/SkShaper_skunicode.h>
+#include <modules/skunicode/include/SkUnicode_icu.h>
 
 #ifdef Q_OS_LINUX
 #include <include/ports/SkFontMgr_fontconfig.h>
@@ -118,6 +122,7 @@ struct DrawPrimitive {
         Rectangle,
         Image,
         MultilineText,
+        Blob,
         Unknown
     };
 
@@ -393,6 +398,8 @@ private:
     std::vector<Offset *> m_offset;
 }; // struct LayoutDirectionHandler
 
+class TextBlobBuilderRunHandler;
+
 //! Auxiliary struct for rendering.
 struct PdfAuxData {
     //! Painters.
@@ -451,16 +458,12 @@ struct PdfAuxData {
     bool m_tableDrawing = false;
     //! Current SkPaint.
     SkPaint m_currentPaint;
-
-    //! Fonts manager.
-#ifdef Q_OS_LINUX
-    sk_sp<SkFontMgr> m_fontMgr = SkFontMgr_New_FontConfig(nullptr, std::move(SkFontScanner_Make_FreeType()));
-#endif
-
-#ifdef Q_OS_WIN
+    //! SkFontMgr.
     sk_sp<SkFontMgr> m_fontMgr;
-#endif
-
+    //! SkUnicode.
+    sk_sp<SkUnicode> m_unicode;
+    //! SkShaper.
+    std::shared_ptr<SkShaper> m_shaper;
     //! Cache of typesets.
     QHash<QString, sk_sp<SkTypeface>> m_typefaceCache;
 
@@ -487,6 +490,9 @@ struct PdfAuxData {
     //! Reserve space for drawing, i.e. move footnotes on the next page.
     void freeSpaceOn(int page);
 
+    //! Draw blob.
+    void drawBlob(double x,
+                  const sk_sp<SkTextBlob> &blob);
     //! Draw text
     void drawText(double x,
                   double y,
@@ -527,6 +533,16 @@ struct PdfAuxData {
     void restoreColor();
     //! Repeat color (needed after new page creation).
     void repeatColor();
+
+    //! Shape string.
+    //!
+    //! \return True on success.
+    bool shape(TextBlobBuilderRunHandler &handler,
+               const Font &font,
+               double size,
+               double scale,
+               const String &s,
+               bool leftToRight) const;
 
     //! \return String width.
     double stringWidth(const Font &font,
@@ -1161,7 +1177,8 @@ private:
                const Font *regularSpaceFont = nullptr,
                double regularSpaceFontSize = 0.0,
                double regularSpaceFontScale = 0.0,
-               RTLFlag *rtl = nullptr);
+               RTLFlag *rtl = nullptr,
+               bool useShaper = false);
     //! Draw link.
     QVector<QPair<RectF,
                   unsigned int>>

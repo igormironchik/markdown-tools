@@ -28,6 +28,12 @@ SPDX-FileCopyrightText = "2026 Igor Mironchik <igor.mironchik@gmail.com>"
 SPDX-License-Identifier = "GPL-3.0-or-later"
 
 [[annotations]]
+path = "tests/manual/conan_adding_packages_readme.md"
+precedence = "override"
+SPDX-FileCopyrightText = "2019 Conan.io"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
 path = "src/editor/res/hightlight-blockquote.js"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2024 Ivan Stanevich, 2026 Igor Mironchik"
