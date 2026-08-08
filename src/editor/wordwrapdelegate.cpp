@@ -178,7 +178,7 @@ QSize WordWrapItemDelegate::sizeHint(const QStyleOptionViewItem &option,
         codeWidth = 0;
 
         for (const auto &tt : std::as_const(it->m_splittedText)) {
-            auto text = tt.first;
+            auto text = tt.m_word;
 
             auto w = option.fontMetrics.horizontalAdvance(text);
 
@@ -201,7 +201,7 @@ QSize WordWrapItemDelegate::sizeHint(const QStyleOptionViewItem &option,
                         }
 
                         it->m_textRects.append(
-                            std::make_pair(layout.rect(w), UnitData{tmpStr, it->m_data.m_code, tt.second}));
+                            std::make_pair(layout.rect(w), UnitData{tmpStr, it->m_data.m_code, tt.m_rtl}));
 
                         if (it->m_data.m_code) {
                             it->m_backgroundRects.append(layout.rect(w));
@@ -234,7 +234,7 @@ QSize WordWrapItemDelegate::sizeHint(const QStyleOptionViewItem &option,
                 codeWidth += w;
             }
 
-            it->m_textRects.append(std::make_pair(layout.rect(w), UnitData{text, it->m_data.m_code, tt.second}));
+            it->m_textRects.append(std::make_pair(layout.rect(w), UnitData{text, it->m_data.m_code, tt.m_rtl}));
 
             layout.moveXBy(w + sw);
         }

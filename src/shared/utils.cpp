@@ -183,12 +183,10 @@ bool isRightToLeft(const QChar &ch)
     }
 }
 
-QVector<QPair<QString,
-              bool>>
-splitString(const QString &str,
-            bool skipSpaces)
+QVector<Word> splitString(const QString &str,
+                          bool skipSpaces)
 {
-    QVector<QPair<QString, bool>> res;
+    QVector<Word> res;
     qsizetype first = 0;
     bool space = false;
     bool previousRTL = false;
@@ -205,11 +203,11 @@ splitString(const QString &str,
 
                 rtl = previousRTL;
 
-                res.append({word, rtl});
+                res.append({word, rtl, nullptr});
             }
 
             if (!skipSpaces) {
-                res.append({QStringLiteral(" "), false});
+                res.append({QStringLiteral(" "), false, nullptr});
             }
 
             space = true;
@@ -224,19 +222,18 @@ splitString(const QString &str,
 
     if (!space && first < str.length()) {
         const auto word = str.sliced(first);
-        res.append({word, isRightToLeft(word[0])});
+        res.append({word, isRightToLeft(word[0]), nullptr});
     }
 
     return res;
 }
 
-void orderWords(QVector<QPair<QString,
-                              bool>> &text)
+void orderWords(QVector<Word> &text)
 {
     qsizetype start = -1;
     qsizetype end = -1;
 
-    auto reverseItems = [](qsizetype start, qsizetype end, QVector<QPair<QString, bool>> &data) {
+    auto reverseItems = [](qsizetype start, qsizetype end, QVector<Word> &data) {
         if (start > -1 && end > start) {
             while (end - start > 0) {
                 data.swapItemsAt(start, end);
@@ -247,8 +244,8 @@ void orderWords(QVector<QPair<QString,
     };
 
     for (qsizetype i = 0; i < text.size(); ++i) {
-        if (text[i].first != QStringLiteral(" ")) {
-            if (!text[i].second) {
+        if (text[i].m_word != QStringLiteral(" ")) {
+            if (!text[i].m_rtl) {
                 if (start == -1) {
                     start = i;
                     end = i;

@@ -34,6 +34,12 @@ SPDX-FileCopyrightText = "2019 Conan.io"
 SPDX-License-Identifier = "MIT"
 
 [[annotations]]
+path = "tests/manual/from_harfbuzz.md"
+precedence = "override"
+SPDX-FileCopyrightText = "harfbuzz authors"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
 path = "src/editor/res/hightlight-blockquote.js"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2024 Ivan Stanevich, 2026 Igor Mironchik"

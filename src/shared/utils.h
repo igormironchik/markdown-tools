@@ -31,20 +31,26 @@ void initSharedResources();
 //! \return Is a given character RTL one?
 bool isRightToLeft(const QChar &ch);
 
+class SkFont;
+
+//! Aux struct for splitted words.
+struct Word {
+    QString m_word;
+    bool m_rtl = false;
+    const SkFont *m_font = nullptr;
+}; // struct Word
+
 /*!
  * \brief Split string by spaces.
  * \param str String.
  * \param skipSpaces If false in returned vector will be spaces too.
  * \return Vector of words with flag indicates RTL.
  */
-QVector<QPair<QString,
-              bool>>
-splitString(const QString &str,
-            bool skipSpaces);
+QVector<Word> splitString(const QString &str,
+                          bool skipSpaces);
 
 //! Order words for painting with Qt with RTL, LTR rules.
-void orderWords(QVector<QPair<QString,
-                              bool>> &text);
+void orderWords(QVector<Word> &text);
 
 //! Set plugins to parser.
 void setPlugins(MD::Parser &parser,

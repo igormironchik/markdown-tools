@@ -6,9 +6,6 @@
 // md-editor include.
 #include "toc.h"
 
-// shared include.
-#include "utils.h"
-
 // C++ include.
 #include <functional>
 

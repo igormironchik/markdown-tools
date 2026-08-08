@@ -404,34 +404,12 @@ class TextBlobBuilderRunHandler;
 struct PdfAuxData {
     //! Painters.
     std::vector<Page> *m_pages = nullptr;
-    //! Index of the current page.
-    int m_currentPageIdx = -1;
     //! Layout direction handler.
     LayoutDirectionHandler m_layout;
-    //! Anchors in document.
-    QStringList m_anchors;
-    //! Reserved spaces on the pages for footnotes.
-    QMap<unsigned int, double> m_reserved;
-    //! Drawing footnotes or the document?
-    bool m_drawFootnotes = false;
-    //! Current page index for drawing footnotes.
-    int m_footnotePageIdx = -1;
-    //! Current painter index.
-    int m_currentPainterIdx = -1;
-    //! Current index of the footnote (for drawing number in the PDF).
-    int m_currentFootnote = 1;
-    //! Is this first item on the page?
-    bool m_firstOnPage = true;
-    //! Continue drawing of paragraph?
-    bool m_continueParagraph = false;
     //! Current line height.
     double m_lineHeight = 0.0;
     //! Extra space before footnotes.
     double m_extraInFootnote = 0.0;
-    //! Colors stack.
-    QStack<QColor> m_colorsStack;
-    //! Markdown document.
-    QSharedPointer<MD::Document> m_md;
     //! Start line of procesing in the document.
     long long int m_startLine = 0;
     //! Start position in the start line.
@@ -440,8 +418,14 @@ struct PdfAuxData {
     long long int m_endLine = 0;
     //! End position in the end line.
     long long int m_endPos = 0;
-    //! Footnote counter.
-    int m_footnoteNum = 1;
+    //! Anchors in document.
+    QStringList m_anchors;
+    //! Reserved spaces on the pages for footnotes.
+    QMap<unsigned int, double> m_reserved;
+    //! Colors stack.
+    QStack<QColor> m_colorsStack;
+    //! Markdown document.
+    QSharedPointer<MD::Document> m_md;
     //! Current file.
     QString m_currentFile;
     //! Footnotes map to map anchors.
@@ -454,10 +438,6 @@ struct PdfAuxData {
     QMap<QString, QSharedPointer<QTemporaryFile>> m_fontsCache;
     //! Stack of painters used on table drawing.
     QMap<int, char> m_cachedPainters;
-    //! Flag when drawing table.
-    bool m_tableDrawing = false;
-    //! Current SkPaint.
-    SkPaint m_currentPaint;
     //! SkFontMgr.
     sk_sp<SkFontMgr> m_fontMgr;
     //! SkUnicode.
@@ -466,15 +446,35 @@ struct PdfAuxData {
     std::shared_ptr<SkShaper> m_shaper;
     //! Cache of typesets.
     QHash<QString, sk_sp<SkTypeface>> m_typefaceCache;
+    //! Current SkPaint.
+    SkPaint m_currentPaint;
+    //! Index of the current page.
+    int m_currentPageIdx = -1;
+    //! Current page index for drawing footnotes.
+    int m_footnotePageIdx = -1;
+    //! Current painter index.
+    int m_currentPainterIdx = -1;
+    //! Current index of the footnote (for drawing number in the PDF).
+    int m_currentFootnote = 1;
+    //! Footnote counter.
+    int m_footnoteNum = 1;
+    //! Drawing footnotes or the document?
+    bool m_drawFootnotes = false;
+    //! Is this first item on the page?
+    bool m_firstOnPage = true;
+    //! Continue drawing of paragraph?
+    bool m_continueParagraph = false;
+    //! Flag when drawing table.
+    bool m_tableDrawing = false;
 
 #ifdef MD_PDF_TESTING
     QMap<QString, QString> m_fonts;
     QSharedPointer<QFile> m_drawingsFile;
     QSharedPointer<QTextStream> m_drawingsStream;
-    bool m_printDrawings = false;
     QVector<DrawPrimitive> m_testData;
-    int m_testPos = 0;
     PdfRenderer *m_self = nullptr;
+    int m_testPos = 0;
+    bool m_printDrawings = false;
 #endif // MD_PDF_TESTING
 
     //! \return Top Y coordinate on the page.
@@ -1179,6 +1179,17 @@ private:
                double regularSpaceFontScale = 0.0,
                RTLFlag *rtl = nullptr,
                bool useShaper = false);
+    //! Draw blob or simple text.
+    void drawTextBlobOrText(PdfAuxData &pdfData,
+                            const Font &font,
+                            double fontSize,
+                            double fontScale,
+                            const Utf8String &str,
+                            double descent,
+                            double baselineDelta,
+                            bool rtl,
+                            double length,
+                            bool strikeout);
     //! Draw link.
     QVector<QPair<RectF,
                   unsigned int>>
