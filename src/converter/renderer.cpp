@@ -2412,10 +2412,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                                 if (fontFamilyBefore != currentFamilyName) {
                                     const auto fallbackFont = std::make_shared<SkFont>(fallback, fontSize * fontScale);
                                     fonts.append(fallbackFont);
-                                    words.insert(i,
-                                                 Word{words[i].m_word[0],
-                                                      words[i].m_rtl,
-                                                      fonts.back().get()});
+                                    words.insert(i, Word{words[i].m_word[0], words[i].m_rtl, fonts.back().get()});
                                 } else {
                                     words[i - 1].m_word.append(words[i].m_word[0]);
                                     --i;

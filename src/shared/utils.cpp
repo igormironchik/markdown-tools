@@ -183,7 +183,8 @@ bool isRightToLeft(const QChar &ch)
     }
 }
 
-inline bool isRtlPrev(const QString &str, qsizetype i)
+inline bool isRtlPrev(const QString &str,
+                      qsizetype i)
 {
     --i;
 
@@ -198,7 +199,8 @@ inline bool isRtlPrev(const QString &str, qsizetype i)
     return false;
 }
 
-inline bool isRtlNext(const QString &str, qsizetype i)
+inline bool isRtlNext(const QString &str,
+                      qsizetype i)
 {
     ++i;
 
@@ -211,6 +213,49 @@ inline bool isRtlNext(const QString &str, qsizetype i)
     }
 
     return false;
+}
+
+inline bool noLettersPrev(const QString &str,
+                          qsizetype i)
+{
+    --i;
+
+    while (i >= 0) {
+        if (str[i].isLetter()) {
+            return false;
+        }
+
+        --i;
+    }
+
+    return true;
+}
+
+inline bool noLettersNext(const QString &str,
+                          qsizetype i)
+{
+    ++i;
+
+    while (i < str.size()) {
+        if (str[i].isLetter()) {
+            return false;
+        }
+
+        ++i;
+    }
+
+    return true;
+}
+
+inline bool isDigitsAndPunctOnly(const QString &s)
+{
+    for (qsizetype i = 0; i < s.size(); ++i) {
+        if (!s[i].isDigit() && !s[i].isPunct()) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 QVector<Word> splitString(const QString &str,
@@ -230,8 +275,9 @@ QVector<Word> splitString(const QString &str,
     qsizetype i = 0;
 
     auto addWord = [&](bool separator) -> bool {
-        if (first < i + (separator ? 1 : 0)) {
-            const auto word = str.sliced(first, i - first + (separator ? 1 : 0));
+        const auto end = i + (separator ? 1 : 0) - 1;
+        if (first < end + 1) {
+            auto word = str.sliced(first, end - first + 1);
 
             if (separator) {
                 const auto prevRtl = isRtlPrev(str, first);
@@ -243,7 +289,18 @@ QVector<Word> splitString(const QString &str,
                     res.append({word, rtl, nullptr});
                 }
             } else {
-                res.append({word, word.isRightToLeft(), nullptr});
+                const auto noLettersBefore = noLettersPrev(str, first);
+                const auto noLettersAfter = noLettersNext(str, end);
+                const auto rtlDigits = ((isRtlPrev(str, first) || noLettersBefore)
+                                        && (isRtlNext(str, end) || noLettersAfter)
+                                        && isDigitsAndPunctOnly(word)
+                                        && !(noLettersBefore && noLettersAfter));
+
+                if (rtlDigits) {
+                    std::reverse(word.begin(), word.end());
+                }
+
+                res.append({word, word.isRightToLeft() || rtlDigits, nullptr});
             }
 
             return true;
