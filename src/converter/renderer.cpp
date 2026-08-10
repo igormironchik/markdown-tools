@@ -2422,7 +2422,6 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                                 }
 
                                 words[i + 1].m_word.removeFirst();
-                                words[i + 1].m_rtl = words[i + 1].m_word.isRightToLeft();
 
                                 if (words[i + 1].m_word.isEmpty()) {
                                     words.removeAt(i + 1);
