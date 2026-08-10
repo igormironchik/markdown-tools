@@ -8,6 +8,7 @@
 // shared include.
 #include "emoji_parser.h"
 #include "syntax.h"
+#include "utils.h"
 
 // md4qt include.
 #include <md4qt/src/doc.h>
@@ -1143,6 +1144,13 @@ private:
                     PrevBaselineStateStack &previousBaseline,
                     RTLFlag *rtl = nullptr,
                     bool inLink = false);
+
+    bool nextOnOneLineIsFit(PdfAuxData &pdfData,
+                            QVector<Word>::iterator it,
+                            QVector<Word>::iterator last,
+                            double width,
+                            double fontSize,
+                            double fontScale);
 
     //! Draw string.
     QVector<QPair<RectF,

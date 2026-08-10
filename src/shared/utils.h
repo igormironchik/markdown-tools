@@ -49,6 +49,12 @@ struct Word {
 QVector<Word> splitString(const QString &str,
                           bool skipSpaces);
 
+//! \return Whether the given symbol is a DirCS.
+inline bool isSeparator(const QChar &ch)
+{
+    return (ch.direction() == QChar::DirCS);
+}
+
 //! Order words for painting with Qt with RTL, LTR rules.
 void orderWords(QVector<Word> &text);
 

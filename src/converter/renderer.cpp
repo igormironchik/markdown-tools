@@ -10,7 +10,6 @@
 
 // shared include.
 #include "emoji.h"
-#include "utils.h"
 
 #ifdef MD_PDF_TESTING
 #include <QtTest/QtTest>
@@ -2222,6 +2221,38 @@ void PdfRenderer::alignLine(PdfAuxData &pdfData,
     }
 }
 
+bool PdfRenderer::nextOnOneLineIsFit(PdfAuxData &pdfData,
+                                     QVector<Word>::iterator it,
+                                     QVector<Word>::iterator last,
+                                     double width,
+                                     double fontSize,
+                                     double fontScale)
+{
+    if (it == last) {
+        return true;
+    }
+
+    it = std::next(it);
+
+    auto checkSeparator = [](const QString &s) -> bool {
+        return std::find_if(s.cbegin(),
+                            s.cend(),
+                            [](const auto &ch) {
+                                return !isSeparator(ch);
+                            })
+            == s.cend();
+    };
+
+    if (it != last && checkSeparator(it->m_word)) {
+        const auto length =
+            pdfData.stringWidth(*it->m_font, fontSize, fontScale, createUtf8String(it->m_word), !it->m_rtl);
+
+        return pdfData.m_layout.isFit(width + length);
+    }
+
+    return true;
+}
+
 QVector<QPair<RectF,
               unsigned int>>
 PdfRenderer::drawString(PdfAuxData &pdfData,
@@ -2544,7 +2575,8 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
 
             const auto width = length + (it + 1 == last && footnoteAtEnd ? footnoteWidth : 0.0);
 
-            if (pdfData.m_layout.isFit(width) || drawAnyway) {
+            if ((pdfData.m_layout.isFit(width) && nextOnOneLineIsFit(pdfData, it, last, width, fontSize, fontScale))
+                || drawAnyway) {
                 newLine = false;
                 drawAnyway = false;
 
@@ -5028,12 +5060,11 @@ PdfRenderer::drawCode(PdfAuxData &pdfData,
                             continue;
                         }
 
-                        const auto fallback =
-                            pdfData.m_fontMgr->matchFamilyStyleCharacter(nullptr,
-                                                                         f.getTypeface()->fontStyle(),
-                                                                         nullptr,
-                                                                         0,
-                                                                         word[c].unicode());
+                        const auto fallback = pdfData.m_fontMgr->matchFamilyStyleCharacter(nullptr,
+                                                                                           f.getTypeface()->fontStyle(),
+                                                                                           nullptr,
+                                                                                           0,
+                                                                                           word[c].unicode());
 
                         if (c > 0 && fallback && !isFallbackInit) {
                             drawMonospaced(c);

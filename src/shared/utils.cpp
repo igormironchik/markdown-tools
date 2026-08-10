@@ -186,41 +186,67 @@ bool isRightToLeft(const QChar &ch)
 QVector<Word> splitString(const QString &str,
                           bool skipSpaces)
 {
+    static const QString s_spaceString = QStringLiteral(" ");
+
+    const auto pRtl = str.isRightToLeft();
+
     QVector<Word> res;
+
+    if (str.isEmpty()) {
+        return res;
+    }
+
     qsizetype first = 0;
-    bool space = false;
-    bool previousRTL = false;
+    bool rtl = isRightToLeft(str[0]);
 
     for (qsizetype i = 0; i < str.length(); ++i) {
-        if (str[i].isSpace() && !space) {
+        auto addWord = [&]() -> bool {
             if (first < i) {
                 const auto word = str.sliced(first, i - first);
-                bool rtl = false;
-
-                if (word[0].direction() != QChar::DirON) {
-                    previousRTL = isRightToLeft(word[0]);
-                }
-
-                rtl = previousRTL;
+                rtl = word.isRightToLeft();
 
                 res.append({word, rtl, nullptr});
+
+                return true;
             }
 
-            if (!skipSpaces) {
-                res.append({QStringLiteral(" "), false, nullptr});
+            return false;
+        };
+
+        if (str[i].isSpace()) {
+            if ((addWord() || (!res.isEmpty() && res.back().m_word != s_spaceString)) && !skipSpaces) {
+                res.append({s_spaceString, false, nullptr});
             }
 
-            space = true;
-        } else {
-            if (space) {
-                first = i;
-            }
+            first = i + 1;
+        } else if (isSeparator(str[i])) {
+            const auto tmp = str.sliced(first, i - first + 1);
 
-            space = false;
+            if (tmp.isRightToLeft() != pRtl && pRtl) {
+                addWord();
+
+                for (qsizetype j = res.size() - 1; j >= 0; --j) {
+                    if (res[j].m_rtl && j < res.size()) {
+                        ++j;
+
+                        for (; j < res.size(); ++j) {
+                            if (res[j].m_word != s_spaceString) {
+                                break;
+                            }
+                        }
+
+                        res[j].m_word.prepend(str[i]);
+
+                        first = i + 1;
+
+                        break;
+                    }
+                }
+            }
         }
     }
 
-    if (!space && first < str.length()) {
+    if (first < str.length()) {
         const auto word = str.sliced(first);
         res.append({word, isRightToLeft(word[0]), nullptr});
     }
