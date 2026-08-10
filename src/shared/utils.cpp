@@ -214,7 +214,7 @@ QVector<Word> splitString(const QString &str,
         };
 
         if (str[i].isSpace()) {
-            if ((addWord() || (!res.isEmpty() && res.back().m_word != s_spaceString)) && !skipSpaces) {
+            if ((addWord() || (!res.isEmpty() && res.back().m_word != s_spaceString) || res.isEmpty()) && !skipSpaces) {
                 res.append({s_spaceString, false, nullptr});
             }
 
