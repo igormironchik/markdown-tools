@@ -2387,7 +2387,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                     if (!font.unicharToGlyph(words[i].m_word[c].unicode())) {
                         if (c > 0) {
                             const auto tmp = words[i].m_word.sliced(c, words[i].m_word.size() - c);
-                            words.insert(i + 1, Word{tmp, tmp.isRightToLeft(), nullptr});
+                            words.insert(i + 1, Word{tmp, words[i].m_rtl, nullptr});
                             words[i].m_word = words[i].m_word.sliced(0, c);
 
                             break;
@@ -2414,7 +2414,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                                     fonts.append(fallbackFont);
                                     words.insert(i,
                                                  Word{words[i].m_word[0],
-                                                      isRightToLeft(words[i].m_word[0]),
+                                                      words[i].m_rtl,
                                                       fonts.back().get()});
                                 } else {
                                     words[i - 1].m_word.append(words[i].m_word[0]);
@@ -2435,9 +2435,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
             }
         }
 
-        if (pdfData.m_layout.isRightToLeft()) {
-            orderWords(words);
-        }
+        orderWords(words, pdfData.m_layout.isRightToLeft());
     } else {
         words.push_back({str, false, &font});
     }

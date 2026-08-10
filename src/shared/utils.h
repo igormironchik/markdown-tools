@@ -56,7 +56,8 @@ inline bool isSeparator(const QChar &ch)
 }
 
 //! Order words for painting with Qt with RTL, LTR rules.
-void orderWords(QVector<Word> &text);
+void orderWords(QVector<Word> &text,
+                bool rtl);
 
 //! Set plugins to parser.
 void setPlugins(MD::Parser &parser,

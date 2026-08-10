@@ -57,9 +57,7 @@ StringData::StringData(const QString &t,
     , m_splittedText(splitString(m_data.m_text,
                                  true))
 {
-    if (m_data.m_isRightToLeft) {
-        orderWords(m_splittedText);
-    }
+    orderWords(m_splittedText, m_data.m_isRightToLeft);
 }
 
 //

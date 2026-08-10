@@ -183,12 +183,42 @@ bool isRightToLeft(const QChar &ch)
     }
 }
 
+inline bool isRtlPrev(const QString &str, qsizetype i)
+{
+    --i;
+
+    while (i >= 0) {
+        if (str[i].isLetter()) {
+            return isRightToLeft(str[i]);
+        }
+
+        --i;
+    }
+
+    return false;
+}
+
+inline bool isRtlNext(const QString &str, qsizetype i)
+{
+    ++i;
+
+    while (i < str.size()) {
+        if (str[i].isLetter()) {
+            return isRightToLeft(str[i]);
+        }
+
+        ++i;
+    }
+
+    return false;
+}
+
 QVector<Word> splitString(const QString &str,
                           bool skipSpaces)
 {
     static const QString s_spaceString = QStringLiteral(" ");
 
-    const auto pRtl = str.isRightToLeft();
+    const auto rtl = str.isRightToLeft();
 
     QVector<Word> res;
 
@@ -197,69 +227,61 @@ QVector<Word> splitString(const QString &str,
     }
 
     qsizetype first = 0;
+    qsizetype i = 0;
 
-    for (qsizetype i = 0; i < str.length(); ++i) {
-        auto addWord = [&]() -> bool {
-            if (first < i) {
-                const auto word = str.sliced(first, i - first);
+    auto addWord = [&](bool separator) -> bool {
+        if (first < i) {
+            const auto word = str.sliced(first, i - first);
+
+            if (separator) {
+                const auto prevRtl = isRtlPrev(str, first);
+                const auto nextRtl = isRtlNext(str, first);
+
+                if (prevRtl == nextRtl) {
+                    res.append({word, prevRtl, nullptr});
+                } else {
+                    res.append({word, rtl, nullptr});
+                }
+            } else {
                 res.append({word, word.isRightToLeft(), nullptr});
-
-                return true;
             }
 
-            return false;
-        };
+            return true;
+        }
 
+        return false;
+    };
+
+    for (; i < str.length(); ++i) {
         if (str[i].isSpace()) {
-            if ((addWord() || (!res.isEmpty() && res.back().m_word != s_spaceString) || res.isEmpty()) && !skipSpaces) {
+            if ((addWord(false) || (!res.isEmpty() && res.back().m_word != s_spaceString) || res.isEmpty())
+                && !skipSpaces) {
                 res.append({s_spaceString, false, nullptr});
             }
 
             first = i + 1;
         } else if (isSeparator(str[i])) {
-            const auto tmp = str.sliced(first, i - first + 1);
+            addWord(false);
 
-            if (tmp.isRightToLeft() != pRtl && pRtl) {
-                addWord();
+            first = i;
 
-                for (qsizetype j = res.size() - 1; j >= 0; --j) {
-                    if (res[j].m_rtl && j < res.size()) {
-                        ++j;
+            ++i;
 
-                        for (; j < res.size(); ++j) {
-                            if (res[j].m_word != s_spaceString) {
-                                break;
-                            }
-                        }
+            addWord(true);
 
-                        if (j >= res.size()) {
-                            res.append({QString(), false, nullptr});
-                        }
-
-                        res[j].m_word.prepend(str[i]);
-
-                        first = i + 1;
-
-                        break;
-                    }
-                }
-            }
+            first = i;
         }
     }
 
     if (first < str.length()) {
-        const auto word = str.sliced(first);
-        if (!res.isEmpty() && res.back().m_rtl == word.isRightToLeft() && res.back().m_word != s_spaceString) {
-            res.back().m_word.append(word);
-        } else {
-            res.append({word, word.isRightToLeft(), nullptr});
-        }
+        addWord(false);
     }
 
     return res;
 }
 
-void orderWords(QVector<Word> &text)
+void orderWords(QVector<Word> &text,
+                bool rtl)
 {
     qsizetype start = -1;
     qsizetype end = -1;
@@ -276,7 +298,7 @@ void orderWords(QVector<Word> &text)
 
     for (qsizetype i = 0; i < text.size(); ++i) {
         if (text[i].m_word != QStringLiteral(" ")) {
-            if (!text[i].m_rtl) {
+            if (text[i].m_rtl != rtl) {
                 if (start == -1) {
                     start = i;
                     end = i;
