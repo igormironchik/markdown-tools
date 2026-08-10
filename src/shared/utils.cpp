@@ -230,8 +230,8 @@ QVector<Word> splitString(const QString &str,
     qsizetype i = 0;
 
     auto addWord = [&](bool separator) -> bool {
-        if (first < i) {
-            const auto word = str.sliced(first, i - first);
+        if (first < i + (separator ? 1 : 0)) {
+            const auto word = str.sliced(first, i - first + (separator ? 1 : 0));
 
             if (separator) {
                 const auto prevRtl = isRtlPrev(str, first);
@@ -265,11 +265,9 @@ QVector<Word> splitString(const QString &str,
 
             first = i;
 
-            ++i;
-
             addWord(true);
 
-            first = i;
+            first = i + 1;
         }
     }
 
