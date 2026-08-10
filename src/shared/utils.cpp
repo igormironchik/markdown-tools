@@ -197,15 +197,12 @@ QVector<Word> splitString(const QString &str,
     }
 
     qsizetype first = 0;
-    bool rtl = isRightToLeft(str[0]);
 
     for (qsizetype i = 0; i < str.length(); ++i) {
         auto addWord = [&]() -> bool {
             if (first < i) {
                 const auto word = str.sliced(first, i - first);
-                rtl = word.isRightToLeft();
-
-                res.append({word, rtl, nullptr});
+                res.append({word, word.isRightToLeft(), nullptr});
 
                 return true;
             }
@@ -235,6 +232,10 @@ QVector<Word> splitString(const QString &str,
                             }
                         }
 
+                        if (j >= res.size()) {
+                            res.append({QString(), false, nullptr});
+                        }
+
                         res[j].m_word.prepend(str[i]);
 
                         first = i + 1;
@@ -248,7 +249,11 @@ QVector<Word> splitString(const QString &str,
 
     if (first < str.length()) {
         const auto word = str.sliced(first);
-        res.append({word, isRightToLeft(word[0]), nullptr});
+        if (!res.isEmpty() && res.back().m_rtl == word.isRightToLeft() && res.back().m_word != s_spaceString) {
+            res.back().m_word.append(word);
+        } else {
+            res.append({word, word.isRightToLeft(), nullptr});
+        }
     }
 
     return res;
