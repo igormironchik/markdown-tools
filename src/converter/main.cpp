@@ -62,6 +62,8 @@ int main(int argc,
     tex::LaTeX::init(":/res");
 
     initSharedResources();
+    Q_INIT_RESOURCE(resources);
+    Q_INIT_RESOURCE(latex);
 
     QTranslator appTranslator;
     const auto locale = QLocale::system();

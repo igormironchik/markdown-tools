@@ -31,8 +31,6 @@
 #include <include/core/SkPicture.h>
 #include <include/core/SkStream.h>
 #include <include/core/SkTextBlob.h>
-#include <include/docs/SkPDFDocument.h>
-#include <include/docs/SkPDFJpegHelpers.h>
 #include <modules/svg/include/SkSVGRenderContext.h>
 
 #ifdef Q_OS_WIN
@@ -46,117 +44,16 @@
 // C++ include.
 #include <algorithm>
 #include <cmath>
-#include <fstream>
 #include <functional>
 #include <utility>
 
 // Qt include.
-#include <QApplication>
 #include <QBuffer>
-#include <QFileInfo>
-#include <QNetworkAccessManager>
-#include <QPainter>
-#include <QRegularExpression>
 #include <QScopedValueRollback>
-#include <QScreen>
-#include <QTemporaryFile>
 #include <QThread>
 
 // md4qt include.
 #include <md4qt/src/algo.h>
-
-// zlib include.
-#include <zlib.h>
-
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-static QByteArray qt_inflateSvgzDataFrom(QIODevice *device,
-                                         bool doCheckContent)
-{
-    Q_UNUSED(doCheckContent)
-
-    if (!device) {
-        return QByteArray();
-    }
-
-    if (!device->isOpen()) {
-        device->open(QIODevice::ReadOnly);
-    }
-
-    Q_ASSERT(device->isOpen() && device->isReadable());
-
-    static const int CHUNK_SIZE = 4096;
-    int zlibResult = Z_OK;
-
-    QByteArray source;
-    QByteArray destination;
-
-    // Initialize zlib stream struct
-    z_stream zlibStream;
-    zlibStream.next_in = Z_NULL;
-    zlibStream.avail_in = 0;
-    zlibStream.avail_out = 0;
-    zlibStream.zalloc = Z_NULL;
-    zlibStream.zfree = Z_NULL;
-    zlibStream.opaque = Z_NULL;
-
-    // Adding 16 to the window size gives us gzip decoding
-    if (inflateInit2(&zlibStream, MAX_WBITS + 16) != Z_OK) {
-        return QByteArray();
-    }
-
-    bool stillMoreWorkToDo = true;
-    while (stillMoreWorkToDo) {
-        if (!zlibStream.avail_in) {
-            source = device->read(CHUNK_SIZE);
-
-            if (source.isEmpty())
-                break;
-
-            zlibStream.avail_in = source.size();
-            zlibStream.next_in = reinterpret_cast<Bytef *>(source.data());
-        }
-
-        do {
-            // Prepare the destination buffer
-            int oldSize = destination.size();
-            if (oldSize > INT_MAX - CHUNK_SIZE) {
-                inflateEnd(&zlibStream);
-                return QByteArray();
-            }
-
-            destination.resize(oldSize + CHUNK_SIZE);
-            zlibStream.next_out = reinterpret_cast<Bytef *>(destination.data() + oldSize - zlibStream.avail_out);
-            zlibStream.avail_out += CHUNK_SIZE;
-
-            zlibResult = inflate(&zlibStream, Z_NO_FLUSH);
-            switch (zlibResult) {
-            case Z_NEED_DICT:
-            case Z_DATA_ERROR:
-            case Z_STREAM_ERROR:
-            case Z_MEM_ERROR: {
-                inflateEnd(&zlibStream);
-                return QByteArray();
-            }
-            }
-
-            // If the output buffer still has more room after calling inflate
-            // it means we have to provide more data, so exit the loop here
-        } while (!zlibStream.avail_out);
-
-        if (zlibResult == Z_STREAM_END) {
-            // Make sure there are no more members to process before exiting
-            if (!(zlibStream.avail_in && inflateReset(&zlibStream) == Z_OK))
-                stillMoreWorkToDo = false;
-        }
-    }
-
-    // Chop off trailing space in the buffer
-    destination.chop(zlibStream.avail_out);
-
-    inflateEnd(&zlibStream);
-    return destination;
-}
 
 namespace MdPdf
 {
@@ -164,46 +61,7 @@ namespace MdPdf
 namespace Render
 {
 
-const double PdfRenderer::PrevBaselineStateStack::s_scale = 1.5;
-const double PdfRenderer::PrevBaselineStateStack::s_baselineScale = 0.5;
-
 static const QString s_spaceString = QStringLiteral(" ");
-
-RectF::RectF(qreal leftX,
-             qreal bottomY,
-             qreal width,
-             qreal height)
-    : m_leftX(leftX)
-    , m_bottomY(bottomY)
-    , m_width(width)
-    , m_height(height)
-{
-}
-
-qreal RectF::x() const
-{
-    return m_leftX;
-}
-
-qreal RectF::bottomY() const
-{
-    return m_bottomY;
-}
-
-qreal RectF::width() const
-{
-    return m_width;
-}
-
-qreal RectF::height() const
-{
-    return m_height;
-}
-
-void RectF::setWidth(qreal w)
-{
-    m_width = w;
-}
 
 //
 // PdfRendererError
@@ -226,402 +84,6 @@ public:
 private:
     QString m_what;
 }; // class PdfRendererError
-
-//
-// PdfAuxData
-//
-
-double PdfAuxData::topY(int page) const
-{
-    if (!m_drawFootnotes) {
-        return m_layout.topY();
-    } else {
-        return topFootnoteY(page);
-    }
-}
-
-int PdfAuxData::currentPageIndex() const
-{
-    if (!m_drawFootnotes) {
-        return m_currentPageIdx;
-    } else {
-        return m_footnotePageIdx;
-    }
-}
-
-double PdfAuxData::topFootnoteY(int page) const
-{
-    if (m_reserved.contains(page)) {
-        return m_layout.pageHeight() - m_reserved[page];
-    } else {
-        return m_layout.pageHeight() - m_layout.m_coords.m_margins.m_bottom;
-    }
-}
-
-double PdfAuxData::currentPageAllowedY() const
-{
-    return allowedY(m_currentPageIdx);
-}
-
-double PdfAuxData::allowedY(int page) const
-{
-    if (!m_drawFootnotes) {
-        if (m_reserved.contains(page)) {
-            return m_layout.pageHeight() - m_reserved[page];
-        } else {
-            return m_layout.pageHeight() - m_layout.margins().m_bottom;
-        }
-    } else {
-        return m_layout.pageHeight() - m_layout.margins().m_bottom;
-    }
-}
-
-void PdfAuxData::freeSpaceOn(int page)
-{
-    if (!m_drawFootnotes) {
-        if (m_reserved.contains(page)) {
-            double r = m_reserved[page];
-            m_reserved.remove(page);
-
-            if (page == m_footnotePageIdx) {
-                m_footnotePageIdx = page + 1;
-            }
-
-            while (m_reserved.contains(++page)) {
-                const double tmp = m_reserved[page];
-                m_reserved[page] = r;
-                r = tmp;
-            }
-
-            m_reserved[page] = r;
-        }
-    }
-}
-
-void PdfAuxData::drawBlob(double x,
-                          const sk_sp<SkTextBlob> &blob)
-{
-    m_firstOnPage = false;
-
-    SkPaint paint = m_currentPaint;
-    paint.setAntiAlias(true);
-
-#ifndef MD_PDF_TESTING
-    (*m_pages)[m_currentPainterIdx].m_canvas->drawTextBlob(blob, x, 0.0, paint);
-#else
-    if (m_printDrawings) {
-        (*m_drawingsStream) << QStringLiteral("Blob 0 \"\" %1 %2 0.0 0.0 %3 %4 0.0 0.0\n")
-                                   .arg(QString::number(x, 'f', 16),
-                                        QString::number(blob->bounds().y(), 'f', 16),
-                                        QString::number(blob->bounds().width(), 'f', 16),
-                                        QString::number(blob->bounds().height(), 'f', 16));
-    } else {
-        (*m_pages)[m_currentPainterIdx].m_canvas->drawTextBlob(blob, x, 0.0, paint);
-
-        if (QTest::currentTestFailed()) {
-            m_self->terminate();
-        }
-
-        int pos = m_testPos++;
-        QCOMPARE(DrawPrimitive::Type::Blob, m_testData.at(pos).m_type);
-        QCOMPARE(x, m_testData.at(pos).m_x);
-        QCOMPARE(blob->bounds().y(), m_testData.at(pos).m_y);
-        QCOMPARE(blob->bounds().width(), m_testData.at(pos).m_width);
-        QCOMPARE(blob->bounds().height(), m_testData.at(pos).m_height);
-    }
-#endif // MD_PDF_TESTING
-}
-
-void PdfAuxData::drawText(double x,
-                          double y,
-                          const Utf8String &text,
-                          const Font &font,
-                          double size,
-                          double scale,
-                          bool strikeout)
-{
-    m_firstOnPage = false;
-
-    auto copyFont = font;
-    copyFont.setSize(size);
-    copyFont.setScaleX(scale);
-    SkPaint paint = m_currentPaint;
-    paint.setAntiAlias(true);
-
-#ifndef MD_PDF_TESTING
-    (*m_pages)[m_currentPainterIdx].m_canvas->drawString(text, x, y, copyFont, paint);
-
-    if (strikeout) {
-        SkPaint paint = m_currentPaint;
-        SkFontMetrics fm;
-        copyFont.getMetrics(&fm);
-        paint.setStrokeWidth(fm.fStrikeoutThickness);
-
-        (*m_pages)[m_currentPainterIdx].m_canvas->drawLine(
-            x,
-            y + fm.fStrikeoutPosition,
-            x + copyFont.measureText(text, text.data.size(), SkTextEncoding::kUTF8),
-            y + fm.fStrikeoutPosition,
-            paint);
-    }
-#else
-    if (m_printDrawings) {
-        const auto s = PdfRenderer::createQString(text);
-
-        (*m_drawingsStream) << QStringLiteral("Text %1 \"%2\" %3 %4 0.0 0.0 0.0 0.0 0.0 0.0\n")
-                                   .arg(QString::number(s.length()),
-                                        s,
-                                        QString::number(x, 'f', 16),
-                                        QString::number(y, 'f', 16));
-    } else {
-        (*m_pages)[m_currentPainterIdx].m_canvas->drawString(text, x, y, copyFont, paint);
-
-        if (strikeout) {
-            SkPaint paint = m_currentPaint;
-            SkFontMetrics fm;
-            copyFont.getMetrics(&fm);
-            paint.setStrokeWidth(fm.fStrikeoutThickness);
-
-            (*m_pages)[m_currentPainterIdx].m_canvas->drawLine(
-                x,
-                y + fm.fStrikeoutPosition,
-                x + copyFont.measureText(text, text.data.size(), SkTextEncoding::kUTF8),
-                y + fm.fStrikeoutPosition,
-                paint);
-        }
-
-        if (QTest::currentTestFailed()) {
-            m_self->terminate();
-        }
-
-        int pos = m_testPos++;
-        QCOMPARE(DrawPrimitive::Type::Text, m_testData.at(pos).m_type);
-        QCOMPARE(PdfRenderer::createQString(text), m_testData.at(pos).m_text);
-        QCOMPARE(x, m_testData.at(pos).m_x);
-        QCOMPARE(y, m_testData.at(pos).m_y);
-    }
-#endif // MD_PDF_TESTING
-}
-
-void PdfAuxData::drawImage(double x,
-                           double y,
-                           const Image *img,
-                           double xScale,
-                           double yScale)
-{
-    m_firstOnPage = false;
-
-#ifndef MD_PDF_TESTING
-    (*m_pages)[m_currentPainterIdx].m_canvas->save();
-    (*m_pages)[m_currentPainterIdx].m_canvas->scale(xScale, yScale);
-    (*m_pages)[m_currentPainterIdx].m_canvas->drawImage(
-        img,
-        x / xScale,
-        y / yScale,
-        SkSamplingOptions(SkFilterMode::kLinear, SkMipmapMode::kLinear));
-    (*m_pages)[m_currentPainterIdx].m_canvas->restore();
-#else
-    if (m_printDrawings) {
-        (*m_drawingsStream) << QStringLiteral("Image 0 \"\" %1 %2 0.0 0.0 0.0 0.0 %3 %4\n")
-                                   .arg(QString::number(x, 'f', 16),
-                                        QString::number(y, 'f', 16),
-                                        QString::number(xScale, 'f', 16),
-                                        QString::number(yScale, 'f', 16));
-    } else {
-        (*m_pages)[m_currentPainterIdx].m_canvas->save();
-        (*m_pages)[m_currentPainterIdx].m_canvas->scale(xScale, yScale);
-        (*m_pages)[m_currentPainterIdx].m_canvas->drawImage(
-            img,
-            x / xScale,
-            y / yScale,
-            SkSamplingOptions(SkFilterMode::kLinear, SkMipmapMode::kLinear));
-        (*m_pages)[m_currentPainterIdx].m_canvas->restore();
-
-        if (QTest::currentTestFailed()) {
-            m_self->terminate();
-        }
-
-        int pos = m_testPos++;
-        QCOMPARE(x, m_testData.at(pos).m_x);
-        QCOMPARE(y, m_testData.at(pos).m_y);
-        QCOMPARE(xScale, m_testData.at(pos).m_xScale);
-        QCOMPARE(yScale, m_testData.at(pos).m_yScale);
-    }
-#endif // MD_PDF_TESTING
-}
-
-void PdfAuxData::drawImage(double x,
-                           double y,
-                           const SkSVGDOM *img,
-                           double xScale,
-                           double yScale)
-{
-    m_firstOnPage = false;
-
-#ifndef MD_PDF_TESTING
-    (*m_pages)[m_currentPainterIdx].m_canvas->save();
-    (*m_pages)[m_currentPainterIdx].m_canvas->translate(x, y);
-    (*m_pages)[m_currentPainterIdx].m_canvas->scale(xScale, yScale);
-    img->render((*m_pages)[m_currentPainterIdx].m_canvas);
-    (*m_pages)[m_currentPainterIdx].m_canvas->restore();
-#else
-    if (m_printDrawings) {
-        (*m_drawingsStream) << QStringLiteral("Image 0 \"\" %1 %2 0.0 0.0 0.0 0.0 %3 %4\n")
-                                   .arg(QString::number(x, 'f', 16),
-                                        QString::number(y, 'f', 16),
-                                        QString::number(xScale, 'f', 16),
-                                        QString::number(yScale, 'f', 16));
-    } else {
-        (*m_pages)[m_currentPainterIdx].m_canvas->save();
-        (*m_pages)[m_currentPainterIdx].m_canvas->translate(x, y);
-        (*m_pages)[m_currentPainterIdx].m_canvas->scale(xScale, yScale);
-        img->render((*m_pages)[m_currentPainterIdx].m_canvas);
-        (*m_pages)[m_currentPainterIdx].m_canvas->restore();
-
-        if (QTest::currentTestFailed()) {
-            m_self->terminate();
-        }
-
-        int pos = m_testPos++;
-        QCOMPARE(x, m_testData.at(pos).m_x);
-        QCOMPARE(y, m_testData.at(pos).m_y);
-        QCOMPARE(xScale, m_testData.at(pos).m_xScale);
-        QCOMPARE(yScale, m_testData.at(pos).m_yScale);
-    }
-#endif // MD_PDF_TESTING
-}
-
-void PdfAuxData::drawLine(double x1,
-                          double y1,
-                          double x2,
-                          double y2)
-{
-#ifndef MD_PDF_TESTING
-    (*m_pages)[m_currentPainterIdx].m_canvas->drawLine(x1, y1, x2, y2, m_currentPaint);
-#else
-    if (m_printDrawings) {
-        (*m_drawingsStream) << QStringLiteral("Line 0 \"\" %1 %2 %3 %4 0.0 0.0 0.0 0.0\n")
-                                   .arg(QString::number(x1, 'f', 16),
-                                        QString::number(y1, 'f', 16),
-                                        QString::number(x2, 'f', 16),
-                                        QString::number(y2, 'f', 16));
-    } else {
-        (*m_pages)[m_currentPainterIdx].m_canvas->drawLine(x1, y1, x2, y2, m_currentPaint);
-
-        if (QTest::currentTestFailed()) {
-            m_self->terminate();
-        }
-
-        int pos = m_testPos++;
-        QCOMPARE(x1, m_testData.at(pos).m_x);
-        QCOMPARE(y1, m_testData.at(pos).m_y);
-        QCOMPARE(x2, m_testData.at(pos).m_x2);
-        QCOMPARE(y2, m_testData.at(pos).m_y2);
-    }
-#endif // MD_PDF_TESTING
-}
-
-inline SkSize a4Size()
-{
-    static const float inchToPoint = 72.0f;
-    static const float widthInInches = 8.27f;
-    static const float heightInInches = 11.69f;
-
-    return {widthInInches * inchToPoint, heightInInches * inchToPoint};
-}
-
-void PdfAuxData::save(const QString &fileName)
-{
-    const auto write = [this](const QString &fileName) {
-        SkDynamicMemoryWStream buffer;
-        SkPDF::Metadata metadata;
-        metadata.jpegDecoder = SkPDF::JPEG::Decode;
-        metadata.jpegEncoder = SkPDF::JPEG::Encode;
-        metadata.fTitle = SkString(fileName.toUtf8().data());
-        metadata.fCreator =
-            "This PDF was generated with Markdown Tools\n"
-            "https://github.com/igormironchik/markdown-tools";
-        auto pdfDocument = SkPDF::MakeDocument(&buffer, metadata);
-
-        for (const auto &p : *m_pages) {
-            SkCanvas *pageCanvas = pdfDocument->beginPage(a4Size().width(), a4Size().height());
-            pageCanvas->drawPicture(p.m_recorder->finishRecordingAsPicture());
-        }
-
-        pdfDocument->close();
-
-        sk_sp<SkData> pdfData = buffer.detachAsData();
-
-        std::fstream f(fileName.toLocal8Bit().data(), std::ios::binary | std::ios::out);
-
-        f.write(static_cast<const char *>(pdfData->writable_data()), pdfData->size());
-
-        f.close();
-    };
-
-#ifndef MD_PDF_TESTING
-    write(fileName);
-#else
-    if (!m_printDrawings) {
-        write(fileName);
-    }
-#endif // MD_PDF_TESTING
-}
-
-void PdfAuxData::drawRectangle(double x,
-                               double y,
-                               double width,
-                               double height,
-                               SkPaint::Style m)
-{
-    auto paint = m_currentPaint;
-    paint.setStyle(m);
-
-#ifndef MD_PDF_TESTING
-    (*m_pages)[m_currentPainterIdx].m_canvas->drawRect(SkRect::MakeXYWH(x, y, width, height), paint);
-#else
-    if (m_printDrawings) {
-        (*m_drawingsStream) << QStringLiteral("Rectangle 0 \"\" %1 %2 0.0 0.0 %3 %4 0.0 0.0\n")
-                                   .arg(QString::number(x, 'f', 16),
-                                        QString::number(y, 'f', 16),
-                                        QString::number(width, 'f', 16),
-                                        QString::number(height, 'f', 16));
-    } else {
-        (*m_pages)[m_currentPainterIdx].m_canvas->drawRect(SkRect::MakeXYWH(x, y, width, height), paint);
-
-        if (QTest::currentTestFailed()) {
-            m_self->terminate();
-        }
-
-        int pos = m_testPos++;
-        QCOMPARE(x, m_testData.at(pos).m_x);
-        QCOMPARE(y, m_testData.at(pos).m_y);
-        QCOMPARE(width, m_testData.at(pos).m_width);
-        QCOMPARE(height, m_testData.at(pos).m_height);
-    }
-#endif // MD_PDF_TESTING
-}
-
-void PdfAuxData::setColor(const QColor &c)
-{
-    m_colorsStack.push(c);
-    m_currentPaint.setColor(SkColorSetRGB(c.red(), c.green(), c.blue()));
-}
-
-void PdfAuxData::restoreColor()
-{
-    if (m_colorsStack.size() > 1) {
-        m_colorsStack.pop();
-    }
-
-    repeatColor();
-}
-
-void PdfAuxData::repeatColor()
-{
-    const auto &c = m_colorsStack.top();
-    m_currentPaint.setColor(SkColorSetRGB(c.red(), c.green(), c.blue()));
-}
 
 /*
  * Copyright 2016 Google Inc.
@@ -837,98 +299,6 @@ double PdfAuxData::fontDescent(const Font &font,
     copyFont.getMetrics(&fm);
 
     return fm.fDescent;
-}
-
-//
-// PdfRenderer::CustomWidth
-//
-
-double PdfRenderer::CustomWidth::firstLineHeight() const
-{
-    if (!m_height.isEmpty()) {
-        return m_height.first();
-    } else {
-        return 0.0;
-    }
-}
-
-void PdfRenderer::CustomWidth::calcScale(double lineWidth)
-{
-    double w = 0.0;
-    double sw = 0.0;
-    double ww = 0.0;
-    double h = 0.0;
-    double d = 0.0;
-    double lastSpaceWidth = 0.0;
-
-    for (int i = 0, last = m_width.size(); i < last; ++i) {
-        if (m_width.at(i).m_descent > d) {
-            d = m_width.at(i).m_descent;
-        }
-
-        if (m_width.at(i).m_height - m_width.at(i).m_descent > h) {
-            h = m_width.at(i).m_height - m_width.at(i).m_descent;
-        }
-
-        w += m_width.at(i).m_width;
-
-        if (m_width.at(i).m_isSpace) {
-            sw += m_width.at(i).m_width;
-            lastSpaceWidth = m_width.at(i).m_width;
-        } else {
-            ww += m_width.at(i).m_width;
-
-            if (m_width.at(i).m_width > 0.0) {
-                lastSpaceWidth = 0.0;
-            }
-        }
-
-        if (m_width.at(i).m_isNewLine) {
-            if (lastSpaceWidth > 0.0) {
-                w -= lastSpaceWidth;
-                sw -= lastSpaceWidth;
-                lastSpaceWidth = 0.0;
-            }
-
-            if (m_width.at(i).m_shrink) {
-                auto ss = (lineWidth - ww) / sw;
-
-                while (ww + sw * ss > lineWidth) {
-                    ss -= 0.001;
-                }
-
-                m_scale.append(100.0 * ss);
-            } else {
-                m_scale.append(100.0);
-            }
-
-            double widthWithoutLastSpaces = w;
-
-            for (int j = i; j >= 0; --j) {
-                if (m_width.at(j).m_isSpace) {
-                    widthWithoutLastSpaces -= m_width.at(j).m_width;
-                } else {
-                    break;
-                }
-            }
-
-            if (m_width.at(i).m_alignment != ParagraphAlignment::Unknown) {
-                m_alignment.append(m_width.at(i).m_alignment);
-            } else {
-                m_alignment.append(ParagraphAlignment::Unknown);
-            }
-
-            m_height.append(h + d);
-            m_lineWidth.append(widthWithoutLastSpaces);
-            m_descent.append(d);
-
-            w = 0.0;
-            sw = 0.0;
-            ww = 0.0;
-            h = 0.0;
-            d = 0.0;
-        }
-    }
 }
 
 //
@@ -2253,6 +1623,249 @@ bool PdfRenderer::nextOnOneLineIsFit(PdfAuxData &pdfData,
     return true;
 }
 
+QVector<Word>::iterator PdfRenderer::drawWord(PdfAuxData &pdfData,
+                                              QVector<Word>::iterator it,
+                                              QVector<Word>::iterator last,
+                                              double fontSize,
+                                              double fontScale,
+                                              bool &drawAnyway,
+                                              bool &newLine,
+                                              bool draw,
+                                              const QColor &background,
+                                              CustomWidth &cw,
+                                              const PrevBaselineStateStack &currentBaseline,
+                                              double lineHeight,
+                                              bool footnoteAtEnd,
+                                              double footnoteWidth,
+                                              bool useShaper,
+                                              QVector<QPair<RectF,
+                                                            unsigned int>> &ret,
+                                              bool strikeout,
+                                              double fullWidth,
+                                              double offset,
+                                              double &h,
+                                              const QColor &color,
+                                              int footnoteNum)
+{
+    auto newLineFn = [&]() {
+        newLine = true;
+
+        if (draw) {
+            cw.moveToNextLine();
+
+            moveToNewLine(pdfData, offset, cw.height(), 1.0, cw.height());
+
+            alignLine(pdfData, cw);
+
+            h = cw.height();
+        } else {
+            cw.append({0.0, 0.0, false, true, true});
+            pdfData.m_layout.moveXToBegin();
+        }
+    }; // newLineFn
+
+    auto countCharsForAvailableSpace = [](const QString &s,
+                                          double availableWidth,
+                                          const Font &font,
+                                          const PdfAuxData &pdfData,
+                                          double fontSize,
+                                          double fontScale,
+                                          QString &tmp,
+                                          bool leftToRight) -> qsizetype {
+        qsizetype i = 0;
+
+        for (; i < s.length(); ++i) {
+            tmp.push_back(s[i]);
+            const auto l = pdfData.stringWidth(font, fontSize, fontScale, createUtf8String(tmp), leftToRight);
+
+            if (l > availableWidth && !(qAbs(l - availableWidth) < 0.01)) {
+                tmp.removeLast();
+
+                --i;
+
+                break;
+            }
+        }
+
+        return (i < s.length() ? ++i : i);
+    }; // countCharsForAvailableSpace
+
+    auto splitAndDraw = [&](QString s, bool rtl, const Font &font) {
+        while (s.length()) {
+            QString tmp;
+            const auto i = countCharsForAvailableSpace(s,
+                                                       pdfData.m_layout.availableWidth(),
+                                                       font,
+                                                       pdfData,
+                                                       fontSize,
+                                                       fontScale,
+                                                       tmp,
+                                                       !rtl);
+
+            s.remove(0, i);
+
+            const auto w = pdfData.stringWidth(font, fontSize, fontScale, createUtf8String(tmp), !rtl);
+
+            if (draw) {
+                pdfData.setColor(color);
+
+                if (pdfData.m_layout.isRightToLeft()) {
+                    std::reverse(tmp.begin(), tmp.end());
+                }
+
+                pdfData.drawText(pdfData.m_layout.startX(w),
+                                 pdfData.m_layout.y() - cw.descent() - currentBaseline.m_stack.back().m_baselineDelta,
+                                 createUtf8String(tmp),
+                                 font,
+                                 fontSize * fontScale,
+                                 1.0,
+                                 strikeout);
+                pdfData.restoreColor();
+
+                ret.append(
+                    qMakePair(pdfData.m_layout.currentRect(w, lineHeight, currentBaseline.currentBaselineDelta()),
+                              pdfData.m_currentPainterIdx));
+            } else {
+                const auto lineInfo = currentBaseline.fullLineHeight();
+
+                cw.append({w,
+                           lineInfo.first,
+                           false,
+                           false,
+                           true,
+                           tmp,
+                           pdfData.fontDescent(font, fontSize, fontScale) + lineInfo.second});
+            }
+
+            newLine = false;
+
+            pdfData.m_layout.addX(w);
+
+            if (s.length()) {
+                newLineFn();
+            }
+        }
+
+        if (!draw && it + 1 == last && footnoteAtEnd) {
+            const auto lineInfo = currentBaseline.fullLineHeight();
+
+            cw.append({footnoteWidth,
+                       lineInfo.first,
+                       false,
+                       false,
+                       true,
+                       QString::number(footnoteNum),
+                       pdfData.fontDescent(font, fontSize, fontScale) + lineInfo.second});
+        }
+    }; // splitAndDraw
+
+    const auto str = createUtf8String(it->m_word);
+
+    const auto length = pdfData.stringWidth(*it->m_font, fontSize, fontScale, str, !it->m_rtl);
+
+    const auto width = length + (it + 1 == last && footnoteAtEnd ? footnoteWidth : 0.0);
+
+    if ((pdfData.m_layout.isFit(width) && nextOnOneLineIsFit(pdfData, it, last, width, fontSize, fontScale))
+        || drawAnyway) {
+        newLine = false;
+        drawAnyway = false;
+
+        if (draw) {
+            if (background.isValid()) {
+                pdfData.setColor(background);
+                pdfData.drawRectangle(pdfData.m_layout.startX(length),
+                                      pdfData.m_layout.y()
+                                          - cw.descent()
+                                          - currentBaseline.m_stack.back().m_baselineDelta
+                                          + pdfData.fontAscent(*it->m_font, fontSize, fontScale)
+                                              * pdfData.fontBackgroundBoxScale(*it->m_font, fontSize, fontScale),
+                                      length,
+                                      pdfData.lineSpacing(*it->m_font, fontSize, fontScale)
+                                          * pdfData.fontBackgroundBoxScale(*it->m_font, fontSize, fontScale),
+                                      SkPaint::kFill_Style);
+                pdfData.restoreColor();
+            }
+
+            pdfData.setColor(color);
+
+            if (!useShaper && !it->m_rtl) {
+                pdfData.drawText(pdfData.m_layout.startX(length),
+                                 pdfData.m_layout.y() - cw.descent() - currentBaseline.m_stack.back().m_baselineDelta,
+                                 createUtf8String(it->m_word),
+                                 *it->m_font,
+                                 fontSize * fontScale,
+                                 1.0,
+                                 strikeout);
+            } else {
+                drawTextBlobOrText(pdfData,
+                                   *it->m_font,
+                                   fontSize,
+                                   fontScale,
+                                   str,
+                                   cw.descent(),
+                                   currentBaseline.m_stack.back().m_baselineDelta,
+                                   it->m_rtl,
+                                   length,
+                                   strikeout);
+            }
+
+            pdfData.restoreColor();
+
+            ret.append(
+                qMakePair(pdfData.m_layout.currentRect(length, lineHeight, currentBaseline.currentBaselineDelta()),
+                          pdfData.m_currentPainterIdx));
+        } else {
+            const auto lineInfo = currentBaseline.fullLineHeight();
+
+            cw.append({length + (it + 1 == last && footnoteAtEnd ? footnoteWidth : 0.0),
+                       lineInfo.first,
+                       false,
+                       false,
+                       true,
+                       it->m_word,
+                       pdfData.fontDescent(*it->m_font, fontSize, fontScale) + lineInfo.second});
+        }
+
+        pdfData.m_layout.addX(length);
+    }
+    // Need to move to new line.
+    else {
+        if (width > fullWidth * 2.0 / 3.0 && !useShaper) {
+            QString tmp;
+
+            if (countCharsForAvailableSpace(it->m_word,
+                                            pdfData.m_layout.availableWidth(),
+                                            *it->m_font,
+                                            pdfData,
+                                            fontSize,
+                                            fontScale,
+                                            tmp,
+                                            !it->m_rtl)
+                > 4) {
+                splitAndDraw(it->m_word, it->m_rtl, *it->m_font);
+            } else {
+                if (width < fullWidth || qAbs(width - fullWidth) < 0.01) {
+                    newLineFn();
+
+                    --it;
+                } else {
+                    newLineFn();
+
+                    splitAndDraw(it->m_word, it->m_rtl, *it->m_font);
+                }
+            }
+        } else {
+            newLineFn();
+
+            --it;
+
+            drawAnyway = useShaper;
+        }
+    }
+
+    return it;
+}
+
 QVector<QPair<RectF,
               unsigned int>>
 PdfRenderer::drawString(PdfAuxData &pdfData,
@@ -2343,23 +1956,6 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
     if (cw.isDrawing()) {
         h = cw.height();
     }
-
-    auto newLineFn = [&]() {
-        newLine = true;
-
-        if (draw) {
-            cw.moveToNextLine();
-
-            moveToNewLine(pdfData, offset, cw.height(), 1.0, cw.height());
-
-            alignLine(pdfData, cw);
-
-            h = cw.height();
-        } else {
-            cw.append({0.0, 0.0, false, true, true});
-            pdfData.m_layout.moveXToBegin();
-        }
-    };
 
     QVector<QPair<RectF, unsigned int>> ret;
 
@@ -2511,35 +2107,6 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
         }
     }; // drawSpace
 
-    auto countCharsForAvailableSpace = [&rtl](const QString &s,
-                                              double availableWidth,
-                                              const Font &font,
-                                              const PdfAuxData &pdfData,
-                                              double fontSize,
-                                              double fontScale,
-                                              QString &tmp) -> qsizetype {
-        qsizetype i = 0;
-
-        for (; i < s.length(); ++i) {
-            tmp.push_back(s[i]);
-            const auto l = pdfData.stringWidth(font,
-                                               fontSize,
-                                               fontScale,
-                                               createUtf8String(tmp),
-                                               rtl ? !rtl->isRightToLeft() : true);
-
-            if (l > availableWidth && !(qAbs(l - availableWidth) < 0.01)) {
-                tmp.removeLast();
-
-                --i;
-
-                break;
-            }
-        }
-
-        return (i < s.length() ? ++i : i);
-    }; // countCharsForAvailableSpace
-
     bool drawAnyway = false;
 
     // Draw words.
@@ -2552,8 +2119,6 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
             }
         }
 
-        const auto str = createUtf8String(it->m_word);
-
         if (it->m_word == s_spaceString) {
             if (!newLine) {
                 drawSpace(false);
@@ -2565,177 +2130,40 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                 continue;
             }
 
-            const auto length = pdfData.stringWidth(*it->m_font, fontSize, fontScale, str, !it->m_rtl);
+            if (pdfData.m_layout.isRightToLeft() != it->m_rtl) {
+                auto end = std::find_if(it, last, [&it](const auto &w) {
+                    return (w.m_rtl != it->m_rtl && w.m_word != s_spaceString);
+                });
 
-            const auto width = length + (it + 1 == last && footnoteAtEnd ? footnoteWidth : 0.0);
-
-            if ((pdfData.m_layout.isFit(width) && nextOnOneLineIsFit(pdfData, it, last, width, fontSize, fontScale))
-                || drawAnyway) {
-                newLine = false;
-                drawAnyway = false;
-
-                if (draw) {
-                    if (background.isValid()) {
-                        pdfData.setColor(background);
-                        pdfData.drawRectangle(
-                            pdfData.m_layout.startX(length),
-                            pdfData.m_layout.y()
-                                - cw.descent()
-                                - currentBaseline.m_stack.back().m_baselineDelta
-                                + pdfData.fontAscent(*it->m_font, fontSize, fontScale)
-                                    * pdfData.fontBackgroundBoxScale(*it->m_font, fontSize, fontScale),
-                            length,
-                            pdfData.lineSpacing(*it->m_font, fontSize, fontScale)
-                                * pdfData.fontBackgroundBoxScale(*it->m_font, fontSize, fontScale),
-                            SkPaint::kFill_Style);
-                        pdfData.restoreColor();
-                    }
-
-                    pdfData.setColor(color);
-
-                    if (!useShaper && !it->m_rtl) {
-                        pdfData.drawText(
-                            pdfData.m_layout.startX(length),
-                            pdfData.m_layout.y() - cw.descent() - currentBaseline.m_stack.back().m_baselineDelta,
-                            createUtf8String(it->m_word),
-                            *it->m_font,
-                            fontSize * fontScale,
-                            1.0,
-                            strikeout);
-                    } else {
-                        drawTextBlobOrText(pdfData,
-                                           *it->m_font,
-                                           fontSize,
-                                           fontScale,
-                                           str,
-                                           cw.descent(),
-                                           currentBaseline.m_stack.back().m_baselineDelta,
-                                           it->m_rtl,
-                                           length,
-                                           strikeout);
-                    }
-
-                    pdfData.restoreColor();
-
-                    ret.append(qMakePair(
-                        pdfData.m_layout.currentRect(length, lineHeight, currentBaseline.currentBaselineDelta()),
-                        pdfData.m_currentPainterIdx));
-                } else {
-                    const auto lineInfo = currentBaseline.fullLineHeight();
-
-                    cw.append({length + (it + 1 == last && footnoteAtEnd ? footnoteWidth : 0.0),
-                               lineInfo.first,
-                               false,
-                               false,
-                               true,
-                               it->m_word,
-                               pdfData.fontDescent(*it->m_font, fontSize, fontScale) + lineInfo.second});
+                if (end != last && end->m_word != s_spaceString) {
+                    ++end;
                 }
 
-                pdfData.m_layout.addX(length);
+                // while (it != end) { }
             }
-            // Need to move to new line.
-            else {
-                auto splitAndDraw = [&](QString s, bool rtl, const Font &font) {
-                    while (s.length()) {
-                        QString tmp;
-                        const auto i = countCharsForAvailableSpace(s,
-                                                                   pdfData.m_layout.availableWidth(),
-                                                                   font,
-                                                                   pdfData,
-                                                                   fontSize,
-                                                                   fontScale,
-                                                                   tmp);
 
-                        s.remove(0, i);
-
-                        const auto w = pdfData.stringWidth(font, fontSize, fontScale, createUtf8String(tmp), !rtl);
-
-                        if (draw) {
-                            pdfData.setColor(color);
-
-                            if (pdfData.m_layout.isRightToLeft()) {
-                                std::reverse(tmp.begin(), tmp.end());
-                            }
-
-                            pdfData.drawText(
-                                pdfData.m_layout.startX(w),
-                                pdfData.m_layout.y() - cw.descent() - currentBaseline.m_stack.back().m_baselineDelta,
-                                createUtf8String(tmp),
-                                font,
-                                fontSize * fontScale,
-                                1.0,
-                                strikeout);
-                            pdfData.restoreColor();
-
-                            ret.append(qMakePair(
-                                pdfData.m_layout.currentRect(w, lineHeight, currentBaseline.currentBaselineDelta()),
-                                pdfData.m_currentPainterIdx));
-                        } else {
-                            const auto lineInfo = currentBaseline.fullLineHeight();
-
-                            cw.append({w,
-                                       lineInfo.first,
-                                       false,
-                                       false,
-                                       true,
-                                       tmp,
-                                       pdfData.fontDescent(font, fontSize, fontScale) + lineInfo.second});
-                        }
-
-                        newLine = false;
-
-                        pdfData.m_layout.addX(w);
-
-                        if (s.length()) {
-                            newLineFn();
-                        }
-                    }
-
-                    if (!draw && it + 1 == last && footnoteAtEnd) {
-                        const auto lineInfo = currentBaseline.fullLineHeight();
-
-                        cw.append({footnoteWidth,
-                                   lineInfo.first,
-                                   false,
-                                   false,
-                                   true,
-                                   QString::number(footnoteNum),
-                                   pdfData.fontDescent(font, fontSize, fontScale) + lineInfo.second});
-                    }
-                }; // splitAndDraw
-
-                if (width > fullWidth * 2.0 / 3.0 && !useShaper) {
-                    QString tmp;
-
-                    if (countCharsForAvailableSpace(it->m_word,
-                                                    pdfData.m_layout.availableWidth(),
-                                                    font,
-                                                    pdfData,
-                                                    fontSize,
-                                                    fontScale,
-                                                    tmp)
-                        > 4) {
-                        splitAndDraw(it->m_word, it->m_rtl, *it->m_font);
-                    } else {
-                        if (width < fullWidth || qAbs(width - fullWidth) < 0.01) {
-                            newLineFn();
-
-                            --it;
-                        } else {
-                            newLineFn();
-
-                            splitAndDraw(it->m_word, it->m_rtl, *it->m_font);
-                        }
-                    }
-                } else {
-                    newLineFn();
-
-                    --it;
-
-                    drawAnyway = useShaper;
-                }
-            }
+            it = drawWord(pdfData,
+                          it,
+                          last,
+                          fontSize,
+                          fontScale,
+                          drawAnyway,
+                          newLine,
+                          draw,
+                          background,
+                          cw,
+                          currentBaseline,
+                          lineHeight,
+                          footnoteAtEnd,
+                          footnoteWidth,
+                          useShaper,
+                          ret,
+                          strikeout,
+                          fullWidth,
+                          offset,
+                          h,
+                          color,
+                          footnoteNum);
         }
     }
 
@@ -4640,89 +4068,6 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
                                   "sorry for the inconvenience.")
                                    .arg(item->url()));
     }
-}
-
-//
-// LoadImageFromNetwork
-//
-
-LoadImageFromNetwork::LoadImageFromNetwork(const QUrl &url,
-                                           QThread *thread,
-                                           double height,
-                                           bool scale)
-    : m_thread(thread)
-    , m_reply(nullptr)
-    , m_url(url)
-    , m_height(height)
-    , m_scale(scale)
-{
-    connect(this, &LoadImageFromNetwork::start, this, &LoadImageFromNetwork::loadImpl, Qt::QueuedConnection);
-}
-
-const QImage &LoadImageFromNetwork::image() const
-{
-    return m_img;
-}
-
-void LoadImageFromNetwork::load()
-{
-    Q_EMIT start();
-}
-
-bool LoadImageFromNetwork::isSvg() const
-{
-    return !m_svgData.isEmpty();
-}
-
-const QByteArray &LoadImageFromNetwork::svgData() const
-{
-    return m_svgData;
-}
-
-void LoadImageFromNetwork::loadImpl()
-{
-    QNetworkAccessManager *m = new QNetworkAccessManager(this);
-    QNetworkRequest r(m_url);
-    r.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::NoLessSafeRedirectPolicy);
-    m_reply = m->get(r);
-
-    connect(m_reply, &QNetworkReply::finished, this, &LoadImageFromNetwork::loadFinished);
-    connect(m_reply,
-            static_cast<void (QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::errorOccurred),
-            this,
-            &LoadImageFromNetwork::loadError);
-}
-
-void LoadImageFromNetwork::loadFinished()
-{
-    auto data = m_reply->readAll();
-    const auto svg = QString(data.mid(0, 4).toLower());
-
-    if (svg == QStringLiteral("<svg")
-        || svg == QStringLiteral("<?xm")
-        || m_reply->url().fileName().toLower().endsWith(QStringLiteral("svgz"))
-        || m_reply->url().fileName().toLower().endsWith(QStringLiteral("svg.gz"))
-        || m_reply->url().fileName().toLower().endsWith(QStringLiteral("svg"))) {
-        if (m_reply->url().fileName().toLower().endsWith(QStringLiteral("svgz"))
-            || m_reply->url().fileName().toLower().endsWith(QStringLiteral("svg.gz"))) {
-            m_reply->seek(0);
-            m_svgData = qt_inflateSvgzDataFrom(m_reply, true);
-        } else {
-            m_svgData = data;
-        }
-    } else {
-        m_img.loadFromData(data);
-    }
-
-    m_reply->deleteLater();
-
-    m_thread->quit();
-}
-
-void LoadImageFromNetwork::loadError(QNetworkReply::NetworkError)
-{
-    m_reply->deleteLater();
-    m_thread->quit();
 }
 
 QByteArray PdfRenderer::loadImage(MD::Image *item,

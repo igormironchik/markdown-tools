@@ -10,199 +10,17 @@
 #include "syntax.h"
 #include "utils.h"
 
-// md4qt include.
-#include <md4qt/src/doc.h>
+// converter include.
+#include "renderer_aux.h"
 
 // Qt include.
-#include <QByteArray>
-#include <QColor>
-#include <QImage>
-#include <QMutex>
-#include <QNetworkReply>
 #include <QObject>
-#include <QSharedPointer>
-#include <QStack>
-#include <QTemporaryFile>
-
-#ifdef MD_PDF_TESTING
-#include <QFile>
-#include <QTextStream>
-#endif // MD_PDF_TESTING
-
-// C++ include.
-#include <functional>
-#include <memory>
-#include <string_view>
-#include <vector>
-
-// Skia include.
-#include <include/core/SkCanvas.h>
-#include <include/core/SkFont.h>
-#include <include/core/SkImage.h>
-#include <include/core/SkPictureRecorder.h>
-#include <modules/skshaper/include/SkShaper.h>
-#include <modules/skshaper/include/SkShaper_harfbuzz.h>
-#include <modules/skshaper/include/SkShaper_skunicode.h>
-#include <modules/skunicode/include/SkUnicode_icu.h>
-
-#ifdef Q_OS_LINUX
-#include <include/ports/SkFontMgr_fontconfig.h>
-#include <include/ports/SkFontScanner_FreeType.h>
-#endif
-
-#include <modules/svg/include/SkSVGDOM.h>
 
 namespace MdPdf
 {
 
 namespace Render
 {
-
-struct RectF {
-    RectF() = default;
-    RectF(qreal leftX,
-          qreal bottomY,
-          qreal width,
-          qreal height);
-
-    qreal x() const;
-    qreal bottomY() const;
-    qreal width() const;
-    qreal height() const;
-
-    void setWidth(qreal w);
-
-    qreal m_leftX = 0.0;
-    qreal m_bottomY = 0.0;
-    qreal m_width = 0.0;
-    qreal m_height = 0.0;
-}; // struct RectF
-
-struct Utf8String {
-    QByteArray data;
-
-    Utf8String(const QByteArray &a)
-        : data(a)
-    {
-    }
-
-    Utf8String(const char *s)
-        : data(s)
-    {
-    }
-
-    operator const char *() const
-    {
-        return data.data();
-    }
-
-    operator std::string_view() const
-    {
-        return data.data();
-    }
-}; // struct Utf8String
-
-using Font = SkFont;
-using Painter = SkCanvas;
-using String = Utf8String;
-using Image = SkImage;
-
-struct Page {
-    std::shared_ptr<SkPictureRecorder> m_recorder;
-    Painter *m_canvas = nullptr;
-}; // struct Page
-
-//! Footnote scale.
-static const double s_footnoteScale = 0.75;
-
-#ifdef MD_PDF_TESTING
-struct DrawPrimitive {
-    enum class Type {
-        Text = 0,
-        Line,
-        Rectangle,
-        Image,
-        MultilineText,
-        Blob,
-        Unknown
-    };
-
-    Type m_type;
-    QString m_text;
-    double m_x;
-    double m_y;
-    double m_x2;
-    double m_y2;
-    double m_width;
-    double m_height;
-    double m_xScale;
-    double m_yScale;
-};
-#endif // MD_PDF_TESTING
-
-//! Image alignment.
-enum class ImageAlignment {
-    Unknown,
-    Left,
-    Center,
-    Right
-}; // enum ImageAlignment
-
-//! Paragraph alignment.
-enum class ParagraphAlignment {
-    //! Unknown,
-    Unknown,
-    //! Left.
-    Left,
-    //! Center.
-    Center,
-    //! Right.
-    Right,
-    //! FillWidth
-    FillWidth
-}; // enum ParagraphAlignment
-
-//
-// RenderOpts
-//
-
-//! Options for rendering.
-struct RenderOpts {
-    //! Text font.
-    QString m_textFont;
-    //! Text font size.
-    int m_textFontSize;
-    //! Code font.
-    QString m_codeFont;
-    //! Code font size.
-    int m_codeFontSize;
-    //! Links color.
-    QColor m_linkColor;
-    //! Borders color.
-    QColor m_borderColor;
-    //! Mark color.
-    QColor m_markColor;
-    //! Left margin.
-    double m_left;
-    //! Right margin.
-    double m_right;
-    //! Top margin.
-    double m_top;
-    //! Bottom margin.
-    double m_bottom;
-    //! DPI.
-    quint16 m_dpi;
-    //! Syntax highlighter.
-    QSharedPointer<MdShared::Syntax> m_syntax;
-    //! Image alignment.
-    ImageAlignment m_imageAlignment;
-
-#ifdef MD_PDF_TESTING
-    bool m_printDrawings = false;
-    QVector<DrawPrimitive> m_testData;
-    QString m_testDataFileName;
-#endif // MD_PDF_TESTING
-}; // struct RenderOpts
 
 //
 // Renderer
@@ -232,354 +50,6 @@ public:
                         const RenderOpts &opts,
                         bool testing = false) = 0;
 }; // class Renderer
-
-static const double s_margin = 72.0 / 25.4 * 20.0;
-static const double s_beforeHeading = 15.0;
-static const double s_blockquoteBaseOffset = 10.0;
-static const double s_blockquoteMarkWidth = 3.0;
-static const double s_tableMargin = 2.0;
-
-//! Mrgins.
-struct PageMargins {
-    double m_left = s_margin;
-    double m_right = s_margin;
-    double m_top = s_margin;
-    double m_bottom = s_margin;
-}; // struct PageMargins
-
-//! Page current coordinates and etc...
-struct CoordsPageAttribs {
-    PageMargins m_margins;
-    double m_pageWidth = 0.0;
-    double m_pageHeight = 0.0;
-    double m_x = 0.0;
-    double m_y = 0.0;
-}; // struct CoordsPageAttribs
-
-class PdfRenderer;
-
-//! Layout direction handler.
-struct LayoutDirectionHandler {
-    double x() const
-    {
-        return m_coords.m_x;
-    }
-    double y() const
-    {
-        return m_coords.m_y;
-    }
-    void setRightToLeft(bool on)
-    {
-        m_isRightToLeft = on;
-    }
-    bool isRightToLeft() const
-    {
-        return m_isRightToLeft;
-    }
-    void setX(double value)
-    {
-        m_coords.m_x = value;
-    }
-    void addX(double value)
-    {
-        m_coords.m_x += xIncrementDirection() * value;
-    }
-    void moveXToBegin()
-    {
-        setX((isRightToLeft() ? rightBorderXWithOffset() : leftBorderXWithOffset()));
-    }
-    void setY(double value)
-    {
-        m_coords.m_y = value;
-    }
-    void addY(double value,
-              double direction = 1.0)
-    {
-        m_coords.m_y += direction * value;
-    }
-    double leftBorderXWithOffset() const
-    {
-        return (m_coords.m_margins.m_left
-                + (!m_offset.empty() && m_offset.back()->m_left ? m_offset.back()->m_value : 0.0));
-    }
-    double rightBorderXWithOffset() const
-    {
-        return (m_coords.m_pageWidth
-                - m_coords.m_margins.m_right
-                - (!m_offset.empty() && !m_offset.back()->m_left ? m_offset.back()->m_value : 0.0));
-    }
-
-    bool isFit(double width) const
-    {
-        return (isRightToLeft()
-                    ? (x() - width >= leftBorderXWithOffset() || qAbs(leftBorderXWithOffset() - x() + width) < 0.01)
-                    : (x() + width <= rightBorderXWithOffset() || qAbs(x() + width - rightBorderXWithOffset()) < 0.01));
-    }
-
-    double topY() const
-    {
-        return m_coords.m_margins.m_top;
-    }
-    const PageMargins &margins() const
-    {
-        return m_coords.m_margins;
-    }
-    PageMargins &margins()
-    {
-        return m_coords.m_margins;
-    }
-    double pageWidth() const
-    {
-        return m_coords.m_pageWidth;
-    }
-    double pageHeight() const
-    {
-        return m_coords.m_pageHeight;
-    }
-    double borderStartX() const
-    {
-        return (isRightToLeft() ? m_coords.m_pageWidth - m_coords.m_margins.m_right : m_coords.m_margins.m_left);
-    }
-    double xIncrementDirection() const
-    {
-        return (isRightToLeft() ? -1.0 : 1.0);
-    }
-    RectF currentRect(double width,
-                      double height,
-                      double baseline = 0.0) const
-    {
-        return RectF(startX(width), y(), width, height);
-    }
-    double startX(double width) const
-    {
-        return (isRightToLeft() ? x() - width : x());
-    }
-    double availableWidth() const
-    {
-        return (isRightToLeft() ? x() - leftBorderXWithOffset() : rightBorderXWithOffset() - x());
-    }
-
-    struct Offset {
-        Offset(std::vector<Offset *> &offsets,
-               double value,
-               bool left)
-            : m_value(value)
-            , m_left(left)
-            , m_offsets(offsets)
-        {
-            m_offsets.push_back(this);
-        }
-
-        ~Offset()
-        {
-            m_offsets.pop_back();
-        }
-
-        Offset(const Offset &) = delete;
-        Offset &operator=(const Offset &) = delete;
-
-        double m_value = 0.0;
-        bool m_left = true;
-
-    private:
-        std::vector<Offset *> &m_offsets;
-    };
-
-    Offset addOffset(double value,
-                     bool left)
-    {
-        return Offset(m_offset, value, left);
-    }
-
-    //! Coordinates and margins.
-    CoordsPageAttribs m_coords;
-
-private:
-    bool m_isRightToLeft = false;
-    std::vector<Offset *> m_offset;
-}; // struct LayoutDirectionHandler
-
-class TextBlobBuilderRunHandler;
-
-//! Auxiliary struct for rendering.
-struct PdfAuxData {
-    //! Painters.
-    std::vector<Page> *m_pages = nullptr;
-    //! Layout direction handler.
-    LayoutDirectionHandler m_layout;
-    //! Current line height.
-    double m_lineHeight = 0.0;
-    //! Extra space before footnotes.
-    double m_extraInFootnote = 0.0;
-    //! Start line of procesing in the document.
-    long long int m_startLine = 0;
-    //! Start position in the start line.
-    long long int m_startPos = 0;
-    //! End line of procesing in the document.
-    long long int m_endLine = 0;
-    //! End position in the end line.
-    long long int m_endPos = 0;
-    //! Anchors in document.
-    QStringList m_anchors;
-    //! Reserved spaces on the pages for footnotes.
-    QMap<unsigned int, double> m_reserved;
-    //! Colors stack.
-    QStack<QColor> m_colorsStack;
-    //! Markdown document.
-    QSharedPointer<MD::Document> m_md;
-    //! Current file.
-    QString m_currentFile;
-    //! Footnotes map to map anchors.
-    QMap<MD::Footnote *, QPair<QString, int>> m_footnotesAnchorsMap;
-    //! Map of footnotes references to its counter (uses for back links from footnote).
-    QMap<MD::Footnote *, int> m_footnoteRefCount;
-    //! Special blockquotes that should be highlighted.
-    QMap<MD::Blockquote *, QColor> m_highlightedBlockquotes;
-    //! Cache of fonts.
-    QMap<QString, QSharedPointer<QTemporaryFile>> m_fontsCache;
-    //! Stack of painters used on table drawing.
-    QMap<int, char> m_cachedPainters;
-    //! SkFontMgr.
-    sk_sp<SkFontMgr> m_fontMgr;
-    //! SkUnicode.
-    sk_sp<SkUnicode> m_unicode;
-    //! SkShaper.
-    std::shared_ptr<SkShaper> m_shaper;
-    //! Cache of typesets.
-    QHash<QString, sk_sp<SkTypeface>> m_typefaceCache;
-    //! Current SkPaint.
-    SkPaint m_currentPaint;
-    //! Index of the current page.
-    int m_currentPageIdx = -1;
-    //! Current page index for drawing footnotes.
-    int m_footnotePageIdx = -1;
-    //! Current painter index.
-    int m_currentPainterIdx = -1;
-    //! Current index of the footnote (for drawing number in the PDF).
-    int m_currentFootnote = 1;
-    //! Footnote counter.
-    int m_footnoteNum = 1;
-    //! Drawing footnotes or the document?
-    bool m_drawFootnotes = false;
-    //! Is this first item on the page?
-    bool m_firstOnPage = true;
-    //! Continue drawing of paragraph?
-    bool m_continueParagraph = false;
-    //! Flag when drawing table.
-    bool m_tableDrawing = false;
-
-#ifdef MD_PDF_TESTING
-    QMap<QString, QString> m_fonts;
-    QSharedPointer<QFile> m_drawingsFile;
-    QSharedPointer<QTextStream> m_drawingsStream;
-    QVector<DrawPrimitive> m_testData;
-    PdfRenderer *m_self = nullptr;
-    int m_testPos = 0;
-    bool m_printDrawings = false;
-#endif // MD_PDF_TESTING
-
-    //! \return Top Y coordinate on the page.
-    double topY(int page) const;
-    //! \return Current page index.
-    int currentPageIndex() const;
-    //! \return Top footnote Y coordinate on the page.
-    double topFootnoteY(int page) const;
-    //! \return Minimum allowe Y coordinate on the current page.
-    double currentPageAllowedY() const;
-    //! \return Minimum allowe Y coordinate on the page.
-    double allowedY(int page) const;
-    //! Reserve space for drawing, i.e. move footnotes on the next page.
-    void freeSpaceOn(int page);
-
-    //! Draw blob.
-    void drawBlob(double x,
-                  const sk_sp<SkTextBlob> &blob);
-    //! Draw text
-    void drawText(double x,
-                  double y,
-                  const Utf8String &text,
-                  const Font &font,
-                  double size,
-                  double scale,
-                  bool strikeout);
-    //! Draw image.
-    void drawImage(double x,
-                   double y,
-                   const Image *img,
-                   double xScale,
-                   double yScale);
-    //! Draw image.
-    void drawImage(double x,
-                   double y,
-                   const SkSVGDOM *img,
-                   double xScale,
-                   double yScale);
-    //! Draw line.
-    void drawLine(double x1,
-                  double y1,
-                  double x2,
-                  double y2);
-    //! Save document.
-    void save(const QString &fileName);
-    //! Draw rectangle.
-    void drawRectangle(double x,
-                       double y,
-                       double width,
-                       double height,
-                       SkPaint::Style m);
-
-    //! Set color.
-    void setColor(const QColor &c);
-    //! Restore color.
-    void restoreColor();
-    //! Repeat color (needed after new page creation).
-    void repeatColor();
-
-    //! Shape string.
-    //!
-    //! \return True on success.
-    bool shape(TextBlobBuilderRunHandler &handler,
-               const Font &font,
-               double size,
-               double scale,
-               const String &s,
-               bool leftToRight) const;
-
-    //! \return String width.
-    double stringWidth(const Font &font,
-                       double size,
-                       double scale,
-                       const String &s,
-                       bool leftToRight) const;
-    //! \return Line spacing.
-    double lineSpacing(const Font &font,
-                       double size,
-                       double scale) const;
-    //! \return Font ascent.
-    double fontAscent(const Font &font,
-                      double size,
-                      double scale) const;
-    //! \return Font bounding box scale of total line height.
-    double fontBackgroundBoxScale(const Font &font,
-                                  double size,
-                                  double scale) const;
-    //! \return Font descent.
-    double fontDescent(const Font &font,
-                       double size,
-                       double scale) const;
-}; // struct PdfAuxData;
-
-//! Where was the item drawn?
-struct WhereDrawn {
-    //! Page painter index.
-    int m_pageIdx = -1;
-    //! Y of line's bottom.
-    double m_y = 0.0;
-    //! Height of the item.
-    double m_height = 0.0;
-    //! Extra height that can be skipped (usually extra line before new paragraph or heading).
-    double m_extraHeight = 0.0;
-}; // struct WhereDrawn
 
 //
 // PdfRenderer
@@ -626,6 +96,7 @@ protected:
 #ifdef MD_PDF_TESTING
     friend struct TestRendering;
 #endif
+    friend class AutoSubSupScriptInit;
 
     //! Create font.
     Font createFont(const QString &name,
@@ -675,27 +146,6 @@ private:
         //! Calculate full height.
         Full = 2
     }; // enum class CalcHeightOpt
-
-    //! Flag for RTL languages support.
-    struct RTLFlag {
-        RTLFlag()
-            : m_isOn(false)
-            , m_check(true)
-        {
-        }
-
-        bool isCheck() const
-        {
-            return m_check;
-        }
-        bool isRightToLeft() const
-        {
-            return m_isOn;
-        }
-
-        bool m_isOn = false;
-        bool m_check = true;
-    };
 
     void setRTLFlagToFalseIfCheck(RTLFlag *rtl)
     {
@@ -838,219 +288,9 @@ private:
                  bool firstItem,
                  RTLFlag *rtl = nullptr);
 
-    //! Auxiliary struct for calculation of spaces scales to shrink text to width.
-    struct CustomWidth {
-        //! Item on line.
-        struct Width {
-            double m_width = 0.0;
-            double m_height = 0.0;
-            bool m_isSpace = false;
-            bool m_isNewLine = false;
-            bool m_shrink = true;
-            QString m_word = {};
-            double m_descent = 0.0;
-            ParagraphAlignment m_alignment = ParagraphAlignment::Unknown;
-        }; // struct Width
-
-        //! Append new item.
-        void append(const Width &w)
-        {
-            m_width.append(w);
-        }
-        //! \return Scale of space at line.
-        double scale() const
-        {
-            return m_scale.at(m_pos);
-        }
-        //! \return Height of the line.
-        double height() const
-        {
-            return m_height.at(m_pos);
-        }
-        //! \return Descent of the line.
-        double descent() const
-        {
-            return m_descent.at(m_pos);
-        }
-        //! \return Width of the line.
-        double width() const
-        {
-            return m_lineWidth.at(m_pos);
-        }
-        //! Move to next line.
-        void moveToNextLine()
-        {
-            ++m_pos;
-        }
-        //! Is drawing? This struct can be used to precalculate widthes and for actual drawing.
-        bool isDrawing() const
-        {
-            return m_drawing;
-        }
-        //! Set drawing.
-        void setDrawing(bool on = true)
-        {
-            m_drawing = on;
-        }
-        //! \return Is last element is new line?
-        bool isNewLineAtEnd() const
-        {
-            return (m_width.isEmpty() ? false : m_width.back().m_isNewLine);
-        }
-        //! \return Begin iterator.
-        QVector<double>::ConstIterator cbegin() const
-        {
-            return m_height.cbegin();
-        }
-        //! \return End iterator.
-        QVector<double>::ConstIterator cend() const
-        {
-            return m_height.cend();
-        }
-        //! \return Height of first item.
-        double firstLineHeight() const;
-        //! Calculate scales.
-        void calcScale(double lineWidth);
-        //! \return Paragraph alignment.
-        ParagraphAlignment alignment() const
-        {
-            return m_alignment.at(m_pos);
-        }
-        //! Set paragraph alignment.
-        void setAlignment(ParagraphAlignment alignment)
-        {
-            std::for_each(m_alignment.begin(), m_alignment.end(), [alignment](auto &a) {
-                if (a == ParagraphAlignment::Unknown) {
-                    a = alignment;
-                }
-            });
-        }
-
-    private:
-        //! Is drawing?
-        bool m_drawing = false;
-        //! Sizes of items.
-        QVector<Width> m_width;
-        //! Scales on lines.
-        QVector<double> m_scale;
-        //! Heights of lines.
-        QVector<double> m_height;
-        //! Widthes of lines.
-        QVector<double> m_lineWidth;
-        //! Descents.
-        QVector<double> m_descent;
-        //! Position of current line.
-        int m_pos = 0;
-        //! Alignments of lines.
-        QVector<ParagraphAlignment> m_alignment;
-    }; // struct CustomWidth
-
     //! Align line.
     void alignLine(PdfAuxData &pdfData,
                    const CustomWidth &cw);
-
-    //! Baseline delta and scale of previous item.
-    //! Used for calculating superscript and subscript.
-    struct PrevBaselineState {
-        //! Baseline delta.
-        double m_baselineDelta = 0.0;
-        //! Scale.
-        double m_scale = 1.0;
-        //! Line height.
-        double m_lineHeight = 0.0;
-        //! Descent.
-        double m_descent = 0.0;
-    }; // struct PrevBaselineState
-
-    //! Baseline delta and scale of previous item.
-    //! Used for calculating superscript and subscript.
-    struct PrevBaselineStateStack {
-        explicit PrevBaselineStateStack(double lineHeight,
-                                        double descent)
-        {
-            m_stack.push_back({0.0, 1.0, lineHeight, descent});
-        }
-
-        static const double s_scale;
-        static const double s_baselineScale;
-
-        double nextLineHeight(double lineHeight) const
-        {
-            return lineHeight * nextScale();
-        }
-
-        double nextBaselineDelta(bool up) const
-        {
-            return (up ? (m_stack.back().m_lineHeight - currentDescent()) * s_baselineScale : currentDescent());
-        }
-
-        double currentBaselineDelta() const
-        {
-            return m_stack.back().m_baselineDelta;
-        }
-
-        double nextScale() const
-        {
-            return m_stack.back().m_scale / s_scale;
-        }
-
-        double currentScale() const
-        {
-            return m_stack.back().m_scale;
-        }
-
-        double currentDescent() const
-        {
-            return m_stack.back().m_descent;
-        }
-
-        double nextDescent(double descent) const
-        {
-            return descent * nextScale();
-        }
-
-        bool isMarkColorEnabled() const
-        {
-            return (m_mark > 0);
-        }
-
-        // pair.first - line height, pair.second - lower part, below descent.
-        std::pair<double,
-                  double>
-        fullLineHeight() const
-        {
-            const auto firstHeight = m_stack.front().m_lineHeight;
-            const auto firstDescent = m_stack.front().m_descent;
-            double upper = 0.0;
-            double lower = 0.0;
-
-            for (auto it = std::next(m_stack.cbegin()), last = m_stack.cend(); it != last; ++it) {
-                if (it->m_baselineDelta > 0.0) {
-                    if ((it->m_lineHeight - it->m_descent + it->m_baselineDelta) > (firstHeight - firstDescent)) {
-                        const double tmp =
-                            it->m_lineHeight - it->m_descent + it->m_baselineDelta - firstHeight + firstDescent;
-
-                        if (tmp > upper) {
-                            upper = tmp;
-                        }
-                    }
-                } else {
-                    const double tmp = qAbs(it->m_baselineDelta + it->m_descent + firstDescent);
-
-                    if (tmp > lower) {
-                        lower = tmp;
-                    }
-                }
-            }
-
-            return {firstHeight + upper + lower, lower};
-        }
-
-        //! Stack.
-        std::vector<PrevBaselineState> m_stack;
-        //! Is mark style applied?
-        long long int m_mark = 0;
-    }; // struct PrevBaselineStateStack
 
     //! Initialize baseline with the given item.
     void initSubSupScript(MD::ItemWithOpts *item,
@@ -1061,36 +301,6 @@ private:
     //! Deinit baseline with the given item.
     void deinitSubSupScript(MD::ItemWithOpts *item,
                             PrevBaselineStateStack &state);
-
-    struct AutoSubSupScriptInit {
-        AutoSubSupScriptInit(PdfRenderer *render,
-                             MD::ItemWithOpts *item,
-                             PrevBaselineStateStack &stack,
-                             double lineHeight,
-                             double descent)
-            : m_render(render)
-            , m_item(item)
-            , m_stack(stack)
-            , m_count(m_stack.m_stack.size())
-        {
-            m_render->initSubSupScript(m_item, m_stack, lineHeight, descent);
-        }
-
-        ~AutoSubSupScriptInit()
-        {
-            m_render->deinitSubSupScript(m_item, m_stack);
-        }
-
-        bool wasAdded() const
-        {
-            return (m_count != m_stack.m_stack.size());
-        }
-
-        PdfRenderer *m_render;
-        MD::ItemWithOpts *m_item;
-        PrevBaselineStateStack &m_stack;
-        std::size_t m_count;
-    };
 
     //! Draw text.
     QVector<QPair<RectF,
@@ -1151,6 +361,31 @@ private:
                             double width,
                             double fontSize,
                             double fontScale);
+
+    //! Draw a word.
+    QVector<Word>::iterator drawWord(PdfAuxData &pdfData,
+                                     QVector<Word>::iterator it,
+                                     QVector<Word>::iterator last,
+                                     double fontSize,
+                                     double fontScale,
+                                     bool &drawAnyway,
+                                     bool &newLine,
+                                     bool draw,
+                                     const QColor &background,
+                                     CustomWidth &cw,
+                                     const PrevBaselineStateStack &currentBaseline,
+                                     double lineHeight,
+                                     bool footnoteAtEnd,
+                                     double footnoteWidth,
+                                     bool useShapers,
+                                     QVector<QPair<RectF,
+                                                   unsigned int>> &ret,
+                                     bool strikeout,
+                                     double fullWidth,
+                                     double offset,
+                                     double &h,
+                                     const QColor &color,
+                                     int footnoteNum);
 
     //! Draw string.
     QVector<QPair<RectF,
@@ -1518,47 +753,6 @@ private:
     bool m_isError;
 #endif
 }; // class Renderer
-
-//
-// LoadImageFromNetwork
-//
-
-//! Loader of image from network.
-class LoadImageFromNetwork final : public QObject
-{
-    Q_OBJECT
-
-Q_SIGNALS:
-    void start();
-
-public:
-    LoadImageFromNetwork(const QUrl &url,
-                         QThread *thread,
-                         double height,
-                         bool scale);
-    ~LoadImageFromNetwork() override = default;
-
-    const QImage &image() const;
-    void load();
-    bool isSvg() const;
-    const QByteArray &svgData() const;
-
-private Q_SLOTS:
-    void loadImpl();
-    void loadFinished();
-    void loadError(QNetworkReply::NetworkError);
-
-private:
-    Q_DISABLE_COPY(LoadImageFromNetwork)
-
-    QThread *m_thread;
-    QImage m_img;
-    QByteArray m_svgData;
-    QNetworkReply *m_reply;
-    QUrl m_url;
-    double m_height;
-    bool m_scale;
-}; // class LoadImageFromNetwork
 
 } /* namespace Render */
 
