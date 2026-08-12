@@ -1997,11 +1997,15 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
 
             if (pdfData.m_layout.isRightToLeft() != word.m_rtl && i >= reversed) {
                 auto reverse = [](QVector<Word> &words, qsizetype start, qsizetype end, bool wasMovedToNewLine) {
+                    if (words.isEmpty()) {
+                        return;
+                    }
+
                     if (words[start].m_word == s_spaceString) {
                         ++start;
                     }
 
-                    if (words[end - 1].m_word == s_spaceString) {
+                    if (end - 1 >= 0 && words[end - 1].m_word == s_spaceString) {
                         --end;
                     }
 
