@@ -35,8 +35,15 @@ class SkFont;
 
 //! Aux struct for splitted words.
 struct Word {
+    Word() = default;
+    Word(const QString &word,
+         bool rtl,
+         bool onNewLine,
+         const SkFont *font);
+
     QString m_word;
     bool m_rtl = false;
+    bool m_onNewLine = false;
     const SkFont *m_font = nullptr;
 }; // struct Word
 

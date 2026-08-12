@@ -170,6 +170,17 @@ void initSharedResources()
     MdShared::Syntax::init();
 }
 
+Word::Word(const QString &word,
+           bool rtl,
+           bool onNewLine,
+           const SkFont *font)
+    : m_word(word)
+    , m_rtl(rtl)
+    , m_onNewLine(onNewLine)
+    , m_font(font)
+{
+}
+
 bool isRightToLeft(const QChar &ch)
 {
     switch (ch.direction()) {
@@ -284,9 +295,9 @@ QVector<Word> splitString(const QString &str,
                 const auto nextRtl = isRtlNext(str, first);
 
                 if (prevRtl == nextRtl) {
-                    res.append({word, prevRtl, nullptr});
+                    res.append({word, prevRtl, false, nullptr});
                 } else {
-                    res.append({word, rtl, nullptr});
+                    res.append({word, rtl, false, nullptr});
                 }
             } else {
                 const auto noLettersBefore = noLettersPrev(str, first);
@@ -300,7 +311,7 @@ QVector<Word> splitString(const QString &str,
                     std::reverse(word.begin(), word.end());
                 }
 
-                res.append({word, word.isRightToLeft() || rtlDigits, nullptr});
+                res.append({word, word.isRightToLeft() || rtlDigits, false, nullptr});
             }
 
             return true;
@@ -313,7 +324,7 @@ QVector<Word> splitString(const QString &str,
         if (str[i].isSpace()) {
             if ((addWord(false) || (!res.isEmpty() && res.back().m_word != s_spaceString) || res.isEmpty())
                 && !skipSpaces) {
-                res.append({s_spaceString, false, nullptr});
+                res.append({s_spaceString, false, false, nullptr});
             }
 
             first = i + 1;

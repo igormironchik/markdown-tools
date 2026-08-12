@@ -85,222 +85,6 @@ private:
     QString m_what;
 }; // class PdfRendererError
 
-/*
- * Copyright 2016 Google Inc.
- *
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- */
-/**
- * Helper for shaping text directly into a SkTextBlob.
- */
-class TextBlobBuilderRunHandler final : public SkShaper::RunHandler
-{
-public:
-    TextBlobBuilderRunHandler(const char *utf8Text,
-                              SkPoint offset)
-        : fUtf8Text(utf8Text)
-        , fOffset(offset)
-    {
-    }
-
-    sk_sp<SkTextBlob> makeBlob()
-    {
-        return fBuilder.make();
-    }
-
-    SkPoint endPoint()
-    {
-        return fOffset;
-    }
-
-    void beginLine() override
-    {
-        fCurrentPosition = fOffset;
-        fMaxRunAscent = 0;
-        fMaxRunDescent = 0;
-        fMaxRunLeading = 0;
-    }
-
-    void runInfo(const RunInfo &info) override
-    {
-        SkFontMetrics metrics;
-        info.fFont.getMetrics(&metrics);
-        fMaxRunAscent = std::min(fMaxRunAscent, metrics.fAscent);
-        fMaxRunDescent = std::max(fMaxRunDescent, metrics.fDescent);
-        fMaxRunLeading = std::max(fMaxRunLeading, metrics.fLeading);
-    }
-
-    void commitRunInfo() override
-    {
-        fCurrentPosition.fY -= fMaxRunAscent;
-    }
-
-    Buffer runBuffer(const RunInfo &info) override
-    {
-        int glyphCount = SkTFitsIn<int>(info.glyphCount) ? info.glyphCount : INT_MAX;
-        int utf8RangeSize = SkTFitsIn<int>(info.utf8Range.size()) ? info.utf8Range.size() : INT_MAX;
-
-        const auto &runBuffer = fBuilder.allocRunTextPos(info.fFont, glyphCount, utf8RangeSize);
-        if (runBuffer.utf8text && fUtf8Text) {
-            memcpy(runBuffer.utf8text, fUtf8Text + info.utf8Range.begin(), utf8RangeSize);
-        }
-        fClusters = runBuffer.clusters;
-        fGlyphCount = glyphCount;
-        fClusterOffset = info.utf8Range.begin();
-
-        return {runBuffer.glyphs, runBuffer.points(), nullptr, runBuffer.clusters, fCurrentPosition};
-    }
-
-    void commitRunBuffer(const RunInfo &info) override
-    {
-        SkASSERT(0 <= fClusterOffset);
-        for (int i = 0; i < fGlyphCount; ++i) {
-            SkASSERT(fClusters[i] >= (unsigned)fClusterOffset);
-            fClusters[i] -= fClusterOffset;
-        }
-        fCurrentPosition += info.fAdvance;
-    }
-
-    void commitLine() override
-    {
-        fOffset += {0, fMaxRunDescent + fMaxRunLeading - fMaxRunAscent};
-    }
-
-    SkScalar horizontalAdvance() const
-    {
-        return fCurrentPosition.fX;
-    }
-
-private:
-    SkTextBlobBuilder fBuilder;
-    char const *const fUtf8Text;
-    uint32_t *fClusters;
-    int fClusterOffset;
-    int fGlyphCount;
-    SkScalar fMaxRunAscent;
-    SkScalar fMaxRunDescent;
-    SkScalar fMaxRunLeading;
-    SkPoint fCurrentPosition;
-    SkPoint fOffset;
-}; // TextBlobBuilderRunHandler
-
-bool PdfAuxData::shape(TextBlobBuilderRunHandler &handler,
-                       const Font &font,
-                       double size,
-                       double scale,
-                       const String &s,
-                       bool leftToRight) const
-{
-    if (m_shaper) {
-        auto copyFont = font;
-        copyFont.setSize(size * scale);
-
-        SkBidiIterator::Level defaultLevel = leftToRight ? SkBidiIterator::kLTR : SkBidiIterator::kRTL;
-        std::unique_ptr<SkShaper::BiDiRunIterator> bidi(
-            SkShapers::unicode::BidiRunIterator(m_unicode, s, s.data.size(), defaultLevel));
-
-        if (!bidi) {
-            return false;
-        }
-
-        std::unique_ptr<SkShaper::LanguageRunIterator> language(SkShaper::MakeStdLanguageRunIterator(s, s.data.size()));
-
-        if (!language) {
-            return false;
-        }
-
-        std::unique_ptr<SkShaper::ScriptRunIterator> script(SkShapers::HB::ScriptRunIterator(s, s.data.size()));
-
-        if (!script) {
-            return false;
-        }
-
-        std::unique_ptr<SkShaper::FontRunIterator> font(
-            std::make_unique<SkShaper::TrivialFontRunIterator>(copyFont, s.data.size()));
-
-        if (!font) {
-            return false;
-        }
-
-        SkShaper::Feature features[] = {
-            {SkSetFourByteTag('l', 'i', 'g', 'a'), 0, 0, static_cast<size_t>(s.data.size())},
-            {SkSetFourByteTag('c', 'a', 'l', 't'), 0, 0, static_cast<size_t>(s.data.size())}};
-        size_t featuresSize = sizeof(features) / sizeof(features[0]);
-
-        m_shaper
-            ->shape(s, s.data.size(), *font, *bidi, *script, *language, features, featuresSize, 999999.0f, &handler);
-
-        return true;
-    }
-
-    return false;
-}
-
-double PdfAuxData::stringWidth(const Font &font,
-                               double size,
-                               double scale,
-                               const String &s,
-                               bool leftToRight) const
-{
-    auto copyFont = font;
-    copyFont.setSize(size * scale);
-
-    TextBlobBuilderRunHandler handler(s, SkPoint::Make(0.0, 0.0));
-
-    if (!shape(handler, font, size, scale, s, leftToRight)) {
-        return copyFont.measureText(s, s.data.size(), SkTextEncoding::kUTF8);
-    }
-
-    return handler.horizontalAdvance();
-}
-
-double PdfAuxData::lineSpacing(const Font &font,
-                               double size,
-                               double scale) const
-{
-    auto copyFont = font;
-    copyFont.setSize(size * scale);
-
-    return copyFont.getMetrics(nullptr);
-}
-
-double PdfAuxData::fontAscent(const Font &font,
-                              double size,
-                              double scale) const
-{
-    auto copyFont = font;
-    copyFont.setSize(size * scale);
-    SkFontMetrics fm;
-    copyFont.getMetrics(&fm);
-
-    return fm.fAscent;
-}
-
-double PdfAuxData::fontBackgroundBoxScale(const Font &font,
-                                          double size,
-                                          double scale) const
-{
-    auto copyFont = font;
-    copyFont.setSize(size * scale);
-    SkFontMetrics fm;
-    const auto ls = copyFont.getMetrics(&fm);
-
-    return (fm.fDescent + qAbs(fm.fCapHeight)) / ls;
-}
-
-double PdfAuxData::fontDescent(const Font &font,
-                               double size,
-                               double scale) const
-{
-    auto copyFont = font;
-    copyFont.setSize(size * scale);
-    SkFontMetrics fm;
-    copyFont.getMetrics(&fm);
-
-    return fm.fDescent;
-}
-
 //
 // PdfRenderer
 //
@@ -1592,17 +1376,18 @@ void PdfRenderer::alignLine(PdfAuxData &pdfData,
 }
 
 bool PdfRenderer::nextOnOneLineIsFit(PdfAuxData &pdfData,
-                                     QVector<Word>::iterator it,
-                                     QVector<Word>::iterator last,
+                                     const QVector<Word> &words,
+                                     qsizetype idx,
+                                     qsizetype last,
                                      double width,
                                      double fontSize,
                                      double fontScale)
 {
-    if (it == last) {
+    if (idx == last) {
         return true;
     }
 
-    it = std::next(it);
+    ++idx;
 
     auto checkSeparator = [](const QString &s) -> bool {
         return std::find_if(s.cbegin(),
@@ -1613,9 +1398,11 @@ bool PdfRenderer::nextOnOneLineIsFit(PdfAuxData &pdfData,
             == s.cend();
     };
 
-    if (it != last && checkSeparator(it->m_word)) {
+    if (idx != last && checkSeparator(words[idx].m_word)) {
+        const auto &word = words[idx];
+
         const auto length =
-            pdfData.stringWidth(*it->m_font, fontSize, fontScale, createUtf8String(it->m_word), !it->m_rtl);
+            pdfData.stringWidth(*word.m_font, fontSize, fontScale, createUtf8String(word.m_word), !word.m_rtl);
 
         return pdfData.m_layout.isFit(width + length);
     }
@@ -1623,31 +1410,37 @@ bool PdfRenderer::nextOnOneLineIsFit(PdfAuxData &pdfData,
     return true;
 }
 
-QVector<Word>::iterator PdfRenderer::drawWord(PdfAuxData &pdfData,
-                                              QVector<Word>::iterator it,
-                                              QVector<Word>::iterator last,
-                                              double fontSize,
-                                              double fontScale,
-                                              bool &drawAnyway,
-                                              bool &newLine,
-                                              bool draw,
-                                              const QColor &background,
-                                              CustomWidth &cw,
-                                              const PrevBaselineStateStack &currentBaseline,
-                                              double lineHeight,
-                                              bool footnoteAtEnd,
-                                              double footnoteWidth,
-                                              bool useShaper,
-                                              QVector<QPair<RectF,
-                                                            unsigned int>> &ret,
-                                              bool strikeout,
-                                              double fullWidth,
-                                              double offset,
-                                              double &h,
-                                              const QColor &color,
-                                              int footnoteNum)
+qsizetype PdfRenderer::drawWord(PdfAuxData &pdfData,
+                                const QVector<Word> &words,
+                                qsizetype idx,
+                                qsizetype last,
+                                double fontSize,
+                                double fontScale,
+                                bool &drawAnyway,
+                                bool &newLine,
+                                bool draw,
+                                const QColor &background,
+                                CustomWidth &cw,
+                                const PrevBaselineStateStack &currentBaseline,
+                                double lineHeight,
+                                bool footnoteAtEnd,
+                                double footnoteWidth,
+                                bool useShaper,
+                                QVector<QPair<RectF,
+                                              unsigned int>> &ret,
+                                bool strikeout,
+                                double fullWidth,
+                                double offset,
+                                double &h,
+                                const QColor &color,
+                                int footnoteNum,
+                                bool *wasMovedToNewLine)
 {
     auto newLineFn = [&]() {
+        if (wasMovedToNewLine) {
+            *wasMovedToNewLine = true;
+        }
+
         newLine = true;
 
         if (draw) {
@@ -1746,7 +1539,7 @@ QVector<Word>::iterator PdfRenderer::drawWord(PdfAuxData &pdfData,
             }
         }
 
-        if (!draw && it + 1 == last && footnoteAtEnd) {
+        if (!draw && idx + 1 == last && footnoteAtEnd) {
             const auto lineInfo = currentBaseline.fullLineHeight();
 
             cw.append({footnoteWidth,
@@ -1759,13 +1552,19 @@ QVector<Word>::iterator PdfRenderer::drawWord(PdfAuxData &pdfData,
         }
     }; // splitAndDraw
 
-    const auto str = createUtf8String(it->m_word);
+    const auto &word = words[idx];
 
-    const auto length = pdfData.stringWidth(*it->m_font, fontSize, fontScale, str, !it->m_rtl);
+    if (word.m_onNewLine) {
+        newLineFn();
+    }
 
-    const auto width = length + (it + 1 == last && footnoteAtEnd ? footnoteWidth : 0.0);
+    const auto str = createUtf8String(word.m_word);
 
-    if ((pdfData.m_layout.isFit(width) && nextOnOneLineIsFit(pdfData, it, last, width, fontSize, fontScale))
+    const auto length = pdfData.stringWidth(*word.m_font, fontSize, fontScale, str, !word.m_rtl);
+
+    const auto width = length + (idx + 1 == last && footnoteAtEnd ? footnoteWidth : 0.0);
+
+    if ((pdfData.m_layout.isFit(width) && nextOnOneLineIsFit(pdfData, words, idx, last, width, fontSize, fontScale))
         || drawAnyway) {
         newLine = false;
         drawAnyway = false;
@@ -1777,34 +1576,34 @@ QVector<Word>::iterator PdfRenderer::drawWord(PdfAuxData &pdfData,
                                       pdfData.m_layout.y()
                                           - cw.descent()
                                           - currentBaseline.m_stack.back().m_baselineDelta
-                                          + pdfData.fontAscent(*it->m_font, fontSize, fontScale)
-                                              * pdfData.fontBackgroundBoxScale(*it->m_font, fontSize, fontScale),
+                                          + pdfData.fontAscent(*word.m_font, fontSize, fontScale)
+                                              * pdfData.fontBackgroundBoxScale(*word.m_font, fontSize, fontScale),
                                       length,
-                                      pdfData.lineSpacing(*it->m_font, fontSize, fontScale)
-                                          * pdfData.fontBackgroundBoxScale(*it->m_font, fontSize, fontScale),
+                                      pdfData.lineSpacing(*word.m_font, fontSize, fontScale)
+                                          * pdfData.fontBackgroundBoxScale(*word.m_font, fontSize, fontScale),
                                       SkPaint::kFill_Style);
                 pdfData.restoreColor();
             }
 
             pdfData.setColor(color);
 
-            if (!useShaper && !it->m_rtl) {
+            if (!useShaper && !word.m_rtl) {
                 pdfData.drawText(pdfData.m_layout.startX(length),
                                  pdfData.m_layout.y() - cw.descent() - currentBaseline.m_stack.back().m_baselineDelta,
-                                 createUtf8String(it->m_word),
-                                 *it->m_font,
+                                 createUtf8String(word.m_word),
+                                 *word.m_font,
                                  fontSize * fontScale,
                                  1.0,
                                  strikeout);
             } else {
                 drawTextBlobOrText(pdfData,
-                                   *it->m_font,
+                                   *word.m_font,
                                    fontSize,
                                    fontScale,
                                    str,
                                    cw.descent(),
                                    currentBaseline.m_stack.back().m_baselineDelta,
-                                   it->m_rtl,
+                                   word.m_rtl,
                                    length,
                                    strikeout);
             }
@@ -1817,13 +1616,13 @@ QVector<Word>::iterator PdfRenderer::drawWord(PdfAuxData &pdfData,
         } else {
             const auto lineInfo = currentBaseline.fullLineHeight();
 
-            cw.append({length + (it + 1 == last && footnoteAtEnd ? footnoteWidth : 0.0),
+            cw.append({length + (idx + 1 == last && footnoteAtEnd ? footnoteWidth : 0.0),
                        lineInfo.first,
                        false,
                        false,
                        true,
-                       it->m_word,
-                       pdfData.fontDescent(*it->m_font, fontSize, fontScale) + lineInfo.second});
+                       word.m_word,
+                       pdfData.fontDescent(*word.m_font, fontSize, fontScale) + lineInfo.second});
         }
 
         pdfData.m_layout.addX(length);
@@ -1833,37 +1632,126 @@ QVector<Word>::iterator PdfRenderer::drawWord(PdfAuxData &pdfData,
         if (width > fullWidth * 2.0 / 3.0 && !useShaper) {
             QString tmp;
 
-            if (countCharsForAvailableSpace(it->m_word,
+            if (countCharsForAvailableSpace(word.m_word,
                                             pdfData.m_layout.availableWidth(),
-                                            *it->m_font,
+                                            *word.m_font,
                                             pdfData,
                                             fontSize,
                                             fontScale,
                                             tmp,
-                                            !it->m_rtl)
+                                            !word.m_rtl)
                 > 4) {
-                splitAndDraw(it->m_word, it->m_rtl, *it->m_font);
+                splitAndDraw(word.m_word, word.m_rtl, *word.m_font);
             } else {
                 if (width < fullWidth || qAbs(width - fullWidth) < 0.01) {
                     newLineFn();
 
-                    --it;
+                    --idx;
                 } else {
                     newLineFn();
 
-                    splitAndDraw(it->m_word, it->m_rtl, *it->m_font);
+                    splitAndDraw(word.m_word, word.m_rtl, *word.m_font);
                 }
             }
         } else {
             newLineFn();
 
-            --it;
+            --idx;
 
             drawAnyway = useShaper;
         }
     }
 
-    return it;
+    return idx;
+}
+
+void PdfRenderer::drawSpace(PdfAuxData &pdfData,
+                            bool useRegularSpace,
+                            bool &firstSpaceDrawn,
+                            const Font &spaceFont,
+                            double spaceFontSize,
+                            double spaceFontScale,
+                            const Font &font,
+                            double fontSize,
+                            double fontScale,
+                            CustomWidth &cw,
+                            bool draw,
+                            const Font *regularSpaceFont,
+                            double regularSpaceFontSize,
+                            double regularSpaceFontScale,
+                            double spaceWidth,
+                            bool &newLine,
+                            QVector<QPair<RectF,
+                                          unsigned int>> &ret,
+                            double lineHeight,
+                            PrevBaselineStateStack &currentBaseline,
+                            const QColor &background,
+                            bool strikeout)
+{
+    firstSpaceDrawn = true;
+    auto scale = 100.0;
+
+    if (draw && cw.alignment() == ParagraphAlignment::FillWidth) {
+        scale = cw.scale();
+    }
+
+    const auto currentSpaceWidth =
+        (useRegularSpace && regularSpaceFont
+             ? pdfData.stringWidth(*regularSpaceFont, regularSpaceFontSize, regularSpaceFontScale, " ", true)
+             : spaceWidth);
+
+    const auto width = currentSpaceWidth * scale / 100.0;
+
+    if (pdfData.m_layout.isFit(width)) {
+        newLine = false;
+
+        if (draw) {
+            ret.append(
+                qMakePair(pdfData.m_layout.currentRect(width, lineHeight, currentBaseline.currentBaselineDelta()),
+                          pdfData.m_currentPainterIdx));
+
+            if (background.isValid() && !useRegularSpace) {
+                pdfData.setColor(background);
+                pdfData.drawRectangle(pdfData.m_layout.startX(width),
+                                      pdfData.m_layout.y()
+                                          - cw.descent()
+                                          - currentBaseline.m_stack.back().m_baselineDelta
+                                          + pdfData.fontAscent(font, fontSize, fontScale)
+                                              * pdfData.fontBackgroundBoxScale(font, fontSize, fontScale),
+                                      width,
+                                      pdfData.lineSpacing(font, fontSize, fontScale)
+                                          * pdfData.fontBackgroundBoxScale(font, fontSize, fontScale),
+                                      SkPaint::kFill_Style);
+                pdfData.restoreColor();
+            }
+
+            Font font = (useRegularSpace && regularSpaceFont ? *regularSpaceFont : spaceFont);
+            const auto size = (useRegularSpace && regularSpaceFont ? regularSpaceFontSize * regularSpaceFontScale
+                                                                   : spaceFontSize * spaceFontScale);
+            pdfData.drawText(pdfData.m_layout.startX(width),
+                             pdfData.m_layout.y() - cw.descent() - currentBaseline.m_stack.back().m_baselineDelta,
+                             " ",
+                             font,
+                             size,
+                             scale / 100.0,
+                             strikeout);
+        } else {
+            const auto lineInfo = currentBaseline.fullLineHeight();
+
+            cw.append({currentSpaceWidth,
+                       lineInfo.first,
+                       true,
+                       false,
+                       true,
+                       " ",
+                       (useRegularSpace && regularSpaceFont
+                            ? pdfData.fontDescent(*regularSpaceFont, regularSpaceFontSize, regularSpaceFontScale)
+                                + lineInfo.second
+                            : pdfData.fontDescent(spaceFont, spaceFontSize, spaceFontScale) + lineInfo.second)});
+        }
+
+        pdfData.m_layout.addX(width);
+    }
 }
 
 QVector<QPair<RectF,
@@ -1983,7 +1871,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                     if (!font.unicharToGlyph(words[i].m_word[c].unicode())) {
                         if (c > 0) {
                             const auto tmp = words[i].m_word.sliced(c, words[i].m_word.size() - c);
-                            words.insert(i + 1, Word{tmp, words[i].m_rtl, nullptr});
+                            words.insert(i + 1, Word{tmp, words[i].m_rtl, false, nullptr});
                             words[i].m_word = words[i].m_word.sliced(0, c);
 
                             break;
@@ -2008,7 +1896,8 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                                 if (fontFamilyBefore != currentFamilyName) {
                                     const auto fallbackFont = std::make_shared<SkFont>(fallback, fontSize * fontScale);
                                     fonts.append(fallbackFont);
-                                    words.insert(i, Word{words[i].m_word[0], words[i].m_rtl, fonts.back().get()});
+                                    words.insert(i,
+                                                 Word{words[i].m_word[0], words[i].m_rtl, false, fonts.back().get()});
                                 } else {
                                     words[i - 1].m_word.append(words[i].m_word[0]);
                                     --i;
@@ -2027,10 +1916,8 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                 }
             }
         }
-
-        orderWords(words, pdfData.m_layout.isRightToLeft());
     } else {
-        words.push_back({str, false, &font});
+        words.push_back({str, false, false, &font});
     }
 
     const auto fullWidth =
@@ -2039,78 +1926,14 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
     const auto spaceWidth = pdfData.stringWidth(spaceFont, spaceFontSize, spaceFontScale, " ", true);
 
     bool firstSpaceDrawn = false;
-
-    auto drawSpace = [&](bool useRegularSpace) {
-        firstSpaceDrawn = true;
-        auto scale = 100.0;
-
-        if (draw && cw.alignment() == ParagraphAlignment::FillWidth) {
-            scale = cw.scale();
-        }
-
-        const auto currentSpaceWidth =
-            (useRegularSpace && regularSpaceFont
-                 ? pdfData.stringWidth(*regularSpaceFont, regularSpaceFontSize, regularSpaceFontScale, " ", true)
-                 : spaceWidth);
-
-        const auto width = currentSpaceWidth * scale / 100.0;
-
-        if (pdfData.m_layout.isFit(width)) {
-            newLine = false;
-
-            if (draw) {
-                ret.append(
-                    qMakePair(pdfData.m_layout.currentRect(width, lineHeight, currentBaseline.currentBaselineDelta()),
-                              pdfData.m_currentPainterIdx));
-
-                if (background.isValid() && !useRegularSpace) {
-                    pdfData.setColor(background);
-                    pdfData.drawRectangle(pdfData.m_layout.startX(width),
-                                          pdfData.m_layout.y()
-                                              - cw.descent()
-                                              - currentBaseline.m_stack.back().m_baselineDelta
-                                              + pdfData.fontAscent(font, fontSize, fontScale)
-                                                  * pdfData.fontBackgroundBoxScale(font, fontSize, fontScale),
-                                          width,
-                                          pdfData.lineSpacing(font, fontSize, fontScale)
-                                              * pdfData.fontBackgroundBoxScale(font, fontSize, fontScale),
-                                          SkPaint::kFill_Style);
-                    pdfData.restoreColor();
-                }
-
-                Font font = (useRegularSpace && regularSpaceFont ? *regularSpaceFont : spaceFont);
-                const auto size = (useRegularSpace && regularSpaceFont ? regularSpaceFontSize * regularSpaceFontScale
-                                                                       : spaceFontSize * spaceFontScale);
-                pdfData.drawText(pdfData.m_layout.startX(width),
-                                 pdfData.m_layout.y() - cw.descent() - currentBaseline.m_stack.back().m_baselineDelta,
-                                 " ",
-                                 font,
-                                 size,
-                                 scale / 100.0,
-                                 strikeout);
-            } else {
-                const auto lineInfo = currentBaseline.fullLineHeight();
-
-                cw.append({currentSpaceWidth,
-                           lineInfo.first,
-                           true,
-                           false,
-                           true,
-                           " ",
-                           (useRegularSpace && regularSpaceFont
-                                ? pdfData.fontDescent(*regularSpaceFont, regularSpaceFontSize, regularSpaceFontScale)
-                                    + lineInfo.second
-                                : pdfData.fontDescent(spaceFont, spaceFontSize, spaceFontScale) + lineInfo.second)});
-            }
-
-            pdfData.m_layout.addX(width);
-        }
-    }; // drawSpace
+    bool tmpFirstSpaceDrawn = false;
 
     bool drawAnyway = false;
 
+    qsizetype reversed = 0;
+
     // Draw words.
-    for (auto it = words.begin(), last = words.end(); it != last; ++it) {
+    for (qsizetype i = 0, last = words.size(); i < last; ++i) {
         {
             QMutexLocker lock(&m_mutex);
 
@@ -2119,51 +1942,212 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
             }
         }
 
-        if (it->m_word == s_spaceString) {
+        const auto &word = words[i];
+
+        if (word.m_word == s_spaceString) {
             if (!newLine) {
-                drawSpace(false);
+                drawSpace(pdfData,
+                          false,
+                          firstSpaceDrawn,
+                          spaceFont,
+                          spaceFontSize,
+                          spaceFontScale,
+                          font,
+                          fontSize,
+                          fontScale,
+                          cw,
+                          draw,
+                          regularSpaceFont,
+                          regularSpaceFontSize,
+                          regularSpaceFontScale,
+                          spaceWidth,
+                          newLine,
+                          ret,
+                          lineHeight,
+                          currentBaseline,
+                          background,
+                          strikeout);
             }
         } else {
             if (onNewMdLine && !firstSpaceDrawn && !firstInParagraph && !newLine) {
-                drawSpace(true);
-                --it;
+                drawSpace(pdfData,
+                          true,
+                          firstSpaceDrawn,
+                          spaceFont,
+                          spaceFontSize,
+                          spaceFontScale,
+                          font,
+                          fontSize,
+                          fontScale,
+                          cw,
+                          draw,
+                          regularSpaceFont,
+                          regularSpaceFontSize,
+                          regularSpaceFontScale,
+                          spaceWidth,
+                          newLine,
+                          ret,
+                          lineHeight,
+                          currentBaseline,
+                          background,
+                          strikeout);
+                --i;
                 continue;
             }
 
-            if (pdfData.m_layout.isRightToLeft() != it->m_rtl) {
-                auto end = std::find_if(it, last, [&it](const auto &w) {
-                    return (w.m_rtl != it->m_rtl && w.m_word != s_spaceString);
-                });
+            if (pdfData.m_layout.isRightToLeft() != word.m_rtl && i >= reversed) {
+                auto reverse = [](QVector<Word> &words, qsizetype start, qsizetype end, bool wasMovedToNewLine) {
+                    if (words[start].m_word == s_spaceString) {
+                        ++start;
+                    }
 
-                if (end != last && end->m_word != s_spaceString) {
-                    ++end;
+                    if (words[end - 1].m_word == s_spaceString) {
+                        --end;
+                    }
+
+                    std::reverse(words.begin() + start, words.begin() + end);
+
+                    words[start].m_onNewLine = wasMovedToNewLine;
+                };
+
+                qsizetype end = last;
+                for (qsizetype j = i; j < end; ++j) {
+                    if (words[j].m_rtl != word.m_rtl && words[j].m_word != s_spaceString) {
+                        end = j;
+                        break;
+                    }
+                };
+
+                CustomWidth tmpCw;
+                bool tmpDrawAnyway = drawAnyway;
+                bool tmpNewLine = newLine;
+                auto tmpCurrentBaseline = currentBaseline;
+                QVector<QPair<RectF, unsigned int>> tmpRet;
+                auto tmpH = h;
+                bool wasMovedToNewLine = false;
+                bool markFirstWordWithNewLine = false;
+                auto tmpData = pdfData;
+                tmpFirstSpaceDrawn = firstSpaceDrawn;
+
+                auto start = i;
+                qsizetype j = i;
+
+                while (j < end) {
+                    if (words[j].m_word == s_spaceString) {
+                        if (!tmpNewLine) {
+                            drawSpace(tmpData,
+                                      false,
+                                      tmpFirstSpaceDrawn,
+                                      spaceFont,
+                                      spaceFontSize,
+                                      spaceFontScale,
+                                      font,
+                                      fontSize,
+                                      fontScale,
+                                      tmpCw,
+                                      false,
+                                      regularSpaceFont,
+                                      regularSpaceFontSize,
+                                      regularSpaceFontScale,
+                                      spaceWidth,
+                                      tmpNewLine,
+                                      tmpRet,
+                                      lineHeight,
+                                      tmpCurrentBaseline,
+                                      background,
+                                      strikeout);
+                        }
+                    } else {
+                        if (onNewMdLine && !firstSpaceDrawn && !firstInParagraph && !newLine) {
+                            drawSpace(tmpData,
+                                      true,
+                                      tmpFirstSpaceDrawn,
+                                      spaceFont,
+                                      spaceFontSize,
+                                      spaceFontScale,
+                                      font,
+                                      fontSize,
+                                      fontScale,
+                                      tmpCw,
+                                      false,
+                                      regularSpaceFont,
+                                      regularSpaceFontSize,
+                                      regularSpaceFontScale,
+                                      spaceWidth,
+                                      tmpNewLine,
+                                      tmpRet,
+                                      lineHeight,
+                                      tmpCurrentBaseline,
+                                      background,
+                                      strikeout);
+                            --j;
+                            continue;
+                        }
+
+                        j = drawWord(tmpData,
+                                     words,
+                                     j,
+                                     end,
+                                     fontSize,
+                                     fontScale,
+                                     tmpDrawAnyway,
+                                     tmpNewLine,
+                                     false,
+                                     background,
+                                     tmpCw,
+                                     tmpCurrentBaseline,
+                                     lineHeight,
+                                     footnoteAtEnd,
+                                     footnoteWidth,
+                                     useShaper,
+                                     tmpRet,
+                                     strikeout,
+                                     fullWidth,
+                                     offset,
+                                     tmpH,
+                                     color,
+                                     footnoteNum,
+                                     &wasMovedToNewLine);
+
+                        if (wasMovedToNewLine) {
+                            reverse(words, start, j + 1, markFirstWordWithNewLine);
+                            markFirstWordWithNewLine = true;
+                            wasMovedToNewLine = false;
+                            start = j + 1;
+                        }
+                    }
+
+                    ++j;
                 }
 
-                // while (it != end) { }
+                reverse(words, start, j, markFirstWordWithNewLine);
+
+                reversed = j;
             }
 
-            it = drawWord(pdfData,
-                          it,
-                          last,
-                          fontSize,
-                          fontScale,
-                          drawAnyway,
-                          newLine,
-                          draw,
-                          background,
-                          cw,
-                          currentBaseline,
-                          lineHeight,
-                          footnoteAtEnd,
-                          footnoteWidth,
-                          useShaper,
-                          ret,
-                          strikeout,
-                          fullWidth,
-                          offset,
-                          h,
-                          color,
-                          footnoteNum);
+            i = drawWord(pdfData,
+                         words,
+                         i,
+                         last,
+                         fontSize,
+                         fontScale,
+                         drawAnyway,
+                         newLine,
+                         draw,
+                         background,
+                         cw,
+                         currentBaseline,
+                         lineHeight,
+                         footnoteAtEnd,
+                         footnoteWidth,
+                         useShaper,
+                         ret,
+                         strikeout,
+                         fullWidth,
+                         offset,
+                         h,
+                         color,
+                         footnoteNum);
         }
     }
 

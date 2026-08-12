@@ -788,6 +788,197 @@ void PdfAuxData::repeatColor()
     m_currentPaint.setColor(SkColorSetRGB(c.red(), c.green(), c.blue()));
 }
 
+TextBlobBuilderRunHandler::TextBlobBuilderRunHandler(const char *utf8Text,
+                                                     SkPoint offset)
+    : fUtf8Text(utf8Text)
+    , fOffset(offset)
+{
+}
+
+sk_sp<SkTextBlob> TextBlobBuilderRunHandler::makeBlob()
+{
+    return fBuilder.make();
+}
+
+SkPoint TextBlobBuilderRunHandler::endPoint()
+{
+    return fOffset;
+}
+
+void TextBlobBuilderRunHandler::beginLine()
+{
+    fCurrentPosition = fOffset;
+    fMaxRunAscent = 0;
+    fMaxRunDescent = 0;
+    fMaxRunLeading = 0;
+}
+
+void TextBlobBuilderRunHandler::runInfo(const RunInfo &info)
+{
+    SkFontMetrics metrics;
+    info.fFont.getMetrics(&metrics);
+    fMaxRunAscent = std::min(fMaxRunAscent, metrics.fAscent);
+    fMaxRunDescent = std::max(fMaxRunDescent, metrics.fDescent);
+    fMaxRunLeading = std::max(fMaxRunLeading, metrics.fLeading);
+}
+
+void TextBlobBuilderRunHandler::commitRunInfo()
+{
+    fCurrentPosition.fY -= fMaxRunAscent;
+}
+
+TextBlobBuilderRunHandler::Buffer TextBlobBuilderRunHandler::runBuffer(const RunInfo &info)
+{
+    int glyphCount = SkTFitsIn<int>(info.glyphCount) ? info.glyphCount : INT_MAX;
+    int utf8RangeSize = SkTFitsIn<int>(info.utf8Range.size()) ? info.utf8Range.size() : INT_MAX;
+
+    const auto &runBuffer = fBuilder.allocRunTextPos(info.fFont, glyphCount, utf8RangeSize);
+    if (runBuffer.utf8text && fUtf8Text) {
+        memcpy(runBuffer.utf8text, fUtf8Text + info.utf8Range.begin(), utf8RangeSize);
+    }
+    fClusters = runBuffer.clusters;
+    fGlyphCount = glyphCount;
+    fClusterOffset = info.utf8Range.begin();
+
+    return {runBuffer.glyphs, runBuffer.points(), nullptr, runBuffer.clusters, fCurrentPosition};
+}
+
+void TextBlobBuilderRunHandler::commitRunBuffer(const RunInfo &info)
+{
+    SkASSERT(0 <= fClusterOffset);
+    for (int i = 0; i < fGlyphCount; ++i) {
+        SkASSERT(fClusters[i] >= (unsigned)fClusterOffset);
+        fClusters[i] -= fClusterOffset;
+    }
+    fCurrentPosition += info.fAdvance;
+}
+
+void TextBlobBuilderRunHandler::commitLine()
+{
+    fOffset += {0, fMaxRunDescent + fMaxRunLeading - fMaxRunAscent};
+}
+
+SkScalar TextBlobBuilderRunHandler::horizontalAdvance() const
+{
+    return fCurrentPosition.fX;
+}
+
+bool PdfAuxData::shape(TextBlobBuilderRunHandler &handler,
+                       const Font &font,
+                       double size,
+                       double scale,
+                       const String &s,
+                       bool leftToRight) const
+{
+    if (m_shaper) {
+        auto copyFont = font;
+        copyFont.setSize(size * scale);
+
+        SkBidiIterator::Level defaultLevel = leftToRight ? SkBidiIterator::kLTR : SkBidiIterator::kRTL;
+        std::unique_ptr<SkShaper::BiDiRunIterator> bidi(
+            SkShapers::unicode::BidiRunIterator(m_unicode, s, s.data.size(), defaultLevel));
+
+        if (!bidi) {
+            return false;
+        }
+
+        std::unique_ptr<SkShaper::LanguageRunIterator> language(SkShaper::MakeStdLanguageRunIterator(s, s.data.size()));
+
+        if (!language) {
+            return false;
+        }
+
+        std::unique_ptr<SkShaper::ScriptRunIterator> script(SkShapers::HB::ScriptRunIterator(s, s.data.size()));
+
+        if (!script) {
+            return false;
+        }
+
+        std::unique_ptr<SkShaper::FontRunIterator> font(
+            std::make_unique<SkShaper::TrivialFontRunIterator>(copyFont, s.data.size()));
+
+        if (!font) {
+            return false;
+        }
+
+        SkShaper::Feature features[] = {
+            {SkSetFourByteTag('l', 'i', 'g', 'a'), 0, 0, static_cast<size_t>(s.data.size())},
+            {SkSetFourByteTag('c', 'a', 'l', 't'), 0, 0, static_cast<size_t>(s.data.size())}};
+        size_t featuresSize = sizeof(features) / sizeof(features[0]);
+
+        m_shaper
+            ->shape(s, s.data.size(), *font, *bidi, *script, *language, features, featuresSize, 999999.0f, &handler);
+
+        return true;
+    }
+
+    return false;
+}
+
+double PdfAuxData::stringWidth(const Font &font,
+                               double size,
+                               double scale,
+                               const String &s,
+                               bool leftToRight) const
+{
+    auto copyFont = font;
+    copyFont.setSize(size * scale);
+
+    TextBlobBuilderRunHandler handler(s, SkPoint::Make(0.0, 0.0));
+
+    if (!shape(handler, font, size, scale, s, leftToRight)) {
+        return copyFont.measureText(s, s.data.size(), SkTextEncoding::kUTF8);
+    }
+
+    return handler.horizontalAdvance();
+}
+
+double PdfAuxData::lineSpacing(const Font &font,
+                               double size,
+                               double scale) const
+{
+    auto copyFont = font;
+    copyFont.setSize(size * scale);
+
+    return copyFont.getMetrics(nullptr);
+}
+
+double PdfAuxData::fontAscent(const Font &font,
+                              double size,
+                              double scale) const
+{
+    auto copyFont = font;
+    copyFont.setSize(size * scale);
+    SkFontMetrics fm;
+    copyFont.getMetrics(&fm);
+
+    return fm.fAscent;
+}
+
+double PdfAuxData::fontBackgroundBoxScale(const Font &font,
+                                          double size,
+                                          double scale) const
+{
+    auto copyFont = font;
+    copyFont.setSize(size * scale);
+    SkFontMetrics fm;
+    const auto ls = copyFont.getMetrics(&fm);
+
+    return (fm.fDescent + qAbs(fm.fCapHeight)) / ls;
+}
+
+double PdfAuxData::fontDescent(const Font &font,
+                               double size,
+                               double scale) const
+{
+    auto copyFont = font;
+    copyFont.setSize(size * scale);
+    SkFontMetrics fm;
+    copyFont.getMetrics(&fm);
+
+    return fm.fDescent;
+}
+
 //
 // RTLFlag
 //
