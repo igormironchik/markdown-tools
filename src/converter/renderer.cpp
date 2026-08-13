@@ -4924,17 +4924,15 @@ PdfRenderer::drawListItem(PdfAuxData &pdfData,
                 if (item->isChecked()) {
                     const auto d = checkboxWidth * 0.2;
 
-                    pdfData.drawRectangle(pdfData.m_layout.borderStartX()
-                                              + pdfData.m_layout.xIncrementDirection()
-                                                  * (offset + d - spaceWidth - orderedListNumberWidth)
-                                              - (pdfData.m_layout.isRightToLeft() ? checkboxWidth - 2.0 * d : 0.0),
-                                          firstLine.m_y
-                                              - firstLine.m_height
-                                              + qAbs(firstLine.m_height - checkboxWidth) / 2.0
-                                              + d,
-                                          checkboxWidth - 2.0 * d,
-                                          checkboxWidth - 2.0 * d,
-                                          SkPaint::kFill_Style);
+                    pdfData.drawRectangle(
+                        pdfData.m_layout.borderStartX()
+                            + pdfData.m_layout.xIncrementDirection()
+                                * (offset + d - spaceWidth - orderedListNumberWidth)
+                            - (pdfData.m_layout.isRightToLeft() ? checkboxWidth - 2.0 * d : 0.0),
+                        firstLine.m_y - firstLine.m_height + qAbs(firstLine.m_height - checkboxWidth) / 2.0 + d,
+                        checkboxWidth - 2.0 * d,
+                        checkboxWidth - 2.0 * d,
+                        SkPaint::kFill_Style);
                 }
 
                 pdfData.restoreColor();
@@ -4956,7 +4954,11 @@ PdfRenderer::drawListItem(PdfAuxData &pdfData,
                 }
 
                 const auto str = createUtf8String(idxText);
-                const auto w = pdfData.stringWidth(font, m_opts.m_textFontSize * scale, 1.0, str, !pdfData.m_layout.isRightToLeft());
+                const auto w = pdfData.stringWidth(font,
+                                                   m_opts.m_textFontSize * scale,
+                                                   1.0,
+                                                   str,
+                                                   !pdfData.m_layout.isRightToLeft());
 
                 pdfData.drawText(pdfData.m_layout.borderStartX()
                                      + pdfData.m_layout.xIncrementDirection()
@@ -4977,8 +4979,7 @@ PdfRenderer::drawListItem(PdfAuxData &pdfData,
                 pdfData.m_currentPaint.setStyle(SkPaint::kFill_Style);
                 (*pdfData.m_pages)[pdfData.m_currentPainterIdx].m_canvas->drawCircle(
                     pdfData.m_layout.borderStartX()
-                        + pdfData.m_layout.xIncrementDirection() * (offset + r)
-                        - (pdfData.m_layout.isRightToLeft() ? r : 0.0),
+                        + pdfData.m_layout.xIncrementDirection() * (offset + r - orderedListNumberWidth - spaceWidth),
                     firstLine.m_y - firstLine.m_height / 2.0,
                     r,
                     pdfData.m_currentPaint);
