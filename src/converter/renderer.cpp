@@ -4915,7 +4915,8 @@ PdfRenderer::drawListItem(PdfAuxData &pdfData,
                 pdfData.setColor(Qt::black);
                 pdfData.drawRectangle(
                     pdfData.m_layout.borderStartX()
-                        + pdfData.m_layout.xIncrementDirection() * (offset - (orderedListNumberWidth + spaceWidth)),
+                        + pdfData.m_layout.xIncrementDirection() * (offset - (orderedListNumberWidth + spaceWidth))
+                        - (pdfData.m_layout.isRightToLeft() ? orderedListNumberWidth : 0.0),
                     firstLine.m_y - firstLine.m_height + qAbs(firstLine.m_height - orderedListNumberWidth) / 2.0,
                     orderedListNumberWidth,
                     orderedListNumberWidth,
@@ -4926,7 +4927,8 @@ PdfRenderer::drawListItem(PdfAuxData &pdfData,
 
                     pdfData.drawRectangle(pdfData.m_layout.borderStartX()
                                               + pdfData.m_layout.xIncrementDirection()
-                                                  * (offset + d - (orderedListNumberWidth + spaceWidth)),
+                                                  * (offset + d - (orderedListNumberWidth + spaceWidth))
+                                              - (pdfData.m_layout.isRightToLeft() ? orderedListNumberWidth - 2.0 * d : 0.0),
                                           firstLine.m_y
                                               - firstLine.m_height
                                               + qAbs(firstLine.m_height - orderedListNumberWidth) / 2.0
@@ -4946,11 +4948,21 @@ PdfRenderer::drawListItem(PdfAuxData &pdfData,
 
                 prevListItemType = ListItemType::Ordered;
 
-                const QString idxText = QString::number(idx) + QLatin1Char('.');
+                QString idxText = QString::number(idx);
+
+                if (pdfData.m_layout.isRightToLeft()) {
+                    idxText.prepend(QLatin1Char('.'));
+                } else {
+                    idxText.append(QLatin1Char('.'));
+                }
+
+                const auto str = createUtf8String(idxText);
+                const auto w = pdfData.stringWidth(font, m_opts.m_textFontSize * scale, 1.0, str, !pdfData.m_layout.isRightToLeft());
 
                 pdfData.drawText(pdfData.m_layout.borderStartX()
                                      + pdfData.m_layout.xIncrementDirection()
-                                         * (offset - (orderedListNumberWidth + spaceWidth)),
+                                         * (offset - (orderedListNumberWidth + spaceWidth))
+                                     - (pdfData.m_layout.isRightToLeft() ? w : 0.0),
                                  firstLine.m_y - pdfData.fontDescent(font, m_opts.m_textFontSize, scale),
                                  createUtf8String(idxText),
                                  font,
@@ -4966,7 +4978,8 @@ PdfRenderer::drawListItem(PdfAuxData &pdfData,
                 pdfData.m_currentPaint.setStyle(SkPaint::kFill_Style);
                 (*pdfData.m_pages)[pdfData.m_currentPainterIdx].m_canvas->drawCircle(
                     pdfData.m_layout.borderStartX()
-                        + pdfData.m_layout.xIncrementDirection() * (offset + r - (orderedListNumberWidth + spaceWidth)),
+                        + pdfData.m_layout.xIncrementDirection() * (offset + r - (orderedListNumberWidth + spaceWidth))
+                        - (pdfData.m_layout.isRightToLeft() ? r : 0.0),
                     firstLine.m_y - firstLine.m_height / 2.0,
                     r,
                     pdfData.m_currentPaint);
