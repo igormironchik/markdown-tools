@@ -1821,8 +1821,6 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
         pdfData.m_layout.setRightToLeft(str.isRightToLeft());
         rtl->m_check = false;
         rtl->m_isOn = pdfData.m_layout.isRightToLeft();
-    } else if (rtl) {
-        pdfData.m_layout.setRightToLeft(rtl->isRightToLeft());
     }
 
     if (nextItem
@@ -4753,9 +4751,10 @@ PdfRenderer::drawListItem(PdfAuxData &pdfData,
     auto font = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, scale, pdfData);
 
     const auto lineHeight = pdfData.lineSpacing(font, m_opts.m_textFontSize, scale);
+    const auto spaceWidth = pdfData.stringWidth(font, m_opts.m_textFontSize, scale, " ", true);
+    const auto checkboxWidth = lineHeight * 0.75;
     const auto orderedListNumberWidth = pdfData.stringWidth(font, m_opts.m_textFontSize, scale, "9", true) * bulletWidth
         + pdfData.stringWidth(font, m_opts.m_textFontSize, scale, ".", true);
-    const auto spaceWidth = pdfData.stringWidth(font, m_opts.m_textFontSize, scale, " ", true);
     const auto unorderedMarkWidth = lineHeight * 0.25;
 
     if (heightCalcOpt == CalcHeightOpt::Unknown) {
@@ -4915,26 +4914,26 @@ PdfRenderer::drawListItem(PdfAuxData &pdfData,
                 pdfData.setColor(Qt::black);
                 pdfData.drawRectangle(
                     pdfData.m_layout.borderStartX()
-                        + pdfData.m_layout.xIncrementDirection() * (offset - (orderedListNumberWidth + spaceWidth))
-                        - (pdfData.m_layout.isRightToLeft() ? orderedListNumberWidth : 0.0),
-                    firstLine.m_y - firstLine.m_height + qAbs(firstLine.m_height - orderedListNumberWidth) / 2.0,
-                    orderedListNumberWidth,
-                    orderedListNumberWidth,
+                        + pdfData.m_layout.xIncrementDirection() * (offset - spaceWidth - orderedListNumberWidth)
+                        - (pdfData.m_layout.isRightToLeft() ? checkboxWidth : 0.0),
+                    firstLine.m_y - firstLine.m_height + qAbs(firstLine.m_height - checkboxWidth) / 2.0,
+                    checkboxWidth,
+                    checkboxWidth,
                     SkPaint::kStroke_Style);
 
                 if (item->isChecked()) {
-                    const auto d = orderedListNumberWidth * 0.2;
+                    const auto d = checkboxWidth * 0.2;
 
                     pdfData.drawRectangle(pdfData.m_layout.borderStartX()
                                               + pdfData.m_layout.xIncrementDirection()
-                                                  * (offset + d - (orderedListNumberWidth + spaceWidth))
-                                              - (pdfData.m_layout.isRightToLeft() ? orderedListNumberWidth - 2.0 * d : 0.0),
+                                                  * (offset + d - spaceWidth - orderedListNumberWidth)
+                                              - (pdfData.m_layout.isRightToLeft() ? checkboxWidth - 2.0 * d : 0.0),
                                           firstLine.m_y
                                               - firstLine.m_height
-                                              + qAbs(firstLine.m_height - orderedListNumberWidth) / 2.0
+                                              + qAbs(firstLine.m_height - checkboxWidth) / 2.0
                                               + d,
-                                          orderedListNumberWidth - 2.0 * d,
-                                          orderedListNumberWidth - 2.0 * d,
+                                          checkboxWidth - 2.0 * d,
+                                          checkboxWidth - 2.0 * d,
                                           SkPaint::kFill_Style);
                 }
 
@@ -4978,7 +4977,7 @@ PdfRenderer::drawListItem(PdfAuxData &pdfData,
                 pdfData.m_currentPaint.setStyle(SkPaint::kFill_Style);
                 (*pdfData.m_pages)[pdfData.m_currentPainterIdx].m_canvas->drawCircle(
                     pdfData.m_layout.borderStartX()
-                        + pdfData.m_layout.xIncrementDirection() * (offset + r - (orderedListNumberWidth + spaceWidth))
+                        + pdfData.m_layout.xIncrementDirection() * (offset + r)
                         - (pdfData.m_layout.isRightToLeft() ? r : 0.0),
                     firstLine.m_y - firstLine.m_height / 2.0,
                     r,
