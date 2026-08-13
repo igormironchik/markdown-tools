@@ -260,13 +260,19 @@ inline bool noLettersNext(const QString &str,
 
 inline bool isDigitsAndPunctOnly(const QString &s)
 {
+    bool wasDigits = false;
+
     for (qsizetype i = 0; i < s.size(); ++i) {
+        if (s[i].isDigit()) {
+            wasDigits = true;
+
+        }
         if (!s[i].isDigit() && !s[i].isPunct()) {
             return false;
         }
     }
 
-    return true;
+    return wasDigits;
 }
 
 QVector<Word> splitString(const QString &str,
