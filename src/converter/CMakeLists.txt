@@ -10,9 +10,12 @@ set(CMAKE_AUTOUIC ON)
 find_package(Qt6Widgets 6.5.0 REQUIRED)
 find_package(Qt6Network 6.5.0 REQUIRED)
 find_package(Qt6Svg 6.5.0 REQUIRED)
+find_package(Qt6Test 6.5.0 REQUIRED)
+
 find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} COMPONENTS
     IconThemes ColorScheme Config
 )
+
 find_package(ZLIB REQUIRED)
 
 if(WIN32)
@@ -28,14 +31,17 @@ if(ENABLE_COVERAGE)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
 endif(ENABLE_COVERAGE)
 
+set(LIB_SRC skia_paintdevice.h
+    skia_paintdevice.cpp
+    renderer.h
+    renderer.cpp
+    renderer_aux.h
+    renderer_aux.cpp)
+
 set(GUI_SRC main.cpp
 	main_window.cpp
 	main_window.h
 	main_window.ui
-	skia_paintdevice.h
-	skia_paintdevice.cpp
-	renderer.h
-	renderer.cpp
 	progress.h
 	progress.cpp
 	progress.ui
@@ -44,8 +50,8 @@ set(GUI_SRC main.cpp
     settings.cpp
     settings.ui)
 	
-qt6_add_resources(GUI_SRC resources.qrc)
-qt6_add_resources(GUI_SRC ../../3rdparty/MicroTeX/latex.qrc)
+qt6_add_resources(LIB_SRC resources.qrc)
+qt6_add_resources(LIB_SRC ../../3rdparty/MicroTeX/latex.qrc)
 
 if(WIN32)
     list(APPEND GUI_SRC md-pdf.rc)
@@ -60,6 +66,28 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
 add_definitions(-DBUILD_QT)
 
 link_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../../builds/skia")
+
+set(NORMAL_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../tests/fonts/DroidSerif/droid_serif.ttf)
+set(ITALIC_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../tests/fonts/DroidSerif/droid_serif_italic.ttf)
+set(BOLD_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../tests/fonts/DroidSerif/droid_serif_bold.ttf)
+set(BOLD_ITALIC_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../tests/fonts/DroidSerif/droid_serif_italic_bold.ttf)
+set(MONO_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../tests/fonts/SpaceMono/SpaceMono-Regular.ttf)
+set(MONO_ITALIC_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../tests/fonts/SpaceMono/SpaceMono-Italic.ttf)
+set(MONO_BOLD_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../tests/fonts/SpaceMono/SpaceMono-Bold.ttf)
+set(MONO_BOLD_ITALIC_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../tests/fonts/SpaceMono/SpaceMono-BoldItalic.ttf)
+set(WORKING_FOLDER ${CMAKE_CURRENT_SOURCE_DIR}/../../tests/auto/test_render)
+
+configure_file(test_const.h.in test_const.h @ONLY)
+
+add_library(md-pdf-lib STATIC ${LIB_SRC})
+
+add_library(md-pdf-lib-test STATIC ${LIB_SRC})
+
+target_compile_definitions(md-pdf-lib-test PUBLIC MD_PDF_TESTING)
+
+target_include_directories(md-pdf-lib-test PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+)
 
 add_executable(md-pdf-gui WIN32 ${GUI_SRC})
 
@@ -80,12 +108,11 @@ if(UNIX)
     set(PLATFORM_LIBS freetype fontconfig dng_sdk piex webp png jpeg)
 endif()
 
-target_link_libraries(md-pdf-gui
+target_link_libraries(md-pdf-lib
     md4qt::md4qt
     markdown-widgets
     LaTeX
     ${ADDITIONAL_KDE_TARGETS}
-    Qt6::Widgets
     Qt6::Network
     Qt6::Core
     bentleyottmann
@@ -107,6 +134,38 @@ target_link_libraries(md-pdf-gui
     zlib
     ${PLATFORM_LIBS}
     ZLIB::ZLIB)
+
+target_link_libraries(md-pdf-lib-test
+    md4qt::md4qt
+    markdown-widgets
+    LaTeX
+    ${ADDITIONAL_KDE_TARGETS}
+    Qt6::Network
+    Qt6::Core
+    bentleyottmann
+    compression_utils_portable
+    skresources
+    skcms
+    skottie
+    skparagraph
+    sksg
+    svg
+    wuffs
+    skshaper
+    skia
+    skunicode_icu
+    skunicode_core
+    expat
+    harfbuzz
+    icu
+    zlib
+    ${PLATFORM_LIBS}
+    ZLIB::ZLIB
+    Qt6::Test)
+
+target_link_libraries(md-pdf-gui
+    md4qt::md4qt
+    md-pdf-lib)
     
 find_program(SYSTEM_GN gn)
 
@@ -133,7 +192,7 @@ else()
 endif()
 
 add_custom_command(
-    TARGET md-pdf-gui
+    TARGET md-pdf-lib
     PRE_BUILD
     COMMAND ${FETCH_GN_COMMAND}
     COMMAND "${GN_EXEC}" gen "../../../builds/skia" "--args=is_official_build=true skia_use_system_expat=false skia_use_system_harfbuzz=false skia_use_system_icu=false skia_use_system_libjpeg_turbo=false skia_use_system_libpng=false skia_use_system_libwebp=false skia_use_system_zlib=false extra_cflags=[\"${SKIA_CFLAGS}\"]"

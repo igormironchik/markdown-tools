@@ -199,7 +199,7 @@ struct TestRendering {
     static void testDescent()
     {
         {
-            PdfRenderer::CustomWidth cw;
+            CustomWidth cw;
 
             cw.append({10., 10., false, false, true, {}, 5.});
             cw.append({10., 20., false, false, true, {}, 10.});
@@ -213,7 +213,7 @@ struct TestRendering {
         }
 
         {
-            PdfRenderer::CustomWidth cw;
+            CustomWidth cw;
 
             cw.append({10., 10., false, false, true, {}, 9.});
             cw.append({10., 20., false, false, true, {}, 1.});
@@ -227,7 +227,7 @@ struct TestRendering {
         }
 
         {
-            PdfRenderer::CustomWidth cw;
+            CustomWidth cw;
 
             cw.append({10., 10., false, false, true, {}, 9.});
             cw.append({10., 10., false, false, true, {}, 10.});
@@ -240,7 +240,7 @@ struct TestRendering {
         }
 
         {
-            PdfRenderer::CustomWidth cw;
+            CustomWidth cw;
 
             cw.append({10., 10., false, false, true, {}, 0.});
             cw.append({10., 10., false, false, true, {}, 10.});
@@ -254,7 +254,7 @@ struct TestRendering {
         }
 
         {
-            PdfRenderer::CustomWidth cw;
+            CustomWidth cw;
 
             cw.append({10., 20., false, false, true, {}, 1.});
             cw.append({10., 20., false, false, true, {}, 1.});
@@ -395,6 +395,8 @@ void TestRender::initTestCase()
     tex::LaTeX::init(":/res");
 
     initSharedResources();
+    Q_INIT_RESOURCE(resources);
+    Q_INIT_RESOURCE(latex);
 }
 
 void TestRender::testFootnotes()

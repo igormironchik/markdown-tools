@@ -3,6 +3,9 @@
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 
+// shared include.
+#include "utils.h"
+
 // Qt include.
 #include <QAbstractItemModel>
 #include <QRect>
@@ -39,7 +42,7 @@ struct StringData {
     //! Non-splitted text.
     UnitData m_data;
     //! Already splitted text.
-    QVector<QPair<QString, bool>> m_splittedText;
+    QVector<Word> m_splittedText;
     //! Rectangles for code.
     QVector<QRect> m_backgroundRects;
     //! Text rects with corresponding data.

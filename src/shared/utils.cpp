@@ -170,6 +170,17 @@ void initSharedResources()
     MdShared::Syntax::init();
 }
 
+Word::Word(const QString &word,
+           bool rtl,
+           bool onNewLine,
+           const SkFont *font)
+    : m_word(word)
+    , m_rtl(rtl)
+    , m_onNewLine(onNewLine)
+    , m_font(font)
+{
+}
+
 bool isRightToLeft(const QChar &ch)
 {
     switch (ch.direction()) {
@@ -183,60 +194,171 @@ bool isRightToLeft(const QChar &ch)
     }
 }
 
-QVector<QPair<QString,
-              bool>>
-splitString(const QString &str,
-            bool skipSpaces)
+inline bool isRtlPrev(const QString &str,
+                      qsizetype i)
 {
-    QVector<QPair<QString, bool>> res;
-    qsizetype first = 0;
-    bool space = false;
-    bool previousRTL = false;
+    --i;
 
-    for (qsizetype i = 0; i < str.length(); ++i) {
-        if (str[i].isSpace() && !space) {
-            if (first < i) {
-                const auto word = str.sliced(first, i - first);
-                bool rtl = false;
+    while (i >= 0) {
+        if (str[i].isLetter()) {
+            return isRightToLeft(str[i]);
+        }
 
-                if (word[0].direction() != QChar::DirON) {
-                    previousRTL = isRightToLeft(word[0]);
-                }
+        --i;
+    }
 
-                rtl = previousRTL;
+    return false;
+}
 
-                res.append({word, rtl});
-            }
+inline bool isRtlNext(const QString &str,
+                      qsizetype i)
+{
+    ++i;
 
-            if (!skipSpaces) {
-                res.append({QStringLiteral(" "), false});
-            }
+    while (i < str.size()) {
+        if (str[i].isLetter()) {
+            return isRightToLeft(str[i]);
+        }
 
-            space = true;
-        } else {
-            if (space) {
-                first = i;
-            }
+        ++i;
+    }
 
-            space = false;
+    return false;
+}
+
+inline bool noLettersPrev(const QString &str,
+                          qsizetype i)
+{
+    --i;
+
+    while (i >= 0) {
+        if (str[i].isLetter()) {
+            return false;
+        }
+
+        --i;
+    }
+
+    return true;
+}
+
+inline bool noLettersNext(const QString &str,
+                          qsizetype i)
+{
+    ++i;
+
+    while (i < str.size()) {
+        if (str[i].isLetter()) {
+            return false;
+        }
+
+        ++i;
+    }
+
+    return true;
+}
+
+inline bool isDigitsAndPunctOnly(const QString &s)
+{
+    bool wasDigits = false;
+
+    for (qsizetype i = 0; i < s.size(); ++i) {
+        if (s[i].isDigit()) {
+            wasDigits = true;
+
+        }
+        if (!s[i].isDigit() && !s[i].isPunct()) {
+            return false;
         }
     }
 
-    if (!space && first < str.length()) {
-        const auto word = str.sliced(first);
-        res.append({word, isRightToLeft(word[0])});
+    return wasDigits;
+}
+
+QVector<Word> splitString(const QString &str,
+                          bool skipSpaces)
+{
+    static const QString s_spaceString = QStringLiteral(" ");
+
+    const auto rtl = str.isRightToLeft();
+
+    QVector<Word> res;
+
+    if (str.isEmpty()) {
+        return res;
+    }
+
+    qsizetype first = 0;
+    qsizetype i = 0;
+
+    auto addWord = [&](bool separator) -> bool {
+        const auto end = i + (separator ? 1 : 0) - 1;
+        if (first < end + 1) {
+            auto word = str.sliced(first, end - first + 1);
+
+            if (separator) {
+                const auto prevRtl = isRtlPrev(str, first);
+                const auto nextRtl = isRtlNext(str, first);
+
+                if (prevRtl == nextRtl) {
+                    res.append({word, prevRtl, false, nullptr});
+                } else {
+                    res.append({word, rtl, false, nullptr});
+                }
+            } else {
+                const auto noLettersBefore = noLettersPrev(str, first);
+                const auto noLettersAfter = noLettersNext(str, end);
+                const auto rtlDigits = ((isRtlPrev(str, first) || noLettersBefore)
+                                        && (isRtlNext(str, end) || noLettersAfter)
+                                        && isDigitsAndPunctOnly(word)
+                                        && !(noLettersBefore && noLettersAfter));
+
+                if (rtlDigits) {
+                    std::reverse(word.begin(), word.end());
+                }
+
+                res.append({word, word.isRightToLeft() || rtlDigits, false, nullptr});
+            }
+
+            return true;
+        }
+
+        return false;
+    };
+
+    for (; i < str.length(); ++i) {
+        if (str[i].isSpace()) {
+            if ((addWord(false) || (!res.isEmpty() && res.back().m_word != s_spaceString) || res.isEmpty())
+                && !skipSpaces) {
+                res.append({s_spaceString, false, false, nullptr});
+            }
+
+            first = i + 1;
+        } else if (isSeparator(str[i])) {
+            addWord(false);
+
+            first = i;
+
+            addWord(true);
+
+            first = i + 1;
+        }
+    }
+
+    if (first < str.length()) {
+        addWord(false);
     }
 
     return res;
 }
 
-void orderWords(QVector<QPair<QString,
-                              bool>> &text)
+void orderWords(QVector<Word> &text,
+                bool rtl)
 {
     qsizetype start = -1;
     qsizetype end = -1;
 
-    auto reverseItems = [](qsizetype start, qsizetype end, QVector<QPair<QString, bool>> &data) {
+    auto reverseItems = [](qsizetype start, qsizetype end, QVector<Word> &data) {
         if (start > -1 && end > start) {
             while (end - start > 0) {
                 data.swapItemsAt(start, end);
@@ -247,8 +369,8 @@ void orderWords(QVector<QPair<QString,
     };
 
     for (qsizetype i = 0; i < text.size(); ++i) {
-        if (text[i].first != QStringLiteral(" ")) {
-            if (!text[i].second) {
+        if (text[i].m_word != QStringLiteral(" ")) {
+            if (text[i].m_rtl != rtl) {
                 if (start == -1) {
                     start = i;
                     end = i;
