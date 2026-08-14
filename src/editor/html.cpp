@@ -389,7 +389,7 @@ void HtmlConv::onFootnotes(const QString &footnoteBackLinkContent)
     m_justCollectFootnoteRefs = false;
     m_dontIncrementFootnoteCount = true;
 
-    for (const auto &id : m_fns) {
+    for (const auto &id : std::as_const(m_fns)) {
         m_html.push_back(QStringLiteral("<li id=\""));
         m_html.push_back(id.m_id);
         m_html.push_back(QStringLiteral("\">"));

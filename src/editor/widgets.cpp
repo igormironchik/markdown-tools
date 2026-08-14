@@ -99,7 +99,7 @@ void TocTreeView::contextMenuEvent(QContextMenuEvent *e)
                         static_cast<QSortFilterProxyModel *>(model())->mapToSource(indexAt(e->pos())).internalPointer())
                         ->m_id;
 
-    menu.addAction(tr("Scroll Web Preview To"), [id, this]() {
+    menu.addAction(tr("Scroll Web Preview To"), this, [id, this]() {
         Q_EMIT this->scrollWebViewToRequested(id);
     });
 

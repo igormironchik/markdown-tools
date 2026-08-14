@@ -43,7 +43,7 @@
 #include <QTreeWidgetItem>
 #include <QWebEngineSettings>
 #include <QWindow>
-#include <QtConcurrent>
+#include <QtConcurrentRun>
 
 // Sonnet include.
 #include <Sonnet/ConfigWidget>
@@ -298,7 +298,7 @@ void MainWindow::onFileNew()
     m_d->m_editor->document()->clearUndoRedoStacks();
     updateWindowTitle();
 
-    const auto wd = QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first();
+    const auto wd = QStandardPaths::standardLocations(QStandardPaths::HomeLocation).constFirst();
     m_d->m_workingDirectoryWidget->setWorkingDirectory(wd);
     onWorkingDirectoryChange(wd);
     onCursorPositionChanged();
@@ -342,8 +342,9 @@ void MainWindow::onFileOpen()
         return;
     }
 
-    const auto folder = m_d->m_isDefaultFile ? QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first()
-                                             : QFileInfo(m_d->m_editor->docName()).absolutePath();
+    const auto folder = m_d->m_isDefaultFile
+        ? QStandardPaths::standardLocations(QStandardPaths::HomeLocation).constFirst()
+        : QFileInfo(m_d->m_editor->docName()).absolutePath();
 
     QFileDialog dialog(this, tr("Open Markdown File"), folder);
     dialog.setMimeTypeFilters({"text/markdown"});
@@ -388,7 +389,7 @@ void MainWindow::onFileSaveAs()
 {
     QFileDialog dialog(this,
                        tr("Save Markdown File"),
-                       QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first());
+                       QStandardPaths::standardLocations(QStandardPaths::HomeLocation).constFirst());
     dialog.setMimeTypeFilters({"text/markdown"});
     dialog.setAcceptMode(QFileDialog::AcceptSave);
     dialog.setDefaultSuffix("md");
@@ -981,7 +982,7 @@ void MainWindow::onLineNumberContextMenuRequested(int lineNumber,
         [this](const QString &id, qsizetype count, bool code, const QPoint &pos, qsizetype fromTop) {
             QMenu menu;
 
-            menu.addAction(tr("Scroll Web Preview To"), [id, this, count, code, fromTop]() {
+            menu.addAction(tr("Scroll Web Preview To"), this, [id, this, count, code, fromTop]() {
                 this->scrollPreview(id, count, code, fromTop);
             });
 
@@ -1874,7 +1875,9 @@ void MainWindow::openFileFromNavigationToolbar(const QString &path,
 void MainWindow::dragEnterEvent(QDragEnterEvent *event)
 {
     if (event->mimeData()->hasUrls()) {
-        for (const auto &url : event->mimeData()->urls()) {
+        const auto urls = event->mimeData()->urls();
+
+        for (const auto &url : urls) {
             if (url.isLocalFile()) {
                 const auto fileName = url.toLocalFile();
 
@@ -1895,7 +1898,9 @@ void MainWindow::dragEnterEvent(QDragEnterEvent *event)
 
 void MainWindow::dropEvent(QDropEvent *event)
 {
-    for (const auto &url : event->mimeData()->urls()) {
+    const auto urls = event->mimeData()->urls();
+
+    for (const auto &url : urls) {
         if (url.isLocalFile()) {
             const auto fileName = url.toLocalFile();
 

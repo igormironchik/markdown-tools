@@ -12,7 +12,7 @@
 #include "emoji.h"
 
 #ifdef MD_PDF_TESTING
-#include <QtTest/QtTest>
+#include <QTest>
 #include <test_const.h>
 #endif // MD_PDF_TESTING
 
@@ -217,6 +217,30 @@ void PdfRenderer::renderImpl()
                                         : true);
                         };
 
+                        static const QColor s_noteColor(QRgb(0x1f6feb));
+                        static const QColor s_tipColor(QRgb(0x238636));
+                        static const QColor s_warningColor(QRgb(0x9e6a03));
+                        static const QColor s_cautionColor(QRgb(0xda3633));
+                        static const QColor s_importantColor(QRgb(0x8250df));
+
+                        static const QString s_noteMark = QStringLiteral("[!note]");
+                        static const QString s_tipMark = QStringLiteral("[!tip]");
+                        static const QString s_warningMark = QStringLiteral("[!warning]");
+                        static const QString s_cautionMark = QStringLiteral("[!caution]");
+                        static const QString s_importantMark = QStringLiteral("[!important]");
+
+                        static const QString s_noteSvg = QStringLiteral("qrc:/svg/note.svg");
+                        static const QString s_tipSvg = QStringLiteral("qrc:/svg/tip.svg");
+                        static const QString s_warningSvg = QStringLiteral("qrc:/svg/warning.svg");
+                        static const QString s_cautionSvg = QStringLiteral("qrc:/svg/caution.svg");
+                        static const QString s_importantSvg = QStringLiteral("qrc:/svg/important.svg");
+
+                        static const QString s_noteText = QStringLiteral(" Note");
+                        static const QString s_tipText = QStringLiteral(" Tip");
+                        static const QString s_warningText = QStringLiteral(" Warning");
+                        static const QString s_cautionText = QStringLiteral(" Caution");
+                        static const QString s_importantText = QStringLiteral(" Important");
+
                         if (!t->opts()) {
                             QColor c;
                             bool highlight = false;
@@ -224,31 +248,31 @@ void PdfRenderer::renderImpl()
                             QString text = t->text().trimmed().toLower();
 
                             if (isAloneMark(p)) {
-                                if (text == QStringLiteral("[!note]")) {
-                                    c = QColor::fromString(QStringLiteral("#1f6feb"));
+                                if (text == s_noteMark) {
+                                    c = s_noteColor;
                                     highlight = true;
-                                    url = QStringLiteral("qrc:/svg/note.svg");
-                                    text = QStringLiteral(" Note");
-                                } else if (text == QStringLiteral("[!tip]")) {
-                                    c = QColor::fromString(QStringLiteral("#238636"));
+                                    url = s_noteSvg;
+                                    text = s_noteText;
+                                } else if (text == s_tipMark) {
+                                    c = s_tipColor;
                                     highlight = true;
-                                    url = QStringLiteral("qrc:/svg/tip.svg");
-                                    text = QStringLiteral(" Tip");
-                                } else if (text == QStringLiteral("[!warning]")) {
-                                    c = QColor::fromString(QStringLiteral("#9e6a03"));
+                                    url = s_tipSvg;
+                                    text = s_tipText;
+                                } else if (text == s_warningMark) {
+                                    c = s_warningColor;
                                     highlight = true;
-                                    url = QStringLiteral("qrc:/svg/warning.svg");
-                                    text = QStringLiteral(" Warning");
-                                } else if (text == QStringLiteral("[!caution]")) {
-                                    c = QColor::fromString(QStringLiteral("#da3633"));
+                                    url = s_warningSvg;
+                                    text = s_warningText;
+                                } else if (text == s_cautionMark) {
+                                    c = s_cautionColor;
                                     highlight = true;
-                                    url = QStringLiteral("qrc:/svg/caution.svg");
-                                    text = QStringLiteral(" Caution");
-                                } else if (text == QStringLiteral("[!important]")) {
-                                    c = QColor::fromString(QStringLiteral("#8250df"));
+                                    url = s_cautionSvg;
+                                    text = s_cautionText;
+                                } else if (text == s_importantMark) {
+                                    c = s_importantColor;
                                     highlight = true;
-                                    url = QStringLiteral("qrc:/svg/important.svg");
-                                    text = QStringLiteral(" Important");
+                                    url = s_importantSvg;
+                                    text = s_importantText;
                                 }
                             }
 
@@ -591,13 +615,13 @@ void PdfRenderer::createPage(PdfAuxData &pdfData)
         if (!pdfData.m_drawFootnotes) {
             create(pdfData);
         } else {
-            auto it = pdfData.m_reserved.find(++pdfData.m_footnotePageIdx);
+            auto it = pdfData.m_reserved.constFind(++pdfData.m_footnotePageIdx);
 
-            if (it == pdfData.m_reserved.cend()) {
-                it = pdfData.m_reserved.upperBound(pdfData.m_footnotePageIdx);
+            if (it == pdfData.m_reserved.constEnd()) {
+                it = std::as_const(pdfData.m_reserved).upperBound(pdfData.m_footnotePageIdx);
             }
 
-            if (it != pdfData.m_reserved.cend()) {
+            if (it != pdfData.m_reserved.constEnd()) {
                 pdfData.m_footnotePageIdx = it.key();
             } else {
                 pdfData.m_footnotePageIdx = pdfData.m_currentPageIdx + 1;
@@ -2968,7 +2992,7 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
 
                 auto fcit = pdfData.m_footnoteRefCount.find(fit.value().get());
 
-                if (fcit != pdfData.m_footnoteRefCount.cend()) {
+                if (fcit != pdfData.m_footnoteRefCount.end()) {
                     ++fcit.value();
                 } else {
                     fcit = pdfData.m_footnoteRefCount.insert(fit.value().get(), 1);

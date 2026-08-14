@@ -108,7 +108,7 @@ void MainWindowPrivate::initUi()
     m_tabs->setTabPosition(QTabWidget::East);
 
     QObject::connect(m_tabs, &TabWidget::activated, m_q, &MainWindow::onTabActivated);
-    QObject::connect(m_tabs, &TabWidget::removed, [this]() {
+    QObject::connect(m_tabs, &TabWidget::removed, m_q, [this]() {
         this->handleCurrentTab();
     });
 
@@ -124,7 +124,7 @@ void MainWindowPrivate::initUi()
     tocFilterAction->setShortcutContext(Qt::ApplicationShortcut);
     m_q->addAction(tocFilterAction);
 
-    QObject::connect(tocFilterAction, &QAction::triggered, [this]() {
+    QObject::connect(tocFilterAction, &QAction::triggered, m_q, [this]() {
         this->m_tocFilterLine->setFocus();
         this->m_tocFilterLine->selectAll();
     });
@@ -172,12 +172,12 @@ void MainWindowPrivate::initUi()
     m_filePanel->hide();
 
     QObject::connect(m_fileTree, &QTreeWidget::itemDoubleClicked, m_q, &MainWindow::onNavigationDoubleClicked);
-    QObject::connect(m_tocTree->header(), &QHeaderView::sectionResized, [this](int, int, int) {
+    QObject::connect(m_tocTree->header(), &QHeaderView::sectionResized, m_q, [this](int, int, int) {
         notifyTocTree(this->m_filterTocModel, this->m_delegate, QModelIndex());
     });
     QObject::connect(m_tocTree, &TocTreeView::scrollWebViewToRequested, m_q, &MainWindow::onScrollWebViewTo);
 
-    QObject::connect(m_tocFilterLine, &QLineEdit::textChanged, [this](const QString &text) {
+    QObject::connect(m_tocFilterLine, &QLineEdit::textChanged, m_q, [this](const QString &text) {
         this->m_filterTocModel->setFilterFixedString(text);
     });
     QObject::connect(m_backBtn, &QToolButton::clicked, m_q, &MainWindow::onGoBack);
@@ -333,7 +333,7 @@ void MainWindowPrivate::initUi()
     m_tabAction = new QAction(MainWindow::tr("Indent"), m_formatMenu);
     m_tabAction->setShortcut(MainWindow::tr("Tab"));
     m_tabAction->setShortcutContext(Qt::WidgetShortcut);
-    QObject::connect(m_tabAction, &QAction::triggered, [this]() {
+    QObject::connect(m_tabAction, &QAction::triggered, m_q, [this]() {
         qApp->postEvent(this->m_editor, new QKeyEvent(QEvent::KeyPress, Qt::Key_Tab, Qt::NoModifier));
     });
     m_formatMenu->addAction(m_tabAction);
@@ -341,7 +341,7 @@ void MainWindowPrivate::initUi()
     m_backtabAction = new QAction(MainWindow::tr("Unindent"), m_formatMenu);
     m_backtabAction->setShortcut(MainWindow::tr("Shift+Tab"));
     m_backtabAction->setShortcutContext(Qt::WidgetShortcut);
-    QObject::connect(m_backtabAction, &QAction::triggered, [this]() {
+    QObject::connect(m_backtabAction, &QAction::triggered, m_q, [this]() {
         qApp->postEvent(this->m_editor, new QKeyEvent(QEvent::KeyPress, Qt::Key_Backtab, Qt::NoModifier));
     });
     m_formatMenu->addAction(m_backtabAction);
@@ -479,6 +479,7 @@ void MainWindowPrivate::initUi()
                                          QIcon(isDark ? QStringLiteral(":/pics/icon_24x24-dark.png")
                                                       : QStringLiteral(":/pics/icon_24x24.png"))),
                         MainWindow::tr("About Markdown"),
+                        m_q,
                         []() {
                             QDesktopServices::openUrl(QUrl(QStringLiteral("https://spec.commonmark.org/0.31.2/")));
                         });
@@ -498,6 +499,7 @@ void MainWindowPrivate::initUi()
     helpMenu->addSeparator();
     helpMenu->addAction(QIcon::fromTheme(QStringLiteral("help-hint"), QIcon(QStringLiteral(":/res/img/help-hint.png"))),
                         MainWindow::tr("Tips && Tricks"),
+                        m_q,
                         []() {
                             QDesktopServices::openUrl(
                                 QUrl(QStringLiteral("https://igormironchik.github.io/markdown-tools/")));
@@ -506,6 +508,7 @@ void MainWindowPrivate::initUi()
     helpMenu->addAction(
         QIcon::fromTheme(QStringLiteral("tools-report-bug"), QIcon(QStringLiteral(":/res/img/tools-report-bug.png"))),
         MainWindow::tr("Report Bug"),
+        m_q,
         []() {
             QDesktopServices::openUrl(QUrl(QStringLiteral("https://github.com/igormironchik/markdown-tools/issues")));
         });
@@ -548,7 +551,7 @@ void MainWindowPrivate::initUi()
     QObject::connect(m_toggleFindWebAction, &QAction::triggered, m_q, &MainWindow::onFindWeb);
     QObject::connect(m_toggleGoToLineAction, &QAction::triggered, m_q, &MainWindow::onGoToLine);
     QObject::connect(m_nextMisspelled, &QAction::triggered, m_q, &MainWindow::onNextMisspelled);
-    QObject::connect(m_page, &QWebEnginePage::linkHovered, [this](const QString &url) {
+    QObject::connect(m_page, &QWebEnginePage::linkHovered, m_q, [this](const QString &url) {
         if (!url.isEmpty())
             this->m_q->statusBar()->showMessage(url);
         else

@@ -49,7 +49,7 @@ public Q_SLOTS:
     //! Set working directory.
     void setWorkingDirectory(const QString &path);
     //! Set startup state.
-    void setStartupState(const StartupState &st);
+    void setStartupState(const MdEditor::StartupState &st);
     //! Show the extract from Markdown Standard for the cursor.
     void showMarkdownStandard(QTextCursor c);
 

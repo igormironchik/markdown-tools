@@ -227,6 +227,8 @@ void Switch::setOnText(const QString &text)
     if (d->onText != text) {
         d->onText = text;
         updateGeometry();
+
+        Q_EMIT onTextChanged();
     }
 }
 
@@ -240,6 +242,8 @@ void Switch::setOffText(const QString &text)
     if (d->offText != text) {
         d->offText = text;
         updateGeometry();
+
+        Q_EMIT offTextChanged();
     }
 }
 
@@ -267,6 +271,8 @@ void Switch::setOnColor(const QColor &c)
         default:
             break;
         }
+
+        Q_EMIT onColorChanged();
     }
 }
 

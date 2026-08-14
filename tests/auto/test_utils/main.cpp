@@ -13,7 +13,7 @@ bool operator==(const MdUtils::BlockLinesDiff &d1,
 }
 
 // Qt include.
-#include <QtTest/QtTest>
+#include <QTest>
 
 using namespace MdUtils;
 

@@ -79,7 +79,7 @@ class Switch : public QWidget
         By default button doesn't display any text in checked state.
         I.e. this property is empty.
     */
-    Q_PROPERTY(QString onText READ onText WRITE setOnText)
+    Q_PROPERTY(QString onText READ onText WRITE setOnText NOTIFY onTextChanged)
     /*!
         \property offText
 
@@ -88,7 +88,7 @@ class Switch : public QWidget
         By default button doesn't display any text in unchecked state.
         I.e. this property is empty.
     */
-    Q_PROPERTY(QString offText READ offText WRITE setOffText)
+    Q_PROPERTY(QString offText READ offText WRITE setOffText NOTIFY offTextChanged)
     /*!
         \property onColor
 
@@ -96,7 +96,7 @@ class Switch : public QWidget
 
         By default onColor is QPalette::Highlight.
     */
-    Q_PROPERTY(QColor onColor READ onColor WRITE setOnColor)
+    Q_PROPERTY(QColor onColor READ onColor WRITE setOnColor NOTIFY onColorChanged)
 
 Q_SIGNALS:
     /*!
@@ -116,6 +116,18 @@ Q_SIGNALS:
         \a state contains the button's new State.
     */
     void stateChanged(int state);
+    /*!
+     * \brief The text that displays when button is checked was changed.
+     */
+    void onTextChanged();
+    /*!
+     * \brief The text that displays when button is unchecked was changed.
+     */
+    void offTextChanged();
+    /*!
+     * \brief The color used to highlight checked state of the button was changed.
+     */
+    void onColorChanged();
 
 public:
     /*!
@@ -168,7 +180,7 @@ public Q_SLOTS:
     /*!
         Set state of the button.
     */
-    void setState(State st);
+    void setState(MdShared::Switch::State st);
 
 protected:
     void paintEvent(QPaintEvent *event) override;

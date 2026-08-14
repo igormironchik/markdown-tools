@@ -21,8 +21,8 @@
 #include <QFontDatabase>
 #include <QObject>
 #include <QSignalSpy>
+#include <QTest>
 #include <QVector>
-#include <QtTest/QtTest>
 
 //! Prepare test data or do actual test?
 static const bool s_printData = false;

@@ -74,9 +74,9 @@ Q_SIGNALS:
     //! Parsing is done.
     void done(QSharedPointer<MD::Document>,
               unsigned long long int,
-              SyntaxVisitor syntax,
+              MdEditor::SyntaxVisitor syntax,
               MD::details::IdsMap idsMap,
-              Editor::ItemsMap itemsMap,
+              MdEditor::Editor::ItemsMap itemsMap,
               QSharedPointer<MdUtils::BlockLines> blockLines,
               MdUtils::BlockLinesDiff diff);
 
@@ -100,7 +100,7 @@ public Q_SLOTS:
                 const QString &path,
                 const QString &fileName,
                 unsigned long long int counter,
-                SyntaxVisitor syntax,
+                MdEditor::SyntaxVisitor syntax,
                 const MdShared::PluginsCfg &pluginsCfg,
                 QSharedPointer<MdUtils::BlockLines> blocks)
     {
@@ -1251,7 +1251,7 @@ void Editor::contextMenuEvent(QContextMenuEvent *event)
     const auto pos = c.position() - c.block().position();
 
     QPair<long long int, long long int> wordPos;
-    QMap<QAction *, QString> suggested;
+    QHash<QAction *, QString> suggested;
 
     if (syntaxHighlighter().isMisspelled(line, pos, wordPos)) {
         c.setPosition(c.block().position() + wordPos.first);
@@ -1274,7 +1274,7 @@ void Editor::contextMenuEvent(QContextMenuEvent *event)
             menu->addSeparator();
         }
 
-        menu->addAction(tr("Skip Word"), [word, this]() {
+        menu->addAction(tr("Skip Word"), this, [word, this]() {
             Sonnet::Settings sonnet;
             auto ignored = sonnet.currentIgnoreList();
             ignored.append(word);
@@ -1293,6 +1293,7 @@ void Editor::contextMenuEvent(QContextMenuEvent *event)
                                      QIcon(isDark ? QStringLiteral(":/pics/icon_24x24-dark.png")
                                                   : QStringLiteral(":/pics/icon_24x24.png"))),
                     MainWindow::tr("Extract from the standard"),
+                    this,
                     [posCursor, this]() {
                         this->m_d->m_mainWindow->showMarkdownStandard(posCursor);
                     });

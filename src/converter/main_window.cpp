@@ -588,6 +588,7 @@ MainWindow::MainWindow()
     help->addAction(
         QIcon::fromTheme(QStringLiteral("tools-report-bug"), QIcon(QStringLiteral(":/img/tools-report-bug.png"))),
         MainWindow::tr("Report Bug"),
+        this,
         []() {
             QDesktopServices::openUrl(QUrl(QStringLiteral("https://github.com/igormironchik/markdown-tools/issues")));
         });

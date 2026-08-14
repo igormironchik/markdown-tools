@@ -265,7 +265,6 @@ inline bool isDigitsAndPunctOnly(const QString &s)
     for (qsizetype i = 0; i < s.size(); ++i) {
         if (s[i].isDigit()) {
             wasDigits = true;
-
         }
         if (!s[i].isDigit() && !s[i].isPunct()) {
             return false;

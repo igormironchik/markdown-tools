@@ -84,7 +84,7 @@ Q_SIGNALS:
                    const QString &path,
                    const QString &fileName,
                    unsigned long long int counter,
-                   SyntaxVisitor syntax,
+                   MdEditor::SyntaxVisitor syntax,
                    const MdShared::PluginsCfg &pluginsCfg,
                    QSharedPointer<MdUtils::BlockLines> blocks);
     //! Link clicked.
@@ -231,9 +231,9 @@ private Q_SLOTS:
     //! Process finish of Markdown content parsing on a thread.
     void onParsingDone(QSharedPointer<MD::Document> doc,
                        unsigned long long int counter,
-                       SyntaxVisitor syntax,
+                       MdEditor::SyntaxVisitor syntax,
                        MD::details::IdsMap idsMap,
-                       Editor::ItemsMap itemsMap,
+                       MdEditor::Editor::ItemsMap itemsMap,
                        QSharedPointer<MdUtils::BlockLines> blockLines,
                        MdUtils::BlockLinesDiff diff);
     //! Link clicked.
