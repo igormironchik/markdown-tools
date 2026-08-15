@@ -1,6 +1,17 @@
 import katex from '../katex.mjs';
 
 /**
+ * Small module for atom-group constants and type guard.  Kept separate from
+ * `symbols.ts` so that consumers (notably `contrib/render-a11y-string`) can
+ * pull in `isAtom` without dragging in the ~870-line symbol tables.
+ */
+var atomList = ["bin", "close", "inner", "open", "punct", "rel"];
+var Atoms = new Set(atomList);
+function isAtom(value) {
+  return Atoms.has(value);
+}
+
+/**
  * renderA11yString returns a readable string.
  *
  * In some cases the string will have the proper semantic math
@@ -200,9 +211,7 @@ var handleObject = (tree, a11yStrings, atomType) => {
       }
     case "atom":
       {
-        var {
-          text
-        } = tree;
+        var text = tree.text;
         switch (tree.family) {
           case "bin":
             {
@@ -270,10 +279,8 @@ var handleObject = (tree, a11yStrings, atomType) => {
       {
         buildRegion(a11yStrings, regionStrings => {
           // genfrac can have unbalanced delimiters
-          var {
-            leftDelim,
-            rightDelim
-          } = tree;
+          var leftDelim = tree.leftDelim,
+            rightDelim = tree.rightDelim;
           // NOTE: Not sure if this is a safe assumption
           // hasBarLine true -> fraction, false -> binomial
           if (tree.hasBarLine) {
@@ -333,10 +340,8 @@ var handleObject = (tree, a11yStrings, atomType) => {
       }
     case "op":
       {
-        var {
-          body,
-          name
-        } = tree;
+        var body = tree.body,
+          name = tree.name;
         if (body) {
           _buildA11yStrings(body, a11yStrings, atomType);
         } else if (name) {
@@ -403,10 +408,8 @@ var handleObject = (tree, a11yStrings, atomType) => {
     case "sqrt":
       {
         buildRegion(a11yStrings, regionStrings => {
-          var {
-            body,
-            index
-          } = tree;
+          var body = tree.body,
+            index = tree.index;
           if (index) {
             var indexString = _flatten(_buildA11yStrings(index, [], atomType)).join(",");
             if (indexString === "3") {
@@ -429,11 +432,9 @@ var handleObject = (tree, a11yStrings, atomType) => {
       }
     case "supsub":
       {
-        var {
-          base,
-          sub,
-          sup
-        } = tree;
+        var base = tree.base,
+          sub = tree.sub,
+          sup = tree.sup;
         var isLog = false;
         if (base) {
           _buildA11yStrings(base, a11yStrings, atomType);
@@ -629,9 +630,13 @@ var handleObject = (tree, a11yStrings, atomType) => {
       {
         // \neq and \ne are macros so we let "htmlmathml" render the mathmal
         // side of things and extract the text from that.
+        // mclass values are prefixed with "m" (e.g. "mrel" -> "rel")
         var _atomType = tree.mclass.slice(1);
-        // TODO(ts): drop the leading "m" from the values in mclass
-        _buildA11yStrings(tree.body, a11yStrings, _atomType);
+        if (_atomType === "normal" || isAtom(_atomType)) {
+          _buildA11yStrings(tree.body, a11yStrings, _atomType);
+        } else {
+          throw new Error("Unexpected mclass atom type: \"" + _atomType + "\"");
+        }
         break;
       }
     case "mathchoice":
