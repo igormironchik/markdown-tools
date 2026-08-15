@@ -1889,12 +1889,17 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
             words[i].m_font = &font;
 
             if (words[i].m_word != s_spaceString) {
-                for (qsizetype c = 0; c < words[i].m_word.size(); ++c) {
-                    if (!font.unicharToGlyph(words[i].m_word[c].unicode())) {
+                const auto ucs4 = words[i].m_word.toUcs4();
+
+                for (qsizetype c = 0; c < ucs4.size(); ++c) {
+                    if (!font.unicharToGlyph(ucs4[c])) {
                         if (c > 0) {
-                            const auto tmp = words[i].m_word.sliced(c, words[i].m_word.size() - c);
-                            words.insert(i + 1, Word{tmp, words[i].m_rtl, false, nullptr});
-                            words[i].m_word = words[i].m_word.sliced(0, c);
+                            const auto tmp = ucs4.sliced(c, ucs4.size() - c);
+                            words.insert(
+                                i + 1,
+                                Word{QString::fromUcs4(tmp.data(), tmp.size()), words[i].m_rtl, false, nullptr});
+                            const auto tmp2 = ucs4.sliced(0, c);
+                            words[i].m_word = QString::fromUcs4(tmp2.data(), tmp2.size());
 
                             break;
                         } else {
@@ -1903,7 +1908,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                                                                              font.getTypeface()->fontStyle(),
                                                                              nullptr,
                                                                              0,
-                                                                             words[i].m_word[0].unicode());
+                                                                             ucs4[0]);
 
                             if (fallback) {
                                 SkString fontFamilyBefore;
@@ -1919,13 +1924,18 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                                     const auto fallbackFont = std::make_shared<SkFont>(fallback, fontSize * fontScale);
                                     fonts.append(fallbackFont);
                                     words.insert(i,
-                                                 Word{words[i].m_word[0], words[i].m_rtl, false, fonts.back().get()});
+                                                 Word{QString::fromUcs4(ucs4.data(), 1),
+                                                      words[i].m_rtl,
+                                                      false,
+                                                      fonts.back().get()});
                                 } else {
-                                    words[i - 1].m_word.append(words[i].m_word[0]);
+                                    words[i - 1].m_word.append(QString::fromUcs4(ucs4.data(), 1));
                                     --i;
                                 }
 
-                                words[i + 1].m_word.removeFirst();
+                                auto tmp = words[i + 1].m_word.toUcs4();
+                                tmp.removeFirst();
+                                words[i + 1].m_word = QString::fromUcs4(tmp.data(), tmp.size());
 
                                 if (words[i + 1].m_word.isEmpty()) {
                                     words.removeAt(i + 1);
@@ -4367,16 +4377,17 @@ PdfRenderer::drawCode(PdfAuxData &pdfData,
                     f = createFont(m_opts.m_codeFont, bold, italic, m_opts.m_codeFontSize, scale, pdfData);
                 }
 
-                auto word = lines.at(i).mid(colored[currentWord].startPos, length);
+                auto word = lines.at(i).mid(colored[currentWord].startPos, length).toUcs4();
                 qsizetype start = 0;
                 SkFont fallbackFont;
                 bool isFallbackInit = false;
 
                 auto drawWithFallback = [&](qsizetype colon) {
                     const auto tmp = word.sliced(start, colon - start);
-                    const auto str = createUtf8String(tmp);
+                    const auto qStr = QString::fromUcs4(tmp.data(), tmp.size());
+                    const auto str = createUtf8String(qStr);
                     const auto width =
-                        pdfData.stringWidth(fallbackFont, m_opts.m_codeFontSize, scale, str, !tmp.isRightToLeft());
+                        pdfData.stringWidth(fallbackFont, m_opts.m_codeFontSize, scale, str, !qStr.isRightToLeft());
                     drawTextBlobOrText(pdfData,
                                        fallbackFont,
                                        m_opts.m_codeFontSize,
@@ -4384,7 +4395,7 @@ PdfRenderer::drawCode(PdfAuxData &pdfData,
                                        str,
                                        pdfData.fontDescent(fallbackFont, m_opts.m_codeFontSize, scale),
                                        0.0,
-                                       tmp.isRightToLeft(),
+                                       qStr.isRightToLeft(),
                                        width,
                                        false);
 
@@ -4392,9 +4403,10 @@ PdfRenderer::drawCode(PdfAuxData &pdfData,
                 };
 
                 auto drawMonospaced = [&](qsizetype colon) {
+                    const auto tmp = word.sliced(start, colon - start);
                     pdfData.drawText(pdfData.m_layout.startX(spaceWidth * length),
                                      pdfData.m_layout.y() - pdfData.fontDescent(font, m_opts.m_codeFontSize, scale),
-                                     createUtf8String(word.sliced(start, colon - start)),
+                                     createUtf8String(QString::fromUcs4(tmp.data(), tmp.size())),
                                      f,
                                      m_opts.m_codeFontSize * scale,
                                      1.0,
@@ -4404,8 +4416,8 @@ PdfRenderer::drawCode(PdfAuxData &pdfData,
                 };
 
                 for (qsizetype c = 0; c < word.size(); ++c) {
-                    if (!f.unicharToGlyph(word[c].unicode())) {
-                        if (isFallbackInit && fallbackFont.unicharToGlyph(word[c].unicode())) {
+                    if (!f.unicharToGlyph(word[c])) {
+                        if (isFallbackInit && fallbackFont.unicharToGlyph(word[c])) {
                             continue;
                         }
 
@@ -4413,7 +4425,7 @@ PdfRenderer::drawCode(PdfAuxData &pdfData,
                                                                                            f.getTypeface()->fontStyle(),
                                                                                            nullptr,
                                                                                            0,
-                                                                                           word[c].unicode());
+                                                                                           word[c]);
 
                         if (c > 0 && fallback && !isFallbackInit) {
                             drawMonospaced(c);
