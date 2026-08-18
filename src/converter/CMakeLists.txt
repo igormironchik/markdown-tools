@@ -18,14 +18,6 @@ find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} COMPONENTS
 
 find_package(ZLIB REQUIRED)
 
-if(WIN32)
-    if(CMAKE_BUILD_TYPE STREQUAL "Release")
-        set(SKIA_CFLAGS "/MD")
-    else()
-        set(SKIA_CFLAGS "/MDd")
-    endif()
-endif()
-
 if(ENABLE_COVERAGE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")

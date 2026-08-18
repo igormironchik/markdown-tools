@@ -16,6 +16,14 @@ find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} COMPONENTS
     IconThemes ColorScheme Config
 )
 
+if(WIN32)
+    if(CMAKE_BUILD_TYPE STREQUAL "Release")
+        set(SKIA_CFLAGS "/MD")
+    else()
+        set(SKIA_CFLAGS "/MDd")
+    endif()
+endif()
+
 set(SRC license_dialog.h
 	license_dialog.cpp
 	license_dialog.ui
