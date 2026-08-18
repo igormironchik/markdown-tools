@@ -1490,8 +1490,12 @@ qsizetype PdfRenderer::drawWord(PdfAuxData &pdfData,
 
         double width = 0.0;
 
+        tmp.clear();
+
+        SkBreakIterator::Position startPos = 0;
+
         do {
-            const auto startPos = iter->current();
+            startPos = iter->current();
             const auto endPos = iter->next();
 
             if (iter->isDone()) {
@@ -1510,8 +1514,11 @@ qsizetype PdfRenderer::drawWord(PdfAuxData &pdfData,
             }
         } while (true);
 
-        return s.size()
-            - QString::fromUtf8(&utf8.data.data()[iter->current()], utf8.data.size() - iter->current()).size();
+        if (tmp.isEmpty()) {
+            tmp = QString::fromUtf8(utf8.data);
+        }
+
+        return s.size() - QString::fromUtf8(&utf8.data.data()[startPos], utf8.data.size() - startPos).size();
     }; // countCharsForAvailableSpace
 
     auto splitAndDraw = [&](QString s, bool rtl, const Font &font) {
@@ -1537,13 +1544,17 @@ qsizetype PdfRenderer::drawWord(PdfAuxData &pdfData,
                     std::reverse(tmp.begin(), tmp.end());
                 }
 
-                pdfData.drawText(pdfData.m_layout.startX(w),
-                                 pdfData.m_layout.y() - cw.descent() - currentBaseline.m_stack.back().m_baselineDelta,
-                                 createUtf8String(tmp),
-                                 font,
-                                 fontSize * fontScale,
-                                 1.0,
-                                 strikeout);
+                drawTextBlobOrText(pdfData,
+                                   font,
+                                   fontSize,
+                                   fontScale,
+                                   createUtf8String(tmp),
+                                   cw.descent(),
+                                   currentBaseline.m_stack.back().m_baselineDelta,
+                                   rtl,
+                                   w,
+                                   strikeout);
+
                 pdfData.restoreColor();
 
                 ret.append(
