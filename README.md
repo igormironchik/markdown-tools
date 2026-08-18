@@ -110,9 +110,6 @@ fonts to monospaced due to [QTBUG-112145](https://bugreports.qt.io/browse/QTBUG-
 
 * I do not render HTML tags in PDF.
 
-* I don't support languages that don't separate words
-with spaces in converter to `PDF`.
-
 # Translating
 
 To translate these applications into  your language you need to run
