@@ -607,7 +607,7 @@ StringDataVec MainWindowPrivate::paragraphToMenuText(MD::Paragraph *p,
                 rtl = t->text().isRightToLeft();
             }
 
-            res.append({t->text(), false, rtl});
+            res.append({t->text(), false, rtl, m_tocModel->unicode()});
         } break;
 
         case MD::ItemType::Code: {
@@ -618,7 +618,7 @@ StringDataVec MainWindowPrivate::paragraphToMenuText(MD::Paragraph *p,
                 rtl = c->text().isRightToLeft();
             }
 
-            res.append({c->text(), true, rtl});
+            res.append({c->text(), true, rtl, m_tocModel->unicode()});
         } break;
 
         case MD::ItemType::Link: {

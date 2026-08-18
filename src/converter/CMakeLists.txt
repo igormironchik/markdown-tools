@@ -100,14 +100,6 @@ endif()
 
 install(TARGETS md-pdf-gui)
 
-if(WIN32)
-    set(PLATFORM_LIBS Dwmapi Dwrite libwebp libpng libjpeg jsonreader)
-endif()
-
-if(UNIX)
-    set(PLATFORM_LIBS freetype fontconfig dng_sdk piex webp png jpeg)
-endif()
-
 target_link_libraries(md-pdf-lib
     md4qt::md4qt
     markdown-widgets
@@ -125,9 +117,9 @@ target_link_libraries(md-pdf-lib
     svg
     wuffs
     skshaper
-    skia
     skunicode_icu
     skunicode_core
+    skia
     expat
     harfbuzz
     icu
@@ -152,9 +144,9 @@ target_link_libraries(md-pdf-lib-test
     svg
     wuffs
     skshaper
-    skia
     skunicode_icu
     skunicode_core
+    skia
     expat
     harfbuzz
     icu
@@ -166,38 +158,3 @@ target_link_libraries(md-pdf-lib-test
 target_link_libraries(md-pdf-gui
     md4qt::md4qt
     md-pdf-lib)
-    
-find_program(SYSTEM_GN gn)
-
-if(SYSTEM_GN)
-    set(GN_EXEC "${SYSTEM_GN}")
-    set(FETCH_GN_COMMAND "")
-
-    set(SKIA_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/Skia/bin")
-    set(SKIA_GN_TARGET "${SKIA_BIN_DIR}/gn")
-
-    if(NOT EXISTS "${SKIA_GN_TARGET}")
-        message(STATUS "Creating symlink for system GN: ${SKIA_GN_TARGET} -> ${SYSTEM_GN}")
-        execute_process(
-            COMMAND ${CMAKE_COMMAND} -E create_symlink "${SYSTEM_GN}" "${SKIA_GN_TARGET}"
-            RESULT_VARIABLE LINK_RESULT
-        )
-        if(NOT LINK_RESULT EQUAL 0)
-            message(FATAL_ERROR "Failed to create symlink for GN")
-        endif()
-    endif()
-else()
-    set(GN_EXEC "bin/gn")
-    set(FETCH_GN_COMMAND COMMAND python3 bin/fetch-gn)
-endif()
-
-add_custom_command(
-    TARGET md-pdf-lib
-    PRE_BUILD
-    COMMAND ${FETCH_GN_COMMAND}
-    COMMAND "${GN_EXEC}" gen "../../../builds/skia" "--args=is_official_build=true skia_use_system_expat=false skia_use_system_harfbuzz=false skia_use_system_icu=false skia_use_system_libjpeg_turbo=false skia_use_system_libpng=false skia_use_system_libwebp=false skia_use_system_zlib=false extra_cflags=[\"${SKIA_CFLAGS}\"]"
-    COMMAND ninja -C "../../../builds/skia"
-    COMMENT "Configuring and building Skia..."
-    VERBATIM
-    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/Skia"
-)

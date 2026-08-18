@@ -70,16 +70,6 @@ SkSize a4Size();
 
 class PdfRenderer;
 
-struct Utf8String {
-    QByteArray data;
-
-    Utf8String(const QByteArray &a);
-    Utf8String(const char *s);
-
-    operator const char *() const;
-    operator std::string_view() const;
-}; // struct Utf8String
-
 using Font = SkFont;
 using Painter = SkCanvas;
 using String = Utf8String;

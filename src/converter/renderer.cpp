@@ -688,11 +688,6 @@ void PdfRenderer::drawHorizontalLine(PdfAuxData &pdfData)
     pdfData.restoreColor();
 }
 
-Utf8String PdfRenderer::createUtf8String(const QString &text)
-{
-    return {text.toUtf8()};
-}
-
 QString PdfRenderer::createQString(const char *str)
 {
     return QString::fromUtf8(str, -1);
@@ -1885,7 +1880,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
     QVector<Word> words;
     QVector<std::shared_ptr<SkFont>> fonts;
 
-    words = splitString(str, false);
+    words = splitString(str, false, pdfData.m_unicode, pdfData.m_layout.isRightToLeft());
 
     for (qsizetype i = 0; i < words.size(); ++i) {
         words[i].m_font = &font;

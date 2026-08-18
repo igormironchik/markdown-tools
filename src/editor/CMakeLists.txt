@@ -79,18 +79,28 @@ if(WIN32)
     list(APPEND SRC md-editor.rc)
 endif()
 
+link_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../../builds/skia")
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/widgets/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../shared
     ${CMAKE_CURRENT_SOURCE_DIR}/../utils
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/github-release/src)
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/github-release/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/Skia)
 
 add_library(md-editor-lib STATIC ${LIB_SRC})
 
-target_link_libraries(md-editor-lib md4qt::md4qt markdown-widgets md-utils
+target_link_libraries(md-editor-lib
+    md4qt::md4qt
+    markdown-widgets
+    md-utils
     KF${KF_MAJOR_VERSION}::SyntaxHighlighting
-    KF${KF_MAJOR_VERSION}::SonnetUi KF${KF_MAJOR_VERSION}::SonnetCore
-    Qt6::WebEngineWidgets Qt6::Widgets Qt6::Concurrent Qt6::Core)
+    KF${KF_MAJOR_VERSION}::SonnetUi
+    KF${KF_MAJOR_VERSION}::SonnetCore
+    Qt6::WebEngineWidgets
+    Qt6::Widgets
+    Qt6::Concurrent
+    Qt6::Core)
 
 add_executable(md-editor WIN32 ${SRC})
 
@@ -108,7 +118,33 @@ if(WIN32)
     set(WIN_LIBS "Dwmapi")
 endif()
 
-target_link_libraries(md-editor md-editor-lib markdown-widgets github-release
-    KF${KF_MAJOR_VERSION}::SonnetUi KF${KF_MAJOR_VERSION}::SonnetCore
-    KF${KF_MAJOR_VERSION}::WidgetsAddons ${ADDITIONAL_TARGETS}
-    Qt6::WebEngineWidgets Qt6::Widgets Qt6::Core ${WIN_LIBS})
+target_link_libraries(md-editor
+    md-editor-lib
+    markdown-widgets
+    github-release
+    KF${KF_MAJOR_VERSION}::SonnetUi
+    KF${KF_MAJOR_VERSION}::SonnetCore
+    KF${KF_MAJOR_VERSION}::WidgetsAddons
+    ${ADDITIONAL_TARGETS}
+    Qt6::WebEngineWidgets
+    Qt6::Widgets
+    Qt6::Core
+    bentleyottmann
+    compression_utils_portable
+    skresources
+    skcms
+    skottie
+    skparagraph
+    sksg
+    svg
+    wuffs
+    skshaper
+    skunicode_icu
+    skunicode_core
+    skia
+    expat
+    harfbuzz
+    icu
+    zlib
+    ${PLATFORM_LIBS}
+    ${WIN_LIBS})

@@ -15,6 +15,9 @@
 // shared include.
 #include "plugins_page.h"
 
+// Skia include.
+#include <modules/skunicode/include/SkUnicode.h>
+
 //! Init theme.
 void initTheme(QApplication &app);
 
@@ -47,6 +50,21 @@ struct Word {
     const SkFont *m_font = nullptr;
 }; // struct Word
 
+struct Utf8String {
+    QByteArray data;
+
+    Utf8String(const QByteArray &a);
+    Utf8String(const char *s);
+
+    operator const char *() const;
+    operator std::string_view() const;
+}; // struct Utf8String
+
+inline Utf8String createUtf8String(const QString &text)
+{
+    return {text.toUtf8()};
+}
+
 /*!
  * \brief Split string by spaces.
  * \param str String.
@@ -54,7 +72,9 @@ struct Word {
  * \return Vector of words with flag indicates RTL.
  */
 QVector<Word> splitString(const QString &str,
-                          bool skipSpaces);
+                          bool skipSpaces,
+                          sk_sp<SkUnicode> unicode,
+                          bool rtl);
 
 //! \return Whether the given symbol is a DirCS.
 inline bool isSeparator(const QChar &ch)

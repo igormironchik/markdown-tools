@@ -9,6 +9,9 @@
 // C++ include.
 #include <functional>
 
+// Skia include.
+#include <modules/skunicode/include/SkUnicode_icu.h>
+
 namespace MdEditor
 {
 
@@ -50,12 +53,15 @@ bool operator!=(const UnitData &u1,
 
 StringData::StringData(const QString &t,
                        bool c,
-                       bool rtl)
+                       bool rtl,
+                       sk_sp<SkUnicode> unicode)
     : m_data({t,
               c,
               rtl})
     , m_splittedText(splitString(m_data.m_text,
-                                 true))
+                                 true,
+                                 unicode,
+                                 rtl))
 {
     orderWords(m_splittedText, m_data.m_isRightToLeft);
 }
@@ -104,6 +110,7 @@ QString TocData::concatenatedText() const
 struct TocModelPrivate {
     TocModelPrivate(TocModel *parent)
         : m_q(parent)
+        , m_unicode(SkUnicodes::ICU::Make())
     {
     }
 
@@ -135,6 +142,8 @@ struct TocModelPrivate {
     TocModel *m_q;
     //! Model's m_data.
     std::vector<std::shared_ptr<TocData>> m_data;
+    //! Unicode.
+    sk_sp<SkUnicode> m_unicode;
 }; // struct TocModelPrivate
 
 //
@@ -149,6 +158,11 @@ TocModel::TocModel(QObject *parent)
 
 TocModel::~TocModel()
 {
+}
+
+sk_sp<SkUnicode> TocModel::unicode() const
+{
+    return m_d->m_unicode;
 }
 
 void TocModel::addTopLevelItem(const StringDataVec &text,

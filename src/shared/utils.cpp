@@ -82,6 +82,30 @@ void initTheme(QApplication &app)
 #endif
 }
 
+//
+// Utf8String
+//
+
+Utf8String::Utf8String(const QByteArray &a)
+    : data(a)
+{
+}
+
+Utf8String::Utf8String(const char *s)
+    : data(s)
+{
+}
+
+Utf8String::operator const char *() const
+{
+    return data.data();
+}
+
+Utf8String::operator std::string_view() const
+{
+    return data.data();
+}
+
 void setFallbackPathForIcons(bool isDark)
 {
     QIcon::setFallbackSearchPaths(QStringList() << QStringLiteral(":/pics/%1/scalable/apps")
@@ -275,11 +299,11 @@ inline bool isDigitsAndPunctOnly(const QString &s)
 }
 
 QVector<Word> splitString(const QString &str,
-                          bool skipSpaces)
+                          bool skipSpaces,
+                          sk_sp<SkUnicode> unicode,
+                          bool rtl)
 {
     static const QString s_spaceString = QStringLiteral(" ");
-
-    const auto rtl = str.isRightToLeft();
 
     QVector<Word> res;
 
@@ -287,66 +311,45 @@ QVector<Word> splitString(const QString &str,
         return res;
     }
 
-    qsizetype first = 0;
-    qsizetype i = 0;
+    const auto uint16 = reinterpret_cast<const uint16_t *>(str.utf16());
+    const auto char16 = reinterpret_cast<const char16_t *>(str.utf16());
 
-    auto addWord = [&](bool separator) -> bool {
-        const auto end = i + (separator ? 1 : 0) - 1;
-        if (first < end + 1) {
-            auto word = str.sliced(first, end - first + 1);
+    auto bidiIter = unicode->makeBidiIterator(
+        uint16,
+        str.size(),
+        rtl ? SkBidiIterator::Direction::kRTL : SkBidiIterator::Direction::kLTR
+    );
 
-            if (separator) {
-                const auto prevRtl = isRtlPrev(str, first);
-                const auto nextRtl = isRtlNext(str, first);
+    if (!bidiIter) {
+        return res;
+    }
 
-                if (prevRtl == nextRtl) {
-                    res.append({word, prevRtl, false, nullptr});
-                } else {
-                    res.append({word, rtl, false, nullptr});
-                }
-            } else {
-                const auto noLettersBefore = noLettersPrev(str, first);
-                const auto noLettersAfter = noLettersNext(str, end);
-                const auto rtlDigits = ((isRtlPrev(str, first) || noLettersBefore)
-                                        && (isRtlNext(str, end) || noLettersAfter)
-                                        && isDigitsAndPunctOnly(word)
-                                        && !(noLettersBefore && noLettersAfter));
+    auto iter = unicode->makeBreakIterator(SkUnicode::BreakType::kWords);
 
-                if (rtlDigits) {
-                    std::reverse(word.begin(), word.end());
-                }
+    if (!iter) {
+        return res;
+    }
 
-                res.append({word, word.isRightToLeft() || rtlDigits, false, nullptr});
-            }
+    iter->setText(char16, str.size());
 
-            return true;
+    do {
+        const auto startPos = iter->current();
+        const auto endPos = iter->next();
+
+        if (iter->isDone()) {
+            break;
         }
 
-        return false;
-    };
+        const QString word = QString::fromUtf16(&char16[startPos], endPos - startPos);
 
-    for (; i < str.length(); ++i) {
-        if (str[i].isSpace()) {
-            if ((addWord(false) || (!res.isEmpty() && res.back().m_word != s_spaceString) || res.isEmpty())
-                && !skipSpaces) {
+        if (word.simplified().isEmpty()) {
+            if (!skipSpaces && ((!res.isEmpty() && res.back().m_word != s_spaceString) || res.isEmpty())) {
                 res.append({s_spaceString, false, false, nullptr});
             }
-
-            first = i + 1;
-        } else if (isSeparator(str[i])) {
-            addWord(false);
-
-            first = i;
-
-            addWord(true);
-
-            first = i + 1;
+        } else {
+            res.append({word, bidiIter->getLevelAt(startPos) % 2 != 0, false, nullptr});
         }
-    }
-
-    if (first < str.length()) {
-        addWord(false);
-    }
+    } while (true);
 
     return res;
 }

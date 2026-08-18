@@ -121,30 +121,6 @@ namespace Render
 {
 
 //
-// Utf8String
-//
-
-Utf8String::Utf8String(const QByteArray &a)
-    : data(a)
-{
-}
-
-Utf8String::Utf8String(const char *s)
-    : data(s)
-{
-}
-
-Utf8String::operator const char *() const
-{
-    return data.data();
-}
-
-Utf8String::operator std::string_view() const
-{
-    return data.data();
-}
-
-//
 // RectF
 //
 

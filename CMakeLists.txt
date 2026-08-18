@@ -26,6 +26,14 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/bin)
 
+if(WIN32)
+    set(PLATFORM_LIBS Dwmapi Dwrite libwebp libpng libjpeg jsonreader)
+endif()
+
+if(UNIX)
+    set(PLATFORM_LIBS freetype fontconfig dng_sdk piex webp png jpeg)
+endif()
+
 if(NOT MARKDOWN_TOOLS_VERSION_MINOR)
 	execute_process(COMMAND git rev-parse --short HEAD
 		OUTPUT_VARIABLE MARKDOWN_TOOLS_VERSION_MINOR

@@ -55,7 +55,8 @@ install(FILES "pics/icon_64x64.png" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/i
 install(FILES "pics/icon_128x128.png" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/128x128/apps/" RENAME "markdown-tools.png")
 install(FILES "pics/icon_256x256.png" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/256x256/apps/" RENAME "markdown-tools.png")
     
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/Skia)
 
 add_library(markdown-widgets STATIC ${SRC})
 
@@ -68,11 +69,52 @@ endif()
 
 configure_file(version.h.in ${CMAKE_CURRENT_BINARY_DIR}/version.h)
 
-target_link_libraries(markdown-widgets KF${KF_MAJOR_VERSION}::SyntaxHighlighting KF${KF_MAJOR_VERSION}::WidgetsAddons
-    ${ADDITIONAL_TARGETS} Qt6::Widgets Qt6::Core)
+target_link_libraries(markdown-widgets
+    KF${KF_MAJOR_VERSION}::SyntaxHighlighting
+    KF${KF_MAJOR_VERSION}::WidgetsAddons
+    ${ADDITIONAL_TARGETS}
+    Qt6::Widgets
+    Qt6::Core
+    skunicode_icu
+    skunicode_core
+    icu)
 
 target_include_directories(markdown-widgets INTERFACE ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}/markdown-widgets_autogen/include)
 
 set_property(TARGET markdown-widgets PROPERTY CXX_STANDARD 17)
 
+find_program(SYSTEM_GN gn)
+
+if(SYSTEM_GN)
+    set(GN_EXEC "${SYSTEM_GN}")
+    set(FETCH_GN_COMMAND "")
+
+    set(SKIA_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/Skia/bin")
+    set(SKIA_GN_TARGET "${SKIA_BIN_DIR}/gn")
+
+    if(NOT EXISTS "${SKIA_GN_TARGET}")
+        message(STATUS "Creating symlink for system GN: ${SKIA_GN_TARGET} -> ${SYSTEM_GN}")
+        execute_process(
+            COMMAND ${CMAKE_COMMAND} -E create_symlink "${SYSTEM_GN}" "${SKIA_GN_TARGET}"
+            RESULT_VARIABLE LINK_RESULT
+        )
+        if(NOT LINK_RESULT EQUAL 0)
+            message(FATAL_ERROR "Failed to create symlink for GN")
+        endif()
+    endif()
+else()
+    set(GN_EXEC "bin/gn")
+    set(FETCH_GN_COMMAND COMMAND python3 bin/fetch-gn)
+endif()
+
+add_custom_command(
+    TARGET markdown-widgets
+    PRE_BUILD
+    COMMAND ${FETCH_GN_COMMAND}
+    COMMAND "${GN_EXEC}" gen "../../../builds/skia" "--args=is_official_build=true skia_use_system_expat=false skia_use_system_harfbuzz=false skia_use_system_icu=false skia_use_system_libjpeg_turbo=false skia_use_system_libpng=false skia_use_system_libwebp=false skia_use_system_zlib=false extra_cflags=[\"${SKIA_CFLAGS}\"]"
+    COMMAND ninja -C "../../../builds/skia"
+    COMMENT "Configuring and building Skia..."
+    VERBATIM
+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/Skia"
+)

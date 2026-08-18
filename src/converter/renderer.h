@@ -68,8 +68,6 @@ public:
     PdfRenderer();
     ~PdfRenderer() override = default;
 
-    //! Convert QString to UTF-8.
-    static Utf8String createUtf8String(const QString &text);
     //! Convert UTF-8 to QString.
     static QString createQString(const char *str);
 

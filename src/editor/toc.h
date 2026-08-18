@@ -37,7 +37,8 @@ bool operator!=(const UnitData &u1,
 struct StringData {
     StringData(const QString &t,
                bool c,
-               bool rtl);
+               bool rtl,
+               sk_sp<SkUnicode> unicode);
 
     //! Non-splitted text.
     UnitData m_data;
@@ -123,6 +124,9 @@ class TocModel final : public QAbstractItemModel
 public:
     explicit TocModel(QObject *parent);
     ~TocModel() override;
+
+    //! \return Unicode.
+    sk_sp<SkUnicode> unicode() const;
 
     //! Add top-level item.
     void addTopLevelItem(const StringDataVec &text,
