@@ -370,7 +370,6 @@ private:
                        qsizetype last,
                        double fontSize,
                        double fontScale,
-                       bool &drawAnyway,
                        bool &newLine,
                        bool draw,
                        const QColor &background,
@@ -379,7 +378,6 @@ private:
                        double lineHeight,
                        bool footnoteAtEnd,
                        double footnoteWidth,
-                       bool useShapers,
                        QVector<QPair<RectF,
                                      unsigned int>> &ret,
                        bool strikeout,
@@ -446,8 +444,7 @@ private:
                const Font *regularSpaceFont = nullptr,
                double regularSpaceFontSize = 0.0,
                double regularSpaceFontScale = 0.0,
-               RTLFlag *rtl = nullptr,
-               bool useShaper = false);
+               RTLFlag *rtl = nullptr);
     //! Draw blob or simple text.
     void drawTextBlobOrText(PdfAuxData &pdfData,
                             const Font &font,

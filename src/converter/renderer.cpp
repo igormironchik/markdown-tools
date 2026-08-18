@@ -887,7 +887,6 @@ PdfRenderer::drawEmoji(PdfAuxData &pdfData,
 {
     QString text;
     SkFont font;
-    bool useShaper = false;
 
     if (s_emojiMap.contains(item->emojiName())) {
         sk_sp<SkTypeface> typeface;
@@ -914,7 +913,6 @@ PdfRenderer::drawEmoji(PdfAuxData &pdfData,
         if (typeface) {
             text = s_emojiMap[item->emojiName()];
             font = SkFont(typeface, m_opts.m_textFontSize * scale);
-            useShaper = true;
         }
     }
 
@@ -968,8 +966,7 @@ PdfRenderer::drawEmoji(PdfAuxData &pdfData,
                       nullptr,
                       0.0,
                       0.0,
-                      rtl,
-                      useShaper);
+                      rtl);
 }
 
 namespace /* anonymous */
@@ -1440,7 +1437,6 @@ qsizetype PdfRenderer::drawWord(PdfAuxData &pdfData,
                                 qsizetype last,
                                 double fontSize,
                                 double fontScale,
-                                bool &drawAnyway,
                                 bool &newLine,
                                 bool draw,
                                 const QColor &background,
@@ -1449,7 +1445,6 @@ qsizetype PdfRenderer::drawWord(PdfAuxData &pdfData,
                                 double lineHeight,
                                 bool footnoteAtEnd,
                                 double footnoteWidth,
-                                bool useShaper,
                                 QVector<QPair<RectF,
                                               unsigned int>> &ret,
                                 bool strikeout,
@@ -1481,30 +1476,42 @@ qsizetype PdfRenderer::drawWord(PdfAuxData &pdfData,
         }
     }; // newLineFn
 
-    auto countCharsForAvailableSpace = [](const QString &s,
-                                          double availableWidth,
-                                          const Font &font,
-                                          const PdfAuxData &pdfData,
-                                          double fontSize,
-                                          double fontScale,
-                                          QString &tmp,
-                                          bool leftToRight) -> qsizetype {
-        qsizetype i = 0;
+    auto countCharsForAvailableSpace = [&](const QString &s,
+                                           double availableWidth,
+                                           const Font &font,
+                                           const PdfAuxData &pdfData,
+                                           double fontSize,
+                                           double fontScale,
+                                           QString &tmp,
+                                           bool leftToRight) -> qsizetype {
+        auto iter = pdfData.m_unicode->makeBreakIterator(SkUnicode::BreakType::kGraphemes);
+        const auto utf8 = createUtf8String(s);
+        iter->setText(utf8.data.data(), utf8.data.size());
 
-        for (; i < s.length(); ++i) {
-            tmp.push_back(s[i]);
-            const auto l = pdfData.stringWidth(font, fontSize, fontScale, createUtf8String(tmp), leftToRight);
+        double width = 0.0;
 
-            if (l > availableWidth && !(qAbs(l - availableWidth) < 0.01)) {
-                tmp.removeLast();
+        do {
+            const auto startPos = iter->current();
+            const auto endPos = iter->next();
 
-                --i;
+            if (iter->isDone()) {
+                break;
+            }
+
+            const auto utf8Grapheme = utf8.data.sliced(startPos, endPos - startPos);
+            const auto grapheme = QString::fromUtf8(utf8Grapheme);
+
+            width += pdfData.stringWidth(font, fontSize, fontScale, createUtf8String(grapheme), leftToRight);
+
+            if (width > availableWidth && !(qAbs(width - availableWidth) < 0.01)) {
+                tmp = QString::fromUtf8(utf8.data.sliced(0, startPos));
 
                 break;
             }
-        }
+        } while (true);
 
-        return (i < s.length() ? ++i : i);
+        return s.size()
+            - QString::fromUtf8(&utf8.data.data()[iter->current()], utf8.data.size() - iter->current()).size();
     }; // countCharsForAvailableSpace
 
     auto splitAndDraw = [&](QString s, bool rtl, const Font &font) {
@@ -1588,10 +1595,8 @@ qsizetype PdfRenderer::drawWord(PdfAuxData &pdfData,
 
     const auto width = length + (idx + 1 == last && footnoteAtEnd ? footnoteWidth : 0.0);
 
-    if ((pdfData.m_layout.isFit(width) && nextOnOneLineIsFit(pdfData, words, idx, last, width, fontSize, fontScale))
-        || drawAnyway) {
+    if (pdfData.m_layout.isFit(width) && nextOnOneLineIsFit(pdfData, words, idx, last, width, fontSize, fontScale)) {
         newLine = false;
-        drawAnyway = false;
 
         if (draw) {
             if (background.isValid()) {
@@ -1611,26 +1616,16 @@ qsizetype PdfRenderer::drawWord(PdfAuxData &pdfData,
 
             pdfData.setColor(color);
 
-            if (!useShaper && !word.m_rtl) {
-                pdfData.drawText(pdfData.m_layout.startX(length),
-                                 pdfData.m_layout.y() - cw.descent() - currentBaseline.m_stack.back().m_baselineDelta,
-                                 createUtf8String(word.m_word),
-                                 *word.m_font,
-                                 fontSize * fontScale,
-                                 1.0,
-                                 strikeout);
-            } else {
-                drawTextBlobOrText(pdfData,
-                                   *word.m_font,
-                                   fontSize,
-                                   fontScale,
-                                   str,
-                                   cw.descent(),
-                                   currentBaseline.m_stack.back().m_baselineDelta,
-                                   word.m_rtl,
-                                   length,
-                                   strikeout);
-            }
+            drawTextBlobOrText(pdfData,
+                               *word.m_font,
+                               fontSize,
+                               fontScale,
+                               str,
+                               cw.descent(),
+                               currentBaseline.m_stack.back().m_baselineDelta,
+                               word.m_rtl,
+                               length,
+                               strikeout);
 
             pdfData.restoreColor();
 
@@ -1653,7 +1648,7 @@ qsizetype PdfRenderer::drawWord(PdfAuxData &pdfData,
     }
     // Need to move to new line.
     else {
-        if (width > fullWidth * 2.0 / 3.0 && !useShaper) {
+        if (width > fullWidth * 2.0 / 3.0) {
             QString tmp;
 
             if (countCharsForAvailableSpace(word.m_word,
@@ -1681,8 +1676,6 @@ qsizetype PdfRenderer::drawWord(PdfAuxData &pdfData,
             newLineFn();
 
             --idx;
-
-            drawAnyway = useShaper;
         }
     }
 
@@ -1810,8 +1803,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                         const Font *regularSpaceFont,
                         double regularSpaceFontSize,
                         double regularSpaceFontScale,
-                        RTLFlag *rtl,
-                        bool useShaper)
+                        RTLFlag *rtl)
 {
     spaceFontSize *= currentBaseline.m_stack.back().m_scale;
     fontSize *= currentBaseline.m_stack.back().m_scale;
@@ -1882,74 +1874,71 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
     QVector<Word> words;
     QVector<std::shared_ptr<SkFont>> fonts;
 
-    if (!useShaper) {
-        words = splitString(str, false);
+    words = splitString(str, false);
 
-        for (qsizetype i = 0; i < words.size(); ++i) {
-            words[i].m_font = &font;
+    for (qsizetype i = 0; i < words.size(); ++i) {
+        words[i].m_font = &font;
 
-            if (words[i].m_word != s_spaceString) {
-                const auto ucs4 = words[i].m_word.toUcs4();
+        if (words[i].m_word != s_spaceString) {
+            auto iter = pdfData.m_unicode->makeBreakIterator(SkUnicode::BreakType::kGraphemes);
+            const auto utf8 = createUtf8String(words[i].m_word);
+            iter->setText(utf8.data.data(), utf8.data.size());
+            auto word = words[i];
+            words.removeAt(i);
 
-                for (qsizetype c = 0; c < ucs4.size(); ++c) {
-                    if (!font.unicharToGlyph(ucs4[c])) {
-                        if (c > 0) {
-                            const auto tmp = ucs4.sliced(c, ucs4.size() - c);
-                            words.insert(
-                                i + 1,
-                                Word{QString::fromUcs4(tmp.data(), tmp.size()), words[i].m_rtl, false, nullptr});
-                            const auto tmp2 = ucs4.sliced(0, c);
-                            words[i].m_word = QString::fromUcs4(tmp2.data(), tmp2.size());
+            QVector<Word> tmp;
+            tmp.append(Word{QString(), word.m_rtl, word.m_onNewLine, word.m_font});
 
-                            break;
-                        } else {
-                            const auto fallback =
-                                pdfData.m_fontMgr->matchFamilyStyleCharacter(nullptr,
-                                                                             font.getTypeface()->fontStyle(),
-                                                                             nullptr,
-                                                                             0,
-                                                                             ucs4[0]);
+            do {
+                const auto startPos = iter->current();
+                const auto endPos = iter->next();
 
-                            if (fallback) {
-                                SkString fontFamilyBefore;
+                if (iter->isDone()) {
+                    break;
+                }
 
-                                if (i > 0 && words[i - 1].m_word != s_spaceString && words[i].m_word != s_spaceString) {
-                                    words[i - 1].m_font->getTypeface()->getFamilyName(&fontFamilyBefore);
-                                }
+                const auto grapheme = QString::fromUtf8(utf8.data.sliced(startPos, endPos - startPos));
+                const auto ucs4 = grapheme.toUcs4();
 
-                                SkString currentFamilyName;
-                                fallback->getFamilyName(&currentFamilyName);
+                SkString fontFamilyBefore;
+                tmp.back().m_font->getTypeface()->getFamilyName(&fontFamilyBefore);
 
-                                if (fontFamilyBefore != currentFamilyName) {
-                                    const auto fallbackFont = std::make_shared<SkFont>(fallback, fontSize * fontScale);
-                                    fonts.append(fallbackFont);
-                                    words.insert(i,
-                                                 Word{QString::fromUcs4(ucs4.data(), 1),
-                                                      words[i].m_rtl,
-                                                      false,
-                                                      fonts.back().get()});
-                                } else {
-                                    words[i - 1].m_word.append(QString::fromUcs4(ucs4.data(), 1));
-                                    --i;
-                                }
+                sk_sp<SkTypeface> typeface = word.m_font->refTypeface();
 
-                                auto tmp = words[i + 1].m_word.toUcs4();
-                                tmp.removeFirst();
-                                words[i + 1].m_word = QString::fromUcs4(tmp.data(), tmp.size());
+                if (!font.unicharToGlyph(ucs4[0])) {
+                    typeface = pdfData.m_fontMgr->matchFamilyStyleCharacter(nullptr,
+                                                                            font.getTypeface()->fontStyle(),
+                                                                            nullptr,
+                                                                            0,
+                                                                            ucs4[0]);
 
-                                if (words[i + 1].m_word.isEmpty()) {
-                                    words.removeAt(i + 1);
-                                }
-
-                                break;
-                            }
-                        }
+                    if (!typeface) {
+                        typeface = word.m_font->refTypeface();
                     }
                 }
+
+                SkString fontFamilyCurrent;
+                typeface->getFamilyName(&fontFamilyCurrent);
+
+                if (fontFamilyBefore != fontFamilyCurrent) {
+                    fonts.append(std::make_shared<SkFont>(typeface, fontSize * fontScale));
+
+                    if (!tmp.back().m_word.isEmpty()) {
+                        tmp.append(Word{QString(), word.m_rtl, false, fonts.back().get()});
+                    } else {
+                        tmp.back().m_font = fonts.back().get();
+                    }
+                }
+
+                tmp.back().m_word.append(grapheme);
+            } while (true);
+
+            for (const auto &w : std::as_const(tmp)) {
+                words.insert(i++, w);
             }
+
+            --i;
         }
-    } else {
-        words.push_back({str, false, false, &font});
     }
 
     const auto fullWidth =
@@ -1959,8 +1948,6 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
 
     bool firstSpaceDrawn = false;
     bool tmpFirstSpaceDrawn = false;
-
-    bool drawAnyway = false;
 
     qsizetype reversed = 0;
 
@@ -2055,7 +2042,6 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                 };
 
                 CustomWidth tmpCw;
-                bool tmpDrawAnyway = drawAnyway;
                 bool tmpNewLine = newLine;
                 auto tmpCurrentBaseline = currentBaseline;
                 QVector<QPair<RectF, unsigned int>> tmpRet;
@@ -2126,7 +2112,6 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                                      end,
                                      fontSize,
                                      fontScale,
-                                     tmpDrawAnyway,
                                      tmpNewLine,
                                      false,
                                      background,
@@ -2135,7 +2120,6 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                                      lineHeight,
                                      footnoteAtEnd,
                                      footnoteWidth,
-                                     useShaper,
                                      tmpRet,
                                      strikeout,
                                      fullWidth,
@@ -2167,7 +2151,6 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                          last,
                          fontSize,
                          fontScale,
-                         drawAnyway,
                          newLine,
                          draw,
                          background,
@@ -2176,7 +2159,6 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                          lineHeight,
                          footnoteAtEnd,
                          footnoteWidth,
-                         useShaper,
                          ret,
                          strikeout,
                          fullWidth,
@@ -4377,89 +4359,58 @@ PdfRenderer::drawCode(PdfAuxData &pdfData,
                     f = createFont(m_opts.m_codeFont, bold, italic, m_opts.m_codeFontSize, scale, pdfData);
                 }
 
-                auto word = lines.at(i).mid(colored[currentWord].startPos, length).toUcs4();
-                qsizetype start = 0;
-                SkFont fallbackFont;
-                bool isFallbackInit = false;
+                auto word = lines.at(i).mid(colored[currentWord].startPos, length);
+                auto iter = pdfData.m_unicode->makeBreakIterator(SkUnicode::BreakType::kGraphemes);
+                const auto utf8 = createUtf8String(word);
+                iter->setText(utf8.data.data(), utf8.data.size());
+                sk_sp<SkTypeface> typeface = f.refTypeface();
 
-                auto drawWithFallback = [&](qsizetype colon) {
-                    const auto tmp = word.sliced(start, colon - start);
-                    const auto qStr = QString::fromUcs4(tmp.data(), tmp.size());
-                    const auto str = createUtf8String(qStr);
-                    const auto width =
-                        pdfData.stringWidth(fallbackFont, m_opts.m_codeFontSize, scale, str, !qStr.isRightToLeft());
+                do {
+                    const auto startPos = iter->current();
+                    const auto endPos = iter->next();
+
+                    if (iter->isDone()) {
+                        break;
+                    }
+
+                    const auto utf8Grapheme = utf8.data.sliced(startPos, endPos - startPos);
+                    const auto grapheme = QString::fromUtf8(utf8.data.sliced(startPos, endPos - startPos));
+                    const auto ucs4 = grapheme.toUcs4();
+
+                    if (!f.unicharToGlyph(ucs4[0])) {
+                        typeface = pdfData.m_fontMgr->matchFamilyStyleCharacter(nullptr,
+                                                                                font.getTypeface()->fontStyle(),
+                                                                                nullptr,
+                                                                                0,
+                                                                                ucs4[0]);
+
+                        if (!typeface) {
+                            typeface = f.refTypeface();
+                        }
+                    }
+
+                    SkFont drawFont(typeface, m_opts.m_codeFontSize * scale);
+                    const auto width = pdfData.stringWidth(drawFont,
+                                                           m_opts.m_codeFontSize,
+                                                           scale,
+                                                           utf8Grapheme,
+                                                           !word.isRightToLeft());
+
                     drawTextBlobOrText(pdfData,
-                                       fallbackFont,
+                                       drawFont,
                                        m_opts.m_codeFontSize,
                                        scale,
-                                       str,
-                                       pdfData.fontDescent(fallbackFont, m_opts.m_codeFontSize, scale),
+                                       utf8Grapheme,
+                                       pdfData.fontDescent(drawFont, m_opts.m_codeFontSize, scale),
                                        0.0,
-                                       qStr.isRightToLeft(),
+                                       word.isRightToLeft(),
                                        width,
                                        false);
 
                     pdfData.m_layout.addX(width);
-                };
 
-                auto drawMonospaced = [&](qsizetype colon) {
-                    const auto tmp = word.sliced(start, colon - start);
-                    pdfData.drawText(pdfData.m_layout.startX(spaceWidth * length),
-                                     pdfData.m_layout.y() - pdfData.fontDescent(font, m_opts.m_codeFontSize, scale),
-                                     createUtf8String(QString::fromUcs4(tmp.data(), tmp.size())),
-                                     f,
-                                     m_opts.m_codeFontSize * scale,
-                                     1.0,
-                                     false);
-
-                    pdfData.m_layout.addX(spaceWidth * (colon - start));
-                };
-
-                for (qsizetype c = 0; c < word.size(); ++c) {
-                    if (!f.unicharToGlyph(word[c])) {
-                        if (isFallbackInit && fallbackFont.unicharToGlyph(word[c])) {
-                            continue;
-                        }
-
-                        const auto fallback = pdfData.m_fontMgr->matchFamilyStyleCharacter(nullptr,
-                                                                                           f.getTypeface()->fontStyle(),
-                                                                                           nullptr,
-                                                                                           0,
-                                                                                           word[c]);
-
-                        if (c > 0 && fallback && !isFallbackInit) {
-                            drawMonospaced(c);
-                        }
-
-                        if (fallback) {
-                            if (isFallbackInit) {
-                                drawWithFallback(c);
-                            }
-
-                            fallbackFont = SkFont(fallback, m_opts.m_codeFontSize * scale);
-                            isFallbackInit = true;
-                        } else {
-                            isFallbackInit = false;
-                        }
-
-                        if (c > 0 && fallback) {
-                            start = c;
-                        }
-                    } else {
-                        if (isFallbackInit) {
-                            drawWithFallback(c);
-
-                            isFallbackInit = false;
-                            start = c;
-                        }
-                    }
-                }
-
-                if (isFallbackInit) {
-                    drawWithFallback(word.size());
-                } else {
-                    drawMonospaced(word.size());
-                }
+                    typeface = f.refTypeface();
+                } while (true);
 
                 pdfData.restoreColor();
 
