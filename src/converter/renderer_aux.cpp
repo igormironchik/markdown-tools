@@ -507,7 +507,7 @@ void PdfAuxData::drawText(double x,
     }
 #else
     if (m_printDrawings) {
-        const auto s = PdfRenderer::createQString(text);
+        const auto s = QString::fromUtf8(text.data);
 
         (*m_drawingsStream) << QStringLiteral("Text %1 \"%2\" %3 %4 0.0 0.0 0.0 0.0 0.0 0.0\n")
                                    .arg(QString::number(s.length()),
@@ -537,7 +537,7 @@ void PdfAuxData::drawText(double x,
 
         int pos = m_testPos++;
         QCOMPARE(DrawPrimitive::Type::Text, m_testData.at(pos).m_type);
-        QCOMPARE(PdfRenderer::createQString(text), m_testData.at(pos).m_text);
+        QCOMPARE(QString::fromUtf8(text.data), m_testData.at(pos).m_text);
         QCOMPARE(x, m_testData.at(pos).m_x);
         QCOMPARE(y, m_testData.at(pos).m_y);
     }

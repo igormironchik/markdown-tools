@@ -68,13 +68,6 @@ public:
     PdfRenderer();
     ~PdfRenderer() override = default;
 
-    //! Convert UTF-8 to QString.
-    static QString createQString(const char *str);
-
-#ifdef MD_PDF_TESTING
-    bool isError() const;
-#endif
-
 public Q_SLOTS:
     //! Render document. \note Document can be changed during rendering.
     //! Don't reuse the same document twice.
@@ -90,11 +83,13 @@ private Q_SLOTS:
     //! Real rendering.
     void renderImpl();
 
-protected:
+private:
+    friend class AutoSubSupScriptInit;
+
 #ifdef MD_PDF_TESTING
     friend struct TestRendering;
+    bool isError() const;
 #endif
-    friend class AutoSubSupScriptInit;
 
     //! Create font.
     Font createFont(const QString &name,
@@ -104,7 +99,6 @@ protected:
                     double scale,
                     PdfAuxData &pdfData);
 
-private:
     //! Create new page.
     void createPage(PdfAuxData &pdfData);
 

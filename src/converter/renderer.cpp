@@ -688,11 +688,6 @@ void PdfRenderer::drawHorizontalLine(PdfAuxData &pdfData)
     pdfData.restoreColor();
 }
 
-QString PdfRenderer::createQString(const char *str)
-{
-    return QString::fromUtf8(str, -1);
-}
-
 QPair<QVector<WhereDrawn>,
       WhereDrawn>
 PdfRenderer::drawHeading(PdfAuxData &pdfData,
