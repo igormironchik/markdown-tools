@@ -59,27 +59,57 @@ add_definitions(-DBUILD_QT)
 
 link_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../../builds/skia")
 
-set(NORMAL_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../tests/fonts/DroidSerif/droid_serif.ttf)
-set(ITALIC_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../tests/fonts/DroidSerif/droid_serif_italic.ttf)
-set(BOLD_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../tests/fonts/DroidSerif/droid_serif_bold.ttf)
-set(BOLD_ITALIC_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../tests/fonts/DroidSerif/droid_serif_italic_bold.ttf)
-set(MONO_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../tests/fonts/SpaceMono/SpaceMono-Regular.ttf)
-set(MONO_ITALIC_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../tests/fonts/SpaceMono/SpaceMono-Italic.ttf)
-set(MONO_BOLD_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../tests/fonts/SpaceMono/SpaceMono-Bold.ttf)
-set(MONO_BOLD_ITALIC_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../tests/fonts/SpaceMono/SpaceMono-BoldItalic.ttf)
-set(WORKING_FOLDER ${CMAKE_CURRENT_SOURCE_DIR}/../../tests/auto/test_render)
+if (BUILD_MD_TESTS)
+    set(NORMAL_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../tests/fonts/DroidSerif/droid_serif.ttf)
+    set(ITALIC_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../tests/fonts/DroidSerif/droid_serif_italic.ttf)
+    set(BOLD_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../tests/fonts/DroidSerif/droid_serif_bold.ttf)
+    set(BOLD_ITALIC_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../tests/fonts/DroidSerif/droid_serif_italic_bold.ttf)
+    set(MONO_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../tests/fonts/SpaceMono/SpaceMono-Regular.ttf)
+    set(MONO_ITALIC_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../tests/fonts/SpaceMono/SpaceMono-Italic.ttf)
+    set(MONO_BOLD_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../tests/fonts/SpaceMono/SpaceMono-Bold.ttf)
+    set(MONO_BOLD_ITALIC_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../tests/fonts/SpaceMono/SpaceMono-BoldItalic.ttf)
+    set(WORKING_FOLDER ${CMAKE_CURRENT_SOURCE_DIR}/../../tests/auto/test_render)
 
-configure_file(test_const.h.in test_const.h @ONLY)
+    configure_file(test_const.h.in test_const.h @ONLY)
+
+    add_library(md-pdf-lib-test STATIC ${LIB_SRC})
+
+    target_compile_definitions(md-pdf-lib-test PUBLIC MD_PDF_TESTING)
+
+    target_include_directories(md-pdf-lib-test PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+    )
+
+    target_link_libraries(md-pdf-lib-test
+        md4qt::md4qt
+        markdown-widgets
+        LaTeX
+        ${ADDITIONAL_KDE_TARGETS}
+        Qt6::Network
+        Qt6::Core
+        bentleyottmann
+        compression_utils_portable
+        skresources
+        skcms
+        skottie
+        skparagraph
+        sksg
+        svg
+        wuffs
+        skshaper
+        skunicode_icu
+        skunicode_core
+        skia
+        expat
+        harfbuzz
+        icu
+        zlib
+        ${PLATFORM_LIBS}
+        ZLIB::ZLIB
+        Qt6::Test)
+endif()
 
 add_library(md-pdf-lib STATIC ${LIB_SRC})
-
-add_library(md-pdf-lib-test STATIC ${LIB_SRC})
-
-target_compile_definitions(md-pdf-lib-test PUBLIC MD_PDF_TESTING)
-
-target_include_directories(md-pdf-lib-test PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
-)
 
 add_executable(md-pdf-gui WIN32 ${GUI_SRC})
 
@@ -118,34 +148,6 @@ target_link_libraries(md-pdf-lib
     zlib
     ${PLATFORM_LIBS}
     ZLIB::ZLIB)
-
-target_link_libraries(md-pdf-lib-test
-    md4qt::md4qt
-    markdown-widgets
-    LaTeX
-    ${ADDITIONAL_KDE_TARGETS}
-    Qt6::Network
-    Qt6::Core
-    bentleyottmann
-    compression_utils_portable
-    skresources
-    skcms
-    skottie
-    skparagraph
-    sksg
-    svg
-    wuffs
-    skshaper
-    skunicode_icu
-    skunicode_core
-    skia
-    expat
-    harfbuzz
-    icu
-    zlib
-    ${PLATFORM_LIBS}
-    ZLIB::ZLIB
-    Qt6::Test)
 
 target_link_libraries(md-pdf-gui
     md4qt::md4qt
