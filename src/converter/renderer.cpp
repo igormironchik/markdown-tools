@@ -4246,7 +4246,8 @@ PdfRenderer::drawCode(PdfAuxData &pdfData,
 
     QScopedValueRollback continueParagraph(pdfData.m_continueParagraph, true);
 
-    if (heightCalcOpt == CalcHeightOpt::Unknown) {
+    switch (heightCalcOpt) {
+    case CalcHeightOpt::Unknown: {
         if ((pdfData.m_layout.y() + (pdfData.m_firstOnPage ? 0.0 : textLHeight) + lineHeight)
                 > pdfData.currentPageAllowedY()
             && qAbs(pdfData.m_layout.y() + (textLHeight * 2.0) - pdfData.currentPageAllowedY()) > 0.1) {
@@ -4257,6 +4258,19 @@ PdfRenderer::drawCode(PdfAuxData &pdfData,
 
         pdfData.m_layout.moveXToBegin();
     }
+        break;
+
+    case CalcHeightOpt::Minimum: {
+        QVector<WhereDrawn> r;
+        r.append({-1, 0.0, lineHeight, (pdfData.m_firstOnPage ? 0.0 : textLHeight)});
+
+        return {r, {}};
+    }
+        break;
+
+    default:
+        break;
+    }
 
     lines = item->text().split(QLatin1Char('\n'), Qt::KeepEmptyParts);
 
@@ -4264,35 +4278,11 @@ PdfRenderer::drawCode(PdfAuxData &pdfData,
         it->replace(QStringLiteral("\t"), QStringLiteral("    "));
     }
 
-    switch (heightCalcOpt) {
-    case CalcHeightOpt::Minimum: {
-        QVector<WhereDrawn> r;
-        r.append({-1, 0.0, lineHeight, (pdfData.m_firstOnPage ? 0.0 : textLHeight)});
-
-        return {r, {}};
-    }
-
-    case CalcHeightOpt::Full: {
-        QVector<WhereDrawn> r;
-        r.append({-1, 0.0, lineHeight, (pdfData.m_firstOnPage ? 0.0 : textLHeight)});
-
-        auto i = 1;
-
-        while (i < lines.size()) {
-            r.append({-1, 0.0, lineHeight});
-            ++i;
-        }
-
-        return {r, {}};
-    }
-
-    default:
-        break;
-    }
-
     int i = 0;
 
     QVector<WhereDrawn> ret;
+
+    double extra = pdfData.m_firstOnPage ? 0.0 : textLHeight;
 
     {
         QMutexLocker lock(&m_mutex);
@@ -4305,98 +4295,100 @@ PdfRenderer::drawCode(PdfAuxData &pdfData,
     m_opts.m_syntax->setDefinition(m_opts.m_syntax->definitionForName(item->syntax().toLower()));
     const auto colored = m_opts.m_syntax->prepare(lines);
     int currentWord = 0;
-    const auto spaceWidth = pdfData.stringWidth(font, m_opts.m_codeFontSize, scale, " ", true);
 
     const auto firstLinePageIdx = pdfData.m_currentPainterIdx;
     const auto firstLineY = pdfData.m_layout.y();
     const auto firstLineHeight = lineHeight;
 
-    while (i < lines.size()) {
-        auto y = pdfData.m_layout.y();
-        const auto startY = y;
-        int j = i;
-        double h = 0.0;
+    auto drawBackground = [&]() {
+        if (heightCalcOpt == CalcHeightOpt::Full) {
+            ret.append({-1, 0.0, lineHeight, extra});
+            extra = 0.0;
+            pdfData.m_layout.moveXToBegin();
+        } else {
+            auto y = pdfData.m_layout.y();
 
-        while ((y + lineHeight < pdfData.currentPageAllowedY()
-                || qAbs(y + lineHeight - pdfData.currentPageAllowedY()) < 0.1)
-               && j < lines.size()) {
-            h += lineHeight;
-            y += lineHeight;
-            ++j;
-        }
+            moveToNewLine(pdfData, 0.0, lineHeight, 1.0, lineHeight);
 
-        if (i < j) {
+            if (pdfData.m_firstOnPage) {
+                y = pdfData.m_layout.margins().m_top;
+            }
+
             pdfData.setColor(m_opts.m_syntax->theme().editorColor(KSyntaxHighlighting::Theme::CodeFolding));
             pdfData.drawRectangle(pdfData.m_layout.startX(pdfData.m_layout.availableWidth()),
-                                  startY,
+                                  y,
                                   pdfData.m_layout.availableWidth(),
-                                  h,
+                                  lineHeight,
                                   SkPaint::kFill_Style);
             pdfData.restoreColor();
 
-            ret.append({pdfData.m_currentPainterIdx, y, h});
+            ret.append({pdfData.m_currentPainterIdx, pdfData.m_layout.y(), lineHeight});
         }
+    };
 
-        for (; i < j; ++i) {
-            pdfData.m_layout.moveXToBegin();
+    while (i < lines.size()) {
+        drawBackground();
 
-            pdfData.m_layout.addY(lineHeight);
+        while (true) {
+            if (currentWord == colored.size() || colored[currentWord].line != i) {
+                break;
+            }
 
-            while (true) {
-                if (currentWord == colored.size() || colored[currentWord].line != i) {
+            pdfData.setColor(colored[currentWord].format.textColor(m_opts.m_syntax->theme()));
+
+            const auto length = colored[currentWord].endPos - colored[currentWord].startPos + 1;
+
+            Font f = font;
+
+            const auto italic = colored[currentWord].format.isItalic(m_opts.m_syntax->theme());
+            const auto bold = colored[currentWord].format.isBold(m_opts.m_syntax->theme());
+
+            if (italic || bold) {
+                f = createFont(m_opts.m_codeFont, bold, italic, m_opts.m_codeFontSize, scale, pdfData);
+            }
+
+            auto word = lines.at(i).mid(colored[currentWord].startPos, length);
+            auto iter = pdfData.m_unicode->makeBreakIterator(SkUnicode::BreakType::kGraphemes);
+            const auto utf8 = createUtf8String(word);
+            iter->setText(utf8.data.data(), utf8.data.size());
+            sk_sp<SkTypeface> typeface = f.refTypeface();
+
+            do {
+                const auto startPos = iter->current();
+                const auto endPos = iter->next();
+
+                if (iter->isDone()) {
                     break;
                 }
 
-                pdfData.setColor(colored[currentWord].format.textColor(m_opts.m_syntax->theme()));
+                const auto utf8Grapheme = utf8.data.sliced(startPos, endPos - startPos);
+                const auto grapheme = QString::fromUtf8(utf8.data.sliced(startPos, endPos - startPos));
+                const auto ucs4 = grapheme.toUcs4();
 
-                const auto length = colored[currentWord].endPos - colored[currentWord].startPos + 1;
+                if (!f.unicharToGlyph(ucs4[0])) {
+                    typeface = pdfData.m_fontMgr->matchFamilyStyleCharacter(nullptr,
+                                                                            font.getTypeface()->fontStyle(),
+                                                                            nullptr,
+                                                                            0,
+                                                                            ucs4[0]);
 
-                Font f = font;
-
-                const auto italic = colored[currentWord].format.isItalic(m_opts.m_syntax->theme());
-                const auto bold = colored[currentWord].format.isBold(m_opts.m_syntax->theme());
-
-                if (italic || bold) {
-                    f = createFont(m_opts.m_codeFont, bold, italic, m_opts.m_codeFontSize, scale, pdfData);
+                    if (!typeface) {
+                        typeface = f.refTypeface();
+                    }
                 }
 
-                auto word = lines.at(i).mid(colored[currentWord].startPos, length);
-                auto iter = pdfData.m_unicode->makeBreakIterator(SkUnicode::BreakType::kGraphemes);
-                const auto utf8 = createUtf8String(word);
-                iter->setText(utf8.data.data(), utf8.data.size());
-                sk_sp<SkTypeface> typeface = f.refTypeface();
+                SkFont drawFont(typeface, m_opts.m_codeFontSize * scale);
+                const auto width = pdfData.stringWidth(drawFont,
+                                                       m_opts.m_codeFontSize,
+                                                       scale,
+                                                       utf8Grapheme,
+                                                       !word.isRightToLeft());
 
-                do {
-                    const auto startPos = iter->current();
-                    const auto endPos = iter->next();
+                if (!pdfData.m_layout.isFit(width)) {
+                    drawBackground();
+                }
 
-                    if (iter->isDone()) {
-                        break;
-                    }
-
-                    const auto utf8Grapheme = utf8.data.sliced(startPos, endPos - startPos);
-                    const auto grapheme = QString::fromUtf8(utf8.data.sliced(startPos, endPos - startPos));
-                    const auto ucs4 = grapheme.toUcs4();
-
-                    if (!f.unicharToGlyph(ucs4[0])) {
-                        typeface = pdfData.m_fontMgr->matchFamilyStyleCharacter(nullptr,
-                                                                                font.getTypeface()->fontStyle(),
-                                                                                nullptr,
-                                                                                0,
-                                                                                ucs4[0]);
-
-                        if (!typeface) {
-                            typeface = f.refTypeface();
-                        }
-                    }
-
-                    SkFont drawFont(typeface, m_opts.m_codeFontSize * scale);
-                    const auto width = pdfData.stringWidth(drawFont,
-                                                           m_opts.m_codeFontSize,
-                                                           scale,
-                                                           utf8Grapheme,
-                                                           !word.isRightToLeft());
-
+                if (heightCalcOpt != CalcHeightOpt::Full) {
                     drawTextBlobOrText(pdfData,
                                        drawFont,
                                        m_opts.m_codeFontSize,
@@ -4407,28 +4399,29 @@ PdfRenderer::drawCode(PdfAuxData &pdfData,
                                        word.isRightToLeft(),
                                        width,
                                        false);
+                }
 
-                    pdfData.m_layout.addX(width);
+                pdfData.m_layout.addX(width);
 
-                    typeface = f.refTypeface();
-                } while (true);
+                typeface = f.refTypeface();
+            } while (true);
 
-                pdfData.restoreColor();
+            pdfData.restoreColor();
 
-                ++currentWord;
-            }
+            ++currentWord;
         }
 
-        if (i < lines.size()) {
-            createPage(pdfData);
-            pdfData.m_layout.moveXToBegin();
-        }
+        ++i;
     }
 
-    pdfData.m_layout.setRightToLeft(wasRightToLeft);
-    pdfData.m_firstOnPage = false;
+    if (heightCalcOpt != CalcHeightOpt::Full) {
+        pdfData.m_layout.setRightToLeft(wasRightToLeft);
+        pdfData.m_firstOnPage = false;
 
-    return {ret, {firstLinePageIdx, firstLineY, firstLineHeight}};
+        return {ret, {firstLinePageIdx, firstLineY, firstLineHeight}};
+    } else {
+        return {ret, {}};
+    }
 }
 
 QPair<QVector<WhereDrawn>,
