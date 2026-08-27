@@ -569,10 +569,10 @@ struct CustomWidth {
     ParagraphAlignment alignment() const;
     //! Set paragraph alignment.
     void setAlignment(ParagraphAlignment alignment);
+    //! \return Whether error occured?
+    bool isError() const;
 
 private:
-    //! Is drawing?
-    bool m_drawing = false;
     //! Sizes of items.
     QVector<Width> m_width;
     //! Scales on lines.
@@ -583,10 +583,14 @@ private:
     QVector<double> m_lineWidth;
     //! Descents.
     QVector<double> m_descent;
-    //! Position of current line.
-    int m_pos = 0;
     //! Alignments of lines.
     QVector<ParagraphAlignment> m_alignment;
+    //! Position of current line.
+    int m_pos = 0;
+    //! Is drawing?
+    bool m_drawing = false;
+    //! Is error occured?
+    mutable bool m_isError = false;
 }; // struct CustomWidth
 
 //! Auxiliary struct to automatically init/deinit previous base line calculations.

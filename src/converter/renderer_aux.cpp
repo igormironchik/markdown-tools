@@ -955,21 +955,45 @@ void CustomWidth::append(const Width &w)
 }
 double CustomWidth::scale() const
 {
-    return m_scale.at(m_pos);
+    if (m_pos < m_scale.size()) {
+        return m_scale[m_pos];
+    } else {
+        m_isError = true;
+
+        return 0.0;
+    }
 }
 double CustomWidth::height() const
 {
-    return m_height.at(m_pos);
+    if (m_pos < m_height.size()) {
+        return m_height[m_pos];
+    } else {
+        m_isError = true;
+
+        return 0.0;
+    }
 }
 
 double CustomWidth::descent() const
 {
-    return m_descent.at(m_pos);
+    if (m_pos < m_descent.size()) {
+        return m_descent[m_pos];
+    } else {
+        m_isError = true;
+
+        return 0.0;
+    }
 }
 
 double CustomWidth::width() const
 {
-    return m_lineWidth.at(m_pos);
+    if (m_pos < m_lineWidth.size()) {
+        return m_lineWidth[m_pos];
+    } else {
+        m_isError = true;
+
+        return 0.0;
+    }
 }
 
 void CustomWidth::moveToNextLine()
@@ -1092,7 +1116,13 @@ void CustomWidth::calcScale(double lineWidth)
 
 ParagraphAlignment CustomWidth::alignment() const
 {
-    return m_alignment.at(m_pos);
+    if (m_pos < m_alignment.size()) {
+        return m_alignment[m_pos];
+    } else {
+        m_isError = true;
+
+        return ParagraphAlignment::Unknown;
+    }
 }
 
 void CustomWidth::setAlignment(ParagraphAlignment alignment)
@@ -1102,6 +1132,11 @@ void CustomWidth::setAlignment(ParagraphAlignment alignment)
             a = alignment;
         }
     });
+}
+
+bool CustomWidth::isError() const
+{
+    return m_isError;
 }
 
 //

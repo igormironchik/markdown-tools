@@ -2909,6 +2909,10 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
 
     const auto where = toWhereDrawn(normalizeRects(rects), pdfData.m_layout.pageHeight());
 
+    if (cw.isError()) {
+        throw PdfRendererError(tr("The author did a mistake with justified alignment. Please send a bug report."));
+    }
+
     return qMakePair(where, WhereDrawn(firstLinePageIdx, firstLineY, firstLineHeight));
 }
 
