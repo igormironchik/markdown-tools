@@ -1715,7 +1715,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
     spaceFont.setSize(spaceFont.getSize() * currentBaseline.m_stack.back().m_scale);
     auto font = f;
     font.setSize(font.getSize() * currentBaseline.m_stack.back().m_scale);
-    auto tmpFont1 = (ff ? *ff :f);
+    auto tmpFont1 = (ff ? *ff : f);
     tmpFont1.setSize(tmpFont1.getSize() * currentBaseline.m_stack.back().m_scale);
     auto footnoteFont = (ff ? &tmpFont1 : nullptr);
     auto tmpFont2 = (rsf ? *rsf : sf);
@@ -3773,6 +3773,36 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
             && (isOnlineImageOrOnlineImageInLink(pdfData, prevItem, offset, lineHeight, scaleImagesToLineHeight)
                 || (prevItem ? prevItem->endLine() != item->startLine() : false));
         double height = 0.0;
+        const double pageHeight = pdfData.m_layout.pageHeight()
+            - pdfData.topY(pdfData.m_currentPainterIdx)
+            - pdfData.m_layout.margins().m_bottom;
+
+        if (!onLine && !scaleImagesToLineHeight) {
+            if (iWidth > totalAvailableWidth) {
+                imgScale = (totalAvailableWidth / iWidth);
+            }
+
+            if (iHeight * imgScale > pageHeight) {
+                imgScale = (pageHeight / (iHeight * imgScale));
+
+                if (!pdfData.m_firstOnPage && draw) {
+                    createPage(pdfData);
+
+                    pdfData.m_layout.addX(offset);
+                }
+
+                pdfData.freeSpaceOn(pdfData.m_currentPainterIdx);
+            }
+        }
+
+        const AutoSubSupScriptInit subSupInit(this,
+                                              static_cast<MD::ItemWithOpts *>(item),
+                                              previousBaseline,
+                                              iHeight * imgScale,
+                                              0.0);
+
+        imgScale *= scale * previousBaseline.currentScale();
+
         const auto availableAfter = pdfData.m_layout.availableWidth()
             - (iWidth * imgScale + (addSpace ? spaceWidth * (draw ? cw.scale() / 100.0 : 1.0) : 0.0));
 
@@ -3795,43 +3825,14 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
         }
 
         double availableHeight = pdfData.currentPageAllowedY() - pdfData.m_layout.y();
-        const double pageHeight = pdfData.m_layout.pageHeight()
-            - pdfData.topY(pdfData.m_currentPainterIdx)
-            - pdfData.m_layout.margins().m_bottom;
 
-        if (!onLine && !scaleImagesToLineHeight) {
-            if (iWidth > totalAvailableWidth) {
-                imgScale = (totalAvailableWidth / iWidth);
-            }
+        if (!onLine && !scaleImagesToLineHeight && iHeight * imgScale > availableHeight && draw) {
+            createPage(pdfData);
 
-            if (iHeight * imgScale > pageHeight) {
-                imgScale = (pageHeight / (iHeight * imgScale));
+            pdfData.freeSpaceOn(pdfData.m_currentPainterIdx);
 
-                if (!pdfData.m_firstOnPage && draw) {
-                    createPage(pdfData);
-
-                    pdfData.m_layout.addX(offset);
-                }
-
-                pdfData.freeSpaceOn(pdfData.m_currentPainterIdx);
-            } else if (iHeight * imgScale > availableHeight) {
-                if (draw) {
-                    createPage(pdfData);
-
-                    pdfData.freeSpaceOn(pdfData.m_currentPainterIdx);
-
-                    pdfData.m_layout.addX(offset);
-                }
-            }
+            pdfData.m_layout.addX(offset);
         }
-
-        const AutoSubSupScriptInit subSupInit(this,
-                                              static_cast<MD::ItemWithOpts *>(item),
-                                              previousBaseline,
-                                              iHeight * imgScale,
-                                              0.0);
-
-        imgScale *= scale * previousBaseline.currentScale();
 
         RectF r;
         auto font = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize * scale, pdfData);
