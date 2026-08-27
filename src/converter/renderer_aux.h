@@ -60,12 +60,16 @@ namespace Render
 
 //! Footnote scale.
 static const double s_footnoteScale = 0.75;
+//! Default margin - 20 mm.
 static const double s_margin = 72.0 / 25.4 * 20.0;
-static const double s_beforeHeading = 15.0;
+//! Base offset for blockquotes.
 static const double s_blockquoteBaseOffset = 10.0;
+//! Width of blockquote mark.
 static const double s_blockquoteMarkWidth = 3.0;
+//! Margin in table.
 static const double s_tableMargin = 2.0;
 
+//! \return A$ size.
 SkSize a4Size();
 
 class PdfRenderer;
@@ -75,6 +79,8 @@ using Painter = SkCanvas;
 using String = Utf8String;
 using Image = SkImage;
 
+//! Rectangle with base point at bottom left corner.
+//! Width is directed to the right, height is directed to the top.
 struct RectF {
     RectF() = default;
     RectF(qreal leftX,
@@ -95,6 +101,7 @@ struct RectF {
     qreal m_height = 0.0;
 }; // struct RectF
 
+//! Page descriptors.
 struct Page {
     std::shared_ptr<SkPictureRecorder> m_recorder;
     Painter *m_canvas = nullptr;
@@ -514,7 +521,7 @@ struct WhereDrawn {
     int m_pageIdx = -1;
     //! Y of line's bottom.
     double m_y = 0.0;
-    //! Height of the item.
+    //! Height of the item (is directed to the top).
     double m_height = 0.0;
     //! Extra height that can be skipped (usually extra line before new paragraph or heading).
     double m_extraHeight = 0.0;
@@ -595,6 +602,7 @@ private:
     QVector<ParagraphAlignment> m_alignment;
 }; // struct CustomWidth
 
+//! Auxiliary struct to automatically init/deinit previous base line calculations.
 struct AutoSubSupScriptInit {
     AutoSubSupScriptInit(PdfRenderer *render,
                          MD::ItemWithOpts *item,
