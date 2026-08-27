@@ -47,8 +47,7 @@ public:
 
     virtual void render(const QString &fileName,
                         QSharedPointer<MD::Document> doc,
-                        const RenderOpts &opts,
-                        bool testing = false) = 0;
+                        const RenderOpts &opts) = 0;
 }; // class Renderer
 
 //
@@ -69,13 +68,11 @@ public:
     ~PdfRenderer() override = default;
 
 public Q_SLOTS:
-    //! Render document. \note Document can be changed during rendering.
-    //! Don't reuse the same document twice.
+    //! Render document.
     //! Renderer will delete himself on job finish.
     void render(const QString &fileName,
                 QSharedPointer<MD::Document> doc,
-                const MdPdf::Render::RenderOpts &opts,
-                bool testing = false) override;
+                const MdPdf::Render::RenderOpts &opts) override;
     //! Terminate rendering.
     void terminate();
 

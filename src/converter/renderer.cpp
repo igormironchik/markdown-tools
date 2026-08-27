@@ -100,16 +100,17 @@ PdfRenderer::PdfRenderer()
 
 void PdfRenderer::render(const QString &fileName,
                          QSharedPointer<MD::Document> doc,
-                         const RenderOpts &opts,
-                         bool testing)
+                         const RenderOpts &opts)
 {
+    QMutexLocker lock(&m_mutex);
+
     m_fileName = fileName;
-    m_doc = doc;
+    m_doc = doc->clone().staticCast<MD::Document>();
     m_opts = opts;
 
-    if (!testing) {
+#ifndef MD_PDF_TESTING
         Q_EMIT start();
-    }
+#endif
 }
 
 void PdfRenderer::terminate()
