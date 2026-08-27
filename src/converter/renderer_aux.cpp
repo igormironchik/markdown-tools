@@ -477,15 +477,13 @@ void PdfAuxData::drawText(double x,
                           double y,
                           const Utf8String &text,
                           const Font &font,
-                          double size,
-                          double scale,
+                          double scaleX,
                           bool strikeout)
 {
     m_firstOnPage = false;
 
     auto copyFont = font;
-    copyFont.setSize(size);
-    copyFont.setScaleX(scale);
+    copyFont.setScaleX(scaleX);
     SkPaint paint = m_currentPaint;
     paint.setAntiAlias(true);
 
@@ -841,15 +839,10 @@ SkScalar TextBlobBuilderRunHandler::horizontalAdvance() const
 
 bool PdfAuxData::shape(TextBlobBuilderRunHandler &handler,
                        const Font &font,
-                       double size,
-                       double scale,
                        const String &s,
                        bool leftToRight) const
 {
     if (m_shaper) {
-        auto copyFont = font;
-        copyFont.setSize(size * scale);
-
         SkBidiIterator::Level defaultLevel = leftToRight ? SkBidiIterator::kLTR : SkBidiIterator::kRTL;
         std::unique_ptr<SkShaper::BiDiRunIterator> bidi(
             SkShapers::unicode::BidiRunIterator(m_unicode, s, s.data.size(), defaultLevel));
@@ -870,10 +863,10 @@ bool PdfAuxData::shape(TextBlobBuilderRunHandler &handler,
             return false;
         }
 
-        std::unique_ptr<SkShaper::FontRunIterator> font(
-            std::make_unique<SkShaper::TrivialFontRunIterator>(copyFont, s.data.size()));
+        std::unique_ptr<SkShaper::FontRunIterator> fontIt(
+            std::make_unique<SkShaper::TrivialFontRunIterator>(font, s.data.size()));
 
-        if (!font) {
+        if (!fontIt) {
             return false;
         }
 
@@ -883,7 +876,7 @@ bool PdfAuxData::shape(TextBlobBuilderRunHandler &handler,
         size_t featuresSize = sizeof(features) / sizeof(features[0]);
 
         m_shaper
-            ->shape(s, s.data.size(), *font, *bidi, *script, *language, features, featuresSize, 999999.0f, &handler);
+            ->shape(s, s.data.size(), *fontIt, *bidi, *script, *language, features, featuresSize, 999999.0f, &handler);
 
         return true;
     }
@@ -892,65 +885,43 @@ bool PdfAuxData::shape(TextBlobBuilderRunHandler &handler,
 }
 
 double PdfAuxData::stringWidth(const Font &font,
-                               double size,
-                               double scale,
                                const String &s,
                                bool leftToRight) const
 {
-    auto copyFont = font;
-    copyFont.setSize(size * scale);
-
     TextBlobBuilderRunHandler handler(s, SkPoint::Make(0.0, 0.0));
 
-    if (!shape(handler, font, size, scale, s, leftToRight)) {
-        return copyFont.measureText(s, s.data.size(), SkTextEncoding::kUTF8);
+    if (!shape(handler, font, s, leftToRight)) {
+        return font.measureText(s, s.data.size(), SkTextEncoding::kUTF8);
     }
 
     return handler.horizontalAdvance();
 }
 
-double PdfAuxData::lineSpacing(const Font &font,
-                               double size,
-                               double scale) const
+double PdfAuxData::lineSpacing(const Font &font) const
 {
-    auto copyFont = font;
-    copyFont.setSize(size * scale);
-
-    return copyFont.getMetrics(nullptr);
+    return font.getMetrics(nullptr);
 }
 
-double PdfAuxData::fontAscent(const Font &font,
-                              double size,
-                              double scale) const
+double PdfAuxData::fontAscent(const Font &font) const
 {
-    auto copyFont = font;
-    copyFont.setSize(size * scale);
     SkFontMetrics fm;
-    copyFont.getMetrics(&fm);
+    font.getMetrics(&fm);
 
     return fm.fAscent;
 }
 
-double PdfAuxData::fontBackgroundBoxScale(const Font &font,
-                                          double size,
-                                          double scale) const
+double PdfAuxData::fontBackgroundBoxScale(const Font &font) const
 {
-    auto copyFont = font;
-    copyFont.setSize(size * scale);
     SkFontMetrics fm;
-    const auto ls = copyFont.getMetrics(&fm);
+    const auto ls = font.getMetrics(&fm);
 
     return (fm.fDescent + qAbs(fm.fCapHeight)) / ls;
 }
 
-double PdfAuxData::fontDescent(const Font &font,
-                               double size,
-                               double scale) const
+double PdfAuxData::fontDescent(const Font &font) const
 {
-    auto copyFont = font;
-    copyFont.setSize(size * scale);
     SkFontMetrics fm;
-    copyFont.getMetrics(&fm);
+    font.getMetrics(&fm);
 
     return fm.fDescent;
 }

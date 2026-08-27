@@ -445,8 +445,7 @@ struct PdfAuxData {
                   double y,
                   const Utf8String &text,
                   const Font &font,
-                  double size,
-                  double scale,
+                  double scaleX,
                   bool strikeout);
     //! Draw image.
     void drawImage(double x,
@@ -486,33 +485,21 @@ struct PdfAuxData {
     //! \return True on success.
     bool shape(TextBlobBuilderRunHandler &handler,
                const Font &font,
-               double size,
-               double scale,
                const String &s,
                bool leftToRight) const;
 
     //! \return String width.
     double stringWidth(const Font &font,
-                       double size,
-                       double scale,
                        const String &s,
                        bool leftToRight) const;
     //! \return Line spacing.
-    double lineSpacing(const Font &font,
-                       double size,
-                       double scale) const;
+    double lineSpacing(const Font &font) const;
     //! \return Font ascent.
-    double fontAscent(const Font &font,
-                      double size,
-                      double scale) const;
+    double fontAscent(const Font &font) const;
     //! \return Font bounding box scale of total line height.
-    double fontBackgroundBoxScale(const Font &font,
-                                  double size,
-                                  double scale) const;
+    double fontBackgroundBoxScale(const Font &font) const;
     //! \return Font descent.
-    double fontDescent(const Font &font,
-                       double size,
-                       double scale) const;
+    double fontDescent(const Font &font) const;
 }; // struct PdfAuxData;
 
 //! Where was the item drawn?

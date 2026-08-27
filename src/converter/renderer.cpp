@@ -109,7 +109,7 @@ void PdfRenderer::render(const QString &fileName,
     m_opts = opts;
 
 #ifndef MD_PDF_TESTING
-        Q_EMIT start();
+    Q_EMIT start();
 #endif
 }
 
@@ -361,9 +361,7 @@ void PdfRenderer::renderImpl()
         int itemIdx = 0;
 
         pdfData.m_lineHeight =
-            pdfData.lineSpacing(createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, 1.0, pdfData),
-                                m_opts.m_textFontSize,
-                                1.0);
+            pdfData.lineSpacing(createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, pdfData));
         pdfData.m_extraInFootnote = pdfData.m_lineHeight / 3.0;
 
         createPage(pdfData);
@@ -542,7 +540,6 @@ Font PdfRenderer::createFont(const QString &name,
                              bool bold,
                              bool italic,
                              double size,
-                             double scale,
                              PdfAuxData &pdfData)
 {
     const QString internalName =
@@ -567,7 +564,7 @@ Font PdfRenderer::createFont(const QString &name,
 #endif
     }
 
-    return SkFont(typeface, size * scale);
+    return SkFont(typeface, size);
 }
 
 namespace /* anonymous */
@@ -797,8 +794,6 @@ PdfRenderer::drawText(PdfAuxData &pdfData,
                       QSharedPointer<MD::Document> doc,
                       bool &newLine,
                       const Font *footnoteFont,
-                      double footnoteFontSize,
-                      double footnoteFontScale,
                       MD::Item *nextItem,
                       int footnoteNum,
                       double offset,
@@ -812,32 +807,25 @@ PdfRenderer::drawText(PdfAuxData &pdfData,
     auto font = createFont(m_opts.m_textFont,
                            item->opts() & MD::TextOption::BoldText,
                            item->opts() & MD::TextOption::ItalicText,
-                           m_opts.m_textFontSize,
-                           scale,
+                           m_opts.m_textFontSize * scale,
                            pdfData);
 
-    const auto lineHeight = pdfData.lineSpacing(font, m_opts.m_textFontSize, scale);
+    const auto lineHeight = pdfData.lineSpacing(font);
 
     const AutoSubSupScriptInit initSubSup(this,
                                           static_cast<MD::ItemWithOpts *>(item),
                                           previousBaseline,
                                           lineHeight,
-                                          pdfData.fontDescent(font, m_opts.m_textFontSize, scale));
+                                          pdfData.fontDescent(font));
 
     return drawString(pdfData,
                       item->text(),
                       font,
-                      m_opts.m_textFontSize,
-                      scale,
                       font,
-                      m_opts.m_textFontSize,
-                      scale,
                       lineHeight,
                       doc,
                       newLine,
                       footnoteFont,
-                      footnoteFontSize,
-                      footnoteFontScale,
                       nextItem,
                       footnoteNum,
                       offset,
@@ -852,8 +840,6 @@ PdfRenderer::drawText(PdfAuxData &pdfData,
                       previousBaseline,
                       color,
                       nullptr,
-                      0.0,
-                      0.0,
                       rtl);
 }
 
@@ -864,8 +850,6 @@ PdfRenderer::drawEmoji(PdfAuxData &pdfData,
                        QSharedPointer<MD::Document> doc,
                        bool &newLine,
                        const Font *footnoteFont,
-                       double footnoteFontSize,
-                       double footnoteFontScale,
                        MD::Item *nextItem,
                        int footnoteNum,
                        double offset,
@@ -914,33 +898,26 @@ PdfRenderer::drawEmoji(PdfAuxData &pdfData,
         font = createFont(m_opts.m_textFont,
                           item->opts() & MD::TextOption::BoldText,
                           item->opts() & MD::TextOption::ItalicText,
-                          m_opts.m_textFontSize,
-                          scale,
+                          m_opts.m_textFontSize * scale,
                           pdfData);
     }
 
-    const auto lineHeight = pdfData.lineSpacing(font, m_opts.m_textFontSize, scale);
+    const auto lineHeight = pdfData.lineSpacing(font);
 
     const AutoSubSupScriptInit initSubSup(this,
                                           static_cast<MD::ItemWithOpts *>(item),
                                           previousBaseline,
                                           lineHeight,
-                                          pdfData.fontDescent(font, m_opts.m_textFontSize, scale));
+                                          pdfData.fontDescent(font));
 
     return drawString(pdfData,
                       text,
                       font,
-                      m_opts.m_textFontSize,
-                      scale,
                       font,
-                      m_opts.m_textFontSize,
-                      scale,
                       lineHeight,
                       doc,
                       newLine,
                       footnoteFont,
-                      footnoteFontSize,
-                      footnoteFontScale,
                       nextItem,
                       footnoteNum,
                       offset,
@@ -955,8 +932,6 @@ PdfRenderer::drawEmoji(PdfAuxData &pdfData,
                       previousBaseline,
                       color,
                       nullptr,
-                      0.0,
-                      0.0,
                       rtl);
 }
 
@@ -1087,8 +1062,6 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
                       QSharedPointer<MD::Document> doc,
                       bool &newLine,
                       const Font &footnoteFont,
-                      double footnoteFontSize,
-                      double footnoteFontScale,
                       MD::Item *prevItem,
                       MD::Item *nextItem,
                       int footnoteNum,
@@ -1124,15 +1097,14 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
     auto font = createFont(m_opts.m_textFont,
                            item->opts() & MD::TextOption::BoldText,
                            item->opts() & MD::TextOption::ItalicText,
-                           m_opts.m_textFontSize,
-                           scale,
+                           m_opts.m_textFontSize * scale,
                            pdfData);
 
     const AutoSubSupScriptInit subSupInit(this,
                                           static_cast<MD::ItemWithOpts *>(item),
                                           previousBaseline,
-                                          pdfData.lineSpacing(font, m_opts.m_textFontSize, scale),
-                                          pdfData.fontDescent(font, m_opts.m_textFontSize, scale));
+                                          pdfData.lineSpacing(font),
+                                          pdfData.fontDescent(font));
 
     if (!item->p()->isEmpty()) {
         for (auto it = item->p()->items().cbegin(), last = item->p()->items().cend(); it != last; ++it) {
@@ -1140,35 +1112,28 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
             case MD::ItemType::Text: {
                 auto text = (*it).staticCast<MD::Text>();
 
-                auto spaceFont = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, scale, pdfData);
+                auto spaceFont = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize * scale, pdfData);
 
                 auto font = createFont(m_opts.m_textFont,
                                        text->opts() & MD::BoldText || item->opts() & MD::BoldText,
                                        text->opts() & MD::ItalicText || item->opts() & MD::ItalicText,
-                                       m_opts.m_textFontSize,
-                                       scale,
+                                       m_opts.m_textFontSize * scale,
                                        pdfData);
 
                 const AutoSubSupScriptInit subSupInit(this,
                                                       static_cast<MD::ItemWithOpts *>(text.get()),
                                                       previousBaseline,
-                                                      pdfData.lineSpacing(font, m_opts.m_textFontSize, scale),
-                                                      pdfData.fontDescent(font, m_opts.m_textFontSize, scale));
+                                                      pdfData.lineSpacing(font),
+                                                      pdfData.fontDescent(font));
 
                 rects.append(drawString(pdfData,
                                         text->text(),
                                         spaceFont,
-                                        m_opts.m_textFontSize,
-                                        scale,
                                         font,
-                                        m_opts.m_textFontSize,
-                                        scale,
                                         lineHeight,
                                         doc,
                                         newLine,
                                         &footnoteFont,
-                                        footnoteFontSize,
-                                        footnoteFontScale,
                                         (it == std::prev(last) ? nextItem : nullptr),
                                         footnoteNum,
                                         offset,
@@ -1183,8 +1148,6 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
                                         previousBaseline,
                                         m_opts.m_linkColor,
                                         nullptr,
-                                        0.0,
-                                        0.0,
                                         rtl));
             } break;
 
@@ -1241,8 +1204,6 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
                                        doc,
                                        newLine,
                                        &footnoteFont,
-                                       footnoteFontSize,
-                                       footnoteFontScale,
                                        (it == std::prev(last) ? nextItem : nullptr),
                                        footnoteNum,
                                        offset,
@@ -1261,28 +1222,22 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
             }
         }
     } else if (item->img()->isEmpty()) {
-        auto spaceFont = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, scale, pdfData);
+        auto spaceFont = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize * scale, pdfData);
 
         const AutoSubSupScriptInit subSupInit(this,
                                               static_cast<MD::ItemWithOpts *>(item),
                                               previousBaseline,
-                                              pdfData.lineSpacing(font, m_opts.m_textFontSize, scale),
-                                              pdfData.fontDescent(font, m_opts.m_textFontSize, scale));
+                                              pdfData.lineSpacing(font),
+                                              pdfData.fontDescent(font));
 
         rects = drawString(pdfData,
                            url,
                            spaceFont,
-                           m_opts.m_textFontSize,
-                           scale,
                            font,
-                           m_opts.m_textFontSize,
-                           scale,
                            lineHeight,
                            doc,
                            newLine,
                            &footnoteFont,
-                           footnoteFontSize,
-                           footnoteFontScale,
                            nextItem,
                            footnoteNum,
                            offset,
@@ -1297,8 +1252,6 @@ PdfRenderer::drawLink(PdfAuxData &pdfData,
                            previousBaseline,
                            m_opts.m_linkColor,
                            nullptr,
-                           0.0,
-                           0.0,
                            rtl);
     }
     // Otherwise image link.
@@ -1391,9 +1344,7 @@ bool PdfRenderer::nextOnOneLineIsFit(PdfAuxData &pdfData,
                                      const QVector<Word> &words,
                                      qsizetype idx,
                                      qsizetype last,
-                                     double width,
-                                     double fontSize,
-                                     double fontScale)
+                                     double width)
 {
     if (idx == last) {
         return true;
@@ -1413,8 +1364,7 @@ bool PdfRenderer::nextOnOneLineIsFit(PdfAuxData &pdfData,
     if (idx != last && checkSeparator(words[idx].m_word)) {
         const auto &word = words[idx];
 
-        const auto length =
-            pdfData.stringWidth(*word.m_font, fontSize, fontScale, createUtf8String(word.m_word), !word.m_rtl);
+        const auto length = pdfData.stringWidth(*word.m_font, createUtf8String(word.m_word), !word.m_rtl);
 
         return pdfData.m_layout.isFit(width + length);
     }
@@ -1426,8 +1376,6 @@ qsizetype PdfRenderer::drawWord(PdfAuxData &pdfData,
                                 const QVector<Word> &words,
                                 qsizetype idx,
                                 qsizetype last,
-                                double fontSize,
-                                double fontScale,
                                 bool &newLine,
                                 bool draw,
                                 const QColor &background,
@@ -1456,7 +1404,7 @@ qsizetype PdfRenderer::drawWord(PdfAuxData &pdfData,
         if (draw) {
             cw.moveToNextLine();
 
-            moveToNewLine(pdfData, offset, cw.height(), 1.0, cw.height());
+            moveToNewLine(pdfData, cw.height(), 1.0, cw.height());
 
             alignLine(pdfData, cw);
 
@@ -1471,8 +1419,6 @@ qsizetype PdfRenderer::drawWord(PdfAuxData &pdfData,
                                            double availableWidth,
                                            const Font &font,
                                            const PdfAuxData &pdfData,
-                                           double fontSize,
-                                           double fontScale,
                                            QString &tmp,
                                            bool leftToRight) -> qsizetype {
         auto iter = pdfData.m_unicode->makeBreakIterator(SkUnicode::BreakType::kGraphemes);
@@ -1496,7 +1442,7 @@ qsizetype PdfRenderer::drawWord(PdfAuxData &pdfData,
             const auto utf8Grapheme = utf8.data.sliced(startPos, endPos - startPos);
             const auto grapheme = QString::fromUtf8(utf8Grapheme);
 
-            width += pdfData.stringWidth(font, fontSize, fontScale, createUtf8String(grapheme), leftToRight);
+            width += pdfData.stringWidth(font, createUtf8String(grapheme), leftToRight);
 
             if (width > availableWidth && !(qAbs(width - availableWidth) < 0.01)) {
                 tmp = QString::fromUtf8(utf8.data.sliced(0, startPos));
@@ -1515,18 +1461,11 @@ qsizetype PdfRenderer::drawWord(PdfAuxData &pdfData,
     auto splitAndDraw = [&](QString s, bool rtl, const Font &font) {
         while (s.length()) {
             QString tmp;
-            const auto i = countCharsForAvailableSpace(s,
-                                                       pdfData.m_layout.availableWidth(),
-                                                       font,
-                                                       pdfData,
-                                                       fontSize,
-                                                       fontScale,
-                                                       tmp,
-                                                       !rtl);
+            const auto i = countCharsForAvailableSpace(s, pdfData.m_layout.availableWidth(), font, pdfData, tmp, !rtl);
 
             s.remove(0, i);
 
-            const auto w = pdfData.stringWidth(font, fontSize, fontScale, createUtf8String(tmp), !rtl);
+            const auto w = pdfData.stringWidth(font, createUtf8String(tmp), !rtl);
 
             if (draw) {
                 pdfData.setColor(color);
@@ -1537,8 +1476,6 @@ qsizetype PdfRenderer::drawWord(PdfAuxData &pdfData,
 
                 drawTextBlobOrText(pdfData,
                                    font,
-                                   fontSize,
-                                   fontScale,
                                    createUtf8String(tmp),
                                    cw.descent(),
                                    currentBaseline.m_stack.back().m_baselineDelta,
@@ -1554,13 +1491,7 @@ qsizetype PdfRenderer::drawWord(PdfAuxData &pdfData,
             } else {
                 const auto lineInfo = currentBaseline.fullLineHeight();
 
-                cw.append({w,
-                           lineInfo.first,
-                           false,
-                           false,
-                           true,
-                           tmp,
-                           pdfData.fontDescent(font, fontSize, fontScale) + lineInfo.second});
+                cw.append({w, lineInfo.first, false, false, true, tmp, pdfData.fontDescent(font) + lineInfo.second});
             }
 
             newLine = false;
@@ -1581,7 +1512,7 @@ qsizetype PdfRenderer::drawWord(PdfAuxData &pdfData,
                        false,
                        true,
                        QString::number(footnoteNum),
-                       pdfData.fontDescent(font, fontSize, fontScale) + lineInfo.second});
+                       pdfData.fontDescent(font) + lineInfo.second});
         }
     }; // splitAndDraw
 
@@ -1593,11 +1524,11 @@ qsizetype PdfRenderer::drawWord(PdfAuxData &pdfData,
 
     const auto str = createUtf8String(word.m_word);
 
-    const auto length = pdfData.stringWidth(*word.m_font, fontSize, fontScale, str, !word.m_rtl);
+    const auto length = pdfData.stringWidth(*word.m_font, str, !word.m_rtl);
 
     const auto width = length + (idx + 1 == last && footnoteAtEnd ? footnoteWidth : 0.0);
 
-    if (pdfData.m_layout.isFit(width) && nextOnOneLineIsFit(pdfData, words, idx, last, width, fontSize, fontScale)) {
+    if (pdfData.m_layout.isFit(width) && nextOnOneLineIsFit(pdfData, words, idx, last, width)) {
         newLine = false;
 
         if (draw) {
@@ -1607,11 +1538,10 @@ qsizetype PdfRenderer::drawWord(PdfAuxData &pdfData,
                                       pdfData.m_layout.y()
                                           - cw.descent()
                                           - currentBaseline.m_stack.back().m_baselineDelta
-                                          + pdfData.fontAscent(*word.m_font, fontSize, fontScale)
-                                              * pdfData.fontBackgroundBoxScale(*word.m_font, fontSize, fontScale),
+                                          + pdfData.fontAscent(*word.m_font)
+                                              * pdfData.fontBackgroundBoxScale(*word.m_font),
                                       length,
-                                      pdfData.lineSpacing(*word.m_font, fontSize, fontScale)
-                                          * pdfData.fontBackgroundBoxScale(*word.m_font, fontSize, fontScale),
+                                      pdfData.lineSpacing(*word.m_font) * pdfData.fontBackgroundBoxScale(*word.m_font),
                                       SkPaint::kFill_Style);
                 pdfData.restoreColor();
             }
@@ -1620,8 +1550,6 @@ qsizetype PdfRenderer::drawWord(PdfAuxData &pdfData,
 
             drawTextBlobOrText(pdfData,
                                *word.m_font,
-                               fontSize,
-                               fontScale,
                                str,
                                cw.descent(),
                                currentBaseline.m_stack.back().m_baselineDelta,
@@ -1643,7 +1571,7 @@ qsizetype PdfRenderer::drawWord(PdfAuxData &pdfData,
                        false,
                        true,
                        word.m_word,
-                       pdfData.fontDescent(*word.m_font, fontSize, fontScale) + lineInfo.second});
+                       pdfData.fontDescent(*word.m_font) + lineInfo.second});
         }
 
         pdfData.m_layout.addX(length);
@@ -1657,8 +1585,6 @@ qsizetype PdfRenderer::drawWord(PdfAuxData &pdfData,
                                             pdfData.m_layout.availableWidth(),
                                             *word.m_font,
                                             pdfData,
-                                            fontSize,
-                                            fontScale,
                                             tmp,
                                             !word.m_rtl)
                 > 4) {
@@ -1688,16 +1614,10 @@ void PdfRenderer::drawSpace(PdfAuxData &pdfData,
                             bool useRegularSpace,
                             bool &firstSpaceDrawn,
                             const Font &spaceFont,
-                            double spaceFontSize,
-                            double spaceFontScale,
                             const Font &font,
-                            double fontSize,
-                            double fontScale,
                             CustomWidth &cw,
                             bool draw,
                             const Font *regularSpaceFont,
-                            double regularSpaceFontSize,
-                            double regularSpaceFontScale,
                             double spaceWidth,
                             bool &newLine,
                             QVector<QPair<RectF,
@@ -1715,9 +1635,7 @@ void PdfRenderer::drawSpace(PdfAuxData &pdfData,
     }
 
     const auto currentSpaceWidth =
-        (useRegularSpace && regularSpaceFont
-             ? pdfData.stringWidth(*regularSpaceFont, regularSpaceFontSize, regularSpaceFontScale, " ", true)
-             : spaceWidth);
+        (useRegularSpace && regularSpaceFont ? pdfData.stringWidth(*regularSpaceFont, " ", true) : spaceWidth);
 
     const auto width = currentSpaceWidth * scale / 100.0;
 
@@ -1735,23 +1653,19 @@ void PdfRenderer::drawSpace(PdfAuxData &pdfData,
                                       pdfData.m_layout.y()
                                           - cw.descent()
                                           - currentBaseline.m_stack.back().m_baselineDelta
-                                          + pdfData.fontAscent(font, fontSize, fontScale)
-                                              * pdfData.fontBackgroundBoxScale(font, fontSize, fontScale),
+                                          + pdfData.fontAscent(font) * pdfData.fontBackgroundBoxScale(font),
                                       width,
-                                      pdfData.lineSpacing(font, fontSize, fontScale)
-                                          * pdfData.fontBackgroundBoxScale(font, fontSize, fontScale),
+                                      pdfData.lineSpacing(font) * pdfData.fontBackgroundBoxScale(font),
                                       SkPaint::kFill_Style);
                 pdfData.restoreColor();
             }
 
             Font font = (useRegularSpace && regularSpaceFont ? *regularSpaceFont : spaceFont);
-            const auto size = (useRegularSpace && regularSpaceFont ? regularSpaceFontSize * regularSpaceFontScale
-                                                                   : spaceFontSize * spaceFontScale);
+            const auto size = (useRegularSpace && regularSpaceFont ? regularSpaceFont->getSize() : spaceFont.getSize());
             pdfData.drawText(pdfData.m_layout.startX(width),
                              pdfData.m_layout.y() - cw.descent() - currentBaseline.m_stack.back().m_baselineDelta,
                              " ",
                              font,
-                             size,
                              scale / 100.0,
                              strikeout);
         } else {
@@ -1763,10 +1677,8 @@ void PdfRenderer::drawSpace(PdfAuxData &pdfData,
                        false,
                        true,
                        " ",
-                       (useRegularSpace && regularSpaceFont
-                            ? pdfData.fontDescent(*regularSpaceFont, regularSpaceFontSize, regularSpaceFontScale)
-                                + lineInfo.second
-                            : pdfData.fontDescent(spaceFont, spaceFontSize, spaceFontScale) + lineInfo.second)});
+                       (useRegularSpace && regularSpaceFont ? pdfData.fontDescent(*regularSpaceFont) + lineInfo.second
+                                                            : pdfData.fontDescent(spaceFont) + lineInfo.second)});
         }
 
         pdfData.m_layout.addX(width);
@@ -1777,18 +1689,12 @@ QVector<QPair<RectF,
               unsigned int>>
 PdfRenderer::drawString(PdfAuxData &pdfData,
                         const QString &str,
-                        const Font &spaceFont,
-                        double spaceFontSize,
-                        double spaceFontScale,
-                        const Font &font,
-                        double fontSize,
-                        double fontScale,
+                        const Font &sf,
+                        const Font &f,
                         double lineHeight,
                         QSharedPointer<MD::Document> doc,
                         bool &newLine,
-                        const Font *footnoteFont,
-                        double footnoteFontSize,
-                        double footnoteFontScale,
+                        const Font *ff,
                         MD::Item *nextItem,
                         int footnoteNum,
                         double offset,
@@ -1802,15 +1708,20 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                         long long int endPos,
                         PrevBaselineStateStack &currentBaseline,
                         const QColor &color,
-                        const Font *regularSpaceFont,
-                        double regularSpaceFontSize,
-                        double regularSpaceFontScale,
+                        const Font *rsf,
                         RTLFlag *rtl)
 {
-    spaceFontSize *= currentBaseline.m_stack.back().m_scale;
-    fontSize *= currentBaseline.m_stack.back().m_scale;
-    footnoteFontSize *= currentBaseline.m_stack.back().m_scale;
-    regularSpaceFontSize *= currentBaseline.m_stack.back().m_scale;
+    auto spaceFont = sf;
+    spaceFont.setSize(spaceFont.getSize() * currentBaseline.m_stack.back().m_scale);
+    auto font = f;
+    font.setSize(font.getSize() * currentBaseline.m_stack.back().m_scale);
+    auto tmpFont1 = (ff ? *ff :f);
+    tmpFont1.setSize(tmpFont1.getSize() * currentBaseline.m_stack.back().m_scale);
+    auto footnoteFont = (ff ? &tmpFont1 : nullptr);
+    auto tmpFont2 = (rsf ? *rsf : sf);
+    tmpFont2.setSize(tmpFont2.getSize() * currentBaseline.m_stack.back().m_scale);
+    auto regularSpaceFont = (rsf ? &tmpFont2 : nullptr);
+
     lineHeight = currentBaseline.m_stack.back().m_lineHeight;
 
     if (!background.isValid() && currentBaseline.isMarkColorEnabled()) {
@@ -1849,8 +1760,6 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
 
     if (footnoteAtEnd) {
         footnoteWidth = pdfData.stringWidth(*footnoteFont,
-                                            footnoteFontSize,
-                                            footnoteFontScale,
                                             createUtf8String(QString::number(footnoteNum)),
                                             rtl ? !rtl->isRightToLeft() : true);
     }
@@ -1923,7 +1832,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                 typeface->getFamilyName(&fontFamilyCurrent);
 
                 if (fontFamilyBefore != fontFamilyCurrent) {
-                    fonts.append(std::make_shared<SkFont>(typeface, fontSize * fontScale));
+                    fonts.append(std::make_shared<SkFont>(typeface, font.getSize()));
 
                     if (!tmp.back().m_word.isEmpty()) {
                         tmp.append(Word{QString(), word.m_rtl, false, fonts.back().get()});
@@ -1946,7 +1855,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
     const auto fullWidth =
         pdfData.m_layout.pageWidth() - pdfData.m_layout.margins().m_left - pdfData.m_layout.margins().m_right;
 
-    const auto spaceWidth = pdfData.stringWidth(spaceFont, spaceFontSize, spaceFontScale, " ", true);
+    const auto spaceWidth = pdfData.stringWidth(spaceFont, " ", true);
 
     bool firstSpaceDrawn = false;
     bool tmpFirstSpaceDrawn = false;
@@ -1971,16 +1880,10 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                           false,
                           firstSpaceDrawn,
                           spaceFont,
-                          spaceFontSize,
-                          spaceFontScale,
                           font,
-                          fontSize,
-                          fontScale,
                           cw,
                           draw,
                           regularSpaceFont,
-                          regularSpaceFontSize,
-                          regularSpaceFontScale,
                           spaceWidth,
                           newLine,
                           ret,
@@ -1995,16 +1898,10 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                           true,
                           firstSpaceDrawn,
                           spaceFont,
-                          spaceFontSize,
-                          spaceFontScale,
                           font,
-                          fontSize,
-                          fontScale,
                           cw,
                           draw,
                           regularSpaceFont,
-                          regularSpaceFontSize,
-                          regularSpaceFontScale,
                           spaceWidth,
                           newLine,
                           ret,
@@ -2063,16 +1960,10 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                                       false,
                                       tmpFirstSpaceDrawn,
                                       spaceFont,
-                                      spaceFontSize,
-                                      spaceFontScale,
                                       font,
-                                      fontSize,
-                                      fontScale,
                                       tmpCw,
                                       false,
                                       regularSpaceFont,
-                                      regularSpaceFontSize,
-                                      regularSpaceFontScale,
                                       spaceWidth,
                                       tmpNewLine,
                                       tmpRet,
@@ -2087,16 +1978,10 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                                       true,
                                       tmpFirstSpaceDrawn,
                                       spaceFont,
-                                      spaceFontSize,
-                                      spaceFontScale,
                                       font,
-                                      fontSize,
-                                      fontScale,
                                       tmpCw,
                                       false,
                                       regularSpaceFont,
-                                      regularSpaceFontSize,
-                                      regularSpaceFontScale,
                                       spaceWidth,
                                       tmpNewLine,
                                       tmpRet,
@@ -2112,8 +1997,6 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                                      words,
                                      j,
                                      end,
-                                     fontSize,
-                                     fontScale,
                                      tmpNewLine,
                                      false,
                                      background,
@@ -2151,8 +2034,6 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                          words,
                          i,
                          last,
-                         fontSize,
-                         fontScale,
                          newLine,
                          draw,
                          background,
@@ -2176,8 +2057,6 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
 
 void PdfRenderer::drawTextBlobOrText(PdfAuxData &pdfData,
                                      const Font &font,
-                                     double fontSize,
-                                     double fontScale,
                                      const Utf8String &str,
                                      double descent,
                                      double baselineDelta,
@@ -2185,21 +2064,17 @@ void PdfRenderer::drawTextBlobOrText(PdfAuxData &pdfData,
                                      double length,
                                      bool strikeout)
 {
-    auto copyFont = font;
-    copyFont.setSize(fontSize * fontScale);
-
     SkFontMetrics fm;
-    copyFont.getMetrics(&fm);
+    font.getMetrics(&fm);
 
     TextBlobBuilderRunHandler handler(str,
                                       SkPoint::Make(0.0, pdfData.m_layout.y() - descent - baselineDelta + fm.fAscent));
 
-    if (!pdfData.shape(handler, font, fontSize, fontScale, str, !rtl)) {
+    if (!pdfData.shape(handler, font, str, !rtl)) {
         pdfData.drawText(pdfData.m_layout.startX(length),
                          pdfData.m_layout.y() - descent - baselineDelta,
                          str,
                          font,
-                         fontSize * fontScale,
                          1.0,
                          strikeout);
     } else {
@@ -2212,7 +2087,6 @@ void PdfRenderer::drawTextBlobOrText(PdfAuxData &pdfData,
                              pdfData.m_layout.y() - descent - baselineDelta,
                              str,
                              font,
-                             fontSize * fontScale,
                              1.0,
                              strikeout);
         }
@@ -2235,13 +2109,12 @@ PdfRenderer::drawInlinedCode(PdfAuxData &pdfData,
 {
     Q_UNUSED(rtl)
 
-    auto textFont = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, scale, pdfData);
+    auto textFont = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize * scale, pdfData);
 
     auto font = createFont(m_opts.m_codeFont,
                            item->opts() & MD::TextOption::BoldText,
                            item->opts() & MD::TextOption::ItalicText,
-                           m_opts.m_codeFontSize,
-                           scale,
+                           m_opts.m_codeFontSize * scale,
                            pdfData);
 
     auto backgroundColor = m_opts.m_syntax->theme().editorColor(KSyntaxHighlighting::Theme::CodeFolding);
@@ -2259,28 +2132,22 @@ PdfRenderer::drawInlinedCode(PdfAuxData &pdfData,
                          (qBlue(textColor) + qBlue(linkColor)) / 2);
     }
 
-    const auto lineHeight = pdfData.lineSpacing(textFont, m_opts.m_textFontSize, scale);
+    const auto lineHeight = pdfData.lineSpacing(textFont);
 
     const AutoSubSupScriptInit initSubSup(this,
                                           static_cast<MD::ItemWithOpts *>(item),
                                           previousBaseline,
-                                          pdfData.lineSpacing(font, m_opts.m_codeFontSize, scale),
-                                          pdfData.fontDescent(font, m_opts.m_codeFontSize, scale));
+                                          pdfData.lineSpacing(font),
+                                          pdfData.fontDescent(font));
 
     return drawString(pdfData,
                       item->text(),
                       font,
-                      m_opts.m_codeFontSize,
-                      scale,
                       font,
-                      m_opts.m_codeFontSize,
-                      scale,
                       lineHeight,
                       doc,
                       newLine,
                       nullptr,
-                      0.0,
-                      0.0,
                       nullptr,
                       pdfData.m_footnoteNum,
                       offset,
@@ -2295,19 +2162,14 @@ PdfRenderer::drawInlinedCode(PdfAuxData &pdfData,
                       previousBaseline,
                       textColor,
                       &textFont,
-                      m_opts.m_textFontSize,
-                      scale,
                       rtl);
 }
 
 void PdfRenderer::moveToNewLine(PdfAuxData &pdfData,
-                                double xOffset,
                                 double yOffset,
                                 double yOffsetMultiplier,
                                 double yOffsetOnNewPage)
 {
-    Q_UNUSED(xOffset)
-
     pdfData.m_layout.moveXToBegin();
     pdfData.m_layout.addY(yOffset * yOffsetMultiplier);
 
@@ -2470,12 +2332,13 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
         Q_EMIT status(tr("Drawing paragraph."));
     }
 
-    auto font = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, scale, pdfData);
+    auto font = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize * scale, pdfData);
 
     auto footnoteFont = font;
+    footnoteFont.setSize(footnoteFont.getSize() * s_footnoteScale);
 
-    const auto lineHeight = pdfData.lineSpacing(font, m_opts.m_textFontSize, scale);
-    const auto spaceWidth = pdfData.stringWidth(font, m_opts.m_textFontSize, scale, " ", true);
+    const auto lineHeight = pdfData.lineSpacing(font);
+    const auto spaceWidth = pdfData.stringWidth(font, " ", true);
 
     const auto isParagraphRightToLeft = isRightToLeft(item);
     const auto rightToLeft = (rtl && !rtl->isCheck() ? rtl->isRightToLeft() : isParagraphRightToLeft);
@@ -2490,7 +2353,7 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
     bool lineBreak = false;
     bool firstInParagraph = true;
 
-    PrevBaselineStateStack previous(lineHeight, pdfData.fontDescent(font, m_opts.m_textFontSize, scale));
+    PrevBaselineStateStack previous(lineHeight, pdfData.fontDescent(font));
 
     // Calculate words/lines/spaces widthes.
     for (auto it = item->items().begin(), last = item->items().end(); it != last; ++it) {
@@ -2527,8 +2390,6 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
                      doc,
                      newLine,
                      &footnoteFont,
-                     m_opts.m_textFontSize * scale,
-                     s_footnoteScale,
                      (it + 1 != last ? (it + 1)->get() : nullptr),
                      nextFootnoteNum,
                      offset,
@@ -2550,8 +2411,6 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
                       doc,
                       newLine,
                       &footnoteFont,
-                      m_opts.m_textFontSize * scale,
-                      s_footnoteScale,
                       (it + 1 != last ? (it + 1)->get() : nullptr),
                       nextFootnoteNum,
                       offset,
@@ -2586,8 +2445,6 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
                      doc,
                      newLine,
                      footnoteFont,
-                     m_opts.m_textFontSize * scale,
-                     s_footnoteScale,
                      (it != item->items().begin() ? std::prev(it)->get() : nullptr),
                      (std::next(it) != last ? std::next(it)->get() : nullptr),
                      nextFootnoteNum,
@@ -2685,8 +2542,6 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
                          doc,
                          newLine,
                          &footnoteFont,
-                         m_opts.m_textFontSize * scale,
-                         s_footnoteScale,
                          (it + 1 != last ? (it + 1)->get() : nullptr),
                          nextFootnoteNum,
                          offset,
@@ -2757,12 +2612,11 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
     if ((withNewLine && !pdfData.m_firstOnPage && heightCalcOpt == CalcHeightOpt::Unknown)
         || (withNewLine && pdfData.m_drawFootnotes && heightCalcOpt == CalcHeightOpt::Unknown)) {
         moveToNewLine(pdfData,
-                      offset,
                       lineHeight + cw.height(),
                       1.0,
                       (pdfData.m_drawFootnotes ? lineHeight + cw.height() : cw.height()));
     } else {
-        moveToNewLine(pdfData, offset, cw.height(), 1.0, cw.height());
+        moveToNewLine(pdfData, cw.height(), 1.0, cw.height());
     }
 
     alignLine(pdfData, cw);
@@ -2814,8 +2668,6 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
                                   doc,
                                   newLine,
                                   nullptr,
-                                  0.0,
-                                  1.0,
                                   nullptr,
                                   nextFootnoteNum,
                                   offset,
@@ -2837,8 +2689,6 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
                                    doc,
                                    newLine,
                                    &footnoteFont,
-                                   m_opts.m_textFontSize * scale,
-                                   s_footnoteScale,
                                    (it + 1 != last ? (it + 1)->get() : nullptr),
                                    nextFootnoteNum,
                                    offset,
@@ -2882,8 +2732,6 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
                                   doc,
                                   newLine,
                                   footnoteFont,
-                                  m_opts.m_textFontSize * scale,
-                                  s_footnoteScale,
                                   (it != item->items().begin() ? std::prev(it)->get() : nullptr),
                                   (std::next(it) != last ? std::next(it)->get() : nullptr),
                                   nextFootnoteNum,
@@ -2965,7 +2813,7 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
 
         case MD::ItemType::LineBreak: {
             lineBreak = true;
-            moveToNewLine(pdfData, offset, lineHeight, 1.0, lineHeight);
+            moveToNewLine(pdfData, lineHeight, 1.0, lineHeight);
             cw.moveToNextLine();
         } break;
 
@@ -2994,8 +2842,7 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
 
                 const auto str = createUtf8String(QString::number(num));
 
-                const auto w =
-                    pdfData.stringWidth(footnoteFont, m_opts.m_textFontSize * s_footnoteScale, scale, str, true);
+                const auto w = pdfData.stringWidth(footnoteFont, str, true);
 
                 const auto rect = pdfData.m_layout.currentRect(w, lineHeight);
 
@@ -3021,7 +2868,6 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
                                  pdfData.m_layout.y() - cw.descent() * 2.0,
                                  str,
                                  footnoteFont,
-                                 m_opts.m_textFontSize * s_footnoteScale * scale,
                                  1.0,
                                  false);
 
@@ -3038,8 +2884,6 @@ PdfRenderer::drawParagraph(PdfAuxData &pdfData,
                                       doc,
                                       newLine,
                                       nullptr,
-                                      0.0,
-                                      1.0,
                                       nullptr,
                                       nextFootnoteNum,
                                       offset,
@@ -3089,8 +2933,8 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
 
     float fontSize = (float)m_opts.m_textFontSize;
 
-    auto font = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, scale, pdfData);
-    const auto lineHeight = pdfData.lineSpacing(font, m_opts.m_textFontSize, scale);
+    auto font = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize * scale, pdfData);
+    const auto lineHeight = pdfData.lineSpacing(font);
 
     const auto latexRender = [&fontSize, &item](double inlineScale) -> std::unique_ptr<tex::TeXRender> {
         return std::unique_ptr<tex::TeXRender>(
@@ -3141,7 +2985,7 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
         }
 
         if (!firstInParagraph) {
-            moveToNewLine(pdfData, 0.0, lineHeight, 1.0, 0.0);
+            moveToNewLine(pdfData, lineHeight, 1.0, 0.0);
         }
 
         pdfData.m_layout.moveXToBegin();
@@ -3221,7 +3065,7 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
             cw.moveToNextLine();
 
             if (isNextText) {
-                moveToNewLine(pdfData, offset, lineHeight + cw.height(), 1.0, cw.height());
+                moveToNewLine(pdfData, lineHeight + cw.height(), 1.0, cw.height());
             }
 
             return {r, idx};
@@ -3247,7 +3091,7 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
             if (draw) {
                 cw.moveToNextLine();
 
-                moveToNewLine(pdfData, offset, cw.height(), 1.0, cw.height());
+                moveToNewLine(pdfData, cw.height(), 1.0, cw.height());
             } else {
                 cw.append({0.0, 0.0, false, true, true});
                 pdfData.m_layout.moveXToBegin();
@@ -3255,9 +3099,10 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
         } else {
             auto addSpace = [&]() {
                 const auto spaceScale = draw ? (cw.scale() / 100.0) : 1.0;
-                const auto spaceWidth =
-                    pdfData.stringWidth(font, m_opts.m_textFontSize * previousBaseline.currentScale(), scale, " ", true)
-                    * spaceScale;
+                auto sf = font;
+                sf.setSize(m_opts.m_textFontSize * previousBaseline.currentScale() * scale);
+
+                const auto spaceWidth = pdfData.stringWidth(sf, " ", true) * spaceScale;
 
                 if (pdfData.m_layout.isFit(spaceWidth)) {
                     if (draw) {
@@ -3265,8 +3110,7 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
                             pdfData.m_layout.startX(spaceWidth),
                             pdfData.m_layout.y() - cw.descent() - previousBaseline.m_stack.back().m_baselineDelta,
                             " ",
-                            font,
-                            m_opts.m_textFontSize,
+                            sf,
                             spaceScale,
                             false);
                     } else {
@@ -3278,7 +3122,7 @@ PdfRenderer::drawMathExpr(PdfAuxData &pdfData,
                                    false,
                                    true,
                                    " ",
-                                   pdfData.fontDescent(font, m_opts.m_textFontSize, spaceScale) + lineInfo.second});
+                                   pdfData.fontDescent(sf) + lineInfo.second});
                     }
 
                     pdfData.m_layout.addX(spaceWidth);
@@ -3460,17 +3304,13 @@ QVector<WhereDrawn> PdfRenderer::drawFootnote(PdfAuxData &pdfData,
 
     static const double c_offset = 2.0;
 
-    auto font = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, s_footnoteScale, pdfData);
+    auto font = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize * s_footnoteScale, pdfData);
 
     auto footnoteOffset = c_offset * 2.0 / s_mmInPt
-        + pdfData.stringWidth(font,
-                              m_opts.m_textFontSize,
-                              s_footnoteScale,
-                              createUtf8String(QString::number(doc->footnotesMap().size())),
-                              true);
+        + pdfData.stringWidth(font, createUtf8String(QString::number(doc->footnotesMap().size())), true);
 
     if (lineHeight) {
-        *lineHeight = pdfData.lineSpacing(font, m_opts.m_textFontSize, s_footnoteScale);
+        *lineHeight = pdfData.lineSpacing(font);
     }
 
     bool first = true;
@@ -3618,27 +3458,23 @@ QVector<WhereDrawn> PdfRenderer::drawFootnote(PdfAuxData &pdfData,
         // Draw footnote number.
         if (it == note->items().cbegin() && heightCalcOpt == CalcHeightOpt::Unknown) {
             const auto str = createUtf8String(QString::number(pdfData.m_currentFootnote));
-            const auto w = pdfData.stringWidth(font, m_opts.m_textFontSize, s_footnoteScale, str, true);
+            const auto w = pdfData.stringWidth(font, str, true);
             const auto y = ret.constFirst().m_y
                 - ret.constFirst().m_height
-                + pdfData.lineSpacing(font, m_opts.m_textFontSize, s_footnoteScale)
-                - pdfData.fontDescent(font, m_opts.m_textFontSize, s_footnoteScale);
+                + pdfData.lineSpacing(font)
+                - pdfData.fontDescent(font);
             const auto x = pdfData.m_layout.borderStartX()
                 + pdfData.m_layout.xIncrementDirection()
                     * (footnoteOffset - c_offset - (pdfData.m_layout.isRightToLeft() ? 0.0 : w));
             const auto p = ret.constFirst().m_pageIdx;
 
-            SkPoint targetPoint =
-                SkPoint::Make(x,
-                              y
-                                  - pdfData.lineSpacing(font, m_opts.m_textFontSize, s_footnoteScale)
-                                  + pdfData.fontDescent(font, m_opts.m_textFontSize, s_footnoteScale));
+            SkPoint targetPoint = SkPoint::Make(x, y - pdfData.lineSpacing(font) + pdfData.fontDescent(font));
             sk_sp<SkData> pageName(SkData::MakeWithCString(footnoteRefId.toUtf8().data()));
             SkAnnotateNamedDestination((*pdfData.m_pages)[p].m_canvas, targetPoint, pageName.get());
 
             pdfData.m_currentPainterIdx = p;
 
-            pdfData.drawText(x, y, str, font, m_opts.m_textFontSize * s_footnoteScale, 1.0, false);
+            pdfData.drawText(x, y, str, font, 1.0, false);
 
             pdfData.m_currentPainterIdx = pdfData.m_footnotePageIdx;
 
@@ -3950,7 +3786,7 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
             }
 
             if (draw) {
-                moveToNewLine(pdfData, offset, (onLine ? cw.height() : lineHeight), 1.0, lineHeight);
+                moveToNewLine(pdfData, (onLine ? cw.height() : lineHeight), 1.0, lineHeight);
             } else {
                 pdfData.m_layout.moveXToBegin();
             }
@@ -3998,7 +3834,7 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
         imgScale *= scale * previousBaseline.currentScale();
 
         RectF r;
-        auto font = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, scale, pdfData);
+        auto font = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize * scale, pdfData);
 
         if (draw) {
             if (!onLine) {
@@ -4030,7 +3866,7 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
                 pdfData.m_layout.addX(spaceWidth);
             }
 
-            height += iHeight * imgScale + (onLine ? pdfData.fontDescent(font, m_opts.m_textFontSize, scale) : 0.0);
+            height += iHeight * imgScale + (onLine ? pdfData.fontDescent(font) : 0.0);
         }
 
         if (onLine) {
@@ -4048,7 +3884,7 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
         }
 
         if (draw && !onLine && !lastInParagraph && isNextTextOrOnlineImage) {
-            moveToNewLine(pdfData, offset, lineHeight + cw.height(), 1.0, cw.height());
+            moveToNewLine(pdfData, lineHeight + cw.height(), 1.0, cw.height());
         }
 
         const auto lineInfo = previousBaseline.fullLineHeight();
@@ -4060,8 +3896,7 @@ PdfRenderer::drawImage(PdfAuxData &pdfData,
                        !onLine,
                        false,
                        "",
-                       (onLine ? pdfData.fontDescent(font, m_opts.m_textFontSize, scale) : 0.0)
-                           + (subSupInit.wasAdded() ? lineInfo.second : 0.0),
+                       (onLine ? pdfData.fontDescent(font) : 0.0) + (subSupInit.wasAdded() ? lineInfo.second : 0.0),
                        (!onLine ? imageToParagraphAlignment(alignment) : ParagraphAlignment::Unknown)});
         }
 
@@ -4235,13 +4070,13 @@ PdfRenderer::drawCode(PdfAuxData &pdfData,
         Q_EMIT status(tr("Drawing code."));
     }
 
-    auto textFont = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, scale, pdfData);
+    auto textFont = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize * scale, pdfData);
 
-    const auto textLHeight = pdfData.lineSpacing(textFont, m_opts.m_textFontSize, scale);
+    const auto textLHeight = pdfData.lineSpacing(textFont);
 
-    auto font = createFont(m_opts.m_codeFont, false, false, m_opts.m_codeFontSize, scale, pdfData);
+    auto font = createFont(m_opts.m_codeFont, false, false, m_opts.m_codeFontSize * scale, pdfData);
 
-    const auto lineHeight = pdfData.lineSpacing(font, m_opts.m_codeFontSize, scale);
+    const auto lineHeight = pdfData.lineSpacing(font);
 
     QStringList lines;
 
@@ -4258,16 +4093,14 @@ PdfRenderer::drawCode(PdfAuxData &pdfData,
         }
 
         pdfData.m_layout.moveXToBegin();
-    }
-        break;
+    } break;
 
     case CalcHeightOpt::Minimum: {
         QVector<WhereDrawn> r;
         r.append({-1, 0.0, lineHeight, (pdfData.m_firstOnPage ? 0.0 : textLHeight)});
 
         return {r, {}};
-    }
-        break;
+    } break;
 
     default:
         break;
@@ -4309,7 +4142,7 @@ PdfRenderer::drawCode(PdfAuxData &pdfData,
         } else {
             auto y = pdfData.m_layout.y();
 
-            moveToNewLine(pdfData, 0.0, lineHeight, 1.0, lineHeight);
+            moveToNewLine(pdfData, lineHeight, 1.0, lineHeight);
 
             if (pdfData.m_firstOnPage) {
                 y = pdfData.m_layout.margins().m_top;
@@ -4345,7 +4178,7 @@ PdfRenderer::drawCode(PdfAuxData &pdfData,
             const auto bold = colored[currentWord].format.isBold(m_opts.m_syntax->theme());
 
             if (italic || bold) {
-                f = createFont(m_opts.m_codeFont, bold, italic, m_opts.m_codeFontSize, scale, pdfData);
+                f = createFont(m_opts.m_codeFont, bold, italic, m_opts.m_codeFontSize * scale, pdfData);
             }
 
             auto word = lines.at(i).mid(colored[currentWord].startPos, length);
@@ -4379,11 +4212,7 @@ PdfRenderer::drawCode(PdfAuxData &pdfData,
                 }
 
                 SkFont drawFont(typeface, m_opts.m_codeFontSize * scale);
-                const auto width = pdfData.stringWidth(drawFont,
-                                                       m_opts.m_codeFontSize,
-                                                       scale,
-                                                       utf8Grapheme,
-                                                       !word.isRightToLeft());
+                const auto width = pdfData.stringWidth(drawFont, utf8Grapheme, !word.isRightToLeft());
 
                 if (!pdfData.m_layout.isFit(width)) {
                     drawBackground();
@@ -4392,10 +4221,8 @@ PdfRenderer::drawCode(PdfAuxData &pdfData,
                 if (heightCalcOpt != CalcHeightOpt::Full) {
                     drawTextBlobOrText(pdfData,
                                        drawFont,
-                                       m_opts.m_codeFontSize,
-                                       scale,
                                        utf8Grapheme,
-                                       pdfData.fontDescent(drawFont, m_opts.m_codeFontSize, scale),
+                                       pdfData.fontDescent(drawFont),
                                        0.0,
                                        word.isRightToLeft(),
                                        width,
@@ -4730,13 +4557,13 @@ PdfRenderer::drawListItem(PdfAuxData &pdfData,
     pdfData.m_endLine = item->endLine();
     pdfData.m_endPos = item->endColumn();
 
-    auto font = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, scale, pdfData);
+    auto font = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize * scale, pdfData);
 
-    const auto lineHeight = pdfData.lineSpacing(font, m_opts.m_textFontSize, scale);
-    const auto spaceWidth = pdfData.stringWidth(font, m_opts.m_textFontSize, scale, " ", true);
+    const auto lineHeight = pdfData.lineSpacing(font);
+    const auto spaceWidth = pdfData.stringWidth(font, " ", true);
     const auto checkboxWidth = lineHeight * 0.75;
-    const auto orderedListNumberWidth = pdfData.stringWidth(font, m_opts.m_textFontSize, scale, "9", true) * bulletWidth
-        + pdfData.stringWidth(font, m_opts.m_textFontSize, scale, ".", true);
+    const auto orderedListNumberWidth =
+        pdfData.stringWidth(font, "9", true) * bulletWidth + pdfData.stringWidth(font, ".", true);
     const auto unorderedMarkWidth = lineHeight * 0.25;
 
     if (heightCalcOpt == CalcHeightOpt::Unknown) {
@@ -4877,7 +4704,7 @@ PdfRenderer::drawListItem(PdfAuxData &pdfData,
         ret.append({pdfData.m_currentPainterIdx, pdfData.m_layout.y(), lineHeight});
 
         if (heightCalcOpt != CalcHeightOpt::Full) {
-            moveToNewLine(pdfData, offset, lineHeight, 1.0, lineHeight);
+            moveToNewLine(pdfData, lineHeight, 1.0, lineHeight);
         }
     }
 
@@ -4936,20 +4763,15 @@ PdfRenderer::drawListItem(PdfAuxData &pdfData,
                 }
 
                 const auto str = createUtf8String(idxText);
-                const auto w = pdfData.stringWidth(font,
-                                                   m_opts.m_textFontSize * scale,
-                                                   1.0,
-                                                   str,
-                                                   !pdfData.m_layout.isRightToLeft());
+                const auto w = pdfData.stringWidth(font, str, !pdfData.m_layout.isRightToLeft());
 
                 pdfData.drawText(pdfData.m_layout.borderStartX()
                                      + pdfData.m_layout.xIncrementDirection()
                                          * (offset - (orderedListNumberWidth + spaceWidth))
                                      - (pdfData.m_layout.isRightToLeft() ? w : 0.0),
-                                 firstLine.m_y - pdfData.fontDescent(font, m_opts.m_textFontSize, scale),
+                                 firstLine.m_y - pdfData.fontDescent(font),
                                  createUtf8String(idxText),
                                  font,
-                                 m_opts.m_textFontSize * scale,
                                  1.0,
                                  false);
             } else {
@@ -5076,8 +4898,8 @@ PdfRenderer::drawTable(PdfAuxData &pdfData,
         Q_EMIT status(tr("Drawing table."));
     }
 
-    auto font = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize, scale, pdfData);
-    const auto lineHeight = pdfData.lineSpacing(font, m_opts.m_textFontSize, scale);
+    auto font = createFont(m_opts.m_textFont, false, false, m_opts.m_textFontSize * scale, pdfData);
+    const auto lineHeight = pdfData.lineSpacing(font);
     const auto columnWidth =
         (pdfData.m_layout.pageWidth() - pdfData.m_layout.margins().m_left - pdfData.m_layout.margins().m_right - offset)
             / (double)item->rows().at(0)->cells().size()
@@ -5119,7 +4941,7 @@ PdfRenderer::drawTable(PdfAuxData &pdfData,
     }
 
     if (!pdfData.m_firstOnPage) {
-        moveToNewLine(pdfData, offset, lineHeight, 1.0, 0.0);
+        moveToNewLine(pdfData, lineHeight, 1.0, 0.0);
     }
 
     const auto rightToLeft = isRightToLeft(item->rows().at(0)->cells().at(0).get());

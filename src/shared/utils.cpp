@@ -314,11 +314,9 @@ QVector<Word> splitString(const QString &str,
     const auto uint16 = reinterpret_cast<const uint16_t *>(str.utf16());
     const auto char16 = reinterpret_cast<const char16_t *>(str.utf16());
 
-    auto bidiIter = unicode->makeBidiIterator(
-        uint16,
-        str.size(),
-        rtl ? SkBidiIterator::Direction::kRTL : SkBidiIterator::Direction::kLTR
-    );
+    auto bidiIter = unicode->makeBidiIterator(uint16,
+                                              str.size(),
+                                              rtl ? SkBidiIterator::Direction::kRTL : SkBidiIterator::Direction::kLTR);
 
     if (!bidiIter) {
         return res;

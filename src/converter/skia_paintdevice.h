@@ -107,9 +107,7 @@ public:
     void updateState(const QPaintEngineState &state) override;
 
 private:
-    QPair<SkFont,
-          double>
-    qFontToSkia(const QFont &f);
+    SkFont qFontToSkia(const QFont &f);
 
 private:
     Q_DISABLE_COPY(SkiaPaintEngine)

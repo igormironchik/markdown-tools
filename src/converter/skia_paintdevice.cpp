@@ -351,7 +351,7 @@ void SkiaPaintEngine::drawTextItem(const QPointF &p,
 
         pdfPainter()->save();
         pdfPainter()->setMatrix(d->m_transform);
-        d->m_pdfData.drawText(p.x(), p.y(), utf8.constData(), f.first, f.second, 1.0, false);
+        d->m_pdfData.drawText(p.x(), p.y(), utf8.constData(), f, 1.0, false);
         pdfPainter()->restore();
     }
 }
@@ -407,9 +407,7 @@ inline SkColor color(const QColor &c)
     return SkColorSetRGB(c.red(), c.green(), c.blue());
 }
 
-QPair<SkFont,
-      double>
-SkiaPaintEngine::qFontToSkia(const QFont &f)
+SkFont SkiaPaintEngine::qFontToSkia(const QFont &f)
 {
     auto id = tex::FontInfo::__id(f.family().toStdString());
 
@@ -443,16 +441,14 @@ SkiaPaintEngine::qFontToSkia(const QFont &f)
 
         const auto fileName = d->m_pdfData.m_fontsCache[path]->fileName();
 
-        return {SkFont(d->m_pdfData.m_fontMgr->makeFromFile(fileName.toLocal8Bit().constData()), f.pointSize()),
-                f.pointSize()};
+        return SkFont(d->m_pdfData.m_fontMgr->makeFromFile(fileName.toLocal8Bit().constData()), f.pointSize());
     } else {
         SkFontStyle::Slant slant = f.italic() ? SkFontStyle::kItalic_Slant : SkFontStyle::kUpright_Slant;
         int weight = f.bold() ? SkFontStyle::kBold_Weight : SkFontStyle::kNormal_Weight;
 
         SkFontStyle style(weight, SkFontStyle::kNormal_Width, slant);
 
-        return {SkFont(d->m_pdfData.m_fontMgr->matchFamilyStyle(f.family().toLocal8Bit().data(), style), f.pointSize()),
-                f.pointSize()};
+        return SkFont(d->m_pdfData.m_fontMgr->matchFamilyStyle(f.family().toLocal8Bit().data(), style), f.pointSize());
     }
 }
 

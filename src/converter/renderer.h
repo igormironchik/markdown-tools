@@ -93,7 +93,6 @@ private:
                     bool bold,
                     bool italic,
                     double size,
-                    double scale,
                     PdfAuxData &pdfData);
 
     //! Create new page.
@@ -103,8 +102,6 @@ private:
     void moveToNewLine(
         //! Auxiliary PDF data.
         PdfAuxData &pdfData,
-        //! Not used now.
-        double xOffset,
         //! Offset for Y coordinate.
         double yOffset,
         //! Multiplier for Y coordinate. Real offset will be yOffset * yOffsetMultiplier.
@@ -299,8 +296,6 @@ private:
              QSharedPointer<MD::Document> doc,
              bool &newLine,
              const Font *footnoteFont,
-             double footnoteFontSize,
-             double footnoteFontScale,
              MD::Item *nextItem,
              int footnoteNum,
              double offset,
@@ -318,8 +313,6 @@ private:
               QSharedPointer<MD::Document> doc,
               bool &newLine,
               const Font *footnoteFont,
-              double footnoteFontSize,
-              double footnoteFontScale,
               MD::Item *nextItem,
               int footnoteNum,
               double offset,
@@ -348,17 +341,13 @@ private:
                             const QVector<Word> &words,
                             qsizetype idx,
                             qsizetype last,
-                            double width,
-                            double fontSize,
-                            double fontScale);
+                            double width);
 
     //! Draw a word.
     qsizetype drawWord(PdfAuxData &pdfData,
                        const QVector<Word> &words,
                        qsizetype idx,
                        qsizetype last,
-                       double fontSize,
-                       double fontScale,
                        bool &newLine,
                        bool draw,
                        const QColor &background,
@@ -381,16 +370,10 @@ private:
                    bool useRegularSpace,
                    bool &firstSpaceDrawn,
                    const Font &spaceFont,
-                   double spaceFontSize,
-                   double spaceFontScale,
                    const Font &font,
-                   double fontSize,
-                   double fontScale,
                    CustomWidth &cw,
                    bool draw,
                    const Font *regularSpaceFont,
-                   double regularSpaceFontSize,
-                   double regularSpaceFontScale,
                    double spaceWidth,
                    bool &newLine,
                    QVector<QPair<RectF,
@@ -406,17 +389,11 @@ private:
     drawString(PdfAuxData &pdfData,
                const QString &str,
                const Font &spaceFont,
-               double spaceFontSize,
-               double spaceFontScale,
                const Font &font,
-               double fontSize,
-               double fontScale,
                double lineHeight,
                QSharedPointer<MD::Document> doc,
                bool &newLine,
                const Font *footnoteFont,
-               double footnoteFontSize,
-               double footnoteFontScale,
                MD::Item *nextItem,
                int footnoteNum,
                double offset,
@@ -431,14 +408,10 @@ private:
                PrevBaselineStateStack &currentBaseline,
                const QColor &color = Qt::black,
                const Font *regularSpaceFont = nullptr,
-               double regularSpaceFontSize = 0.0,
-               double regularSpaceFontScale = 0.0,
                RTLFlag *rtl = nullptr);
     //! Draw blob or simple text.
     void drawTextBlobOrText(PdfAuxData &pdfData,
                             const Font &font,
-                            double fontSize,
-                            double fontScale,
                             const Utf8String &str,
                             double descent,
                             double baselineDelta,
@@ -453,8 +426,6 @@ private:
              QSharedPointer<MD::Document> doc,
              bool &newLine,
              const Font &footnoteFont,
-             double footnoteFontSize,
-             double footnoteFontScale,
              MD::Item *prevItem,
              MD::Item *nextItem,
              int footnoteNum,
