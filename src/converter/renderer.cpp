@@ -1486,7 +1486,10 @@ qsizetype PdfRenderer::drawWord(PdfAuxData &pdfData,
                 pdfData.restoreColor();
 
                 ret.append(
-                    qMakePair(pdfData.m_layout.currentRect(w, lineHeight, currentBaseline.currentBaselineDelta()),
+                    qMakePair(pdfData.m_layout.currentRect(
+                                  w,
+                                  lineHeight,
+                                  cw.descent() + currentBaseline.currentBaselineDelta() - pdfData.fontDescent(font)),
                               pdfData.m_currentPainterIdx));
             } else {
                 const auto lineInfo = currentBaseline.fullLineHeight();
@@ -1559,9 +1562,12 @@ qsizetype PdfRenderer::drawWord(PdfAuxData &pdfData,
 
             pdfData.restoreColor();
 
-            ret.append(
-                qMakePair(pdfData.m_layout.currentRect(length, lineHeight, currentBaseline.currentBaselineDelta()),
-                          pdfData.m_currentPainterIdx));
+            ret.append(qMakePair(pdfData.m_layout.currentRect(length,
+                                                              lineHeight,
+                                                              cw.descent()
+                                                                  + currentBaseline.currentBaselineDelta()
+                                                                  - pdfData.fontDescent(*word.m_font)),
+                                 pdfData.m_currentPainterIdx));
         } else {
             const auto lineInfo = currentBaseline.fullLineHeight();
 
@@ -1643,10 +1649,6 @@ void PdfRenderer::drawSpace(PdfAuxData &pdfData,
         newLine = false;
 
         if (draw) {
-            ret.append(
-                qMakePair(pdfData.m_layout.currentRect(width, lineHeight, currentBaseline.currentBaselineDelta()),
-                          pdfData.m_currentPainterIdx));
-
             if (background.isValid() && !useRegularSpace) {
                 pdfData.setColor(background);
                 pdfData.drawRectangle(pdfData.m_layout.startX(width),
@@ -1661,13 +1663,18 @@ void PdfRenderer::drawSpace(PdfAuxData &pdfData,
             }
 
             Font font = (useRegularSpace && regularSpaceFont ? *regularSpaceFont : spaceFont);
-            const auto size = (useRegularSpace && regularSpaceFont ? regularSpaceFont->getSize() : spaceFont.getSize());
             pdfData.drawText(pdfData.m_layout.startX(width),
                              pdfData.m_layout.y() - cw.descent() - currentBaseline.currentBaselineDelta(),
                              " ",
                              font,
                              scale / 100.0,
                              strikeout);
+
+            ret.append(qMakePair(pdfData.m_layout.currentRect(
+                                     width,
+                                     lineHeight,
+                                     cw.descent() + currentBaseline.currentBaselineDelta() - pdfData.fontDescent(font)),
+                                 pdfData.m_currentPainterIdx));
         } else {
             const auto lineInfo = currentBaseline.fullLineHeight();
 

@@ -334,9 +334,9 @@ double LayoutDirectionHandler::xIncrementDirection() const
 }
 RectF LayoutDirectionHandler::currentRect(double width,
                                           double height,
-                                          double baseline) const
+                                          double bottomYDelta) const
 {
-    return RectF(startX(width), y(), width, height);
+    return RectF(startX(width), y() - bottomYDelta, width, height);
 }
 double LayoutDirectionHandler::startX(double width) const
 {

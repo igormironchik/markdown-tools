@@ -278,7 +278,7 @@ struct LayoutDirectionHandler {
     double xIncrementDirection() const;
     RectF currentRect(double width,
                       double height,
-                      double baseline = 0.0) const;
+                      double bottomYDelta = 0.0) const;
     double startX(double width) const;
     double availableWidth() const;
 
