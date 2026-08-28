@@ -76,6 +76,7 @@ if(KF${KF_MAJOR_VERSION}IconThemes_FOUND AND KF${KF_MAJOR_VERSION}ColorScheme_FO
 endif()
 
 configure_file(version.h.in ${CMAKE_CURRENT_BINARY_DIR}/version.h)
+configure_file(version.number.in ${CMAKE_CURRENT_BINARY_DIR}/version.number)
 
 target_link_libraries(markdown-widgets
     KF${KF_MAJOR_VERSION}::SyntaxHighlighting

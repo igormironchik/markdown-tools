@@ -1,5 +1,7 @@
 echo "Installing Qt Installer Framework..."
 
+set /P app_version=<%CD%\..\builds\build-markdown-tools\src\shared\version.number
+
 IF EXIST "..\Qt\Tools\QtInstallerFramework" (
    echo "Qt Installer Framework is installed already. Skipping."
 ) ELSE (
@@ -12,7 +14,7 @@ IF EXIST "..\Qt\Tools\QtInstallerFramework" (
 
 echo "Creating installer..."
 
-..\Qt\Tools\QtInstallerFramework\4.7\bin\binarycreator.exe -c installer\config\config.xml -p installer\packages Markdown_Windows_x64.Installer.exe
+..\Qt\Tools\QtInstallerFramework\4.7\bin\binarycreator.exe -c installer\config\config.xml -p installer\packages Markdown_Windows_x64.Installer.%app_version%.exe
 
 IF %ERRORLEVEL% NEQ 0 (
 	exit /B %ERRORLEVEL%
