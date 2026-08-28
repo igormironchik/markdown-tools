@@ -1478,7 +1478,7 @@ qsizetype PdfRenderer::drawWord(PdfAuxData &pdfData,
                                    font,
                                    createUtf8String(tmp),
                                    cw.descent(),
-                                   currentBaseline.m_stack.back().m_baselineDelta,
+                                   currentBaseline.currentBaselineDelta(),
                                    rtl,
                                    w,
                                    strikeout);
@@ -1537,7 +1537,7 @@ qsizetype PdfRenderer::drawWord(PdfAuxData &pdfData,
                 pdfData.drawRectangle(pdfData.m_layout.startX(length),
                                       pdfData.m_layout.y()
                                           - cw.descent()
-                                          - currentBaseline.m_stack.back().m_baselineDelta
+                                          - currentBaseline.currentBaselineDelta()
                                           + pdfData.fontAscent(*word.m_font)
                                               * pdfData.fontBackgroundBoxScale(*word.m_font),
                                       length,
@@ -1552,7 +1552,7 @@ qsizetype PdfRenderer::drawWord(PdfAuxData &pdfData,
                                *word.m_font,
                                str,
                                cw.descent(),
-                               currentBaseline.m_stack.back().m_baselineDelta,
+                               currentBaseline.currentBaselineDelta(),
                                word.m_rtl,
                                length,
                                strikeout);
@@ -1652,7 +1652,7 @@ void PdfRenderer::drawSpace(PdfAuxData &pdfData,
                 pdfData.drawRectangle(pdfData.m_layout.startX(width),
                                       pdfData.m_layout.y()
                                           - cw.descent()
-                                          - currentBaseline.m_stack.back().m_baselineDelta
+                                          - currentBaseline.currentBaselineDelta()
                                           + pdfData.fontAscent(font) * pdfData.fontBackgroundBoxScale(font),
                                       width,
                                       pdfData.lineSpacing(font) * pdfData.fontBackgroundBoxScale(font),
@@ -1663,7 +1663,7 @@ void PdfRenderer::drawSpace(PdfAuxData &pdfData,
             Font font = (useRegularSpace && regularSpaceFont ? *regularSpaceFont : spaceFont);
             const auto size = (useRegularSpace && regularSpaceFont ? regularSpaceFont->getSize() : spaceFont.getSize());
             pdfData.drawText(pdfData.m_layout.startX(width),
-                             pdfData.m_layout.y() - cw.descent() - currentBaseline.m_stack.back().m_baselineDelta,
+                             pdfData.m_layout.y() - cw.descent() - currentBaseline.currentBaselineDelta(),
                              " ",
                              font,
                              scale / 100.0,
