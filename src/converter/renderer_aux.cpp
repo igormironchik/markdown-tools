@@ -440,7 +440,8 @@ void PdfAuxData::freeSpaceOn(int page)
 }
 
 void PdfAuxData::drawBlob(double x,
-                          const sk_sp<SkTextBlob> &blob)
+                          const sk_sp<SkTextBlob> &blob,
+                          bool strikeout)
 {
     m_firstOnPage = false;
 
@@ -471,6 +472,44 @@ void PdfAuxData::drawBlob(double x,
         QCOMPARE(blob->bounds().height(), m_testData.at(pos).m_height);
     }
 #endif // MD_PDF_TESTING
+
+#ifndef MD_PDF_TESTING
+    if (strikeout) {
+#else
+    if (strikeout && !m_printDrawings) {
+#endif
+        SkTextBlob::Iter::ExperimentalRun run;
+        SkTextBlob::Iter it(*blob.get());
+
+        while (it.experimentalNext(&run)) {
+            SkFontMetrics metrics;
+            run.font.getMetrics(&metrics);
+
+            SkScalar strikeoutPosition;
+            SkScalar strikeoutThickness;
+
+            if (!metrics.hasStrikeoutPosition(&strikeoutPosition)) {
+                strikeoutPosition = metrics.fXHeight / -2.0f;
+            }
+
+            if (!metrics.hasStrikeoutThickness(&strikeoutThickness)) {
+                strikeoutThickness = run.font.getSize() / 14.0f;
+            }
+
+            SkPaint linePaint = paint;
+            linePaint.setStyle(SkPaint::kStroke_Style);
+            linePaint.setStrokeWidth(strikeoutThickness);
+
+            for (int i = 0; i < run.count; ++i) {
+                (*m_pages)[m_currentPainterIdx].m_canvas->drawLine(
+                    x + run.positions[i].x(),
+                    run.positions[i].y() + strikeoutPosition,
+                    x + run.positions[i].x() + run.font.getWidth(run.glyphs[i]),
+                    run.positions[i].y() + strikeoutPosition,
+                    linePaint);
+            }
+        }
+    }
 }
 
 void PdfAuxData::drawText(double x,
