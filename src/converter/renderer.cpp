@@ -567,16 +567,6 @@ Font PdfRenderer::createFont(const QString &name,
     return SkFont(typeface, size);
 }
 
-namespace /* anonymous */
-{
-
-inline bool isGoodWidth(double w)
-{
-    return (!std::isinf(w) && !std::isnan(w) && w > 0.0);
-}
-
-} /* namespace anonymous */
-
 void PdfRenderer::createPage(PdfAuxData &pdfData)
 {
     std::function<void(PdfAuxData &)> create;
