@@ -1620,6 +1620,7 @@ void PdfRenderer::drawSpace(PdfAuxData &pdfData,
                                           unsigned int>> &ret,
                             double lineHeight,
                             PrevBaselineStateStack &currentBaseline,
+                            const QColor &color,
                             const QColor &background,
                             bool strikeout)
 {
@@ -1653,12 +1654,17 @@ void PdfRenderer::drawSpace(PdfAuxData &pdfData,
             }
 
             Font font = (useRegularSpace && regularSpaceFont ? *regularSpaceFont : spaceFont);
+
+            pdfData.setColor(color);
+
             pdfData.drawText(pdfData.m_layout.startX(width),
                              pdfData.m_layout.y() - cw.descent() - currentBaseline.currentBaselineDelta(),
                              " ",
                              font,
                              scale / 100.0,
                              strikeout);
+
+            pdfData.restoreColor();
 
             ret.append(qMakePair(pdfData.m_layout.currentRect(
                                      width,
@@ -1886,6 +1892,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                           ret,
                           lineHeight,
                           currentBaseline,
+                          color,
                           background,
                           strikeout);
             }
@@ -1904,6 +1911,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                           ret,
                           lineHeight,
                           currentBaseline,
+                          color,
                           background,
                           strikeout);
                 --i;
@@ -1966,6 +1974,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                                       tmpRet,
                                       lineHeight,
                                       tmpCurrentBaseline,
+                                      color,
                                       background,
                                       strikeout);
                         }
@@ -1984,6 +1993,7 @@ PdfRenderer::drawString(PdfAuxData &pdfData,
                                       tmpRet,
                                       lineHeight,
                                       tmpCurrentBaseline,
+                                      color,
                                       background,
                                       strikeout);
                             --j;

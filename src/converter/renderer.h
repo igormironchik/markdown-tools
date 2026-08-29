@@ -380,6 +380,7 @@ private:
                                  unsigned int>> &ret,
                    double lineHeight,
                    PrevBaselineStateStack &currentBaseline,
+                   const QColor &color,
                    const QColor &background,
                    bool strikeout);
 
