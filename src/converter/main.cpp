@@ -26,8 +26,6 @@
 #include <KColorSchemeManager>
 #endif
 
-using namespace MdPdf;
-
 int main(int argc,
          char **argv)
 {
@@ -74,7 +72,7 @@ int main(int argc,
         }
     }
 
-    MainWindow w;
+    MdPdf::MainWindow w;
     w.show();
 
     if (!fileName.isEmpty()) {

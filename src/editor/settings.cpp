@@ -47,7 +47,7 @@ bool operator!=(const Settings &s1,
 //
 
 SettingsDlg::SettingsDlg(const Settings &s,
-                         QSharedPointer<MdShared::Syntax> syntax,
+                         QSharedPointer<MdPdf::Syntax> syntax,
                          QWidget *parent)
     : MdShared::DlgWheelFilter(parent)
     , m_editorPage(new EditorSettingsPage(this))

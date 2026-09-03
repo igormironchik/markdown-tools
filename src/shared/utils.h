@@ -15,9 +15,6 @@
 // shared include.
 #include "plugins_page.h"
 
-// Skia include.
-#include <modules/skunicode/include/SkUnicode.h>
-
 //! Init theme.
 void initTheme(QApplication &app);
 
@@ -30,66 +27,6 @@ void applyTheme(const QString &name,
 
 //! Init shared resources, like *.qrc.
 void initSharedResources();
-
-//! \return Is a given character RTL one?
-bool isRightToLeft(const QChar &ch);
-
-class SkFont;
-
-//! Aux struct for splitted words.
-struct Word {
-    Word() = default;
-    Word(const QString &word,
-         bool rtl,
-         bool onNewLine,
-         const SkFont *font);
-
-    QString m_word;
-    bool m_rtl = false;
-    bool m_onNewLine = false;
-    const SkFont *m_font = nullptr;
-}; // struct Word
-
-struct Utf8String {
-    QByteArray data;
-
-    Utf8String(const QByteArray &a);
-    Utf8String(const char *s);
-
-    operator const char *() const;
-    operator std::string_view() const;
-}; // struct Utf8String
-
-inline Utf8String createUtf8String(const QString &text)
-{
-    return {text.toUtf8()};
-}
-
-/*!
- * \brief Split string by spaces.
- * \param str String.
- * \param skipSpaces If false in returned vector will be spaces too.
- * \return Vector of words with flag indicates RTL.
- */
-QVector<Word> splitString(const QString &str,
-                          bool skipSpaces,
-                          sk_sp<SkUnicode> unicode,
-                          bool rtl);
-
-//! \return Whether the given symbol is a DirCS.
-inline bool isSeparator(const QChar &ch)
-{
-    return (ch.direction() == QChar::DirCS);
-}
-
-//! Order words for painting with Qt with RTL, LTR rules.
-void orderWords(QVector<Word> &text,
-                bool rtl);
-
-//! Set plugins to parser.
-void setPlugins(MD::Parser &parser,
-                const MdShared::PluginsCfg &cfg,
-                bool enableEmoji = false);
 
 //! Check whether English language is presented in list of languages.
 bool hasEnglish(const QStringList &langs);

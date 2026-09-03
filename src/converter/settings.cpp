@@ -6,6 +6,9 @@
 // md-pdf include.
 #include "settings.h"
 
+// md-pdf-lib include.
+#include <md-pdf-lib/src/utils.h>
+
 namespace MdPdf
 {
 
@@ -13,7 +16,7 @@ namespace MdPdf
 // SettingsDlg
 //
 
-SettingsDlg::SettingsDlg(const MdShared::PluginsCfg &pluginsCfg,
+SettingsDlg::SettingsDlg(const PluginsCfg &pluginsCfg,
                          const QColor &markColor,
                          QWidget *parent)
     : QDialog(parent)
@@ -54,7 +57,7 @@ SettingsDlg::~SettingsDlg()
 {
 }
 
-MdShared::PluginsCfg SettingsDlg::pluginsCfg() const
+PluginsCfg SettingsDlg::pluginsCfg() const
 {
     return m_ui.m_pluginsPage->cfg();
 }

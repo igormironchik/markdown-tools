@@ -6,6 +6,9 @@
 // md-editor include.
 #include "toc.h"
 
+// md-pdf-lib include.
+#include <md-pdf-lib/src/utils.h>
+
 // C++ include.
 #include <functional>
 
@@ -58,12 +61,12 @@ StringData::StringData(const QString &t,
     : m_data({t,
               c,
               rtl})
-    , m_splittedText(splitString(m_data.m_text,
+    , m_splittedText(MdPdf::splitString(m_data.m_text,
                                  true,
                                  unicode,
                                  rtl))
 {
-    orderWords(m_splittedText, m_data.m_isRightToLeft);
+    MdPdf::orderWords(m_splittedText, m_data.m_isRightToLeft);
 }
 
 //

@@ -7,6 +7,9 @@
 #include "wordwrapdelegate.h"
 #include "toc.h"
 
+// md-pdf-lib include.
+#include <md-pdf-lib/src/utils.h>
+
 // Qt include.
 #include <QApplication>
 #include <QHeaderView>

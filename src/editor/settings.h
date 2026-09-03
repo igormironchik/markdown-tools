@@ -16,6 +16,9 @@
 #include "dlg_filter_wheel.h"
 #include "syntax.h"
 
+// md-pdf-lib include.
+#include <md-pdf-lib/src/utils.h>
+
 class KPageWidgetItem;
 
 namespace Sonnet
@@ -50,7 +53,7 @@ struct Settings {
     //! Is pelling enabled?
     bool m_enableSpelling = true;
     //! Configuration of plugins.
-    MdShared::PluginsCfg m_pluginsCfg;
+    MdPdf::PluginsCfg m_pluginsCfg;
     //! Indent mode of the editor.
     Editor::IndentMode m_indentMode = Editor::IndentMode::Tabs;
     //! Count of spaces for indent in editor.
@@ -85,7 +88,7 @@ class SettingsDlg : public MdShared::DlgWheelFilter
 
 public:
     SettingsDlg(const Settings &s,
-                QSharedPointer<MdShared::Syntax> syntax,
+                QSharedPointer<MdPdf::Syntax> syntax,
                 QWidget *parent);
     ~SettingsDlg() override = default;
 

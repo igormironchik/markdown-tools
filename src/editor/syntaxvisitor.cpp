@@ -39,8 +39,8 @@ namespace MdEditor
 //
 
 struct SyntaxVisitorPrivate {
-    SyntaxVisitorPrivate(QSharedPointer<MdShared::Syntax> syntax)
-        : m_codeSyntax(new MdShared::Syntax)
+    SyntaxVisitorPrivate(QSharedPointer<MdPdf::Syntax> syntax)
+        : m_codeSyntax(new MdPdf::Syntax)
     {
         if (syntax) {
             m_codeSyntax->setTheme(syntax->theme());
@@ -65,7 +65,7 @@ struct SyntaxVisitorPrivate {
             m_misspelledPos = other.m_misspelledPos;
             m_currentHighlightedMisspelled = other.m_currentHighlightedMisspelled;
             m_correctWords = other.m_correctWords;
-            m_codeSyntax = QSharedPointer<MdShared::Syntax>::create();
+            m_codeSyntax = QSharedPointer<MdPdf::Syntax>::create();
             m_codeSyntax->setTheme(other.m_codeSyntax->theme());
             m_codeRects = other.m_codeRects;
         }
@@ -198,7 +198,7 @@ struct SyntaxVisitorPrivate {
     //! Cache of correct words.
     QSet<QString> m_correctWords;
     //! Code syntax highlighter.
-    QSharedPointer<MdShared::Syntax> m_codeSyntax;
+    QSharedPointer<MdPdf::Syntax> m_codeSyntax;
     //! Rectangles of code blocks that were highlighted.
     QVector<SyntaxVisitor::CodeRect> m_codeRects;
 }; // struct SyntaxVisitorPrivate
@@ -212,7 +212,7 @@ SyntaxVisitor::SyntaxVisitor()
 {
 }
 
-SyntaxVisitor::SyntaxVisitor(QSharedPointer<MdShared::Syntax> syntax)
+SyntaxVisitor::SyntaxVisitor(QSharedPointer<MdPdf::Syntax> syntax)
     : m_d(new SyntaxVisitorPrivate(syntax))
 {
 }
@@ -323,7 +323,7 @@ bool SyntaxVisitor::hasMisspelled() const
     return !m_d->m_misspelledPos.isEmpty();
 }
 
-QSharedPointer<MdShared::Syntax> SyntaxVisitor::codeBlockSyntaxHighlighter()
+QSharedPointer<MdPdf::Syntax> SyntaxVisitor::codeBlockSyntaxHighlighter()
 {
     return m_d->m_codeSyntax;
 }
@@ -428,8 +428,8 @@ void SyntaxVisitor::onUserDefined(MD::Item *i)
             m_d->setFormat(special, yaml->endDelim());
         } break;
 
-        case MdShared::EmojiItem::emojiType(): {
-            auto emoji = static_cast<MdShared::EmojiItem *>(i);
+        case MdPdf::EmojiItem::emojiType(): {
+            auto emoji = static_cast<MdPdf::EmojiItem *>(i);
 
             QTextCharFormat format;
             format.setForeground(m_d->m_colors.m_textColor);

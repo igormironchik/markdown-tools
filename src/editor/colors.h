@@ -16,6 +16,13 @@
 
 class KColorButton;
 
+namespace MdPdf
+{
+
+class Syntax;
+
+}
+
 namespace MdEditor
 {
 
@@ -87,7 +94,7 @@ public Q_SLOTS:
     //! Apply color scheme for settings page UI.
     void applyColors();
     //! Init code themes combo box.
-    void initCodeThemes(QSharedPointer<MdShared::Syntax> syntax);
+    void initCodeThemes(QSharedPointer<MdPdf::Syntax> syntax);
 
 private Q_SLOTS:
     //! Link color changed.

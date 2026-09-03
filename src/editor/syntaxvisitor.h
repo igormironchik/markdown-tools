@@ -23,6 +23,13 @@ class QTextDocument;
 class QPlainTextEdit;
 QT_END_NAMESPACE
 
+namespace MdPdf
+{
+
+class Syntax;
+
+}
+
 namespace MdEditor
 {
 
@@ -40,7 +47,7 @@ class SyntaxVisitor : public MD::PosCache
 {
 public:
     SyntaxVisitor();
-    explicit SyntaxVisitor(QSharedPointer<MdShared::Syntax> syntax);
+    explicit SyntaxVisitor(QSharedPointer<MdPdf::Syntax> syntax);
     ~SyntaxVisitor() override;
 
     SyntaxVisitor(const SyntaxVisitor &other);
@@ -80,7 +87,7 @@ public:
     //! Select next misspelled word.
     void highlightNextMisspelled(QPlainTextEdit *editor);
     //! \return Code blocks syntax highlighter.
-    QSharedPointer<MdShared::Syntax> codeBlockSyntaxHighlighter();
+    QSharedPointer<MdPdf::Syntax> codeBlockSyntaxHighlighter();
 
     //! Rectangle of highlighted code block.
     struct CodeRect {

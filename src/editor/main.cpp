@@ -17,6 +17,9 @@
 // shared include.
 #include "utils.h"
 
+// md-pdf-lib include.
+#include <md-pdf-lib/src/utils.h>
+
 #ifdef MD_BREEZE
 #include <KIconTheme>
 #endif
@@ -34,6 +37,8 @@ int main(int argc,
     QWebEngineUrlScheme::registerScheme(qrc);
 
     QApplication app(argc, argv);
+
+    qRegisterMetaType<MdPdf::PluginsCfg>();
 
     initTheme(app);
 

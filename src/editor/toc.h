@@ -6,10 +6,20 @@
 // shared include.
 #include "utils.h"
 
+// Skia include.
+#include <modules/skunicode/include/SkUnicode_icu.h>
+
 // Qt include.
 #include <QAbstractItemModel>
 #include <QRect>
 #include <QScopedPointer>
+
+namespace MdPdf
+{
+
+struct Word;
+
+}
 
 namespace MdEditor
 {
@@ -43,7 +53,7 @@ struct StringData {
     //! Non-splitted text.
     UnitData m_data;
     //! Already splitted text.
-    QVector<Word> m_splittedText;
+    QVector<MdPdf::Word> m_splittedText;
     //! Rectangles for code.
     QVector<QRect> m_backgroundRects;
     //! Text rects with corresponding data.

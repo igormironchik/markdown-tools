@@ -1372,7 +1372,7 @@ void MainWindow::readCfg()
     m_d->m_editor->enableSpellingCheck(s.value(s_enabled, m_d->m_editor->settings().m_enableSpelling).toBool());
     s.endGroup();
 
-    MdShared::PluginsCfg pluginsCfg;
+    MdPdf::PluginsCfg pluginsCfg;
 
     s.beginGroup(s_plugins);
 

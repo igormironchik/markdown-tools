@@ -79,7 +79,7 @@ if(WIN32)
     list(APPEND SRC md-editor.rc)
 endif()
 
-link_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../../builds/skia")
+link_directories(${MD_PDF_SKIA_BUILD_PATH})
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/widgets/include

@@ -1,6 +1,6 @@
-[submodule "3rdparty/KDE/md4qt"]
-	path = 3rdparty/KDE/md4qt
-	url = https://invent.kde.org/libraries/md4qt.git
 [submodule "3rdparty/github-release"]
 	path = 3rdparty/github-release
 	url = https://github.com/igormironchik/github-release.git
+[submodule "3rdparty/md-pdf-lib"]
+	path = 3rdparty/md-pdf-lib
+	url = https://github.com/igormironchik/md-pdf-lib.git

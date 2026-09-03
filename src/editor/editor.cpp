@@ -101,7 +101,7 @@ public Q_SLOTS:
                 const QString &fileName,
                 unsigned long long int counter,
                 MdEditor::SyntaxVisitor syntax,
-                const MdShared::PluginsCfg &pluginsCfg,
+                const MdPdf::PluginsCfg &pluginsCfg,
                 QSharedPointer<MdUtils::BlockLines> blocks)
     {
         m_data.clear();
@@ -262,7 +262,7 @@ private:
     //! Internal counter for IDs generation.
     unsigned long long int m_id = 0;
     //! Plugins configuration.
-    MdShared::PluginsCfg m_pluginsCfg;
+    MdPdf::PluginsCfg m_pluginsCfg;
     //! Old blocks of lines.
     QSharedPointer<MdUtils::BlockLines> m_oldBlocks;
 };
@@ -738,7 +738,7 @@ bool Editor::isReady() const
     return m_d->m_isReady;
 }
 
-void Editor::setPluginsCfg(const MdShared::PluginsCfg &cfg)
+void Editor::setPluginsCfg(const MdPdf::PluginsCfg &cfg)
 {
     m_d->m_settings.m_pluginsCfg = cfg;
 

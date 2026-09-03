@@ -48,7 +48,7 @@ MainWidget::MainWidget(QWidget *parent)
     : QWidget(parent)
     , m_ui(new Ui::MainWindow())
     , m_thread(new QThread(this))
-    , m_syntax(new MdShared::Syntax)
+    , m_syntax(new Syntax)
 {
     m_ui->setupUi(this);
 
@@ -110,16 +110,16 @@ static const QString s_leftAlignment = QStringLiteral("left");
 static const QString s_centerAlignment = QStringLiteral("center");
 static const QString s_rightAlignment = QStringLiteral("right");
 
-inline QString imageAlignmentToString(Render::ImageAlignment a)
+inline QString imageAlignmentToString(ImageAlignment a)
 {
     switch (a) {
-    case Render::ImageAlignment::Left:
+    case ImageAlignment::Left:
         return s_leftAlignment;
 
-    case Render::ImageAlignment::Center:
+    case ImageAlignment::Center:
         return s_centerAlignment;
 
-    case Render::ImageAlignment::Right:
+    case ImageAlignment::Right:
         return s_rightAlignment;
 
     default:
@@ -127,46 +127,46 @@ inline QString imageAlignmentToString(Render::ImageAlignment a)
     }
 }
 
-inline Render::ImageAlignment stringToImageAlignment(const QString &a)
+inline ImageAlignment stringToImageAlignment(const QString &a)
 {
     if (a == s_leftAlignment) {
-        return Render::ImageAlignment::Left;
+        return ImageAlignment::Left;
     } else if (a == s_centerAlignment) {
-        return Render::ImageAlignment::Center;
+        return ImageAlignment::Center;
     } else if (a == s_rightAlignment) {
-        return Render::ImageAlignment::Right;
+        return ImageAlignment::Right;
     } else {
-        return Render::ImageAlignment::Center;
+        return ImageAlignment::Center;
     }
 }
 
-inline Render::ImageAlignment imageAlignmentFromInt(int v)
+inline ImageAlignment imageAlignmentFromInt(int v)
 {
     switch (v) {
     case 0:
-        return Render::ImageAlignment::Left;
+        return ImageAlignment::Left;
 
     case 1:
-        return Render::ImageAlignment::Center;
+        return ImageAlignment::Center;
 
     case 2:
-        return Render::ImageAlignment::Right;
+        return ImageAlignment::Right;
 
     default:
-        return Render::ImageAlignment::Center;
+        return ImageAlignment::Center;
     }
 }
 
-inline int imageAlignmentToInt(Render::ImageAlignment a)
+inline int imageAlignmentToInt(ImageAlignment a)
 {
     switch (a) {
-    case Render::ImageAlignment::Left:
+    case ImageAlignment::Left:
         return 0;
 
-    case Render::ImageAlignment::Center:
+    case ImageAlignment::Center:
         return 1;
 
-    case Render::ImageAlignment::Right:
+    case ImageAlignment::Right:
         return 2;
 
     default:
@@ -371,12 +371,12 @@ void MainWidget::applyCfg(QSettings &cfg)
     cfg.endGroup();
 }
 
-const MdShared::PluginsCfg &MainWidget::pluginsCfg() const
+const PluginsCfg &MainWidget::pluginsCfg() const
 {
     return m_pluginsCfg;
 }
 
-void MainWidget::setPluginsCfg(const MdShared::PluginsCfg &cfg)
+void MainWidget::setPluginsCfg(const PluginsCfg &cfg)
 {
     m_pluginsCfg = cfg;
 }
@@ -449,10 +449,10 @@ void MainWidget::process()
         }
 
         if (!doc->isEmpty()) {
-            auto *pdf = new Render::PdfRenderer();
+            auto *pdf = new PdfRenderer();
             pdf->moveToThread(m_thread);
 
-            Render::RenderOpts opts;
+            RenderOpts opts;
 
             opts.m_textFont = m_ui->m_textFont->currentFont().family();
             opts.m_textFontSize = m_ui->m_textFontSize->value();

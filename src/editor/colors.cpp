@@ -209,7 +209,7 @@ void ColorsPage::colorsToggled(bool on)
     m_colors.m_enabled = on;
 }
 
-void ColorsPage::initCodeThemes(QSharedPointer<MdShared::Syntax> syntax)
+void ColorsPage::initCodeThemes(QSharedPointer<MdPdf::Syntax> syntax)
 {
     QStringList themeNames;
     const auto themes = syntax->repository().themes();

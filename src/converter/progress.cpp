@@ -17,7 +17,7 @@ namespace MdPdf
 // ProgressDlg
 //
 
-ProgressDlg::ProgressDlg(Render::PdfRenderer *render,
+ProgressDlg::ProgressDlg(PdfRenderer *render,
                          QWidget *parent)
     : QDialog(parent)
     , m_render(render)
@@ -25,10 +25,10 @@ ProgressDlg::ProgressDlg(Render::PdfRenderer *render,
 {
     m_ui->setupUi(this);
 
-    connect(m_render, &Render::PdfRenderer::progress, this, &ProgressDlg::progress);
-    connect(m_render, &Render::PdfRenderer::done, this, &ProgressDlg::finished);
-    connect(m_render, &Render::PdfRenderer::error, this, &ProgressDlg::error);
-    connect(m_render, &Render::PdfRenderer::status, this, &ProgressDlg::status);
+    connect(m_render, &PdfRenderer::progress, this, &ProgressDlg::progress);
+    connect(m_render, &PdfRenderer::done, this, &ProgressDlg::finished);
+    connect(m_render, &PdfRenderer::error, this, &ProgressDlg::error);
+    connect(m_render, &PdfRenderer::status, this, &ProgressDlg::status);
 
     connect(m_ui->m_cancel, &QPushButton::clicked, this, &ProgressDlg::cancel);
 }

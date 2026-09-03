@@ -7,13 +7,12 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-find_package(Qt6Widgets 6.5.0 REQUIRED)
-find_package(Qt6Network 6.5.0 REQUIRED)
-find_package(Qt6Svg 6.5.0 REQUIRED)
-find_package(Qt6Test 6.5.0 REQUIRED)
-
+find_package(Qt6 REQUIRED COMPONENTS Widgets)
 find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} COMPONENTS
-    IconThemes ColorScheme Config
+    WidgetsAddons IconThemes ColorScheme Config
+)
+find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
+    WidgetsAddons
 )
 
 find_package(ZLIB REQUIRED)
@@ -23,13 +22,6 @@ if(ENABLE_COVERAGE)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
 endif(ENABLE_COVERAGE)
 
-set(LIB_SRC skia_paintdevice.h
-    skia_paintdevice.cpp
-    renderer.h
-    renderer.cpp
-    renderer_aux.h
-    renderer_aux.cpp)
-
 set(GUI_SRC main.cpp
 	main_window.cpp
 	main_window.h
@@ -37,27 +29,19 @@ set(GUI_SRC main.cpp
 	progress.h
 	progress.cpp
 	progress.ui
-    const.h
     settings.h
     settings.cpp
     settings.ui)
 	
 qt6_add_resources(LIB_SRC resources.qrc)
-qt6_add_resources(LIB_SRC ../../3rdparty/MicroTeX/latex.qrc)
 
 if(WIN32)
     list(APPEND GUI_SRC md-pdf.rc)
 endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/MicroTeX/src
 	${CMAKE_CURRENT_BINARY_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/../shared
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/Skia)
-
-add_definitions(-DBUILD_QT)
-
-link_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../../builds/skia")
+    ${CMAKE_CURRENT_SOURCE_DIR}/../shared)
 
 if (BUILD_MD_TESTS)
     set(NORMAL_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../tests/fonts/DroidSerif/droid_serif.ttf)
@@ -109,7 +93,7 @@ if (BUILD_MD_TESTS)
         Qt6::Test)
 endif()
 
-add_library(md-pdf-lib STATIC ${LIB_SRC})
+link_directories(${MD_PDF_SKIA_BUILD_PATH})
 
 add_executable(md-pdf-gui WIN32 ${GUI_SRC})
 
@@ -122,33 +106,9 @@ endif()
 
 install(TARGETS md-pdf-gui)
 
-target_link_libraries(md-pdf-lib
-    md4qt::md4qt
-    markdown-widgets
-    LaTeX
-    ${ADDITIONAL_KDE_TARGETS}
-    Qt6::Network
-    Qt6::Core
-    bentleyottmann
-    compression_utils_portable
-    skresources
-    skcms
-    skottie
-    skparagraph
-    sksg
-    svg
-    wuffs
-    skshaper
-    skunicode_icu
-    skunicode_core
-    skia
-    expat
-    harfbuzz
-    icu
-    zlib
-    ${PLATFORM_LIBS}
-    ZLIB::ZLIB)
-
 target_link_libraries(md-pdf-gui
-    md4qt::md4qt
-    md-pdf-lib)
+    KF${KF_MAJOR_VERSION}::WidgetsAddons
+    ${ADDITIONAL_KDE_TARGETS}
+    markdown-widgets
+    md-pdf-lib
+    Qt6::Widgets)

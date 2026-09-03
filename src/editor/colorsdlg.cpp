@@ -33,7 +33,7 @@ struct ColorsDialogPrivate {
 //
 
 ColorsDialog::ColorsDialog(const Colors &cols,
-                           QSharedPointer<MdShared::Syntax> syntax,
+                           QSharedPointer<MdPdf::Syntax> syntax,
                            QWidget *parent)
     : MdShared::DlgWheelFilter(parent)
     , m_d(new ColorsDialogPrivate(this))

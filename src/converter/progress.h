@@ -25,7 +25,7 @@ class ProgressDlg final : public QDialog
     Q_OBJECT
 
 public:
-    ProgressDlg(Render::PdfRenderer *render,
+    ProgressDlg(PdfRenderer *render,
                 QWidget *parent);
     ~ProgressDlg() override = default;
 
@@ -42,7 +42,7 @@ private Q_SLOTS:
     void status(const QString &msg);
 
 private:
-    Render::PdfRenderer *m_render;
+    PdfRenderer *m_render;
     QScopedPointer<Ui::ProgressDlg> m_ui;
     QString m_error;
 

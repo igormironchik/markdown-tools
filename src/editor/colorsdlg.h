@@ -24,6 +24,13 @@ class ColorWidget;
 
 } /* namespace MdShared */
 
+namespace MdPdf
+{
+
+class Syntax;
+
+}
+
 namespace MdEditor
 {
 
@@ -40,7 +47,7 @@ class ColorsDialog : public MdShared::DlgWheelFilter
 
 public:
     ColorsDialog(const Colors &cols,
-                 QSharedPointer<MdShared::Syntax> syntax,
+                 QSharedPointer<MdPdf::Syntax> syntax,
                  QWidget *parent = nullptr);
     ~ColorsDialog() override;
 

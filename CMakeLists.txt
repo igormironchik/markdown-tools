@@ -7,8 +7,6 @@ project(markdown-tools)
 
 option(BUILD_MD_TESTS "Build tests? Default OFF." OFF)
 
-set(ENV{PKG_CONFIG_PATH} "${CMAKE_CURRENT_BINARY_DIR}")
-
 list(PREPEND CMAKE_PREFIX_PATH ${CMAKE_CURRENT_BINARY_DIR})
 list(PREPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_BINARY_DIR})
 
@@ -26,14 +24,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/bin)
 
-if(WIN32)
-    set(PLATFORM_LIBS Dwmapi Dwrite libwebp libpng libjpeg jsonreader)
-endif()
-
-if(UNIX)
-    set(PLATFORM_LIBS freetype fontconfig dng_sdk piex webp png jpeg)
-endif()
-
 if(NOT MARKDOWN_TOOLS_VERSION_MINOR)
 	execute_process(COMMAND git rev-parse --short HEAD
 		OUTPUT_VARIABLE MARKDOWN_TOOLS_VERSION_MINOR
@@ -41,7 +31,7 @@ if(NOT MARKDOWN_TOOLS_VERSION_MINOR)
 		OUTPUT_STRIP_TRAILING_WHITESPACE)
 endif()
 
-set(MD_TOOLS_VERSION_NUMBER "0.17.12")
+set(MD_TOOLS_VERSION_NUMBER "0.17.13")
 set(HomeDir "@HomeDir@")
 string(TIMESTAMP MD_CURRENT_DATE "%Y-%m-%d")
 
@@ -52,8 +42,6 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/package.xml.in ${CMAKE_CURRENT_SOURCE
 
 set(MD_TOOLS_VERSION "${MD_TOOLS_VERSION_NUMBER} build ${MARKDOWN_TOOLS_VERSION_MINOR}")
 set(MD_TOOLS_COMMIT "${MARKDOWN_TOOLS_VERSION_MINOR}")
-
-find_package(QT NAMES Qt6 REQUIRED COMPONENTS Core)
 
 if(UNIX AND NOT APPLE)
 	list(PREPEND CMAKE_INSTALL_RPATH "\$ORIGIN/../lib")
@@ -91,19 +79,15 @@ install(FILES "markdown-tools.desktop" DESTINATION "${CMAKE_INSTALL_PREFIX}/shar
 
 set(_DISABLE_INSTALLATION TRUE)
 
-add_subdirectory(3rdparty/MicroTeX)
-
-set(BUILD_MD4QT_TESTS OFF CACHE INTERNAL "" FORCE)
-add_subdirectory(3rdparty/KDE/md4qt)
-
-include_directories(${md4qt_INCLUDE_DIRECTORIES}/../..)
-
 set(_DISABLE_INSTALLATION FALSE)
 
 string(REPLACE "/DNDEBUG" "" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
 string(REPLACE "-DNDEBUG" "" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
 
 add_subdirectory(3rdparty/github-release)
+
+set(MD_PDF_SKIA_BUILD_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../builds/skia" CACHE INTERNAL "" FORCE)
+add_subdirectory(3rdparty/md-pdf-lib)
 
 add_subdirectory(src)
 

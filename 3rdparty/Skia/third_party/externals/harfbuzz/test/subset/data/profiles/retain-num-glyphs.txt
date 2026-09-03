@@ -1,2 +1,0 @@
---retain-gids
---retain-num-glyphs

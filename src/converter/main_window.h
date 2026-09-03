@@ -10,6 +10,9 @@
 #include "plugins_page.h"
 #include "syntax.h"
 
+// md-pdf-lib include.
+#include <md-pdf-lib/src/utils.h>
+
 // Qt include.
 #include <QMainWindow>
 #include <QScopedPointer>
@@ -46,9 +49,9 @@ public:
     //! Apply configuration.
     void applyCfg(QSettings &cfg);
     //! \return Plugins configuration.
-    const MdShared::PluginsCfg &pluginsCfg() const;
+    const MdPdf::PluginsCfg &pluginsCfg() const;
     //! Set plugins configuration.
-    void setPluginsCfg(const MdShared::PluginsCfg &cfg);
+    void setPluginsCfg(const MdPdf::PluginsCfg &cfg);
     //! \return Mark color.
     const QColor &markColor() const;
     //! Set mark color.
@@ -71,9 +74,9 @@ private:
 
     QScopedPointer<Ui::MainWindow> m_ui;
     QThread *m_thread;
-    QSharedPointer<MdShared::Syntax> m_syntax;
+    QSharedPointer<MdPdf::Syntax> m_syntax;
     bool m_alreadyShown = false;
-    MdShared::PluginsCfg m_pluginsCfg;
+    MdPdf::PluginsCfg m_pluginsCfg;
     QColor m_markColor;
 
     Q_DISABLE_COPY(MainWidget)

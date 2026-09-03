@@ -342,10 +342,10 @@ void HtmlConv::onListItem(MD::ListItem *i,
 void HtmlConv::onUserDefined(MD::Item *item)
 {
     if (!m_justCollectFootnoteRefs) {
-        if (item->type() == MdShared::EmojiItem::emojiType()) {
+        if (item->type() == MdPdf::EmojiItem::emojiType()) {
             printLineId(item);
 
-            auto emoji = static_cast<MdShared::EmojiItem *>(item);
+            auto emoji = static_cast<MdPdf::EmojiItem *>(item);
 
             openStyle(emoji->openStyles());
 

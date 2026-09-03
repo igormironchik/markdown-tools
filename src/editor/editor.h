@@ -85,7 +85,7 @@ Q_SIGNALS:
                    const QString &fileName,
                    unsigned long long int counter,
                    MdEditor::SyntaxVisitor syntax,
-                   const MdShared::PluginsCfg &pluginsCfg,
+                   const MdPdf::PluginsCfg &pluginsCfg,
                    QSharedPointer<MdUtils::BlockLines> blocks);
     //! Link clicked.
     void linkClicked(const QString &url);
@@ -135,7 +135,7 @@ public:
     //! \return Is document ready?
     bool isReady() const;
     //! Set plugins configuration.
-    void setPluginsCfg(const MdShared::PluginsCfg &cfg);
+    void setPluginsCfg(const MdPdf::PluginsCfg &cfg);
     //! Enable/disable auto-lists.
     void enableAutoLists(bool on = true);
     //! Enable auto add list after non-first block of list item (like on GitHub).

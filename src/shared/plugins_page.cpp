@@ -6,6 +6,9 @@
 // Widgets include.
 #include "plugins_page.h"
 
+// md-pdf-lib include.
+#include <md-pdf-lib/src/utils.h>
+
 namespace MdShared
 {
 
@@ -83,7 +86,7 @@ Ui::PluginsPage &PluginsPage::ui()
     return d->m_ui;
 }
 
-void PluginsPage::setCfg(const PluginsCfg &cfg)
+void PluginsPage::setCfg(const MdPdf::PluginsCfg &cfg)
 {
     if (!cfg.m_sup.m_delimiter.isNull()) {
         d->m_ui.m_supChar->setText(cfg.m_sup.m_delimiter);
@@ -112,13 +115,13 @@ void PluginsPage::setCfg(const PluginsCfg &cfg)
     d->isOk(d->m_ui.m_markChar, d->m_ui.m_markSwitch);
 }
 
-PluginsCfg PluginsPage::cfg() const
+MdPdf::PluginsCfg PluginsPage::cfg() const
 {
     if (!d->isOk()) {
         return {};
     }
 
-    PluginsCfg c;
+    MdPdf::PluginsCfg c;
 
     const auto sup = d->m_ui.m_supChar->text().simplified();
 
