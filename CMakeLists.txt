@@ -87,6 +87,7 @@ string(REPLACE "-DNDEBUG" "" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}
 add_subdirectory(3rdparty/github-release)
 
 set(MD_PDF_SKIA_BUILD_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../builds/skia" CACHE INTERNAL "" FORCE)
+set(BUILD_TEST_LIBRARY OFF CACHE INTERNAL "" FORCE)
 add_subdirectory(3rdparty/md-pdf-lib)
 
 add_subdirectory(src)

@@ -27,6 +27,27 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../../lib
     "${CMAKE_CURRENT_SOURCE_DIR}/../../../../builds/skia")
 
+set(NORMAL_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../fonts/DroidSerif/droid_serif.ttf)
+set(ITALIC_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../fonts/DroidSerif/droid_serif_italic.ttf)
+set(BOLD_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../fonts/DroidSerif/droid_serif_bold.ttf)
+set(BOLD_ITALIC_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../fonts/DroidSerif/droid_serif_italic_bold.ttf)
+set(MONO_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../fonts/SpaceMono/SpaceMono-Regular.ttf)
+set(MONO_ITALIC_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../fonts/SpaceMono/SpaceMono-Italic.ttf)
+set(MONO_BOLD_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../fonts/SpaceMono/SpaceMono-Bold.ttf)
+set(MONO_BOLD_ITALIC_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../fonts/SpaceMono/SpaceMono-BoldItalic.ttf)
+set(WORKING_FOLDER ${CMAKE_CURRENT_SOURCE_DIR})
+
+configure_file(test_const.h.in test_const.h @ONLY)
+
+add_library(md-pdf-lib-test-consts INTERFACE)
+
+target_include_directories(md-pdf-lib-test-consts INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+)
+
+set(BUILD_TEST_LIBRARY ON CACHE INTERNAL "" FORCE)
+add_subdirectory(../../../3rdparty/md-pdf-lib "${CMAKE_CURRENT_BINARY_DIR}/md-pdf-lib-test")
+
 add_executable(test.render ${SRC})
 
 target_link_libraries(test.render

@@ -3,12 +3,11 @@
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 
-#include "src/converter/const.h"
-#include "src/converter/renderer.h"
-
-#include "src/shared/plugins_page.h"
-#include "src/shared/syntax.h"
-#include "src/shared/utils.h"
+// md-pdf-lib include.
+#include <md-pdf-lib/src/const.h>
+#include <md-pdf-lib/src/syntax.h>
+#include <md-pdf-lib/src/renderer.h>
+#include <md-pdf-lib/src/utils.h>
 
 // md4qt include.
 #include <md4qt/src/parser.h>
@@ -128,9 +127,6 @@ private Q_SLOTS:
 namespace MdPdf
 {
 
-namespace Render
-{
-
 namespace /* anonymous */
 {
 
@@ -153,7 +149,7 @@ struct TestRendering {
         MD::Parser parser;
 
         if (withPlugins) {
-            MdShared::PluginsCfg pluginsCfg;
+            PluginsCfg pluginsCfg;
             pluginsCfg.m_sup.m_delimiter = QLatin1Char('^');
             pluginsCfg.m_sup.m_on = true;
             pluginsCfg.m_sub.m_delimiter = QLatin1Char('-');
@@ -169,7 +165,7 @@ struct TestRendering {
         opts.m_borderColor = QColor(81, 81, 81);
         opts.m_linkColor = QColor(33, 122, 255);
         opts.m_bottom = mmInPt(20.0);
-        opts.m_syntax = QSharedPointer<MdShared::Syntax>::create();
+        opts.m_syntax = QSharedPointer<Syntax>::create();
         opts.m_syntax->setTheme(opts.m_syntax->themeForName(QStringLiteral("GitHub Light")));
         opts.m_codeFont = QStringLiteral("Space Mono");
         opts.m_codeFontSize = codeFontSize;
@@ -357,28 +353,26 @@ QVector<DrawPrimitive> loadTestData(const QString &fileName,
     return data;
 }
 
-} /* namespace Render */
-
 } /* namespace MdPdf */
 
 void doTest(const QString &fileName,
             const QString &suffix,
             double textFontSize,
             double codeFontSize,
-            MdPdf::Render::ImageAlignment align = MdPdf::Render::ImageAlignment::Center,
+            MdPdf::ImageAlignment align = MdPdf::ImageAlignment::Center,
             bool withPlugins = false)
 {
-    QVector<MdPdf::Render::DrawPrimitive> data;
+    QVector<MdPdf::DrawPrimitive> data;
 
     if (!s_printData) {
-        data = MdPdf::Render::loadTestData(fileName, suffix);
+        data = MdPdf::loadTestData(fileName, suffix);
 
         if (data.isEmpty()) {
             QFAIL("Failed to load test data.");
         }
     }
 
-    MdPdf::Render::TestRendering::testRendering(fileName, suffix, data, textFontSize, codeFontSize, align, withPlugins);
+    MdPdf::TestRendering::testRendering(fileName, suffix, data, textFontSize, codeFontSize, align, withPlugins);
 }
 
 void TestRender::initTestCase()
@@ -394,9 +388,7 @@ void TestRender::initTestCase()
 
     tex::LaTeX::init(":/res");
 
-    initSharedResources();
-    Q_INIT_RESOURCE(resources);
-    Q_INIT_RESOURCE(latex);
+    MdPdf::initSharedResources();
 }
 
 void TestRender::testFootnotes()
@@ -556,22 +548,22 @@ void TestRender::testBlockquoteHighlightingBig()
 
 void TestRender::testPlacing()
 {
-    doTest(QStringLiteral("different_placing_cases.md"), QString(), 8.0, 8.0, MdPdf::Render::ImageAlignment::Left);
+    doTest(QStringLiteral("different_placing_cases.md"), QString(), 8.0, 8.0, MdPdf::ImageAlignment::Left);
 }
 
 void TestRender::testDescent()
 {
-    MdPdf::Render::TestRendering::testDescent();
+    MdPdf::TestRendering::testDescent();
 }
 
 void TestRender::testSuperSubScript()
 {
-    doTest(QStringLiteral("styles.md"), QString(), 8.0, 8.0, MdPdf::Render::ImageAlignment::Left, true);
+    doTest(QStringLiteral("styles.md"), QString(), 8.0, 8.0, MdPdf::ImageAlignment::Left, true);
 }
 
 void TestRender::testSuperSubScriptBigFont()
 {
-    doTest(QStringLiteral("styles.md"), QStringLiteral("_big"), 16.0, 14.0, MdPdf::Render::ImageAlignment::Left, true);
+    doTest(QStringLiteral("styles.md"), QStringLiteral("_big"), 16.0, 14.0, MdPdf::ImageAlignment::Left, true);
 }
 
 void TestRender::testEmoji()
@@ -580,7 +572,7 @@ void TestRender::testEmoji()
            QString(),
            8.0,
            8.0,
-           MdPdf::Render::ImageAlignment::Center,
+           MdPdf::ImageAlignment::Center,
            true);
 }
 
@@ -590,7 +582,7 @@ void TestRender::testEmojiBigFont()
            QStringLiteral("_big"),
            16.0,
            14.0,
-           MdPdf::Render::ImageAlignment::Center,
+           MdPdf::ImageAlignment::Center,
            true);
 }
 
