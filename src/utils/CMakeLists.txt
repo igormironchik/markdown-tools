@@ -5,7 +5,7 @@ set(LIB_SRC
 	diff.h
 	diff.cpp)
 
-find_package(Qt6Core REQUIRED)
+find_package(Qt6 REQUIRED COMPONENTS Core)
 
 add_library(md-utils STATIC ${LIB_SRC})
 

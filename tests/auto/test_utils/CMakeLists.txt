@@ -3,7 +3,7 @@
 
 project(test.utils)
 
-find_package(Qt6Test 6.5.0 REQUIRED)
+find_package(Qt6 REQUIRED COMPONENTS Test)
 
 set(CMAKE_AUTOMOC ON)
 
@@ -16,8 +16,6 @@ set(SRC main.cpp)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/utils)
-
-link_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../../lib)
 
 add_executable(test.utils ${SRC})
 

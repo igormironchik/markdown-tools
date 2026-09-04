@@ -3,7 +3,7 @@
 
 project(test.render)
 
-find_package(Qt6Test 6.5.0 REQUIRED)
+find_package(Qt6 REQUIRED COMPONENTS Test)
 
 set(CMAKE_AUTOMOC ON)
 
@@ -24,8 +24,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/shared
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/Skia)
 
-link_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../../lib
-    "${CMAKE_CURRENT_SOURCE_DIR}/../../../../builds/skia")
+link_directories(${MD_PDF_SKIA_BUILD_PATH})
 
 set(NORMAL_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../fonts/DroidSerif/droid_serif.ttf)
 set(ITALIC_FONT ${CMAKE_CURRENT_SOURCE_DIR}/../../fonts/DroidSerif/droid_serif_italic.ttf)

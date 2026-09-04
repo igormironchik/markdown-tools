@@ -9,12 +9,11 @@ set(CMAKE_AUTOUIC ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} COMPONENTS
-    WidgetsAddons IconThemes ColorScheme Config
+    IconThemes ColorScheme Config
 )
 find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
     WidgetsAddons
 )
-
 find_package(ZLIB REQUIRED)
 
 if(ENABLE_COVERAGE)

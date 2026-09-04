@@ -9,7 +9,10 @@ set(CMAKE_AUTOUIC ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
 find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
-    WidgetsAddons IconThemes ColorScheme Config
+    WidgetsAddons
+)
+find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
+    IconThemes ColorScheme Config
 )
 
 set(SRC license_dialog.h

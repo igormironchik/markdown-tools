@@ -129,22 +129,4 @@ target_link_libraries(md-editor
     Qt6::WebEngineWidgets
     Qt6::Widgets
     Qt6::Core
-    bentleyottmann
-    compression_utils_portable
-    skresources
-    skcms
-    skottie
-    skparagraph
-    sksg
-    svg
-    wuffs
-    skshaper
-    skunicode_icu
-    skunicode_core
-    skia
-    expat
-    harfbuzz
-    icu
-    zlib
-    ${PLATFORM_LIBS}
     ${WIN_LIBS})
