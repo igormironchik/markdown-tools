@@ -14,7 +14,7 @@
 namespace MdPdf
 {
 
-class PluginsCfg;
+struct PluginsCfg;
 
 }
 
