@@ -1913,6 +1913,83 @@ Output PDF is broken. Sorry.</source>
     </message>
 </context>
 <context>
+    <name>MdPdf::PdfRenderer</name>
+    <message>
+        <location filename="../3rdparty/md-pdf-lib/src/renderer.cpp" line="148"/>
+        <source>Unable to create font manager.</source>
+        <translation>Не удалось создать менеджер шрифтов.</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/md-pdf-lib/src/renderer.cpp" line="160"/>
+        <source>Rendering PDF...</source>
+        <translation>Преобразование в PDF...</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/md-pdf-lib/src/renderer.cpp" line="488"/>
+        <source>Saving PDF...</source>
+        <translation>Сохранение PDF...</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/md-pdf-lib/src/renderer.cpp" line="2338"/>
+        <source>Drawing paragraph.</source>
+        <translation>Рисую параграф.</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/md-pdf-lib/src/renderer.cpp" line="2919"/>
+        <source>The author did a mistake with justified alignment. Please send a bug report.</source>
+        <translation>Автор допустил ошибку в выравнивании по ширине. Создайте отчет об ошибке, пожалуйста.</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/md-pdf-lib/src/renderer.cpp" line="3697"/>
+        <source>Loading image.</source>
+        <translation>Загружаю картинку.</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/md-pdf-lib/src/renderer.cpp" line="3721"/>
+        <location filename="../3rdparty/md-pdf-lib/src/renderer.cpp" line="3760"/>
+        <location filename="../3rdparty/md-pdf-lib/src/renderer.cpp" line="3767"/>
+        <location filename="../3rdparty/md-pdf-lib/src/renderer.cpp" line="3916"/>
+        <location filename="../3rdparty/md-pdf-lib/src/renderer.cpp" line="4028"/>
+        <source>Unable to load image: %1.
+
+If this image is in Web, please be sure you are connected to the Internet. I&apos;m sorry for the inconvenience.</source>
+        <translation>Не удалось загрузить картинку: %1.
+
+Если эта картинка в сети Интернет, убедитесь, что вы подключены к сети. Прошу прощения за неудобства.</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/md-pdf-lib/src/renderer.cpp" line="3957"/>
+        <location filename="../3rdparty/md-pdf-lib/src/renderer.cpp" line="3978"/>
+        <location filename="../3rdparty/md-pdf-lib/src/renderer.cpp" line="4022"/>
+        <source>Hmm, I don&apos;t know how to load this image: %1.
+
+This image is not a local existing file, and not in the Web. Check your Markdown.</source>
+        <translation>Хм, я не знаю как загрузить эту картинку: %1.
+
+Эта картинка не локальный файл и не в сети Интернет. Проверьте Markdown документ.</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/md-pdf-lib/src/renderer.cpp" line="4081"/>
+        <source>Drawing code.</source>
+        <translation>Рисую код.</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/md-pdf-lib/src/renderer.cpp" line="4284"/>
+        <source>Drawing blockquote.</source>
+        <translation>Рисую цитату.</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/md-pdf-lib/src/renderer.cpp" line="4510"/>
+        <source>Drawing list.</source>
+        <translation>Рисую список.</translation>
+    </message>
+    <message>
+        <location filename="../3rdparty/md-pdf-lib/src/renderer.cpp" line="4909"/>
+        <source>Drawing table.</source>
+        <translation>Рисую таблицу.</translation>
+    </message>
+</context>
+<context>
     <name>MdPdf::ProgressDlg</name>
     <message>
         <location filename="../src/converter/progress.cpp" line="65"/>
@@ -1928,14 +2005,12 @@ Output PDF is broken. Sorry.</source>
 <context>
     <name>MdPdf::Render::PdfRenderer</name>
     <message>
-        <location filename="../src/converter/renderer.cpp" line="163"/>
         <source>Rendering PDF...</source>
-        <translation>Преобразование в PDF...</translation>
+        <translation type="vanished">Преобразование в PDF...</translation>
     </message>
     <message>
-        <location filename="../src/converter/renderer.cpp" line="491"/>
         <source>Saving PDF...</source>
-        <translation>Сохранение PDF...</translation>
+        <translation type="vanished">Сохранение PDF...</translation>
     </message>
     <message>
         <source>Unable to create font: %1. Please choose another one.
@@ -1946,68 +2021,52 @@ This application uses PoDoFo C++ library to create PDF. And not all fonts suppor
 Это приложение использует PoDoFo C++ библиотеку для создания PDF. Поэтому не все шрифты, поддерживаемые Qt, поддерживаются PoDoFo. Прошу прощения за неудобства.</translation>
     </message>
     <message>
-        <location filename="../src/converter/renderer.cpp" line="151"/>
         <source>Unable to create font manager.</source>
-        <translation>Не удалось создать менеджер шрифтов.</translation>
+        <translation type="vanished">Не удалось создать менеджер шрифтов.</translation>
     </message>
     <message>
-        <location filename="../src/converter/renderer.cpp" line="2332"/>
         <source>Drawing paragraph.</source>
-        <translation>Рисую параграф.</translation>
+        <translation type="vanished">Рисую параграф.</translation>
     </message>
     <message>
-        <location filename="../src/converter/renderer.cpp" line="2913"/>
         <source>The author did a mistake with justified alignment. Please send a bug report.</source>
-        <translation>Автор допустил ошибку в выравнивании по ширине. Создайте отчет об ошибке, пожалуйста.</translation>
+        <translation type="vanished">Автор допустил ошибку в выравнивании по ширине. Создайте отчет об ошибке, пожалуйста.</translation>
     </message>
     <message>
-        <location filename="../src/converter/renderer.cpp" line="3691"/>
         <source>Loading image.</source>
-        <translation>Загружаю картинку.</translation>
+        <translation type="vanished">Загружаю картинку.</translation>
     </message>
     <message>
-        <location filename="../src/converter/renderer.cpp" line="3715"/>
-        <location filename="../src/converter/renderer.cpp" line="3754"/>
-        <location filename="../src/converter/renderer.cpp" line="3761"/>
-        <location filename="../src/converter/renderer.cpp" line="3910"/>
-        <location filename="../src/converter/renderer.cpp" line="4022"/>
         <source>Unable to load image: %1.
 
 If this image is in Web, please be sure you are connected to the Internet. I&apos;m sorry for the inconvenience.</source>
-        <translation>Не удалось загрузить картинку: %1.
+        <translation type="vanished">Не удалось загрузить картинку: %1.
 
 Если эта картинка в сети Интернет, убедитесь, что вы подключены к сети. Прошу прощения за неудобства.</translation>
     </message>
     <message>
-        <location filename="../src/converter/renderer.cpp" line="3951"/>
-        <location filename="../src/converter/renderer.cpp" line="3972"/>
-        <location filename="../src/converter/renderer.cpp" line="4016"/>
         <source>Hmm, I don&apos;t know how to load this image: %1.
 
 This image is not a local existing file, and not in the Web. Check your Markdown.</source>
-        <translation>Хм, я не знаю как загрузить эту картинку: %1.
+        <translation type="vanished">Хм, я не знаю как загрузить эту картинку: %1.
 
 Эта картинка не локальный файл и не в сети Интернет. Проверьте Markdown документ.</translation>
     </message>
     <message>
-        <location filename="../src/converter/renderer.cpp" line="4075"/>
         <source>Drawing code.</source>
-        <translation>Рисую код.</translation>
+        <translation type="vanished">Рисую код.</translation>
     </message>
     <message>
-        <location filename="../src/converter/renderer.cpp" line="4278"/>
         <source>Drawing blockquote.</source>
-        <translation>Рисую цитату.</translation>
+        <translation type="vanished">Рисую цитату.</translation>
     </message>
     <message>
-        <location filename="../src/converter/renderer.cpp" line="4504"/>
         <source>Drawing list.</source>
-        <translation>Рисую список.</translation>
+        <translation type="vanished">Рисую список.</translation>
     </message>
     <message>
-        <location filename="../src/converter/renderer.cpp" line="4903"/>
         <source>Drawing table.</source>
-        <translation>Рисую таблицу.</translation>
+        <translation type="vanished">Рисую таблицу.</translation>
     </message>
 </context>
 <context>

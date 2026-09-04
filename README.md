@@ -115,7 +115,7 @@ fonts to monospaced due to [QTBUG-112145](https://bugreports.qt.io/browse/QTBUG-
 To translate these applications into  your language you need to run
 
 ```bash
-lupdate6 . ../3rdparty/github-release/src -ts ../translate/md_{locale}.ts
+lupdate6 . ../3rdparty/github-release/src ../3rdparty/md-pdf-lib/src -ts ../translate/md_{locale}.ts
 ```
 
 from `src` directory.
