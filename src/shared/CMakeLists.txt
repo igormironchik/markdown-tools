@@ -11,7 +11,7 @@ find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
 find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
     WidgetsAddons
 )
-find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
+find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} COMPONENTS
     IconThemes ColorScheme Config
 )
 
