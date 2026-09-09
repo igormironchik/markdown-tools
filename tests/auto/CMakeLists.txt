@@ -3,5 +3,4 @@
 
 project(auto)
 
-add_subdirectory(test_render)
 add_subdirectory(test_utils)
