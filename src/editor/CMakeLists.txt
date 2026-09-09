@@ -93,7 +93,6 @@ add_library(md-editor-lib STATIC ${LIB_SRC})
 target_link_libraries(md-editor-lib
     md4qt::md4qt
     markdown-utils
-    md-utils
     KF${KF_MAJOR_VERSION}::SyntaxHighlighting
     KF${KF_MAJOR_VERSION}::SonnetUi
     KF${KF_MAJOR_VERSION}::SonnetCore
