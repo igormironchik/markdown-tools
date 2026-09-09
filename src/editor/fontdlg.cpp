@@ -19,7 +19,7 @@ namespace MdEditor
 
 FontDlg::FontDlg(const QFont &f,
                  QWidget *parent)
-    : MdShared::DlgWheelFilter(parent)
+    : MdUtils::DlgWheelFilter(parent)
 {
     setWindowTitle(tr("Font"));
 

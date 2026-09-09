@@ -22,7 +22,7 @@ class FontPage;
 //
 
 //! Font dialog.
-class FontDlg : public MdShared::DlgWheelFilter
+class FontDlg : public MdUtils::DlgWheelFilter
 {
     Q_OBJECT
 

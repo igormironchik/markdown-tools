@@ -136,12 +136,12 @@ WorkingDirectoryWidget::WorkingDirectoryWidget(QWidget *parent)
     m_useWorkingDir->setToolTip(tr("Use Working Directory."));
     m_useWorkingDir->setChecked(false);
 
-    m_folderChooser = new MdShared::FolderChooser(this);
+    m_folderChooser = new MdUtils::FolderChooser(this);
     m_folderChooser->setPopup();
     m_folderChooser->hide();
 
     connect(m_btn, &QToolButton::clicked, this, &WorkingDirectoryWidget::onChangeButtonClicked);
-    connect(m_folderChooser, &MdShared::FolderChooser::pathSelected, this, &WorkingDirectoryWidget::onPathChanged);
+    connect(m_folderChooser, &MdUtils::FolderChooser::pathSelected, this, &WorkingDirectoryWidget::onPathChanged);
     connect(m_useWorkingDir, &QCheckBox::checkStateChanged, this, &WorkingDirectoryWidget::onUseWorkingDirChanged);
 }
 
@@ -165,7 +165,7 @@ bool WorkingDirectoryWidget::isRelative() const
     return !m_useWorkingDir->isChecked();
 }
 
-MdShared::FolderChooser *WorkingDirectoryWidget::folderChooser()
+MdUtils::FolderChooser *WorkingDirectoryWidget::folderChooser()
 {
     return m_folderChooser;
 }

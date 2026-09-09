@@ -699,7 +699,7 @@ void MainWindow::about()
            "com</a>).<br /><br />"
            "Copyright (c) 2026 Igor Mironchik.<br /><br />"
            "Licensed under GNU GPL 3.0.")
-            .arg(MdShared::c_version, MdShared::c_md4qtVersion, MdShared::c_commit),
+            .arg(MdUtils::c_version, MdUtils::c_md4qtVersion, MdUtils::c_commit),
         QMessageBox::NoButton,
         this);
     QIcon icon = dlg.windowIcon();
@@ -716,7 +716,7 @@ void MainWindow::aboutQt()
 
 void MainWindow::licenses()
 {
-    MdShared::LicenseDialog msg(this);
+    MdUtils::LicenseDialog msg(this);
     msg.addLicense(s_oxygenName, s_oxygenLicense);
     msg.addLicense(s_skiaName, s_skiaLicense);
     msg.addLicense(s_ksyntaxHighlightingName, s_ksyntaxHighlightingLicense);

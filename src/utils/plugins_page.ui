@@ -62,7 +62,7 @@
            </widget>
           </item>
           <item row="0" column="2">
-           <widget class="MdShared::Switch" name="m_supSwitch" native="true">
+           <widget class="MdUtils::Switch" name="m_supSwitch" native="true">
             <property name="toolTip">
              <string>Turn on/off superscript emphasis plugin.</string>
             </property>
@@ -83,7 +83,7 @@
            </widget>
           </item>
           <item row="1" column="2">
-           <widget class="MdShared::Switch" name="m_subSwitch" native="true">
+           <widget class="MdUtils::Switch" name="m_subSwitch" native="true">
             <property name="toolTip">
              <string>Turn on/off subscript emphasis plugin.</string>
             </property>
@@ -104,7 +104,7 @@
            </widget>
           </item>
           <item row="2" column="2">
-           <widget class="MdShared::Switch" name="m_markSwitch" native="true">
+           <widget class="MdUtils::Switch" name="m_markSwitch" native="true">
             <property name="toolTip">
              <string>Turn on/off mark emphasis plugin.</string>
             </property>
@@ -140,7 +140,7 @@
            </spacer>
           </item>
           <item>
-           <widget class="MdShared::Switch" name="m_yamlSwitch" native="true"/>
+           <widget class="MdUtils::Switch" name="m_yamlSwitch" native="true"/>
           </item>
          </layout>
         </widget>
@@ -153,7 +153,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>MdShared::Switch</class>
+   <class>MdUtils::Switch</class>
    <extends>QWidget</extends>
    <header>switch.h</header>
    <container>1</container>

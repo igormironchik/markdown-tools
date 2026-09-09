@@ -49,11 +49,11 @@ bool operator!=(const Settings &s1,
 SettingsDlg::SettingsDlg(const Settings &s,
                          QSharedPointer<MdPdf::Syntax> syntax,
                          QWidget *parent)
-    : MdShared::DlgWheelFilter(parent)
+    : MdUtils::DlgWheelFilter(parent)
     , m_editorPage(new EditorSettingsPage(this))
     , m_colorsPage(new ColorsPage(this))
     , m_fontPage(new FontPage(this))
-    , m_pluginsPage(new MdShared::PluginsPage(this))
+    , m_pluginsPage(new MdUtils::PluginsPage(this))
     , m_previewPage(new PreviewSettingsPage(this))
 {
     m_colorsPage->initCodeThemes(syntax);

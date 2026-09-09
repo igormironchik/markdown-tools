@@ -7,7 +7,7 @@
 // Widgets include.
 #include "color.h"
 
-namespace MdShared
+namespace MdUtils
 {
 
 //
@@ -72,4 +72,4 @@ QColor darkerColor(const QColor &c,
     return hsv.convertTo(c.spec());
 }
 
-} /* namespace MdShared */
+} /* namespace MdUtils */

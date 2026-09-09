@@ -17,7 +17,7 @@
 #include <QScrollArea>
 #include <QScrollBar>
 
-namespace MdShared
+namespace MdUtils
 {
 
 namespace /* anonymous */
@@ -194,4 +194,4 @@ void LicenseDialog::anchorClicked()
     d->m_ui.m_stack->setCurrentWidget(a->widget());
 }
 
-} /* namespace MdShared */
+} /* namespace MdUtils */

@@ -560,7 +560,7 @@ void MainWindow::onAbout()
            "com</a>).<br /><br />"
            "Copyright (c) 2026 Igor Mironchik.<br /><br />"
            "Licensed under GNU GPL 3.0.")
-            .arg(MdShared::c_version, MdShared::c_md4qtVersion, MdShared::c_commit),
+            .arg(MdUtils::c_version, MdUtils::c_md4qtVersion, MdUtils::c_commit),
         QMessageBox::NoButton,
         this);
     QIcon icon = dlg.windowIcon();
@@ -741,7 +741,7 @@ void MainWindow::showMarkdownStandard(QTextCursor c)
 
     bool inlineSpan = false;
 
-    auto handleEmphasis = [](MD::ItemWithOpts *i, MdShared::LicenseDialog &dlg) {
+    auto handleEmphasis = [](MD::ItemWithOpts *i, MdUtils::LicenseDialog &dlg) {
         if (i->opts() & MD::TextOption::BoldText || i->opts() & MD::TextOption::ItalicText) {
             dlg.addLicense(tr("Emphasis and strong emphasis"),
                            QApplication::translate("Markdown", MdSyntax::s_emphasisAndStrongEmphasis));
@@ -752,7 +752,7 @@ void MainWindow::showMarkdownStandard(QTextCursor c)
         }
     };
 
-    MdShared::LicenseDialog dlg(this);
+    MdUtils::LicenseDialog dlg(this);
     dlg.setWindowTitle(tr("Extract from the Markdown Standard"));
 
     if (!items.empty()) {
@@ -910,8 +910,8 @@ void MainWindow::onCheckForUpdates()
 {
     if (QDateTime::currentDateTime() - m_d->m_lastCheckForUpdates
             > std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::hours(1))
-        && !GHRelease::majorMinorPatchCompare(MdShared::c_versionNumbers, m_d->m_updatesAbailable)) {
-        auto future = QtConcurrent::run(checkForUpdates, MdShared::c_versionNumbers);
+        && !GHRelease::majorMinorPatchCompare(MdUtils::c_versionNumbers, m_d->m_updatesAbailable)) {
+        auto future = QtConcurrent::run(checkForUpdates, MdUtils::c_versionNumbers);
         m_d->m_updateWatcher->setFuture(future);
     } else {
         onAddUpdatesButton();
@@ -940,7 +940,7 @@ void MainWindow::onAddUpdatesButton()
 {
     if (!m_d->m_updatesAbailable.isEmpty()
         && !m_d->m_updatesUrl.isEmpty()
-        && GHRelease::majorMinorPatchCompare(MdShared::c_versionNumbers, m_d->m_updatesAbailable)) {
+        && GHRelease::majorMinorPatchCompare(MdUtils::c_versionNumbers, m_d->m_updatesAbailable)) {
         auto btn = new GHRelease::NewVersionAvailableButton(m_d->m_updatesUrl,
                                                             GHRelease::NewVersionAvailableButton::OpenUrlOnClick,
                                                             statusBar());
@@ -1676,7 +1676,7 @@ void MainWindow::onSetWorkingDirectory()
     if (!m_d->m_tmpWorkingDir.isEmpty()) {
         if (m_d->m_tmpWorkingDir != m_d->m_workingDirectoryWidget->fullPath()
             && m_d->m_workingDirectoryWidget->fullPath().contains(m_d->m_tmpWorkingDir)) {
-            const auto idx = MdShared::FolderChooser::splitPath(m_d->m_tmpWorkingDir).size() - 1;
+            const auto idx = MdUtils::FolderChooser::splitPath(m_d->m_tmpWorkingDir).size() - 1;
 
             m_d->m_workingDirectoryWidget->folderChooser()->emulateClick(idx);
         }
@@ -2230,7 +2230,7 @@ void MainWindow::onAddTOC()
 
 void MainWindow::onShowLicenses()
 {
-    MdShared::LicenseDialog msg(this);
+    MdUtils::LicenseDialog msg(this);
     msg.addLicense(s_oxygenName, s_oxygenLicense);
     msg.addLicense(s_katexName, s_katexLicense);
     msg.addLicense(s_githubMarkdownCssName, s_githubMarkdownCssLicense);

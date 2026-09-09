@@ -1,12 +1,74 @@
 # SPDX-FileCopyrightText: 2026 Igor Mironchik <igor.mironchik@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-set(LIB_SRC
-	diff.h
-	diff.cpp)
+project(markdown-utils)
 
-find_package(Qt6 REQUIRED COMPONENTS Core)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
 
-add_library(md-utils STATIC ${LIB_SRC})
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
+find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
+    WidgetsAddons
+)
+find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} COMPONENTS
+    IconThemes ColorScheme Config
+)
 
-target_link_libraries(md-utils Qt6::Core)
+set(SRC license_dialog.h
+	license_dialog.cpp
+	license_dialog.ui
+	utils.h
+	utils.cpp
+	folder_chooser.h
+    folder_chooser.cpp
+    plugins_page.cpp
+    plugins_page.h
+    plugins_page.ui
+    switch.cpp
+    switch.h
+    color.h
+    color.cpp
+    fingergeometry.h
+    fingergeometry.cpp
+    dlg_filter_wheel.cpp
+    dlg_filter_wheel.h
+    md.h
+    diff.h
+    diff.cpp)
+
+qt6_add_resources(SRC qt.qrc)
+qt6_add_resources(SRC icon.qrc)
+qt6_add_resources(SRC tr.qrc)
+
+install(FILES "pics/icon_16x16.png" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/16x16/apps/" RENAME "markdown-tools.png")
+install(FILES "pics/icon_24x24.png" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/24x24/apps/" RENAME "markdown-tools.png")
+install(FILES "pics/icon_32x32.png" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/32x32/apps/" RENAME "markdown-tools.png")
+install(FILES "pics/icon_48x48.png" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/48x48/apps/" RENAME "markdown-tools.png")
+install(FILES "pics/icon_64x64.png" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/64x64/apps/" RENAME "markdown-tools.png")
+install(FILES "pics/icon_128x128.png" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/128x128/apps/" RENAME "markdown-tools.png")
+install(FILES "pics/icon_256x256.png" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/256x256/apps/" RENAME "markdown-tools.png")
+
+add_library(markdown-utils STATIC ${SRC})
+
+if(KF${KF_MAJOR_VERSION}IconThemes_FOUND AND KF${KF_MAJOR_VERSION}ColorScheme_FOUND
+    AND KF${KF_MAJOR_VERSION}Config_FOUND)
+    list(APPEND ADDITIONAL_TARGETS KF${KF_MAJOR_VERSION}::ConfigCore
+        KF${KF_MAJOR_VERSION}::IconThemes KF${KF_MAJOR_VERSION}::ColorScheme)
+    target_compile_definitions(markdown-utils PRIVATE MD_BREEZE)
+endif()
+
+configure_file(version.h.in ${CMAKE_CURRENT_BINARY_DIR}/version.h)
+configure_file(version.number.in ${CMAKE_CURRENT_BINARY_DIR}/version.number)
+
+target_link_libraries(markdown-utils
+    KF${KF_MAJOR_VERSION}::WidgetsAddons
+    ${ADDITIONAL_TARGETS}
+    md-pdf-lib
+    Qt6::Widgets
+    Qt6::Core)
+
+target_include_directories(markdown-utils PUBLIC ${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}/markdown-utils_autogen/include
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty)

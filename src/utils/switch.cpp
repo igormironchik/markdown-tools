@@ -18,7 +18,7 @@
 #include <QStyleHints>
 #include <QStyleOption>
 
-namespace MdShared
+namespace MdUtils
 {
 
 //
@@ -464,4 +464,4 @@ void Switch::resizeEvent(QResizeEvent *event)
     event->accept();
 }
 
-} /* namespace MdShared */
+} /* namespace MdUtils */

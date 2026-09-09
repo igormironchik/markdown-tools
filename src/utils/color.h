@@ -9,7 +9,7 @@
 // Qt include.
 #include <QColor>
 
-namespace MdShared
+namespace MdUtils
 {
 
 //
@@ -28,4 +28,4 @@ QColor lighterColor(const QColor &c,
 QColor darkerColor(const QColor &c,
                    int b);
 
-} /* namespace MdShared */
+} /* namespace MdUtils */

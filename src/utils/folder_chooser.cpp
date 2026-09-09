@@ -18,7 +18,7 @@
 // C++ include.
 #include <utility>
 
-namespace MdShared
+namespace MdUtils
 {
 
 void createMask(QBitmap &m,
@@ -345,6 +345,6 @@ void FolderChooser::updateFolders()
     }
 }
 
-} /* namespace MdShared */
+} /* namespace MdUtils */
 
 #include "folder_chooser.moc"

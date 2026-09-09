@@ -26,7 +26,7 @@ namespace Sonnet
 class ConfigWidget;
 }
 
-namespace MdShared
+namespace MdUtils
 {
 class PluginsPage;
 }
@@ -82,7 +82,7 @@ bool operator!=(const Settings &s1,
 //
 
 //! Settings dialog.
-class SettingsDlg : public MdShared::DlgWheelFilter
+class SettingsDlg : public MdUtils::DlgWheelFilter
 {
     Q_OBJECT
 
@@ -109,7 +109,7 @@ private:
     EditorSettingsPage *m_editorPage = nullptr;
     ColorsPage *m_colorsPage = nullptr;
     FontPage *m_fontPage = nullptr;
-    MdShared::PluginsPage *m_pluginsPage = nullptr;
+    MdUtils::PluginsPage *m_pluginsPage = nullptr;
     KPageWidgetItem *m_colorsPageItem = nullptr;
     KPageWidgetItem *m_editorPageItem = nullptr;
     PreviewSettingsPage *m_previewPage = nullptr;

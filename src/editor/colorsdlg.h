@@ -17,12 +17,12 @@
 #include "dlg_filter_wheel.h"
 #include "syntax.h"
 
-namespace MdShared
+namespace MdUtils
 {
 
 class ColorWidget;
 
-} /* namespace MdShared */
+} /* namespace MdUtils */
 
 namespace MdPdf
 {
@@ -41,7 +41,7 @@ namespace MdEditor
 struct ColorsDialogPrivate;
 
 //! Colors dialog.
-class ColorsDialog : public MdShared::DlgWheelFilter
+class ColorsDialog : public MdUtils::DlgWheelFilter
 {
     Q_OBJECT
 

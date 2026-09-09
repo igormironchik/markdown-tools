@@ -12,7 +12,7 @@
 #include <QByteArray>
 #include <QScreen>
 
-namespace MdShared
+namespace MdUtils
 {
 
 static const qreal fingerSize = 0.0393700787 * 10;
@@ -73,4 +73,4 @@ int FingerGeometry::longTouchBounce()
     return bounce;
 }
 
-} /* namespace MdShared */
+} /* namespace MdUtils */

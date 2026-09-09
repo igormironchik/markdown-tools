@@ -8,7 +8,7 @@
 // KDE include.
 #include <KPageDialog>
 
-namespace MdShared
+namespace MdUtils
 {
 
 //
@@ -35,4 +35,4 @@ protected:
     virtual void installFilterForChildren(QObject *parent);
 }; // class DlgWheelFilter
 
-} /* namespace MdShared */
+} /* namespace MdUtils */

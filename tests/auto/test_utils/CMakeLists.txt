@@ -17,9 +17,11 @@ set(SRC main.cpp)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/utils)
 
+link_directories(${MD_PDF_SKIA_BUILD_PATH})
+
 add_executable(test.utils ${SRC})
 
-target_link_libraries(test.utils md-utils Qt6::Test Qt6::Core)
+target_link_libraries(test.utils markdown-utils Qt6::Test Qt6::Core)
 
 add_test(NAME test.utils
 	COMMAND test.utils${CMAKE_EXECUTABLE_SUFFIX}

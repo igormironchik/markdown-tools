@@ -9,7 +9,7 @@
 // md-pdf-lib include.
 #include <md-pdf-lib/src/utils.h>
 
-namespace MdShared
+namespace MdUtils
 {
 
 //
@@ -31,17 +31,17 @@ public:
         m_ui.m_subChar->setText(QStringLiteral("-"));
         m_ui.m_markChar->setText(QStringLiteral("="));
 
-        QObject::connect(m_ui.m_supSwitch, &MdShared::Switch::stateChanged, q, &PluginsPage::onButtonStateChanged);
-        QObject::connect(m_ui.m_subSwitch, &MdShared::Switch::stateChanged, q, &PluginsPage::onButtonStateChanged);
-        QObject::connect(m_ui.m_markSwitch, &MdShared::Switch::stateChanged, q, &PluginsPage::onButtonStateChanged);
-        QObject::connect(m_ui.m_yamlSwitch, &MdShared::Switch::stateChanged, q, &PluginsPage::onButtonStateChanged);
+        QObject::connect(m_ui.m_supSwitch, &MdUtils::Switch::stateChanged, q, &PluginsPage::onButtonStateChanged);
+        QObject::connect(m_ui.m_subSwitch, &MdUtils::Switch::stateChanged, q, &PluginsPage::onButtonStateChanged);
+        QObject::connect(m_ui.m_markSwitch, &MdUtils::Switch::stateChanged, q, &PluginsPage::onButtonStateChanged);
+        QObject::connect(m_ui.m_yamlSwitch, &MdUtils::Switch::stateChanged, q, &PluginsPage::onButtonStateChanged);
         QObject::connect(m_ui.m_supChar, &QLineEdit::textChanged, q, &PluginsPage::onSupDelimChanged);
         QObject::connect(m_ui.m_subChar, &QLineEdit::textChanged, q, &PluginsPage::onSubDelimChanged);
         QObject::connect(m_ui.m_markChar, &QLineEdit::textChanged, q, &PluginsPage::onMarkDelimChanged);
     }
 
     bool isOk(QLineEdit *e,
-              MdShared::Switch *s = nullptr)
+              MdUtils::Switch *s = nullptr)
     {
         const auto text = e->text().simplified();
         bool ok = true;
@@ -50,7 +50,7 @@ public:
             ok = false;
 
             if (s) {
-                s->setState(MdShared::Switch::AcceptedUncheck);
+                s->setState(MdUtils::Switch::AcceptedUncheck);
             }
         }
 
@@ -92,23 +92,23 @@ void PluginsPage::setCfg(const MdPdf::PluginsCfg &cfg)
         d->m_ui.m_supChar->setText(cfg.m_sup.m_delimiter);
     }
 
-    d->m_ui.m_supSwitch->setState(cfg.m_sup.m_on ? MdShared::Switch::AcceptedCheck : MdShared::Switch::AcceptedUncheck);
+    d->m_ui.m_supSwitch->setState(cfg.m_sup.m_on ? MdUtils::Switch::AcceptedCheck : MdUtils::Switch::AcceptedUncheck);
 
     if (!cfg.m_sub.m_delimiter.isNull()) {
         d->m_ui.m_subChar->setText(cfg.m_sub.m_delimiter);
     }
 
-    d->m_ui.m_subSwitch->setState(cfg.m_sub.m_on ? MdShared::Switch::AcceptedCheck : MdShared::Switch::AcceptedUncheck);
+    d->m_ui.m_subSwitch->setState(cfg.m_sub.m_on ? MdUtils::Switch::AcceptedCheck : MdUtils::Switch::AcceptedUncheck);
 
     if (!cfg.m_mark.m_delimiter.isNull()) {
         d->m_ui.m_markChar->setText(cfg.m_mark.m_delimiter);
     }
 
-    d->m_ui.m_markSwitch->setState(cfg.m_mark.m_on ? MdShared::Switch::AcceptedCheck
-                                                   : MdShared::Switch::AcceptedUncheck);
+    d->m_ui.m_markSwitch->setState(cfg.m_mark.m_on ? MdUtils::Switch::AcceptedCheck
+                                                   : MdUtils::Switch::AcceptedUncheck);
 
-    d->m_ui.m_yamlSwitch->setState(cfg.m_yamlEnabled ? MdShared::Switch::AcceptedCheck
-                                                     : MdShared::Switch::AcceptedUncheck);
+    d->m_ui.m_yamlSwitch->setState(cfg.m_yamlEnabled ? MdUtils::Switch::AcceptedCheck
+                                                     : MdUtils::Switch::AcceptedUncheck);
 
     d->isOk(d->m_ui.m_supChar, d->m_ui.m_supSwitch);
     d->isOk(d->m_ui.m_subChar, d->m_ui.m_subSwitch);
@@ -160,15 +160,15 @@ MdPdf::PluginsCfg PluginsPage::cfg() const
 
 void PluginsPage::onButtonStateChanged(int st)
 {
-    auto btn = static_cast<MdShared::Switch *>(sender());
+    auto btn = static_cast<MdUtils::Switch *>(sender());
 
     switch (st) {
-    case MdShared::Switch::NotAcceptedCheck:
-        btn->setState(MdShared::Switch::AcceptedCheck);
+    case MdUtils::Switch::NotAcceptedCheck:
+        btn->setState(MdUtils::Switch::AcceptedCheck);
         break;
 
-    case MdShared::Switch::NotAcceptedUncheck:
-        btn->setState(MdShared::Switch::AcceptedUncheck);
+    case MdUtils::Switch::NotAcceptedUncheck:
+        btn->setState(MdUtils::Switch::AcceptedUncheck);
         break;
 
     default:
@@ -191,4 +191,4 @@ void PluginsPage::onMarkDelimChanged(const QString &)
     d->isOk(d->m_ui.m_markChar, d->m_ui.m_markSwitch);
 }
 
-} /* namespace MdShared */
+} /* namespace MdUtils */

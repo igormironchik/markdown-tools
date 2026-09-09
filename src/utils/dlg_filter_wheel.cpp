@@ -12,7 +12,7 @@
 #include <QEvent>
 #include <QSpinBox>
 
-namespace MdShared
+namespace MdUtils
 {
 
 DlgWheelFilter::DlgWheelFilter(QWidget *parent)
@@ -48,4 +48,4 @@ bool DlgWheelFilter::isFilteredType(QObject *o)
     return (qobject_cast<QComboBox *>(o) || qobject_cast<QSpinBox *>(o));
 }
 
-} /* namespace MdShared */
+} /* namespace MdUtils */

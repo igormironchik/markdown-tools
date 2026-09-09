@@ -58,6 +58,6 @@ install(TARGETS md-pdf-gui)
 target_link_libraries(md-pdf-gui
     KF${KF_MAJOR_VERSION}::WidgetsAddons
     ${ADDITIONAL_KDE_TARGETS}
-    markdown-widgets
+    markdown-utils
     md-pdf-lib
     Qt6::Widgets)

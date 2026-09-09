@@ -6,7 +6,7 @@
 
 #pragma once
 
-namespace MdShared
+namespace MdUtils
 {
 
 //
@@ -33,4 +33,4 @@ public:
     static int longTouchBounce();
 }; // class FingerGeometry
 
-} /* namespace MdShared */
+} /* namespace MdUtils */

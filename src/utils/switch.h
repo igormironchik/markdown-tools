@@ -10,7 +10,7 @@
 #include <QScopedPointer>
 #include <QWidget>
 
-namespace MdShared
+namespace MdUtils
 {
 
 //
@@ -180,7 +180,7 @@ public Q_SLOTS:
     /*!
         Set state of the button.
     */
-    void setState(MdShared::Switch::State st);
+    void setState(MdUtils::Switch::State st);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -197,4 +197,4 @@ private:
     QScopedPointer<SwitchPrivate> d;
 }; // class Switch
 
-} /* namespace MdShared */
+} /* namespace MdUtils */

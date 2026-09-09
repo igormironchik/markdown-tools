@@ -35,7 +35,7 @@ struct ColorsDialogPrivate {
 ColorsDialog::ColorsDialog(const Colors &cols,
                            QSharedPointer<MdPdf::Syntax> syntax,
                            QWidget *parent)
-    : MdShared::DlgWheelFilter(parent)
+    : MdUtils::DlgWheelFilter(parent)
     , m_d(new ColorsDialogPrivate(this))
 {
     setWindowTitle(tr("Colors"));

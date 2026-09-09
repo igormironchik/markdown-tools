@@ -8,7 +8,7 @@
 // Qt include.
 #include <QWidget>
 
-namespace MdShared
+namespace MdUtils
 {
 
 //
@@ -87,4 +87,4 @@ private:
     Q_DISABLE_COPY(FolderChooser)
 }; // class FolderChooser
 
-} /* namespace MdShared */
+} /* namespace MdUtils */

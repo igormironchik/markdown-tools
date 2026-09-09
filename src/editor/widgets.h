@@ -16,7 +16,7 @@ class QToolButton;
 class QCheckBox;
 QT_END_NAMESPACE
 
-namespace MdShared
+namespace MdUtils
 {
 
 class FolderChooser;
@@ -115,7 +115,7 @@ public:
     //! Should relative path be used?
     bool isRelative() const;
     //! \return Folder chooser widget.
-    MdShared::FolderChooser *folderChooser();
+    MdUtils::FolderChooser *folderChooser();
 
     int labelHeight() const;
 
@@ -137,7 +137,7 @@ private:
     //! Checkbox for enabling/disabling working directory usage.
     QCheckBox *m_useWorkingDir = nullptr;
     //! Folder chooser widget.
-    MdShared::FolderChooser *m_folderChooser = nullptr;
+    MdUtils::FolderChooser *m_folderChooser = nullptr;
     //! Currently selected path.
     QString m_currentPath;
     //! Full available path.

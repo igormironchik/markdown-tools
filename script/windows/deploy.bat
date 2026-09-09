@@ -1,6 +1,6 @@
 echo "Installing Qt Installer Framework..."
 
-set /P app_version=<%CD%\..\builds\build-markdown-tools\src\shared\version.number
+set /P app_version=<%CD%\..\builds\build-markdown-tools\src\utils\version.number
 
 IF EXIST "..\Qt\Tools\QtInstallerFramework" (
    echo "Qt Installer Framework is installed already. Skipping."

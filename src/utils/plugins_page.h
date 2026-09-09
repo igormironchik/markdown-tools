@@ -18,7 +18,7 @@ struct PluginsCfg;
 
 }
 
-namespace MdShared
+namespace MdUtils
 {
 
 //
@@ -58,4 +58,4 @@ private:
     Q_DISABLE_COPY(PluginsPage)
 }; // class PluginsPage
 
-} /* namespace MdShared */
+} /* namespace MdUtils */

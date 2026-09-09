@@ -8,7 +8,7 @@
 // Qt include.
 #include <QDialog>
 
-namespace MdShared
+namespace MdUtils
 {
 
 //
@@ -39,4 +39,4 @@ private:
     Q_DISABLE_COPY(LicenseDialog)
 }; // class LicenseDialog
 
-} /* namespace MdShared */
+} /* namespace MdUtils */
