@@ -324,12 +324,12 @@
 <context>
     <name>LicenseDialog</name>
     <message>
-        <location filename="../src/shared/license_dialog.ui" line="18"/>
+        <location filename="../src/utils/license_dialog.ui" line="18"/>
         <source>Licenses</source>
         <translation>Лицензии</translation>
     </message>
     <message>
-        <location filename="../src/shared/license_dialog.ui" line="85"/>
+        <location filename="../src/utils/license_dialog.ui" line="85"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
@@ -357,92 +357,92 @@
         <translation>Шрифт кода</translation>
     </message>
     <message>
-        <location filename="../src/converter/main_window.ui" line="78"/>
+        <location filename="../src/converter/main_window.ui" line="77"/>
         <source>Images alignment</source>
         <translation>Выравнивание картинок</translation>
     </message>
     <message>
-        <location filename="../src/converter/main_window.ui" line="101"/>
+        <location filename="../src/converter/main_window.ui" line="100"/>
         <source>Text font size</source>
         <translation>Размер шрифта текста</translation>
     </message>
     <message>
-        <location filename="../src/converter/main_window.ui" line="114"/>
+        <location filename="../src/converter/main_window.ui" line="113"/>
         <source>Text font</source>
         <translation>Шрифт текста</translation>
     </message>
     <message>
-        <location filename="../src/converter/main_window.ui" line="131"/>
+        <location filename="../src/converter/main_window.ui" line="129"/>
         <source>Link color</source>
         <translation>Цвет ссылки</translation>
     </message>
     <message>
-        <location filename="../src/converter/main_window.ui" line="168"/>
+        <location filename="../src/converter/main_window.ui" line="166"/>
         <source>Left</source>
         <translation>По левому краю</translation>
     </message>
     <message>
-        <location filename="../src/converter/main_window.ui" line="173"/>
+        <location filename="../src/converter/main_window.ui" line="171"/>
         <source>Center</source>
         <translation>По центру</translation>
     </message>
     <message>
-        <location filename="../src/converter/main_window.ui" line="178"/>
+        <location filename="../src/converter/main_window.ui" line="176"/>
         <source>Right</source>
         <translation>По правому краю</translation>
     </message>
     <message>
-        <location filename="../src/converter/main_window.ui" line="186"/>
+        <location filename="../src/converter/main_window.ui" line="184"/>
         <source>DPI for images</source>
         <translation>DPI для картинок</translation>
     </message>
     <message>
-        <location filename="../src/converter/main_window.ui" line="199"/>
+        <location filename="../src/converter/main_window.ui" line="197"/>
         <source>Code font size</source>
         <translation>Размер шрифта кода</translation>
     </message>
     <message>
-        <location filename="../src/converter/main_window.ui" line="212"/>
+        <location filename="../src/converter/main_window.ui" line="210"/>
         <source>Code theme</source>
         <translation>Тема кода</translation>
     </message>
     <message>
-        <location filename="../src/converter/main_window.ui" line="240"/>
+        <location filename="../src/converter/main_window.ui" line="238"/>
         <source>Page margins</source>
         <translation>Отступы</translation>
     </message>
     <message>
-        <location filename="../src/converter/main_window.ui" line="362"/>
+        <location filename="../src/converter/main_window.ui" line="360"/>
         <source>mm</source>
         <translation>мм</translation>
     </message>
     <message>
-        <location filename="../src/converter/main_window.ui" line="384"/>
+        <location filename="../src/converter/main_window.ui" line="382"/>
         <source>pt</source>
         <translation>пт</translation>
     </message>
     <message>
-        <location filename="../src/converter/main_window.ui" line="513"/>
+        <location filename="../src/converter/main_window.ui" line="511"/>
         <source>Markdown</source>
         <translation>Markdown</translation>
     </message>
     <message>
-        <location filename="../src/converter/main_window.ui" line="519"/>
+        <location filename="../src/converter/main_window.ui" line="517"/>
         <source>Use working directory</source>
         <translation>Использовать рабочую директорию</translation>
     </message>
     <message>
-        <location filename="../src/converter/main_window.ui" line="566"/>
+        <location filename="../src/converter/main_window.ui" line="564"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/converter/main_window.ui" line="575"/>
+        <location filename="../src/converter/main_window.ui" line="573"/>
         <source>Load all linked Markdown files</source>
         <translation>Загружать все присоединенные Markdown файлы</translation>
     </message>
     <message>
-        <location filename="../src/converter/main_window.ui" line="597"/>
+        <location filename="../src/converter/main_window.ui" line="595"/>
         <source>Start</source>
         <translation>Запуск</translation>
     </message>
@@ -450,7 +450,7 @@
 <context>
     <name>Markdown</name>
     <message>
-        <location filename="../src/shared/md.h" line="14"/>
+        <location filename="../src/utils/md.h" line="14"/>
         <source>&lt;p&gt;&lt;b&gt;Thematic breaks&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;A line consisting of optionally up to three spaces of indentation, followed by a sequence of three or more matching &lt;code&gt;-&lt;/code&gt;, &lt;code&gt;_&lt;/code&gt;, or &lt;code&gt;*&lt;/code&gt; characters, each followed optionally by any number of spaces or tabs, forms a thematic break.&lt;/p&gt;
 &lt;p&gt;&lt;b&gt;Example&lt;/b&gt;
@@ -458,7 +458,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/shared/md.h" line="23"/>
+        <location filename="../src/utils/md.h" line="23"/>
         <source>&lt;p&gt;&lt;b&gt;ATX headings&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;An ATX heading consists of a string of characters, parsed as inline content, between an opening sequence of 1–6 unescaped &lt;code&gt;#&lt;/code&gt; characters and an optional closing sequence of any number of unescaped &lt;code&gt;#&lt;/code&gt; characters. The opening sequence of &lt;code&gt;#&lt;/code&gt; characters must be followed by spaces or tabs, or by the end of line. The optional closing sequence of &lt;code&gt;#&lt;/code&gt;s must be preceded by spaces or tabs and may be followed by spaces or tabs only. The opening &lt;code&gt;#&lt;/code&gt; character may be preceded by up to three spaces of indentation. The raw contents of the heading are stripped of leading and trailing space or tabs before being parsed as inline content. The heading level is equal to the number of &lt;code&gt;#&lt;/code&gt; characters in the opening sequence.&lt;/p&gt;
 &lt;p&gt;&lt;b&gt;Example&lt;/b&gt;
@@ -466,7 +466,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/shared/md.h" line="37"/>
+        <location filename="../src/utils/md.h" line="37"/>
         <source>&lt;p&gt;&lt;b&gt;Setext headings&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;A setext heading consists of one or more lines of text, not interrupted by a blank line, of which the first line does not have more than 3 spaces of indentation, followed by a setext heading underline. The lines of text must be such that, were they not followed by the setext heading underline, they would be interpreted as a paragraph: they cannot be interpretable as a code fence, ATX heading, block quote, thematic break, list item, or HTML block.&lt;/p&gt;
 &lt;p&gt;A setext heading underline is a sequence of &lt;code&gt;=&lt;/code&gt; characters or a sequence of &lt;code&gt;-&lt;/code&gt; characters, with no more than 3 spaces of indentation and any number of trailing spaces or tabs.&lt;/p&gt;
@@ -478,7 +478,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/shared/md.h" line="56"/>
+        <location filename="../src/utils/md.h" line="56"/>
         <source>&lt;p&gt;&lt;b&gt;Indented code blocks&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;An indented code block is composed of one or more indented chunks separated by blank lines. An indented chunk is a sequence of non-blank lines, each preceded by four or more spaces of indentation. The contents of the code block are the literal contents of the lines, including trailing line endings, minus four spaces of indentation. An indented code block has no info string.&lt;/p&gt;
 &lt;p&gt;An indented code block cannot interrupt a paragraph, so there must be a blank line between a paragraph and a following indented code block. (A blank line is not needed, however, between a code block and a following paragraph.)&lt;/p&gt;
@@ -488,7 +488,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/shared/md.h" line="70"/>
+        <location filename="../src/utils/md.h" line="70"/>
         <source>&lt;p&gt;&lt;b&gt;Fenced code blocks&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;A code fence is a sequence of at least three consecutive backtick characters (&lt;code&gt;`&lt;/code&gt;) or tildes (&lt;code&gt;~&lt;/code&gt;). (Tildes and backticks cannot be mixed.) A fenced code block begins with a code fence, preceded by up to three spaces of indentation.&lt;/p&gt;
 &lt;p&gt;The line with the opening code fence may optionally contain some text following the code fence; this is trimmed of leading and trailing spaces or tabs and called the info string. If the info string comes after a backtick fence, it may not contain any backtick characters. (The reason for this restriction is that otherwise some inline code would be incorrectly interpreted as the beginning of a fenced code block.)&lt;/p&gt;
@@ -503,7 +503,7 @@ int i = 0;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/shared/md.h" line="101"/>
+        <location filename="../src/utils/md.h" line="101"/>
         <source>&lt;p&gt;&lt;b&gt;HTML blocks&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;An HTML block is a group of lines that is treated as raw HTML (and will not be escaped in HTML output).&lt;/p&gt;
 &lt;p&gt;There are seven kinds of HTML block, which can be defined by their start and end conditions. The block begins with a line that meets a start condition (after up to three optional spaces of indentation). It ends with the first subsequent line that meets a matching end condition, or the last line of the document, or the last line of the container block containing the current HTML block, if no line is encountered that meets the end condition. If the first line meets both the start condition and the end condition, the block will contain just that line.&lt;/p&gt;
@@ -542,7 +542,7 @@ int i = 0;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/shared/md.h" line="168"/>
+        <location filename="../src/utils/md.h" line="168"/>
         <source>&lt;p&gt;&lt;b&gt;Link reference definitions&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;A link reference definition consists of a link label, optionally preceded by up to three spaces of indentation, followed by a colon (&lt;code&gt;:&lt;/code&gt;), optional spaces or tabs (including up to one line ending), a link destination, optional spaces or tabs (including up to one line ending), and an optional link title, which if it is present must be separated from the link destination by spaces or tabs. No further character may occur.&lt;/p&gt;
 &lt;p&gt;A link reference definition does not correspond to a structural element of a document. Instead, it defines a label which can be used in reference links and reference-style images elsewhere in the document. Link reference definitions can come either before or after the links that use them.&lt;/p&gt;
@@ -551,7 +551,7 @@ int i = 0;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/shared/md.h" line="182"/>
+        <location filename="../src/utils/md.h" line="182"/>
         <source>&lt;p&gt;&lt;b&gt;Paragraphs&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;A sequence of non-blank lines that cannot be interpreted as other kinds of blocks forms a paragraph. The contents of the paragraph are the result of parsing the paragraph’s raw content as inlines. The paragraph’s raw content is formed by concatenating the lines and removing initial and final spaces or tabs.&lt;/p&gt;
 &lt;p&gt;&lt;b&gt;Example&lt;/b&gt;
@@ -559,7 +559,7 @@ int i = 0;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/shared/md.h" line="191"/>
+        <location filename="../src/utils/md.h" line="191"/>
         <source>&lt;p&gt;&lt;b&gt;Block quotes&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;A block quote marker, optionally preceded by up to three spaces of indentation, consists of (a) the character &lt;code&gt;&amp;gt;&lt;/code&gt; together with a following space of indentation, or (b) a single character &lt;code&gt;&amp;gt;&lt;/code&gt; not followed by a space of indentation.&lt;/p&gt;
 &lt;p&gt;The following rules define block quotes:&lt;/p&gt;
@@ -580,7 +580,7 @@ int i = 0;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/shared/md.h" line="220"/>
+        <location filename="../src/utils/md.h" line="220"/>
         <source>&lt;p&gt;&lt;b&gt;List items&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;A list marker is a bullet list marker or an ordered list marker.&lt;/p&gt;
 &lt;p&gt;A bullet list marker is a &lt;code&gt;-&lt;/code&gt;, &lt;code&gt;+&lt;/code&gt;, or &lt;code&gt;*&lt;/code&gt; character.&lt;/p&gt;
@@ -620,7 +620,7 @@ int i = 0;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/shared/md.h" line="287"/>
+        <location filename="../src/utils/md.h" line="287"/>
         <source>&lt;p&gt;&lt;b&gt;Lists&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;A list is a sequence of one or more list items of the same type. The list items may be separated by any number of blank lines.&lt;/p&gt;
 &lt;p&gt;Two list items are of the same type if they begin with a list marker of the same type. Two list markers are of the same type if (a) they are bullet list markers using the same character (&lt;code&gt;-&lt;/code&gt;, &lt;code&gt;+&lt;/code&gt;, or &lt;code&gt;*&lt;/code&gt;) or (b) they are ordered list numbers with the same delimiter (either &lt;code&gt;.&lt;/code&gt; or &lt;code&gt;)&lt;/code&gt;).&lt;/p&gt;
@@ -632,7 +632,7 @@ int i = 0;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/shared/md.h" line="307"/>
+        <location filename="../src/utils/md.h" line="307"/>
         <source>&lt;p&gt;&lt;b&gt;Tables&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;A table is an arrangement of data with rows and columns, consisting of a single header row, a delimiter row separating the header from the data, and zero or more data rows.&lt;/p&gt;
 &lt;p&gt;Each row consists of cells containing arbitrary text, in which inlines are parsed, separated by pipes (&lt;code&gt;|&lt;/code&gt;). A leading and trailing pipe is also recommended for clarity of reading, and if there’s otherwise parsing ambiguity. Spaces between pipes and cell content are trimmed. Block-level elements cannot be inserted in a table.&lt;/p&gt;
@@ -644,7 +644,7 @@ int i = 0;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/shared/md.h" line="324"/>
+        <location filename="../src/utils/md.h" line="324"/>
         <source>&lt;p&gt;&lt;b&gt;Task list items&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;A task list item is a list item where the first block in it is a paragraph which begins with a task list item marker and at least one whitespace character before any other content.&lt;/p&gt;
 &lt;p&gt;A task list item marker consists of an optional number of spaces, a left bracket (&lt;code&gt;[&lt;/code&gt;), either a whitespace character or the letter &lt;code&gt;x&lt;/code&gt; in either lowercase or uppercase, and then a right bracket (&lt;code&gt;]&lt;/code&gt;).&lt;/p&gt;
@@ -654,7 +654,7 @@ int i = 0;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/shared/md.h" line="337"/>
+        <location filename="../src/utils/md.h" line="337"/>
         <source>&lt;p&gt;&lt;b&gt;Code spans&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;A backtick string is a string of one or more backtick characters (&lt;code&gt;`&lt;/code&gt;) that is neither preceded nor followed by a backtick.&lt;/p&gt;
 &lt;p&gt;A code span begins with a backtick string and ends with a backtick string of equal length. The contents of the code span are the characters between these two backtick strings, normalized in the following ways:&lt;/p&gt;
@@ -671,7 +671,7 @@ int i = 0;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/shared/md.h" line="358"/>
+        <location filename="../src/utils/md.h" line="358"/>
         <source>&lt;p&gt;&lt;b&gt;Emphasis and strong emphasis&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;First, some definitions. A delimiter run is either a sequence of one or more &lt;code&gt;*&lt;/code&gt; characters that is not preceded or followed by a non-backslash-escaped &lt;code&gt;*&lt;/code&gt; character, or a sequence of one or more &lt;code&gt;_&lt;/code&gt; characters that is not preceded or followed by a non-backslash-escaped &lt;code&gt;_&lt;/code&gt; character.&lt;/p&gt;
 &lt;p&gt;A left-flanking delimiter run is a delimiter run that is (1) not followed by Unicode whitespace, and either (2a) not followed by a Unicode punctuation character, or (2b) followed by a Unicode punctuation character and preceded by Unicode whitespace or a Unicode punctuation character. For purposes of this definition, the beginning and the end of the line count as Unicode whitespace.&lt;/p&gt;
@@ -763,7 +763,7 @@ a _ b&lt;/code&gt;&lt;/pre&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/shared/md.h" line="496"/>
+        <location filename="../src/utils/md.h" line="496"/>
         <source>&lt;p&gt;&lt;b&gt;Links&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;A link contains link text (the visible text), a link destination (the URI that is the link destination), and optionally a link title. There are two basic kinds of links in Markdown. In inline links the destination and title are given immediately after the link text. In reference links the destination and title are defined elsewhere in the document.&lt;/p&gt;
 &lt;p&gt;A link text consists of a sequence of zero or more inline elements enclosed by square brackets (&lt;code&gt;[&lt;/code&gt; and &lt;code&gt;]&lt;/code&gt;). The following rules apply:&lt;/p&gt;
@@ -820,7 +820,7 @@ a _ b&lt;/code&gt;&lt;/pre&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/shared/md.h" line="590"/>
+        <location filename="../src/utils/md.h" line="590"/>
         <source>&lt;p&gt;&lt;b&gt;Images&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;Syntax for images is like the syntax for links, with one difference. Instead of link text, we have an image description. The rules for this are the same as for link text, except that (a) an image description starts with &lt;code&gt;![&lt;/code&gt; rather than &lt;code&gt;[&lt;/code&gt;, and (b) an image description may contain links. An image description has inline elements as its contents. When an image is rendered to HTML, this is standardly used as the image’s &lt;code&gt;alt&lt;/code&gt; attribute.&lt;/p&gt;
 &lt;p&gt;&lt;b&gt;Example&lt;/b&gt;
@@ -828,7 +828,7 @@ a _ b&lt;/code&gt;&lt;/pre&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/shared/md.h" line="601"/>
+        <location filename="../src/utils/md.h" line="601"/>
         <source>&lt;p&gt;&lt;b&gt;Autolinks&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;Autolinks are absolute URIs and email addresses inside &lt;code&gt;&amp;lt;&lt;/code&gt; and &lt;code&gt;&amp;gt;&lt;/code&gt;. They are parsed as links, with the URL or email address as the link label.&lt;/p&gt;
 &lt;p&gt;A URI autolink consists of &lt;code&gt;&amp;lt;&lt;/code&gt;, followed by an absolute URI followed by &lt;code&gt;&amp;gt;&lt;/code&gt;. It is parsed as a link to the URI, with the URI as the link’s label.&lt;/p&gt;
@@ -843,7 +843,7 @@ a _ b&lt;/code&gt;&lt;/pre&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/shared/md.h" line="629"/>
+        <location filename="../src/utils/md.h" line="629"/>
         <source>&lt;p&gt;&lt;b&gt;Raw HTML&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;Text between &lt;code&gt;&amp;lt;&lt;/code&gt; and &lt;code&gt;&amp;gt;&lt;/code&gt; that looks like an HTML tag is parsed as a raw HTML tag and will be rendered in HTML without escaping. Tag and attribute names are not limited to current HTML tags, so custom tags (and even, say, DocBook tags) may be used.&lt;/p&gt;
 &lt;p&gt;Here is the grammar for tags:&lt;/p&gt;
@@ -867,7 +867,7 @@ a _ b&lt;/code&gt;&lt;/pre&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/shared/md.h" line="672"/>
+        <location filename="../src/utils/md.h" line="672"/>
         <source>&lt;p&gt;&lt;b&gt;Hard line breaks&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;A line ending (not in a code span or HTML tag) that is preceded by two or more spaces and does not occur at the end of a block is parsed as a hard line break (rendered in HTML as a &lt;code&gt;&amp;lt;br /&amp;gt;&lt;/code&gt; tag):&lt;/p&gt;
 &lt;p&gt;&lt;b&gt;Example&lt;/b&gt;
@@ -875,7 +875,7 @@ a _ b&lt;/code&gt;&lt;/pre&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/shared/md.h" line="680"/>
+        <location filename="../src/utils/md.h" line="680"/>
         <source>&lt;p&gt;&lt;b&gt;Strikethrough&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;Strikethrough text is any text wrapped in a matching pair of one or two tildes (&lt;code&gt;~&lt;/code&gt;).&lt;/p&gt;
 &lt;p&gt;&lt;b&gt;Example&lt;/b&gt;
@@ -883,7 +883,7 @@ a _ b&lt;/code&gt;&lt;/pre&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/shared/md.h" line="687"/>
+        <location filename="../src/utils/md.h" line="687"/>
         <source>&lt;p&gt;&lt;b&gt;Blank lines&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;Blank lines between block-level elements are ignored, except for the role they play in determining whether a list is tight or loose.&lt;/p&gt;
 &lt;p&gt;Blank lines at the beginning and end of the document are also ignored.&lt;/p&gt;</source>
@@ -2072,7 +2072,14 @@ This image is not a local existing file, and not in the Web. Check your Markdown
 <context>
     <name>MdShared::FolderWidget</name>
     <message>
-        <location filename="../src/shared/folder_chooser.cpp" line="92"/>
+        <source>Choose working directory...</source>
+        <translation type="vanished">Выберите рабочую директорию...</translation>
+    </message>
+</context>
+<context>
+    <name>MdUtils::FolderWidget</name>
+    <message>
+        <location filename="../src/utils/folder_chooser.cpp" line="92"/>
         <source>Choose working directory...</source>
         <translation>Выберите рабочую директорию...</translation>
     </message>
@@ -2080,59 +2087,59 @@ This image is not a local existing file, and not in the Web. Check your Markdown
 <context>
     <name>PluginsPage</name>
     <message>
-        <location filename="../src/shared/plugins_page.ui" line="14"/>
+        <location filename="../src/utils/plugins_page.ui" line="14"/>
         <source>Form</source>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../src/shared/plugins_page.ui" line="47"/>
+        <location filename="../src/utils/plugins_page.ui" line="47"/>
         <source>Additional emphasises</source>
         <translation>Дополнительные стили</translation>
     </message>
     <message>
-        <location filename="../src/shared/plugins_page.ui" line="53"/>
+        <location filename="../src/utils/plugins_page.ui" line="53"/>
         <source>Delimiter for superscript emphasis</source>
         <translation>Символ для надстрочного стиля</translation>
     </message>
     <message>
-        <location filename="../src/shared/plugins_page.ui" line="60"/>
-        <location filename="../src/shared/plugins_page.ui" line="81"/>
-        <location filename="../src/shared/plugins_page.ui" line="102"/>
+        <location filename="../src/utils/plugins_page.ui" line="60"/>
+        <location filename="../src/utils/plugins_page.ui" line="81"/>
+        <location filename="../src/utils/plugins_page.ui" line="102"/>
         <source>Only first character will be used.</source>
         <translation>Только первый символ будет использован.</translation>
     </message>
     <message>
-        <location filename="../src/shared/plugins_page.ui" line="67"/>
+        <location filename="../src/utils/plugins_page.ui" line="67"/>
         <source>Turn on/off superscript emphasis plugin.</source>
         <translation>Включить/выключить плагин надстрочного стиля.</translation>
     </message>
     <message>
-        <location filename="../src/shared/plugins_page.ui" line="74"/>
+        <location filename="../src/utils/plugins_page.ui" line="74"/>
         <source>Delimiter for subscript emphasis</source>
         <translation>Символ для подстрочного стиля</translation>
     </message>
     <message>
-        <location filename="../src/shared/plugins_page.ui" line="88"/>
+        <location filename="../src/utils/plugins_page.ui" line="88"/>
         <source>Turn on/off subscript emphasis plugin.</source>
         <translation>Включить/выключить плагин подстрочного стиля.</translation>
     </message>
     <message>
-        <location filename="../src/shared/plugins_page.ui" line="95"/>
+        <location filename="../src/utils/plugins_page.ui" line="95"/>
         <source>Delimiter for mark emphasis</source>
         <translation>Символ для выделенного стиля</translation>
     </message>
     <message>
-        <location filename="../src/shared/plugins_page.ui" line="109"/>
+        <location filename="../src/utils/plugins_page.ui" line="109"/>
         <source>Turn on/off mark emphasis plugin.</source>
         <translation>Включить/выключить плагин выделенного стиля.</translation>
     </message>
     <message>
-        <location filename="../src/shared/plugins_page.ui" line="119"/>
+        <location filename="../src/utils/plugins_page.ui" line="119"/>
         <source>Additional blocks</source>
         <translation>Дополнительные блоки</translation>
     </message>
     <message>
-        <location filename="../src/shared/plugins_page.ui" line="125"/>
+        <location filename="../src/utils/plugins_page.ui" line="125"/>
         <source>YAML header</source>
         <translation>YAML заголовок</translation>
     </message>
