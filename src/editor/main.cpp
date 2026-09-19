@@ -115,6 +115,7 @@ int main(int argc,
     w.setStartupState(state);
 
     w.show();
+    w.readCfg();
 
     return QApplication::exec();
 }

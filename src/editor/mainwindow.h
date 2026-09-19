@@ -52,6 +52,8 @@ public Q_SLOTS:
     void setStartupState(const MdEditor::StartupState &st);
     //! Show the extract from Markdown Standard for the cursor.
     void showMarkdownStandard(QTextCursor c);
+    //! Read configuration.
+    void readCfg();
 
 protected:
     void resizeEvent(QResizeEvent *e) override;
@@ -162,8 +164,6 @@ private:
     const QString &htmlContent() const;
     //! Save configuration.
     void saveCfg() const;
-    //! Read configuration.
-    void readCfg();
     //! Read all linked files.
     void readAllLinked(bool updateRootFileName = false);
     //! Update window title.

@@ -1699,8 +1699,6 @@ void MainWindow::onProcessQueue()
 
 void MainWindow::onFirstTimeShown()
 {
-    readCfg();
-
     updateStyle(false, true, true);
 
     if (!m_d->m_startupState.m_fileName.isEmpty()) {
