@@ -3,6 +3,7 @@ name: Trigger OBS Build on Release
 on:
   release:
     types: [published]
+  workflow_dispatch:
 
 jobs:
   trigger-obs:
@@ -12,22 +13,22 @@ jobs:
         run: |
           curl -X POST \
             -H "Authorization: Token ${{ secrets.OBS_TOKEN_SECRET_1 }}" \
-            "https://build.opensuse.org/trigger/runservice?id=${{ secrets.OBS_TOKEN_ID_1 }}"
+            "https://api.opensuse.org/trigger/runservice?id=${{ secrets.OBS_TOKEN_ID_1 }}"
 
       - name: Send Trigger to OBS 2
         run: |
           curl -X POST \
             -H "Authorization: Token ${{ secrets.OBS_TOKEN_SECRET_2 }}" \
-            "https://build.opensuse.org/trigger/runservice?id=${{ secrets.OBS_TOKEN_ID_2 }}"
+            "https://api.opensuse.org/trigger/runservice?id=${{ secrets.OBS_TOKEN_ID_2 }}"
             
       - name: Send Trigger to OBS 3
         run: |
           curl -X POST \
             -H "Authorization: Token ${{ secrets.OBS_TOKEN_SECRET_3 }}" \
-            "https://build.opensuse.org/trigger/runservice?id=${{ secrets.OBS_TOKEN_ID_3 }}"
+            "https://api.opensuse.org/trigger/runservice?id=${{ secrets.OBS_TOKEN_ID_3 }}"
 
       - name: Send Trigger to OBS 4
         run: |
           curl -X POST \
             -H "Authorization: Token ${{ secrets.OBS_TOKEN_SECRET_4 }}" \
-            "https://build.opensuse.org/trigger/runservice?id=${{ secrets.OBS_TOKEN_ID_4 }}"
+            "https://api.opensuse.org/trigger/runservice?id=${{ secrets.OBS_TOKEN_ID_4 }}"
