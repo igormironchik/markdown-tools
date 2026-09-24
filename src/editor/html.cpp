@@ -382,7 +382,7 @@ void HtmlConv::onFootnotes(const QString &footnoteBackLinkContent)
         const auto fit = this->m_doc->footnotesMap().find(id.m_id);
 
         if (fit != this->m_doc->footnotesMap().cend()) {
-            this->onFootnote(fit->get());
+            this->onFootnote(fit->m_footnote.get());
         }
     }
 
@@ -399,11 +399,11 @@ void HtmlConv::onFootnotes(const QString &footnoteBackLinkContent)
 
         if (fit != this->m_doc->footnotesMap().cend()) {
             m_id = id.m_id;
-            m_top = fit->get();
+            m_top = fit->m_footnote.get();
             m_count = 0;
             m_lastCount = 0;
 
-            this->onFootnote(fit->get());
+            this->onFootnote(fit->m_footnote.get());
 
             if (!footnoteBackLinkContent.isEmpty()) {
                 QString backRef;

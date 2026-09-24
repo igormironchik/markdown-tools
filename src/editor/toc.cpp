@@ -62,9 +62,9 @@ StringData::StringData(const QString &t,
               c,
               rtl})
     , m_splittedText(MdPdf::splitString(m_data.m_text,
-                                 true,
-                                 unicode,
-                                 rtl))
+                                        true,
+                                        unicode,
+                                        rtl))
 {
     MdPdf::orderWords(m_splittedText, m_data.m_isRightToLeft);
 }

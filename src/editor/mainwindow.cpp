@@ -1957,7 +1957,8 @@ void MainWindow::onScrollEditor(const QString &id)
     const auto fit = m_d->m_mdDoc->footnotesMap().find(tmp);
 
     if (!tmp.isEmpty() && (fit != m_d->m_mdDoc->footnotesMap().cend() || m_d->m_editor->itemsMap().contains(tmp))) {
-        auto item = (fit != m_d->m_mdDoc->footnotesMap().cend() ? fit->get() : m_d->m_editor->itemsMap()[tmp]);
+        auto item =
+            (fit != m_d->m_mdDoc->footnotesMap().cend() ? fit->m_footnote.get() : m_d->m_editor->itemsMap()[tmp]);
 
         auto c = m_d->m_editor->textCursor();
 

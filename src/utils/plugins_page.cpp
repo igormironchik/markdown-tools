@@ -104,8 +104,7 @@ void PluginsPage::setCfg(const MdPdf::PluginsCfg &cfg)
         d->m_ui.m_markChar->setText(cfg.m_mark.m_delimiter);
     }
 
-    d->m_ui.m_markSwitch->setState(cfg.m_mark.m_on ? MdUtils::Switch::AcceptedCheck
-                                                   : MdUtils::Switch::AcceptedUncheck);
+    d->m_ui.m_markSwitch->setState(cfg.m_mark.m_on ? MdUtils::Switch::AcceptedCheck : MdUtils::Switch::AcceptedUncheck);
 
     d->m_ui.m_yamlSwitch->setState(cfg.m_yamlEnabled ? MdUtils::Switch::AcceptedCheck
                                                      : MdUtils::Switch::AcceptedUncheck);
