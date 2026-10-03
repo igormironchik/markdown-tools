@@ -513,6 +513,12 @@ void MainWindowPrivate::initUi()
             QDesktopServices::openUrl(QUrl(QStringLiteral("https://github.com/igormironchik/markdown-tools/issues")));
         });
 
+    m_refreshAction = new QAction(
+        QIcon::fromTheme(QStringLiteral("view-refresh"), QIcon(QStringLiteral(":/res/img/view-refresh.png"))),
+        MainWindow::tr("Refresh"));
+    m_refreshAction->setShortcut(MainWindow::tr("F5"));
+    m_q->addAction(m_refreshAction);
+
     m_cursorPosLabel = new QLabel(m_q);
     m_workingDirectoryWidget = new WorkingDirectoryWidget(m_q);
 
@@ -537,6 +543,7 @@ void MainWindowPrivate::initUi()
                      &WorkingDirectoryWidget::workingDirectoryChanged,
                      m_q,
                      &MainWindow::onWorkingDirectoryChange);
+    QObject::connect(m_refreshAction, &QAction::triggered, m_q, &MainWindow::onRefresh);
     QObject::connect(m_editor->document(), &QTextDocument::modificationChanged, m_saveAction, &QAction::setEnabled);
     QObject::connect(m_editor, &Editor::ready, m_q, &MainWindow::onTextChanged);
     QObject::connect(m_editor, &Editor::misspelled, m_q, &MainWindow::onMisspelledFount);

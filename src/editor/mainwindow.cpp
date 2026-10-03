@@ -42,6 +42,7 @@
 #include <QToolTip>
 #include <QTreeWidgetItem>
 #include <QWebEngineSettings>
+#include <QWebEngineProfile>
 #include <QWindow>
 #include <QtConcurrentRun>
 
@@ -949,6 +950,12 @@ void MainWindow::onAddUpdatesButton()
         statusBar()->addPermanentWidget(m_d->makeSeparator());
         statusBar()->addPermanentWidget(btn);
     }
+}
+
+void MainWindow::onRefresh()
+{
+    m_d->m_preview->page()->profile()->clearHttpCache();
+    m_d->m_editor->doUpdate();
 }
 
 #if defined(Q_OS_WIN) && defined(MD_BREEZE)
@@ -1989,10 +1996,12 @@ void MainWindow::updateLoadAllLinkedFilesMenuText()
         m_d->m_loadAllAction->setText(tr("Show Only Current File..."));
         m_d->m_addTOCAction->setEnabled(false);
         m_d->m_preview->enableScrollEditor(false);
+        m_d->m_refreshAction->setEnabled(false);
     } else {
         m_d->m_loadAllAction->setText(tr("Load All Linked Files..."));
         m_d->m_addTOCAction->setEnabled(true);
         m_d->m_preview->enableScrollEditor(true);
+        m_d->m_refreshAction->setEnabled(true);
     }
 }
 
@@ -2378,6 +2387,11 @@ void MainWindow::onSettings()
     m_d->m_settingsWindowMaximized = dlg.isMaximized();
 
     saveCfg();
+}
+
+QAction *MainWindow::refreshAction() const
+{
+    return m_d->m_refreshAction;
 }
 
 } /* namespace MdEditor */

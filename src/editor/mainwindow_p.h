@@ -130,6 +130,7 @@ struct MainWindowPrivate {
     QAction *m_goFwdAction = nullptr;
     QAction *m_orientAction = nullptr;
     QAction *m_mdStandardAction = nullptr;
+    QAction *m_refreshAction = nullptr;
 #if defined(Q_OS_WIN) && defined(MD_BREEZE)
     QAction *m_themeAction = nullptr;
 #endif

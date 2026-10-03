@@ -118,6 +118,7 @@ private Q_SLOTS:
     void onCheckForUpdates();
     void onCheckForUpdatesFinished();
     void onAddUpdatesButton();
+    void onRefresh();
 #if defined(Q_OS_WIN) && defined(MD_BREEZE)
     void onChangeTheme();
 #endif
@@ -192,6 +193,9 @@ protected:
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dropEvent(QDropEvent *event) override;
 
+protected:
+    QAction *refreshAction() const;
+
 private:
     Q_DISABLE_COPY(MainWindow)
 
@@ -199,6 +203,7 @@ private:
     friend class Find;
     friend class FindWeb;
     friend class GoToLine;
+    friend class Editor;
 
     QScopedPointer<MainWindowPrivate> m_d;
 }; // class MainWindow

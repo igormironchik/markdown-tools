@@ -1298,6 +1298,9 @@ void Editor::contextMenuEvent(QContextMenuEvent *event)
                         this->m_d->m_mainWindow->showMarkdownStandard(posCursor);
                     });
 
+    menu->addSeparator();
+    menu->addAction(m_d->m_mainWindow->refreshAction());
+
     auto action = menu->exec(event->globalPos());
 
     if (suggested.contains(action)) {
