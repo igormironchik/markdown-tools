@@ -695,11 +695,12 @@ void MainWindow::about()
         tr("MD-PDF Converter.<br /><br />"
            "Version <a href=\"https://github.com/igormironchik/markdown-tools/commit/%3\">%1</a><br /><br />"
            "md4qt version %2<br /><br />"
+           "md-pdf-lib version %4<br /><br />"
            "Author - Igor Mironchik (<a href=\"mailto:igor.mironchik@gmail.com\">igor.mironchik at gmail dot "
            "com</a>).<br /><br />"
            "Copyright (c) 2026 Igor Mironchik.<br /><br />"
            "Licensed under GNU GPL 3.0.")
-            .arg(MdUtils::c_version, MdUtils::c_md4qtVersion, MdUtils::c_commit),
+            .arg(MdUtils::c_version, MdUtils::c_md4qtVersion, MdUtils::c_commit, MdUtils::c_mdPdfLibVersion),
         QMessageBox::NoButton,
         this);
     QIcon icon = dlg.windowIcon();
