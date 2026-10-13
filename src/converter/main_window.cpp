@@ -725,6 +725,7 @@ void MainWindow::licenses()
     msg.addLicense(s_microtexName, s_microtexLicense);
     msg.addLicense(s_md4qtName, s_md4qtLicense);
     msg.addLicense(s_kwidgetsaddonsName, s_kwidgetsaddonsLicense);
+    msg.addLicense(s_mdPdfLibName, s_mdPdfLibLicense);
 
 #ifdef Q_OS_WIN
     msg.addLicense(s_breezeName, s_breezeLicense);

@@ -41,8 +41,8 @@
 #include <QToolButton>
 #include <QToolTip>
 #include <QTreeWidgetItem>
-#include <QWebEngineSettings>
 #include <QWebEngineProfile>
+#include <QWebEngineSettings>
 #include <QWindow>
 #include <QtConcurrentRun>
 
