@@ -431,4 +431,13 @@ void HtmlConv::onFootnotes(const QString &footnoteBackLinkContent)
     }
 }
 
+void HtmlConv::onAnchor(MD::Anchor *a)
+{
+    if (!m_justCollectFootnoteRefs && m_isWrappedInArticle) {
+        m_html.push_back(QStringLiteral("\n<div class=\"md-editor-anchor\" id=\""));
+        m_html.push_back(a->label());
+        m_html.push_back(QStringLiteral("\"></div>\n"));
+    }
+}
+
 } /* namespace MdEditor */

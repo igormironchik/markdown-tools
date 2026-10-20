@@ -240,6 +240,11 @@ void MainWindowPrivate::initUi()
     m_page->setWebChannel(channel);
 
     QObject::connect(m_preview, &WebView::scrollRequested, m_q, &MainWindow::onScrollEditor, Qt::QueuedConnection);
+    QObject::connect(m_preview,
+                     &WebView::openFileRequested,
+                     m_q,
+                     &MainWindow::onOpenFileInEditor,
+                     Qt::QueuedConnection);
 
 #ifdef Q_OS_WIN
     m_mdPdfExe = QStringLiteral("md-pdf-gui.exe");

@@ -107,6 +107,7 @@ private Q_SLOTS:
     void onGoForward();
     void onOpenRequestedRef();
     void onScrollEditor(const QString &id);
+    void onOpenFileInEditor(const QString &id);
     void scrollPreview(const QString &id,
                        qsizetype count,
                        bool code,

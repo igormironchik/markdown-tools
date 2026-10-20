@@ -181,6 +181,28 @@
                 return topParent ? (divCount > 0 ? `${topParent.id}-${divCount}` : topParent.id) : null;
             }
 
+            window.getAnchor = function(x, y) {
+                const topLevelElement = document.elementFromPoint(x, y).closest('.markdown-body > *');
+
+                if (!topLevelElement) return;
+
+                if (topLevelElement.matches('.md-editor-anchor')) {
+                    return topLevelElement.id;
+                }
+
+                let sibling = topLevelElement.previousElementSibling;
+
+                while (sibling) {
+                    if (sibling.matches('.md-editor-anchor')) {
+                        return sibling.id;
+                    }
+
+                    sibling = sibling.previousElementSibling;
+                }
+
+                return null;
+            }
+
             let placeholder = document.getElementById('placeholder');
 
             function scroll() {

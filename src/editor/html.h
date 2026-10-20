@@ -38,6 +38,7 @@ protected:
     void onUserDefined(MD::Item *item) override;
     QString prepareTextForHtml(const QString &t) override;
     void onFootnotes(const QString &footnoteBackLinkContent) override;
+    void onAnchor(MD::Anchor *a) override;
 
 private:
     void printLineId(MD::Item *item);

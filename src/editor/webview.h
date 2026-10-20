@@ -25,6 +25,7 @@ class WebView : public QWebEngineView
 
 Q_SIGNALS:
     void scrollRequested(const QString &id);
+    void openFileRequested(const QString &id);
 
 public:
     explicit WebView(QWidget *parent);
@@ -37,6 +38,7 @@ private Q_SLOTS:
     void onSelectionChanged();
     void onCopy();
     void onScroll();
+    void onOpenFile();
 
 private:
     friend class WebViewPrivate;

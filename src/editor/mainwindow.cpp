@@ -1983,6 +1983,19 @@ void MainWindow::onScrollEditor(const QString &id)
     }
 }
 
+void MainWindow::onOpenFileInEditor(const QString &id)
+{
+    if (!m_d->m_loadAllFlag) {
+        return;
+    }
+
+    if (id.isEmpty()) {
+        return;
+    }
+
+    openFileFromNavigationToolbar(id);
+}
+
 void MainWindow::updateWindowTitle()
 {
     setWindowTitle(tr("%1[*] - Markdown Editor%2")

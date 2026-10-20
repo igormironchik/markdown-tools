@@ -32,17 +32,20 @@ struct WebViewPrivate {
         m_copyAction = new QAction(WebView::tr("Copy"), m_q);
         m_q->addAction(m_copyAction);
         m_copyAction->setEnabled(false);
+        m_openFileAction = new QAction(WebView::tr("Open File In Editor"), m_q);
         m_q->setContextMenuPolicy(Qt::ActionsContextMenu);
         m_q->setFocusPolicy(Qt::ClickFocus);
 
         QObject::connect(m_copyAction, &QAction::triggered, m_q, &WebView::onCopy);
         QObject::connect(m_scrollAction, &QAction::triggered, m_q, &WebView::onScroll);
+        QObject::connect(m_openFileAction, &QAction::triggered, m_q, &WebView::onOpenFile);
         QObject::connect(m_q, &QWebEngineView::selectionChanged, m_q, &WebView::onSelectionChanged);
     }
 
     WebView *m_q;
     QAction *m_copyAction = nullptr;
     QAction *m_scrollAction = nullptr;
+    QAction *m_openFileAction = nullptr;
 }; // struct WebViewPrivate
 
 //
@@ -90,12 +93,20 @@ WebView::~WebView()
 void WebView::enableScrollEditor(bool on)
 {
     if (on) {
+        if (actions().contains(m_d->m_openFileAction)) {
+            removeAction(m_d->m_openFileAction);
+        }
+
         if (!actions().contains(m_d->m_scrollAction)) {
             insertAction(m_d->m_copyAction, m_d->m_scrollAction);
         }
     } else {
         if (actions().contains(m_d->m_scrollAction)) {
             removeAction(m_d->m_scrollAction);
+        }
+
+        if (!actions().contains(m_d->m_openFileAction)) {
+            insertAction(m_d->m_copyAction, m_d->m_openFileAction);
         }
     }
 }
@@ -117,6 +128,16 @@ void WebView::onScroll()
                               .arg(lastContextMenuRequest()->position().y()),
                           [this](const QVariant &v) {
                               Q_EMIT this->scrollRequested(v.toString());
+                          });
+}
+
+void WebView::onOpenFile()
+{
+    page()->runJavaScript(QStringLiteral("getAnchor(%1, %2)")
+                              .arg(lastContextMenuRequest()->position().x())
+                              .arg(lastContextMenuRequest()->position().y()),
+                          [this](const QVariant &v) {
+                              Q_EMIT this->openFileRequested(v.toString());
                           });
 }
 
