@@ -1974,7 +1974,9 @@ void MainWindow::onOpenFileInEditor(const QString &anchor,
         return;
     }
 
-    openFileFromNavigationToolbar(anchor);
+    if (m_d->m_editor->docName() != anchor) {
+        openFileFromNavigationToolbar(anchor);
+    }
 
     m_d->runWhenEditorReady(std::bind(&MainWindow::onScrollEditor, this, id));
 }
