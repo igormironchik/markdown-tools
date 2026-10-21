@@ -9,8 +9,8 @@
 #include <md4qt/src/parser.h>
 #include <md4qt/src/poscache.h>
 
-// shared include.
-#include "syntax.h"
+// md-pdf-lib include.
+#include <md-pdf-lib/src/syntax.h>
 
 // Qt include.
 #include <QScopedPointer>

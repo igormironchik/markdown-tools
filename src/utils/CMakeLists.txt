@@ -49,6 +49,9 @@ install(FILES "pics/icon_64x64.png" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/i
 install(FILES "pics/icon_128x128.png" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/128x128/apps/" RENAME "markdown-tools.png")
 install(FILES "pics/icon_256x256.png" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/256x256/apps/" RENAME "markdown-tools.png")
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/..
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty)
+
 add_library(markdown-utils STATIC ${SRC})
 
 if(KF${KF_MAJOR_VERSION}IconThemes_FOUND AND KF${KF_MAJOR_VERSION}ColorScheme_FOUND
@@ -69,6 +72,4 @@ target_link_libraries(markdown-utils
     Qt6::Core)
 
 target_include_directories(markdown-utils PUBLIC ${CMAKE_CURRENT_BINARY_DIR}
-    ${CMAKE_CURRENT_BINARY_DIR}/markdown-utils_autogen/include
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty)
+    ${CMAKE_CURRENT_BINARY_DIR}/markdown-utils_autogen/include)

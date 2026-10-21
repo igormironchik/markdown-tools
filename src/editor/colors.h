@@ -11,8 +11,8 @@
 // md-editor include.
 #include "ui_colors.h"
 
-// shared include.
-#include "syntax.h"
+// md-pdf-lib include.
+#include <md-pdf-lib/src/syntax.h>
 
 class KColorButton;
 

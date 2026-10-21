@@ -39,8 +39,9 @@ if(WIN32)
 endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/../shared)
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/..
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty)
 
 link_directories(${MD_PDF_SKIA_BUILD_PATH})
 

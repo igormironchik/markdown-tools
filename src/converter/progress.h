@@ -6,8 +6,10 @@
 #pragma once
 
 // md-pdf include.
-#include "renderer.h"
 #include "ui_progress.h"
+
+// md-pdf-lib include.
+#include <md-pdf-lib/src/renderer.h>
 
 // Qt include.
 #include <QDialog>

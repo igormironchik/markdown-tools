@@ -32,20 +32,17 @@ struct WebViewPrivate {
         m_copyAction = new QAction(WebView::tr("Copy"), m_q);
         m_q->addAction(m_copyAction);
         m_copyAction->setEnabled(false);
-        m_openFileAction = new QAction(WebView::tr("Open File In Editor"), m_q);
         m_q->setContextMenuPolicy(Qt::ActionsContextMenu);
         m_q->setFocusPolicy(Qt::ClickFocus);
 
         QObject::connect(m_copyAction, &QAction::triggered, m_q, &WebView::onCopy);
         QObject::connect(m_scrollAction, &QAction::triggered, m_q, &WebView::onScroll);
-        QObject::connect(m_openFileAction, &QAction::triggered, m_q, &WebView::onOpenFile);
         QObject::connect(m_q, &QWebEngineView::selectionChanged, m_q, &WebView::onSelectionChanged);
     }
 
     WebView *m_q;
     QAction *m_copyAction = nullptr;
     QAction *m_scrollAction = nullptr;
-    QAction *m_openFileAction = nullptr;
 }; // struct WebViewPrivate
 
 //
@@ -90,24 +87,14 @@ WebView::~WebView()
 {
 }
 
-void WebView::enableScrollEditor(bool on)
+void WebView::setMultiFileMode(bool on)
 {
+    disconnect(m_d->m_scrollAction, &QAction::triggered, this, 0);
+
     if (on) {
-        if (actions().contains(m_d->m_openFileAction)) {
-            removeAction(m_d->m_openFileAction);
-        }
-
-        if (!actions().contains(m_d->m_scrollAction)) {
-            insertAction(m_d->m_copyAction, m_d->m_scrollAction);
-        }
+        connect(m_d->m_scrollAction, &QAction::triggered, this, &WebView::onOpenFile);
     } else {
-        if (actions().contains(m_d->m_scrollAction)) {
-            removeAction(m_d->m_scrollAction);
-        }
-
-        if (!actions().contains(m_d->m_openFileAction)) {
-            insertAction(m_d->m_copyAction, m_d->m_openFileAction);
-        }
+        connect(m_d->m_scrollAction, &QAction::triggered, this, &WebView::onScroll);
     }
 }
 
@@ -136,8 +123,16 @@ void WebView::onOpenFile()
     page()->runJavaScript(QStringLiteral("getAnchor(%1, %2)")
                               .arg(lastContextMenuRequest()->position().x())
                               .arg(lastContextMenuRequest()->position().y()),
-                          [this](const QVariant &v) {
-                              Q_EMIT this->openFileRequested(v.toString());
+                          [this](const QVariant &anchor) {
+                              const auto savedAnchor = anchor.toString();
+
+                              this->page()->runJavaScript(QStringLiteral("getId(%1, %2)")
+                                                              .arg(lastContextMenuRequest()->position().x())
+                                                              .arg(lastContextMenuRequest()->position().y()),
+                                                          [this, savedAnchor](const QVariant &id) {
+                                                              Q_EMIT this->openFileRequested(savedAnchor,
+                                                                                             id.toString());
+                                                          });
                           });
 }
 

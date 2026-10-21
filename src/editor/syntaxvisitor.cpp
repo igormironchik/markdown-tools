@@ -9,9 +9,9 @@
 #include "editor.h"
 #include "speller.h"
 
-// shared include.
-#include "emoji_parser.h"
-#include "syntax.h"
+// md-pdf-lib include.
+#include <md-pdf-lib/src/emoji_parser.h>
+#include <md-pdf-lib/src/syntax.h>
 
 // Sonnet include.
 #include <Sonnet/Settings>

@@ -82,11 +82,8 @@ endif()
 link_directories(${MD_PDF_SKIA_BUILD_PATH})
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/widgets/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/../shared
-    ${CMAKE_CURRENT_SOURCE_DIR}/../utils
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/github-release/src
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/Skia)
+    ${CMAKE_CURRENT_SOURCE_DIR}/..
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty)
 
 add_library(md-editor-lib STATIC ${LIB_SRC})
 

@@ -7,12 +7,14 @@
 #include <md4qt/src/parser.h>
 
 // md-pdf include.
-#include "const.h"
 #include "main_window.h"
 #include "progress.h"
-#include "renderer.h"
 #include "settings.h"
 #include "version.h"
+
+// md-pdf-lib include.
+#include <md-pdf-lib/src/const.h>
+#include <md-pdf-lib/src/renderer.h>
 
 // Qt include.
 #include <QApplication>
@@ -33,9 +35,9 @@
 #include <QToolButton>
 #include <QWindow>
 
-// shared include.
-#include "license_dialog.h"
-#include "utils.h"
+// utils include.
+#include "utils/license_dialog.h"
+#include "utils/utils.h"
 
 namespace MdPdf
 {

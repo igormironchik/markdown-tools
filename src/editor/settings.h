@@ -12,11 +12,11 @@
 #include "colorsdlg.h"
 #include "editor.h"
 
-// shared include.
-#include "dlg_filter_wheel.h"
-#include "syntax.h"
+// utils include.
+#include "utils/dlg_filter_wheel.h"
 
 // md-pdf-lib include.
+#include <md-pdf-lib/src/syntax.h>
 #include <md-pdf-lib/src/utils.h>
 
 class KPageWidgetItem;

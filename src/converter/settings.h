@@ -8,8 +8,8 @@
 // Qt include.
 #include <QDialog>
 
-// shared include.
-#include "plugins_page.h"
+// utils include.
+#include "utils/plugins_page.h"
 
 // md-pdf include.
 #include "ui_settings.h"

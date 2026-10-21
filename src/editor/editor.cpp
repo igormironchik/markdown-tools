@@ -46,9 +46,8 @@
 // md4qt include.
 #include <md4qt/src/algo.h>
 
-// shared include.
-#include "emoji.h"
-#include "utils.h"
+// md-pdf-lib include.
+#include <md-pdf-lib/src/emoji.h>
 
 namespace MdEditor
 {
@@ -63,209 +62,180 @@ bool operator!=(const Margins &l,
 // DataParser
 //
 
-//! Threaded parsing of Markdown content and syntax highlighting.
-class DataParser : public QObject
+DataParser::DataParser()
 {
-    Q_OBJECT
+    connect(this, &DataParser::newData, this, &DataParser::onParse, Qt::QueuedConnection);
+}
 
-Q_SIGNALS:
-    //! Signals about data available for parsing.
-    void newData();
-    //! Parsing is done.
-    void done(QSharedPointer<MD::Document>,
-              unsigned long long int,
-              MdEditor::SyntaxVisitor syntax,
-              MD::details::IdsMap idsMap,
-              MdEditor::Editor::ItemsMap itemsMap,
-              QSharedPointer<MdUtils::BlockLines> blockLines,
-              MdUtils::BlockLinesDiff diff);
+void DataParser::onData(const QString &md,
+                        const QString &path,
+                        const QString &fileName,
+                        unsigned long long int counter,
+                        MdEditor::SyntaxVisitor syntax,
+                        const MdPdf::PluginsCfg &pluginsCfg,
+                        QSharedPointer<MdUtils::BlockLines> blocks)
+{
+    m_data.clear();
+    m_data.push_back(md);
+    m_path = path;
+    m_fileName = fileName;
+    m_counter = counter;
+    m_syntax = syntax;
+    m_pluginsCfg = pluginsCfg;
+    m_oldBlocks = blocks;
 
-public:
-    DataParser()
-        : m_itemTypes({MD::ItemType::Paragraph,
-                       MD::ItemType::Blockquote,
-                       MD::ItemType::List,
-                       MD::ItemType::Code,
-                       MD::ItemType::Table,
-                       MD::ItemType::Heading})
-    {
-        connect(this, &DataParser::newData, this, &DataParser::onParse, Qt::QueuedConnection);
-    }
+    Q_EMIT newData();
+}
 
-    ~DataParser() override = default;
+void DataParser::onParse()
+{
+    if (!m_data.isEmpty()) {
+        QTextStream stream(&m_data.back());
+        MD::TextStream tmp(stream);
+        QStringList lines;
 
-public Q_SLOTS:
-    //! New data arrived.
-    void onData(const QString &md,
-                const QString &path,
-                const QString &fileName,
-                unsigned long long int counter,
-                MdEditor::SyntaxVisitor syntax,
-                const MdPdf::PluginsCfg &pluginsCfg,
-                QSharedPointer<MdUtils::BlockLines> blocks)
-    {
+        while (!tmp.atEnd()) {
+            lines.append(tmp.readLine().slicedCopy(0));
+        }
+
+        stream.seek(0);
+
+        setPlugins(m_parser, m_pluginsCfg, true);
+
+        const auto doc = m_parser.parse(stream, m_path, m_fileName);
+
         m_data.clear();
-        m_data.push_back(md);
-        m_path = path;
-        m_fileName = fileName;
-        m_counter = counter;
-        m_syntax = syntax;
-        m_pluginsCfg = pluginsCfg;
-        m_oldBlocks = blocks;
 
-        Q_EMIT newData();
+        m_syntax.highlight(&lines, doc, m_syntax.colors());
+
+        const auto ids = generateIds(doc);
+
+        auto block = QSharedPointer<MdUtils::BlockLines>::create(-1, -1, nullptr);
+
+        collectBlockLines(*block, *doc, tmp);
+
+        MdUtils::BlockLinesDiff diff;
+
+        if (!block->m_children.isEmpty()) {
+            diff = MdUtils::compareBlocks(m_oldBlocks->m_children, block->m_children);
+        }
+
+        Q_EMIT done(doc, m_counter, m_syntax, ids.first, ids.second, block, diff);
     }
+}
 
-private Q_SLOTS:
-    //! Do parsing.
-    void onParse()
-    {
-        if (!m_data.isEmpty()) {
-            QTextStream stream(&m_data.back());
-            MD::TextStream tmp(stream);
-            QStringList lines;
+void DataParser::setEndLine(MdUtils::BlockLines *block,
+                            qsizetype line,
+                            MD::TextStream &stream)
+{
+    while (line >= 0) {
+        block->m_end = line;
+        auto tmp = stream.moveTo(line);
 
-            while (!tmp.atEnd()) {
-                lines.append(tmp.readLine().slicedCopy(0));
-            }
-
-            stream.seek(0);
-
-            setPlugins(m_parser, m_pluginsCfg, true);
-
-            const auto doc = m_parser.parse(stream, m_path, m_fileName);
-
-            m_data.clear();
-
-            m_syntax.highlight(&lines, doc, m_syntax.colors());
-
-            MD::details::IdsMap idsMap;
-            Editor::ItemsMap itemsMap;
-
-            m_id = 0;
-
-            MD::forEach(
-                m_itemTypes,
-                doc,
-                [&idsMap, &itemsMap, this](MD::Item *item) {
-                    const auto id = this->generateId(item);
-
-                    if (!id.isEmpty()) {
-                        idsMap.insert(item, id);
-                        itemsMap.insert(id, item);
-                    }
-                },
-                1);
-
-            auto block = QSharedPointer<MdUtils::BlockLines>::create(-1, -1, nullptr);
-
-            collectBlockLines(*block, *doc, tmp);
-
-            MdUtils::BlockLinesDiff diff;
-
-            if (!block->m_children.isEmpty()) {
-                diff = MdUtils::compareBlocks(m_oldBlocks->m_children, block->m_children);
-            }
-
-            Q_EMIT done(doc, m_counter, m_syntax, idsMap, itemsMap, block, diff);
+        if (MD::isEmptyLine(tmp)) {
+            --line;
+        } else {
+            break;
         }
     }
+}
 
-private:
-    void setEndLine(MdUtils::BlockLines *block,
-                    qsizetype line,
-                    MD::TextStream &stream)
-    {
-        while (line >= 0) {
-            block->m_end = line;
-            auto tmp = stream.moveTo(line);
+void DataParser::collectBlockLines(MdUtils::BlockLines &lines,
+                                   MD::Block &block,
+                                   MD::TextStream &stream)
+{
+    for (const auto &b : std::as_const(block.items())) {
+        if (b->type() != MD::ItemType::Anchor) {
+            lines.m_children.append(QSharedPointer<MdUtils::BlockLines>::create(-1, -1, &lines));
 
-            if (MD::isEmptyLine(tmp)) {
-                --line;
+            if (b->type() != MD::ItemType::Code) {
+                lines.m_children.back()->m_start = b->startLine();
+                setEndLine(lines.m_children.back().get(), b->endLine(), stream);
             } else {
-                break;
-            }
-        }
-    }
-    void collectBlockLines(MdUtils::BlockLines &lines,
-                           MD::Block &block,
-                           MD::TextStream &stream)
-    {
-        for (const auto &b : std::as_const(block.items())) {
-            if (b->type() != MD::ItemType::Anchor) {
-                lines.m_children.append(QSharedPointer<MdUtils::BlockLines>::create(-1, -1, &lines));
+                auto c = static_cast<MD::Code *>(b.get());
 
-                if (b->type() != MD::ItemType::Code) {
+                if (c->isFensedCode()) {
+                    lines.m_children.back()->m_start = b->startLine() - 1;
+                    setEndLine(lines.m_children.back().get(), b->endLine() + 1, stream);
+                } else {
                     lines.m_children.back()->m_start = b->startLine();
                     setEndLine(lines.m_children.back().get(), b->endLine(), stream);
-                } else {
-                    auto c = static_cast<MD::Code *>(b.get());
-
-                    if (c->isFensedCode()) {
-                        lines.m_children.back()->m_start = b->startLine() - 1;
-                        setEndLine(lines.m_children.back().get(), b->endLine() + 1, stream);
-                    } else {
-                        lines.m_children.back()->m_start = b->startLine();
-                        setEndLine(lines.m_children.back().get(), b->endLine(), stream);
-                    }
                 }
+            }
 
-                if (b->type() != MD::ItemType::Paragraph) {
-                    auto child = dynamic_cast<MD::Block *>(b.get());
+            if (b->type() != MD::ItemType::Paragraph) {
+                auto child = dynamic_cast<MD::Block *>(b.get());
 
-                    if (child) {
-                        collectBlockLines(*lines.m_children.back().get(), *child, stream);
-                    }
+                if (child) {
+                    collectBlockLines(*lines.m_children.back().get(), *child, stream);
                 }
             }
         }
     }
-    //! \return Generated ID for a given item.
-    QString generateId(MD::Item *item)
-    {
-        if (item->type() != MD::ItemType::Heading) {
-            if (m_id == std::numeric_limits<unsigned long long int>::max()) {
-                m_id = 0;
+}
+
+QString DataParser::generateId(MD::Item *item,
+                               unsigned long long int &counter,
+                               const QString &fileName)
+{
+    if (item->type() != MD::ItemType::Heading) {
+        if (counter == std::numeric_limits<unsigned long long int>::max()) {
+            counter = 0;
+        }
+
+        return QStringLiteral("md4qt-line-id-%1/%2").arg(QString::number(++counter), fileName);
+    } else {
+        const auto labelToId = [](const QString &label) -> QString {
+            auto id = label;
+
+            if (id.startsWith(QStringLiteral("#"))) {
+                id.remove(0, 1);
             }
 
-            return QStringLiteral("md4qt-line-id-%1/%2/%3").arg(QString::number(++m_id), m_path, m_fileName);
-        } else {
-            const auto labelToId = [](const QString &label) -> QString {
-                auto id = label;
+            return id;
+        };
 
-                if (id.startsWith(QStringLiteral("#"))) {
-                    id.remove(0, 1);
-                }
-
-                return id;
-            };
-
-            return labelToId(static_cast<MD::Heading *>(item)->label());
-        }
+        return labelToId(static_cast<MD::Heading *>(item)->label());
     }
+}
 
-private:
-    //! Queue of Markdown content.
-    QStringList m_data;
-    //! Working directory.
-    QString m_path;
-    //! File name.
-    QString m_fileName;
-    //! ID of last requested parsing.
-    unsigned long long int m_counter;
-    //! Parser of Markdown.
-    MD::Parser m_parser;
-    //! Syntax highlighter.
-    SyntaxVisitor m_syntax;
-    //! List of type of items that should get IDs.
-    QVector<MD::ItemType> m_itemTypes;
-    //! Internal counter for IDs generation.
-    unsigned long long int m_id = 0;
-    //! Plugins configuration.
-    MdPdf::PluginsCfg m_pluginsCfg;
-    //! Old blocks of lines.
-    QSharedPointer<MdUtils::BlockLines> m_oldBlocks;
-};
+QPair<MD::details::IdsMap,
+      Editor::ItemsMap>
+DataParser::generateIds(QSharedPointer<MD::Document> doc)
+{
+    QPair<MD::details::IdsMap, Editor::ItemsMap> tmp;
+    QString fileName;
+
+    unsigned long long int id = 0;
+
+    MD::forEach(
+        {MD::ItemType::Anchor,
+         MD::ItemType::Paragraph,
+         MD::ItemType::Blockquote,
+         MD::ItemType::List,
+         MD::ItemType::Code,
+         MD::ItemType::Table,
+         MD::ItemType::Heading},
+        doc,
+        [&tmp, &id, &fileName](MD::Item *item) {
+            if (item->type() == MD::ItemType::Anchor) {
+                auto a = static_cast<MD::Anchor *>(item);
+
+                fileName = a->label();
+                id = 0;
+            } else {
+                const auto generated = generateId(item, id, fileName);
+
+                if (!generated.isEmpty()) {
+                    tmp.first.insert(item, generated);
+                    tmp.second.insert(generated, item);
+                }
+            }
+        },
+        1);
+
+    return tmp;
+}
 
 //
 // DocumentLayoutWithRightAlignment
@@ -2792,5 +2762,3 @@ void Editor::keyPressEvent(QKeyEvent *event)
 }
 
 } /* namespace MdEditor */
-
-#include "editor.moc"

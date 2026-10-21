@@ -9,8 +9,8 @@
 #include <QFont>
 #include <QScopedPointer>
 
-// shared include.
-#include "dlg_filter_wheel.h"
+// utils include.
+#include "utils/dlg_filter_wheel.h"
 
 namespace MdEditor
 {

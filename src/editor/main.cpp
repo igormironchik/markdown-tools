@@ -14,8 +14,8 @@
 // md-editor include.
 #include "mainwindow.h"
 
-// shared include.
-#include "utils.h"
+// utils include.
+#include "utils/utils.h"
 
 // md-pdf-lib include.
 #include <md-pdf-lib/src/utils.h>

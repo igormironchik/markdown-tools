@@ -10,8 +10,8 @@
 #include "font.h"
 #include "preview_settings.h"
 
-// md-shared include.
-#include "plugins_page.h"
+// utils include.
+#include "utils/plugins_page.h"
 
 // Qt include.
 #include <QCheckBox>

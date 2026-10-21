@@ -6,9 +6,9 @@
 // md-editor include.
 #include "html.h"
 
-// shared include.
-#include "emoji.h"
-#include "emoji_parser.h"
+// md-pdf-lib include.
+#include <md-pdf-lib/src/emoji.h>
+#include <md-pdf-lib/src/emoji_parser.h>
 
 // Qt include.
 #include <QScopedValueRollback>
@@ -20,9 +20,15 @@ namespace MdEditor
 // HtmlConv
 //
 
+static const QChar s_numberSignChar = QLatin1Char('#');
+
 QString HtmlConv::getId(MD::Item *item) const
 {
-    const auto tmp = MD::details::HtmlVisitor::getId(item);
+    auto tmp = MD::details::HtmlVisitor::getId(item);
+
+    if (tmp.startsWith(s_numberSignChar)) {
+        tmp.remove(0, 1);
+    }
 
     if (!tmp.isEmpty()) {
         m_id = tmp;
@@ -129,6 +135,8 @@ void HtmlConv::onHeading(MD::Heading *h)
     if (!m_justCollectFootnoteRefs) {
         printLineId(h);
     }
+
+    getId(h);
 
     MD::details::HtmlVisitor::onHeading(h);
 
@@ -437,6 +445,7 @@ void HtmlConv::onAnchor(MD::Anchor *a)
         m_html.push_back(QStringLiteral("\n<div class=\"md-editor-anchor\" id=\""));
         m_html.push_back(a->label());
         m_html.push_back(QStringLiteral("\"></div>\n"));
+        m_lastCount = m_count + 1;
     }
 }
 

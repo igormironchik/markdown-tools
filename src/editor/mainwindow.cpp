@@ -54,16 +54,16 @@
 #include <md4qt/src/algo.h>
 #include <md4qt/src/parser.h>
 
-// shared include.
-#include "folder_chooser.h"
-#include "license_dialog.h"
-#include "md.h"
-#include "plugins_page.h"
-#include "utils.h"
+// utils include.
+#include "utils/folder_chooser.h"
+#include "utils/license_dialog.h"
+#include "utils/md.h"
+#include "utils/plugins_page.h"
+#include "utils/utils.h"
 #include "version.h"
 
 // github-release include.
-#include <github.h>
+#include <github-release/src/github.h>
 
 namespace MdEditor
 {
@@ -1784,34 +1784,14 @@ void MainWindow::readAllLinked(bool updateRootFileName)
                                         {QStringLiteral("md"), QStringLiteral("mkd"), QStringLiteral("markdown")});
         }
 
-        MD::details::IdsMap idsMap;
-
-        for (auto it = m_d->m_mdDoc->items().cbegin(), last = m_d->m_mdDoc->items().cend(); it != last; ++it) {
-            if ((*it)->type() == MD::ItemType::Anchor) {
-                auto a = static_cast<MD::Anchor *>(it->get());
-
-                if (a->label() == m_d->m_editor->docName()) {
-                    const auto doc = m_d->m_editor->currentDoc();
-
-                    for (auto eIt = doc->items().cbegin(), eLast = doc->items().cend(); eIt != eLast; ++eIt, ++it) {
-                        const auto idIt = m_d->m_editor->idsMap().find(eIt->get());
-
-                        if (idIt != m_d->m_editor->idsMap().cend()) {
-                            idsMap.insert(it->get(), idIt.value());
-                        }
-                    }
-
-                    break;
-                }
-            }
-        }
+        const auto ids = DataParser::generateIds(m_d->m_mdDoc);
 
         if (m_d->m_livePreviewVisible) {
             m_d->m_html->setText(MD::toHtml<HtmlConv>(m_d->m_mdDoc,
                                                       false,
                                                       QStringLiteral("<img src=\"qrc:/res/img/go-jump.png\" />"),
                                                       true,
-                                                      &idsMap));
+                                                      &ids.first));
         }
     }
 }
@@ -1983,17 +1963,20 @@ void MainWindow::onScrollEditor(const QString &id)
     }
 }
 
-void MainWindow::onOpenFileInEditor(const QString &id)
+void MainWindow::onOpenFileInEditor(const QString &anchor,
+                                    const QString &id)
 {
     if (!m_d->m_loadAllFlag) {
         return;
     }
 
-    if (id.isEmpty()) {
+    if (anchor.isEmpty()) {
         return;
     }
 
-    openFileFromNavigationToolbar(id);
+    openFileFromNavigationToolbar(anchor);
+
+    m_d->runWhenEditorReady(std::bind(&MainWindow::onScrollEditor, this, id));
 }
 
 void MainWindow::updateWindowTitle()
@@ -2008,12 +1991,12 @@ void MainWindow::updateLoadAllLinkedFilesMenuText()
     if (m_d->m_loadAllFlag) {
         m_d->m_loadAllAction->setText(tr("Show Only Current File..."));
         m_d->m_addTOCAction->setEnabled(false);
-        m_d->m_preview->enableScrollEditor(false);
+        m_d->m_preview->setMultiFileMode(true);
         m_d->m_refreshAction->setEnabled(false);
     } else {
         m_d->m_loadAllAction->setText(tr("Load All Linked Files..."));
         m_d->m_addTOCAction->setEnabled(true);
-        m_d->m_preview->enableScrollEditor(true);
+        m_d->m_preview->setMultiFileMode(false);
         m_d->m_refreshAction->setEnabled(true);
     }
 }

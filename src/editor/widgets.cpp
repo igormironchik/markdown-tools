@@ -7,8 +7,8 @@
 #include "widgets.h"
 #include "toc.h"
 
-// md-shared include.
-#include "folder_chooser.h"
+// utils include.
+#include "utils/folder_chooser.h"
 
 // Qt include.
 #include <QCheckBox>

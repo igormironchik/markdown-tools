@@ -25,14 +25,15 @@ class WebView : public QWebEngineView
 
 Q_SIGNALS:
     void scrollRequested(const QString &id);
-    void openFileRequested(const QString &id);
+    void openFileRequested(const QString &anchor,
+                           const QString &id);
 
 public:
     explicit WebView(QWidget *parent);
     ~WebView() override;
 
 public Q_SLOTS:
-    void enableScrollEditor(bool on = true);
+    void setMultiFileMode(bool on = true);
 
 private Q_SLOTS:
     void onSelectionChanged();

@@ -6,11 +6,11 @@
 // md-pdf include.
 #include "ui_main_window.h"
 
-// shared include.
-#include "plugins_page.h"
-#include "syntax.h"
+// utils include.
+#include "utils/plugins_page.h"
 
 // md-pdf-lib include.
+#include <md-pdf-lib/src/syntax.h>
 #include <md-pdf-lib/src/utils.h>
 
 // Qt include.

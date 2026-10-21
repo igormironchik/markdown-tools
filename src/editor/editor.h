@@ -12,15 +12,16 @@
 // md-editor include.
 #include "syntaxvisitor.h"
 
-// md-utils include.
-#include "diff.h"
+// utils include.
+#include "utils/diff.h"
+#include "utils/plugins_page.h"
 
 // md4qt include.
 #include <md4qt/src/html.h>
 #include <md4qt/src/parser.h>
 
-// shared include.
-#include "plugins_page.h"
+// md-pdf-lib include.
+#include <md-pdf-lib/src/utils.h>
 
 QT_BEGIN_NAMESPACE
 class QStringListModel;
@@ -287,6 +288,81 @@ private:
 
     QScopedPointer<EditorPrivate> m_d;
 }; // class Editor
+
+//
+// DataParser
+//
+
+//! Threaded parsing of Markdown content and syntax highlighting.
+class DataParser : public QObject
+{
+    Q_OBJECT
+
+Q_SIGNALS:
+    //! Signals about data available for parsing.
+    void newData();
+    //! Parsing is done.
+    void done(QSharedPointer<MD::Document>,
+              unsigned long long int,
+              MdEditor::SyntaxVisitor syntax,
+              MD::details::IdsMap idsMap,
+              MdEditor::Editor::ItemsMap itemsMap,
+              QSharedPointer<MdUtils::BlockLines> blockLines,
+              MdUtils::BlockLinesDiff diff);
+
+public:
+    DataParser();
+    ~DataParser() override = default;
+
+    //! \return Generated ID for a given item.
+    static QString generateId(MD::Item *item,
+                              unsigned long long int &counter,
+                              const QString &fileName);
+    //! \return Maps of IDs.
+    static QPair<MD::details::IdsMap,
+                 Editor::ItemsMap>
+    generateIds(QSharedPointer<MD::Document> doc);
+
+public Q_SLOTS:
+    //! New data arrived.
+    void onData(const QString &md,
+                const QString &path,
+                const QString &fileName,
+                unsigned long long int counter,
+                MdEditor::SyntaxVisitor syntax,
+                const MdPdf::PluginsCfg &pluginsCfg,
+                QSharedPointer<MdUtils::BlockLines> blocks);
+
+private Q_SLOTS:
+    //! Do parsing.
+    void onParse();
+
+private:
+    void setEndLine(MdUtils::BlockLines *block,
+                    qsizetype line,
+                    MD::TextStream &stream);
+    void collectBlockLines(MdUtils::BlockLines &lines,
+                           MD::Block &block,
+                           MD::TextStream &stream);
+
+private:
+    //! Queue of Markdown content.
+    QStringList m_data;
+    //! Working directory.
+    QString m_path;
+    //! File name.
+    QString m_fileName;
+    //! ID of last requested parsing.
+    unsigned long long int m_counter;
+    //! Parser of Markdown.
+    MD::Parser m_parser;
+    //! Syntax highlighter.
+    SyntaxVisitor m_syntax;
+    //! Plugins configuration.
+    MdPdf::PluginsCfg m_pluginsCfg;
+    //! Old blocks of lines.
+    QSharedPointer<MdUtils::BlockLines> m_oldBlocks;
+};
 
 //
 // LineNumberArea

@@ -887,12 +887,12 @@ a _ b&lt;/code&gt;&lt;/pre&gt;
 <context>
     <name>MdEditor::Editor</name>
     <message>
-        <location filename="../src/editor/editor.cpp" line="1265"/>
+        <location filename="../src/editor/editor.cpp" line="1235"/>
         <source>Spelling</source>
         <translation>Орфография</translation>
     </message>
     <message>
-        <location filename="../src/editor/editor.cpp" line="1277"/>
+        <location filename="../src/editor/editor.cpp" line="1247"/>
         <source>Skip Word</source>
         <translation>Пропустить слово</translation>
     </message>
@@ -1062,7 +1062,7 @@ a _ b&lt;/code&gt;&lt;/pre&gt;
         <translation>Сохранить как</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="2014"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1997"/>
         <location filename="../src/editor/mainwindow_p.cpp" line="284"/>
         <source>Load All Linked Files...</source>
         <translation>Загрузить все присоединенные файлы...</translation>
@@ -1203,7 +1203,7 @@ a _ b&lt;/code&gt;&lt;/pre&gt;
         <translation>F5</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="2151"/>
+        <location filename="../src/editor/mainwindow.cpp" line="2134"/>
         <location filename="../src/editor/mainwindow_p.cpp" line="394"/>
         <source>Split Vertically</source>
         <translation>Расположить вертикально</translation>
@@ -1309,7 +1309,7 @@ a _ b&lt;/code&gt;&lt;/pre&gt;
         <translation>О Markdown</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="2157"/>
+        <location filename="../src/editor/mainwindow.cpp" line="2140"/>
         <source>Split Horizontally</source>
         <translation>Расположить горизонтально</translation>
     </message>
@@ -1641,7 +1641,7 @@ File: &quot;%1&quot;</source>
     </message>
     <message>
         <location filename="../src/editor/mainwindow.cpp" line="1541"/>
-        <location filename="../src/editor/mainwindow.cpp" line="1830"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1810"/>
         <source>You have unsaved changes. Please save document first.</source>
         <translation>У вас есть несохраненные изменения. Пожалуйста, сохраните документ.</translation>
     </message>
@@ -1661,22 +1661,22 @@ File: &quot;%1&quot;</source>
         <translation>В этом документе нет других подключенных Markdown документов.</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="2001"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1984"/>
         <source>%1[*] - Markdown Editor%2</source>
         <translation>%1[*] - Markdown редактор%2</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="2003"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1986"/>
         <source> [Preview Mode]</source>
         <translation> [Режим просмотра]</translation>
     </message>
     <message>
-        <location filename="../src/editor/mainwindow.cpp" line="2009"/>
+        <location filename="../src/editor/mainwindow.cpp" line="1992"/>
         <source>Show Only Current File...</source>
         <translation>Показать только текущий файл...</translation>
     </message>
     <message>
-        <location filename="../src/editor/editor.cpp" line="1295"/>
+        <location filename="../src/editor/editor.cpp" line="1265"/>
         <location filename="../src/editor/mainwindow_p.cpp" line="495"/>
         <source>Extract from the standard</source>
         <translation>Выжимка из стандарта Markdown</translation>
@@ -1729,11 +1729,6 @@ File: &quot;%1&quot;</source>
         <location filename="../src/editor/webview.cpp" line="32"/>
         <source>Copy</source>
         <translation>Копировать</translation>
-    </message>
-    <message>
-        <location filename="../src/editor/webview.cpp" line="35"/>
-        <source>Open File In Editor</source>
-        <translation>Открыть файл в редакторе</translation>
     </message>
 </context>
 <context>
