@@ -12,8 +12,8 @@
 #include <QString>
 #include <QTranslator>
 
-// shared include.
-#include "utils.h"
+// utils include.
+#include "utils/utils.h"
 
 // MicroTeX include.
 #include <latex.h>
