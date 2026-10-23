@@ -11,6 +11,7 @@
 #include <md-pdf-lib/src/emoji_parser.h>
 
 // Qt include.
+#include <QApplication>
 #include <QScopedValueRollback>
 
 namespace MdEditor
@@ -167,6 +168,16 @@ void HtmlConv::clearTop(MD::Item *item)
 }
 
 static const QChar s_newLine = QLatin1Char('\n');
+/*
+    Copyright 2020 Google LLC. Licensed under the Apache License, Version 2.0.
+*/
+static const QString s_copyBtnSvg = QStringLiteral(
+    "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 -960 960 960\" width=\"24px\" "
+    "fill=\"#1f1f1f\"><path d=\"M360-240q-33 0-56.5-23.5T280-320v-480q0-33 23.5-56.5T360-880h360q33 0 56.5 "
+    "23.5T800-800v480q0 33-23.5 56.5T720-240H360Zm0-80h360v-480H360v480ZM200-80q-33 "
+    "0-56.5-23.5T120-160v-560h80v560h440v80H200Zm160-240v-480 480Z\"/></svg>");
+
+static const char *s_copyBtnToolTip = QT_TRANSLATE_NOOP("MainWindow", "Copy To Clipboard");
 
 void HtmlConv::onCode(MD::Code *c)
 {
@@ -176,7 +187,13 @@ void HtmlConv::onCode(MD::Code *c)
         const auto lines = c->text().split(s_newLine);
 
         m_html.push_back(QStringLiteral("\n"));
-        m_html.push_back(QStringLiteral("<pre"));
+        m_html.push_back(QStringLiteral("<div class=\"md-edit-code\">"));
+        m_html.push_back(QStringLiteral("<button class=\"copy-btn\" title=\""));
+        m_html.push_back(QApplication::translate("MainWindow", s_copyBtnToolTip));
+        m_html.push_back(QStringLiteral("\" onClick=\"copyCode(this)\">"));
+        m_html.push_back(s_copyBtnSvg);
+        m_html.push_back(QStringLiteral("</button>"));
+        m_html.push_back(QStringLiteral("<pre "));
         printId(c);
         m_html.push_back(QStringLiteral(" data-lines-count=\""));
         m_html.push_back(QString::number(lines.size()));
@@ -198,7 +215,7 @@ void HtmlConv::onCode(MD::Code *c)
             onAddLineEnding();
         }
 
-        m_html.push_back(QStringLiteral("</code></pre>"));
+        m_html.push_back(QStringLiteral("</code></pre></div>"));
         m_html.push_back(QStringLiteral("\n"));
 
         clearTop(c);

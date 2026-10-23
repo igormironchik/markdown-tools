@@ -9,6 +9,34 @@
     <link rel="stylesheet" href="qrc:/res/katex/katex.min.css">
     <script src="qrc:/res/katex/katex.min.js"></script>
     <script src="qrc:/res/katex/contrib/auto-render.min.js"></script>
+    <style>
+        .md-edit-code {
+            position: relative;
+        }
+        .copy-btn {
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            top: 5px;
+            right: 5px;
+            cursor: pointer;
+            position: absolute;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .copy-btn svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .md-edit-code:hover .copy-btn {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
 </head>
 <body>
     <div id="placeholder"></div>
@@ -20,6 +48,14 @@
             let s_id = '';
             let s_ln = -1;
             let s_st = -1;
+
+            window.copyCode = function(button) {
+                const codeBlock = button.nextElementSibling.firstElementChild;
+
+                if (codeBlock) {
+                    navigator.clipboard.writeText(codeBlock.innerText.replace(/^\u00a0+/gm, ''));
+                }
+            }
 
             window.scrollToId = function(itemId) {
                 const element = document.getElementById(itemId);
@@ -101,6 +137,10 @@
                     }
                 }
 
+                if (topParent.classList.contains('md-edit-code')) {
+                    topParent = topParent.children[1];
+                }
+
                 return topParent;
             }
 
@@ -163,7 +203,7 @@
                     const preTag = code.parentElement;
 
                     if (!preTag.id) {
-                        const span = preTag.previousElementSibling;
+                        const span = preTag.parentElement.previousElementSibling;
                         const lastHyphenIndex = span.id.lastIndexOf('-');
                         const lastNumber = span.id.slice(lastHyphenIndex + 1);
 

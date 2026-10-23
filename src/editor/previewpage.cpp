@@ -18,6 +18,7 @@ PreviewPage::PreviewPage(QObject *parent)
 {
     settings()->setAttribute(QWebEngineSettings::LocalContentCanAccessRemoteUrls, true);
     settings()->setAttribute(QWebEngineSettings::LinksIncludedInFocusChain, false);
+    settings()->setAttribute(QWebEngineSettings::JavascriptCanAccessClipboard, true);
 }
 
 bool PreviewPage::acceptNavigationRequest(const QUrl &url,
