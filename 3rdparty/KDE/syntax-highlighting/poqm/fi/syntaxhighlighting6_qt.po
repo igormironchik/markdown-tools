@@ -25,7 +25,7 @@ msgstr ""
 "Project-Id-Version: katepart4\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2016-09-08 07:30+0000\n"
-"PO-Revision-Date: 2026-01-05 20:41+0200\n"
+"PO-Revision-Date: 2026-02-25 19:27+0200\n"
 "Last-Translator: Tommi Nieminen <translator@legisign.org>\n"
 "Language-Team: Finnish <kde-i18n-doc@kde.org>\n"
 "Language: fi\n"
@@ -321,6 +321,10 @@ msgid "MS-DOS Batch"
 msgstr "MS-DOS-komentojono"
 
 msgctxt "Language|"
+msgid "DotEnv"
+msgstr ""
+
+msgctxt "Language|"
 msgid "dot"
 msgstr "dot"
 
@@ -456,11 +460,9 @@ msgctxt "Language|"
 msgid "GDL"
 msgstr "GDL"
 
-#, fuzzy
-#| msgid "text"
 msgctxt "Language|"
 msgid "Gemtext"
-msgstr "teksti"
+msgstr "Gemtext"
 
 msgctxt "Language|"
 msgid "GNU Gettext"
@@ -655,6 +657,10 @@ msgid "Julia"
 msgstr "Julia"
 
 msgctxt "Language|"
+msgid "Just"
+msgstr ""
+
+msgctxt "Language|"
 msgid "J"
 msgstr "J"
 
@@ -669,6 +675,13 @@ msgstr "KBasic"
 msgctxt "Language|"
 msgid "Kconfig"
 msgstr "Kconfig"
+
+#, fuzzy
+#| msgctxt "Language|"
+#| msgid "GDL"
+msgctxt "Language|"
+msgid "KDL"
+msgstr "GDL"
 
 msgctxt "Language|"
 msgid "Klipper Config"
@@ -753,6 +766,10 @@ msgstr "Logtalk"
 msgctxt "Language|"
 msgid "LPC"
 msgstr "LPC"
+
+msgctxt "Language|"
+msgid "LRC Lyrics"
+msgstr ""
 
 msgctxt "Language|"
 msgid "LSL"

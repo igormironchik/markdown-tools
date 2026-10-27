@@ -325,6 +325,10 @@ msgid "MS-DOS Batch"
 msgstr "МС‑ДОС бач"
 
 msgctxt "Language|"
+msgid "DotEnv"
+msgstr ""
+
+msgctxt "Language|"
 msgid "dot"
 msgstr "ДОТ"
 
@@ -669,6 +673,10 @@ msgid "Julia"
 msgstr "јулија"
 
 msgctxt "Language|"
+msgid "Just"
+msgstr ""
+
+msgctxt "Language|"
 msgid "J"
 msgstr "Ј"
 
@@ -686,6 +694,13 @@ msgstr "к‑бејзик"
 msgctxt "Language|"
 msgid "Kconfig"
 msgstr "К‑конфиг"
+
+#, fuzzy
+#| msgctxt "Language|"
+#| msgid "GDL"
+msgctxt "Language|"
+msgid "KDL"
+msgstr "ГДЛ"
 
 msgctxt "Language|"
 msgid "Klipper Config"
@@ -773,6 +788,10 @@ msgstr "логток"
 msgctxt "Language|"
 msgid "LPC"
 msgstr "ЛПЦ"
+
+msgctxt "Language|"
+msgid "LRC Lyrics"
+msgstr ""
 
 msgctxt "Language|"
 msgid "LSL"

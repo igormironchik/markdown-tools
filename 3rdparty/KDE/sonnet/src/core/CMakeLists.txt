@@ -62,7 +62,7 @@ ecm_generate_export_header(KF6SonnetCore
     USE_VERSION_HEADER
     VERSION_BASE_NAME Sonnet
     DEPRECATED_BASE_VERSION 0
-    DEPRECATION_VERSIONS
+    DEPRECATION_VERSIONS 6.30
     EXCLUDE_DEPRECATED_BEFORE_AND_AT ${EXCLUDE_DEPRECATED_BEFORE_AND_AT}
 )
 
@@ -96,3 +96,17 @@ install(FILES
    ${SonnetCore_HEADERS}
    ${CMAKE_CURRENT_BINARY_DIR}/sonnetcore_export.h
    DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF}/SonnetCore/sonnet COMPONENT Devel)
+
+ecm_add_installed_library_check(KF6SonnetCore
+    PACKAGE_NAME "KF6Sonnet"
+    PACKAGE_TARGET_NAMESPACE "KF6::"
+)
+
+ecm_installed_library_check_include_strings(KF6SonnetCore
+    HEADERS ${SonnetCore_CamelCase_HEADERS}
+    PREFIX Sonnet
+)
+
+ecm_installed_library_check_version_preprocessor_macros(KF6SonnetCore
+    PREFIX SONNET
+)

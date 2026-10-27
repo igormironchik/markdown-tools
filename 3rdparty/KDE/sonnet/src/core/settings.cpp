@@ -316,7 +316,14 @@ bool Settings::defaultCheckerEnabledByDefault()
     return false;
 }
 
+#if SONNETCORE_BUILD_DEPRECATED_SINCE(6, 30)
 bool Settings::defauktSkipRunTogether()
+{
+    return defaultSkipRunTogether();
+}
+#endif
+
+bool Settings::defaultSkipRunTogether()
 {
     return true;
 }

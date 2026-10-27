@@ -1,5 +1,4 @@
 # translation of katepart4.po to Italian
-# SPDX-FileCopyrightText: 2014-2015, 2017-2026 Vincenzo Reale <smart2128vr@gmail.com>
 # Andrea Rizzi <rizzi@kde.org>, 2003, 2004.
 # Federico Zenith <federico.zenith@member.fsf.org>, 2004, 2007, 2008, 2009, 2010, 2011.
 # Federico Cozzi <federicocozzi@federicocozzi.it>, 2004.
@@ -8,12 +7,13 @@
 # Samuele Kaplun <samuele.kaplun@collegiodimilano.it>, 2006.
 # Nicola Ruggero <nicola@nxnt.org>, 2006, 2007.
 # Federico Zenith <federico.zenith@member.fsf.org>, 2008, 2012, 2013, 2014, 2015.
+# SPDX-FileCopyrightText: 2014-2015, 2017-2026 Vincenzo Reale <smart2128vr@gmail.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: katepart4\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2016-09-08 07:30+0000\n"
-"PO-Revision-Date: 2026-05-19 10:10+0200\n"
+"PO-Revision-Date: 2026-09-06 13:58+0200\n"
 "Last-Translator: Vincenzo Reale <smart2128vr@gmail.com>\n"
 "Language-Team: Italian <kde-i18n-it@kde.org>\n"
 "Language: it\n"
@@ -21,7 +21,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 26.04.1\n"
+"X-Generator: Lokalize 26.08.0\n"
 "X-Qt-Contexts: true\n"
 
 msgctxt "Language|"
@@ -307,6 +307,10 @@ msgstr "Modello HTML di Django"
 msgctxt "Language|"
 msgid "MS-DOS Batch"
 msgstr "Batch MS-DOS"
+
+msgctxt "Language|"
+msgid "DotEnv"
+msgstr "DotEnv"
 
 msgctxt "Language|"
 msgid "dot"
@@ -641,6 +645,10 @@ msgid "Julia"
 msgstr "Julia"
 
 msgctxt "Language|"
+msgid "Just"
+msgstr "Just"
+
+msgctxt "Language|"
 msgid "J"
 msgstr "J"
 
@@ -655,6 +663,10 @@ msgstr "KBasic"
 msgctxt "Language|"
 msgid "Kconfig"
 msgstr "Kconfig"
+
+msgctxt "Language|"
+msgid "KDL"
+msgstr "KDL"
 
 msgctxt "Language|"
 msgid "Klipper Config"
@@ -745,6 +757,10 @@ msgstr "Logtalk"
 msgctxt "Language|"
 msgid "LPC"
 msgstr "LPC"
+
+msgctxt "Language|"
+msgid "LRC Lyrics"
+msgstr "LRC Lyrics"
 
 msgctxt "Language|"
 msgid "LSL"

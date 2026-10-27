@@ -254,7 +254,7 @@ void SettingsImpl::restore()
 
     // same defaults are in the default filter (filter.cpp)
     d->checkUppercase = settings.value(QStringLiteral("checkUppercase"), !Settings::defaultSkipUppercase()).toBool();
-    d->skipRunTogether = settings.value(QStringLiteral("skipRunTogether"), Settings::defauktSkipRunTogether()).toBool();
+    d->skipRunTogether = settings.value(QStringLiteral("skipRunTogether"), Settings::defaultSkipRunTogether()).toBool();
     d->backgroundCheckerEnabled = settings.value(QStringLiteral("backgroundCheckerEnabled"), Settings::defaultBackgroundCheckerEnabled()).toBool();
     d->checkerEnabledByDefault = settings.value(QStringLiteral("checkerEnabledByDefault"), Settings::defaultCheckerEnabledByDefault()).toBool();
     d->disablePercentage = settings.value(QStringLiteral("Sonnet_AsYouTypeDisablePercentage"), 90).toInt();

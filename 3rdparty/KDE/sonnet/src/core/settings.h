@@ -101,6 +101,15 @@ class SONNETCORE_EXPORT Settings : public QObject
      */
     Q_PROPERTY(bool modified READ modified NOTIFY modifiedChanged)
 
+    Q_PROPERTY(QStringList defaultIgnoreList READ defaultIgnoreList CONSTANT)
+    Q_PROPERTY(bool defaultSkipUppercase READ defaultSkipUppercase CONSTANT)
+    Q_PROPERTY(bool defaultAutodetectLanguage READ defaultAutodetectLanguage CONSTANT)
+    Q_PROPERTY(bool defaultBackgroundCheckerEnabled READ defaultBackgroundCheckerEnabled CONSTANT)
+    Q_PROPERTY(bool defaultCheckerEnabledByDefault READ defaultCheckerEnabledByDefault CONSTANT)
+    Q_PROPERTY(bool defaultSkipRunTogether READ defaultSkipRunTogether CONSTANT)
+    Q_PROPERTY(QString defaultDefaultLanguage READ defaultDefaultLanguage CONSTANT)
+    Q_PROPERTY(QStringList defaultPreferredLanguages READ defaultPreferredLanguages CONSTANT)
+
 public:
     /*!
      * Roles for dictionaryModel
@@ -180,7 +189,14 @@ public:
 
     [[nodiscard]] static bool defaultCheckerEnabledByDefault();
 
+#if SONNETCORE_BUILD_DEPRECATED_SINCE(6, 30)
+    /*!
+     * \deprecated Use Settings::defaultSkipRunTogether
+     */
     [[nodiscard]] static bool defauktSkipRunTogether();
+#endif
+
+    [[nodiscard]] static bool defaultSkipRunTogether();
 
     [[nodiscard]] static QString defaultDefaultLanguage();
 

@@ -42,11 +42,23 @@ echo $! $=!
 
 # expression subst:
 echo $(( cd << ed + 1 ))
-
+echo $((##a + ##$ + ##$a + ##^ + ##^A + ##^++ ##\a + ##^\a + ##abc))  # value of char
+                                                              # ~~ no number
+echo $((##$)) $((##^)) $((##\))) $((##\())
+                                    # ~~ no number
+echo $((#abc + #$abc))  # value of first character contents
+echo $[1+1]
 
 # command subst:
 echo $(ls -l)
 echo `cat myfile`
+echo ${|ls -l}
+echo ${ ls -l}
+echo ${ ls {a,b} ${var} $v}
+echo ${{param} ls -l}
+echo ${{array[k]} ls -l}
+echo ${{param}ls -l} # missing space
+echo ${{param}} # missing command
 
 
 # file subst:
@@ -336,7 +348,8 @@ ls **.php
 ls **/*(#ia2)readme
 ls **/*(-@)
 ls **/*(.)
-ls **/*(.:g-w:)
+ls **/*(.:h:g-w:)
+ls **/*(.g:w::h)
 ls **/*(.Lm+10)
 ls **/*(D/e:'[[ -e $REPLY/index.php && -e $REPLY/index.html ]]':)
 ls **/*(u0WLk+10m0)
@@ -358,6 +371,7 @@ ls *.*(mM4)
 ls *.*~(lex|parse).[ch](^D^l1)
 ls *.*~[a-m]*(u:nobody:g:apache:.xX)
 ls *.c(#q:s/#%(#b)s(*).c/'S${match[1]}.C'/)
+ls *.c(#q:s'"'_)(#q:s"'"_)
 ls *.c(:r)
 ls *.c~lex.c
 ls *.h~(fred|foo).h
@@ -416,7 +430,8 @@ ls $(echo /c/aax/*(.om[1]))(+cyg) &
 ls *~vssver.scc(.om[1])
 ls /c/aax/*(.om[1]+cyg)
 ls ${(ps:\0:)"$(grep -lZ foobar ./*.txt(.))"}
-ls [[[[]]x*
+ls [[[[]]x* []]] [^]]] [-a-Z<0-9>0-9<>] [a$foo:hb]
+ls [()] [(ab)] [a(b] [a)b]
 
 2 - f -f
 !a -f
@@ -499,7 +514,12 @@ echo ${(@)foo} ${(@)foo[1,2]} ${${(A)name}[1]} ${(AA)=name=...} ${(Q)${(z)foo}}
 echo ${(ps.$sep.)val} ${(ps.${sep}.)val} ${(s.$sep.)val} ${(s.)(.)val}
 echo ${(pr:2+3::_::$d:)var} ${(r:2+3::_::$d:)var}
 echo ${${:-=cat}:h}
-$foo:h34:a:gs/dfs/fds/:s/fds/d'd'f xyz $foo: $foo:O $foo:A
+echo ${foo:h34:a} $foo:h34:a
+echo $foo:F:2:wh $foo:F[2]W( _ )h    $foo:fi $foo:F:2:i
+echo $foo:h:a:gs/dfs/fds/:s/fds/d'd'f xyz $foo: $foo:O $foo:A
+echo ${foo:s/{{{'}/}}/'_} ${foo:s/{{{"}/}}/"_}  # oups, last / in quoting
+echo $foo:s'"'_ $foo:s"'"_ ${foo:s'"'_} ${foo:s"'"_}
+echo $foo:s/a'bc/_&\&_/':h $foo:s/a"$a/$a,"/:h $foo:s/a'bc'd/_/:h $foo:s/abc/a"b&\&_"c/:h
 3=$foo:QQQ xyz $a[3,$]:h3:t1:e
 echo ${${~foo}//\*/*.c}
 echo !$ !!:$ !* !!:* !-2:2 !:-3 !:2* !:2- !:2-3 !^ !:1 !!:1
@@ -519,12 +539,14 @@ echo $f:e $f:h $f:h:h $f:r $f:t $f:t:r $file:r
 echo ${(C)foo:gs/-/ /:r} ${(M)0%%<->} ${(j/x/s/x/)foo} ${(l:$COLUMNS::-:)}
 echo ${(l:3::0:)${RANDOM}} ${(s/x/)foo%%1*} ${0##*[!0-9]}
 echo ${a:2:2} ${a:2} ${a[1,3]} ${d/#?/} ${d/%?/} ${d[1,-2]} ${d[2,$]}
+echo ${a:2:2:P} ${a: i:2:P} ${a:i:2:P}
 echo ${d[2,-1]} ${file##*/} ${file%.*} ${texfilepath%/*.*} *(f:u+rx,o-x:)
 echo *(f:u+rx:) **/*(@-^./=%p) **/*(@-^./=%p) convert_csv.php(:a)
 cd $(locate -l1 -r "/zoo.txt$")(:h) # cd to directory of first occurence of a file zoo.txt
 cd ${$(!!)[3]:h}  # cd to 3rd in list
 cd ${$(locate zoo.txt)[1]:h}
 cd ${drive}/inetpub/wwwdev/www.some.co.uk/
+cd $x:h[1]
 cd **/*.php(.om[1]:h) # cd to directory of newest php file
 cd -
 cd /tmp/test/;touch {1..5} {6,7,8,12} {00..03}
@@ -556,6 +578,7 @@ print $((${${(z)${(f)"$(dirs -v)"}[-1]}[1]} + 1)) # or
 print $(history -n -1|sed 's/.* //')
 print $aa[(e)*]
 print $ass_array[one]
+print $aa[1][0-9]
 print $x $y
 print ${#path[1]}       # length of first element in path array
 print ${#path}          # length of "path" array
@@ -714,8 +737,11 @@ a) ]]
 [ a -eq 2 ] || [ a -eq 2] ] && [[ a -eq 2 ]] || [[ a != b ]];
 [ a -eq 2 ]||[ a -eq 2] ]&&[[ a -eq 2 ]]||[[ a != b ]];
 
+# arithmetic expression
 ((3+1+a+$c*(x) & 0x4342_2fd+03-08_5/23#D9a@_^8))
 ((1.3/(2-(a-4))))
+print $(( [#_] sqrt(1e7) 0__39 1423e23 .2443 43.34 34.43e4 .d))
+print $(( [#10_3] 1e___3 .__2 1.__e__3 1.__ ))
 
 # they are not arithmetic evaluations...
 ((cmd && cmd) || cmd)
@@ -724,8 +750,6 @@ $((cmd && cmd) || cmd)
 cmd) || cmd)
 $((cmd &&
 cmd) || cmd)
-
-print $(( [#_] sqrt(1e7) 0__39 1423e23 .2443 43.34 34.43e4 .d))
 
 { echo
     echo

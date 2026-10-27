@@ -77,6 +77,7 @@
 <span style="color:#0057ae">RestartSec</span> = <span style="color:#b08000">15</span>
 <span style="color:#0057ae">RestartSteps</span> = <span style="color:#b08000">2</span>
 <span style="color:#0057ae">RestartMaxDelaySec</span> = <span style="color:#b08000">150</span><span style="font-style:italic">ms</span>
+<span style="color:#0057ae">RestartRandomizedDelaySec</span> = <span style="color:#b08000">200</span><span style="font-style:italic">ms</span>
 <span style="color:#0057ae">TimeoutStartSec</span> = <span style="color:#b08000">5</span><span style="font-style:italic">s</span> <span style="color:#b08000">100</span><span style="font-style:italic">ms</span>
 <span style="color:#0057ae">TimeoutStopSec</span> = <span style="color:#aa5500">infinity</span>
 <span style="color:#0057ae">TimeoutAbortSec</span> = <span style="color:#b08000">15</span>
@@ -100,6 +101,8 @@
   <span style="color:#006e28">some-other</span><span style="color:#006e28;font-style:italic">.socket</span>
 <span style="color:#0057ae">FileDescriptorStoreMax</span> = <span style="color:#b08000">5</span>
 <span style="color:#0057ae">FileDescriptorStorePreserve</span> = <span style="color:#aa5500">yes</span>
+<span style="color:#0057ae">LUOSession</span> = some-name <span style="font-weight:bold">\</span>
+  some-other-name
 <span style="color:#0057ae">USBFunctionDescriptors</span> = /some/absolute/path
 <span style="color:#0057ae">USBFunctionStrings</span> = /some/absolute/path
 <span style="color:#0057ae">OOMPolicy</span> = <span style="color:#aa5500">stop</span>
@@ -313,7 +316,11 @@
 <span style="color:#0057ae">WatchdogSignal</span> = <span style="color:#aa5500">SIGQUIT</span>
 
 <span style="color:#898887">## from systemd.resource-control</span>
+<span style="color:#0057ae">CPUPressureThresholdSec</span> = <span style="color:#b08000">250</span><span style="font-style:italic">ms</span>
+<span style="color:#0057ae">CPUPressureWatch</span> = <span style="color:#aa5500">skip</span>
 <span style="color:#0057ae">CPUWeight</span> = <span style="color:#b08000">1234</span>
+<span style="color:#0057ae">IOPressureWatch</span> = <span style="color:#aa5500">auto</span>
+<span style="color:#0057ae">IOPressureThresholdSec</span> = <span style="color:#b08000">123 </span><span style="font-style:italic">ms</span>
 <span style="color:#0057ae">StartupCPUWeight</span> = <span style="color:#b08000">321</span>
 <span style="color:#0057ae">CPUQuota</span> = <span style="color:#b08000">123.4</span><span style="font-style:italic">%</span>
 <span style="color:#0057ae">CPUQuotaPeriodSec</span> = <span style="color:#b08000">1</span><span style="font-style:italic">s</span> <span style="color:#b08000">23</span><span style="font-style:italic">ms</span> <span style="color:#b08000">45</span><span style="font-style:italic">us</span>
@@ -321,6 +328,7 @@
 <span style="color:#0057ae">StartupAllowedCPUs</span> = <span style="color:#b08000">0-24</span>
 <span style="color:#0057ae">AllowedMemoryNodes</span> = <span style="color:#b08000">5-8</span>, <span style="color:#b08000">12</span>
 <span style="color:#0057ae">StartupAllowedMemoryNodes</span> = <span style="color:#b08000">5-10</span>, <span style="color:#b08000">12</span>
+<span style="color:#0057ae">CPUSetPartition</span> = <span style="color:#aa5500">root</span>
 <span style="color:#0057ae">MemoryAccounting</span> = <span style="color:#aa5500">yes</span>
 <span style="color:#0057ae">MemoryMin</span> = <span style="color:#b08000">10</span><span style="font-style:italic">G</span>
 <span style="color:#0057ae">MemoryLow</span> = <span style="color:#b08000">20</span><span style="font-style:italic">%</span>
@@ -369,6 +377,7 @@
 
 
 <span style="font-weight:bold">[Slice]</span>
+<span style="color:#0057ae">ActivatingConcurrencyMax</span> = <span style="color:#aa5500">infinity</span>
 <span style="color:#0057ae">ConcurrencyHardMax</span> = <span style="color:#b08000">20</span>
 <span style="color:#0057ae">ConcurrencySoftMax</span> = <span style="color:#aa5500">infinity</span>
 <span style="color:#898887"># The Slice section may include options of the resource-control option group.</span>
@@ -413,10 +422,13 @@
 <span style="color:#0057ae">SmackLabel</span> = value
 <span style="color:#0057ae">SmackLabelIPIn</span> = value
 <span style="color:#0057ae">SmackLabelIPOut</span> = value
+<span style="color:#0057ae">XAttrEntryPoint</span> = user.some-xattr-name=some-value
+<span style="color:#0057ae">XAttrListen</span> = user.arch-<span style="color:#3daee9">%a</span>=id-<span style="color:#3daee9">%b</span>
+<span style="color:#0057ae">XAttrAccept</span> = user.some-xattr-name=some-value
 <span style="color:#0057ae">SELinuxContextFromNet</span> = <span style="color:#aa5500">true</span>
 <span style="color:#0057ae">PipeSize</span> = <span style="color:#b08000">1</span><span style="font-style:italic">M</span>
 <span style="color:#0057ae">MessageQueueMaxMessages</span> = <span style="color:#b08000">12</span>
-<span style="color:#0057ae">MessageQueueMessageSize</span> = <span style="color:#b08000">1234</span>
+<span style="color:#0057ae">MessageQueueMessageSize</span> = <span style="color:#b08000">1</span><span style="font-style:italic">Ki</span>
 <span style="color:#0057ae">FreeBind</span> = <span style="color:#aa5500">yes</span>
 <span style="color:#0057ae">Transparent</span> = <span style="color:#aa5500">no</span>
 <span style="color:#0057ae">Broadcast</span> = <span style="color:#aa5500">true</span>
@@ -545,9 +557,11 @@
 <span style="color:#0057ae">ConditionDirectoryNotEmpty</span> = <span style="color:#ff5500">!</span>/some/path
 <span style="color:#0057ae">ConditionFileNotEmpty</span> = <span style="color:#ff5500">!</span>/some/path
 <span style="color:#0057ae">ConditionFileIsExecutable</span> = <span style="color:#ff5500">!</span>/some/path
+<span style="color:#0057ae">ConditionFraction</span> = <span style="color:#ff5500">!</span><span style="color:#0057ae">some!tag </span><span style="color:#b08000">75.5</span><span style="font-style:italic">%</span>
 <span style="color:#0057ae">ConditionUser</span> = <span style="color:#ff5500">|</span><span style="color:#aa5500">@system</span>
 <span style="color:#0057ae">ConditionGroup</span> = <span style="color:#ff5500">|</span>groupname
 <span style="color:#0057ae">ConditionControlGroupController</span> = <span style="color:#aa5500">memory</span>
+<span style="color:#0057ae">ConditionMachineTag</span> = so<span style="color:#3daee9">?</span>e<span style="color:#3daee9">*</span>tag
 <span style="color:#0057ae">ConditionMemory</span> = <span style="color:#ff5500">| </span>>= <span style="color:#b08000">1</span><span style="font-style:italic">G</span>
 <span style="color:#0057ae">ConditionCPUs</span> = <span style="color:#ff5500">| </span>&lt; <span style="color:#b08000">8</span>
 <span style="color:#0057ae">ConditionCPUFeature</span> = <span style="color:#ff5500">| </span><span style="color:#aa5500">sse2</span>
@@ -568,6 +582,8 @@
 <span style="color:#0057ae">AssertACPower</span> = <span style="color:#aa5500">true</span>
 <span style="color:#0057ae">AssertNeedsUpdate</span> = <span style="color:#ff5500">!</span>/var
 <span style="color:#0057ae">AssertFirstBoot</span> = <span style="color:#ff5500">|</span><span style="color:#aa5500">false</span>
+<span style="color:#0057ae">AssertFraction</span> = <span style="color:#0057ae">some-tag </span><span style="color:#b08000">100</span><span style="font-style:italic">%</span>
+<span style="color:#0057ae">AssertMachineTag</span> = so<span style="color:#3daee9">?</span>e<span style="color:#3daee9">*</span>tag
 <span style="color:#0057ae">AssertPathExists</span> = <span style="color:#ff5500">!</span>/some/absolute/path
 <span style="color:#0057ae">AssertPathExistsGlob</span> = <span style="color:#ff5500">|!</span>/mnt/<span style="color:#3daee9">*</span>
 <span style="color:#0057ae">AssertPathIsDirectory</span> = <span style="color:#ff5500">!</span>/some/path
@@ -1423,13 +1439,17 @@ WantedBy = some.service some.socket
 <span style="color:#0057ae">TasksMax</span> = <span style="color:#aa5500">infinity</span> 20
 
 
-<span style="color:#898887">###### cardinal %KGMT infinity</span>
+<span style="color:#898887">###### cardinal %KMGT infinity</span>
 <span style="font-weight:bold">[Service]</span>
 <span style="color:#0057ae">MemoryMin</span> = <span style="color:#b08000">123</span>
 <span style="color:#0057ae">MemoryMin</span> = <span style="color:#b08000">12</span><span style="font-style:italic">K</span>
+<span style="color:#0057ae">MemoryMin</span> = <span style="color:#b08000">12</span><span style="font-style:italic">Ki</span>
 <span style="color:#0057ae">MemoryMin</span> = <span style="color:#b08000">12</span><span style="font-style:italic">M</span>
+<span style="color:#0057ae">MemoryMin</span> = <span style="color:#b08000">12</span><span style="font-style:italic">Mi</span>
 <span style="color:#0057ae">MemoryMin</span> = <span style="color:#b08000">12</span><span style="font-style:italic">G</span>
+<span style="color:#0057ae">MemoryMin</span> = <span style="color:#b08000">12</span><span style="font-style:italic">Gi</span>
 <span style="color:#0057ae">MemoryMin</span> = <span style="color:#b08000">12</span><span style="font-style:italic">T</span>
+<span style="color:#0057ae">MemoryMin</span> = <span style="color:#b08000">12</span><span style="font-style:italic">Ti</span>
 <span style="color:#0057ae">MemoryMin</span> = <span style="color:#b08000">12 </span><span style="font-style:italic">G</span>
 <span style="color:#0057ae">MemoryMin</span> = <span style="color:#b08000">20</span><span style="font-style:italic">%</span>
 <span style="color:#0057ae">MemoryMin</span> = <span style="color:#aa5500">infinity</span>
@@ -1440,16 +1460,21 @@ WantedBy = some.service some.socket
 <span style="color:#0057ae">MemoryMin</span> = <span style="color:#b08000">12</span>H
 <span style="color:#0057ae">MemoryMin</span> = <span style="color:#b08000">12 </span>E
 <span style="color:#0057ae">MemoryMin</span> = <span style="color:#b08000">12</span>P
+<span style="color:#0057ae">MemoryMin</span> = <span style="color:#b08000">12</span><span style="font-style:italic">%</span>i
 
 
-<span style="color:#898887">###### cardinal KGMT</span>
+<span style="color:#898887">###### cardinal KMGT</span>
 <span style="font-weight:bold">[Socket]</span>
 <span style="color:#0057ae">PipeSize</span> = <span style="color:#b08000">123</span>
 <span style="color:#0057ae">PipeSize</span> = <span style="color:#b08000">12</span><span style="font-style:italic">K</span>
+<span style="color:#0057ae">PipeSize</span> = <span style="color:#b08000">12</span><span style="font-style:italic">Ki</span>
 <span style="color:#0057ae">PipeSize</span> = <span style="color:#b08000">12</span><span style="font-style:italic">M</span>
-<span style="color:#0057ae">PipeSize</span> = <span style="color:#b08000">12</span><span style="font-style:italic">G</span>
+<span style="color:#0057ae">PipeSize</span> = <span style="color:#b08000">12</span><span style="font-style:italic">M</span>
+<span style="color:#0057ae">PipeSize</span> = <span style="color:#b08000">12</span><span style="font-style:italic">Gi</span>
 <span style="color:#0057ae">PipeSize</span> = <span style="color:#b08000">12</span><span style="font-style:italic">T</span>
+<span style="color:#0057ae">PipeSize</span> = <span style="color:#b08000">12</span><span style="font-style:italic">Ti</span>
 <span style="color:#0057ae">PipeSize</span> = <span style="color:#b08000">12 </span><span style="font-style:italic">G</span>
+<span style="color:#0057ae">PipeSize</span> = <span style="color:#b08000">12 </span><span style="font-style:italic">Gi</span>
 <span style="color:#898887">## invalid values</span>
 <span style="color:#0057ae">PipeSize</span> = invalid
 <span style="color:#0057ae">PipeSize</span> = infinity
@@ -1461,7 +1486,7 @@ WantedBy = some.service some.socket
 <span style="color:#0057ae">PipeSize</span> = <span style="color:#b08000">20</span>%
 
 
-<span style="color:#898887">###### cardinal KGMT infinity</span>
+<span style="color:#898887">###### cardinal KMGT infinity</span>
 <span style="font-weight:bold">[Service]</span>
 <span style="color:#0057ae">MemorySwapMax</span> = <span style="color:#b08000">123</span>
 <span style="color:#0057ae">MemorySwapMax</span> = <span style="color:#b08000">12</span><span style="font-style:italic">K</span>
@@ -1616,6 +1641,8 @@ WantedBy = some.service some.socket
 <span style="color:#0057ae">ConditionCPUFeature</span> = <span style="color:#aa5500">tsc</span>
 <span style="color:#0057ae">ConditionCPUFeature</span> = <span style="color:#aa5500">vme</span>
 <span style="color:#0057ae">ConditionCPUFeature</span> = <span style="color:#aa5500">xsave</span>
+<span style="color:#898887"># since v262 features may have an architecture prefix</span>
+<span style="color:#0057ae">ConditionCPUFeature</span> = arm64.bti
 <span style="color:#898887">## invalid values</span>
 <span style="color:#0057ae">ConditionCPUFeature</span> = invalid
 <span style="color:#898887"># multiple values</span>
@@ -1687,6 +1714,17 @@ WantedBy = some.service some.socket
 <span style="color:#0057ae">CPUWeight</span> = 1 <span style="color:#b08000">10000</span>
 
 
+<span style="color:#898887">###### cpuset partition type</span>
+<span style="font-weight:bold">[Service]</span>
+<span style="color:#0057ae">CPUSetPartition</span> = <span style="color:#aa5500">isolated</span>
+<span style="color:#0057ae">CPUSetPartition</span> = <span style="color:#aa5500">member</span>
+<span style="color:#0057ae">CPUSetPartition</span> = <span style="color:#aa5500">root</span>
+<span style="color:#898887">## invalid values</span>
+<span style="color:#0057ae">CPUSetPartition</span> = invalid
+<span style="color:#898887"># multiple values</span>
+<span style="color:#0057ae">CPUSetPartition</span> = <span style="color:#aa5500">isolated</span> root
+
+
 <span style="color:#898887">###### defer trigger</span>
 <span style="font-weight:bold">[Socket]</span>
 <span style="color:#0057ae">DeferTrigger</span> = <span style="color:#aa5500">patient</span>
@@ -1697,7 +1735,6 @@ WantedBy = some.service some.socket
 <span style="color:#0057ae">DeferTrigger</span> = invalid
 <span style="color:#898887"># multiple values</span>
 <span style="color:#0057ae">DeferTrigger</span> = <span style="color:#aa5500">patient</span> true
-
 
 
 <span style="color:#898887">###### delegate</span>
@@ -1822,6 +1859,7 @@ WantedBy = some.service some.socket
 <span style="color:#0057ae">SuccessExitStatus</span> = <span style="color:#aa5500">LIMITS</span>
 <span style="color:#0057ae">SuccessExitStatus</span> = <span style="color:#aa5500">LOGS_DIRECTORY</span>
 <span style="color:#0057ae">SuccessExitStatus</span> = <span style="color:#aa5500">MEMORY</span>
+<span style="color:#0057ae">SuccessExitStatus</span> = <span style="color:#aa5500">MEMORY_THP</span>
 <span style="color:#0057ae">SuccessExitStatus</span> = <span style="color:#aa5500">NAMESPACE</span>
 <span style="color:#0057ae">SuccessExitStatus</span> = <span style="color:#aa5500">NETWORK</span>
 <span style="color:#0057ae">SuccessExitStatus</span> = <span style="color:#aa5500">NICE</span>
@@ -1891,6 +1929,18 @@ WantedBy = some.service some.socket
 <span style="color:#0057ae">TimeoutStartFailureMode</span> = <span style="color:#aa5500">abort</span> kill
 
 
+<span style="color:#898887">###### fd store preserve</span>
+<span style="font-weight:bold">[Service]</span>
+<span style="color:#0057ae">FileDescriptorStorePreserve</span> = <span style="color:#aa5500">on-success</span>
+<span style="color:#0057ae">FileDescriptorStorePreserve</span> = <span style="color:#aa5500">restart</span>
+<span style="color:#0057ae">FileDescriptorStorePreserve</span> = <span style="color:#aa5500">yes</span>
+<span style="color:#0057ae">FileDescriptorStorePreserve</span> = <span style="color:#aa5500">no</span>
+<span style="color:#898887">## invalid values</span>
+<span style="color:#0057ae">FileDescriptorStorePreserve</span> = invalid
+<span style="color:#898887"># multiple values</span>
+<span style="color:#0057ae">FileDescriptorStorePreserve</span> = <span style="color:#aa5500">on-success</span> restart
+
+
 <span style="color:#898887">###### file mode</span>
 <span style="font-weight:bold">[Automount]</span>
 <span style="color:#0057ae">DirectoryMode</span> = <span style="color:#b08000">755</span>
@@ -1922,6 +1972,28 @@ WantedBy = some.service some.socket
 <span style="color:#0057ae">ConditionFirmware</span> = smbios-field()
 <span style="color:#898887"># multiple values</span>
 <span style="color:#0057ae">ConditionFirmware</span> = <span style="color:#aa5500">uefi</span> device-tree
+
+
+<span style="color:#898887">###### fraction</span>
+<span style="font-weight:bold">[Unit]</span>
+<span style="color:#0057ae">ConditionFraction</span> = <span style="color:#b08000">100</span><span style="font-style:italic">%</span>
+<span style="color:#0057ae">ConditionFraction</span> = <span style="color:#0057ae">12.34 </span>%
+<span style="color:#0057ae">ConditionFraction</span> = <span style="color:#b08000">0.5</span><span style="font-style:italic">%</span>
+<span style="color:#0057ae">ConditionFraction</span> = <span style="color:#b08000">0.</span><span style="font-style:italic">%</span>
+<span style="color:#0057ae">ConditionFraction</span> = <span style="color:#0057ae">some!tag </span><span style="color:#b08000">12.34</span><span style="font-style:italic">%</span>
+<span style="color:#0057ae">ConditionFraction</span> = <span style="color:#ff5500">!</span><span style="color:#0057ae">some!tag </span><span style="color:#b08000">12.34</span><span style="font-style:italic">%</span>
+<span style="color:#0057ae">ConditionFraction</span> = <span style="color:#ff5500">!</span><span style="color:#b08000"> 12.34</span><span style="font-style:italic">%</span>
+<span style="color:#898887"># The tag is an arbitrary string without spaces, so this is ok too.</span>
+<span style="color:#0057ae">ConditionFraction</span> = <span style="color:#0057ae">12.34% </span><span style="color:#b08000">12.34</span><span style="font-style:italic">%</span>
+<span style="color:#898887">## invalid values</span>
+<span style="color:#898887"># More than 100%.</span>
+<span style="color:#0057ae">ConditionFraction</span> = <span style="color:#0057ae">123 </span>%
+<span style="color:#898887"># More than 2 decimal places.</span>
+<span style="color:#0057ae">ConditionFraction</span> = <span style="color:#0057ae">50.123 </span>%
+<span style="color:#898887"># Misplaced `!`.</span>
+<span style="color:#0057ae">ConditionFraction</span> = <span style="color:#0057ae">some!tag </span>!<span style="color:#b08000"> 12.34</span><span style="font-style:italic">%</span>
+<span style="color:#898887"># Tag after percent value.</span>
+<span style="color:#0057ae">ConditionFraction</span> = <span style="color:#0057ae">12.34% </span>some!tag
 
 
 <span style="color:#898887">###### fs set</span>
@@ -2383,6 +2455,8 @@ WantedBy = some.service some.socket
 <span style="color:#0057ae">NUMAPolicy</span> = <span style="color:#aa5500">interleave</span>
 <span style="color:#0057ae">NUMAPolicy</span> = <span style="color:#aa5500">local</span>
 <span style="color:#0057ae">NUMAPolicy</span> = <span style="color:#aa5500">preferred</span>
+<span style="color:#0057ae">NUMAPolicy</span> = <span style="color:#aa5500">preferred-many</span>
+<span style="color:#0057ae">NUMAPolicy</span> = <span style="color:#aa5500">weighted-interleave</span>
 <span style="color:#898887">## invalid values</span>
 <span style="color:#0057ae">NUMAPolicy</span> = invalid
 <span style="color:#898887"># multiple values</span>
@@ -2493,6 +2567,21 @@ WantedBy = some.service some.socket
 <span style="color:#0057ae">Personality</span> = m68k
 <span style="color:#898887"># multiple values</span>
 <span style="color:#0057ae">Personality</span> = <span style="color:#aa5500">x86-64</span> s390x
+
+
+<span style="color:#898887">###### pressure watch</span>
+<span style="font-weight:bold">[Service]</span>
+<span style="color:#0057ae">CPUPressureWatch</span> = <span style="color:#aa5500">auto</span>
+<span style="color:#0057ae">CPUPressureWatch</span> = <span style="color:#aa5500">skip</span>
+<span style="color:#898887"># boolean (see boolean above for all supported values)</span>
+<span style="color:#0057ae">CPUPressureWatch</span> = <span style="color:#aa5500">yes</span>
+<span style="color:#0057ae">CPUPressureWatch</span> = <span style="color:#aa5500">no</span>
+<span style="color:#0057ae">CPUPressureWatch</span> = <span style="color:#aa5500">0</span>
+<span style="color:#0057ae">CPUPressureWatch</span> = <span style="color:#aa5500">1</span>
+<span style="color:#898887">## invalid values</span>
+<span style="color:#0057ae">CPUPressureWatch</span> = invalid
+<span style="color:#898887"># multiple values</span>
+<span style="color:#0057ae">CPUPressureWatch</span> = <span style="color:#aa5500">auto</span> skip
 
 
 <span style="color:#898887">###### private tmp</span>
@@ -2657,16 +2746,22 @@ WantedBy = some.service some.socket
 
 <span style="color:#898887">###### secure bits list</span>
 <span style="font-weight:bold">[Service]</span>
-<span style="color:#0057ae">SecureBits</span> = <span style="color:#aa5500">keep-caps</span>
-<span style="color:#0057ae">SecureBits</span> = <span style="color:#aa5500">keep-caps-locked</span>
-<span style="color:#0057ae">SecureBits</span> = <span style="color:#aa5500">no-setuid-fixup</span>
-<span style="color:#0057ae">SecureBits</span> = <span style="color:#aa5500">no-setuid-fixup-locked</span>
-<span style="color:#0057ae">SecureBits</span> = <span style="color:#aa5500">noroot</span>
-<span style="color:#0057ae">SecureBits</span> = <span style="color:#aa5500">noroot-locked</span>
-<span style="color:#0057ae">SecureBits</span> = <span style="color:#aa5500">keep-caps</span> <span style="color:#aa5500">noroot-locked</span> <span style="font-weight:bold">\</span>
-  <span style="color:#aa5500">no-setuid-fixup</span>
+<span style="color:#898887"># multiple values may be used</span>
+<span style="color:#0057ae">SecureBits</span> = <span style="font-weight:bold">\</span>
+  <span style="color:#aa5500">exec-deny-interactive</span> <span style="font-weight:bold">\</span>
+  <span style="color:#aa5500">exec-deny-interactive-locked</span> <span style="font-weight:bold">\</span>
+  <span style="color:#aa5500">exec-restrict-file</span> <span style="font-weight:bold">\</span>
+  <span style="color:#aa5500">exec-restrict-file-locked</span> <span style="font-weight:bold">\</span>
+  <span style="color:#aa5500">keep-caps</span> <span style="font-weight:bold">\</span>
+  <span style="color:#aa5500">keep-caps-locked</span> <span style="font-weight:bold">\</span>
+  <span style="color:#aa5500">no-cap-ambient-raise</span> <span style="font-weight:bold">\</span>
+  <span style="color:#aa5500">no-cap-ambient-raise-locked</span> <span style="font-weight:bold">\</span>
+  <span style="color:#aa5500">no-setuid-fixup</span> <span style="font-weight:bold">\</span>
+  <span style="color:#aa5500">no-setuid-fixup-locked</span> <span style="font-weight:bold">\</span>
+  <span style="color:#aa5500">noroot</span> <span style="font-weight:bold">\</span>
+  <span style="color:#aa5500">noroot-locked</span>
 <span style="color:#898887">## invalid values</span>
-<span style="color:#0057ae">SecureBits</span> = invalid
+<span style="color:#0057ae">SecureBits</span> = invalid noroot-invalid
 
 
 <span style="color:#898887">###### security</span>
@@ -2674,6 +2769,7 @@ WantedBy = some.service some.socket
 <span style="color:#0057ae">ConditionSecurity</span> = <span style="color:#aa5500">apparmor</span>
 <span style="color:#0057ae">ConditionSecurity</span> = <span style="color:#aa5500">audit</span>
 <span style="color:#0057ae">ConditionSecurity</span> = <span style="color:#aa5500">ima</span>
+<span style="color:#0057ae">ConditionSecurity</span> = <span style="color:#aa5500">measured-os</span>
 <span style="color:#0057ae">ConditionSecurity</span> = <span style="color:#aa5500">measured-uki</span>
 <span style="color:#0057ae">ConditionSecurity</span> = <span style="color:#aa5500">selinux</span>
 <span style="color:#0057ae">ConditionSecurity</span> = <span style="color:#aa5500">smack</span>

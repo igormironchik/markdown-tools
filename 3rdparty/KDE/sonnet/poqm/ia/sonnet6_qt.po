@@ -1221,7 +1221,7 @@ msgstr "Adde al dictionario"
 #~ msgstr "Patronos"
 
 #~ msgid "Wallpapers"
-#~ msgstr "Tapetes de papiro"
+#~ msgstr "Fundos de schermo"
 
 #~ msgid "XDG Application menu (.desktop files)"
 #~ msgstr "XDG Menu de applicationes (files .desktop)"
@@ -8766,7 +8766,7 @@ msgstr "Adde al dictionario"
 
 #~ msgid "Too many requests to server. Please try again in a few minutes."
 #~ msgstr ""
-#~ "Troppo requestas a le servitor. Pro favor prova de nove inter pauc "
+#~ "Troppo requestas a le servitor. Pro favor prova de nove inter pauco "
 #~ "minutas."
 
 #~ msgid "Unknown Open Collaboration Service API error. (%1)"

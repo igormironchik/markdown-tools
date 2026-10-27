@@ -3,14 +3,14 @@
 # This file is distributed under the license LGPL version 2.1 or
 # version 3 or later versions approved by the membership of KDE e.V.
 #
-# SPDX-FileCopyrightText: 2017, 2018, 2019, 2020, 2022 Antoni Bella Pérez <antonibella5@yahoo.com>
+# SPDX-FileCopyrightText: 2017-2020, 2022 Antoni Bella Pérez <antonibella5@yahoo.com>
 # SPDX-FileCopyrightText: 2019 Empar Montoro Martín <montoro_mde@gva.es>
-# SPDX-FileCopyrightText: 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026 Josep M. Ferrer <txemaq@gmail.com>
+# SPDX-FileCopyrightText: 2016-2026 Josep M. Ferrer <txemaq@gmail.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: syntax-highlighting\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"PO-Revision-Date: 2026-05-18 09:09+0200\n"
+"PO-Revision-Date: 2026-09-06 09:51+0200\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: ca\n"
@@ -305,6 +305,10 @@ msgstr "Plantilla HTML Django"
 msgctxt "Language|"
 msgid "MS-DOS Batch"
 msgstr "MS-DOS Batch"
+
+msgctxt "Language|"
+msgid "DotEnv"
+msgstr "DotEnv"
 
 msgctxt "Language|"
 msgid "dot"
@@ -639,6 +643,10 @@ msgid "Julia"
 msgstr "Julia"
 
 msgctxt "Language|"
+msgid "Just"
+msgstr "Just"
+
+msgctxt "Language|"
 msgid "J"
 msgstr "J"
 
@@ -653,6 +661,10 @@ msgstr "KBasic"
 msgctxt "Language|"
 msgid "Kconfig"
 msgstr "Kconfig"
+
+msgctxt "Language|"
+msgid "KDL"
+msgstr "KDL"
 
 msgctxt "Language|"
 msgid "Klipper Config"
@@ -737,6 +749,10 @@ msgstr "Logtalk"
 msgctxt "Language|"
 msgid "LPC"
 msgstr "LPC"
+
+msgctxt "Language|"
+msgid "LRC Lyrics"
+msgstr "LRC Lyrics"
 
 msgctxt "Language|"
 msgid "LSL"

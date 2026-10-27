@@ -8,3 +8,4 @@ Options:
  require-passing-tests-on: ['Linux', 'FreeBSD', 'Windows']
  cmake-options: -DBUILD_EXAMPLES=ON
  enable-lsan: True
+ run-installed-library-check-on: ['@all']

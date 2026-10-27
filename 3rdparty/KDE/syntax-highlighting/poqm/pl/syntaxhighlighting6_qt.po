@@ -301,6 +301,10 @@ msgid "MS-DOS Batch"
 msgstr "Wsadowy MS-DOS"
 
 msgctxt "Language|"
+msgid "DotEnv"
+msgstr ""
+
+msgctxt "Language|"
 msgid "dot"
 msgstr "dot"
 
@@ -633,6 +637,10 @@ msgid "Julia"
 msgstr "Julia"
 
 msgctxt "Language|"
+msgid "Just"
+msgstr ""
+
+msgctxt "Language|"
 msgid "J"
 msgstr "J"
 
@@ -647,6 +655,13 @@ msgstr "KBasic"
 msgctxt "Language|"
 msgid "Kconfig"
 msgstr "Kconfig"
+
+#, fuzzy
+#| msgctxt "Language|"
+#| msgid "GDL"
+msgctxt "Language|"
+msgid "KDL"
+msgstr "GDL"
 
 msgctxt "Language|"
 msgid "Klipper Config"
@@ -731,6 +746,10 @@ msgstr "Logtalk"
 msgctxt "Language|"
 msgid "LPC"
 msgstr "LPC"
+
+msgctxt "Language|"
+msgid "LRC Lyrics"
+msgstr ""
 
 msgctxt "Language|"
 msgid "LSL"
