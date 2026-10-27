@@ -92,3 +92,17 @@ if(BUILD_DESIGNERPLUGIN)
 endif()
 
 ecm_generate_qdoc(KF6SonnetUi sonnetui.qdocconf)
+
+ecm_add_installed_library_check(KF6SonnetUi
+    PACKAGE_NAME "KF6Sonnet"
+    PACKAGE_TARGET_NAMESPACE "KF6::"
+)
+
+ecm_installed_library_check_include_strings(KF6SonnetUi
+    HEADERS ${SonnetUi_CamelCase_HEADERS}
+    PREFIX Sonnet
+)
+
+ecm_installed_library_check_version_preprocessor_macros(KF6SonnetUi
+    PREFIX SONNET
+)

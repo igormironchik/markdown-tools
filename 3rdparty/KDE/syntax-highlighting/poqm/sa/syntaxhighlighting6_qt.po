@@ -307,6 +307,10 @@ msgid "MS-DOS Batch"
 msgstr "MS-DOS बैच"
 
 msgctxt "Language|"
+msgid "DotEnv"
+msgstr ""
+
+msgctxt "Language|"
 msgid "dot"
 msgstr "बिन्दुः"
 
@@ -645,6 +649,10 @@ msgid "Julia"
 msgstr "जूलिया"
 
 msgctxt "Language|"
+msgid "Just"
+msgstr ""
+
+msgctxt "Language|"
 msgid "J"
 msgstr "जे"
 
@@ -659,6 +667,13 @@ msgstr "केबेसिक"
 msgctxt "Language|"
 msgid "Kconfig"
 msgstr "Kconfig"
+
+#, fuzzy
+#| msgctxt "Language|"
+#| msgid "GDL"
+msgctxt "Language|"
+msgid "KDL"
+msgstr "जीडीएल"
 
 msgctxt "Language|"
 msgid "Klipper Config"
@@ -749,6 +764,10 @@ msgstr "लॉगटॉक"
 msgctxt "Language|"
 msgid "LPC"
 msgstr "एलपीसी"
+
+msgctxt "Language|"
+msgid "LRC Lyrics"
+msgstr ""
 
 msgctxt "Language|"
 msgid "LSL"

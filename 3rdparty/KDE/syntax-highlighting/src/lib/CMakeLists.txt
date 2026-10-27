@@ -27,6 +27,7 @@ target_sources(KF6SyntaxHighlighting PRIVATE
     theme.cpp
     wildcardmatcher.cpp
     themedata.cpp
+    themepreviewicon.cpp
     worddelimiters.cpp
     ${syntax_highlighting_QM_LOADER}
     $<TARGET_OBJECTS:SyntaxHighlightingData>
@@ -92,3 +93,17 @@ install(FILES
 
 
 ecm_generate_qdoc(KF6SyntaxHighlighting ksyntaxhighlighting.qdocconf)
+
+ecm_add_installed_library_check(KF6SyntaxHighlighting
+    PACKAGE_NAME "KF6SyntaxHighlighting"
+    PACKAGE_TARGET_NAMESPACE "KF6::"
+)
+
+ecm_installed_library_check_include_strings(KF6SyntaxHighlighting
+    HEADERS ${CamelCase_HEADERS}
+    PREFIX KSyntaxHighlighting
+)
+
+ecm_installed_library_check_version_preprocessor_macros(KF6SyntaxHighlighting
+    PREFIX KSYNTAXHIGHLIGHTING
+)

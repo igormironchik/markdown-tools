@@ -298,6 +298,10 @@ msgid "MS-DOS Batch"
 msgstr ""
 
 msgctxt "Language|"
+msgid "DotEnv"
+msgstr ""
+
+msgctxt "Language|"
 msgid "dot"
 msgstr ""
 
@@ -630,6 +634,10 @@ msgid "Julia"
 msgstr ""
 
 msgctxt "Language|"
+msgid "Just"
+msgstr ""
+
+msgctxt "Language|"
 msgid "J"
 msgstr ""
 
@@ -643,6 +651,10 @@ msgstr ""
 
 msgctxt "Language|"
 msgid "Kconfig"
+msgstr ""
+
+msgctxt "Language|"
+msgid "KDL"
 msgstr ""
 
 msgctxt "Language|"
@@ -727,6 +739,10 @@ msgstr ""
 
 msgctxt "Language|"
 msgid "LPC"
+msgstr ""
+
+msgctxt "Language|"
+msgid "LRC Lyrics"
 msgstr ""
 
 msgctxt "Language|"

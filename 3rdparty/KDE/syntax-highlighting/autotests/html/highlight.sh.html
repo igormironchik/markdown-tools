@@ -21,7 +21,7 @@
 <span style="color:#644a9b;font-weight:bold">echo</span> <span style="color:#bf0303">'single quoted string'</span>
 <span style="color:#644a9b;font-weight:bold">echo</span> <span style="color:#bf0303">"double quoted string"</span>
 <span style="color:#644a9b;font-weight:bold">echo</span> <span style="color:#bf0303">$'string with esc</span><span style="color:#0057ae">\a</span><span style="color:#bf0303">pes</span><span style="color:#0057ae">\x0d</span><span style="color:#bf0303">in it'</span>
-<span style="color:#644a9b;font-weight:bold">echo</span> <span style="color:#bf0303">$"</span><span style="color:#bf0303">string meant to be translated"</span>
+<span style="color:#644a9b;font-weight:bold">echo</span> <span style="color:#bf0303">$"string meant to be translated"</span>
 <span style="color:#644a9b;font-weight:bold">echo</span> <span style="color:#bf0303">"$"</span>
 
 
@@ -96,9 +96,14 @@
 <span style="color:#0057ae">v</span><span style="color:#ca60ca">=</span><span style="color:#0057ae">${</span><span style="font-weight:bold">|</span><span style="color:#644a9b">ls</span><span style="font-weight:bold">;</span><span style="color:#0057ae">}</span>
 <span style="color:#0057ae">v</span><span style="color:#ca60ca">=</span><span style="color:#0057ae">${</span> <span style="color:#644a9b">ls</span> <span style="color:#0057ae">-l</span> }<span style="font-weight:bold">;</span> <span style="color:#0057ae">}</span>
 <span style="color:#898887">#          ^ ls parameter</span>
+<span style="color:#0057ae">v</span><span style="color:#ca60ca">=</span><span style="color:#bf0303">"</span><span style="color:#0057ae">${</span> <span style="color:#644a9b">ls</span> <span style="color:#0057ae">-l</span> }<span style="font-weight:bold">;</span> <span style="color:#0057ae">}</span><span style="color:#bf0303">"</span>
+<span style="color:#898887">#           ^ ls parameter</span>
 <span style="color:#0057ae">v</span><span style="color:#ca60ca">=</span><span style="color:#0057ae">${</span>
   <span style="color:#644a9b">ls</span> <span style="color:#0057ae">-l</span>
 <span style="color:#0057ae">}</span>
+<span style="color:#0057ae">v</span><span style="color:#ca60ca">=</span><span style="color:#bf0303">"</span><span style="color:#0057ae">${</span>
+  <span style="color:#644a9b">ls</span> <span style="color:#0057ae">-l</span>
+<span style="color:#0057ae">}</span><span style="color:#bf0303">"</span>
 
 <span style="color:#898887"># file subst:</span>
 <span style="color:#644a9b;font-weight:bold">echo</span> <span style="color:#0057ae">$(</span><span style="color:#ca60ca">&lt;</span><span style="color:#0057ae">$</span><span style="color:#0057ae">filename</span><span style="color:#0057ae">)</span>

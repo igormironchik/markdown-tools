@@ -68,6 +68,10 @@ constexpr DefinitionDataRow definitionsForFileNames[] = {
 
     {"xorg.conf", "/etc/literal-pattern/xorg.conf", "x.org Configuration\nTOML"},
     {".profile", "2-literal-patterns/.profile", "Bash\nZsh"},
+    {".envrc", ".envrc", "Bash"},
+    {".env", ".env", "DotEnv"},
+    {".env.*", ".env.local", "DotEnv"},
+    {"*.lrc", "song.lrc", "LRC Lyrics"},
 
     {"Config.*", "Config.beginning", "Kconfig"},
     {"usr.libexec.*", "usr.libexec.", "AppArmor Security Profile"},

@@ -176,7 +176,7 @@ void ConfigWidget::slotDefault()
 {
     d->ui.kcfg_autodetectLanguage->setChecked(Settings::defaultAutodetectLanguage());
     d->ui.kcfg_skipUppercase->setChecked(Settings::defaultSkipUppercase());
-    d->ui.kcfg_skipRunTogether->setChecked(Settings::defauktSkipRunTogether());
+    d->ui.kcfg_skipRunTogether->setChecked(Settings::defaultSkipRunTogether());
     d->ui.kcfg_checkerEnabledByDefault->setChecked(Settings::defaultCheckerEnabledByDefault());
     d->ui.kcfg_backgroundCheckerEnabled->setChecked(Settings::defaultBackgroundCheckerEnabled());
     d->ui.ignoreListWidget->clear();

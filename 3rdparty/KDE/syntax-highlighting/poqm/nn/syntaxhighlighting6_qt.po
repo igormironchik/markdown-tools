@@ -2,6 +2,7 @@
 #
 # Gaute Hvoslef Kvalnes <gaute@verdsveven.com>, 1999, 2000, 2002, 2003, 2004, 2005, 2006.
 # Håvard Korsvoll <korsvoll@skulelinux.no>, 2003, 2005.
+# Karl Ove Hufthammer <karl@huftis.org>, 2004, 2007, 2008, 2009, 2010, 2011, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026.
 # Jørgen Grønlund <jorgenhg@broadpark.no>, 2005.
 # Eirik U. Birkeland <eirbir@gmail.com>, 2008, 2009, 2010.
 msgid ""
@@ -9,14 +10,14 @@ msgstr ""
 "Project-Id-Version: katepart4\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2016-09-05 07:08+0000\n"
-"PO-Revision-Date: 2026-05-15 23:04+0200\n"
+"PO-Revision-Date: 2026-09-19 16:38+0200\n"
 "Last-Translator: Karl Ove Hufthammer <karl@huftis.org>\n"
-"Language-Team: Norwegian Nynorsk <l10n-no@lister.huftis.org>\n"
+"Language-Team: Norwegian Nynorsk <l10n-no@nuug.no>\n"
 "Language: nn\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 26.04.1\n"
+"X-Generator: Lokalize 26.08.1\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Environment: kde\n"
 "X-Accelerator-Marker: &\n"
@@ -308,6 +309,10 @@ msgid "MS-DOS Batch"
 msgstr "MS-DOS-.bat-format"
 
 msgctxt "Language|"
+msgid "DotEnv"
+msgstr "DotEnv"
+
+msgctxt "Language|"
 msgid "dot"
 msgstr "dot"
 
@@ -325,7 +330,7 @@ msgstr "DTD"
 
 msgctxt "Language|"
 msgid "Devicetree Source (DTS)"
-msgstr ""
+msgstr "Devicetree-kjelde (DTS)"
 
 msgctxt "Language|"
 msgid "D"
@@ -640,6 +645,10 @@ msgid "Julia"
 msgstr "Julia"
 
 msgctxt "Language|"
+msgid "Just"
+msgstr "Just"
+
+msgctxt "Language|"
 msgid "J"
 msgstr "J"
 
@@ -654,6 +663,10 @@ msgstr "KBasic"
 msgctxt "Language|"
 msgid "Kconfig"
 msgstr "Kconfig"
+
+msgctxt "Language|"
+msgid "KDL"
+msgstr "KDL"
 
 # Er snakk om https://www.klipper3d.org/, ikkje utklippstavleprogrammet Klipper!
 msgctxt "Language|"
@@ -685,6 +698,7 @@ msgctxt "Language|"
 msgid "LDIF"
 msgstr "LDIF"
 
+# skip-rule: bokmålsord
 msgctxt "Language|"
 msgid "GNU Linker Script"
 msgstr "GNU Linker-skript"
@@ -717,19 +731,17 @@ msgctxt "Language|"
 msgid "Logcat"
 msgstr "Logcat"
 
-#, fuzzy
 msgctxt "Language|"
 msgid "Log File (advanced) Selector"
-msgstr "Loggfil (avansert)"
+msgstr "Loggfil-veljar (avansert)"
 
 msgctxt "Language|"
 msgid "Log File (advanced)"
 msgstr "Loggfil (avansert)"
 
-#, fuzzy
 msgctxt "Language|"
 msgid "Log File (simplified) Selector"
-msgstr "Loggfil (forenkla)"
+msgstr "Loggfil-veljar (forenkla)"
 
 msgctxt "Language|"
 msgid "Log File (simplified)"
@@ -742,6 +754,10 @@ msgstr "Logtalk"
 msgctxt "Language|"
 msgid "LPC"
 msgstr "LPC"
+
+msgctxt "Language|"
+msgid "LRC Lyrics"
+msgstr "LRC-songtekst"
 
 msgctxt "Language|"
 msgid "LSL"
@@ -1024,6 +1040,7 @@ msgctxt "Language|"
 msgid "Pug"
 msgstr "Pug"
 
+# skip-rule: bokmålsord
 msgctxt "Language|"
 msgid "Puppet"
 msgstr "Puppet"
@@ -1202,7 +1219,7 @@ msgstr "SiSU"
 
 msgctxt "Language|"
 msgid "Slint"
-msgstr ""
+msgstr "Slint"
 
 msgctxt "Language|"
 msgid "Smali"
@@ -1418,7 +1435,7 @@ msgstr "Wayland-spor"
 
 msgctxt "Language|"
 msgid "Web Video Text Tracks"
-msgstr ""
+msgstr "Vevvideo-teksting"
 
 msgctxt "Language|"
 msgid "WINE Config"

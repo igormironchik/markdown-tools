@@ -286,6 +286,9 @@ Q_SIGNALS:
      */
     void reloaded();
 
+protected:
+    bool eventFilter(QObject *receiver, QEvent *event) override;
+
 private:
     Q_DISABLE_COPY(Repository)
     friend class RepositoryPrivate;

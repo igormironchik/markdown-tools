@@ -8,9 +8,9 @@ msgstr ""
 "Project-Id-Version: kdelibs4\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2014-03-23 01:50+0000\n"
-"PO-Revision-Date: 2026-06-01 18:48-0400\n"
+"PO-Revision-Date: 2026-09-23 06:56+0900\n"
 "Last-Translator: Abduqadir Abliz <sahranbay@gmail.com>\n"
-"Language-Team: Uyghur Computer Science Association <UKIJ@yahoogroups.com>\n"
+"Language-Team: Uyghur <kde-i18n-doc@kde.org>\n"
 "Language: ug\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -22,17 +22,17 @@ msgstr ""
 #: core/loader.cpp:177
 msgctxt "Sonnet::Loader|dictionary variant"
 msgid "40"
-msgstr "40"
+msgstr ""
 
 #: core/loader.cpp:178
 msgctxt "Sonnet::Loader|dictionary variant"
 msgid "60"
-msgstr "60"
+msgstr ""
 
 #: core/loader.cpp:179
 msgctxt "Sonnet::Loader|dictionary variant"
 msgid "80"
-msgstr "80"
+msgstr ""
 
 #: core/loader.cpp:180
 msgctxt "Sonnet::Loader|dictionary variant"
@@ -130,13 +130,13 @@ msgctxt ""
 "Sonnet::Loader|dictionary name; %1 = language name, %2 = country name and %3 "
 "= language variant name"
 msgid "%1 (%2) [%3]"
-msgstr "%1 (%2) [%3]"
+msgstr ""
 
 #: core/loader.cpp:234
 #, qt-format
 msgctxt "Sonnet::Loader|dictionary name; %1 = language name, %2 = country name"
 msgid "%1 (%2)"
-msgstr "%1 (%2)"
+msgstr ""
 
 #: quick/spellcheckhighlighter.cpp:263 quick/spellcheckhighlighter.cpp:287
 msgctxt "SpellcheckHighlighter|"
@@ -146,7 +146,7 @@ msgstr "كىرگۈزگەندە ئىملا تەكشۈرۈش قوزغىتىلغا�
 #: quick/spellcheckhighlighter.cpp:267
 msgctxt "SpellcheckHighlighter|"
 msgid "Too many misspelled words. As-you-type spell checking disabled."
-msgstr "ئىملا خاتالىق بەك جىق، كىرگۈزگەندە ئىملا تەكشۈرۈش چەكلەندى."
+msgstr "Too many misspelled words. كىرگۈزگەندە ئىملا تەكشۈرۈش چەكلەنگەن."
 
 #: quick/spellcheckhighlighter.cpp:289
 msgctxt "SpellcheckHighlighter|"
@@ -256,7 +256,7 @@ msgstr "كىرگۈزگەندە ئىملا تەكشۈرۈش قوزغىتىلغا�
 #: ui/highlighter.cpp:261
 msgctxt "Sonnet::Highlighter|"
 msgid "Too many misspelled words. As-you-type spell checking disabled."
-msgstr "ئىملا خاتالىق بەك جىق، كىرگۈزگەندە ئىملا تەكشۈرۈش چەكلەندى."
+msgstr "Too many misspelled words. كىرگۈزگەندە ئىملا تەكشۈرۈش چەكلەنگەن."
 
 #: ui/highlighter.cpp:282
 msgctxt "Sonnet::Highlighter|"
@@ -279,18 +279,6 @@ msgid ""
 "All</b>.</p>\n"
 "</qt>"
 msgstr ""
-"<qt><p>بۇ سۆز «نامەلۇم سۆز» دەپ قارالغاچقا، ئۇ نۆۋەتتىكى لۇغەتتە "
-"ئىشلىتىلىۋاتقان ھەر قانداق تۈر بىلەن ماسلاشمايدۇ. بەلكىم ئۇ چەتتىن كىرگەن "
-"سۆز بولۇشى مۇمكىن.</p>\n"
-"<p>ئەگەر بۇ سۆزدە ئىملا خاتالىقى بولمىسا، <b>لۇغەتكە قوش</b>نى چېكىپ لۇغەتكە "
-"قوشالايسىز. ئەگەر نامەلۇم سۆزنىڭ لۇغەتكە قوشۇلۇشىنى خالىمىسىڭىز، ئەمما ئۇنىڭ "
-"ئەسلىنى ساقلاپ قالماقچى بولسىڭىز،<b>پەرۋا قىلما</b> ياكى <b>ھەممىگە پەرۋا "
-"قىلما</b>نى چېكىڭ.</p>\n"
-"<p>شۇنداقتىمۇ، ئەگەر سۆزنىڭ ئىملاسى خاتا بولسا، تۆۋەندىكى تىزىملىكتىن توغرا "
-"سۆزنى تېپىپ ئۇنى ئالماشتۇرۇشنى سىناڭ. ئەگەر ئالماشتۇرىدىغان سۆزنى "
-"تاپالمىسىڭىز، تۆۋەندىكى تېكىست رامكىسىغا سۆزدىن بىرنى كىرگۈزۈپ ئاندىن  "
-"<b>ئالماشتۇر</b> ياكى <b>ھەممىنى ئالماشتۇر</b>نى تاللاڭ.</p>\n"
-"</qt>"
 
 #: ui/sonnetui.ui:47
 msgctxt "SonnetUi|"
@@ -338,13 +326,6 @@ msgid ""
 "part of the text and then return here to continue proofing.</p>\n"
 "</qt>"
 msgstr ""
-"<qt>\n"
-"<p>بۇ جايدا شۇ سۆزنى ئۆز ئىچىگە ئالغان تىل مۇھىت نەقىل تېكىستلىرىنى "
-"كۆرەلەيسىز. ئەگەر بۇ ئۇچۇرلار سىزنىڭ مۇۋاپىق سۆزنى تېپىپ ئالماشتۇرۇشىڭىزغا "
-"يېتەرلىك بولمىسا، نۆۋەتتە ئىملا تەكشۈرۈۋاتقان پۈتۈكنى چېكىپ، تېخىمۇ كەڭ "
-"دائىرىلىك تېكىستنى كۆرۈڭ، ئاندىن بۇ جايغا قايتىپ ئىملا تۈزىتىشنى "
-"داۋاملاشتۇرۇڭ.</p>\n"
-"</qt>"
 
 #: ui/sonnetui.ui:96
 msgctxt "SonnetUi|"
@@ -363,14 +344,6 @@ msgid ""
 "or <b>Ignore All</b> instead.</p>\n"
 "</qt>"
 msgstr ""
-"<qt>\n"
-"<p>نامەلۇم سۆز بايقالدى، ئۇنىڭ نامەلۇم دەپ قارىلىشى ئۇنىڭ لۇغەتتە "
-"بولماسلىقىدا.<br>\n"
-"ئەگەر سىز ئۇ سۆزنىڭ ئىملاسى خاتا ئەمەس قاراپ، كېيىنكى قېتىم قايتا ئىملاسى "
-"خاتا دەپ تونۇشىنى خالىمىسىڭىز، بۇ جاينى چېكىڭ. ئەگەر ئۇنىڭ ئەسلى ھالىتىنى "
-"ساقلاشنى خالىسىڭىز ئەمما لۇغەتكە قوشمىسىڭىز ئۇنداقتا <b>پەرۋا قىلما</b> ياكى "
-"<b>ھەممىگە پەرۋا قىلما</b> نى چېكىڭ.</p>\n"
-"</qt>"
 
 #: ui/sonnetui.ui:112
 msgctxt "SonnetUi|"
@@ -395,14 +368,6 @@ msgid ""
 "</p>\n"
 "</qt>"
 msgstr ""
-"<qt>\n"
-"<p>ئەگەر نامەلۇم سۆزنىڭ ئىملاسى خاتا بولسا، ئىملاسى توغرا سۆز بار يوقلۇقىنى "
-"تەكشۈرۈڭ، ئەگەر مەۋجۇت بولسا ئۇنى چېكىڭ. ئەگەر بۇ تىزىملىكتە ئالماشتۇرغىلى "
-"بولىدىغان مۇۋاپىق سۆز بولمىسا، ئۈستىدىكى تەھرىرلەش رامكىسىدا توغرا سۆزنى "
-"كىرگۈزۈڭ.</p>\n"
-"<p>مۇشۇ سۆزنىلا تۈزەتمەكچى بولسىڭىز <b>ئالماشتۇر</b> نى، ھەممىنى تۈزەتمەكچى "
-"بولسىڭىز <b>ھەممىنى ئالماشتۇر</b>نى چېكىڭ.</p>\n"
-"</qt>"
 
 #: ui/sonnetui.ui:151 ui/sonnetui.ui:167
 msgctxt "SonnetUi|"

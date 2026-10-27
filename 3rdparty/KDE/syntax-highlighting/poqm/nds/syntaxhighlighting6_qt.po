@@ -467,6 +467,10 @@ msgctxt "Language|"
 msgid "MS-DOS Batch"
 msgstr "MS-DOS-Stapel"
 
+msgctxt "Language|"
+msgid "DotEnv"
+msgstr ""
+
 #, fuzzy
 #| msgctxt "Language"
 #| msgid "dot"
@@ -969,6 +973,10 @@ msgctxt "Language|"
 msgid "Julia"
 msgstr "Julia"
 
+msgctxt "Language|"
+msgid "Just"
+msgstr ""
+
 #, fuzzy
 #| msgctxt "Language"
 #| msgid "J"
@@ -995,6 +1003,13 @@ msgstr "KBasic"
 msgctxt "Language|"
 msgid "Kconfig"
 msgstr "KConfig"
+
+#, fuzzy
+#| msgctxt "Language"
+#| msgid "GDL"
+msgctxt "Language|"
+msgid "KDL"
+msgstr "GDL"
 
 #, fuzzy
 #| msgid "Folder Config File"
@@ -1120,6 +1135,10 @@ msgstr "Logtalk"
 msgctxt "Language|"
 msgid "LPC"
 msgstr "LPC"
+
+msgctxt "Language|"
+msgid "LRC Lyrics"
+msgstr ""
 
 #, fuzzy
 #| msgctxt "Language"
