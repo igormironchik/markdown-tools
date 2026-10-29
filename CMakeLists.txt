@@ -3,7 +3,7 @@
 
 cmake_minimum_required(VERSION 3.19)
 
-project(markdown-tools)
+project(markdown-tools VERSION "17.15.7")
 
 option(BUILD_MD_TESTS "Build tests? Default OFF." OFF)
 
@@ -31,7 +31,7 @@ if(NOT MARKDOWN_TOOLS_VERSION_MINOR)
 		OUTPUT_STRIP_TRAILING_WHITESPACE)
 endif()
 
-set(MD_TOOLS_VERSION_NUMBER "17.15.7")
+set(MD_TOOLS_VERSION_NUMBER ${PROJECT_VERSION})
 set(HomeDir "@HomeDir@")
 string(TIMESTAMP MD_CURRENT_DATE "%Y-%m-%d")
 
@@ -64,16 +64,6 @@ endif(NOT CMAKE_BUILD_TYPE)
 set(CMAKE_CXX_STANDARD 20)
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-if(NOT DEFINED _DISABLE_INSTALLATION)
-  set(_DISABLE_INSTALLATION FALSE)
-
-	macro(install)
-		if(NOT _DISABLE_INSTALLATION)
-			_install(${ARGN})
-		endif()
-	endmacro()
-endif()
 
 install(FILES "markdown-tools.desktop" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/applications/")
 
