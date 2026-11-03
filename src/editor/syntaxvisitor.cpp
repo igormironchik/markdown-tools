@@ -799,7 +799,8 @@ void SyntaxVisitor::onBlockquote(MD::Blockquote *b)
 
 void SyntaxVisitor::onListItem(MD::ListItem *l,
                                bool first,
-                               bool)
+                               bool,
+                               MD::ListLooseness)
 {
     MD::PosCache::onListItem(l, first);
 

@@ -119,7 +119,8 @@ protected:
     void onFootnote(MD::Footnote *f) override;
     void onListItem(MD::ListItem *l,
                     bool first,
-                    bool skipOpeningWrap = false) override;
+                    bool skipOpeningWrap = false,
+                    MD::ListLooseness looseness = MD::ListLooseness::Unknown) override;
 
 private:
     void onItemWithOpts(MD::ItemWithOpts *i);

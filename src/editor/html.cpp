@@ -354,13 +354,14 @@ void HtmlConv::onHorizontalLine(MD::HorizontalLine *l)
 
 void HtmlConv::onListItem(MD::ListItem *i,
                           bool first,
-                          bool skipOpeningWrap)
+                          bool skipOpeningWrap,
+                          MD::ListLooseness looseness)
 {
     if (!m_justCollectFootnoteRefs) {
         printLineId(i);
     }
 
-    MD::details::HtmlVisitor::onListItem(i, first, skipOpeningWrap);
+    MD::details::HtmlVisitor::onListItem(i, first, skipOpeningWrap, looseness);
 
     clearTop(i);
 }

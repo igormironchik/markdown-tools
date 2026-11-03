@@ -3,7 +3,7 @@
 
 cmake_minimum_required(VERSION 3.19)
 
-project(markdown-tools VERSION "17.15.7")
+project(markdown-tools VERSION "17.15.8")
 
 option(BUILD_MD_TESTS "Build tests? Default OFF." OFF)
 

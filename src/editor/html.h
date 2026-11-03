@@ -28,7 +28,8 @@ protected:
                      bool skipOpeningWrap = false) override;
     void onListItem(MD::ListItem *i,
                     bool first,
-                    bool skipOpeningWrap = false) override;
+                    bool skipOpeningWrap = false,
+                    MD::ListLooseness looseness = MD::ListLooseness::Unknown) override;
     void onHeading(MD::Heading *h) override;
     void onCode(MD::Code *c) override;
     void onBlockquote(MD::Blockquote *b) override;
