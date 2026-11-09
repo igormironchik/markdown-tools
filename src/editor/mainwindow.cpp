@@ -364,7 +364,7 @@ void MainWindow::onFileSave()
     }
 
     QFile f(m_d->m_editor->docName());
-    if (!f.open(QIODevice::WriteOnly | QIODevice::Text)) {
+    if (!f.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
         QMessageBox::warning(this,
                              windowTitle(),
                              tr("Could not write to file %1: %2")
@@ -373,8 +373,7 @@ void MainWindow::onFileSave()
         return;
     }
 
-    QTextStream str(&f);
-    str << m_d->m_editor->toPlainText();
+    f.write(m_d->m_editor->content().toUtf8());
     f.close();
 
     m_d->m_editor->document()->setModified(false);
@@ -1005,7 +1004,7 @@ void MainWindow::onFind(bool)
     }
 
     if (!m_d->m_editor->textCursor().selection().isEmpty()) {
-        m_d->m_find->setFindText(m_d->m_editor->textCursor().selection().toPlainText());
+        m_d->m_find->setFindText(replaceLineEndings(m_d->m_editor->textCursor().selection().toRawText()));
     } else {
         m_d->m_find->setFocusOnFind();
     }

@@ -30,6 +30,9 @@ QT_END_NAMESPACE
 namespace MdEditor
 {
 
+//! Replace Unicode line endings with simple line ending.
+QString replaceLineEndings(const QString &str);
+
 class LineNumberArea;
 
 //! \return Whether block is folded.
@@ -173,6 +176,8 @@ public:
     const MdUtils::BlockLines &blockLines() const;
     //! \return Line number area widget.
     LineNumberArea *lineNumberArea() const;
+    //! \return Plain text content.
+    QString content() const;
 
 public Q_SLOTS:
     //! Enable/disable showing of unprintable characters.

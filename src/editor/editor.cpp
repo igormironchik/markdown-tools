@@ -841,6 +841,25 @@ LineNumberArea *Editor::lineNumberArea() const
     return m_d->m_lineNumberArea;
 }
 
+QString replaceLineEndings(const QString &str)
+{
+    static const QChar s_lineEnd = QLatin1Char('\n');
+    static const QChar s_newParagraph = QChar(8233);
+    static const QChar s_newLine = QChar(8232);
+
+    auto tmp = str;
+
+    tmp.replace(s_newParagraph, s_lineEnd);
+    tmp.replace(s_newLine, s_lineEnd);
+
+    return tmp;
+}
+
+QString Editor::content() const
+{
+    return replaceLineEndings(document()->toRawText());
+}
+
 bool isFolded(const QTextBlock &block)
 {
     return (block.userState() > 0 ? block.userState() & s_foldingState : false);
@@ -2270,15 +2289,14 @@ void Editor::unfoldLine(const QTextCursor &cursor)
 
 void Editor::onContentChanged()
 {
-    const auto md = toPlainText();
+    const auto md = content();
     QFileInfo info(m_d->m_docName);
 
     if (m_d->m_autosavingEnabled && !m_d->m_docName.isEmpty() && m_d->m_docName != s_defaultFileName) {
         if (document()->isUndoAvailable()) {
             QFile f(m_d->m_docName + s_autosaveExtension);
-            if (f.open(QIODevice::WriteOnly | QIODevice::Text)) {
-                QTextStream str(&f);
-                str << md;
+            if (f.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+                f.write(md.toUtf8());
                 f.close();
             }
         } else {
