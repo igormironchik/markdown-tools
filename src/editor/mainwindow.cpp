@@ -657,12 +657,13 @@ void MainWindow::onLineHovered(int lineNumber,
     if (!items.empty()) {
         if ((items.front()->type() != MD::ItemType::List && items.front()->type() != MD::ItemType::Footnote)
             || items.size() == 1) {
-            QToolTip::showText(pos, itemType(items.front(), items.size() == 1));
+            QToolTip::showText(pos, itemType(items.front(), items.size() == 1), this);
         } else {
             QToolTip::showText(
                 pos,
                 tr("%1 in %2")
-                    .arg(itemType(items.at(1), items.size() == 1), itemType(items.front(), items.size() == 1)));
+                    .arg(itemType(items.at(1), items.size() == 1), itemType(items.front(), items.size() == 1)),
+                this);
         }
     }
 }
