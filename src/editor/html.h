@@ -40,6 +40,7 @@ protected:
     QString prepareTextForHtml(const QString &t) override;
     void onFootnotes(const QString &footnoteBackLinkContent) override;
     void onAnchor(MD::Anchor *a) override;
+    void onYamlHeader(MD::YAMLHeader *h) override;
 
 private:
     void printLineId(MD::Item *item);

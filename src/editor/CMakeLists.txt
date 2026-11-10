@@ -12,6 +12,7 @@ find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
 find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} COMPONENTS
     IconThemes ColorScheme Config
 )
+find_package(yaml-cpp REQUIRED)
 
 set(LIB_SRC
 	editor.h
@@ -96,7 +97,8 @@ target_link_libraries(md-editor-lib
     Qt6::WebEngineWidgets
     Qt6::Widgets
     Qt6::Concurrent
-    Qt6::Core)
+    Qt6::Core
+    yaml-cpp::yaml-cpp)
 
 add_executable(md-editor WIN32 ${SRC})
 

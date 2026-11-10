@@ -10,9 +10,15 @@
 #include <md-pdf-lib/src/emoji.h>
 #include <md-pdf-lib/src/emoji_parser.h>
 
+// md4qt include.
+#include <md4qt/src/parser.h>
+
 // Qt include.
 #include <QApplication>
 #include <QScopedValueRollback>
+
+// yaml-cpp include.
+#include <yaml-cpp/yaml.h>
 
 namespace MdEditor
 {
@@ -464,6 +470,70 @@ void HtmlConv::onAnchor(MD::Anchor *a)
         m_html.push_back(a->label());
         m_html.push_back(QStringLiteral("\"></div>\n"));
         m_lastCount = m_count + 1;
+    }
+}
+
+namespace /* anonymous */ {
+
+void yamlToTable(const YAML::Node &node, QString &html)
+{
+    switch (node.Type()) {
+    case YAML::NodeType::Map: {
+        html.append(QStringLiteral("<table>\n"));
+
+        for (auto it = node.begin(), last = node.end(); it != last; ++it) {
+            html.append(QStringLiteral("<tr>\n"));
+            html.append(QStringLiteral("<th>\n"));
+            html.append(QString::fromStdString(it->first.as<std::string>()).toHtmlEscaped());
+            html.append(QStringLiteral("</th>\n"));
+            html.append(QStringLiteral("<td>\n"));
+            yamlToTable(it->second, html);
+            html.append(QStringLiteral("</td>\n"));
+            html.append(QStringLiteral("</tr>\n"));
+        }
+
+        html.append(QStringLiteral("</table>\n"));
+    } break;
+
+    case YAML::NodeType::Scalar: {
+        MD::Parser p;
+        auto md = QString::fromStdString(node.Scalar());
+        QTextStream stream(&md);
+        const auto doc = p.parse(stream, QString(), QString());
+        HtmlConv conv;
+        html.append(conv.toHtml(doc, QString(), false));
+    } break;
+
+    case YAML::NodeType::Sequence: {
+        html.append(QStringLiteral("<ul>\n"));
+
+        for (auto it = node.begin(), last = node.end(); it != last; ++it) {
+            html.append(QStringLiteral("<li>\n"));
+            yamlToTable(*it, html);
+            html.append(QStringLiteral("</li>\n"));
+        }
+
+        html.append(QStringLiteral("</ul>\n"));
+    } break;
+
+    default:
+        break;
+    }
+}
+
+} /* namespace anonymous */
+
+void HtmlConv::onYamlHeader(MD::YAMLHeader *h)
+{
+    if (!h->yaml().isEmpty()) {
+        try {
+            QString tmp;
+            yamlToTable(YAML::Load(h->yaml().toStdString()), tmp);
+
+            m_html.push_back(tmp);
+            m_html.push_back(QStringLiteral("\n"));
+        } catch (const YAML::Exception &) {
+        }
     }
 }
 
