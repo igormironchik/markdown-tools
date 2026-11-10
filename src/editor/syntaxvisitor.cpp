@@ -411,23 +411,6 @@ void SyntaxVisitor::onUserDefined(MD::Item *i)
 {
     if (m_d->m_colors.m_enabled) {
         switch (i->type()) {
-        case static_cast<MD::ItemType>(static_cast<int>(MD::ItemType::UserDefined) + 1): {
-            auto yaml = static_cast<MD::YAMLHeader *>(i);
-
-            QTextCharFormat format;
-            format.setForeground(m_d->m_colors.m_codeColor);
-            format.setFont(m_d->styleFont(m_d->m_additionalStyle));
-
-            m_d->setFormat(format, yaml->startLine(), yaml->startColumn(), yaml->endLine(), yaml->endColumn());
-
-            QTextCharFormat special;
-            special.setForeground(m_d->m_colors.m_specialColor);
-            special.setFont(m_d->styleFont(m_d->m_additionalStyle));
-
-            m_d->setFormat(special, yaml->startDelim());
-            m_d->setFormat(special, yaml->endDelim());
-        } break;
-
         case MdPdf::EmojiItem::emojiType(): {
             auto emoji = static_cast<MdPdf::EmojiItem *>(i);
 
@@ -815,6 +798,26 @@ void SyntaxVisitor::onListItem(MD::ListItem *l,
             m_d->setFormat(special, l->taskDelim());
         }
     }
+}
+
+void SyntaxVisitor::onYamlHeader(MD::YAMLHeader *yaml)
+{
+    if (m_d->m_colors.m_enabled) {
+        QTextCharFormat format;
+        format.setForeground(m_d->m_colors.m_codeColor);
+        format.setFont(m_d->styleFont(m_d->m_additionalStyle));
+
+        m_d->setFormat(format, yaml->startLine(), yaml->startColumn(), yaml->endLine(), yaml->endColumn());
+
+        QTextCharFormat special;
+        special.setForeground(m_d->m_colors.m_specialColor);
+        special.setFont(m_d->styleFont(m_d->m_additionalStyle));
+
+        m_d->setFormat(special, yaml->startDelim());
+        m_d->setFormat(special, yaml->endDelim());
+    }
+
+    MD::PosCache::onYamlHeader(yaml);
 }
 
 void SyntaxVisitor::onTable(MD::Table *t)

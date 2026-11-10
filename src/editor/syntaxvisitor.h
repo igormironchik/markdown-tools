@@ -121,6 +121,7 @@ protected:
                     bool first,
                     bool skipOpeningWrap = false,
                     MD::ListLooseness looseness = MD::ListLooseness::Unknown) override;
+    void onYamlHeader(MD::YAMLHeader *h) override;
 
 private:
     void onItemWithOpts(MD::ItemWithOpts *i);

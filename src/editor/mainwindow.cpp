@@ -638,8 +638,7 @@ inline QString itemType(MD::Item *item,
         return MainWindow::tr("Raw HTML");
     case MD::ItemType::Math:
         return MainWindow::tr("LaTeX Math Expression");
-
-    case static_cast<MD::ItemType>(static_cast<int>(MD::ItemType::UserDefined) + 1):
+    case MD::ItemType::YamlHeader:
         return MainWindow::tr("YAML Header");
 
     default:
