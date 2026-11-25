@@ -472,6 +472,9 @@ void MainWidget::process()
             m_syntax->setTheme(m_syntax->themeForName(m_ui->m_codeTheme->currentText()));
             opts.m_imageAlignment = imageAlignmentFromInt(m_ui->m_imageAlignment->currentIndex());
 
+            auto diagram = QSharedPointer<MdPdf::Diagram>::create(opts.m_textFont, opts.m_codeFont, 16);
+            opts.m_diagram = diagram.get();
+
             ProgressDlg progress(pdf, this);
 
             pdf->render(fileName, doc, opts);

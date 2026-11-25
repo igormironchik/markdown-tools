@@ -11,9 +11,13 @@
 #include <QCommandLineParser>
 #include <QString>
 #include <QTranslator>
+#include <QWebEngineUrlScheme>
 
 // utils include.
 #include "utils/utils.h"
+
+// md-pdf-lib include.
+#include <md-pdf-lib/src/diagram.h>
 
 // MicroTeX include.
 #include <latex.h>
@@ -32,6 +36,11 @@ int main(int argc,
 #ifdef MD_BREEZE
     KIconTheme::initTheme();
 #endif
+
+    QWebEngineUrlScheme qrc("qrc");
+    qrc.setFlags(QWebEngineUrlScheme::CorsEnabled | QWebEngineUrlScheme::FetchApiAllowed);
+    qrc.setSyntax(QWebEngineUrlScheme::Syntax::Path);
+    QWebEngineUrlScheme::registerScheme(qrc);
 
     QApplication app(argc, argv);
 
@@ -59,6 +68,7 @@ int main(int argc,
 
     tex::LaTeX::init(":/res");
 
+    initMdPdfSharedResources();
     initSharedResources();
     Q_INIT_RESOURCE(resources);
     Q_INIT_RESOURCE(latex);
