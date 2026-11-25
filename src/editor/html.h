@@ -18,6 +18,14 @@ namespace MdEditor
 //! Converter to HTML.
 class HtmlConv : public MD::details::HtmlVisitor
 {
+public:
+    static void setMmdSvg(const QHash<QString,
+                                      QString> &svg);
+
+    static const QHash<QString,
+                       QString> &
+    mmdSvg();
+
 protected:
     QString getId(MD::Item *item) const override;
     void openStyle(const typename MD::ItemWithOpts::Styles &styles) override;
@@ -52,6 +60,7 @@ private:
     mutable MD::Item *m_top = nullptr;
     mutable qsizetype m_lastCount = 0;
     bool m_skipSpan = false;
+    static QHash<QString, QString> m_mmdSvg;
 }; // class HtmlConv
 
 } /* namespace MdEditor */

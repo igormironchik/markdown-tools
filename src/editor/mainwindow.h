@@ -6,6 +6,7 @@
 #pragma once
 
 // md-editor include.
+#include "html.h"
 #include "mainwindow_p.h"
 
 // Qt include.
@@ -124,6 +125,8 @@ private Q_SLOTS:
 #if defined(Q_OS_WIN) && defined(MD_BREEZE)
     void onChangeTheme();
 #endif
+    void onMermaidReady(QHash<QString,
+                              QString> svg);
 
 private:
     template<class Func>
@@ -143,9 +146,15 @@ private:
                 bool code = false;
 
                 if (items.back()->type() == MD::ItemType::Code && !static_cast<MD::Code *>(items.back())->isInline()) {
-                    count = lineNumber - items.back()->startLine();
-                    fromTop = items.back()->startLine() - items.front()->startLine();
-                    code = true;
+                    auto c = static_cast<MD::Code *>(items.back());
+                    const auto hash = QCryptographicHash::hash(c->text().toUtf8(), QCryptographicHash::Sha256);
+
+                    if (!(MdPdf::mermaidSyntax().contains(c->syntax().toLower().trimmed())
+                          && HtmlConv::mmdSvg().contains(hash))) {
+                        count = lineNumber - items.back()->startLine();
+                        fromTop = items.back()->startLine() - items.front()->startLine();
+                        code = true;
+                    }
                 } else {
                     count = lineNumber - items.front()->startLine();
                 }

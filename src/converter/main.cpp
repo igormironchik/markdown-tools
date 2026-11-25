@@ -16,9 +16,6 @@
 // utils include.
 #include "utils/utils.h"
 
-// md-pdf-lib include.
-#include <md-pdf-lib/src/diagram.h>
-
 // MicroTeX include.
 #include <latex.h>
 
@@ -68,10 +65,7 @@ int main(int argc,
 
     tex::LaTeX::init(":/res");
 
-    initMdPdfSharedResources();
     initSharedResources();
-    Q_INIT_RESOURCE(resources);
-    Q_INIT_RESOURCE(latex);
 
     QTranslator appTranslator;
     const auto locale = QLocale::system();

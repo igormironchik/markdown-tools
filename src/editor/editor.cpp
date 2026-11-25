@@ -17,15 +17,18 @@
 #include <QApplication>
 #include <QCommonStyle>
 #include <QCompleter>
+#include <QCryptographicHash>
 #include <QCursor>
 #include <QDesktopServices>
 #include <QFileInfo>
+#include <QFuture>
 #include <QListView>
 #include <QMenu>
 #include <QMimeData>
 #include <QPainter>
 #include <QPixmapCache>
 #include <QPointer>
+#include <QPromise>
 #include <QScrollBar>
 #include <QStringListModel>
 #include <QStyle>
@@ -47,6 +50,7 @@
 #include <md4qt/src/algo.h>
 
 // md-pdf-lib include.
+#include <md-pdf-lib/src/diagram.h>
 #include <md-pdf-lib/src/emoji.h>
 
 namespace MdEditor
@@ -62,7 +66,8 @@ bool operator!=(const Margins &l,
 // DataParser
 //
 
-DataParser::DataParser()
+DataParser::DataParser(MdPdf::Diagram *diagram)
+    : m_diagram(diagram)
 {
     connect(this, &DataParser::newData, this, &DataParser::onParse, Qt::QueuedConnection);
 }
@@ -120,7 +125,30 @@ void DataParser::onParse()
             diff = MdUtils::compareBlocks(m_oldBlocks->m_children, block->m_children);
         }
 
-        Q_EMIT done(doc, m_counter, m_syntax, ids.first, ids.second, block, diff);
+        QHash<QString, QString> svgHash;
+
+        MD::forEach({MD::ItemType::Code}, doc, [this, &svgHash](MD::Item *i) {
+            auto code = static_cast<MD::Code *>(i);
+            const auto syntax = code->syntax().toLower().trimmed();
+
+            if (MdPdf::mermaidSyntax().contains(syntax)) {
+                const auto hash = QCryptographicHash::hash(code->text().toUtf8(), QCryptographicHash::Sha256);
+
+                auto promise = QSharedPointer<QPromise<QString>>::create();
+                auto future = promise->future();
+
+                QMetaObject::invokeMethod(this->m_diagram, "convert", Qt::QueuedConnection, code->text(), promise);
+
+                future.waitForFinished();
+                const auto svg = future.result();
+
+                if (!svg.isEmpty()) {
+                    svgHash.insert(hash, svg);
+                }
+            }
+        });
+
+        Q_EMIT done(doc, m_counter, m_syntax, ids.first, ids.second, block, diff, svgHash);
     }
 }
 
@@ -353,7 +381,11 @@ struct EditorPrivate {
                                                                    -1,
                                                                    nullptr))
         , m_parsingThread(new QThread(m_q))
-        , m_parser(new DataParser)
+        , m_diagram(new MdPdf::Diagram(QStringLiteral("sans-serif"),
+                                       QStringLiteral("monospaced"),
+                                       16,
+                                       m_q))
+        , m_parser(new DataParser(m_diagram))
     {
         m_parser->moveToThread(m_parsingThread);
         m_q->setMouseTracking(true);
@@ -608,6 +640,8 @@ struct EditorPrivate {
     SyntaxVisitor m_syntax;
     //! Tread for parsing.
     QThread *m_parsingThread = nullptr;
+    //! Mermaid diagram renderer.
+    MdPdf::Diagram *m_diagram = nullptr;
     //! Data parser.
     DataParser *m_parser = nullptr;
     //! "Find/replace" widget.
@@ -2347,7 +2381,9 @@ void Editor::onParsingDone(QSharedPointer<MD::Document> doc,
                            MD::details::IdsMap idsMap,
                            Editor::ItemsMap itemsMap,
                            QSharedPointer<MdUtils::BlockLines> blockLines,
-                           MdUtils::BlockLinesDiff diff)
+                           MdUtils::BlockLinesDiff diff,
+                           QHash<QString,
+                                 QString> svg)
 {
     if (m_d->m_currentParsingCounter == counter) {
         m_d->m_currentDoc = doc;
@@ -2385,6 +2421,7 @@ void Editor::onParsingDone(QSharedPointer<MD::Document> doc,
             block = block.next();
         }
 
+        Q_EMIT mermaidReady(svg);
         Q_EMIT ready();
         Q_EMIT misspelled(syntaxHighlighter().hasMisspelled());
 

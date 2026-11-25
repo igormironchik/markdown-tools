@@ -10,6 +10,12 @@
     <script src="qrc:/res/katex/katex.min.js"></script>
     <script src="qrc:/res/katex/contrib/auto-render.min.js"></script>
     <style>
+        .md-edit-mermaid {
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
+
         .md-edit-code {
             position: relative;
         }
@@ -33,6 +39,11 @@
         }
 
         .md-edit-code:hover .copy-btn {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .md-edit-mermaid:hover .copy-btn {
             opacity: 1;
             visibility: visible;
         }

@@ -11,7 +11,6 @@
 #include "findweb.h"
 #include "fontdlg.h"
 #include "gotoline.h"
-#include "html.h"
 #include "htmldocument.h"
 #include "previewpage.h"
 #include "settings.h"
@@ -979,6 +978,12 @@ void MainWindow::onChangeTheme()
 }
 
 #endif
+
+void MainWindow::onMermaidReady(QHash<QString,
+                                      QString> svg)
+{
+    HtmlConv::setMmdSvg(svg);
+}
 
 void MainWindow::onLineNumberContextMenuRequested(int lineNumber,
                                                   const QPoint &pos)

@@ -19,7 +19,6 @@
 
 // md-pdf-lib include.
 #include <md-pdf-lib/src/utils.h>
-#include <md-pdf-lib/src/diagram.h>
 
 #ifdef MD_BREEZE
 #include <KIconTheme>
@@ -70,7 +69,6 @@ int main(int argc,
 
     const auto fileName = (args.isEmpty() ? QString() : args.at(0));
 
-    initMdPdfSharedResources();
     initSharedResources();
     Q_INIT_RESOURCE(resources);
 

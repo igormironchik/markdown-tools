@@ -551,6 +551,7 @@ void MainWindowPrivate::initUi()
     QObject::connect(m_refreshAction, &QAction::triggered, m_q, &MainWindow::onRefresh);
     QObject::connect(m_editor->document(), &QTextDocument::modificationChanged, m_saveAction, &QAction::setEnabled);
     QObject::connect(m_editor, &Editor::ready, m_q, &MainWindow::onTextChanged);
+    QObject::connect(m_editor, &Editor::mermaidReady, m_q, &MainWindow::onMermaidReady);
     QObject::connect(m_editor, &Editor::misspelled, m_q, &MainWindow::onMisspelledFount);
     QObject::connect(m_editor, &Editor::lineHovered, m_q, &MainWindow::onLineHovered);
     QObject::connect(m_editor,
