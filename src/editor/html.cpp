@@ -7,6 +7,7 @@
 #include "html.h"
 
 // md-pdf-lib include.
+#include <md-pdf-lib/src/diagram.h>
 #include <md-pdf-lib/src/emoji.h>
 #include <md-pdf-lib/src/emoji_parser.h>
 
@@ -15,6 +16,9 @@
 
 // Qt include.
 #include <QApplication>
+#include <QCryptographicHash>
+#include <QJsonArray>
+#include <QJsonDocument>
 #include <QScopedValueRollback>
 
 // yaml-cpp include.
@@ -28,6 +32,21 @@ namespace MdEditor
 //
 
 static const QChar s_numberSignChar = QLatin1Char('#');
+
+QHash<QString, QString> HtmlConv::m_mmdSvg;
+
+void HtmlConv::setMmdSvg(const QHash<QString,
+                                     QString> &svg)
+{
+    m_mmdSvg = svg;
+}
+
+const QHash<QString,
+            QString> &
+HtmlConv::mmdSvg()
+{
+    return m_mmdSvg;
+}
 
 QString HtmlConv::getId(MD::Item *item) const
 {
@@ -185,10 +204,50 @@ static const QString s_copyBtnSvg = QStringLiteral(
 
 static const char *s_copyBtnToolTip = QT_TRANSLATE_NOOP("MainWindow", "Copy To Clipboard");
 
+QString toJsStringLiteral(const QString &str)
+{
+    QJsonArray arr;
+    arr.append(str);
+
+    QString json = QString::fromUtf8(QJsonDocument(arr).toJson(QJsonDocument::Compact));
+    json = json.mid(1, json.length() - 2);
+
+    json.replace(QLatin1Char('<'), QStringLiteral("\\u003C"))
+        .replace(QLatin1Char('>'), QStringLiteral("\\u003E"))
+        .replace(QChar(0x2028), QStringLiteral("\\u2028"))
+        .replace(QChar(0x2029), QStringLiteral("\\u2029"));
+
+    return json;
+}
+
 void HtmlConv::onCode(MD::Code *c)
 {
     if (!m_justCollectFootnoteRefs) {
         printLineId(c);
+
+        const auto syntax = c->syntax().toLower().trimmed();
+
+        if (MdPdf::mermaidSyntax().contains(syntax)) {
+            const auto hash = QCryptographicHash::hash(c->text().toUtf8(), QCryptographicHash::Sha256);
+
+            if (m_mmdSvg.contains(hash)) {
+                m_html.push_back(QStringLiteral("<div class=\"md-edit-mermaid\" "));
+                printId(c);
+                m_html.push_back(QStringLiteral("><button class=\"copy-btn\" title=\""));
+                m_html.push_back(QApplication::translate("MainWindow", s_copyBtnToolTip));
+                m_html.push_back(QStringLiteral("\" onClick='navigator.clipboard.writeText("));
+                m_html.push_back(toJsStringLiteral(c->text()));
+                m_html.push_back(QStringLiteral(")'>"));
+                m_html.push_back(s_copyBtnSvg);
+                m_html.push_back(QStringLiteral("</button>"));
+                m_html.push_back(m_mmdSvg[hash]);
+                m_html.push_back(QStringLiteral("</div>\n"));
+
+                clearTop(c);
+
+                return;
+            }
+        }
 
         const auto lines = c->text().split(s_newLine);
 
@@ -473,9 +532,11 @@ void HtmlConv::onAnchor(MD::Anchor *a)
     }
 }
 
-namespace /* anonymous */ {
+namespace /* anonymous */
+{
 
-void yamlToTable(const YAML::Node &node, QString &html)
+void yamlToTable(const YAML::Node &node,
+                 QString &html)
 {
     switch (node.Type()) {
     case YAML::NodeType::Map: {

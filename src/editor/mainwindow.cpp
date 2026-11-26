@@ -11,7 +11,6 @@
 #include "findweb.h"
 #include "fontdlg.h"
 #include "gotoline.h"
-#include "html.h"
 #include "htmldocument.h"
 #include "previewpage.h"
 #include "settings.h"
@@ -979,6 +978,12 @@ void MainWindow::onChangeTheme()
 }
 
 #endif
+
+void MainWindow::onMermaidReady(QHash<QString,
+                                      QString> svg)
+{
+    HtmlConv::setMmdSvg(svg);
+}
 
 void MainWindow::onLineNumberContextMenuRequested(int lineNumber,
                                                   const QPoint &pos)
@@ -2245,6 +2250,8 @@ void MainWindow::onShowLicenses()
     msg.addLicense(s_md4qtName, s_md4qtLicense);
     msg.addLicense(s_kwidgetsaddonsName, s_kwidgetsaddonsLicense);
     msg.addLicense(s_yamlCppName, s_yamlCppLicense);
+    msg.addLicense(s_peleName, s_peleLicense);
+    msg.addLicense(s_mathjaxName, s_mathjaxLicense);
 
 #ifdef Q_OS_WIN
     msg.addLicense(s_breezeName, s_breezeLicense);

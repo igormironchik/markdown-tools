@@ -27,6 +27,13 @@ QT_BEGIN_NAMESPACE
 class QStringListModel;
 QT_END_NAMESPACE
 
+namespace MdPdf
+{
+
+class Diagram;
+
+}
+
 namespace MdEditor
 {
 
@@ -93,6 +100,9 @@ Q_SIGNALS:
                    QSharedPointer<MdUtils::BlockLines> blocks);
     //! Link clicked.
     void linkClicked(const QString &url);
+    //! Mermaid SVGs ready.
+    void mermaidReady(QHash<QString,
+                            QString>);
 
 public:
     Editor(QWidget *parent,
@@ -241,7 +251,9 @@ private Q_SLOTS:
                        MD::details::IdsMap idsMap,
                        MdEditor::Editor::ItemsMap itemsMap,
                        QSharedPointer<MdUtils::BlockLines> blockLines,
-                       MdUtils::BlockLinesDiff diff);
+                       MdUtils::BlockLinesDiff diff,
+                       QHash<QString,
+                             QString> svg);
     //! Link clicked.
     void onLinkClicked(const QString &url);
     //! Check for URL auto-completion.
@@ -313,10 +325,12 @@ Q_SIGNALS:
               MD::details::IdsMap idsMap,
               MdEditor::Editor::ItemsMap itemsMap,
               QSharedPointer<MdUtils::BlockLines> blockLines,
-              MdUtils::BlockLinesDiff diff);
+              MdUtils::BlockLinesDiff diff,
+              QHash<QString,
+                    QString> svg);
 
 public:
-    DataParser();
+    explicit DataParser(MdPdf::Diagram *diagram);
     ~DataParser() override = default;
 
     //! \return Generated ID for a given item.
@@ -367,6 +381,8 @@ private:
     MdPdf::PluginsCfg m_pluginsCfg;
     //! Old blocks of lines.
     QSharedPointer<MdUtils::BlockLines> m_oldBlocks;
+    //! Mermaid renderer.
+    MdPdf::Diagram *m_diagram;
 };
 
 //

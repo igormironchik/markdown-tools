@@ -11,6 +11,7 @@
 #include <QCommandLineParser>
 #include <QString>
 #include <QTranslator>
+#include <QWebEngineUrlScheme>
 
 // utils include.
 #include "utils/utils.h"
@@ -32,6 +33,11 @@ int main(int argc,
 #ifdef MD_BREEZE
     KIconTheme::initTheme();
 #endif
+
+    QWebEngineUrlScheme qrc("qrc");
+    qrc.setFlags(QWebEngineUrlScheme::CorsEnabled | QWebEngineUrlScheme::FetchApiAllowed);
+    qrc.setSyntax(QWebEngineUrlScheme::Syntax::Path);
+    QWebEngineUrlScheme::registerScheme(qrc);
 
     QApplication app(argc, argv);
 
@@ -60,8 +66,6 @@ int main(int argc,
     tex::LaTeX::init(":/res");
 
     initSharedResources();
-    Q_INIT_RESOURCE(resources);
-    Q_INIT_RESOURCE(latex);
 
     QTranslator appTranslator;
     const auto locale = QLocale::system();

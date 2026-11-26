@@ -472,6 +472,9 @@ void MainWidget::process()
             m_syntax->setTheme(m_syntax->themeForName(m_ui->m_codeTheme->currentText()));
             opts.m_imageAlignment = imageAlignmentFromInt(m_ui->m_imageAlignment->currentIndex());
 
+            auto diagram = QSharedPointer<MdPdf::Diagram>::create(opts.m_textFont, opts.m_codeFont, 16);
+            opts.m_diagram = diagram.get();
+
             ProgressDlg progress(pdf, this);
 
             pdf->render(fileName, doc, opts);
@@ -728,6 +731,8 @@ void MainWindow::licenses()
     msg.addLicense(s_md4qtName, s_md4qtLicense);
     msg.addLicense(s_kwidgetsaddonsName, s_kwidgetsaddonsLicense);
     msg.addLicense(s_mdPdfLibName, s_mdPdfLibLicense);
+    msg.addLicense(s_peleName, s_peleLicense);
+    msg.addLicense(s_mathjaxName, s_mathjaxLicense);
 
 #ifdef Q_OS_WIN
     msg.addLicense(s_breezeName, s_breezeLicense);

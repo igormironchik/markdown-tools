@@ -32,7 +32,7 @@ int main(int argc,
 #endif
 
     QWebEngineUrlScheme qrc("qrc");
-    qrc.setFlags(QWebEngineUrlScheme::CorsEnabled);
+    qrc.setFlags(QWebEngineUrlScheme::CorsEnabled | QWebEngineUrlScheme::FetchApiAllowed);
     qrc.setSyntax(QWebEngineUrlScheme::Syntax::Path);
     QWebEngineUrlScheme::registerScheme(qrc);
 
